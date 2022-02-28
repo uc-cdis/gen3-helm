@@ -1,0 +1,297 @@
+# Default values for fence.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/cdis/fence
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: 
+    eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/gen3_service/emalinowskiv1--default--audit-sqs-sender
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "fence-sa"
+
+podAnnotations: {}
+
+podSecurityContext: 
+  fsGroup: 101
+
+securityContext: {}
+
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {
+  }
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+  requests: 
+    cpu: 0.4
+    memory: 1200Mi
+  limits:
+    cpu: 1.0
+    memory: 2400Mi
+
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: enabled
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+labels: 
+  app: fence
+  release: production
+  # for network policy selectors
+  authprovider: "yes"
+  # uses explicit proxy and AWS APIs
+  netnolimit: "yes"
+  public: "yes"
+  userhelper: "yes"
+  tags.datadoghq.com/service: "fence"
+  tags.datadoghq.com/env: anvilstaging
+  tags.datadoghq.com/service: fence
+  tags.datadoghq.com/version: 2021.12
+  date: 1643646653
+affinity: 
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - fence
+        topologyKey: "kubernetes.io/hostname"
+
+env: 
+  - name: DD_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: dd_enabled
+        optional: true
+  - name: DD_ENV
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['tags.datadoghq.com/env']
+  - name: DD_SERVICE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['tags.datadoghq.com/service']
+  - name: DD_VERSION
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['tags.datadoghq.com/version']
+  - name: DD_LOGS_INJECTION
+    value: "true"
+  - name: DD_PROFILING_ENABLED
+    value: "true"
+  - name: DD_TRACE_SAMPLE_RATE
+    value: "1"
+  - name: GEN3_UWSGI_TIMEOUT
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: uwsgi-timeout
+        optional: true
+  - name: DD_AGENT_HOST
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: AWS_STS_REGIONAL_ENDPOINTS
+    value: regional
+  - name: PYTHONPATH
+    value: /var/www/fence
+  - name: GEN3_DEBUG
+    value: "False"
+  - name: FENCE_PUBLIC_CONFIG
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-fence
+        key: fence-config-public.yaml
+        optional: true
+
+      
+volumes: 
+  - name: old-config-volume
+    secret:
+      secretName: "fence-secret"
+  - name: json-secret-volume
+    secret:
+      secretName: "fence-json-secret"
+  - name: creds-volume
+    secret:
+      secretName: "fence-creds"
+  - name: config-helper
+    configMap:
+      name: config-helper
+  - name: logo-volume
+    configMap:
+      name: "logo-config"
+  - name: config-volume
+    secret:
+      secretName: "fence-config"
+  - name: fence-google-app-creds-secret-volume
+    secret:
+      secretName: "fence-google-app-creds-secret"
+  - name: fence-google-storage-creds-secret-volume
+    secret:
+      secretName: "fence-google-storage-creds-secret"
+  - name: fence-jwt-keys
+    secret:
+      secretName: "fence-jwt-keys"
+  - name: cert-volume
+    secret:
+      secretName: "cert-fence-service"
+  - name: ca-volume
+    secret:
+      secretName: "service-ca"
+  - name: privacy-policy
+    configMap:
+      name: "privacy-policy"
+  - name: yaml-merge
+    configMap:
+      name: "fence-yaml-merge"
+
+volumeMounts: 
+  - name: "old-config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/local_settings.py"
+    subPath: local_settings.py
+  - name: "json-secret-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence_credentials.json"
+    subPath: fence_credentials.json
+  - name: "creds-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/creds.json"
+    subPath: creds.json
+  - name: "config-helper"
+    readOnly: true
+    mountPath: "/var/www/fence/config_helper.py"
+    subPath: config_helper.py
+  - name: "logo-volume"
+    readOnly: true
+    mountPath: "/fence/fence/static/img/logo.svg"
+    subPath: "logo.svg"
+  - name: "privacy-policy"
+    readOnly: true
+    mountPath: "/fence/fence/static/privacy_policy.md"
+    subPath: "privacy_policy.md"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    subPath: fence-config.yaml
+  - name: "yaml-merge"
+    readOnly: true
+    mountPath: "/var/www/fence/yaml_merge.py"
+    subPath: yaml_merge.py
+  - name: "fence-google-app-creds-secret-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+    subPath: fence_google_app_creds_secret.json
+  - name: "fence-google-storage-creds-secret-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+    subPath: fence_google_storage_creds_secret.json
+  - name: "cert-volume"
+    readOnly: true
+    mountPath: "/mnt/ssl/service.crt"
+    subPath: "service.crt"
+  - name: "cert-volume"
+    readOnly: true
+    mountPath: "/mnt/ssl/service.key"
+    subPath: "service.key"
+  - name: "ca-volume"
+    # See https://askubuntu.com/questions/645818/how-to-install-certificates-for-command-line
+    readOnly: true
+    mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
+    subPath: "ca.pem"
+  - name: "fence-jwt-keys"
+    readOnly: true
+    mountPath: "/fence/jwt-keys.tar"
+    subPath: "jwt-keys.tar"            
+
+initVolumeMounts: 
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    subPath: fence-config.yaml
+  - name: "yaml-merge"
+    readOnly: true
+    mountPath: "/var/www/fence/yaml_merge.py"
+    subPath: yaml_merge.py
+  - name: "fence-google-app-creds-secret-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+    subPath: fence_google_app_creds_secret.json
+  - name: "fence-google-storage-creds-secret-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+    subPath: fence_google_storage_creds_secret.json
+
+initEnv: 
+  - name: PYTHONPATH
+    value: /var/www/fence
+  - name: FENCE_PUBLIC_CONFIG
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-fence
+        key: fence-config-public.yaml
+        optional: true
+
+selectorLabels: 
+  app: fence
+  release: production
+
+
