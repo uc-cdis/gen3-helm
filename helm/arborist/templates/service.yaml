@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fence.fullname" . }}-service
+  name: {{ include "arborist.fullname" . }}-service
   labels:
-    {{- include "fence.labels" . | nindent 4 }}
+    {{- include "arborist.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "fence.selectorLabels" . | nindent 4 }}
+    {{- include "arborist.selectorLabels" . | nindent 4 }}

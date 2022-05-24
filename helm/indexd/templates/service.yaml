@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "indexd.fullname" . }}
+  name: {{ include "indexd.fullname" . }}-service
   labels:
     {{- include "indexd.labels" . | nindent 4 }}
 spec:

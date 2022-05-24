@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: arborist-creds
+type: Opaque
+stringData:
+  dbcreds.json: |-
+    {
+      "db_host": {{ default "arborist-postgresql" .Values.secrets.db.host | quote }},
+      "db_username": {{ default "postgres" .Values.secrets.db.username | quote }},
+      "db_password": {{ default .Values.global.postgresql.auth.postgresPassword .Values.secrets.db.password | quote }},
+      "db_database": {{ default .Values.global.postgresql.auth.database .Values.secrets.db.database | quote }}
+    }
+
+
