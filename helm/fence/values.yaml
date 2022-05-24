@@ -1,3 +1,14 @@
+# 
+# Gloabl values
+#
+
+global:
+  postgresql:
+    auth:
+      postgresPassword: "password!123"
+      database: "fence"
+
+
 # Default values for fence.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -43,14 +54,17 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   }
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths: []
+    - host: ingress.local
+      paths:
+        - path: "/user(/|$)(.*)"
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -58,8 +72,8 @@ ingress:
 
 resources: 
   requests: 
-    cpu: 0.4
-    memory: 1200Mi
+    cpu: 100m
+    memory: 128Mi
   limits:
     cpu: 1.0
     memory: 2400Mi
@@ -97,9 +111,7 @@ labels:
   userhelper: "yes"
   tags.datadoghq.com/service: "fence"
   tags.datadoghq.com/env: anvilstaging
-  tags.datadoghq.com/service: fence
   tags.datadoghq.com/version: 2021.12
-  date: 1643646653
 affinity: 
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -169,12 +181,14 @@ volumes:
   - name: json-secret-volume
     secret:
       secretName: "fence-json-secret"
+      optional: true
   - name: creds-volume
     secret:
       secretName: "fence-creds"
   - name: config-helper
     configMap:
       name: config-helper
+      optional: true
   - name: logo-volume
     configMap:
       name: "logo-config"
@@ -190,18 +204,13 @@ volumes:
   - name: fence-jwt-keys
     secret:
       secretName: "fence-jwt-keys"
-  - name: cert-volume
-    secret:
-      secretName: "cert-fence-service"
-  - name: ca-volume
-    secret:
-      secretName: "service-ca"
   - name: privacy-policy
     configMap:
       name: "privacy-policy"
   - name: yaml-merge
     configMap:
       name: "fence-yaml-merge"
+      optional: true
 
 volumeMounts: 
   - name: "old-config-volume"
@@ -230,7 +239,7 @@ volumeMounts:
     subPath: "privacy_policy.md"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    mountPath: "/var/www/fence/fence-config.yaml"
     subPath: fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
@@ -244,28 +253,15 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
-  - name: "cert-volume"
-    readOnly: true
-    mountPath: "/mnt/ssl/service.crt"
-    subPath: "service.crt"
-  - name: "cert-volume"
-    readOnly: true
-    mountPath: "/mnt/ssl/service.key"
-    subPath: "service.key"
-  - name: "ca-volume"
-    # See https://askubuntu.com/questions/645818/how-to-install-certificates-for-command-line
-    readOnly: true
-    mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
-    subPath: "ca.pem"
   - name: "fence-jwt-keys"
     readOnly: true
-    mountPath: "/fence/jwt-keys.tar"
-    subPath: "jwt-keys.tar"            
+    mountPath: "/fence/keys/key/jwt_private_key.pem"
+    subPath: "jwt_private_key.pem"            
 
 initVolumeMounts: 
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    mountPath: "/var/www/fence/fence-config.yaml"
     subPath: fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
@@ -294,4 +290,11 @@ selectorLabels:
   app: fence
   release: production
 
+
+logo: 
+privacy_policy: 
+
+# Whether or not to deploy a local postgres pod
+postgres: 
+  enabled: true
 

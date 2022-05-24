@@ -1,3 +1,13 @@
+# 
+# Gloabl values
+#
+
+global:
+  postgresql:
+    auth:
+      postgresPassword: "password!123"
+      database: "audit"
+
 # Default values for audit.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -5,10 +15,10 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/audit
+  repository: quay.io/cdis/audit-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -42,14 +52,17 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
   }
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths: []
+    - host: ingress.local
+      paths:
+        - path: "/audit(/|$)(.*)"
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -57,10 +70,10 @@ ingress:
 
 resources: 
   requests: 
-    cpu: 0.4
-    memory: 512Mi
+    cpu: 0.1
+    memory: 128Mi
   limits:
-    cpu: 0.8
+    cpu: 80
     memory: 1024Mi
 
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -142,6 +155,21 @@ initEnv: {}
 
 selectorLabels: 
   app: audit
-  release: production
 
+server:
+  pull_from_queue: false
+  debug: false
 
+secrets:
+  sqs:
+    url: "http://sqs.com"
+    region: "us-east-1"
+  db:
+    host: "audit-postgresql"
+    password: 
+    user: 
+    database: 
+
+# Whether or not to deploy a local postgres pod
+postgres: 
+  enabled: true
