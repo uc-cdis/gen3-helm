@@ -62,7 +62,7 @@ ingress:
   hosts:
     - host: ingress.local
       paths:
-        - path: /authz
+        - path: /authz(/|$)(.*)
           pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
