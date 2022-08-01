@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fence-creds
+type: Opaque
+stringData:
+  creds.json: |-
+      {
+        "db_host": "fence-postgressql",
+        "db_username": "fence_user",
+        "db_password": "",
+        "db_database": "fence",
+        "hostname": "brh.data-commons.org",
+        "indexd_password": "",
+        "google_client_secret": "YOUR.GOOGLE.SECRET",
+        "google_client_id": "YOUR.GOOGLE.CLIENT",
+        "hmac_key": ""
+      }
+

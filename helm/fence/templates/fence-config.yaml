@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fence-config
+type: Opaque
+data:
+{{ (.Files.Glob "fence-config/*").AsSecrets | indent 2 }}
+    

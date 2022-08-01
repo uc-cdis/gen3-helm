@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "audit.name" -}}
+{{- define "peregrine.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "audit.fullname" -}}
+{{- define "peregrine.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "audit.chart" -}}
+{{- define "peregrine.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "audit.labels" -}}
-helm.sh/chart: {{ include "audit.chart" . }}
-{{ include "audit.selectorLabels" . }}
+{{- define "peregrine.labels" -}}
+helm.sh/chart: {{ include "peregrine.chart" . }}
+{{ include "peregrine.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,27 +45,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "audit.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "audit.name" . }}
+{{- define "peregrine.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "peregrine.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "audit.serviceAccountName" -}}
+{{- define "peregrine.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "audit.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "peregrine.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
-{{- end }}
-
-
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "audit.secretName" -}}
-{{- default "audit-g3auto" }}
 {{- end }}

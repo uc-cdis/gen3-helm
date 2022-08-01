@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "indexd.fullname" . }}
+  labels:
+    {{- include "indexd.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "indexd.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "indexd.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "indexd.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- toYaml .Values.env | nindent 12  }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+        - name: indexd-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["/bin/bash" ]
+          args: 
+            - "-c"
+            # Script always succeeds if it runs (echo exits with 0)
+            # indexd image does not include jq, so use python 
+            - |
+              eval $(python 2> /dev/null <<EOM
+              import json
+
+              # sheepdog_data = json.load(open('/var/www/indexd/sheepdog_creds.json', 'r'))
+              indexd_data = json.load(open('/var/www/indexd/creds.json', 'r'))
+              user_db = { 'gdcapi': 'indexd_password' }
+              if 'user_db' in indexd_data:
+                more_users = indexd_data['user_db']
+                for user in more_users:
+                  user_db[user] = more_users[user]
+              print('declare -A user_db')
+              for user in user_db:
+                print("user_db['%s']='%s'" % (user, user_db[user]))
+              EOM
+              )
+              for user in "${!user_db[@]}"; do
+                python /indexd/bin/index_admin.py create --username "$user" --password "${user_db[$user]}"
+              done
+              echo "Exit code: $?"
+          volumeMounts:
+            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
+          env:
+            {{ toYaml .Values.initEnv | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
