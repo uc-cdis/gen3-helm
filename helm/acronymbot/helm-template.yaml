@@ -1,0 +1,122 @@
+---
+# Source: acronymbot/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: release-name-acronymbot
+  labels:
+    helm.sh/chart: acronymbot-0.1.0
+    app.kubernetes.io/name: acronymbot
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: acronymbot/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-acronymbot
+  labels:
+    helm.sh/chart: acronymbot-0.1.0
+    app.kubernetes.io/name: acronymbot
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: acronymbot
+    app.kubernetes.io/instance: release-name
+---
+# Source: acronymbot/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acronymbot-deployment
+  labels:
+    helm.sh/chart: acronymbot-0.1.0
+    app.kubernetes.io/name: acronymbot
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acronymbot
+      app.kubernetes.io/instance: release-name
+      app: acronymbot-0.1.0
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: acronymbot
+        app.kubernetes.io/name: acronymbot
+        app.kubernetes.io/instance: release-name
+    spec:
+      #TODO Add the options for an imagePullSecret, decide if a 
+      #serviceAccount and securityContext are needed
+      serviceAccountName: release-name-acronymbot
+      securityContext:
+        {}
+      containers:
+        - name: acronymbot
+        #TODO Decide if a securityContext is needed here
+          securityContext:
+            {}
+          image: "nginx:1.16.0"
+          imagePullPolicy: Always
+          env:
+            - name: SLACK_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: 
+                  key: 
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: 
+                  key: 
+
+          volumeMounts:
+          - name: slacktoken
+            mountPath: "/secret/slacktoken.json"
+          
+          volumes:
+          - name: slacktoken
+            secret:
+              secretName: 
+
+          resources:
+            {}
+---
+# Source: acronymbot/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "release-name-acronymbot-test-connection"
+  labels:
+    helm.sh/chart: acronymbot-0.1.0
+    app.kubernetes.io/name: acronymbot
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['release-name-acronymbot:80']
+  restartPolicy: Never
