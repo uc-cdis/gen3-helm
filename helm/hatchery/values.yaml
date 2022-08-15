@@ -1,25 +1,15 @@
-# 
-# Gloabl values
-#
-global:
-  postgresql:
-    auth:
-      postgresPassword: "password!123"
-      database: "audit"
-
-
-
-# Default values for arborist.
+# Default values for hatchery.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/arborist
+  # repository: mendhak/http-https-echo
+  repository: quay.io/cdis/hatchery
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -56,14 +46,15 @@ ingress:
   className: ""
   annotations: {
     nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "nginx",
+    nginx.ingress.kubernetes.io/allow-headers: REMOTE_USER
   }
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: ingress.local
       paths:
-        - path: /authz(/|$)(.*)
+        - path: "/lw-workspace(/|$)(.*)"
           pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
@@ -95,31 +86,17 @@ tolerations: []
 
 affinity: {}
 
+env: 
+- name: HTTP_PORT
+  value: "8000"
 
 volumes:
-- name: creds-volume
-  secret:
-    secretName: "arborist-creds"
-
+- name: hatchery-config
+  configMap:
+    name: manifest-hatchery
 
 volumeMounts:
-- name: "creds-volume"
+- name: hatchery-config
   readOnly: true
-  mountPath: "/var/www/arborist/dbcreds.json"
-  subPath: dbcreds.json
-
-env:
-- name: JWKS_ENDPOINT
-  value: "http://fence-service/.well-known/jwks"
-
-
-secrets:
-  db:
-    host: 
-    password: 
-    user: 
-    database: 
-
-# Whether or not to deploy a local postgres pod
-postgres: 
-  enabled: true
+  mountPath: /hatchery.json
+  subPath: json
