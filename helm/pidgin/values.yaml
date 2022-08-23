@@ -4,7 +4,7 @@
 
 
 
-#Configmap
+# Deployment
 
 autoscaling:
   enabled: false
