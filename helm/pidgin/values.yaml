@@ -101,8 +101,8 @@ containerPort:
 
 resources:
   limits:
-    cpu: '0.8'
-    memory: '512Mi'
+    cpu: 0.8
+    memory: 512Mi
 
 
 #Service and Pod
