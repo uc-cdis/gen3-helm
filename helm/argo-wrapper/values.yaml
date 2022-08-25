@@ -4,7 +4,7 @@
 
 
 
-#Configmap
+#Deployment
 podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
 
 autoscaling:
@@ -44,6 +44,9 @@ volumes:
   - name: argo-config
     configMap:
       name: manifest-argo
+      items:
+        - key: argo.json
+          path: argo.json
 
 image:
   repository: quay.io/cdis/argo-wrapper
@@ -71,8 +74,8 @@ volumeMounts:
 
 resources:
   limits:
-    cpu: '100m'
-    memory: '128Mi'
+    cpu: 100m
+    memory: 128Mi
 
 
 #Service and Pod
@@ -84,17 +87,35 @@ service:
 
 #Configmap
 scaling_groups:
-  scaling_groups:
-    test 1: workflow 1
-    test 2: workflow 2
-
-s3_bucket: "argo-artifact-storage-test"
-internal_s3_bucket: "gen3-argo-testawsaccountid-vpcname"
-indexd_admin_user: "user"
-environment: "default"
-pvc: "test-pvc"
-
-
+  valueFrom: 
+    configMapKeyRef:
+      name: manifest-global
+      key: .scaling_groups
+      optional: false
+s3_bucket: 
+  valueFrom: 
+    configMapKeyRef:
+      name: manifest-global
+      key: .argo-wrapper."s3-bucket"
+      optional: false
+internal_s3_bucket:
+  valueFrom: 
+    configMapKeyRef:
+      name: manifest-global
+      key: .argo-wrapper."internal-s3-bucket"
+      optional: false
+environment:
+  valueFrom: 
+    configMapKeyRef:
+      name: manifest-global
+      key: .argo-wrapper.environment
+      optional: false
+pvc:
+  valueFrom: 
+    configMapKeyRef:
+      name: manifest-global
+      key: .argo-wrapper.pvc
+      optional: false
 
 #Ingress
 ingress:
