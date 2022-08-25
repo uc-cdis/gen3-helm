@@ -1,0 +1,218 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: revproxy-deployment
+  labels:
+    {{- include "revproxy.labels" . | nindent 4 }}
+  annotations:
+    gen3.io/network-ingress: "portal,sowerjob"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "revproxy.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "revproxy.selectorLabels" . | nindent 8 }}
+        {{- if .Values.userhelperEnabled }}
+        userhelper: "yes"
+        {{- end}}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - revproxy
+              topologyKey: "kubernetes.io/hostname"
+      automountServiceAccountToken: false
+      volumes:
+        - name: revproxy-conf
+          configMap:
+            name: revproxy-nginx-conf
+        - name: revproxy-subconf
+          configMap:
+            name: revproxy-nginx-subconf
+        - name: modsec-conf
+          configMap:
+            name: manifest-modsec
+        - name: revproxy-manifest-conf
+          configMap:
+            name: manifest-revproxy
+        - name: helper-js
+          configMap:
+            name: revproxy-helper-js
+        - name: cert-external-volume
+          secret:
+            secretName: "cert-external"
+        - name: cert-volume
+          secret:
+            secretName: "cert-revproxy-service"
+        - name: ca-volume
+          secret:
+            secretName: "service-ca"
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: 80
+          - containerPort: 443
+          - containerPort: 6567
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CANARY_PERCENT_JSON
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-canary
+                key: json
+          - name: MAINTENANCE_MODE
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: maintenance_mode
+                optional: true
+          - name: FRONTEND_ROOT
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: frontend_root
+                optional: true
+          - name: ORIGINS_ALLOW_CREDENTIALS
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: origins_allow_credentials
+                optional: true
+          - name: COOKIE_DOMAIN
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: cookie_domain
+                optional: true
+          - name: DES_NAMESPACE
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: des_namespace
+                optional: true
+          - name: INDEXD_AUTHZ
+            valueFrom:
+              secretKeyRef:
+                name: gateway-g3auto
+                key: base64Authz.txt
+                optional: true  
+          - name: MDS_AUTHZ
+            valueFrom:
+              secretKeyRef:
+                name: metadata-g3auto
+                key: base64Authz.txt
+                optional: true
+          volumeMounts:
+          - name: "revproxy-conf"
+            readOnly: true
+            mountPath: "/etc/nginx/nginx.conf"
+            subPath: nginx.conf
+          - name: "revproxy-subconf"
+            readOnly: true
+            mountPath: "/etc/nginx/gen3.conf"
+          - name: "modsec-conf"
+            readOnly: true
+            mountPath: "/etc/nginx/modsec"
+          - name: "revproxy-manifest-conf"
+            readOnly: true
+            mountPath: "/etc/nginx/manifest-revproxy"
+          - name: "helper-js"
+            readOnly: true
+            mountPath: "/etc/nginx/helpers.js"
+            subPath: helpers.js
+          - name: "cert-volume"
+            readOnly: true
+            # revproxy-service domain certificate
+            mountPath: "/mnt/ssl/service.crt"
+            subPath: "service.crt"
+          - name: "cert-volume"
+            readOnly: true
+            mountPath: "/mnt/ssl/service.key"
+            subPath: "service.key"
+          - name: "cert-external-volume"
+            readOnly: true
+            # external hostname certificate
+            mountPath: "/mnt/ssl/external.crt"
+            subPath: "service.crt"
+          - name: "cert-external-volume"
+            readOnly: true
+            mountPath: "/mnt/ssl/external.key"
+            subPath: "service.key"
+          - name: "ca-volume"
+            # See https://askubuntu.com/questions/645818/how-to-install-certificates-for-command-line
+            readOnly: true
+            mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
+            subPath: "ca.pem"
+          command: ["/bin/sh" ]
+          args:
+            - "-c"
+            # Script always succeeds if it runs (echo exits with 0)
+            # Launch script handles different nginx versions, etc
+            - |
+              for name in ngx_http_perl_module.so ngx_http_js_module.so ngx_http_headers_more_filter_module.so ngx_http_modsecurity_module.so; do
+                if [ -f /etc/nginx/modules/$name ]; then
+                  echo "load_module modules/$name;" >> /etc/nginx/gen3_modules.conf
+                fi
+              done
+              if [ -f /etc/nginx/modules/ngx_http_modsecurity_module.so -a -f /etc/nginx/modsec/main.conf ]; then
+                echo "modsecurity on;" >> /etc/nginx/gen3_server_modsec.conf
+                echo "modsecurity_rules_file /etc/nginx/modsec/main.conf;" >> /etc/nginx/gen3_server_modsec.conf
+              fi
+    
+              exec nginx -g 'daemon off;'
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
