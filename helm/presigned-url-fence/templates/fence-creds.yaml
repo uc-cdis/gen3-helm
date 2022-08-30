@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: presigned-url-fence-creds
+type: Opaque
+stringData:
+  creds.json: |-
+      {
+        "db_host": "presigned-url-fence-postgressql",
+        "db_username": "presigned-url-fence_user",
+        "db_password": "",
+        "db_database": "presigned-url-fence",
+        "hostname": "brh.data-commons.org",
+        "indexd_password": "",
+        "google_client_secret": "YOUR.GOOGLE.SECRET",
+        "google_client_id": "YOUR.GOOGLE.CLIENT",
+        "hmac_key": ""
+      }
+
