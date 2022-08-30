@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: presigned-url-fence
+  labels:
+    {{- include "presigned-url-fence.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "presigned-url-fence.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "presigned-url-fence.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "presigned-url-fence.serviceAccountName" . }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      containers:
+        - name: presigned-url-fence
+          image: "quay.io/cdis/presigned-url-fence:2021.12"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: container
+              containerPort: 6567
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              echo "${presigned-url-fence_PUBLIC_CONFIG:-""}" > "/var/www/presigned-url-fence/presigned-url-fence-config-public.yaml"
+              python /var/www/presigned-url-fence/yaml_merge.py /var/www/presigned-url-fence/presigned-url-fence-config-public.yaml /var/www/presigned-url-fence/presigned-url-fence-config-secret.yaml > /var/www/presigned-url-fence/presigned-url-fence-config.yaml
+              if [[ -f /presigned-url-fence/keys/key/jwt_private_key.pem ]]; then
+                openssl rsa -in /presigned-url-fence/keys/key/jwt_private_key.pem -pubout > /presigned-url-fence/keys/key/jwt_public_key.pem
+              fi
+              bash /presigned-url-fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+      initContainers:
+        - name: presigned-url-fence-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: container
+              containerPort: 6567
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              # echo "${presigned-url-fence_PUBLIC_CONFIG:-""}" > "/var/www/presigned-url-fence/presigned-url-fence-config-public.yaml"
+              # python /var/www/presigned-url-fence/yaml_merge.py /var/www/presigned-url-fence/presigned-url-fence-config-public.yaml /var/www/presigned-url-fence/presigned-url-fence-config-secret.yaml > /var/www/presigned-url-fence/presigned-url-fence-config.yaml
+              if presigned-url-fence-create migrate --help > /dev/null 2>&1; then
+                if ! grep -E 'ENABLE_DB_MIGRATION"?: *false' /var/www/presigned-url-fence/presigned-url-fence-config.yaml; then
+                  echo "Running db migration: presigned-url-fence-create migrate"
+                  presigned-url-fence-create migrate
+                else
+                  echo "Db migration disabled in presigned-url-fence-config"
+                fi
+              else
+                echo "Db migration not available in this version of presigned-url-fence"
+              fi
+          volumeMounts:
+            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
+          env:
+            {{ toYaml .Values.initEnv | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

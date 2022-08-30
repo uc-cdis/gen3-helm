@@ -1,23 +1,12 @@
-# 
-# Gloabl values
-#
-global:
-  postgresql:
-    auth:
-      postgresPassword: "password!123"
-      database: "audit"
-
-
-
-# Default values for arborist.
+# Default values for acronymbot.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/arborist
-  pullPolicy: IfNotPresent
+  repository: nginx
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -52,19 +41,16 @@ service:
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx"
-  }
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: ingress.local
+    - host: chart-example.local
       paths:
-        - path: /authz(/|$)(.*)
-          pathType: Prefix
+        - path: /
+          pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -95,31 +81,10 @@ tolerations: []
 
 affinity: {}
 
-
-volumes:
-- name: creds-volume
-  secret:
-    secretName: "arborist-creds"
-
-
-volumeMounts:
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/arborist/dbcreds.json"
-  subPath: dbcreds.json
-
-env:
-- name: JWKS_ENDPOINT
-  value: "http://fence-service/.well-known/jwks"
-
-
 secrets:
-  db:
-    host: 
-    password: 
-    user: 
-    database: 
-
-# Whether or not to deploy a local postgres pod
-postgres: 
-  enabled: true
+  slack:
+    name: ""
+    key: ""
+  github:
+    name: ""
+    key: ""

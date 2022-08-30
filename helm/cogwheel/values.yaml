@@ -1,22 +1,11 @@
-# 
-# Gloabl values
-#
-global:
-  postgresql:
-    auth:
-      postgresPassword: "password!123"
-      database: "audit"
-
-
-
-# Default values for arborist.
+# Default values for cogwheel.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/arborist
+  repository: quay.io/cdis/cogwheel
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -27,7 +16,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -52,35 +41,32 @@ service:
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx"
-  }
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: ingress.local
+    - host: chart-example.local
       paths:
-        - path: /authz(/|$)(.*)
-          pathType: Prefix
+        - path: /
+          pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 10m
+    memory: 128Mi
 
 autoscaling:
   enabled: false
@@ -97,29 +83,42 @@ affinity: {}
 
 
 volumes:
-- name: creds-volume
+- name: cogwheel-g3auto
   secret:
-    secretName: "arborist-creds"
+    secretName: cogwheel-g3auto
 
 
 volumeMounts:
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/arborist/dbcreds.json"
-  subPath: dbcreds.json
-
-env:
-- name: JWKS_ENDPOINT
-  value: "http://fence-service/.well-known/jwks"
-
-
-secrets:
-  db:
-    host: 
-    password: 
-    user: 
-    database: 
-
-# Whether or not to deploy a local postgres pod
-postgres: 
-  enabled: true
+- mountPath: "/etc/shibboleth/sp-encrypt-cert.pem"
+  subPath: "sp-encrypt-cert.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/shibboleth/sp-encrypt-key.pem"
+  subPath: "sp-encrypt-key.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/shibboleth/sp-signing-cert.pem"
+  subPath: "sp-signing-cert.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/shibboleth/sp-signing-key.pem"
+  subPath: "sp-signing-key.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/shibboleth/mdqsigner.pem"
+  subPath: "mdqsigner.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/shibboleth/shibboleth2.xml"
+  subPath: "shibboleth2.xml"
+  name: cogwheel-g3auto
+- mountPath: "/etc/httpd/conf.d/ssl.conf"
+  subPath: "ssl.conf"
+  name: cogwheel-g3auto
+- mountPath: "/etc/cogwheel/wsgi_settings.py"
+  subPath: "wsgi_settings.py"
+  name: cogwheel-g3auto
+- mountPath: "/etc/cogwheel/oauth2_metadata.json"
+  subPath: "oauth2_metadata.json"
+  name: cogwheel-g3auto
+- mountPath: "/etc/cogwheel/rsa/privatekey.pem"
+  subPath: "rsa_privatekey.pem"
+  name: cogwheel-g3auto
+- mountPath: "/etc/cogwheel/rsa/publickey.pem"
+  subPath: "rsa_publickey.pem"
+  name: cogwheel-g3auto

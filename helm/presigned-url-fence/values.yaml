@@ -6,17 +6,17 @@ global:
   postgresql:
     auth:
       postgresPassword: "password!123"
-      database: "fence"
+      database: "presigned-url-fence"
 
 
-# Default values for fence.
+# Default values for presigned-url-fence.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/fence
+  repository: quay.io/cdis/presigned-url-fence
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -33,7 +33,7 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/gen3_service/emalinowskiv1--default--audit-sqs-sender
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "fence-sa"
+  name: "presigned-url-fence-sa"
 
 podAnnotations: {}
 
@@ -102,7 +102,7 @@ nodeSelector: {}
 tolerations: []
 
 labels: 
-  app: fence
+  app: presigned-url-fence
   release: production
   # for network policy selectors
   authprovider: "yes"
@@ -110,7 +110,7 @@ labels:
   netnolimit: "yes"
   public: "yes"
   userhelper: "yes"
-  tags.datadoghq.com/service: "fence"
+  tags.datadoghq.com/service: "presigned-url-fence"
   tags.datadoghq.com/env: anvilstaging
   tags.datadoghq.com/version: 2021.12
 affinity: 
@@ -123,7 +123,7 @@ affinity:
           - key: app
             operator: In
             values:
-            - fence
+            - presigned-url-fence
         topologyKey: "kubernetes.io/hostname"
 
 env: 
@@ -164,28 +164,28 @@ env:
   - name: AWS_STS_REGIONAL_ENDPOINTS
     value: regional
   - name: PYTHONPATH
-    value: /var/www/fence
+    value: /var/www/presigned-url-fence
   - name: GEN3_DEBUG
     value: "False"
-  - name: FENCE_PUBLIC_CONFIG
+  - name: presigned-url-fence_PUBLIC_CONFIG
     valueFrom:
       configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
+        name: manifest-presigned-url-fence
+        key: presigned-url-fence-config-public.yaml
         optional: true
 
       
 volumes: 
   - name: old-config-volume
     secret:
-      secretName: "fence-secret"
+      secretName: "presigned-url-fence-secret"
   - name: json-secret-volume
     secret:
-      secretName: "fence-json-secret"
+      secretName: "presigned-url-fence-json-secret"
       optional: true
   - name: creds-volume
     secret:
-      secretName: "fence-creds"
+      secretName: "presigned-url-fence-creds"
   - name: config-helper
     configMap:
       name: config-helper
@@ -195,100 +195,100 @@ volumes:
       name: "logo-config"
   - name: config-volume
     secret:
-      secretName: "fence-config"
-  - name: fence-google-app-creds-secret-volume
+      secretName: "presigned-url-fence-config"
+  - name: presigned-url-fence-google-app-creds-secret-volume
     secret:
-      secretName: "fence-google-app-creds-secret"
-  - name: fence-google-storage-creds-secret-volume
+      secretName: "presigned-url-fence-google-app-creds-secret"
+  - name: presigned-url-fence-google-storage-creds-secret-volume
     secret:
-      secretName: "fence-google-storage-creds-secret"
-  - name: fence-jwt-keys
+      secretName: "presigned-url-fence-google-storage-creds-secret"
+  - name: presigned-url-fence-jwt-keys
     secret:
-      secretName: "fence-jwt-keys"
+      secretName: "presigned-url-fence-jwt-keys"
   - name: privacy-policy
     configMap:
       name: "privacy-policy"
   - name: yaml-merge
     configMap:
-      name: "fence-yaml-merge"
+      name: "presigned-url-fence-yaml-merge"
       optional: true
 
 volumeMounts: 
   - name: "old-config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/local_settings.py"
+    mountPath: "/var/www/presigned-url-fence/local_settings.py"
     subPath: local_settings.py
   - name: "json-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_credentials.json"
-    subPath: fence_credentials.json
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence_credentials.json"
+    subPath: presigned-url-fence_credentials.json
   - name: "creds-volume"
     readOnly: true
-    mountPath: "/var/www/fence/creds.json"
+    mountPath: "/var/www/presigned-url-fence/creds.json"
     subPath: creds.json
   - name: "config-helper"
     readOnly: true
-    mountPath: "/var/www/fence/config_helper.py"
+    mountPath: "/var/www/presigned-url-fence/config_helper.py"
     subPath: config_helper.py
   - name: "logo-volume"
     readOnly: true
-    mountPath: "/fence/fence/static/img/logo.svg"
+    mountPath: "/presigned-url-fence/presigned-url-fence/static/img/logo.svg"
     subPath: "logo.svg"
   - name: "privacy-policy"
     readOnly: true
-    mountPath: "/fence/fence/static/privacy_policy.md"
+    mountPath: "/presigned-url-fence/presigned-url-fence/static/privacy_policy.md"
     subPath: "privacy_policy.md"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
-    subPath: fence-config.yaml
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence-config.yaml"
+    subPath: presigned-url-fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
-    mountPath: "/var/www/fence/yaml_merge.py"
+    mountPath: "/var/www/presigned-url-fence/yaml_merge.py"
     subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
+  - name: "presigned-url-fence-google-app-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
-  - name: "fence-google-storage-creds-secret-volume"
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence_google_app_creds_secret.json"
+    subPath: presigned-url-fence_google_app_creds_secret.json
+  - name: "presigned-url-fence-google-storage-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
-  - name: "fence-jwt-keys"
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence_google_storage_creds_secret.json"
+    subPath: presigned-url-fence_google_storage_creds_secret.json
+  - name: "presigned-url-fence-jwt-keys"
     readOnly: true
-    mountPath: "/fence/keys/key/jwt_private_key.pem"
+    mountPath: "/presigned-url-fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"            
 
 initVolumeMounts: 
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
-    subPath: fence-config.yaml
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence-config.yaml"
+    subPath: presigned-url-fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
-    mountPath: "/var/www/fence/yaml_merge.py"
+    mountPath: "/var/www/presigned-url-fence/yaml_merge.py"
     subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
+  - name: "presigned-url-fence-google-app-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
-  - name: "fence-google-storage-creds-secret-volume"
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence_google_app_creds_secret.json"
+    subPath: presigned-url-fence_google_app_creds_secret.json
+  - name: "presigned-url-fence-google-storage-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
+    mountPath: "/var/www/presigned-url-fence/presigned-url-fence_google_storage_creds_secret.json"
+    subPath: presigned-url-fence_google_storage_creds_secret.json
 
 initEnv: 
   - name: PYTHONPATH
-    value: /var/www/fence
-  - name: FENCE_PUBLIC_CONFIG
+    value: /var/www/presigned-url-fence
+  - name: presigned-url-fence_PUBLIC_CONFIG
     valueFrom:
       configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
+        name: manifest-presigned-url-fence
+        key: presigned-url-fence-config-public.yaml
         optional: true
 
 selectorLabels: 
-  app: fence
+  app: presigned-url-fence
   release: production
 
 
