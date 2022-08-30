@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: manifest-argo
 data:
-  config.json: |
+  argo.json: |
       {
           {{- with .Values.scaling_groups }}
           {{- toJson . }}

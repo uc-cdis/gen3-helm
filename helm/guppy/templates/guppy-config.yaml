@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-guppy
+data:
+  gupp_config.json: |
+      {
+        {{- with .Values.indices }}
+        "indices": 
+          {{- toJson . }}
+        {{ end }},
+        "config_index": "{{ .Values.config_index }}",
+        "auth_filter_field": "{{ .Values.auth_filter_field }}"
+        "enable_encrypt_whitelist": {{ .Values.enable_encrypt_whitelist }},
+          {{- with .Values.encrypt_whitelist }}
+        "encrypt_whitelist": 
+          {{- toJson . }}
+        {{ end }},
+      }
