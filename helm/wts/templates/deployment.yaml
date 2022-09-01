@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wts-deployment
+  labels:
+    {{- include "wts.labels" . | nindent 4 }}
+  annotations:
+    gen3.io/network-ingress: "mariner"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "wts.selectorLabels" . | nindent 6 }}
+      release: {{ .Values.release }}
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podLabels }}
+      labels:
+        {{- include "wts.selectorLabels" . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - wts
+              topologyKey: "kubernetes.io/hostname"
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: wts-secret
+          secret:
+            secretName: "wts-g3auto"
+      terminationGracePeriodSeconds: 10
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: workspace-token-service
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+            failureThreshold: 10
+            initialDelaySeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+      - name: wts-db-migrate
+        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        volumeMounts:
+        - name: "wts-secret"
+          readOnly: true
+          mountPath: "/var/www/wts/dbcreds.json"
+          subPath: dbcreds.json
+        - name: "wts-secret"
+          readOnly: true
+          mountPath: "/var/www/wts/appcreds.json"
+          subPath: appcreds.json
+        env:
+        - name: POSTGRES_CREDS_FILE
+          value: "/var/www/wts/dbcreds.json"
+        - name: SECRET_CONFIG
+          value: "/var/www/wts/appcreds.json"
+        resources:
+          limits:
+            cpu: 0.8
+            memory: 512Mi
+        command: ["/bin/sh"]
+        args:
+          - "/bin/sh"
+          - "-c"
+          - |
+            if hash alembic 2>/dev/null; then
+            echo "Running DB migration"
+            cd /wts
+            alembic upgrade head
+            else
+            echo "Alembic not installed - not running DB migration"
+            fi
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
