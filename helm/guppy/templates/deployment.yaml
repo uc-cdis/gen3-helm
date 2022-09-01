@@ -27,13 +27,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.volumes}}
+      volumes: 
+        {{- toYaml . | nindent 8}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.env}}
-          env: 
-            {{- toYaml . | nindent 10}}
-          {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12}}
@@ -45,6 +45,14 @@ spec:
           {{- with .Values.containerPort}}
           ports:
             {{- toYaml . | nindent 10}}
+          {{- end }}
+          {{- with .Values.env}}
+          env: 
+            {{- toYaml . | nindent 10}}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
