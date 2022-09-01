@@ -4,6 +4,8 @@ metadata:
   name: "guppy-test-connection"
   labels:
     {{- include "guppy.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
 spec:
   containers:
     - name: wget

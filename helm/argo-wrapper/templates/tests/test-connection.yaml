@@ -4,6 +4,8 @@ metadata:
   name: "argo-wrapper-test-connection"
   labels:
     {{- include "argo-wrapper.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
 spec:
   containers:
     - name: wget
