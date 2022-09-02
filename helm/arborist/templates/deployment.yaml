@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "arborist.fullname" . }}
+  name: arborist-deployment
   labels:
     {{- include "arborist.labels" . | nindent 4 }}
 spec:
