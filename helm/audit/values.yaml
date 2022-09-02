@@ -173,4 +173,4 @@ secrets:
 
 # Whether or not to deploy a local postgres pod
 postgres: 
-  enabled: true
+  enabled: false
