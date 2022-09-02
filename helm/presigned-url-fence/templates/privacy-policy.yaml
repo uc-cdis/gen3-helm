@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: privacy-policy
-data:
-   privacy_policy.md: {{   .Values.privacy_policy | default "None" }}

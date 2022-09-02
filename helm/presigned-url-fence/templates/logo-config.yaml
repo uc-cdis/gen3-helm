@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: logo-config
-data:
-   logo.svg: {{   .Values.logo | default ((.Files.Get "logo/logo.svg")) }}
