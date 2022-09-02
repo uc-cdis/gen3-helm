@@ -4,6 +4,8 @@ metadata:
   name: "pidgin-test-connection"
   labels:
     {{- include "pidgin.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
 spec:
   containers:
     - name: wget

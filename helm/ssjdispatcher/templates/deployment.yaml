@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssjdispatcher-deployment
+spec:
+  selector:
+    matchLabels:
+      {{- include "ssjdispatcher.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: 2
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}  
+  template:
+    metadata:
+      labels:
+        {{- include "ssjdispatcher.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: "ssjdispatcher-service-account"
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      containers:
+        - name: ssjdispatcher
+          image: "quay.io/cdis/ssjdispatcher:2022.08"
+          imagePullPolicy: Always
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

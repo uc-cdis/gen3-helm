@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "argo-wrapper-test-connection"
+  name: "metadata-test-connection"
   labels:
-    {{- include "argo-wrapper.labels" . | nindent 4 }}
+    {{- include "metadata.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "argo-wrapper.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "metadata.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never

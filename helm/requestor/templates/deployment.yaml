@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guppy-deployment
+  name: requestor-deployment
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "guppy.selectorLabels" . | nindent 6 }}
+      {{- include "requestor.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -20,20 +20,25 @@ spec:
       labels:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- include "guppy.selectorLabels" . | nindent 8 }}
+        {{- include "requestor.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes}}
       volumes: 
-        {{- toYaml . | nindent 8}}
-      {{- end }}
+        - name: config-volume
+          secret:
+            secretName: {{ (lookup "v1" "Secret" "default" "requestor-g3auto").metadata.name }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- with .Values.env}}
+          env: 
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12}}
@@ -44,16 +49,30 @@ spec:
           {{- end }}
           {{- with .Values.containerPort}}
           ports:
-            {{- toYaml . | nindent 10}}
-          {{- end }}
-          {{- with .Values.env}}
-          env: 
-            {{- toYaml . | nindent 10}}
+            {{- toYaml . | nindent 12}}
           {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      initContainers:
+        - name: {{ .Values.initContainerName }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.initResources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          command: {{ .Values.command }}
+          {{- with .Values.args }}
+          args: 
+            {{- toYaml . | nindent 12}}
+          {{- end }}
