@@ -74,7 +74,7 @@ resources:
     cpu: 0.1
     memory: 128Mi
   limits:
-    cpu: 80
+    cpu: 1.0
     memory: 1024Mi
 
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -109,9 +109,6 @@ labels:
   public: "yes"
   userhelper: "yes"
   tags.datadoghq.com/service: "audit"
-  tags.datadoghq.com/service: audit
-  tags.datadoghq.com/version: 2021.12
-  date: 1643646653
 affinity: 
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:

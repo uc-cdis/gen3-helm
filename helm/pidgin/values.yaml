@@ -100,9 +100,9 @@ containerPort:
   - containerPort: 443
 
 resources:
-  limits:
-    cpu: 0.8
-    memory: 512Mi
+  # limits:
+  #   cpu: 1
+  #   memory: 512Mi
 
 
 #Service and Pod
