@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fence.fullname" . }}
+  name: fence-service
   labels:
     {{- include "fence.labels" . | nindent 4 }}
 spec:

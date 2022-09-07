@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: presigned-url-fence
+  name: presigned-url-fence-deployment
   labels:
-    app: presigned-url-fence 
+    app: presigned-url-fence
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -25,7 +25,7 @@ spec:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: presigned-url-fence
-          image: "quay.io/cdis/fence:2021.12"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: http
@@ -64,8 +64,6 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
-          volumeMounts:
-            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
           env:
             {{ toYaml .Values.initEnv | nindent 12 }}
       {{- with .Values.nodeSelector }}
