@@ -16,8 +16,17 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.templateLabels}}
       labels:
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      {{- if .Values.datadog.enabled }}
+        tags.datadoghq.com/service: "guppy"
+        # TODO: move this to helpers so we can have this populated from a configmap
+        tags.datadoghq.com/env: {{ .Values.datadog.env }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+      {{- end }}
+      {{- with .Values.templateLabels}}
         {{- toYaml . | nindent 8 }}
       {{- end }}
         {{- include "guppy.selectorLabels" . | nindent 8 }}
@@ -46,8 +55,10 @@ spec:
           ports:
             {{- toYaml . | nindent 10}}
           {{- end }}
-          {{- with .Values.env}}
           env: 
+          - name: GEN3_ES_ENDPOINT
+            value: {{ .Values.es_endpoint }}
+          {{- with .Values.env}}
             {{- toYaml . | nindent 10}}
           {{- end }}
           {{- with .Values.volumeMounts }}

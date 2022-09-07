@@ -180,8 +180,17 @@ secrets:
       host: 
       user: 
       pass: 
-  db:
-    host: 
-    password: 
-    user: 
-    database: 
+
+
+database: 
+  port: 5432
+  host: postgres-postgresql.postgres.svc.cluster.local
+
+  # Credentials used to initialize fence db if it doesn't exist. 
+  master_user: postgres
+  master_pass: postgres
+
+  # Actual fence db creds
+  user: postgres
+  password: postgres
+  dbname: audit
