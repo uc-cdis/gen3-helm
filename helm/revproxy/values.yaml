@@ -57,12 +57,13 @@ ingress:
   #      - chart-example.local
 
 resources: 
-  requests:
-    cpu: 0.5
-    memory: 1024Mi
-  limits:
-    cpu: 1.0
-    memory: 2048Mi
+  # TODO: revaluate thse
+  # requests:
+  #   cpu: 0.5
+  #   memory: 1024Mi
+  # limits:
+  #   cpu: 1.0
+  #   memory: 2048Mi
 
 autoscaling:
   enabled: false
@@ -84,7 +85,7 @@ strategy:
     maxSurge: 1
     maxUnavailable: 0
 
-userhelperEnabled: true
+userhelperEnabled: false
 
 revproxyElb:
   sslCert: ""

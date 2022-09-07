@@ -3,14 +3,15 @@ apiVersion: v1
 metadata:
   name: revproxy-service-elb
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ .Values.revproxyElb.sslCert }}
-    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
-    # for holding idle noVNC websocket connections
-    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "300"
-    # supported in k8s 1.9
-    service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: "ELBSecurityPolicy-TLS-1-2-2017-01"
+    # TODO: Make these annotations work with templating.
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    # # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{ .Values.revproxyElb.sslCert }}
+    # service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+    # # for holding idle noVNC websocket connections
+    # service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "300"
+    # # supported in k8s 1.9
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: "ELBSecurityPolicy-TLS-1-2-2017-01"
     # see kube-setup-revproxy
 spec:
   selector:

@@ -7,3 +7,13 @@ data:
   {{ ($a := split "/" $path)._1 }}: |
   {{- $bytes | toString | nindent 4 }}  
 {{- end}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: revproxy-nginx-conf
+data:
+{{- range $path, $bytes := .Files.Glob "nginx/*.conf" }}
+  {{ ($a := split "/" $path)._1 }}: |
+  {{- $bytes | toString | nindent 4 }}  
+{{- end}}
