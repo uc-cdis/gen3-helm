@@ -139,8 +139,8 @@ env:
 
 resources:
   requests:
-    cpu: 0.4
-    memory: 512Mi
+    cpu: 0.1
+    memory: 128Mi
   limits:
     cpu: 1.0
     memory: 2400Mi

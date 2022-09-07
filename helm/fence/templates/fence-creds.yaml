@@ -6,11 +6,11 @@ type: Opaque
 stringData:
   creds.json: |-
       {
-        "db_host": "fence-postgressql",
-        "db_username": "fence_user",
-        "db_password": "",
-        "db_database": "fence",
-        "hostname": "brh.data-commons.org",
+        "db_host": "{{ .Values.database.host }}",
+        "db_username": "{{ .Values.database.user }}",
+        "db_password": "{{ .Values.database.password }}",
+        "db_database": "{{ .Values.database.dbname }}",
+        "hostname": "{{ .Values.hostname }}",
         "indexd_password": "",
         "google_client_secret": "YOUR.GOOGLE.SECRET",
         "google_client_id": "YOUR.GOOGLE.CLIENT",
