@@ -90,3 +90,5 @@ revproxyElb:
   sslCert: ""
   targetPortHTTPS: 443
   targetPortHTTP: 80
+
+  gen3SecretsFolder: Gen3Secrets
