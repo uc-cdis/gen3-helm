@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manifestservice-deployment
+spec:
+  selector:
+      {{- with .Values.selectorLabels }}
+      matchLabels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
+  template:
+    metadata:
+      {{- with .Values.labels }}
+      labels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.selectorLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }} 
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
+      containers:
+        - name: manifestservice
+          image: "quay.io/cdis/manifestservice:2022.09"
+          imagePullPolicy: Always
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
