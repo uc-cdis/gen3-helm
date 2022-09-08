@@ -104,3 +104,10 @@ resources:
     cpu: 1.0
     memory: 1024Mi
 
+manifestserviceG3auto:
+  hostname: testinstall
+  bucketName: testbucket
+  prefix: test
+  awsaccesskey: ""
+  awssecretkey: ""
+  

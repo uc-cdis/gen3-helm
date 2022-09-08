@@ -44,11 +44,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: 80
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: 80
