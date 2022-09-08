@@ -5,7 +5,6 @@
 
 
 #Deployment
-
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -118,7 +117,7 @@ indices:
   type: "subject"
 - index: "file"
   type: "file"
-config_index: "array-config"
-auth_filter_field: "auth_resource_path"
-enable_encrypt_whitelist: true
-encrypt_whitelist: "test1"
+configIndex: "array-config"
+authFilterField: "auth_resource_path"
+enableEncryptWhitelist: true
+encryptWhitelist: "test1"
