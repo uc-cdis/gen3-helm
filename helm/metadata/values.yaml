@@ -23,10 +23,9 @@ strategy:
     maxSurge: 1
     maxUnavailable: 0
 
-templateLabels:
-  netnolimit: 'yes'
-  public: 'yes'
-  userhelper: 'yes'
+dataDog:
+  enabled: false
+  env: dev
 
 affinity: 
   podAntiAffinity:
@@ -49,42 +48,12 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-volumes:
-  - name: config-volume-g3auto
-    secret:
-      secretName: metadata-g3auto
-  # This volume may or may not be needed or available. See kube-setup-metadata.sh and note that this
-  # is only available if a <manifest dir>/metadata directory exists.
-  - name: config-volume
-    secret:
-      secretName: metadata-config
-      optional: true
-  # This volume may or may not be needed or available. See kube-setup-metadata.sh and note that this
-  # may not exist if the commons does not have any metadata manifest configuration.
-  - name: config-manifest
-    configMap:
-      name: manifest-metadata
-      optional: true
-
 debug: false
 
-env:
-  - name: GEN3_DEBUG
-    value: "False"
-  - name: GEN3_ES_ENDPOINT
-    value: http://esproxy-service:9200
-  - name: USE_AGG_MDS
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-metadata
-        key: USE_AGG_MDS
-        optional: true
-  - name: AGG_MDS_NAMESPACE
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-metadata
-        key: AGG_MDS_NAMESPACE
-        optional: true
+# Environment Variables
+esEndpoint: esproxy-service:9200
+useAggMds:
+aggMdsNamespace:
 
 livenessProbe:
   httpGet:
@@ -116,12 +85,12 @@ volumeMounts:
     subPath: json
 
 resources:
-  requests:
-    cpu: 0.4
-    memory: 512Mi
-  limits:
-    cpu: 1
-    memory: 2048Mi
+  # requests:
+  #   cpu: 0.4
+  #   memory: 512Mi
+  # limits:
+  #   cpu: 1
+  #   memory: 2048Mi
 
 # Init Container
 initContainerName: metadata-db-migrate

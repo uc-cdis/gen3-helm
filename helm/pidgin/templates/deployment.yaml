@@ -16,9 +16,15 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.templateLabels}}
       labels:
-        {{- toYaml . | nindent 8 }}
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      {{- if .Values.dataDog.enabled }}
+        tags.datadoghq.com/service: "pidgin"
+        # TODO: move this to helpers so we can have this populated from a configmap
+        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
       {{- end }}
         {{- include "pidgin.selectorLabels" . | nindent 8 }}
     spec:
@@ -30,10 +36,41 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.env}}
           env: 
-            {{- toYaml . | nindent 10}}
-          {{- end }}
+            - name: GEN3_DEBUG
+              value: "False"
+            {{- with .Values.ddTraceEnabled }}
+            - name: DD_TRACE_ENABLED
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddEnv }}
+            - name: DD_ENV
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddService }}
+            - name: DD_SERVICE
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddVersion }}
+            - name: DD_VERSION
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddLogsInjection }}
+            - name: DD_LOGS_INJECTION
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddProfilingEnabled }}
+            - name: DD_PROFILING_ENABLED
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddTraceSampleRate }}
+            - name: DD_TRACE_SAMPLE_RATE
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddTraceAgentHostname }}
+            - name: DD_TRACE_AGENT_HOSTNAME
+              value: {{ . }}
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12}}
