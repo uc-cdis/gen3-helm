@@ -6,10 +6,10 @@ type: Opaque
 stringData:
   dbcreds.json: |-
     {
-      "db_host": {{ default "arborist-postgresql" .Values.secrets.db.host | quote }},
-      "db_username": {{ default "postgres" .Values.secrets.db.username | quote }},
-      "db_password": {{ default .Values.global.postgresql.auth.postgresPassword .Values.secrets.db.password | quote }},
-      "db_database": {{ default .Values.global.postgresql.auth.database .Values.secrets.db.database | quote }}
+      "db_host": {{ .Values.database.host | quote }},
+      "db_username": {{ .Values.database.user | quote}},
+      "db_password": {{ include "arborist.postgres.password" . | quote }},
+      "db_database": {{ .Values.database.dbname | quote }}
     }
 
 

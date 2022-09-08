@@ -1,8 +1,0 @@
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: workspace-token-service
-rules:
-- apiGroups: [""]
-  resources: ["namespaces", "pods"]
-  verbs: ["get", "list"]

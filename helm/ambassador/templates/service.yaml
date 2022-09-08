@@ -1,3 +1,4 @@
+# TODO: evaluate if we need this
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,43 +9,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - name: {{ .Values.rbac.rbacServiceName }}
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      port: {{ .Values.rbac.servicePort }}
+      targetPort: {{ .Values.rbac.servicePort }}
       nodePort: null
   selector:
     {{- include "ambassador.selectorLabels" . | nindent 4 }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: ambassador
-rules:
-- apiGroups: [""]
-  resources:
-  - namespaces
-  - services
-  - secrets
-  - endpoints
-  verbs: ["get", "list", "watch"]
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ambassador
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: ambassador-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ambassador
-subjects:
-- kind: ServiceAccount
-  name: ambassador
-  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
 kind: Service

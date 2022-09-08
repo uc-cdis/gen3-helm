@@ -5,15 +5,9 @@ metadata:
 data:
   guppy_config.json: |
       {
-        {{- with .Values.indices }}
-        "indices": 
-          {{- toJson . }}
-        {{ end }},
-        "config_index": "{{ .Values.config_index }}",
-        "auth_filter_field": "{{ .Values.auth_filter_field }}",
-        "enable_encrypt_whitelist": {{ .Values.enable_encrypt_whitelist }},
-        {{- with .Values.encrypt_whitelist }}
-        "encrypt_whitelist": 
-          {{- toJson . }}
-        {{ end }}
+        "indices": {{ .Values.indices  | toJson }},
+        "config_index": {{ .Values.config_index | quote }},
+        "auth_filter_field": {{ .Values.auth_filter_field | quote }},
+        "enable_encrypt_whitelist": {{ .Values.enable_encrypt_whitelist | quote }},
+        "encrypt_whitelist":  {{ .Values.encrypt_whitelist | quote }}
       }

@@ -60,3 +60,16 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+ Postgres Password lookup
+*/}}
+{{- define "peregrine.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.database.password }}
+{{- end }}
+{{- end }}
