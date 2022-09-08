@@ -78,12 +78,6 @@ volumes:
   - name: config-volume
     secret:
       secretName: "manifestservice-g3auto"
-  - name: cert-volume
-    secret:
-      secretName: "cert-manifestservice-service"
-  - name: ca-volume
-    secret:
-      secretName: "service-ca"
 
 terminationGracePeriodSeconds: 50
 
@@ -97,18 +91,6 @@ env:
     value: "False"
 
 volumeMounts:
-  - name: "cert-volume"
-    readOnly: true
-    mountPath: "/mnt/ssl/service.crt"
-    subPath: "service.crt"
-  - name: "cert-volume"
-    readOnly: true
-    mountPath: "/mnt/ssl/service.key"
-    subPath: "service.key"
-  - name: "ca-volume"
-    readOnly: true
-    mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
-    subPath: "ca.pem"
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/gen3/config/"
