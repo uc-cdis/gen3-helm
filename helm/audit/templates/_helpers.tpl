@@ -69,3 +69,16 @@ Create the name of the service account to use
 {{- define "audit.secretName" -}}
 {{- default "audit-g3auto" }}
 {{- end }}
+
+
+{{/*
+ Postgres Password lookup
+*/}}
+{{- define "audit.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.database.password }}
+{{- end }}
+{{- end }}

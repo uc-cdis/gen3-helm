@@ -5,7 +5,7 @@ metadata:
 stringData:
   fence-config.yaml: |
     BASE_URL: '{{ .Values.FENCE_CONFIG.BASE_URL }}'
-    DB: 'postgresql://{{ .Values.database.user }}:{{ .Values.database.password }}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.dbname }}'
+    DB: 'postgresql://{{ .Values.database.user }}:{{ include  "fence.postgres.password" . }}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.dbname }}'
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}

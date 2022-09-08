@@ -33,7 +33,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
+      serviceAccountName: ambassador
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -44,10 +44,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: AMBASSADOR_NAMESPACE
-            valueFrom:
-              configMapKeyRef:
-                name: manifest-hatchery
-                key: user-namespace
+            value: {{ .Values.userNamespace | quote }}
           - name: AMBASSADOR_SINGLE_NAMESPACE
             value: "true"
           ports:
