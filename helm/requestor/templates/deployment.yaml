@@ -44,7 +44,7 @@ spec:
           env: 
             - name: GEN3_DEBUG
               value: "False"
-            {{- with .Values.arboristURL }}
+            {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
               value: {{ . }}
             {{- end }}
