@@ -57,7 +57,7 @@ image:
 
 # Environment Variables
 esEndpoint: esproxy-service:9200
-arboristURL: http://arborist-service
+arboristUrl: http://arborist-service
 tierAcessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
 tierAccessLimit: 1000
