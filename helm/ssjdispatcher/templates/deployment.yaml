@@ -4,17 +4,24 @@ metadata:
   name: ssjdispatcher-deployment
 spec:
   selector:
-    matchLabels:
-      {{- include "ssjdispatcher.selectorLabels" . | nindent 6 }}
+      {{- with .Values.selectorLabels }}
+      matchLabels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   revisionHistoryLimit: 2
   strategy:
     {{- toYaml .Values.strategy | nindent 8 }}  
   template:
     metadata:
+      {{- with .Values.labels }}
       labels:
-        {{- include "ssjdispatcher.labels" . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.selectorLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
-      serviceAccountName: "ssjdispatcher-service-account"
+      #serviceAccountName: "ssjdispatcher-service-account"
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.affinity }}
@@ -31,7 +38,27 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- with .Values.awsRegion  }}
+            - name: AWS_REGION
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.awsStsRegionalEndpoints  }}
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.gen3Namespace  }}
+            - name: GEN3_NAMESPACE
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.dispatcherJobNum  }}
+            - name: JOB_NUM_MAX
+              value: {{ . }}
+            {{- end }}
+         #   {{- with .Values.ssjdispatcherJobImages  }}
+         #   - name: JOB_IMAGES
+         #     value: {{ . }}
+         #   {{- end }}
+
           ports:
             - name: http
               containerPort: 8000

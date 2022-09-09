@@ -83,10 +83,9 @@ tolerations: []
 
 selectorLabels:
   app: ssjdispatcher
+  release: production
 
 labels:
-  app: ssjdispatcher
-  release: production
   netnolimit: "yes"
   public: "yes"
   #GEN3_DATE_LABEL
@@ -117,25 +116,36 @@ volumeMounts:
     mountPath: "/credentials.json"
     subPath: credentials.json
 
-env:
-  - name: AWS_REGION
-    value: us-east-1
-  - name: AWS_STS_REGIONAL_ENDPOINTS
-    value: regional
-  - name: GEN3_NAMESPACE
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.namespace
-  - name: JOB_NUM_MAX
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: dispatcher_job_num
-  - name: JOB_IMAGES
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-ssjdispatcher
-        key: job_images
+awsRegion: us-east-1
+awsStsRegionalEndpoints: regional
+gen3Namespace: default
+dispatcherJobNum: 10
+#ssjdispatcherJobImages: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+#ssjdispatcherJobImages: |-
+#  {
+#    "indexing": "707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"
+#  }
+
+
+#env:
+#  - name: AWS_REGION
+#    value: us-east-1
+#  - name: AWS_STS_REGIONAL_ENDPOINTS
+##    value: regional
+#  - name: GEN3_NAMESPACE
+#    valueFrom:
+#      fieldRef:
+#        fieldPath: metadata.namespace
+#  - name: JOB_NUM_MAX
+#    valueFrom:
+#      configMapKeyRef:
+#        name: manifest-global
+#        key: dispatcher_job_num
+#  - name: JOB_IMAGES
+#    valueFrom:
+#      configMapKeyRef:
+#        name: manifest-ssjdispatcher
+#        key: job_images
 
 resources:
   requests:
@@ -152,3 +162,17 @@ strategy:
     maxUnavailable: 0
 
 automountServiceAccountToken: true
+
+ssjcreds:
+  sqsUrl: "https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"
+  jobName: "indexing"
+  jobPattern: "s3://test-12345678901234-upload/*"
+  jobUrl: "http://indexd-service/index"
+  jobUser: "ssj"
+  jobPassword: "replace_with_password"
+  jobRequestCpu: "500m"
+  jobRequestMem: "0.5Gi"
+  metadataserviceUrl: "http://revproxy-service/mds"
+  metadataserviceUsername: "gateway"
+  metadataservicePassword: "replace_with_password"
+  
