@@ -21,7 +21,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      #serviceAccountName: "ssjdispatcher-service-account"
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.affinity }}
@@ -50,14 +49,10 @@ spec:
             - name: GEN3_NAMESPACE
               value: {{ . }}
             {{- end }}
-            {{- with .Values.dispatcherJobNum  }}
-            - name: JOB_NUM_MAX
-              value: {{ . }}
+            {{- with .Values.ssjdispatcherJobImages  }}
+            - name: JOB_IMAGES
+              value: {{ . | toJson }}
             {{- end }}
-         #   {{- with .Values.ssjdispatcherJobImages  }}
-         #   - name: JOB_IMAGES
-         #     value: {{ . }}
-         #   {{- end }}
 
           ports:
             - name: http

@@ -119,33 +119,9 @@ volumeMounts:
 awsRegion: us-east-1
 awsStsRegionalEndpoints: regional
 gen3Namespace: default
-dispatcherJobNum: 10
-#ssjdispatcherJobImages: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
-#ssjdispatcherJobImages: |-
-#  {
-#    "indexing": "707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"
-#  }
-
-
-#env:
-#  - name: AWS_REGION
-#    value: us-east-1
-#  - name: AWS_STS_REGIONAL_ENDPOINTS
-##    value: regional
-#  - name: GEN3_NAMESPACE
-#    valueFrom:
-#      fieldRef:
-#        fieldPath: metadata.namespace
-#  - name: JOB_NUM_MAX
-#    valueFrom:
-#      configMapKeyRef:
-#        name: manifest-global
-#        key: dispatcher_job_num
-#  - name: JOB_IMAGES
-#    valueFrom:
-#      configMapKeyRef:
-#        name: manifest-ssjdispatcher
-#        key: job_images
+dispatcherJobNum: "10"
+#ssjdispatcherJobImages:
+#  - indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
 
 resources:
   requests:
