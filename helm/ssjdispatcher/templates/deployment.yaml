@@ -49,11 +49,11 @@ spec:
             - name: GEN3_NAMESPACE
               value: {{ . }}
             {{- end }}
-            {{- with .Values.ssjdispatcherJobImages  }}
             - name: JOB_IMAGES
-              value: {{ . | toJson }}
-            {{- end }}
-
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-ssjdispatcher
+                  key: job_images
           ports:
             - name: http
               containerPort: 8000

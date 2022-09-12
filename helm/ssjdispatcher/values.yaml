@@ -120,8 +120,8 @@ awsRegion: us-east-1
 awsStsRegionalEndpoints: regional
 gen3Namespace: default
 dispatcherJobNum: "10"
-#ssjdispatcherJobImages:
-#  - indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+
+indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
 
 resources:
   requests:
