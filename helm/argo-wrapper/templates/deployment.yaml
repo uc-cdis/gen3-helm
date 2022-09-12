@@ -23,10 +23,16 @@ spec:
   template:
     metadata:
       labels:
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      {{- if .Values.dataDog.enabled }}
+        tags.datadoghq.com/service: "argo-wrapper"
+        # TODO: move this to helpers so we can have this populated from a configmap
+        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+      {{- end }}
         {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
-        tags.datadoghq.com/service: "{{ .Values.datadog }}"
-        netnolimit: "{{ .Values.netnolimit }}"
-        public: "{{ .Values.public }}"
     spec:
       {{- with .Values.affinity }}
       affinity:

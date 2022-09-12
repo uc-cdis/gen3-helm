@@ -5,7 +5,6 @@
 
 
 #Deployment
-
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -22,6 +21,9 @@ strategy:
     maxSurge: 1
     maxUnavailable: 0
   
+dataDog:
+  enabled: false
+  env: dev
 
 affinity: 
   podAntiAffinity:
@@ -53,65 +55,21 @@ image:
   tag: ""
 
 
-es_endpoint: "esproxy-service:9200"
-
-env:
-  - name: GUPPY_PORT
-    value: "8000"
-  - name: GUPPY_CONFIG_FILEPATH
-    value: /guppy/guppy_config.json
-  - name: GEN3_ES_ENDPOINT
-    value: esproxy-service:9200
-  - name: GEN3_ARBORIST_ENDPOINT
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: arborist_url
-        optional: true
-  - name: TIER_ACCESS_LEVEL
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
-        key: tier_access_level
-        # for now making it optional so won't break anything
-        optional: true
-  - name: TIER_ACCESS_LIMIT
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: tier_access_limit
-        optional: true
-  - name: DD_TRACE_ENABLED
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: dd_enabled
-        optional: true
-  - name: DD_ENV
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: environment
-        optional: true
-  - name: DD_SERVICE
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/service']
-  - name: DD_VERSION
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/version']
-  - name: DD_LOGS_INJECTION
-    value: "true"
-  - name: DD_PROFILING_ENABLED
-    value: "true"
-  - name: DD_TRACE_SAMPLE_RATE
-    value: "1"
-  - name: DD_TRACE_AGENT_HOSTNAME
-    valueFrom:
-      fieldRef:
-        fieldPath: status.hostIP
+# Environment Variables
+esEndpoint: esproxy-service:9200
+arboristUrl: http://arborist-service
+tierAcessLevel: regular
+# acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+tierAccessLimit: 1000
+#Placeholders for datadog
+ddTraceEnabled: 
+ddEnv: 
+ddService:
+ddVersion:
+ddLogsInjection:
+ddProfilingEnabled:
+ddTraceSampleRate: 
+ddTraceAgentHostname: 
 
 
 livenessProbe:
@@ -155,15 +113,11 @@ service:
 
 #Configmap
 indices: 
-- index: "test"
+- index: "etl"
   type: "subject"
-- index: "test2"
-  type: "subject"
-config_index: "test"
-auth_filter_field: "test"
-enable_encrypt_whitelist: "test"
-encrypt_whitelist: "test"
-
-datadog:
-  enabled: false
-  env: dev
+- index: "file"
+  type: "file"
+configIndex: "array-config"
+authFilterField: "auth_resource_path"
+enableEncryptWhitelist: true
+encryptWhitelist: "test1"

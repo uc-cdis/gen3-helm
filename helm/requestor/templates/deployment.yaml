@@ -16,9 +16,16 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.templateLabels}}
       labels:
-        {{- toYaml . | nindent 8 }}
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+        dbrequestor: 'yes'
+      {{- if .Values.dataDog.enabled }}
+        tags.datadoghq.com/service: "requestor"
+        # TODO: move this to helpers so we can have this populated from a configmap
+        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
       {{- end }}
         {{- include "requestor.selectorLabels" . | nindent 8 }}
     spec:
@@ -34,10 +41,13 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.env}}
           env: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            - name: GEN3_DEBUG
+              value: "False"
+            {{- with .Values.arboristUrl }}
+            - name: ARBORIST_URL
+              value: {{ . }}
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.livenessProbe }}
           livenessProbe:

@@ -23,9 +23,9 @@ strategy:
     maxSurge: 1
     maxUnavailable: 0
 
-datadog: argo-wrapper
-netnolimit: 'yes'
-public: 'yes'
+dataDog:
+  enabled: false
+  env: dev
 
 affinity: 
   podAntiAffinity:
@@ -86,50 +86,12 @@ service:
 
 
 #Configmap
-scaling_groups:
-  valueFrom: 
-    configMapKeyRef:
-      name: manifest-global
-      key: .scaling_groups
-      optional: false
-s3_bucket: 
-  valueFrom: 
-    configMapKeyRef:
-      name: manifest-global
-      key: .argo-wrapper."s3-bucket"
-      optional: false
-internal_s3_bucket:
-  valueFrom: 
-    configMapKeyRef:
-      name: manifest-global
-      key: .argo-wrapper."internal-s3-bucket"
-      optional: false
-environment:
-  valueFrom: 
-    configMapKeyRef:
-      name: manifest-global
-      key: .argo-wrapper.environment
-      optional: false
-pvc:
-  valueFrom: 
-    configMapKeyRef:
-      name: manifest-global
-      key: .argo-wrapper.pvc
-      optional: false
-
-#Ingress
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+scalingGroups:
+- user1: "workflow1"
+- user2: "workflow2"
+- user3: "workflow3"
+s3Bucket: "argo-artifact-downloadable"
+internalS3Bucket: "argo-internal-bucket"
+indexdAdminUser: "fence"
+environment: "default"
+pvc: "test-pvc"

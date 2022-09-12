@@ -5,12 +5,10 @@ metadata:
 data:
   argo.json: |
       {
-          {{- with .Values.scaling_groups }}
-          {{- toJson . }}
-          {{- end }},
-        "s3-bucket": "{{ .Values.s3_bucket }}",
-        "internal-s3-bucket": "{{ .Values.internal_s3_bucket }}",
-        "indexd_admin_user": "{{ .Values.indexd_admin_user }}",
-        "environment": "{{ .Values.environment }}",
-        "pvc": "{{ .Values.pvc }}"
+        "scaling_groups": {{.Values.scalingGroups | toJson}},
+        "s3-bucket": {{ .Values.s3Bucket | quote }},
+        "internal-s3-bucket": {{ .Values.internalS3Bucket | quote }},
+        "indexd_admin_user": {{ .Values.indexdAdminUser | quote }},
+        "environment": {{ .Values.environment | quote }},
+        "pvc": {{ .Values.pvc | quote }}
       }
