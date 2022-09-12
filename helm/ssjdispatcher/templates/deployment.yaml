@@ -28,6 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      serviceAccountName: {{ include "ssjdispatcher.serviceAccountName" . }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
@@ -49,11 +50,11 @@ spec:
             - name: GEN3_NAMESPACE
               value: {{ . }}
             {{- end }}
-            {{- with .Values.ssjdispatcherJobImages  }}
             - name: JOB_IMAGES
-              value: {{ . | toJson }}
-            {{- end }}
-
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-ssjdispatcher
+                  key: job_images
           ports:
             - name: http
               containerPort: 8000

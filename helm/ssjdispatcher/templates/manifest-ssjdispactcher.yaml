@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-ssjdispatcher
+data:
+  job_images: |-
+    {
+      "indexing": {{ .Values.indexing  | toJson }}
+    }
+

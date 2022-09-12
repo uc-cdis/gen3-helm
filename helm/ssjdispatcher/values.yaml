@@ -120,8 +120,8 @@ awsRegion: us-east-1
 awsStsRegionalEndpoints: regional
 gen3Namespace: default
 dispatcherJobNum: "10"
-#ssjdispatcherJobImages:
-#  - indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+
+indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
 
 resources:
   requests:
@@ -151,4 +151,14 @@ ssjcreds:
   metadataserviceUrl: "http://revproxy-service/mds"
   metadataserviceUsername: "gateway"
   metadataservicePassword: "replace_with_password"
-  
+ 
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "ssjdispatcher-service-account"
+ 
