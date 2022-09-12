@@ -50,12 +50,12 @@ image:
   repository: quay.io/cdis/sheepdog
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "helm-test"
 
 # Environment Variables
-dictionaryUrl: https://s3.amazonaws.com/dictionary
-indexdUrl: https://test.org/index/
-fenceUrl: https://test.org/user
+dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+indexdUrl: http://indexd-service
+fenceUrl: http://fence-service
 arboristUrl: http://arborist-service.default.svc.cluster.local
 authNamespace: default
 #Placeholders for datadog
@@ -78,6 +78,7 @@ livenessProbe:
   timeoutSeconds: 30
 
 readinessProbe:
+  initialDelaySeconds: 30
   httpGet:
     path: /_status?timeout=2
     port: 80
@@ -111,7 +112,7 @@ resources:
 #Service and Pod
 service:
   type: ClusterIP
-  port: 8000
+  port: 80
 
 # Secrets
 secrets:

@@ -54,19 +54,23 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.ports}}
           ports:
             {{- toYaml . | nindent 12}}
           {{- end }}
+           {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          # command: ["/bin/bash" ]
+          # args: 
+          #   - "-c"
+          #   - "sleep infinity"
           env: 
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
@@ -96,7 +100,7 @@ spec:
               #
               value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
-              value: "False"
+              value: "True"
             {{- with .Values.ddTraceEnabled }}
             - name: DD_TRACE_ENABLED
               value: {{ . }}
