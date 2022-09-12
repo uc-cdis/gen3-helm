@@ -2,13 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-global:
-  postgresql:
-    auth:
-      postgresPassword: "password!123"
-      database: "sheepdog"
-
-
 #Deployment
 releaseLabel: production
 
@@ -120,28 +113,19 @@ service:
   type: ClusterIP
   port: 8000
 
-#Configmap
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: sheepdog
-
+# Secrets
 secrets:
-  fence:
-    db:
-      host: 
-      user: 
-      pass: 
-  db:
-    host: 
-    password: 
-    user: 
-    database: 
+  fence:    
+    host: postgres-postgresql.postgres.svc.cluster.local
+    user: postgres
+    pass: postgres
+    database: fence
+  sheepdog:
+    host:  postgres-postgresql.postgres.svc.cluster.local
+    password: postgres
+    user: postgres
+    database: sheepdog
+  gdcapi:
+    secretKey:
+  indexd: 
+    password: postgres

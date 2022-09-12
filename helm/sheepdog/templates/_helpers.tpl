@@ -64,13 +64,38 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
- Postgres Password lookup
+ Postgres Password lookup Sheepdog
 */}}
 {{- define "sheepdog.postgres.password" -}}
 {{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
 {{- if $localpass }}
 {{- default (index $localpass.data "postgres-password" | b64dec) }}
 {{- else }}
-{{- default .Values.database.password }}
+{{- default .Values.secrets.sheepdog.password }}
+{{- end }}
+{{- end }}
+
+{{/*
+ Postgres Password lookup Fence
+*/}}
+{{- define "fence.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.secrets.fence.password }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+ Postgres Password lookup Indexd
+*/}}
+{{- define "indexd.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.secrets.indexd.password }}
 {{- end }}
 {{- end }}
