@@ -1,14 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guppy-deployment
+  name: sheepdog-deployment
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "sheepdog.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "guppy.selectorLabels" . | nindent 6 }}
+      {{- include "sheepdog.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -20,23 +26,31 @@ spec:
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
+        s3: 'yes'
       {{- if .Values.dataDog.enabled }}
-        tags.datadoghq.com/service: "guppy"
+        tags.datadoghq.com/service: "sheepdog"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
         tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
       {{- end }}
-        {{- include "guppy.selectorLabels" . | nindent 8 }}
+        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes}}
-      volumes: 
-        {{- toYaml . | nindent 8}}
-      {{- end }}
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "sheepdog-secret"
+        - name: creds-volume
+          secret:
+            secretName: "sheepdog-creds"
+        - name: config-helper
+          configMap:
+            name: config-helper
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -45,32 +59,44 @@ spec:
             {{- toYaml . | nindent 12}}
           {{- end }}
           {{- with .Values.readinessProbe }}
-          readinessProbe:
+          livenessProbe:
             {{- toYaml . | nindent 12}}
           {{- end }}
-          {{- with .Values.containerPort}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.ports}}
           ports:
-            {{- toYaml . | nindent 10}}
+            {{- toYaml . | nindent 12}}
           {{- end }}
           env: 
-            - name: GUPPY_PORT
-              value: "8000"
-            - name: GUPPY_CONFIG_FILEPATH
-              value: /guppy/guppy_config.json
-            - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint }}
+            - name: GEN3_UWSGI_TIMEOUT
+              value: "600"
+            - name: DICTIONARY_URL
+              value: {{ .Values.dictionaryUrl }}
+            {{- with .Values.indexdUrl }}
+            - name: INDEX_CLIENT_HOST
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.fenceUrl }}
+            - name: FENCE_URL
+              value: {{ . }}
+            {{- end }}
             {{- with .Values.arboristUrl }}
-            - name: GEN3_ARBORIST_ENDPOINT
+            - name: ARBORIST_URL
               value: {{ . }}
             {{- end }}
-            {{- with .Values.tierAcessLevel }}
-            - name: TIER_ACCESS_LEVEL
+            {{- with .Values.authNamespace }}
+            - name: AUTH_NAMESPACE
               value: {{ . }}
             {{- end }}
-            {{- with .Values.tierAccessLimit }}
-            - name: TIER_ACCESS_LIMIT
-              value: {{ . | quote }}
-            {{- end }}
+            - name: REQUESTS_CA_BUNDLE
+              #
+              # override python 'requests' SSL certificate bundle
+              # to use system trusted certs
+              # which includes our private certificate authority
+              #
+              value: /etc/ssl/certs/ca-certificates.crt
+            - name: GEN3_DEBUG
+              value: "False"
             {{- with .Values.ddTraceEnabled }}
             - name: DD_TRACE_ENABLED
               value: {{ . }}
@@ -103,12 +129,9 @@ spec:
             - name: DD_TRACE_AGENT_HOSTNAME
               value: {{ . }}
             {{- end }}
-
-
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
