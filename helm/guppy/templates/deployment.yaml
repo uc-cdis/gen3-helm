@@ -59,7 +59,7 @@ spec:
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
-            {{- with .Values.arboristURL }}
+            {{- with .Values.arboristUrl }}
             - name: GEN3_ARBORIST_ENDPOINT
               value: {{ . }}
             {{- end }}
