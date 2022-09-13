@@ -99,6 +99,10 @@ affinity:
             - dashboard
         topologyKey: "kubernetes.io/hostname"
 
+dashboardG3auto:
+  bucket: dashboard-895962623434-testing-gen3
+  prefix: gen3.testing.org
+
 volumes:
   - name: config-volume
     secret:

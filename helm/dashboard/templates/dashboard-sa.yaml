@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::895962626746:role/gen3_service/bdcatprod--default--dashboard
+  creationTimestamp: "2020-12-14T18:50:10Z"
+  name: dashboard-sa
+  namespace: default
+  resourceVersion: "84368437"
+  uid: 315dd7fa-3e3d-11eb-ac53-0e70bb248256
+secrets:
+- name: dashboard-sa-token-p2xxx
