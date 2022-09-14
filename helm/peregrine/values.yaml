@@ -193,4 +193,4 @@ database:
   # Actual fence db creds
   user: postgres
   password: postgres
-  dbname: audit
+  dbname: peregrine

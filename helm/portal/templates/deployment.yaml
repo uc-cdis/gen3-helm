@@ -27,25 +27,24 @@ spec:
         {{- toYaml .Values.volumes | nindent 8 }}      
       containers:
         - name: portal
-          image: "quay.io/cdis/data-portal:3.30.0"
-          imagePullPolicy: Always
-          livenessProbe:
-            httpGet:
-              path: /portal/
-              port: 80
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 30
-            failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /portal/
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          image: "quay.io/cdis/data-portal:latest"
+          # imagePullPolicy: Never
+          # livenessProbe:
+          #   httpGet:
+          #     path: /portal/
+          #     port: 80
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 30
+          #   timeoutSeconds: 30
+          #   failureThreshold: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /portal/
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 30
+            # TODO: re-add resources
           ports:
             - containerPort: 80
             - containerPort: 443
@@ -53,7 +52,105 @@ spec:
             - /bin/bash
             - ./dockerStart.sh
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            - name: HOSTNAME
+              value: revproxy-service
+            # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
+            # see https://github.com/npm/cli/issues/3163
+            - name: NPM_CONFIG_UPDATE_NOTIFIER
+              value: "false"
+            - name: NODE_ENV
+              value: "dev"
+            - name: APP
+              value: {{ .Values.portalApp | quote }}
+            - name: GEN3_BUNDLE
+              # optional: true
+              value: ""
+            - name: LOGOUT_INACTIVE_USERS
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: logout_inactive_users
+                  optional: true
+            - name: WORKSPACE_TIMEOUT_IN_MINUTES
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: workspace_timeout_in_minutes
+                  optional: true
+            - name: TIER_ACCESS_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+                  key: tier_access_level
+                  # for now making it optional so won't break anything
+                  optional: true
+            - name: TIER_ACCESS_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: tier_access_limit
+                  optional: true
+            - name: FENCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: fence_url
+                  optional: true
+            - name: INDEXD_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: indexd_url
+                  optional: true
+            - name: WORKSPACE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: workspace_url
+                  optional: true
+            - name: MANIFEST_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: manifest_service_url
+                  optional: true
+            - name: WTS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: wts_url
+                  optional: true
+            - name: PRIVACY_POLICY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: privacy_policy_url
+                  optional: true
+            - name: MAPBOX_API_TOKEN
+              # Optional token for mapbox api
+              valueFrom:
+                configMapKeyRef:
+                  name: global
+                  key: mapbox_token
+                  optional: true
+            {{- with .Values.datadogApplicationId  }}      
+            - name: DATADOG_APPLICATION_ID
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.datadogClientToken  }}      
+            - name: DATADOG_CLIENT_TOKEN
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.dataUploadBucket  }}
+            - name: DATA_UPLOAD_BUCKET
+              value: {{ . }}
+            {{- end }}
+              # S3 bucket name for data upload, for setting up CSP
+              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
+            - name: BASENAME
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       
