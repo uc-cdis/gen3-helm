@@ -95,7 +95,7 @@ strategy:
 labels:
   app: portal
   public: "yes"
-  #GEN3_DATE_LABEL
+
 
 affinity:
   podAntiAffinity:
@@ -125,12 +125,12 @@ volumes:
 
 
 resources:
-  # requests:
-  #   cpu: 0.6
-  #   memory: 512Mi
-  # limits:
-  #   cpu: 2.0
-  #   memory: 4096Mi
+  requests:
+    cpu: 0.6
+    memory: 512Mi
+  limits:
+    cpu: 2.0
+    memory: 4096Mi
 
 portalApp: "dev"
 

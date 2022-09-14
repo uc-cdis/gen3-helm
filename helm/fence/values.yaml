@@ -584,7 +584,7 @@ FENCE_CONFIG:
     - name: 'Login from Google'
       desc: 'description'
       idp: google
-      secondary: True
+      # secondary: True
     # - name: 'ORCID Login'
     #   idp: orcid
     # - name: 'Microsoft Login'
@@ -624,7 +624,7 @@ FENCE_CONFIG:
   # - must be configured in LOGIN_OPTIONS and OPENID_CONNECT
   # - if several options in LOGIN_OPTIONS are defined for this IDP, will default
   # to the first one.
-  DEFAULT_LOGIN_IDP: null
+  DEFAULT_LOGIN_IDP: google
 
   # Default login URL: DEPRECATED and replaced by LOGIN_OPTIONS + DEFAULT_LOGIN_IDP configs
   # - Google? Use: '{{BASE_URL}}/login/google'

@@ -61,7 +61,7 @@ userNamespace: "jupyter-pods"
 
 resources: 
   limits:
-    cpu: 1
+    cpu: 500m
     memory: 400Mi
   requests:
     cpu: 100m
