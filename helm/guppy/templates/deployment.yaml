@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guppy-deployment
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "guppy.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      {{- if .Values.dataDog.enabled }}
+        tags.datadoghq.com/service: "guppy"
+        # TODO: move this to helpers so we can have this populated from a configmap
+        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+      {{- end }}
+        {{- include "guppy.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.volumes}}
+      volumes: 
+        {{- toYaml . | nindent 8}}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.containerPort}}
+          ports:
+            {{- toYaml . | nindent 10}}
+          {{- end }}
+          env: 
+            - name: GUPPY_PORT
+              value: "8000"
+            - name: GUPPY_CONFIG_FILEPATH
+              value: /guppy/guppy_config.json
+            - name: GEN3_ES_ENDPOINT
+              value: {{ .Values.esEndpoint }}
+            {{- with .Values.arboristUrl }}
+            - name: GEN3_ARBORIST_ENDPOINT
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.tierAcessLevel }}
+            - name: TIER_ACCESS_LEVEL
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.tierAccessLimit }}
+            - name: TIER_ACCESS_LIMIT
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.ddTraceEnabled }}
+            - name: DD_TRACE_ENABLED
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddEnv }}
+            - name: DD_ENV
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddService }}
+            - name: DD_SERVICE
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddVersion }}
+            - name: DD_VERSION
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddLogsInjection }}
+            - name: DD_LOGS_INJECTION
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddProfilingEnabled }}
+            - name: DD_PROFILING_ENABLED
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddTraceSampleRate }}
+            - name: DD_TRACE_SAMPLE_RATE
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.ddTraceAgentHostname }}
+            - name: DD_TRACE_AGENT_HOSTNAME
+              value: {{ . }}
+            {{- end }}
+
+
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

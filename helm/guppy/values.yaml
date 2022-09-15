@@ -1,0 +1,123 @@
+# Default values for guppy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+
+#Deployment
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  
+dataDog:
+  enabled: false
+  env: dev
+
+affinity: 
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - guppy
+        topologyKey: "kubernetes.io/hostname"
+
+volumes:
+  - name: guppy-config
+    configMap:
+      name: manifest-guppy
+      items:
+        - key: guppy_config.json
+          path: guppy_config.json
+
+automountServiceAccountToken: false
+
+image:
+  repository: quay.io/cdis/guppy
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+
+# Environment Variables
+esEndpoint: esproxy-service:9200
+arboristUrl: http://arborist-service
+tierAcessLevel: regular
+# acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+tierAccessLimit: 1000
+#Placeholders for datadog
+ddTraceEnabled: 
+ddEnv: 
+ddService:
+ddVersion:
+ddLogsInjection:
+ddProfilingEnabled:
+ddTraceSampleRate: 
+ddTraceAgentHostname: 
+
+
+livenessProbe:
+  httpGet:
+    path: /_status
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+readinessProbe:
+  httpGet:
+    path: /_status
+    port: 8000
+
+containerPort:
+  - containerPort: 8000
+
+volumeMounts:
+  - name: guppy-config
+    readOnly: true
+    mountPath: /guppy/guppy_config.json
+    subPath: guppy_config.json
+
+resources:
+  requests:
+    cpu: 0.5
+    memory: 1024Mi
+  limits:
+    cpu: 1
+    memory: 2400Mi
+
+
+#Service and Pod
+service:
+  type: ClusterIP
+  port:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      name: http
+
+#Configmap
+indices: 
+- index: "etl"
+  type: "subject"
+- index: "file"
+  type: "file"
+configIndex: "array-config"
+authFilterField: "auth_resource_path"
+enableEncryptWhitelist: true
+encryptWhitelist: "test1"

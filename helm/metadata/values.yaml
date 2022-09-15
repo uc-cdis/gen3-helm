@@ -1,0 +1,147 @@
+# Default values for metadata.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+
+# Deployment
+releaseLabel: "production"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+dataDog:
+  enabled: false
+  env: dev
+
+affinity: 
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - metadata
+        topologyKey: "kubernetes.io/hostname"
+
+automountServiceAccountToken: false
+
+image:
+  repository: quay.io/cdis/metadata-service
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
+
+debug: false
+
+# Environment Variables
+esEndpoint: esproxy-service:9200
+useAggMds:
+aggMdsNamespace:
+
+livenessProbe:
+  httpGet:
+    path: /_status
+    port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+readinessProbe:
+  httpGet:
+    path: /_status
+    port: 80
+
+containerPort:
+  - containerPort: 80
+
+volumeMounts:
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: /src/.env
+    subPath: metadata.env
+  - name: config-volume
+    readOnly: true
+    mountPath: /aggregate_config.json
+    subPath: aggregate_config.json
+  - name: config-manifest
+    readOnly: true
+    mountPath: /metadata.json
+    subPath: json
+
+resources:
+  # requests:
+  #   cpu: 0.4
+  #   memory: 512Mi
+  # limits:
+  #   cpu: 1
+  #   memory: 2048Mi
+
+# Init Container
+initContainerName: metadata-db-migrate
+
+initVolumeMounts:
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: /src/.env
+    subPath: metadata.env
+
+initResources:
+  limits:
+    cpu: 0.8
+    memory: 512Mi
+
+command: ["/bin/sh"]
+
+args:
+  - "-c"
+  - |
+    /env/bin/alembic upgrade head
+
+#Service and Pod
+serviceAnnotations:
+  getambassador.io/config: |
+    ---
+    apiVersion: ambassador/v1
+    ambassador_id: "gen3"
+    kind:  Mapping
+    name:  metadata_mapping
+    prefix: /index/
+    service: http://metadata-service:80
+
+service:
+  type: ClusterIP
+  port:
+    - protocol: TCP
+      port: 80
+      targetPort: 80 
+      name: http
+
+#Configmap
+database: 
+  port: 5432
+  host: postgres-postgresql.postgres.svc.cluster.local
+
+  # Credentials used to initialize fence db if it doesn't exist. 
+  master_user: postgres
+  master_pass: postgres
+
+  # Actual fence db creds
+  user: postgres
+  password: postgres
+  dbname: metadata

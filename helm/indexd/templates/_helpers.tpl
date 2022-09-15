@@ -60,3 +60,42 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+ Postgres Password lookup
+*/}}
+{{- define "indexd.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.database.password }}
+{{- end }}
+{{- end }}
+
+
+# fence: {{ default (randAlphaNum 32) .Values.secrets.userdb.fence | quote }},
+# gdcapi: {{ default (randAlphaNum 32) .Values.secrets.userdb.gdcapi | quote }},
+# gateway: {{ default (randAlphaNum 32) .Values.secrets.userdb.gateway | quote }}
+
+{{/*
+  Indexd Fence Creds
+*/}}
+{{- define "indexd-fence-creds" -}}
+{{- default (randAlphaNum 32) .Values.secrets.userdb.fence }}
+{{- end }}
+
+{{/*
+  Indexd sheepdog Creds
+*/}}
+{{- define "indexd-sheepdog-creds" -}}
+{{- default (randAlphaNum 32) .Values.secrets.userdb.sheepdog }}
+{{- end }}
+
+{{/*
+  Indexd Gateway Creds
+*/}}
+{{- define "indexd-gateway-creds" -}}
+{{- default (randAlphaNum 32) .Values.secrets.userdb.gateway }}
+{{- end }}

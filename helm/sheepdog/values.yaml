@@ -1,0 +1,132 @@
+# Default values for sheepdog.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#Deployment
+releaseLabel: production
+
+podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+dataDog:
+  enabled: false
+  env: dev
+
+affinity: 
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - sheepdog
+        topologyKey: "kubernetes.io/hostname"
+
+automountServiceAccountToken: false
+
+
+# sheepdog transactions take forever - try to let the complete before termination
+terminationGracePeriodSeconds: 50
+
+image:
+  repository: quay.io/cdis/sheepdog
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "helm-test"
+
+# Environment Variables
+dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+indexdUrl: http://indexd-service
+fenceUrl: http://fence-service
+arboristUrl: http://arborist-service.default.svc.cluster.local
+authNamespace: default
+#Placeholders for datadog
+ddTraceEnabled: 
+ddEnv: 
+ddService:
+ddVersion:
+ddLogsInjection:
+ddProfilingEnabled:
+ddTraceSampleRate: 
+ddTraceAgentHostname: 
+
+
+livenessProbe:
+  httpGet:
+    path: /_status?timeout=20
+    port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+
+readinessProbe:
+  initialDelaySeconds: 30
+  httpGet:
+    path: /_status?timeout=2
+    port: 80
+
+ports:
+- containerPort: 80
+- containerPort: 443
+
+volumeMounts:
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/sheepdog/wsgi.py"
+    subPath: "wsgi.py"
+  - name: "creds-volume"
+    readOnly: true
+    mountPath: "/var/www/sheepdog/creds.json"
+    subPath: creds.json
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/sheepdog/config_helper.py"
+    subPath: config_helper.py
+
+resources:
+  # requests:
+  #   cpu: 0.8
+  #   memory: 1024Mi
+  # limits:
+  #   cpu: 2
+  #   memory: 2048Mi
+
+#Service and Pod
+service:
+  type: ClusterIP
+  port: 80
+
+# Secrets
+secrets:
+  fence:    
+    host: postgres-postgresql.postgres.svc.cluster.local
+    user: postgres
+    pass: postgres
+    database: fence
+  sheepdog:
+    host:  postgres-postgresql.postgres.svc.cluster.local
+    password: postgres
+    user: postgres
+    database: sheepdog
+  gdcapi:
+    secretKey:
+  indexd: 
+    password: postgres

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-argo
+data:
+  argo.json: |
+      {
+        "scaling_groups": {{.Values.scalingGroups | toJson}},
+        "s3-bucket": {{ .Values.s3Bucket | quote }},
+        "internal-s3-bucket": {{ .Values.internalS3Bucket | quote }},
+        "indexd_admin_user": {{ .Values.indexdAdminUser | quote }},
+        "environment": {{ .Values.environment | quote }},
+        "pvc": {{ .Values.pvc | quote }}
+      }

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fence.fullname" . }}
+  name: fence-service
   labels:
     {{- include "fence.labels" . | nindent 4 }}
 spec:
@@ -13,3 +13,18 @@ spec:
       name: http
   selector:
     {{- include "fence.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: presigned-url-fence-service
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: presigned-url-fence
+
