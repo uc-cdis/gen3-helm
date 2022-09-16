@@ -59,6 +59,15 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: "wts-secret"
+            readOnly: true
+            mountPath: "/var/www/wts/dbcreds.json"
+            subPath: dbcreds.json
+          - name: "wts-secret"
+            readOnly: true
+            mountPath: "/var/www/wts/appcreds.json"
+            subPath: appcreds.json
           ports:
             - name: http
               containerPort: 80
@@ -73,6 +82,13 @@ spec:
             httpGet:
               path: /_status
               port: 80
+          env:
+          - name: POSTGRES_CREDS_FILE
+            value: "/var/www/wts/dbcreds.json"
+          - name: SECRET_CONFIG
+            value: "/var/www/wts/appcreds.json"
+          - name: AUTH_PLUGINS
+            value: k8s
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
@@ -99,15 +115,14 @@ spec:
             memory: 512Mi
         command: ["/bin/sh"]
         args:
-          - "/bin/sh"
           - "-c"
           - |
             if hash alembic 2>/dev/null; then
-            echo "Running DB migration"
-            cd /wts
-            alembic upgrade head
+              echo "Running DB migration"
+              cd /wts
+              alembic upgrade head
             else
-            echo "Alembic not installed - not running DB migration"
+              echo "Alembic not installed - not running DB migration"
             fi
       {{- with .Values.nodeSelector }}
       nodeSelector:

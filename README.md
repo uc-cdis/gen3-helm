@@ -91,5 +91,22 @@ To restart fence to pick up these changes run
 kubectl rollout restart deployment fence-deployment
 ```
 
+### Install WTS 
+
+WTS is a service that needs a fence client. We need to manually create this client and populate the values for WTS using the following steps
+
+1. Make sure fence is running and is healthy
+2. Exec into a running fence pod and generate a fence client for WTS by runningthe following commands
+```
+kubectl exec -it <FENCE-POD> bash
+fence-create client-create --client wts --urls https://localhost/wts/oauth2/authorize --username wts
+```
+
+Note down the client_id and secret and install wts again by running this command
+
+```
+helm upgrade wts . --set oidc_client_id=<CLIENT_ID> --set oidc_client_secret=<CLIENT_SECRET>
+```
+
 # Production Deployment
 These helm charts are not yet ready for production, but check back again soon. 
