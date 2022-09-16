@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "hatchery.fullname" . }}
+  name: hatchery-service
   labels:
     {{- include "hatchery.labels" . | nindent 4 }}
 spec:
