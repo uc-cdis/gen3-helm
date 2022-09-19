@@ -21,7 +21,7 @@ spec:
         netnolimit: 'yes'
         public: 'yes'
         userhelper: 'yes'
-      {{- if .Values.dataDog.enabled }}
+      {{- if eq (include "metadata.ddEnabled" . ) "true" }}
         tags.datadoghq.com/service: "guppy"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
