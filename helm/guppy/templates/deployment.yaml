@@ -20,7 +20,7 @@ spec:
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-      {{- if .Values.dataDog.enabled }}
+      {{- if eq (include "guppy.ddEnabled" . ) "true" }}
         tags.datadoghq.com/service: "guppy"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
@@ -63,10 +63,8 @@ spec:
             - name: GEN3_ARBORIST_ENDPOINT
               value: {{ . }}
             {{- end }}
-            {{- with .Values.tierAcessLevel }}
             - name: TIER_ACCESS_LEVEL
-              value: {{ . }}
-            {{- end }}
+              value: {{ include "guppy.tierAccessLevel" . }}
             {{- with .Values.tierAccessLimit }}
             - name: TIER_ACCESS_LIMIT
               value: {{ . | quote }}

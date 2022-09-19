@@ -58,7 +58,7 @@ image:
 # Environment Variables
 esEndpoint: esproxy-service:9200
 arboristUrl: http://arborist-service
-tierAcessLevel: regular
+tierAccessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
 tierAccessLimit: 1000
 #Placeholders for datadog
@@ -113,11 +113,11 @@ service:
 
 #Configmap
 indices: 
-- index: "etl"
-  type: "subject"
-- index: "file"
-  type: "file"
-configIndex: "array-config"
-authFilterField: "auth_resource_path"
+- index: etl
+  type: subject
+- index: file
+  type: file
+configIndex: array-config
+authFilterField: auth_resource_path
 enableEncryptWhitelist: true
-encryptWhitelist: "test1"
+encryptWhitelist: test1
