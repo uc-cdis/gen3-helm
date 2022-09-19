@@ -107,3 +107,16 @@ secrets:
   #       "db_passwurd": "WTS_DB_PWD.REPLACE",
   #       "db_database": "wts_default"
   #     }
+
+postgres:
+  host: postgres-postgresql.postgres.svc.cluster.local
+  
+  master:
+    username: postgres
+    password: TEnTIpzG2I
+    port: 5432
+  
+  databases:
+  - databaseName: wts
+    username: wts
+    password: wts_password

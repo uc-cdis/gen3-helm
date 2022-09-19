@@ -1,0 +1,6 @@
+dependencies:
+- name: db-setup
+  repository: file://../db-setup
+  version: 0.1.0
+digest: sha256:ebe24f94c9bc192b19cebb4b52d53702323feddb93c21facccc99147b748ff10
+generated: "2022-09-16T12:58:43.964836-04:00"
