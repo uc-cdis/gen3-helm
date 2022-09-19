@@ -1,4 +1,4 @@
-{{- define "db-setup-job" }}
+{{- define "db-setup.setup-job" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -26,6 +26,6 @@ spec:
             psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -tc "SELECT 1 FROM pg_database WHERE datname = '{{ .databaseName }}'" | grep -q 1 || psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -c "CREATE DATABASE {{ .databaseName }};"
             psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -tc "SELECT 1 FROM pg_user WHERE usename = '{{ .username }}'" | grep -q 1 || psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -c "CREATE USER {{ .username }} WITH PASSWORD '{{ .password }}';"
             psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -c "GRANT ALL ON DATABASE {{ .databaseName }} TO {{ .username }} WITH GRANT OPTION;"
-            psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -c "\c {{ .databaseName }}; CREATE EXTENSION ltree; ALTER ROLE {{ .username }} WITH LOGIN" 
+            psql -h {{ $.Values.postgres.host }} -U {{ $.Values.postgres.master.username }} -p {{ $.Values.postgres.master.port }} -d {{ .databaseName }} -c "CREATE EXTENSION ltree; ALTER ROLE {{ .username }} WITH LOGIN" 
             {{- end }}
-{{- end }}
+{{- end -}}
