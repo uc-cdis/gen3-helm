@@ -103,6 +103,8 @@ env:
       name: manifest-global
       key: dictionary_url
       optional: true
+#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
+#adding a var in helpers.tpl for later- Elise
 - name: PUBLIC_DATASETS
   valueFrom:
     configMapKeyRef:

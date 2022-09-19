@@ -73,3 +73,14 @@ Create the name of the service account to use
 {{- default .Values.database.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define dictionaryUrl
+*/}}
+{{- define "peregrine.dictionaryUrl" -}}
+{{- if .Values.global }}
+{{- .Values.global.dictionaryUrl }}
+{{- else}}
+{{- .Values.dictionaryUrl }}
+{{- end }}
+{{- end }}

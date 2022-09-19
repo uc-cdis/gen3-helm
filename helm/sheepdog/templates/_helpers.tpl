@@ -99,3 +99,25 @@ Create the name of the service account to use
 {{- default .Values.secrets.indexd.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define ddEnabled
+*/}}
+{{- define "sheepdog.ddEnabled" -}}
+{{- if .Values.global }}
+{{- .Values.global.ddEnabled }}
+{{- else}}
+{{- .Values.dataDog.enabled }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define dictionaryUrl
+*/}}
+{{- define "sheepdog.dictionaryUrl" -}}
+{{- if .Values.global }}
+{{- .Values.global.dictionaryUrl }}
+{{- else}}
+{{- .Values.dictionaryUrl }}
+{{- end }}
+{{- end }}
