@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: terraform-runner-job-{{ randAlphaNum 6 | lower }}
+  labels:
+    {{- include "terraform-runner-job.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      volumes: 
+        - name: tf-config
+          secret:
+            secretName: "tf-config"    
+        - name: credentials
+          secret:
+            secretName: "tf-creds"
+      containers:
+        - name: terraform
+          image: "quay.io/cdis/awshelper:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: gen3Env
+              valueFrom:
+                configMapKeyRef:
+                  name: global
+                  key: environment
+            - name: JENKINS_HOME
+              value: "devterm"
+            - name: GEN3_HOME
+              value: /home/ubuntu/cloud-automation
+            - name: resource_name
+              value: {{ .Values.terraform.resource_name }}  
+            - name: workspace_name
+              value: {{ .Values.terraform.workspace_name }}                  
+          volumeMounts: 
+            - name: "tf-config"
+              readOnly: true
+              mountPath: "/config.tfvars"
+              subPath: config.tfvars   
+            - name: "credentials"
+              readOnly: true
+              mountPath: "/home/ubuntu/.aws/credentials"
+              subPath: credentials                
+          command: [ "/bin/bash" ]
+          args:
+            - "-c"
+            - |
+              export LC_ALL=C.UTF-8
+              export LANG=C.UTF-8                    
+              source "${GEN3_HOME}/gen3/gen3setup.sh"
+              gen3 workon default "${resouce_name}_${workspace_name}"
+              gen3 cd
+              cp /config.tfvars ./config.tfvars
+              {{ if .Values.terraform.destroy }} 
+              gen3 tfplan --destroy
+              {{ else }}
+              gen3 tfplan
+              {{ end }}
+              gen3 tfapply
+      restartPolicy: Never

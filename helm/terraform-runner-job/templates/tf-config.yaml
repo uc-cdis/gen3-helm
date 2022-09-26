@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tf-config
+type: Opaque
+data:
+{{ (.Files.Glob "config-tfvars/*").AsSecrets | indent 2 }}
