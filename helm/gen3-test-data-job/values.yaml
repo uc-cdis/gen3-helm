@@ -1,0 +1,13 @@
+# Default values for gen3-test-data-job.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+fence:
+  image: quay.io/cdis/fence:master
+
+gentestdata:
+  submission_user: "cdis.autotest@gmail.com"
+  test_program: "DEV"
+  test_project: "test"
+  max_examples: "10"
+  submission_order: "submitted_unaligned_reads"
