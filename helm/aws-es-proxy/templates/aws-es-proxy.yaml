@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-es-proxy
+type: Opaque
+stringData:
+  credentials: |
+      {
+        "aws_access_key_id": {{.Values.secrets.awsAccessKeyId | quote}},
+        "aws_secret_access_key": {{ .Values.secrets.awsSecretAccessKey | quote }}
+      }
