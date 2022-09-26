@@ -20,7 +20,7 @@ spec:
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-      {{- if .Values.dataDog.enabled }}
+      {{- if eq (include "pidgin.ddEnabled" . ) "true" }}
         tags.datadoghq.com/service: "pidgin"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}

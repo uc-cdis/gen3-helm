@@ -74,3 +74,14 @@ Create the name of the service account to use
 {{- default .Values.database.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define ddEnabled
+*/}}
+{{- define "metadata.ddEnabled" -}}
+{{- if .Values.global }}
+{{- .Values.global.ddEnabled }}
+{{- else}}
+{{- .Values.dataDog.enabled }}
+{{- end }}
+{{- end }}
