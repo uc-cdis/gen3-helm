@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dicom-server-deployment
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "dicom-server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dicom-server.selectorLabels" . | nindent 6 }}
+      release: "production"
+      public: "yes"
+  template:
+    metadata:
+      labels:
+        {{- include "dicom-server.selectorLabels" . | nindent 8 }}
+        release: "production"
+        public: "yes"
+    spec:
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "dicom-server"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.readinessProbe}}
+          readinessProbe: 
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.livenessProbe}}
+          livenessProbe: 
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.ports}}
+          ports:
+            {{- toYaml . | nindent 12}}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
