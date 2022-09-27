@@ -48,7 +48,7 @@ Selector labels
 {{- define "dicom-server.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "dicom-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ "esproxy" }}
+app: "dicom-server"
 {{- end }}
 
 {{/*
