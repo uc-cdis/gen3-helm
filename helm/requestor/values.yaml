@@ -103,3 +103,10 @@ service:
       port: 80
       targetPort: 80 
       name: http
+
+# Secrets
+secrets:
+  host: postgres-postgresql.postgres.svc.cluster.local
+  user: postgres
+  password: postgres
+  database: requestor
