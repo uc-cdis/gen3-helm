@@ -119,7 +119,7 @@ secrets:
   fence:    
     host: postgres-postgresql.postgres.svc.cluster.local
     user: postgres
-    pass: postgres
+    password: postgres
     database: fence
   sheepdog:
     host:  postgres-postgresql.postgres.svc.cluster.local
