@@ -1,0 +1,73 @@
+# Default values for gen3.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Dependancy Charts
+ambassador: 
+  enabled: false
+  
+arborist: 
+  enabled: true
+  
+argo-wrapper: 
+  enabled: false
+  
+audit: 
+  enabled: false
+  
+fence: 
+  enabled: true
+  
+guppy: 
+  enabled: true
+  
+hatchery: 
+  enabled: true
+  
+indexd: 
+  enabled: true
+  
+manifestservice: 
+  enabled: true
+  
+metadata: 
+  enabled: false
+  
+peregrine: 
+  enabled: true
+  
+pidgin: 
+  enabled: true
+  
+portal: 
+  enabled: true
+  
+requestor: 
+  enabled: true
+  
+revproxy: 
+  enabled: false
+  
+sheepdog: 
+  enabled: true
+
+ssjdispatcher: 
+  enabled: false
+  
+
+# Configmap
+global:
+  environment: default
+  hostname: test
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: False
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: on
+  dispatcherJobNum: 10
+  ddEnabled: false

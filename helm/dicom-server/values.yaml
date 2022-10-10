@@ -1,0 +1,71 @@
+# Default values for dicom-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+
+#Deployment
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+replicaCount: 1
+
+volumes:
+  - name: config-volume-g3auto
+    secret:
+      secretName: orthanc-g3auto
+
+image:
+  repository: quay.io/cdis/gen3-orthanc
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
+
+readinessProbe:
+  httpGet:
+    path: /system
+    port: 8042
+  initialDelaySeconds: 5
+  periodSeconds: 20
+  timeoutSeconds: 30
+
+livenessProbe:
+  httpGet:
+    path: /system
+    port: 8042
+  initialDelaySeconds: 5
+  periodSeconds: 60
+  timeoutSeconds: 30 
+
+ports:
+  - containerPort: 8042
+
+volumeMounts:
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: /etc/orthanc/orthanc_config_overwrites.json
+    subPath: orthanc_config_overwrites.json
+
+
+#Service and Pod
+service:
+  port: 80
+  targetport: 8042
+
+
+
+#Secret
+secrets:
+  authenticationEnabled: false
+  enableIndex: true
+  enableStorage: true
+  port: 5432
+  host: postgres-postgresql.postgres.svc.cluster.local
+  dataBase: postgres
+  userName: postgres
+  password: postgres
+  indexConnectionsCount: 5
+  lock: false

@@ -27,7 +27,7 @@ spec:
         netnolimit: 'yes'
         public: 'yes'
         s3: 'yes'
-      {{- if .Values.dataDog.enabled }}
+      {{- if eq (include "sheepdog.ddEnabled" . ) "true" }}
         tags.datadoghq.com/service: "sheepdog"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
@@ -75,7 +75,7 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              value: {{ .Values.dictionaryUrl }}
+              value: {{ include "sheepdog.dictionaryUrl" .}}
             {{- with .Values.indexdUrl }}
             - name: INDEX_CLIENT_HOST
               value: {{ . }}

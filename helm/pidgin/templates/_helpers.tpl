@@ -61,3 +61,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define ddEnabled
+*/}}
+{{- define "pidgin.ddEnabled" -}}
+{{- if .Values.global }}
+{{- .Values.global.ddEnabled }}
+{{- else}}
+{{- .Values.dataDog.enabled }}
+{{- end }}
+{{- end }}

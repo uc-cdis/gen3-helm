@@ -61,3 +61,25 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define environment
+*/}}
+{{- define "argo-wrapper.environment" -}}
+{{- if .Values.global }}
+{{- .Values.global.environment }}
+{{- else}}
+{{- .Values.environment }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define ddEnabled
+*/}}
+{{- define "argo-wrapper.ddEnabled" -}}
+{{- if .Values.global }}
+{{- .Values.global.ddEnabled }}
+{{- else}}
+{{- .Values.dataDog.enabled }}
+{{- end }}
+{{- end }}
