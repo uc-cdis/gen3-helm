@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ohdsi-atlas-deployment
+  labels:
+    {{- include "ohdsi-atlas.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "ohdsi-atlas.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "ohdsi-atlas.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ohdsi-atlas.serviceAccountName" . }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ohdsi-atlas
+              topologyKey: "kubernetes.io/hostname"
+      automountServiceAccountToken: false
+      
+      containers:
+        - name: ohdsi-atlas
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          volumeMounts:
+            - name: ohdsi-atlas-config-local
+              readOnly: false
+              mountPath: /usr/share/nginx/html/atlas/js/config-local.js
+              subPath: config-local.js
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: ohdsi-atlas-config-local
+          configMap:
+            name: ohdsi-atlas-config-local
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

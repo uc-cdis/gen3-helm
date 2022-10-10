@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ohdsi-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /atlas
+            pathType: Prefix
+            backend:
+              service:
+                name: ohdsi-atlas-service
+                port:
+                  number: 80
+          - path: /WebAPI
+            pathType: Prefix
+            backend:
+              service:
+                name: ohdsi-webapi-service
+                port:
+                  number: 80
