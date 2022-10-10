@@ -73,3 +73,15 @@ Define ddEnabled
 {{- .Values.dataDog.enabled }}
 {{- end }}
 {{- end }}
+
+{{/*
+ Postgres Password lookup
+*/}}
+{{- define "requestor.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.secrets.password }}
+{{- end }}
+{{- end }}
