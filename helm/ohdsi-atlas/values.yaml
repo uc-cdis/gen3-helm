@@ -8,7 +8,7 @@ image:
   repository: quay.io/cdis/ohdsi-atlas
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "master-2.11"
 
 imagePullSecrets: []
 nameOverride: ""

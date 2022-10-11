@@ -66,6 +66,7 @@ spec:
               subPath: config-local.js
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env: 
       volumes:
         - name: ohdsi-atlas-config-local
           configMap:
