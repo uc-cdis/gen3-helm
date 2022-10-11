@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "requestor.name" -}}
+{{- define "dicom-viewer.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "requestor.fullname" -}}
+{{- define "dicom-viewer.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "requestor.chart" -}}
+{{- define "dicom-viewer.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "requestor.labels" -}}
-helm.sh/chart: {{ include "requestor.chart" . }}
-{{ include "requestor.selectorLabels" . }}
+{{- define "dicom-viewer.labels" -}}
+helm.sh/chart: {{ include "dicom-viewer.chart" . }}
+{{ include "dicom-viewer.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,43 +45,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "requestor.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "requestor.name" . }}
+{{- define "dicom-viewer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "dicom-viewer.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "requestor.name" . }}
-release: {{ .Values.releaseLabel }}
+app: "dicom-viewer"
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "requestor.serviceAccountName" -}}
+{{- define "dicom-viewer.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "requestor.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "dicom-viewer.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Define ddEnabled
-*/}}
-{{- define "requestor.ddEnabled" -}}
-{{- if .Values.global }}
-{{- .Values.global.ddEnabled }}
-{{- else}}
-{{- .Values.dataDog.enabled }}
-{{- end }}
-{{- end }}
-
-{{/*
- Postgres Password lookup
-*/}}
-{{- define "requestor.postgres.password" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.secrets.password }}
 {{- end }}
 {{- end }}

@@ -26,12 +26,12 @@ config["ARBORIST"] = "http://arborist-service/"
 config['SIGNPOST'] = {
     'host': environ.get('SIGNPOST_HOST') or 'http://indexd-service',
     'version': 'v0',
-    'auth': ('gdcapi', conf_data.get('indexd_password', '{{indexd_password}}')),
+    'auth': ('gdcapi', environ.get('INDEXD_PASS')),
 }
 config['INDEX_CLIENT'] = {
     'host': environ.get('INDEX_CLIENT_HOST') or 'http://indexd-service',
     'version': 'v0',
-    'auth': ('gdcapi', conf_data.get('indexd_password', '{{indexd_password}}')),
+    'auth': ('gdcapi', environ.get('INDEXD_PASS')),
 }
 config["FAKE_AUTH"] = False
 config["PSQLGRAPH"] = {

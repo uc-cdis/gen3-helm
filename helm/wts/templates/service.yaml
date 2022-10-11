@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: workspace-token-service
+  labels:
+    {{- include "wts.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: wts
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.service.httpPort }}
+      name: http
+    - protocol: TCP
+      port: {{ .Values.service.httpsPort }}
+      targetPort: {{ .Values.service.httpsPort }}
+      name: https
