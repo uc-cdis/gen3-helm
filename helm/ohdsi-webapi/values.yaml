@@ -68,13 +68,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-# targetMemoryUtilizationPercentage: 80
-
 nodeSelector: {}
 
 tolerations: []
@@ -89,3 +82,17 @@ webAPI:
   fenceClientID: CLIENT_ID
   fenceClientSecret: CLIENT_SECRET
   hostname: HOSTNAME
+
+postgres:
+  enabled: true
+  host: postgres-postgresql.postgres.svc.cluster.local
+  
+  master:
+    username: postgres
+    password: postgres
+    port: 5432
+  
+  databases:
+  - databaseName: ohdsi-webapi
+    username: ohdsi
+    password: ohdsi_password
