@@ -87,19 +87,6 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-
-{{/*
- Postgres Password lookup Indexd
-*/}}
-{{- define "indexd.postgres.password" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.secrets.indexd.password }}
-{{- end }}
-{{- end }}
-
 {{/*
 Define ddEnabled
 */}}

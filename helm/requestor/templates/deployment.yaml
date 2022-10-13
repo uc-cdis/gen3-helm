@@ -37,7 +37,7 @@ spec:
       volumes: 
         - name: config-volume
           secret:
-            secretName: {{ (lookup "v1" "Secret" "default" "requestor-g3auto").metadata.name }}
+            secretName: "requestor-g3auto"
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
