@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-exporter
+spec:
+  containers:
+  - name: secret-pusher
+    image: quay.io/cdis/awshelper:master
+    volumeMounts: 
+    {{- range .Values.secrets }}
+    - name: {{ . }}
+      mountPath: /etc/secrets/{{ . }}
+    {{- end }}
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+  volumes:
+  {{- range .Values.secrets }}
+  - name: {{ . }}
+    secret:
+      secretName: {{ . }}
+      defaultMode: 444  
+  {{- end }}
