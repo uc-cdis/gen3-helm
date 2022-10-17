@@ -46,7 +46,7 @@ requestor:
   enabled: true
   
 revproxy: 
-  enabled: false
+  enabled: true
   
 sheepdog: 
   enabled: true
