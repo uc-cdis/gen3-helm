@@ -7,7 +7,7 @@ Helm charts for Gen3 Deployments
 ## Prerequisites
 
 ### Kubernetes
-It is suggested to use [Rancher Desktop](rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's
+It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's
 
 ### Postgres 
 We need a postgres deployment, for databases and stuff. 
