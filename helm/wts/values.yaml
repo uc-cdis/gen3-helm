@@ -1,3 +1,11 @@
+global:
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      password: 
+      port: 5432
+
 # Default values for wts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -8,11 +16,13 @@ image:
   repository: quay.io/cdis/workspace-token-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2022.09"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+
 
 hostname: localhost
 oidc_client_id: 
@@ -108,15 +118,17 @@ secrets:
   #       "db_database": "wts_default"
   #     }
 
+# Whether or not to run database creation job
+# The job is idempotant
+db_creation: true
+
 postgres:
-  host: postgres-postgresql.postgres.svc.cluster.local
-  
-  master:
-    username: postgres
-    password: TEnTIpzG2I
-    port: 5432
-  
   databases:
-  - databaseName: wts
+  # Array of databases for service
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  - service: wts
+    databaseName: wts
     username: wts
-    password: wts_password
+    # If left empty it will be auto-generated
+    # TODO: complete auto-generate feature in db-setup
+    password: testpass

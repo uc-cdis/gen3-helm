@@ -1,6 +1,6 @@
 apiVersion: v2
 name: acronymbot
-description: A Helm chart for Kubernetes
+description: A Helm chart for gen3 acronymbot
 
 # A chart can be either an 'application' or a 'library' chart.
 #

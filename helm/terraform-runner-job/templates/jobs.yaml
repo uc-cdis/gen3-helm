@@ -24,11 +24,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: gen3Env
-              valueFrom:
-                configMapKeyRef:
-                  name: global
-                  key: environment
+            - name: USE_TF_1
+              value: "True"
             - name: JENKINS_HOME
               value: "devterm"
             - name: GEN3_HOME
@@ -53,7 +50,7 @@ spec:
               export LC_ALL=C.UTF-8
               export LANG=C.UTF-8                    
               source "${GEN3_HOME}/gen3/gen3setup.sh"
-              gen3 workon default "${resouce_name}_${workspace_name}"
+              gen3 workon default "helm"
               gen3 cd
               cp /config.tfvars ./config.tfvars
               {{ if .Values.terraform.destroy }} 

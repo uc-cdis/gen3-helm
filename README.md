@@ -36,13 +36,14 @@ kubectl run postgres-postgresql-client --rm --tty -i --restart='Never' --namespa
 
 Once you get a PSQL shell into postgres create databses by running the following
 ```
-CREATE DATBASE arborist;
-CREATE DATBASE audit;
-CREATE DATBASE fence;
-CREATE DATBASE indexd;
-CREATE DATBASE metadata;
-CREATE DATBASE peregrine;
-CREATE DATBASE sheepdog;
+CREATE DATABASE arborist;
+CREATE DATABASE audit;
+CREATE DATABASE fence;
+CREATE DATABASE indexd;
+CREATE DATABASE metadata;
+CREATE DATABASE peregrine;
+CREATE DATABASE sheepdog;
+CREATE DATABASE requestor;
 ```
 
 
@@ -72,10 +73,10 @@ After configuration is complete, take note of the client ID that was created. Yo
 
 ## Helm chart deployment
 
-### Install all charts
+### Install Gen3
 ```
 cd ./helm
-for i in $(ls); do helm upgrade --install $i ./$i; done
+helm upgrade --install gen3 ./gen3 -f values.yaml
 ```
 
 ### Install fence with google login secrets

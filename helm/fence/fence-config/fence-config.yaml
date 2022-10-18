@@ -24,7 +24,7 @@
 # //////////////////////////////////////////////////////////////////////////////////////
 APP_NAME: 'Gen3 Data Commons'
 # Where fence microservice is deployed
-BASE_URL: 'http://localhost/user'
+BASE_URL: 'https://localhost/user'
 # postgres db to connect to
 # connection url format:
 #     postgresql://[user[:password]@][netloc][:port][/dbname]

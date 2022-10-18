@@ -1,15 +1,20 @@
+global:
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      port: 5432
+      # If password is left empty the lookup function will look for postgres master password
+      password: 
+
 postgres:
-  host: postgres-postgresql.postgres.svc.cluster.local
-  
-  master:
-    username: postgres
-    password: postgres
-    port: 5432
-  
+  # An array of databases to create.
   databases:
-  - databaseName: wts
+  - service: wts
+    databaseName: wts
     username: wts
     password: wts_password
-  - databaseName: indexd
+  - service: indexd
+    databaseName: indexd
     username: indexd
     password: indexd_password

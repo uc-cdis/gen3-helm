@@ -1,0 +1,3 @@
+{{- include "db-setup.setup-job" . }}
+---
+{{ include "db-setup.secret" . -}}
