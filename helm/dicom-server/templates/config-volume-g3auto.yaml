@@ -8,7 +8,7 @@ stringData:
         {
           "db_host": {{ .Values.secrets.host | quote }},
           "db_username": {{ .Values.secrets.userName | quote }},
-          "db_password": {{ .Values.secrets.password | quote }},
+          "db_password": {{ include "dicom.postgres.password" . | quote }},
           "db_database": {{ .Values.secrets.dataBase | quote }}
         }
   orthanc_config_overwrites.json: |
@@ -21,7 +21,7 @@ stringData:
             "Host": {{ .Values.secrets.host | quote }},
             "Database": {{ .Values.secrets.dataBase | quote }},
             "Username": {{ .Values.secrets.userName | quote }},
-            "Password": {{ .Values.secrets.password | quote }},
+            "Password": {{ include "dicom.postgres.password" . | quote }},
             "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
             "Lock": {{ .Values.secrets.lock }}
           },
