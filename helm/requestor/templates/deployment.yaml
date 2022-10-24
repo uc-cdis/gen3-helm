@@ -70,7 +70,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       initContainers:
-        - name: {{ .Values.initContainerName }}
+        - name: requestor-db-migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.volumeMounts }}
@@ -81,8 +81,8 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          command: {{ .Values.command }}
-          {{- with .Values.args }}
-          args: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              /env/bin/alembic upgrade head

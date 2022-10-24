@@ -4,7 +4,7 @@ metadata:
   name: revproxy
 spec:
   rules:
-    - host: localhost
+    - host: {{ default .Values.global.hostname .Values.hostname }}
       http:
         paths:
           - path: /

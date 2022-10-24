@@ -1,3 +1,24 @@
+global:
+  # Default values are for postgres deployed as a helm chart
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      password: 
+      port: 5432
+
+
+# Whether or not to run database creation job
+# The job is idempotant
+db_creation: true
+postgres:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: wts
+  username: wts
+  # If left empty it will be auto-generated
+  password: 
+
+    
 # Default values for wts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -5,18 +26,20 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/workspace-token-service
-  pullPolicy: Always
+  repository: quay.io/cdis/wts
+  pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2022.09"
+  tag: "jqtest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+
+
 hostname: localhost
 oidc_client_id: 
-oidc_client_secret:
+oidc_client_secret: 
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -50,13 +73,6 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  user: postgres
-  password: 
-  dbname: wts
 
 service:
   type: ClusterIP
@@ -108,15 +124,3 @@ secrets:
   #       "db_database": "wts_default"
   #     }
 
-postgres:
-  host: postgres-postgresql.postgres.svc.cluster.local
-  
-  master:
-    username: postgres
-    password: TEnTIpzG2I
-    port: 5432
-  
-  databases:
-  - databaseName: wts
-    username: wts
-    password: wts_password

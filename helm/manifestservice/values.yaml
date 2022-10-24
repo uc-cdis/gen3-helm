@@ -18,22 +18,6 @@ serviceAccount:
   annotations: {}
   name: ""
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
 
 autoscaling:
   enabled: false
@@ -80,7 +64,6 @@ volumes:
       secretName: "manifestservice-g3auto"
 
 terminationGracePeriodSeconds: 50
-
 
 env:
   - name: REQUESTS_CA_BUNDLE

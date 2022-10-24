@@ -59,14 +59,8 @@ spec:
             - "-c"
             - |
               # set env vars
-              export PGDATABASE=$(cat /var/www/arborist/dbcreds.json | jq -r '.db_database')
-              export PGUSER=$(cat /var/www/arborist/dbcreds.json | jq -r '.db_username')
-              export PGPASSWORD=$(cat /var/www/arborist/dbcreds.json | jq -r '.db_password')
-              export PGHOST=$(cat /var/www/arborist/dbcreds.json | jq -r '.db_host')
-              export PGPORT="5432"
               export PGSSLMODE="disable"
               
-
               # bring the database schema up to the latest version
               /go/src/github.com/uc-cdis/arborist/migrations/latest
 

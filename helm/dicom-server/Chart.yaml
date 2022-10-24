@@ -1,6 +1,6 @@
 apiVersion: v2
 name: dicom-server
-description: A Helm chart for AWS Dicom Server
+description: A Helm chart for gen3 Dicom Server
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -31,19 +31,19 @@ spec:
           # imagePullPolicy: Never
           # livenessProbe:
           #   httpGet:
-          #     path: /portal/
+          #     path: /
           #     port: 80
           #   initialDelaySeconds: 60
           #   periodSeconds: 30
           #   timeoutSeconds: 30
           #   failureThreshold: 30
-          # readinessProbe:
-          #   httpGet:
-          #     path: /portal/
-          #     port: 80
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
             # TODO: re-add resources
           ports:
             - containerPort: 80
@@ -52,6 +52,8 @@ spec:
             - /bin/bash
             - ./dockerStart.sh
           env:
+            - name: NODE_ENV
+              value: dev
             - name: HOSTNAME
               value: revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up

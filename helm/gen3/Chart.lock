@@ -1,54 +1,57 @@
 dependencies:
 - name: ambassador
   repository: file://../ambassador
-  version: 0.1.0
+  version: 0.0.1
 - name: arborist
   repository: file://../arborist
-  version: 0.1.0
+  version: 0.0.1
 - name: argo-wrapper
   repository: file://../argo-wrapper
-  version: 0.1.0
+  version: 0.0.1
 - name: audit
   repository: file://../audit
-  version: 0.1.0
+  version: 0.0.1
 - name: fence
   repository: file://../fence
-  version: 0.1.0
+  version: 0.0.1
 - name: guppy
   repository: file://../guppy
-  version: 0.1.0
+  version: 0.0.1
 - name: hatchery
   repository: file://../hatchery
-  version: 0.1.0
+  version: 0.0.1
 - name: indexd
   repository: file://../indexd
-  version: 0.1.0
+  version: 0.0.1
 - name: manifestservice
   repository: file://../manifestservice
-  version: 0.1.0
+  version: 0.0.1
 - name: metadata
   repository: file://../metadata
-  version: 0.1.0
+  version: 0.0.1
 - name: peregrine
   repository: file://../peregrine
-  version: 0.1.0
+  version: 0.0.1
 - name: pidgin
   repository: file://../pidgin
-  version: 0.1.0
+  version: 0.0.1
 - name: portal
   repository: file://../portal
-  version: 0.1.0
+  version: 0.0.1
 - name: requestor
   repository: file://../requestor
-  version: 0.1.0
+  version: 0.0.1
 - name: revproxy
   repository: file://../revproxy
-  version: 0.1.0
+  version: 0.0.1
 - name: sheepdog
   repository: file://../sheepdog
-  version: 0.1.0
+  version: 0.0.1
 - name: ssjdispatcher
   repository: file://../ssjdispatcher
-  version: 0.1.0
-digest: sha256:7363cb3f2fc0db97142131a851ea7e637772ee83ce1d33164b9886fd4745678a
-generated: "2022-09-19T14:49:52.41625-06:00"
+  version: 0.0.1
+- name: wts
+  repository: file://../wts
+  version: 0.0.1
+digest: sha256:94301835cea4dfeb07a462246b7574f9526f0808feb692272f36d0661677cab2
+generated: "2022-10-18T12:52:15.089837-05:00"

@@ -4,74 +4,78 @@ description: An Umbrella Chart to conditionally deploy Gen3 Services
 
 #Dependancies
 dependencies:
- - name: ambassador
-   version: "0.1.0"
-   repository: "file://../ambassador"
-   condition: ambassador.enabled
- - name: arborist
-   version: "0.1.0"
-   repository: "file://../arborist"
-   condition: arborist.enabled
- - name: argo-wrapper
-   version: "0.1.0"
-   repository: "file://../argo-wrapper"
-   condition: argo-wrapper.enabled
- - name: audit
-   version: "0.1.0"
-   repository: "file://../audit"
-   condition: audit.enabled
- - name: fence
-   version: "0.1.0"
-   repository: "file://../fence"
-   condition: fence.enabled
- - name: guppy
-   version: "0.1.0"
-   repository: "file://../guppy"
-   condition: guppy.enabled
- - name: hatchery
-   version: "0.1.0"
-   repository: "file://../hatchery"
-   condition: hatchery.enabled
- - name: indexd
-   version: "0.1.0"
-   repository: "file://../indexd"
-   condition: indexd.enabled
- - name: manifestservice
-   version: "0.1.0"
-   repository: "file://../manifestservice"
-   condition: manifestservice.enabled
- - name: metadata
-   version: "0.1.0"
-   repository: "file://../metadata"
-   condition: metadata.enabled
- - name: peregrine
-   version: "0.1.0"
-   repository: "file://../peregrine"
-   condition: peregrine.enabled
- - name: pidgin
-   version: "0.1.0"
-   repository: "file://../pidgin"
-   condition: pidgin.enabled
- - name: portal
-   version: "0.1.0"
-   repository: "file://../portal"
-   condition: portal.enabled
- - name: requestor
-   version: "0.1.0"
-   repository: "file://../requestor"
-   condition: requestor.enabled
- - name: revproxy
-   version: "0.1.0"
-   repository: "file://../revproxy"
-   condition: revproxy.enabled
- - name: sheepdog
-   version: "0.1.0"
-   repository: "file://../sheepdog"
-   condition: sheepdog.enabled
- - name: ssjdispatcher
-   version: "0.1.0"
-   repository: "file://../ssjdispatcher"
-   condition: ssjdispatcher.enabled
+- name: ambassador
+  version: "0.0.1"
+  repository: "file://../ambassador"
+  condition: ambassador.enabled
+- name: arborist
+  version: "0.0.1"
+  repository: "file://../arborist"
+  condition: arborist.enabled
+- name: argo-wrapper
+  version: "0.0.1"
+  repository: "file://../argo-wrapper"
+  condition: argo-wrapper.enabled
+- name: audit
+  version: "0.0.1"
+  repository: "file://../audit"
+  condition: audit.enabled
+- name: fence
+  version: "0.0.1"
+  repository: "file://../fence"
+  condition: fence.enabled
+- name: guppy
+  version: "0.0.1"
+  repository: "file://../guppy"
+  condition: guppy.enabled
+- name: hatchery
+  version: "0.0.1"
+  repository: "file://../hatchery"
+  condition: hatchery.enabled
+- name: indexd
+  version: "0.0.1"
+  repository: "file://../indexd"
+  condition: indexd.enabled
+- name: manifestservice
+  version: "0.0.1"
+  repository: "file://../manifestservice"
+  condition: manifestservice.enabled
+- name: metadata
+  version: "0.0.1"
+  repository: "file://../metadata"
+  condition: metadata.enabled
+- name: peregrine
+  version: "0.0.1"
+  repository: "file://../peregrine"
+  condition: peregrine.enabled
+- name: pidgin
+  version: "0.0.1"
+  repository: "file://../pidgin"
+  condition: pidgin.enabled
+- name: portal
+  version: "0.0.1"
+  repository: "file://../portal"
+  condition: portal.enabled
+- name: requestor
+  version: "0.0.1"
+  repository: "file://../requestor"
+  condition: requestor.enabled
+- name: revproxy
+  version: "0.0.1"
+  repository: "file://../revproxy"
+  condition: revproxy.enabled
+- name: sheepdog
+  version: "0.0.1"
+  repository: "file://../sheepdog"
+  condition: sheepdog.enabled
+- name: ssjdispatcher
+  version: "0.0.1"
+  repository: "file://../ssjdispatcher"
+  condition: ssjdispatcher.enabled
+- name: wts
+  version: "0.0.1"
+  repository: "file://../wts"
+  condition: wts.enabled
 
 #A chart can be either an 'application' or a 'library' chart.
 #
@@ -86,10 +90,10 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.0.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.16.0"
+appVersion: "master"
