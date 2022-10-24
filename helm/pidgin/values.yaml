@@ -1,7 +1,23 @@
 # Default values for pidgin.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  # Default values are for postgres deployed as a helm chart
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      password: 
+      port: 5432
 
+db_create: true
+postgres:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: pidgin
+  username: pidgin
+  port: 5432
+  # If left empty password will be auto-generated
+  password: 
 
 
 # Deployment

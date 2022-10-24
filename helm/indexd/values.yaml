@@ -1,7 +1,25 @@
-
 # Default values for indexd.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+global:
+  # Default values are for postgres deployed as a helm chart
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      password:
+      port: 5432
+
+db_create: true
+postgres:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: indexd
+  username: indexd
+  host:
+  port: 5432
+  # If left empty password will be auto-generated
+  password:
 
 replicaCount: 1
 
@@ -94,19 +112,6 @@ volumeMounts:
 env:
   - name: "GEN3_DEBUG"
     value: "false"
-
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: indexd
 
 secrets:
   userdb:

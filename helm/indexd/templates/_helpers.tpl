@@ -70,7 +70,7 @@ Create the name of the service account to use
 {{- if $localpass }}
 {{- default (index $localpass.data "postgres-password" | b64dec) }}
 {{- else }}
-{{- default .Values.database.password }}
+{{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
 

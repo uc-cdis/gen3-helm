@@ -72,6 +72,74 @@ spec:
           #   - "-c"
           #   - "sleep infinity"
           env: 
+            - name: FENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false
+            - name: FENCE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: FENCE_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false
+            - name: FENCE_DB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: FLASK_SECRET_KEY
+              value: "TODO: FIX THIS!!!"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: database
+                  optional: false
+            - name: PUBLIC_DATASETS
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: public_datasets
+                  optional: true
+            # - name: INDEX_CLIENT_HOST
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: manifest-global
+            #       key: indexd_url
+            #       optional: true
+            - name: FENCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: fence_url
+                  optional: true
             - name: INDEXD_PASS
               valueFrom:
                 secretKeyRef:
@@ -98,13 +166,13 @@ spec:
             - name: AUTH_NAMESPACE
               value: {{ . }}
             {{- end }}
-            - name: REQUESTS_CA_BUNDLE
-              #
-              # override python 'requests' SSL certificate bundle
-              # to use system trusted certs
-              # which includes our private certificate authority
-              #
-              value: /etc/ssl/certs/ca-certificates.crt
+            # - name: REQUESTS_CA_BUNDLE
+            #   #
+            #   # override python 'requests' SSL certificate bundle
+            #   # to use system trusted certs
+            #   # which includes our private certificate authority
+            #   #
+            #   value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "True"
             {{- with .Values.ddTraceEnabled }}
