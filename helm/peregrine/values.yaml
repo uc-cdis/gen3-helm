@@ -1,7 +1,24 @@
 # Default values for peregrine.
 # This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+global:
+  postgres:
+    master:
+      host: postgres-postgresql.postgres.svc.cluster.local
+      username: postgres
+      port: 5432
+      # If password is left empty the lookup function will look for postgres master password
+      password: 
 
+db_create: true
+postgres:
+  host:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: peregrine
+  username: peregrine
+  port: 5432
+  # If left empty password will be auto-generated
+  password:
+  
 replicaCount: 1
 
 image:
@@ -68,57 +85,8 @@ affinity: {}
 
 
 env:
-- name: GEN3_UWSGI_TIMEOUT
-  value: "600"
-- name: DICTIONARY_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: dictionary_url
-      optional: true
-#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
-#adding a var in helpers.tpl for later- Elise
-- name: PUBLIC_DATASETS
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: public_datasets
-      optional: true
-# Signpost is deprecated; replace this w INDEX_CLIENT_HOST block
-- name: SIGNPOST_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: indexd_url
-      optional: true
-- name: INDEX_CLIENT_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: indexd_url
-      optional: true
-- name: GRAPHQL_TIMEOUT
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-peregrine
-      key: peregrine_timeout
-      optional: true
-- name: FENCE_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: fence_url
-      optional: true
-- name: ARBORIST_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: arborist_url
-      optional: true
-- name: GEN3_DEBUG
-  value: "False"
-- name: GEN3_SIDECAR
-  value: "False"
+
+
 
 volumes:
 - name: shared-data
@@ -126,46 +94,7 @@ volumes:
 - name: config-volume
   secret:
     secretName: "peregrine-secret"
-- name: creds-volume
-  secret:
-    secretName: "peregrine-creds"
-- name: config-helper
-  configMap:
-    name: config-helper
 
 volumeMounts:
-- name: "shared-data"
-  mountPath: "/var/run/gen3"
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/wsgi.py"
-  subPath: "wsgi.py"
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/creds.json"
-  subPath: creds.json
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/config_helper.py"
-  subPath: config_helper.py
-
-secrets:
-  fence:
-    db:
-      host: 
-      user: 
-      pass: 
 
 
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: peregrine

@@ -2,6 +2,24 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# GLOBAL
+global:
+  postgres:
+    host: postgres-postgresql.postgres.svc.cluster.local
+    master:
+      username: postgres
+      password: 
+      port: 5432
+
+# DATABASE
+db_create: true
+postgres:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: sheepdog
+  username: sheepdog
+  # If left empty it will be auto-generated
+  password: 
+
 #Deployment
 releaseLabel: production
 
@@ -130,3 +148,5 @@ secrets:
     secretKey:
   indexd: 
     password: postgres
+
+

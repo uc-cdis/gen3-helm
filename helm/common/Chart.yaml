@@ -1,5 +1,5 @@
 apiVersion: v2
-name: db-setup
+name: common
 description: A Helm chart for provisioning databases in gen3
 
 # A chart can be either an 'application' or a 'library' chart.

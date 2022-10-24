@@ -62,10 +62,6 @@ spec:
           volumeMounts:
           - name: "wts-secret"
             readOnly: true
-            mountPath: "/var/www/wts/dbcreds.json"
-            subPath: dbcreds.json
-          - name: "wts-secret"
-            readOnly: true
             mountPath: "/var/www/wts/appcreds.json"
             subPath: appcreds.json
           ports:
@@ -83,12 +79,36 @@ spec:
               path: /_status
               port: 80
           env:
-          - name: POSTGRES_CREDS_FILE
-            value: "/var/www/wts/dbcreds.json"
           - name: SECRET_CONFIG
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS
             value: k8s
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: host
+                optional: false  
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: username
+                optional: false 
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: password
+                optional: false
+          - name: PGDB
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: database
+                optional: false
+          - name: SQLALCHEMY_DATABASE_URI
+            value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
@@ -98,15 +118,35 @@ spec:
         volumeMounts:
         - name: "wts-secret"
           readOnly: true
-          mountPath: "/var/www/wts/dbcreds.json"
-          subPath: dbcreds.json
-        - name: "wts-secret"
-          readOnly: true
           mountPath: "/var/www/wts/appcreds.json"
           subPath: appcreds.json
         env:
-        - name: POSTGRES_CREDS_FILE
-          value: "/var/www/wts/dbcreds.json"
+        - name: PGHOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Chart.Name }}-dbcreds
+              key: host
+              optional: false  
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Chart.Name }}-dbcreds
+              key: username
+              optional: false 
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Chart.Name }}-dbcreds
+              key: password
+              optional: false
+        - name: PGDB
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Chart.Name }}-dbcreds
+              key: database
+              optional: false
+        - name: SQLALCHEMY_DATABASE_URI
+          value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
         - name: SECRET_CONFIG
           value: "/var/www/wts/appcreds.json"
         resources:

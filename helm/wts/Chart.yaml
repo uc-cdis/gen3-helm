@@ -24,7 +24,6 @@ version: 0.0.1
 appVersion: "2022.10"
 
 dependencies:
-  - name: db-setup
+  - name: common
     version: 0.0.1
-    repository: file://../db-setup
-    condition: db_creation.enabled
+    repository: file://../common

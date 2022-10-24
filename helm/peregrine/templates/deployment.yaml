@@ -38,9 +38,101 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- toYaml .Values.env | nindent 12  }}
+            - name: FENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false
+            - name: FENCE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: FENCE_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false
+            - name: FENCE_DB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: FLASK_SECRET_KEY
+              value: "TODO: FIX THIS!!!"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: database
+                  optional: false
+            - name: GEN3_UWSGI_TIMEOUT
+              value: "600"
+            - name: DICTIONARY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: dictionary_url
+                  optional: true
+            - name: PUBLIC_DATASETS
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: public_datasets
+                  optional: true
+            - name: INDEX_CLIENT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: indexd_url
+                  optional: true
+            - name: GRAPHQL_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-peregrine
+                  key: peregrine_timeout
+                  optional: true
+            - name: FENCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: fence_url
+                  optional: true
+            - name: ARBORIST_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: arborist_url
+                  optional: true
+            - name: GEN3_SIDECAR
+              value: "False"
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/peregrine/wsgi.py"
+              subPath: "wsgi.py"
           ports:
             - name: http
               containerPort: 80

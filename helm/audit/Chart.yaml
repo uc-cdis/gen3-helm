@@ -22,4 +22,10 @@ version: 0.0.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 appVersion: "2022.10"
 
+dependencies:
+- name: common
+  version: 0.0.1
+  repository: file://../common
+  condition: db_creation.enabled
+
 
