@@ -2,7 +2,7 @@
 Helm charts for Gen3 Deployments
 
 
-# Deployment inststructions
+# Deployment instructions
 
 TL/DR: 
 ```
