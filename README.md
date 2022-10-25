@@ -4,10 +4,10 @@ Helm charts for Gen3 Deployments
 
 # Deployment instructions
 
-TL/DR: 
+## TL;DR 
 ```
 helm repo add gen3 http://helm.gen3.org
-helm upgrade --install gen3  -f ./values.yaml 
+helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
 ```
 
 Use the following as a template for your `values.yaml` file 
