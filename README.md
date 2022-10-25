@@ -1,10 +1,12 @@
+![gen3-log](docs/images/gen3-blue-dark.png)
+
 # gen3-helm
-Helm charts for Gen3 Deployments
+Helm charts for deploying Gen3 services to a kubernetes cluster.
 
 
 # Deployment inststructions
 
-TL/DR: 
+TL;DR 
 ```
 helm repo add gen3 http://helm.gen3.org
 helm upgrade --install gen3  -f ./values.yaml 
