@@ -11,6 +11,8 @@ spec:
     - name: {{ . }}
       mountPath: /etc/secrets/{{ . }}
     {{- end }}
+    - name: cred-volume
+      mountPath: "/root/.aws/credentials"
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
   volumes:
@@ -20,3 +22,6 @@ spec:
       secretName: {{ . }}
       defaultMode: 444  
   {{- end }}
+  - name: cred-volume
+    secret:
+      secretName: dcf-aws-creds-secret
