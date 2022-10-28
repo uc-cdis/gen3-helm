@@ -1,6 +1,6 @@
 apiVersion: v2
 name: dicom-viewer
-description: A Helm chart for AWS Dicom Viewer
+description: A Helm chart for gen3 Dicom Viewer
 
 # A chart can be either an 'application' or a 'library' chart.
 #
