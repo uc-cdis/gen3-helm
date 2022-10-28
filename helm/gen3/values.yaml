@@ -1,11 +1,10 @@
 global:
   postgres:
-    host: postgres-postgresql.postgres.svc.cluster.local
     master:
+      host: postgres-postgresql.postgres.svc.cluster.local
       username: postgres
       password: 
       port: 5432
-
 # Default values for gen3.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -62,6 +61,8 @@ sheepdog:
 ssjdispatcher: 
   enabled: false
   
+wts:
+  enabled: false
 
 # Configmap
 global:
