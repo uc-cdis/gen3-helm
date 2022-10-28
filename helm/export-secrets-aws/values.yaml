@@ -1,2 +1,3 @@
-secrets:
-- creds.json
+secrets: []
+
+serviceAccountName: secret-exporter

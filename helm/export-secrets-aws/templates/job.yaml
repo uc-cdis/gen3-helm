@@ -1,27 +1,30 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: secret-exporter
+  name: secret-exporter-job
 spec:
-  containers:
-  - name: secret-pusher
-    image: quay.io/cdis/awshelper:master
-    volumeMounts: 
-    {{- range .Values.secrets }}
-    - name: {{ . }}
-      mountPath: /etc/secrets/{{ . }}
-    {{- end }}
-    - name: cred-volume
-      mountPath: "/root/.aws/credentials"
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-  volumes:
-  {{- range .Values.secrets }}
-  - name: {{ . }}
-    secret:
-      secretName: {{ . }}
-      defaultMode: 444  
-  {{- end }}
-  - name: cred-volume
-    secret:
-      secretName: dcf-aws-creds-secret
+  template:
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      restartPolicy: OnFailure
+      containers:
+      - name: secret-pusher
+        image: quay.io/cdis/awshelper:master
+        volumeMounts: 
+        {{- range .Values.secrets }}
+        - name: {{ . }}
+          mountPath: /etc/secrets/{{ . }}
+        {{- end }}
+        command: ["/bin/bash", "-c"]
+        args:
+          - |   
+            {{- range .Values.secrets }}
+            for i in $(ls /etc/secrets/{{ . }}); do aws secretsmanager create-secret --name {{ . }}-$i --secret-string file:///etc/secrets/{{ . }}/$i; done
+            {{- end }}
+      volumes:
+      {{- range .Values.secrets }}
+      - name: {{ . }}
+        secret:
+          secretName: {{ . }}
+          defaultMode: 444  
+      {{- end }}
