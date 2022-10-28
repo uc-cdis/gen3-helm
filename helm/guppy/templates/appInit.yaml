@@ -1,0 +1,1 @@
+{{- include "gen3-test-data-job.create-test-indices" . }}
