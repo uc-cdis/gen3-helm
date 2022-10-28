@@ -22,3 +22,8 @@ version: 0.0.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "2022.10"
+
+dependencies:
+  - name: gen3-test-data-job
+    version: 0.0.1
+    repository: file://../gen3-test-data-job
