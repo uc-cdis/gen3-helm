@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 global:
   postgres:
-    host: postgres-postgresql.postgres.svc.cluster.local
-    master:
+    master: 
+      host: postgres-postgresql.postgres.svc.cluster.local
       username: postgres
       password: 
       port: 5432

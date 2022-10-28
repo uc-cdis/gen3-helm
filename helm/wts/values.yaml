@@ -1,8 +1,8 @@
 global:
   # Default values are for postgres deployed as a helm chart
   postgres:
-    host: postgres-postgresql.postgres.svc.cluster.local
     master:
+      host: postgres-postgresql.postgres.svc.cluster.local
       username: postgres
       password: 
       port: 5432
