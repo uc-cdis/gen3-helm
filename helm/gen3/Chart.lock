@@ -53,5 +53,8 @@ dependencies:
 - name: wts
   repository: file://../wts
   version: 0.0.1
-digest: sha256:94301835cea4dfeb07a462246b7574f9526f0808feb692272f36d0661677cab2
-generated: "2022-10-18T12:52:15.089837-05:00"
+- name: common
+  repository: file://../common
+  version: 0.0.1
+digest: sha256:df1541357a625a1dbfd6e1e792e801be513447d2c8323904a065413041f57cdb
+generated: "2022-10-31T14:49:41.869921-06:00"
