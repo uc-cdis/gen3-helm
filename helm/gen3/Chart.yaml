@@ -76,6 +76,10 @@ dependencies:
   version: "0.0.1"
   repository: "file://../wts"
   condition: wts.enabled
+- name: common
+  version: 0.0.1
+  repository: file://../common
+  condition: db_creation.enabled
 
 #A chart can be either an 'application' or a 'library' chart.
 #
