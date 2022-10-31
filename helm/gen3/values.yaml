@@ -64,6 +64,9 @@ ssjdispatcher:
 wts:
   enabled: false
 
+db_create: true
+# If db does not exist in postgres cluster and db_creation is set ot true then all relevant dbs will be created
+
 # Configmap
 global:
   environment: default
