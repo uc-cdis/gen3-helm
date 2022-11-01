@@ -54,7 +54,7 @@ spec:
             - name: GEN3_ENDPOINT
               value: {{ .Values.global.hostname }}
             - name: GEN3_VPCID
-              value: {{ .Values.global.environment }}
+              value: {{ .Values.global.vpcid }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       {{- with .Values.nodeSelector }}

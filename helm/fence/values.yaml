@@ -354,6 +354,7 @@ selectorLabels:
 logo:
 privacy_policy:
 
+#### FENCE CONFIG ####
 
 USER_YAML_CRON:
   LOCATION:
