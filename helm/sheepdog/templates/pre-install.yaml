@@ -2,8 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: sheepdog-dbinit
-  annotations:
-    "helm.sh/hook": "pre-install" #,pre-upgrade"
 spec:
   backoffLimit: 0
   template:

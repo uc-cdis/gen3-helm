@@ -9,8 +9,6 @@ metadata:
   # creds.json
   #
   name: indexd-userdb
-  annotations:
-    "helm.sh/hook": "pre-install,pre-upgrade"
 spec:
   backoffLimit: 0
   template:
