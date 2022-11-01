@@ -95,6 +95,10 @@ spec:
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS
             value: k8s
+          - name: AUTHORIZE_URL
+            value: "http://localhost/user/"
+          - name: ACCESS_TOKEN_URL
+            value: "http://fence-service/"
           - name: PGHOST
             valueFrom:
               secretKeyRef:
