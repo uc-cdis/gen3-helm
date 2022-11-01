@@ -6,12 +6,13 @@ data:
   json: |
     {
       "user-namespace": "jupyter-pods",
+      "localdev": true,
       "sub-dir": "/lw-workspace",
       "user-volume-size": "10Gi",
       "sidecar": {
           "cpu-limit": "1.0",
           "memory-limit": "256Mi",
-          "image": "quay.io/cdis/ecs-ws-sidecar:2022.05",
+          "image": "quay.io/cdis/ecs-ws-sidecar:master",
           "env": {
           "NAMESPACE": "default",
           "GEN3_ENDPOINT": "healdata.org",
@@ -137,7 +138,7 @@ data:
           "cpu-limit": "1.0",
           "memory-limit": "2Gi",
           "name": "(Tutorials) Example Analysis Jupyter Lab Notebooks",
-          "image": "quay.io/cdis/heal-notebooks:combined_tutorials__fbd5ce467b9c2a8e4d59c2d7ec49ad6c5c80312a",
+          "image": "quay.io/cdis/heal-notebooks:combined_tutorials__latest",
           "env": {
               "FRAME_ANCESTORS": "https://healdata.org"
           },

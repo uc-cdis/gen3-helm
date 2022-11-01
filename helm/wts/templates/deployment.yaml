@@ -83,6 +83,10 @@ spec:
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS
             value: k8s
+          - name: AUTHORIZE_URL
+            value: "http://localhost/user/"
+          - name: ACCESS_TOKEN_URL
+            value: "http://fence-service/"
           - name: PGHOST
             valueFrom:
               secretKeyRef:
@@ -113,8 +117,8 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
       - name: wts-db-migrate
-        imagePullPolicy: Always
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: "wts-secret"
           readOnly: true

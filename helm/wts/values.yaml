@@ -26,10 +26,10 @@ postgres:
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/wts
-  pullPolicy: Never
+  repository: quay.io/cdis/workspace-token-service
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "jqtest"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -37,7 +37,7 @@ fullnameOverride: ""
 
 
 
-hostname: localhost
+hostname: 
 oidc_client_id: 
 oidc_client_secret: 
 
