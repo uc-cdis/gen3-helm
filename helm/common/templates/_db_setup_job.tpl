@@ -86,14 +86,10 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
-data:
-  database: {{ $.Values.postgres.database | b64enc | quote}}
-  username: {{ $.Values.postgres.username | b64enc | quote }}
-  port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
-  {{- else }}
-  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- end }}
+stringData:
+  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
+  database: "{{ include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $) }}"
+  username: "{{ include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}"
+  password: "{{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) }}"
+  port: "{{ include "gen3.service-postgres" (dict "key" "port" "service" $.Chart.Name "context" $) }}"
 {{- end }}
