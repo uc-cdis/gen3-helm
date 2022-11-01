@@ -92,7 +92,7 @@ volumes:
     secretName: "indexd-secret"
 - name: creds-volume
   secret:
-    secretName: "indexd-creds"
+    secretName: "indexd-dbcreds"
 
 
 volumeMounts:

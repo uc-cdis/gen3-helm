@@ -196,7 +196,7 @@ volumes:
       optional: true
   - name: creds-volume
     secret:
-      secretName: "fence-creds"
+      secretName: "fence-dbcreds"
   - name: config-helper
     configMap:
       name: config-helper
