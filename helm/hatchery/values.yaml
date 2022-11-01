@@ -5,61 +5,19 @@
 replicaCount: 1
 
 image:
-  # repository: mendhak/http-https-echo
   repository: quay.io/cdis/hatchery
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 80
-
-ingress:
-  enabled: true
-  className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx",
-    nginx.ingress.kubernetes.io/allow-headers: REMOTE_USER
-  }
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ingress.local
-      paths:
-        - path: "/lw-workspace(/|$)(.*)"
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -89,6 +47,11 @@ affinity: {}
 env: 
 - name: HTTP_PORT
   value: "8000"
+- name: POD_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+
 
 volumes:
 - name: hatchery-config

@@ -59,36 +59,3 @@ Usage:
 {{- end }}
 
 
-
-
-
-
-{{/*
- Postgres User lookup
-*/}}
-{{- define "peregrine.postgres.user" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.postgres.password }}
-{{- end }}
-{{- end }}
-
-
-{{- if not (lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" .Chart.Name "dbcreds")) }}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Chart.Name }}-dbcreds
-  annotations:
-    "helm.sh/hook": "pre-install,pre-upgrade"
-    "helm.sh/resource-policy": "keep"
-    "helm.sh/hook-weight": "-10"
-stringData:
-  host: {{ default .Values.global.postgres.host  .Values.postgres.host }}
-  database: "{{ default .Chart.Name .Values.postgres.dbname }}"
-  username: "{{ default .Chart.Name .Values.postgres.user }}"
-  password: "{{ default (randAlphaNum 24 | nospace) .Values.postgres.password }}"
-  port: "{{ default 5432 .Values.postgres.port }}"
-{{- end -}}

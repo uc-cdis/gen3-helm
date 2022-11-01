@@ -4,8 +4,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
-  annotations:
-    "helm.sh/hook": "pre-install" #,pre-upgrade"
 spec:
   template:
     metadata:
@@ -47,7 +45,6 @@ spec:
                 optional: false
         args:
           - |
-            env
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
@@ -69,20 +66,14 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if not (lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" .Chart.Name "dbcreds")) }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
-  annotations:
-    "helm.sh/hook": "pre-install,pre-upgrade"
-    "helm.sh/resource-policy": "keep"
-    "helm.sh/hook-weight": "-10"
 stringData:
   host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
   database: "{{ include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $) }}"
   username: "{{ include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}"
   password: "{{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) }}"
   port: "{{ include "gen3.service-postgres" (dict "key" "port" "service" $.Chart.Name "context" $) }}"
-{{- end -}}
 {{- end }}

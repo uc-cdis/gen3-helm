@@ -198,8 +198,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: create-test-indices
-  annotations:
-    "helm.sh/hook": "pre-install"
+  # annotations:
+  #   "helm.sh/hook": "pre-install"
 spec:
   template:
     metadata:
