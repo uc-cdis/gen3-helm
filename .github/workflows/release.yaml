@@ -9,6 +9,8 @@ on:
 env:
   HELM_DOCS_VERSION: "1.7.0"
 
+permissions: read-all
+
 jobs:
   release:
     permissions:
