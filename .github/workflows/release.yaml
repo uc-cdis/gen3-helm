@@ -39,6 +39,10 @@ jobs:
           tar -xvf helm-docs_${{env.HELM_DOCS_VERSION}}_Linux_x86_64.tar.gz
           sudo mv helm-docs /usr/local/sbin
 
+      - name: run helm-docs
+        run: |
+          helm-docs -t README.md.gotmpl -o README.md
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.1
         with:
