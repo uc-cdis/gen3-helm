@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+env:
+  HELM_DOCS_VERSION: "1.7.0"
 
 jobs:
   release:
