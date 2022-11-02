@@ -3,7 +3,9 @@ name: Release Charts
 on:
   push:
     branches:
+      - develop
       - master
+      
 env:
   HELM_DOCS_VERSION: "1.7.0"
 
