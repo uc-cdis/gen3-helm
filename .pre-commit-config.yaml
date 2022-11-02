@@ -9,3 +9,9 @@ repos:
     hooks:
       - id: no-commit-to-branch
         args: [--branch, develop, --branch, master, --pattern, release/.*]
+  - repo: https://github.com/uc-cdis/gen3-helm
+    rev: v0.0.1
+    hooks:
+      - id: helm-docs
+        args:
+          - --template-files=README.md.gotmpl
