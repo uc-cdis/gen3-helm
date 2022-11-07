@@ -26,7 +26,7 @@ spec:
       containers:
         - name: audit
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: 80
             name: http

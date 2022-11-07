@@ -80,6 +80,10 @@ dependencies:
   version: 0.0.1
   repository: file://../common
   condition: db_creation.enabled
+- name: postgresql
+  version: 11.9.13
+  repository: "https://charts.bitnami.com/bitnami"
+  condition: postgres.enabled
 
 #A chart can be either an 'application' or a 'library' chart.
 #
