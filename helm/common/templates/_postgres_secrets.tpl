@@ -27,8 +27,8 @@
     {{- $randomPassword = randAlphaNum 20 }}
     {{- $valuesGlobalPostgres = "" }}
   {{- end }}
-  {{- $password := coalesce $valuesPostgres $localSecretPass $randomPassword  $valuesGlobalPostgres}}
-  {{- printf "%v" $password -}}
+  {{- $value := coalesce $valuesPostgres $localSecretPass $randomPassword  $valuesGlobalPostgres}}
+  {{- printf "%v" $value -}}
 {{- end }}
 
 
@@ -46,13 +46,13 @@ Usage:
  # https://helm.sh/docs/chart_template_guide/function_list/#coalesce
 */}}
 {{- define "gen3.master-postgres" }}
-  {{- $chartName := default "" .context.Chart.Name }}
+  {{- $chartName := .context.Chart.Name }}
   
   {{- $valuesPostgres := get .context.Values.global.postgres.master .key}}
-  {{- $secret :=  (lookup "v1" "Secret" "postgres" "postgres-postgresql" )}}
+  {{- $secret :=  (lookup "v1" "Secret" "default" "gen3-postgresql" )}}
   {{- $devPostgresSecret := "" }}
   {{-  if $secret }}
-    {{- $devPostgresSecret = (index $secret.data "postgres-password") | b64dec }}
+    {{- $devPostgresSecret = (index $secret "data" "postgres-password") | b64dec }}
   {{- end }}
   {{- $value := coalesce $valuesPostgres $devPostgresSecret  }}
   {{- printf "%v" $value -}}

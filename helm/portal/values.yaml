@@ -8,7 +8,8 @@ image:
   repository: quay.io/cdis/data-portal
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  # TODO: REMOVE THIS AFTER DEV IS COMPLETE
+  tag: "prebuilt"
 
 imagePullSecrets: []
 nameOverride: ""

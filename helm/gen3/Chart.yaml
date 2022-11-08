@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gen3
-description: An Umbrella Chart to conditionally deploy Gen3 Services
+description: Helm chart to deploy Gen3 Data Commons
 
 #Dependancies
 dependencies:
@@ -83,7 +83,7 @@ dependencies:
 - name: postgresql
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
-  condition: postgres.enabled
+  condition: global.postgres.dev
 
 #A chart can be either an 'application' or a 'library' chart.
 #

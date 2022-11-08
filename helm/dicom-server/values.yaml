@@ -62,7 +62,7 @@ secrets:
   authenticationEnabled: false
   enableIndex: true
   enableStorage: true
-  port: 5432
+  port: "5432"
   host: postgres-postgresql.postgres.svc.cluster.local
   dataBase: postgres
   userName: postgres
