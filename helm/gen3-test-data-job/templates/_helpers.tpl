@@ -60,3 +60,31 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+NEEDS TO BE MODIFIED
+Postgres Master Secret Lookup
+
+Usage:
+    {{ include "gen3.master-postgres" (dict "key" "database" "context" $) }}
+
+ Lookups for secret is done in this order, until it finds a value:
+  - Secret provided via `.Values.global.master.postgres` (Can be database, username, password, host, port)
+  - Lookup secret `postgres-postgresql` with property `postgres-password` in `postgres` namespace. (This is for develop installation of gen3)
+ 
+
+ # https://helm.sh/docs/chart_template_guide/function_list/#coalesce
+*/}}
+{{- define "gen3.master-postgres2" }}
+  {{- $chartName := default "" .context.Chart.Name }}
+  
+  {{- $valuesPostgres := get .context.Values.global.postgres.master .key}}
+  {{- $secret :=  (lookup "v1" "Secret" "postgres" "postgres-postgresql" )}}
+  {{- $devPostgresSecret := "" }}
+  {{-  if $secret }}
+    {{- $devPostgresSecret = (index $secret.data "postgres-password") | b64dec }}
+  {{- end }}
+  {{- $value := coalesce $valuesPostgres $devPostgresSecret  }}
+  {{- printf "%v" $value -}}
+{{- end }}

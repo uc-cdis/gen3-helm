@@ -193,13 +193,14 @@ spec:
 A job that will create test indices with data for guppy to run upon 
 deployment since it requires indices to be present.
 */}}
-{{- define "gen3-test-data-job.create-test-indices" -}}
+{{ define "gen3-test-data-job.create-test-indices" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: create-test-indices
-  # annotations:
-  #   "helm.sh/hook": "pre-install"
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "10"
 spec:
   template:
     metadata:
@@ -210,23 +211,107 @@ spec:
     #   serviceAccountName: gitops-sa
     #   securityContext:
     #     fsGroup: 1000
+      volumes:
+        - name: cred-volume
+          secret:
+            secretName: aws-config
       containers:
         - name: create-indices
-          image: quay.io/cdis/awshelper:feat_GPE-572
-          imagePullPolicy: Always
+          image: quay.io/cdis/awshelper:master
           env:
-            # - name: gen3Env
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: global
-            #       key: environment
-            # - name: JENKINS_HOME
-            #   value: "devterm"
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
+            - name: GUPPY_INDICES
+              value: {{ range .Values.indices }} {{ .index }} {{ end }}
+            - name: GUPPY_CONFIGINDEX
+              value: {{ .Values.configIndex }}
+          volumeMounts:
+            - name: cred-volume
+              mountPath: "/home/ubuntu/.aws/credentials"
+              subPath: credentials
           command: [ "/bin/bash" ]
           args:
             - "-c"
             - |
-              bash ~/cloud-automation/files/scripts/test-indices/create-test-indices.sh
+              source "${GEN3_HOME}/gen3/lib/utils.sh"
+              gen3_load "gen3/gen3setup"
+              export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
+              export ESHOST="${ESHOST:-"esproxy-service:9200"}"
+              aws s3 cp s3://gen3-dummy-data/ . --recursive  
+              for index in $indices
+              do
+                gen3 nrun elasticdump --input /home/ubuntu/"$index"__mapping.json --output=http://esproxy-service:9200/$index --type mapping
+                gen3 nrun elasticdump --input /home/ubuntu/"$index"__data.json --output=http://esproxy-service:9200/$index --type data
+              done
+              rm dev*
+{{- end }}
+
+
+{{/* 
+A job that will restore a db using a pgdump file from s3 with bogus data
+*/}}
+{{ define "gen3-test-data-job.create-test-dbs" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-test-dbs
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "10"
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: Never
+    #   serviceAccountName: gitops-sa
+    #   securityContext:
+    #     fsGroup: 1000
+      volumes:
+        - name: cred-volume
+          secret:
+            secretName: aws-config
+      containers:
+        - name: restore-dbs
+          image: quay.io/cdis/awshelper:master
+          imagePullPolicy: Always
+          env:
+            - name: PGPORT
+              value: "{{ include "gen3.master-postgres2" (dict "key" "port" "context" $) }}"
+            - name: PGHOST
+              value: "{{ include "gen3.master-postgres2" (dict "key" "host" "context" $) }}"
+            - name: SERVICE_PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: username
+                  optional: false
+            - name: SERVICE_PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: database
+                  optional: false
+            - name: SERVICE_PGPASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: password
+                  optional: false
+          volumeMounts:
+            - name: cred-volume
+              mountPath: "/home/ubuntu/.aws/credentials"
+              subPath: credentials
+          command: [ "/bin/bash" ]
+          args:
+            - "-c"
+            - |
+              echo 'starting...123'
+              aws s3 cp s3://gen3-dummy-data/db$SERVICE_PGDB.backup .
+              ls
+              echo 'copied'
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
+              rm db*
+              # bash ~/cloud-automation/files/scripts/gen3-dummy-data/restore-test-databases.sh
 {{- end }}

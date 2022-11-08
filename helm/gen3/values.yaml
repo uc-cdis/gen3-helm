@@ -32,7 +32,7 @@ ambassador:
   enabled: false
   
 arborist: 
-  enabled: true
+  enabled: false
   
 argo-wrapper: 
   enabled: false
@@ -41,40 +41,40 @@ audit:
   enabled: false
   
 fence: 
-  enabled: true
-  
-guppy: 
   enabled: false
   
-hatchery: 
+guppy: 
   enabled: true
+  
+hatchery: 
+  enabled: false
   
 indexd: 
   enabled: true
   
 manifestservice: 
-  enabled: true
+  enabled: false
   
 metadata: 
   enabled: false
   
 peregrine: 
-  enabled: true
+  enabled: false
   
 pidgin: 
-  enabled: true
+  enabled: false
   
 portal: 
-  enabled: true
+  enabled: false
   
 requestor: 
-  enabled: true
+  enabled: false
   
 revproxy: 
-  enabled: true
+  enabled: false
   
 sheepdog: 
-  enabled: true
+  enabled: false
 
 ssjdispatcher: 
   enabled: false
@@ -84,6 +84,9 @@ wts:
 
 db_create: true
 # If db does not exist in postgres cluster and db_creation is set ot true then all relevant dbs will be created
+
+db_restore: true
+  #If db_restore is set to true then the database will have fake data/tables dumped into it. 
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
