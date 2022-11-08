@@ -4,18 +4,7 @@ metadata:
   name: fence-config
 stringData:
   fence-config.yaml: |
-    {{- $database :=  $.Values.postgres.database  }}
-    {{- $port := $.Values.postgres.port  }}
-    {{- $username := $.Values.postgres.username }}
-    {{- $password := (lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" .Chart.Name "dbcreds")).data.password | b64dec  }}
-    {{- $host :=  "" }}
-    {{- if $.Values.global.dev }}
-      {{- $host =  (printf "%s-%s" $.Release.Name "postgresql" ) }}
-    {{- else }}
-      {{ $host = include "common.secrets.passwords.manage" (dict "secret" (printf "%s-%s" $.Chart.Name "dbcreds") "key" "host" "providedValues" (list "postgres.host") "global.postgres.master.host" $) }}
-    {{- end}}
     BASE_URL: '{{ .Values.FENCE_CONFIG.BASE_URL }}'
-    DB: 'postgresql://{{ $username }}:{{  $password }}@{{ $host  }}:{{ $port }}/{{ $database }}'
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
