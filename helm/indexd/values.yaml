@@ -6,10 +6,10 @@ global:
   # Default values are for postgres deployed as a helm chart
   postgres:
     master:
-      host: postgres-postgresql.postgres.svc.cluster.local
+      host: 
       username: postgres
       password:
-      port: 5432
+      port: "5432"
 
 db_create: true
 postgres:
@@ -17,7 +17,7 @@ postgres:
   database: indexd
   username: indexd
   host:
-  port: 5432
+  port: "5432"
   # If left empty password will be auto-generated
   password:
 
@@ -89,7 +89,7 @@ affinity: {}
 volumes:
 - name: config-volume
   secret:
-    secretName: "indexd-secret"
+    secretName: "indexd-settings"
 - name: creds-volume
   secret:
     secretName: "indexd-creds"

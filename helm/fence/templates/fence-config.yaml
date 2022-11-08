@@ -4,13 +4,7 @@ metadata:
   name: fence-config
 stringData:
   fence-config.yaml: |
-    {{- $username := include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}
-    {{- $password := include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) }}
-    {{- $host := include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
-    {{- $port := include "gen3.service-postgres" (dict "key" "port" "service" $.Chart.Name "context" $) }}
-    {{- $database := include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $) }}
     BASE_URL: '{{ .Values.FENCE_CONFIG.BASE_URL }}'
-    DB: 'postgresql://{{ $username }}:{{ $password }}@{{ $host }}:{{ $port }}/{{ $database }}'
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
