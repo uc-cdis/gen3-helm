@@ -64,5 +64,4 @@ spec:
               
               echo python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password XXXXX --host "${PGHOST}" --database "${PGDB}"
               python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password "${PGPASSWORD}" --host "${PGHOST}" --database "${PGDB}"
-              echo "Exit code: $?"
-      restartPolicy: Never
+      restartPolicy: OnFailure

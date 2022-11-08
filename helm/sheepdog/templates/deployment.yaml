@@ -52,7 +52,7 @@ spec:
             name: config-helper
 
       containers:
-        - name: {{ .Chart.Name }}
+        - name: sheepdog
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.ports}}
@@ -101,25 +101,25 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: host
                   optional: false  
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: username
                   optional: false 
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: password
                   optional: false
             - name: PGDB
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: database
                   optional: false
             - name: PUBLIC_DATASETS
