@@ -1,0 +1,11 @@
+remote: origin
+target-branch: develop
+chart-dirs:
+  - helm
+helm-extra-args: "--timeout 600s"
+validate-chart-schema: true
+validate-chart-values: true
+validate-maintainers: true
+validate-yaml: true
+exclude-deprecated: true
+excluded-charts: []
