@@ -89,7 +89,7 @@ affinity: {}
 volumes:
 - name: config-volume
   secret:
-    secretName: "indexd-secret"
+    secretName: "indexd-settings"
 - name: creds-volume
   secret:
     secretName: "indexd-creds"
