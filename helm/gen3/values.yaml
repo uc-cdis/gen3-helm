@@ -80,7 +80,7 @@ ssjdispatcher:
   enabled: false
   
 wts:
-  enabled: false
+  enabled: true
 
 db_create: true
 # If db does not exist in postgres cluster and db_creation is set ot true then all relevant dbs will be created
