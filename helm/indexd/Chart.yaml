@@ -25,7 +25,11 @@ appVersion: "2022.10"
 
 
 dependencies:
-- name: common
-  version: 0.0.1
-  repository: file://../common
-  condition: db_creation.enabled
+  - name: common
+    version: 0.0.1
+    repository: file://../common
+    condition: db_creation.enabled
+  - name: gen3-test-data-job
+    version: 0.0.1
+    repository: file://../gen3-test-data-job
+    condition: db_restore.enabled

@@ -193,13 +193,11 @@ spec:
 A job that will create test indices with data for guppy to run upon 
 deployment since it requires indices to be present.
 */}}
-{{- define "gen3-test-data-job.create-test-indices" -}}
+{{ define "gen3-test-data-job.create-test-indices" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-test-indices
-  # annotations:
-  #   "helm.sh/hook": "pre-install"
+  name: {{ .Chart.Name }}-create-test-indices
 spec:
   template:
     metadata:
@@ -210,23 +208,149 @@ spec:
     #   serviceAccountName: gitops-sa
     #   securityContext:
     #     fsGroup: 1000
+      volumes:
+        - name: cred-volume
+          secret:
+            secretName: aws-config
       containers:
         - name: create-indices
-          image: quay.io/cdis/awshelper:feat_GPE-572
-          imagePullPolicy: Always
+          image: quay.io/cdis/awshelper:master
           env:
-            # - name: gen3Env
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: global
-            #       key: environment
-            # - name: JENKINS_HOME
-            #   value: "devterm"
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
+            - name: GUPPY_INDICES
+              value: {{ range .Values.indices }} {{ .index }} {{ end }}
+            - name: GUPPY_CONFIGINDEX
+              value: {{ .Values.configIndex }}
+            - name: ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: BUCKET
+              value: {{ .Values.global.dbRestoreBucket }}
+            - name: VERSION
+              value: {{ .Chart.Version }}
+          volumeMounts:
+            - name: cred-volume
+              mountPath: "/home/ubuntu/.aws/credentials"
+              subPath: credentials
           command: [ "/bin/bash" ]
           args:
             - "-c"
             - |
-              bash ~/cloud-automation/files/scripts/test-indices/create-test-indices.sh
+              source "${GEN3_HOME}/gen3/lib/utils.sh"
+              gen3_load "gen3/gen3setup"
+              export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
+              export ESHOST="${ESHOST:-"esproxy-service:9200"}"
+              echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive"
+              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive
+              for index in $indices
+              do
+                gen3 nrun elasticdump --input /home/ubuntu/"$index"__mapping.json --output=http://esproxy-service:9200/$index --type mapping
+                gen3 nrun elasticdump --input /home/ubuntu/"$index"__data.json --output=http://esproxy-service:9200/$index --type data
+              done
+              rm dev*
+{{- end }}
+
+
+{{/* 
+A job that will restore a db using a pgdump file from s3 with bogus data
+*/}}
+{{ define "gen3-test-data-job.create-test-dbs" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-test-pgdump
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+    #   serviceAccountName: gitops-sa
+    #   securityContext:
+    #     fsGroup: 1000
+      volumes:
+        - name: cred-volume
+          secret:
+            secretName: aws-config
+      containers:
+        - name: restore-dbs
+          image: quay.io/cdis/awshelper:master
+          imagePullPolicy: Always
+          env:
+            - name: PGPASSWORD
+              {{- if $.Values.global.dev }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql
+                  key: postgres-password
+                  optional: false
+              {{- else }}
+              value:  {{ .Values.global.postgres.master.password | quote}}
+              {{- end }}
+            - name: PGUSER
+              value: {{ .Values.global.postgres.master.username | quote }}
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: port
+                  optional: false
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: host
+                  optional: false
+            - name: SERVICE_PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: username
+                  optional: false
+            - name: SERVICE_PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: database
+                  optional: false
+            - name: SERVICE_PGPASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: password
+                  optional: false
+            - name: ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: BUCKET
+              value: {{ .Values.global.dbRestoreBucket }}
+            - name: VERSION
+              value: {{ .Chart.Version }}
+          volumeMounts:
+            - name: cred-volume
+              mountPath: "/home/ubuntu/.aws/credentials"
+              subPath: credentials
+          command: [ "/bin/bash" ]
+          args:
+            - "-c"
+            - |
+              sleep 60
+              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/ . --recursive
+              echo "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup"
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
+              rm db*
+          livenessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "PGPASSWORD=$PGPASSWORD psql -U $PGUSER -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB"
+                if PGPASSWORD=$PGPASSWORD psql -U $PGUSER -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then 
+                  exit 0
+                else
+                  exit 1
+                fi
+            initialDelaySeconds: 5
+            periodSeconds: 5
 {{- end }}

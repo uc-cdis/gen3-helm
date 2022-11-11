@@ -17,6 +17,7 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
+  dbRestoreBucket: gen3-dummy-data
   syncFromDbgap: False
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
@@ -84,6 +85,14 @@ wts:
 
 db_create: true
 # If db does not exist in postgres cluster and db_creation is set ot true then all relevant dbs will be created
+
+db_restore: true
+  #If db_restore is set to true then the database will have fake data/tables dumped into it. 
+
+#The db restore job requires AWS credentials to access the S3 bucket
+secrets:
+  awsAccessKeyId: test
+  awsSecretAccessKey: test
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
