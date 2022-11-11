@@ -197,10 +197,7 @@ deployment since it requires indices to be present.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-test-indices
-  annotations:
-    "helm.sh/hook": "pre-install"
-    "helm.sh/hook-weight": "10"
+  name: {{ .Chart.Name }}-create-test-indices
 spec:
   template:
     metadata:
@@ -225,6 +222,12 @@ spec:
               value: {{ range .Values.indices }} {{ .index }} {{ end }}
             - name: GUPPY_CONFIGINDEX
               value: {{ .Values.configIndex }}
+            - name: ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: BUCKET
+              value: {{ .Values.global.dbRestoreBucket }}
+            - name: VERSION
+              value: {{ .Chart.Version }}
           volumeMounts:
             - name: cred-volume
               mountPath: "/home/ubuntu/.aws/credentials"
@@ -237,7 +240,8 @@ spec:
               gen3_load "gen3/gen3setup"
               export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
               export ESHOST="${ESHOST:-"esproxy-service:9200"}"
-              aws s3 cp s3://gen3-dummy-data/ . --recursive  
+              echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive"
+              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive
               for index in $indices
               do
                 gen3 nrun elasticdump --input /home/ubuntu/"$index"__mapping.json --output=http://esproxy-service:9200/$index --type mapping
@@ -254,17 +258,14 @@ A job that will restore a db using a pgdump file from s3 with bogus data
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-test-dbs
-  annotations:
-    "helm.sh/hook": "pre-install"
-    "helm.sh/hook-weight": "10"
+  name: {{ .Chart.Name }}-test-pgdump
 spec:
   template:
     metadata:
       labels:
         app: gen3job
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
     #   serviceAccountName: gitops-sa
     #   securityContext:
     #     fsGroup: 1000
@@ -277,10 +278,30 @@ spec:
           image: quay.io/cdis/awshelper:master
           imagePullPolicy: Always
           env:
+            - name: PGPASSWORD
+              {{- if $.Values.global.dev }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql
+                  key: postgres-password
+                  optional: false
+              {{- else }}
+              value:  {{ .Values.global.postgres.master.password | quote}}
+              {{- end }}
+            - name: PGUSER
+              value: {{ .Values.global.postgres.master.username | quote }}
             - name: PGPORT
-              value: "{{ include "gen3.master-postgres2" (dict "key" "port" "context" $) }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: port
+                  optional: false
             - name: PGHOST
-              value: "{{ include "gen3.master-postgres2" (dict "key" "host" "context" $) }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: host
+                  optional: false
             - name: SERVICE_PGUSER
               valueFrom:
                 secretKeyRef:
@@ -299,6 +320,12 @@ spec:
                   name: {{ .Chart.Name }}-dbcreds
                   key: password
                   optional: false
+            - name: ENVIRONMENT
+              value: {{ .Values.global.environment }}
+            - name: BUCKET
+              value: {{ .Values.global.dbRestoreBucket }}
+            - name: VERSION
+              value: {{ .Chart.Version }}
           volumeMounts:
             - name: cred-volume
               mountPath: "/home/ubuntu/.aws/credentials"
@@ -307,11 +334,23 @@ spec:
           args:
             - "-c"
             - |
-              echo 'starting...123'
-              aws s3 cp s3://gen3-dummy-data/db$SERVICE_PGDB.backup .
-              ls
-              echo 'copied'
+              sleep 60
+              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/ . --recursive
+              echo "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
               rm db*
-              # bash ~/cloud-automation/files/scripts/gen3-dummy-data/restore-test-databases.sh
+          livenessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "PGPASSWORD=$PGPASSWORD psql -U $PGUSER -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB"
+                if PGPASSWORD=$PGPASSWORD psql -U $PGUSER -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then 
+                  exit 0
+                else
+                  exit 1
+                fi
+            initialDelaySeconds: 5
+            periodSeconds: 5
 {{- end }}

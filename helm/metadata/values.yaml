@@ -27,14 +27,13 @@ global:
 
 postgres:
   db_create:
-  database:
-    # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
-    database: metadata
-    username: metadata
-    host:
-    port: "5432"
-    # If left empty password will be auto-generated
-    password: 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: metadata
+  username: metadata
+  host:
+  port: "5432"
+  # If left empty password will be auto-generated
+  password: 
 
 db_restore: true
   #If db_restore is set to true then the database will have fake data/tables dumped into it. 
