@@ -3,22 +3,32 @@ kind: Deployment
 metadata:
   name: ambassador-deployment
   labels:
-    {{- include "ambassador.labels" . | nindent 4 }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: ambassador
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: 1
   selector:
     matchLabels:
       app: ambassador
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        sidecar.istio.io/inject: "false"
+        consul.hashicorp.com/connect-inject: "false"
+        # see: https://github.com/helm/charts/tree/master/stable/prometheus
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8877"
       labels:
-        {{- toYaml .Values.podLabels | nindent 8 }}
+        app: ambassador
+        service: ambassador
+        public: "yes"
+        netnolimit: "yes"
+        userhelper: "yes"
     spec:
       affinity:
         podAntiAffinity:
@@ -29,19 +39,14 @@ spec:
                 matchLabels:
                   service: ambassador
               topologyKey: kubernetes.io/hostname
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       serviceAccountName: ambassador
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        runAsUser: 8888
+        #fsGroup: 2000
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/datawire/ambassador:1.4.2"
+          imagePullPolicy: Always
           env:
           - name: AMBASSADOR_NAMESPACE
             value: {{ .Values.userNamespace | quote }}
@@ -67,16 +72,10 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 3
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            limits:
+              cpu: 500m
+              memory: 400Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+
