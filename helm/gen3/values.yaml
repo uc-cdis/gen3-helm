@@ -71,7 +71,7 @@ hatchery:
     tag:
   
 indexd: 
-  enabled: false
+  enabled: true
   image:
     repository:
     tag:
