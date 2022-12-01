@@ -29,61 +29,115 @@ global:
 
 # Dependancy Charts
 ambassador: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 arborist: 
   enabled: true
-  
+  image:
+    repository:
+    tag:
+
 argo-wrapper: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 audit: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 fence: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 guppy: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 hatchery: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 indexd: 
-  enabled: true
+  enabled: false
+  image:
+    repository:
+    tag:
   
 manifestservice: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 metadata: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 peregrine: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 pidgin: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 portal: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 requestor: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 revproxy: 
   enabled: true
+  image:
+    repository:
+    tag:
   
 sheepdog: 
   enabled: true
+  image:
+    repository:
+    tag:
 
 ssjdispatcher: 
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
   
 wts:
-  enabled: false
+  enabled: true
+  image:
+    repository:
+    tag:
 
+# If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
 db_create: true
-# If db does not exist in postgres cluster and db_creation is set ot true then all relevant dbs will be created
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments

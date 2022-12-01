@@ -25,16 +25,16 @@ global:
   dispatcherJobNum: 10
   ddEnabled: false
 
+
 postgres:
   db_create:
-  database:
-    # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
-    database: metadata
-    username: metadata
-    host:
-    port: "5432"
-    # If left empty password will be auto-generated
-    password: 
+  host:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  database: metadata
+  username: metadata
+  port: "5432"
+  # If left empty password will be auto-generated
+  password:
 
 
 # Deployment

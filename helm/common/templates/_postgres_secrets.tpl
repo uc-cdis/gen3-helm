@@ -18,16 +18,23 @@
 */}}
 {{- define "gen3.service-postgres" -}}
   {{- $chartName := default "" .context.Chart.Name }}
-  {{- $valuesPostgres := get .context.Values.postgres .key}}
-  {{- $localSecretPass := get ((lookup "v1" "Secret" .context.Release.Namespace (printf "%s%s" .service "-dbcreds")).data) .key }}
-  
+  {{- $valuesPostgres := get .context.Values.postgres .key }}
+  {{- $localSecretPass := "" }}
+  {{- $secretData := (lookup "v1" "Secret" $.context.Release.Namespace (printf "%s-%s" $chartName "dbcreds")).data }}
+  {{- if $secretData }}
+    {{- if hasKey $secretData .key }}
+      {{- $localSecretPass = index $secretData .key | b64dec }}
+    {{- else }}
+      {{- printf "\nERROR: The secret \"%s\" does not contain the key \"%s\"\n" (printf "%s-%s" $chartName "dbcreds") .key | fail -}}
+    {{- end }}
+  {{- end }}
   {{- $randomPassword := "" }}
   {{- $valuesGlobalPostgres := get .context.Values.global.postgres.master .key}}
   {{- if eq .key "password" }}
     {{- $randomPassword = randAlphaNum 20 }}
     {{- $valuesGlobalPostgres = "" }}
   {{- end }}
-  {{- $value := coalesce $valuesPostgres $localSecretPass $randomPassword  $valuesGlobalPostgres}}
+  {{- $value := coalesce $valuesPostgres $localSecretPass $randomPassword $valuesGlobalPostgres}}
   {{- printf "%v" $value -}}
 {{- end }}
 

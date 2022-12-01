@@ -43,7 +43,7 @@ image:
   repository: quay.io/cdis/audit-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: "feat_dbenvvar"
 
 imagePullSecrets: []
 nameOverride: ""

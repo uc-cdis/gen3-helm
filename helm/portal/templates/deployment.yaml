@@ -24,7 +24,18 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}      
+      - name: docker-config
+        configMap:
+          name: docker-command
+      - name: config-volume
+        secret:
+          secretName: "portal-config"
+      - name: sponsor-img-volume
+        secret:
+          secretName: "portal-sponsor-config"
+      - name: privacy-policy
+        configMap:
+          name: "privacy-policy"     
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -154,5 +165,28 @@ spec:
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-      
+            - name: "docker-config"
+              mountPath: "/data-portal/dockerStart.sh"
+              subPath: "dockerStart.sh"
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/logo/gitops-logo.png"
+              subPath: "gitops-logo.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/createdby/gitops.png"
+              subPath: "gitops-createdby.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+              subPath: "gitops-favicon.ico"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/css/gitops.css"
+              subPath: "gitops.css"
+            - name: "sponsor-img-volume"
+              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/data-portal/custom/privacy_policy.md"
+              subPath: "privacy_policy.md"
+              

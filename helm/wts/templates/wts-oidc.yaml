@@ -1,0 +1,107 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wts-oidc-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: wts-secrets
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "fence-config"
+        - name: shared-volume
+          emptyDir: {}
+
+      containers:
+        - name: fence-client
+          # TODO: Make this configurable
+          image: "quay.io/cdis/fence:feat_dbenvvar"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # TODO: ADD RESOURCES
+          # resources:
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              export WTS_HOSTNAME={{ .Values.global.hostname }}
+              echo "Trying to generate WTS client for hostname : $WTS_HOSTNAME..."
+
+
+
+              secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
+              if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                echo "Failed generating oidc client for workspace token service: $secrets"
+                exit 1
+              fi
+              client_id="${BASH_REMATCH[2]}"
+              client_secret="${BASH_REMATCH[3]}"
+              echo client_id: $client_id
+              echo client_secret: $client_secret
+              echo $client_id > /shared/client_id
+              echo $client_secret > /shared/client_secret
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: DB
+              value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+            - name: PYTHONPATH
+              value: /var/www/fence
+            - name: FENCE_PUBLIC_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-fence
+                  key: fence-config-public.yaml
+                  optional: true
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+        - name: kubectl
+          #TODO: Make this configurable?  
+          image: bitnami/kubectl:latest
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+          command: ["/bin/bash"]
+          args: 
+            - "-c"
+            - |
+              while [ ! -e /shared/client_id ]
+              do
+                echo "waiting for /shared/client_id"
+                sleep 30
+              done
+              echo "Updating k8s secret wts-oidc-client"
+              CLIENT_ID=$(cat /shared/client_id | base64)
+              CLIENT_SECRET=$(cat /shared/client_secret | base64)
+              kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"

@@ -41,7 +41,7 @@ image:
   repository: quay.io/cdis/fence
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "feat_dbenvvar"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -80,23 +80,6 @@ service:
   type: ClusterIP
   port: 80
 
-# ingress:
-#   enabled: true
-#   annotations: {
-#     nginx.ingress.kubernetes.io/rewrite-target: /$2,
-#     kubernetes.io/ingress.class: "nginx"
-#   }
-#     # kubernetes.io/ingress.class: nginx
-#     # kubernetes.io/tls-acme: "true"
-#   hosts:
-#     - host: ingress.local
-#       paths:
-#         - path: "/user(/|$)(.*)"
-#           pathType: Prefix
-#   tls: []
-#   #  - secretName: chart-example-tls
-#   #    hosts:
-#   #      - chart-example.local
 
 resources: 
   requests: 
@@ -200,6 +183,32 @@ env:
         name: manifest-fence
         key: fence-config-public.yaml
         optional: true
+  - name: PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: host
+        optional: false  
+  - name: PGUSER
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: username
+        optional: false 
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: password
+        optional: false
+  - name: PGDB
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: database
+        optional: false
+  - name: DB
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
 
       
 volumes: 
@@ -304,7 +313,33 @@ initVolumeMounts:
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
 
-initEnv: 
+initEnv:
+  - name: PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: host
+        optional: false  
+  - name: PGUSER
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: username
+        optional: false 
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: password
+        optional: false
+  - name: PGDB
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: database
+        optional: false
+  - name: DB
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
   - name: FENCE_PUBLIC_CONFIG

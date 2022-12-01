@@ -14,7 +14,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: db-setup
-        # TODO: READ THIS FROM GLOBAL VALUES?
+        # TODO: READ THIS IMAGE FROM GLOBAL VALUES?
         image: quay.io/cdis/awshelper:master
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
@@ -90,10 +90,10 @@ data:
   database: {{ $.Values.postgres.database | b64enc | quote}}
   username: {{ $.Values.postgres.username | b64enc | quote }}
   port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "common.secrets.passwords.manage" (dict "secret" (printf "%s-%s" $.Chart.Name "dbcreds") "key" "password" "providedValues" (list "postgres.password") "context" $) }}
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc  }}
+  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
   {{- else }}
-  host: {{ include "common.secrets.passwords.manage" (dict "secret" (printf "%s-%s" $.Chart.Name "dbcreds") "key" "host" "providedValues" (list "postgres.host") "global.postgres.master.host" $) }}
+  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
   {{- end }}
 {{- end }}
