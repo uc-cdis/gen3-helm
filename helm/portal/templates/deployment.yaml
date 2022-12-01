@@ -24,9 +24,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
-      - name: docker-config
-        configMap:
-          name: docker-command
       - name: config-volume
         secret:
           secretName: "portal-config"
