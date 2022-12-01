@@ -48,9 +48,6 @@ nameOverride: ""
 fullnameOverride: ""
 
 
-hostname: localhost
-
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -1241,7 +1238,6 @@ USER_YAML:
 #### FENCE CONFIG ####
 FENCE_CONFIG:
   APP_NAME: 'Gen3 Data Commons'
-  BASE_URL: 'https://localhost/user'
   
 
   # A URL-safe base64-encoded 32-byte key for encrypting keys in db
