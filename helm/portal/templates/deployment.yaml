@@ -162,9 +162,6 @@ spec:
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
           volumeMounts:
-            - name: "docker-config"
-              mountPath: "/data-portal/dockerStart.sh"
-              subPath: "dockerStart.sh"
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
