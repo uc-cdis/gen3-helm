@@ -79,6 +79,18 @@ spec:
               path: /_status
               port: 80
           env:
+          - name: OIDC_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wts-oidc-client
+                key: client_id
+                optional: false
+          - name: OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: wts-oidc-client
+                key: client_secret
+                optional: false
           - name: SECRET_CONFIG
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS

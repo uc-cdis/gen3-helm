@@ -42,7 +42,7 @@ image:
   repository: quay.io/cdis/workspace-token-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "feat_wts_internalfence"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -69,9 +69,7 @@ podLabels:
   netnolimit: "yes"
   userhelper: "yes"
   tags.datadoghq.com/service: "token-service"
-  #GEN3_DATE_LABEL
-  #GEN3_WTS_VERSION
-  #GEN3_ENV_LABEL
+
 
 podAnnotations: {}
 
@@ -118,6 +116,16 @@ roleName: workspace-token-service
 release: production
 
 secrets:
+  external_oidc:
+    # - base_url: 
+    #   oidc_client_id: 
+    #   oidc_client_secret: 
+    #   login_options:
+    #     example-google-login: 
+    #       name: 
+    #       params:
+    #         idp: 
+
   # wts-g3auto:
   #   appcreds.json: |
   #     {

@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 global:
+  dev: true
   # Default values are for postgres deployed as a helm chart
   postgres:
     master:
@@ -102,18 +103,10 @@ volumeMounts:
   readOnly: true
   mountPath: "/var/www/indexd/local_settings.py"
   subPath: "local_settings.py"
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/creds.json"
-  subPath: creds.json
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/config_helper.py"
-  subPath: config_helper.py
 
 env:
   - name: "GEN3_DEBUG"
-    value: "false"
+    value: "False"
 
 secrets:
   userdb:

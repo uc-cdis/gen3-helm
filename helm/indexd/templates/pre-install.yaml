@@ -20,13 +20,7 @@ spec:
       volumes:
         - name: config-volume
           secret:
-            secretName: "indexd-secret"
-        - name: "sheepdog-creds-volume"
-          secret:
-            secretName: "sheepdog-creds"
-        - name: "indexd-creds-volume"
-          secret:
-            secretName: "indexd-creds"
+            secretName: "indexd-settings"
       containers:
         - name: indexd
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -35,14 +29,6 @@ spec:
               readOnly: true
               mountPath: "/var/www/indexd/local_settings.py"
               subPath: "local_settings.py"  
-            - name: "sheepdog-creds-volume"
-              readOnly: true
-              mountPath: "/var/www/indexd/sheepdog_creds.json"
-              subPath: creds.json
-            - name: "indexd-creds-volume"
-              readOnly: true
-              mountPath: "/var/www/indexd/creds.json"
-              subPath: creds.json
           imagePullPolicy: Always
           command: ["/bin/bash" ]
           args: 
@@ -68,5 +54,4 @@ spec:
               for user in "${!user_db[@]}"; do
                 python /indexd/bin/index_admin.py create --username "$user" --password "${user_db[$user]}"
               done
-              echo "Exit code: $?"
       restartPolicy: Never

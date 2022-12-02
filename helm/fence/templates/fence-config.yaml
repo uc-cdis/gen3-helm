@@ -4,7 +4,7 @@ metadata:
   name: fence-config
 stringData:
   fence-config.yaml: |
-    BASE_URL: '{{ .Values.FENCE_CONFIG.BASE_URL }}'
+    BASE_URL: https://{{ .Values.global.hostname }}/user
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}

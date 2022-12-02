@@ -5,11 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/cdis/data-portal
+  repository: quay.io/cdis/data-portal-prebuilt
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  # TODO: REMOVE THIS AFTER DEV IS COMPLETE
-  tag: "prebuilt"
+  tag: "va.data-commons.org-feat-develop"
+
 
 imagePullSecrets: []
 nameOverride: ""
@@ -40,22 +40,6 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -125,44 +109,6 @@ resources:
 
 portalApp: "dev"
 
-volumes:
-  - name: docker-config
-    configMap:
-      name: docker-command
-  - name: config-volume
-    secret:
-      secretName: "portal-config"
-  - name: sponsor-img-volume
-    secret:
-      secretName: "portal-sponsor-config"
-  - name: privacy-policy
-    configMap:
-      name: "privacy-policy"
 
-env:
 
-volumeMounts:
-  - name: "docker-config"
-    mountPath: "/data-portal/dockerStart.sh"
-    subPath: "dockerStart.sh"
-  - name: "config-volume"
-    mountPath: "/data-portal/data/config/gitops.json"
-    subPath: "gitops.json"
-  - name: "config-volume"
-    mountPath: "/data-portal/custom/logo/gitops-logo.png"
-    subPath: "gitops-logo.png"
-  - name: "config-volume"
-    mountPath: "/data-portal/custom/createdby/gitops.png"
-    subPath: "gitops-createdby.png"
-  - name: "config-volume"
-    mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
-    subPath: "gitops-favicon.ico"
-  - name: "config-volume"
-    mountPath: "/data-portal/custom/css/gitops.css"
-    subPath: "gitops.css"
-  - name: "sponsor-img-volume"
-    mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
-  - name: "privacy-policy"
-    readOnly: true
-    mountPath: "/data-portal/custom/privacy_policy.md"
-    subPath: "privacy_policy.md"
+

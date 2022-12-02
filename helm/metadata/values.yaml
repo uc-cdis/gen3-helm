@@ -25,6 +25,7 @@ global:
   dispatcherJobNum: 10
   ddEnabled: false
 
+
 postgres:
   db_create:
   database: metadata

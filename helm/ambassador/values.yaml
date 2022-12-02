@@ -79,7 +79,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-rbac:
-  rbacServiceName: ambassador-admin
-  servicePort: 8877
