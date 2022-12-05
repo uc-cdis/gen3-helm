@@ -1,6 +1,34 @@
 # Default values for hatchery.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+# Declare variables to be passed into your templates.
+global:
+  aws: 
+    enabled: false 
+    account:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host: 
+      username: postgres
+      password: 
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: False
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: on
+  dispatcherJobNum: 10
+  ddEnabled: false
+
 
 replicaCount: 1
 
@@ -63,3 +91,57 @@ volumeMounts:
   readOnly: true
   mountPath: /hatchery.json
   subPath: json
+
+
+hatchery:
+  sidecarContainer:
+    cpu-limit: '1.0'
+    memory-limit: 256Mi
+    image: quay.io/cdis/ecs-ws-sidecar:master
+    env:
+      NAMESPACE: "{{ .Release.Namespace }}"
+      GEN3_ENDPOINT: "{{ .Values.global.hostname }}"
+      HOSTNAME: "{{ .Values.global.hostname }}"
+    args: []
+    command:
+    - "/bin/bash"
+    - "./sidecar.sh"
+    lifecycle-pre-stop:
+    - su
+    - "-c"
+    - echo test
+    - "-s"
+    - "/bin/sh"
+    - root
+
+  containers:
+    - target-port: 8888
+      cpu-limit: '1.0'
+      memory-limit: 2Gi
+      name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
+      image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+      env:
+        FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
+      args:
+      - "--NotebookApp.base_url=/lw-workspace/proxy/"
+      - "--NotebookApp.default_url=/lab"
+      - "--NotebookApp.password=''"
+      - "--NotebookApp.token=''"
+      - "--NotebookApp.shutdown_no_activity_timeout=5400"
+      - "--NotebookApp.quit_button=False"
+      command:
+      - start-notebook.sh
+      path-rewrite: "/lw-workspace/proxy/"
+      use-tls: 'false'
+      ready-probe: "/lw-workspace/proxy/"
+      lifecycle-post-start:
+      - "/bin/sh"
+      - "-c"
+      - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
+        ln -s /data /home/$IAM/pd/; true
+      user-uid: 1000
+      fs-gid: 100
+      user-volume-location: "/home/jovyan/pd"
+      gen3-volume-location: "/home/jovyan/.gen3"
+
+        

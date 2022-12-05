@@ -42,8 +42,8 @@ spec:
               client_secret="${BASH_REMATCH[3]}"
               echo client_id: $client_id
               echo client_secret: $client_secret
-              echo $client_id > /shared/client_id
-              echo $client_secret > /shared/client_secret
+              echo -n $client_id > /shared/client_id
+              echo -n $client_secret > /shared/client_secret
           env:
             - name: PGHOST
               valueFrom:
