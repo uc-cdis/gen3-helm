@@ -35,7 +35,7 @@ postgres:
   port: "5432"
   # If left empty it will be auto-generated
   password: 
-  db_restore: true
+  db_restore: false
     #If db_restore is set to true then the database will have fake data/tables dumped into it. 
 
 #Deployment
