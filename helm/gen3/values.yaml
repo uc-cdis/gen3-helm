@@ -141,7 +141,7 @@ wts:
 # If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
 db_create: true
 
-db_restore: true
+db_restore: false
   #If db_restore is set to true then the database will have fake data/tables dumped into it. 
 
 #The db restore job requires AWS credentials to access the S3 bucket
