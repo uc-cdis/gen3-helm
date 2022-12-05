@@ -59,5 +59,8 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.9.13
-digest: sha256:2396b74a6e16837a64881f95ca82eba35228b0bee8adfb437d344528b09d68df
-generated: "2022-11-07T18:12:29.273258-06:00"
+- name: gen3-test-data-job
+  repository: file://../gen3-test-data-job
+  version: 0.0.1
+digest: sha256:61a15d7d1495a5b7e824f3214511836affddae9ff134e93b62c1f577ea5d16cf
+generated: "2022-12-05T15:06:22.41667-07:00"
