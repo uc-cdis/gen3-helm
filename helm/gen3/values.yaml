@@ -2,7 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 global:
-  aws: false
+  aws: 
+    enabled: false 
+    account:
   dev: true
   postgres:
     db_create: true
@@ -141,8 +143,8 @@ wts:
 # If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
 db_create: true
 
+#If db_restore is set to true then the database will have fake data/tables dumped into it. 
 db_restore: false
-  #If db_restore is set to true then the database will have fake data/tables dumped into it. 
 
 #The db restore job requires AWS credentials to access the S3 bucket
 secrets:

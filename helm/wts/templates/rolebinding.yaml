@@ -11,5 +11,5 @@ subjects:
   namespace: {{ $.Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ .Values.roleName }}
+  name: {{ include "wts.fullname" . }}
   apiGroup: ""

@@ -94,6 +94,6 @@ data:
   {{- if $.Values.global.dev }}
   host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
   {{- else }}
-  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
+  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- end }}
 {{- end }}
