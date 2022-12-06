@@ -44,6 +44,20 @@ fence:
     MOCK_AUTH: true
 ```
 
+
+## Selective deployments 
+All service helm charts are sub-charts of the gen3 chart (which acts as an umbrella chart)
+To enable or disable a service you can add this pattern to your values.yaml
+
+```
+fence:
+  enable: true
+
+wts:
+  enable: false
+```
+
+
 ## Prerequisites
 
 ### Kubernetes cluster
