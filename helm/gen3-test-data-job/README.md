@@ -1,6 +1,6 @@
 # <no value>
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=for-the-badge)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=for-the-badge)
 ![Type: library](https://img.shields.io/badge/Type-library-informational?style=for-the-badge)
 ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=for-the-badge)
 
