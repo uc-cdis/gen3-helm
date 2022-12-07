@@ -1,66 +1,66 @@
 dependencies:
 - name: ambassador
   repository: file://../ambassador
-  version: 0.0.1
+  version: 0.1.0
 - name: arborist
   repository: file://../arborist
-  version: 0.0.1
+  version: 0.1.0
 - name: argo-wrapper
   repository: file://../argo-wrapper
-  version: 0.0.1
+  version: 0.1.0
 - name: audit
   repository: file://../audit
-  version: 0.0.1
+  version: 0.1.0
 - name: fence
   repository: file://../fence
-  version: 0.0.1
+  version: 0.1.0
 - name: guppy
   repository: file://../guppy
-  version: 0.0.1
+  version: 0.1.0
 - name: hatchery
   repository: file://../hatchery
-  version: 0.0.1
+  version: 0.1.0
 - name: indexd
   repository: file://../indexd
-  version: 0.0.1
+  version: 0.1.0
 - name: manifestservice
   repository: file://../manifestservice
-  version: 0.0.1
+  version: 0.1.0
 - name: metadata
   repository: file://../metadata
-  version: 0.0.1
+  version: 0.1.0
 - name: peregrine
   repository: file://../peregrine
-  version: 0.0.1
+  version: 0.1.0
 - name: pidgin
   repository: file://../pidgin
-  version: 0.0.1
+  version: 0.1.0
 - name: portal
   repository: file://../portal
-  version: 0.0.1
+  version: 0.1.0
 - name: requestor
   repository: file://../requestor
-  version: 0.0.1
+  version: 0.1.0
 - name: revproxy
   repository: file://../revproxy
-  version: 0.0.1
+  version: 0.1.0
 - name: sheepdog
   repository: file://../sheepdog
-  version: 0.0.1
+  version: 0.1.0
 - name: ssjdispatcher
   repository: file://../ssjdispatcher
-  version: 0.0.1
+  version: 0.1.0
 - name: wts
   repository: file://../wts
-  version: 0.0.1
+  version: 0.1.0
 - name: common
   repository: file://../common
-  version: 0.0.1
+  version: 0.1.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.9.13
 - name: gen3-test-data-job
   repository: file://../gen3-test-data-job
-  version: 0.0.1
-digest: sha256:61a15d7d1495a5b7e824f3214511836affddae9ff134e93b62c1f577ea5d16cf
-generated: "2022-12-05T15:06:22.41667-07:00"
+  version: 0.1.0
+digest: sha256:330133a1ccfd9678a295c0be86fd23a75344ec10ac2177277cb54020399d3fc1
+generated: "2022-12-07T10:39:13.422735+01:00"
