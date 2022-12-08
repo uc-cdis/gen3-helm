@@ -42,7 +42,7 @@ jobs:
 
       - name: Run chart-testing gen3 (install)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --config ./github/ct.yaml --charts helm/gen3
+        run: ct install --config .github/ct.yaml --charts helm/gen3
 
       # - name: Run chart-testing gen3 (upgrade)
       #   if: steps.list-changed.outputs.changed == 'true'
