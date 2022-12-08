@@ -6,31 +6,24 @@ metadata:
     {{- include "indexd.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "indexd.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "indexd.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: config-volume
+          secret:
+            secretName: "indexd-secret"
+        - name: creds-volume
+          secret:
+            secretName: "indexd-creds"
       serviceAccountName: {{ include "indexd.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: indexd
           securityContext:
@@ -62,9 +55,21 @@ spec:
                   name: indexd-dbcreds
                   key: database
                   optional: false
-            {{- toYaml .Values.env | nindent 12  }}
+            - name: "GEN3_DEBUG"
+              value: "false"
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/local_settings.py"
+              subPath: "local_settings.py"
+            - name: "creds-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/creds.json"
+              subPath: creds.json
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/config_helper.py"
+              subPath: config_helper.py
           ports:
             - name: http
               containerPort: 80
@@ -84,8 +89,8 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
         - name: indexd-init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/cdis/indexd:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash" ]

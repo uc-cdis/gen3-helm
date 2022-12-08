@@ -42,13 +42,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "feat_wts_internalfence"
 
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostname:
-oidc_client_id:
-oidc_client_secret:
+
+#TODO Better documentation on these
+hostname: 
+oidc_client_id: 
+oidc_client_secret: 
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -67,26 +68,7 @@ podLabels:
   tags.datadoghq.com/service: "token-service"
 
 
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-
-service:
-  type: ClusterIP
-  httpPort: 80
-  httpsPort: 443
-
-resources:
+resources: 
   requests:
     cpu: 0.1
     memory: 12Mi
@@ -101,16 +83,11 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
 roleName: workspace-token-service
 
 release: production
 
+#TODO Determine if leaving this here as a reference is productive or not.
 secrets:
   external_oidc:
     # - base_url:

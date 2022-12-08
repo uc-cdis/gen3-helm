@@ -1,17 +1,12 @@
 # Default values for portal.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-replicaCount: 1
-
 image:
-  repository: quay.io/cdis/data-portal-prebuilt
+  repository: nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "brh.data-commons.org-feat-develop"
+  tag: ""
 
-
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -24,23 +19,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -48,38 +26,12 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
-
-tolerations: []
-
 selectorLabels:
   app: portal
-
-revisionHistoryLimit: 2
-
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 2
-    maxUnavailable: 25%
 
 labels:
   app: portal
   public: "yes"
-
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - portal
-        topologyKey: "kubernetes.io/hostname"
 
 automountServiceAccountToken: false
 

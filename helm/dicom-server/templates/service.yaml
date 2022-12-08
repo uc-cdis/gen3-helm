@@ -6,8 +6,8 @@ metadata:
     {{- include "dicom-server.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetport }}
+    - port: 80
+      targetPort: 8042
       protocol: TCP
       name: https
   selector:

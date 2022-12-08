@@ -6,40 +6,40 @@ type: Opaque
 stringData:
   dbcreds.json: |
         {
-          "db_host": {{ .Values.secrets.host | quote }},
-          "db_username": {{ .Values.secrets.userName | quote }},
+          "db_host": {{ .Values.config.host | quote }},
+          "db_username": {{ .Values.config.userName | quote }},
           "db_password": {{ include "dicom.postgres.password" . | quote }},
-          "db_database": {{ .Values.secrets.dataBase | quote }}
+          "db_database": {{ .Values.config.dataBase | quote }}
         }
   orthanc_config_overwrites.json: |
         {
-          "AuthenticationEnabled": {{ .Values.secrets.authenticationEnabled }},
+          "AuthenticationEnabled": {{ .Values.config.authenticationEnabled }},
           "PostgreSQL": {
-            "EnableIndex": {{ .Values.secrets.enableIndex }},
-            "EnableStorage": {{ .Values.secrets.enableStorage }},
-            "Port": {{ .Values.secrets.port }},
-            "Host": {{ .Values.secrets.host | quote }},
-            "Database": {{ .Values.secrets.dataBase | quote }},
-            "Username": {{ .Values.secrets.userName | quote }},
+            "EnableIndex": {{ .Values.config.enableIndex }},
+            "EnableStorage": {{ .Values.config.enableStorage }},
+            "Port": {{ .Values.config.port }},
+            "Host": {{ .Values.config.host | quote }},
+            "Database": {{ .Values.config.dataBase | quote }},
+            "Username": {{ .Values.config.userName | quote }},
             "Password": {{ include "dicom.postgres.password" . | quote }},
-            "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
-            "Lock": {{ .Values.secrets.lock }}
+            "IndexConnectionsCount": {{ .Values.config.indexConnectionsCount }},
+            "Lock": {{ .Values.config.lock }}
           },
           "PythonScript": "/etc/orthanc/authz_filter.py"
         }
   orthanc_config_overwrites.json_backup: |
         { 
-          "AuthenticationEnabled": {{ .Values.secrets.authenticationEnabled }},  
+          "AuthenticationEnabled": {{ .Values.config.authenticationEnabled }},  
           "PostgreSQL": {
-            "EnableIndex": {{ .Values.secrets.enableIndex }},
-            "EnableStorage": {{ .Values.secrets.enableStorage }},
-            "Port": {{ .Values.secrets.port }},
-            "Host": {{ .Values.secrets.host | quote }},
-            "Database": {{ .Values.secrets.dataBase | quote }},
-            "Username": {{ .Values.secrets.userName | quote }},
-            "Password": {{ .Values.secrets.password | quote }},
-            "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
-            "Lock": {{ .Values.secrets.lock }}
+            "EnableIndex": {{ .Values.config.enableIndex }},
+            "EnableStorage": {{ .Values.config.enableStorage }},
+            "Port": {{ .Values.config.port }},
+            "Host": {{ .Values.config.host | quote }},
+            "Database": {{ .Values.config.dataBase | quote }},
+            "Username": {{ .Values.config.userName | quote }},
+            "Password": {{ .Values.config.password | quote }},
+            "IndexConnectionsCount": {{ .Values.config.indexConnectionsCount }},
+            "Lock": {{ .Values.config.lock }}
           },
           "PythonScript": "/etc/orthanc/authz_filter.py"
         }

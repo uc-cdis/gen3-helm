@@ -2,24 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: argo-wrapper-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    gen3.io/network-ingress: "argo-wrapper"
   labels:
     {{- include "argo-wrapper.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "argo-wrapper.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -34,29 +33,43 @@ spec:
       {{- end }}
         {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.volumes }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - argo-wrapper
+            topologyKey: "kubernetes.io/hostname"
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: argo-config
+          configMap:
+            name: manifest-argo
+            items:
+              - key: argo.json
+                path: argo.json
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.livenessProbe }}
+          image: "quay.io/cdis/argo-wrapper:{{ .Chart.AppVersion }}"
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.ports}}
+            httpGet:
+              path: /test
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          imagePullPolicy: Always
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
+            - containerPort: 8000
+              protocol: TCP
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: argo-config
+              readOnly: true
+              mountPath: /argo.json
+              subPath: argo.json
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

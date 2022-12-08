@@ -10,7 +10,10 @@ spec:
       {{- end }}
   revisionHistoryLimit: 2
   strategy:
-    {{- toYaml .Values.strategy | nindent 8 }}  
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       {{- with .Values.labels }}
@@ -22,21 +25,36 @@ spec:
       {{- end }}
     spec:
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        runAsUser: 1000
+        fsGroup: 1000
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ssjdispatcher
+              topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       serviceAccountName: {{ include "ssjdispatcher.serviceAccountName" . }}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
+        - name: ssjdispatcher-creds-volume
+          secret:
+            secretName: "ssjdispatcher-creds"
       containers:
         - name: ssjdispatcher
-          image: "quay.io/cdis/ssjdispatcher:2022.08"
+          image: "quay.io/cdis/ssjdispatcher:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "ssjdispatcher-creds-volume"
+              readOnly: true
+              mountPath: "/credentials.json"
+              subPath: credentials.json
           env:
             {{- with .Values.awsRegion  }}
             - name: AWS_REGION
@@ -72,11 +90,3 @@ spec:
               port: 8000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}

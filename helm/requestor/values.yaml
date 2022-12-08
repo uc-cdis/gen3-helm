@@ -44,32 +44,9 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
 
-replicaCount: 1
-
-revisionHistoryLimit: 2
-
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
-
 dataDog:
   enabled: false
   env: dev
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - requestor
-        topologyKey: "kubernetes.io/hostname"
 
 automountServiceAccountToken: false
 
@@ -82,27 +59,6 @@ image:
 # Environment Variables
 arboristUrl: http://arborist-service
 
-livenessProbe:
-  httpGet:
-    path: /_status
-    port: 80
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-readinessProbe:
-  httpGet:
-    path: /_status
-    port: 80
-
-containerPort:
-  - containerPort: 80
-
-volumeMounts:
-  # - name: "config-volume"
-  #   readOnly: true
-  #   mountPath: "/src/requestor-config.yaml"
-  #   subPath: "requestor-config.yaml"
-
 resources:
   requests:
     cpu: 0.1
@@ -112,25 +68,14 @@ resources:
     memory: 1024Mi
 
 # Init Container
-initContainerName: requestor-db-migrate
-
 initResources:
   limits:
     cpu: 0.8
     memory: 512Mi
 
-command: ["/bin/sh"]
-
-args:
-  - "-c"
-  - |
-    /env/bin/alembic upgrade head
-
-# Service and Pod
-service:
-  type: ClusterIP
-  port:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-      name: http
+# Secrets
+secrets:
+  host: postgres-postgresql.postgres.svc.cluster.local
+  user: postgres
+  password: 
+  database: requestor

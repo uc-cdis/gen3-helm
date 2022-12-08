@@ -4,16 +4,17 @@ metadata:
   name: requestor-deployment
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "requestor.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -29,10 +30,18 @@ spec:
       {{- end }}
         {{- include "requestor.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - requestor
+            topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes: 
         - name: config-volume
@@ -41,6 +50,7 @@ spec:
       containers:
         - name: requestor
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DB_PORT
               value: "5432"
@@ -75,22 +85,24 @@ spec:
               value: {{ . }}
             {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+            httpGet:
+              path: /_status
+              port: 80
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
+            - containerPort: 80
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/src/requestor-config.yaml"
+              subPath: "requestor-config.yaml"
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -128,8 +140,10 @@ spec:
                   optional: false
           {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/src/requestor-config.yaml"
+              subPath: "requestor-config.yaml"
           {{- with .Values.initResources }}
           resources:
             {{- toYaml . | nindent 12 }}

@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "hatchery.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "hatchery.selectorLabels" . | nindent 6 }}
@@ -20,12 +18,10 @@ spec:
       labels:
         {{- include "hatchery.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
+        - name: hatchery-config
+          configMap:
+            name: manifest-hatchery
       serviceAccountName: hatchery-service-account
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -33,8 +29,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/cdis/hatchery:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8000
@@ -50,22 +46,18 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            - name: HTTP_PORT
+              value: "8000"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: GEN3_ENDPOINT
               value: {{ .Values.global.hostname }}
             - name: GEN3_VPCID
               value: {{ .Values.global.vpcid }}
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            - name: hatchery-config
+              readOnly: true
+              mountPath: /hatchery.json
+              subPath: json

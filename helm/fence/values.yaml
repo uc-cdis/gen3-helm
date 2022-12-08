@@ -35,17 +35,17 @@ postgres:
   # If left empty password will be auto-generated
   password:
 
-replicaCount: 1
-
 image:
   repository: quay.io/cdis/fence
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: ""
 
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+#This should be set to the hostname of the commons you are deploying against.
+hostname: localhost
 
 
 serviceAccount:
@@ -59,43 +59,13 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "fence-sa"
 
-podAnnotations: {}
-
-podSecurityContext:
-  fsGroup: 101
-
-securityContext: {}
-
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
-
-resources:
-  requests:
+resources: 
+  requests: 
     cpu: 100m
     memory: 128Mi
   limits:
     cpu: 1.0
     memory: 2400Mi
-
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
 autoscaling:
   enabled: enabled
@@ -104,11 +74,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
-
-tolerations: []
-
-labels:
+labels: 
   app: fence
   release: production
   # for network policy selectors
@@ -121,238 +87,14 @@ labels:
   tags.datadoghq.com/env: anvilstaging
   tags.datadoghq.com/version: 2021.12
 
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - fence
-        topologyKey: "kubernetes.io/hostname"
-
-env:
-  - name: DD_ENABLED
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: dd_enabled
-        optional: true
-  - name: DD_ENV
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/env']
-  - name: DD_SERVICE
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/service']
-  - name: DD_VERSION
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/version']
-  - name: DD_LOGS_INJECTION
-    value: "true"
-  - name: DD_PROFILING_ENABLED
-    value: "true"
-  - name: DD_TRACE_SAMPLE_RATE
-    value: "1"
-  - name: GEN3_UWSGI_TIMEOUT
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: uwsgi-timeout
-        optional: true
-  - name: DD_AGENT_HOST
-    valueFrom:
-      fieldRef:
-        fieldPath: status.hostIP
-  - name: AWS_STS_REGIONAL_ENDPOINTS
-    value: regional
-  - name: PYTHONPATH
-    value: /var/www/fence
-  - name: GEN3_DEBUG
-    value: "False"
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
-  - name: PGHOST
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: host
-        optional: false
-  - name: PGUSER
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: username
-        optional: false
-  - name: PGPASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: password
-        optional: false
-  - name: PGDB
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: database
-        optional: false
-  - name: DB
-    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-
-volumes:
-  - name: old-config-volume
-    secret:
-      secretName: "fence-secret"
-  - name: json-secret-volume
-    secret:
-      secretName: "fence-json-secret"
-      optional: true
-  - name: creds-volume
-    secret:
-      secretName: "fence-creds"
-  - name: config-helper
-    configMap:
-      name: config-helper
-      optional: true
-  - name: logo-volume
-    configMap:
-      name: "logo-config"
-  - name: config-volume
-    secret:
-      secretName: "fence-config"
-  - name: fence-google-app-creds-secret-volume
-    secret:
-      secretName: "fence-google-app-creds-secret"
-  - name: fence-google-storage-creds-secret-volume
-    secret:
-      secretName: "fence-google-storage-creds-secret"
-  - name: fence-jwt-keys
-    secret:
-      secretName: "fence-jwt-keys"
-  - name: privacy-policy
-    configMap:
-      name: "privacy-policy"
-  - name: yaml-merge
-    configMap:
-      name: "fence-yaml-merge"
-      optional: true
-
-volumeMounts:
-  - name: "old-config-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/local_settings.py"
-    subPath: local_settings.py
-  - name: "json-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_credentials.json"
-    subPath: fence_credentials.json
-  - name: "creds-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/creds.json"
-    subPath: creds.json
-  - name: "config-helper"
-    readOnly: true
-    mountPath: "/var/www/fence/config_helper.py"
-    subPath: config_helper.py
-  - name: "logo-volume"
-    readOnly: true
-    mountPath: "/fence/fence/static/img/logo.svg"
-    subPath: "logo.svg"
-  - name: "privacy-policy"
-    readOnly: true
-    mountPath: "/fence/fence/static/privacy_policy.md"
-    subPath: "privacy_policy.md"
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
-    subPath: fence-config.yaml
-  - name: "yaml-merge"
-    readOnly: true
-    mountPath: "/var/www/fence/yaml_merge.py"
-    subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
-  - name: "fence-google-storage-creds-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
-  - name: "fence-jwt-keys"
-    readOnly: true
-    mountPath: "/fence/keys/key/jwt_private_key.pem"
-    subPath: "jwt_private_key.pem"
-
-initVolumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
-    subPath: fence-config.yaml
-  - name: "yaml-merge"
-    readOnly: true
-    mountPath: "/var/www/fence/yaml_merge.py"
-    subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
-  - name: "fence-google-storage-creds-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
-
-initEnv:
-  - name: PGHOST
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: host
-        optional: false
-  - name: PGUSER
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: username
-        optional: false
-  - name: PGPASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: password
-        optional: false
-  - name: PGDB
-    valueFrom:
-      secretKeyRef:
-        name: fence-dbcreds
-        key: database
-        optional: false
-  - name: DB
-    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-  - name: PYTHONPATH
-    value: /var/www/fence
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
-
-selectorLabels:
+selectorLabels: 
   app: fence
   release: production
 
-
-logo:
-privacy_policy:
+#This should be a base64-encoded image that will be displayed as the commons' logo.
+logo: 
+#A URL linking to the privacy policy of the commons
+privacy_policy: 
 
 #### FENCE CONFIG ####
 

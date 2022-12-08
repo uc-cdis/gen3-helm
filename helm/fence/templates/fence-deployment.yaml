@@ -6,26 +6,58 @@ metadata:
     {{- include "fence.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "fence.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "fence.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
+        - name: old-config-volume
+          secret:
+            secretName: "fence-secret"
+        - name: json-secret-volume
+          secret:
+            secretName: "fence-json-secret"
+            optional: true
+        - name: creds-volume
+          secret:
+            secretName: "fence-creds"
+        - name: config-helper
+          configMap:
+            name: config-helper
+            optional: true
+        - name: logo-volume
+          configMap:
+            name: "logo-config"
+        - name: config-volume
+          secret:
+            secretName: "fence-config"
+        - name: fence-google-app-creds-secret-volume
+          secret:
+            secretName: "fence-google-app-creds-secret"
+        - name: fence-google-storage-creds-secret-volume
+          secret:
+            secretName: "fence-google-storage-creds-secret"
+        - name: fence-jwt-keys
+          secret:
+            secretName: "fence-jwt-keys"
+        - name: privacy-policy
+          configMap:
+            name: "privacy-policy"
+        - name: yaml-merge
+          configMap:
+            name: "fence-yaml-merge"
+            optional: true
+
       containers:
         - name: fence
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/cdis/fence:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: http
@@ -61,9 +93,97 @@ spec:
               fi
               bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            - name: DD_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: dd_enabled
+                  optional: true
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_PROFILING_ENABLED
+              value: "true"
+            - name: DD_TRACE_SAMPLE_RATE
+              value: "1"
+            - name: GEN3_UWSGI_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: uwsgi-timeout
+                  optional: true
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: regional
+            - name: PYTHONPATH
+              value: /var/www/fence
+            - name: GEN3_DEBUG
+              value: "False"
+            - name: FENCE_PUBLIC_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-fence
+                  key: fence-config-public.yaml
+                  optional: true
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "old-config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/local_settings.py"
+              subPath: local_settings.py
+            - name: "json-secret-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence_credentials.json"
+              subPath: fence_credentials.json
+            - name: "creds-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/creds.json"
+              subPath: creds.json
+            - name: "config-helper"
+              readOnly: true
+              mountPath: "/var/www/fence/config_helper.py"
+              subPath: config_helper.py
+            - name: "logo-volume"
+              readOnly: true
+              mountPath: "/fence/fence/static/img/logo.svg"
+              subPath: "logo.svg"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/fence/fence/static/privacy_policy.md"
+              subPath: "privacy_policy.md"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+            - name: "yaml-merge"
+              readOnly: true
+              mountPath: "/var/www/fence/yaml_merge.py"
+              subPath: yaml_merge.py
+            - name: "fence-google-app-creds-secret-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+              subPath: fence_google_app_creds_secret.json
+            - name: "fence-google-storage-creds-secret-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+              subPath: fence_google_storage_creds_secret.json
+            - name: "fence-jwt-keys"
+              readOnly: true
+              mountPath: "/fence/keys/key/jwt_private_key.pem"
+              subPath: "jwt_private_key.pem"
       initContainers:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -98,18 +218,40 @@ spec:
                 echo "Db migration not available in this version of fence"
               fi
           volumeMounts:
-            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+            - name: "yaml-merge"
+              readOnly: true
+              mountPath: "/var/www/fence/yaml_merge.py"
+              subPath: yaml_merge.py
+            - name: "fence-google-app-creds-secret-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+              subPath: fence_google_app_creds_secret.json
+            - name: "fence-google-storage-creds-secret-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+              subPath: fence_google_storage_creds_secret.json
           env:
-            {{ toYaml .Values.initEnv | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
+              - name: PYTHONPATH
+                value: /var/www/fence
+              - name: FENCE_PUBLIC_CONFIG
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-fence
+                    key: fence-config-public.yaml
+                    optional: true
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - fence
+              topologyKey: "kubernetes.io/hostname"

@@ -35,7 +35,6 @@ postgres:
   # If left empty password will be auto-generated
   password:
 
-replicaCount: 1
 
 image:
   repository: quay.io/cdis/audit-service
@@ -57,42 +56,15 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "audit-service-sa"
 
-podAnnotations: {}
-
-podSecurityContext: {}
-
-securityContext: {}
-
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
-
-resources:
-  requests:
+resources: 
+  requests: 
     cpu: 100m
     memory: 128Mi
   limits:
     cpu: 500m
     memory: 1024Mi
 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+
 
 autoscaling:
   enabled: enabled
@@ -101,11 +73,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
 
-tolerations: []
-
-labels:
+labels: 
   app: audit
   release: production
   # for network policy selectors
@@ -115,56 +84,16 @@ labels:
   public: "yes"
   userhelper: "yes"
   tags.datadoghq.com/service: "audit"
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - audit
-        topologyKey: "kubernetes.io/hostname"
-
-env:
-  - name: DEBUG
-    value: "false"
-  - name: ARBORIST_URL
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: arborist_url
-        optional: true
-
-volumes:
-  - name: config-volume
-    secret:
-      secretName: "audit-g3auto"
-
-volumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/src/audit-service-config.yaml"
-    subPath: "audit-service-config.yaml"
-
-initVolumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/src/audit-service-config.yaml"
-    subPath: "audit-service-config.yaml"
-
-initEnv: {}
 
 selectorLabels:
   app: audit
 
+#These are settings to control the audit service itself. 
 server:
   pull_from_queue: false
   debug: false
-
-secrets:
+  
   sqs:
+    #The URL of the SQS queue that audit will use. This needs to be updated before deployment. 
     url: "http://sqs.com"
     region: "us-east-1"

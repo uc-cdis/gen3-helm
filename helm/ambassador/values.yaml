@@ -13,8 +13,7 @@ selectorLabels:
 
 userNamespace: "jupyter-pods"
 
-<<<<<<< HEAD
-resources:
+resources: 
   limits:
     cpu: 500m
     memory: 400Mi
@@ -22,23 +21,12 @@ resources:
     cpu: 100m
     memory: 100Mi
 
-=======
->>>>>>> af2c152 (Cleaned up ambassador's values.yaml)
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 60
   # targetMemoryUtilizationPercentage: 80
-
-<<<<<<< HEAD
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-=======
 rbac:
   rbacServiceName: ambassador-admin
   servicePort: 8877
->>>>>>> af2c152 (Cleaned up ambassador's values.yaml)

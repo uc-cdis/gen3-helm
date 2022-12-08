@@ -6,12 +6,6 @@ selectorLabels:
   app: manifestservice
   release: production
 
-revisionHistoryLimit: 2
-
-service:
-  type: ClusterIP
-  port: 80
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -24,54 +18,15 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
+  # targetMemoryUtilizationPercentage: 80
 
 labels:
   s3: "yes"
   public: "yes"
   userhelper: "yes"
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - manifestservice
-        topologyKey: "kubernetes.io/hostname"
+  #GEN3_DATE_LABEL
 
 automountServiceAccountToken: false
-
-
-volumes:
-  - name: config-volume
-    secret:
-      secretName: "manifestservice-g3auto"
-
-terminationGracePeriodSeconds: 50
-
-env:
-  - name: REQUESTS_CA_BUNDLE
-    value: /etc/ssl/certs/ca-certificates.crt
-  - name: MANIFEST_SERVICE_CONFIG_PATH
-    value: /var/gen3/config/config.json
-  - name: GEN3_DEBUG
-    value: "False"
-
-volumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/var/gen3/config/"
-
 
 resources:
   requests:

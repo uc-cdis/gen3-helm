@@ -8,9 +8,12 @@ spec:
       matchLabels:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml .Values.strategy | nindent 8 }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       {{- with .Values.labels }}
@@ -21,22 +24,39 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - manifestservice
+            topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }} 
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
+        - name: config-volume
+          secret:
+            secretName: "manifestservice-g3auto"
+      terminationGracePeriodSeconds: 50
       containers:
         - name: manifestservice
           image: "quay.io/cdis/manifestservice:2022.09"
           imagePullPolicy: Always
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/ca-certificates.crt
+            - name: MANIFEST_SERVICE_CONFIG_PATH
+              value: /var/gen3/config/config.json
+            - name: GEN3_DEBUG
+              value: "False"
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/gen3/config/"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
