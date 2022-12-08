@@ -1,0 +1,26 @@
+global:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  db_create:

@@ -1,0 +1,3 @@
+{{- if .Values.db_restore }}
+{{ include "gen3-test-data-job.create-test-indices" . }}
+{{- end  }}

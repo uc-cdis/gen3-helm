@@ -3,23 +3,26 @@
 # Declare variables to be passed into your templates.
 
 global:
+  dev: true
   # Default values are for postgres deployed as a helm chart
   postgres:
-    host: postgres-postgresql.postgres.svc.cluster.local
     master:
+      host:
       username: postgres
       password:
-      port: 5432
+      port: "5432"
 
 db_create: true
 postgres:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: indexd
   username: indexd
   host:
-  port: 5432
+  port: "5432"
   # If left empty password will be auto-generated
   password:
+  # If db_restore is set to true then the database will have fake data/tables dumped into it.
+  db_restore: false
 
 replicaCount: 1
 
@@ -89,7 +92,7 @@ affinity: {}
 volumes:
 - name: config-volume
   secret:
-    secretName: "indexd-secret"
+    secretName: "indexd-settings"
 - name: creds-volume
   secret:
     secretName: "indexd-creds"
@@ -100,18 +103,10 @@ volumeMounts:
   readOnly: true
   mountPath: "/var/www/indexd/local_settings.py"
   subPath: "local_settings.py"
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/creds.json"
-  subPath: creds.json
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/config_helper.py"
-  subPath: config_helper.py
 
 env:
   - name: "GEN3_DEBUG"
-    value: "false"
+    value: "False"
 
 secrets:
   userdb:

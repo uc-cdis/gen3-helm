@@ -24,11 +24,6 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-
-
-
 
 strategy:
   type: RollingUpdate
@@ -40,7 +35,6 @@ labels:
   s3: "yes"
   public: "yes"
   userhelper: "yes"
-  #GEN3_DATE_LABEL
 
 affinity:
   podAntiAffinity:
@@ -93,4 +87,3 @@ manifestserviceG3auto:
   prefix: test
   awsaccesskey: ""
   awssecretkey: ""
-  

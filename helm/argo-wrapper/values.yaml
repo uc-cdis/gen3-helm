@@ -2,9 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
-
-#Deployment
+# Deployment
 podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
 
 autoscaling:
@@ -27,7 +25,7 @@ dataDog:
   enabled: false
   env: dev
 
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -78,14 +76,12 @@ resources:
     memory: 128Mi
 
 
-#Service and Pod
+# Service and Pod
 service:
   type: ClusterIP
   port: 8000
 
-
-
-#Configmap
+# Configmap
 scalingGroups:
 - user1: "workflow1"
 - user2: "workflow2"

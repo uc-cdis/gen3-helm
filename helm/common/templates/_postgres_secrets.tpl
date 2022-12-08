@@ -18,17 +18,24 @@
 */}}
 {{- define "gen3.service-postgres" -}}
   {{- $chartName := default "" .context.Chart.Name }}
-  {{- $valuesPostgres := get .context.Values.postgres .key}}
-  {{- $localSecretPass := get ((lookup "v1" "Secret" .context.Release.Namespace (cat .service "-dbcreds")).data) .key }}
-  
+  {{- $valuesPostgres := get .context.Values.postgres .key }}
+  {{- $localSecretPass := "" }}
+  {{- $secretData := (lookup "v1" "Secret" $.context.Release.Namespace (printf "%s-%s" $chartName "dbcreds")).data }}
+  {{- if $secretData }}
+    {{- if hasKey $secretData .key }}
+      {{- $localSecretPass = index $secretData .key | b64dec }}
+    {{- else }}
+      {{- printf "\nERROR: The secret \"%s\" does not contain the key \"%s\"\n" (printf "%s-%s" $chartName "dbcreds") .key | fail -}}
+    {{- end }}
+  {{- end }}
   {{- $randomPassword := "" }}
   {{- $valuesGlobalPostgres := get .context.Values.global.postgres.master .key}}
   {{- if eq .key "password" }}
     {{- $randomPassword = randAlphaNum 20 }}
     {{- $valuesGlobalPostgres = "" }}
   {{- end }}
-  {{- $password := coalesce $valuesPostgres $localSecretPass $randomPassword  $valuesGlobalPostgres}}
-  {{- printf "%v" $password -}}
+  {{- $value := coalesce $valuesPostgres $localSecretPass $randomPassword $valuesGlobalPostgres}}
+  {{- printf "%v" $value -}}
 {{- end }}
 
 
@@ -46,49 +53,16 @@ Usage:
  # https://helm.sh/docs/chart_template_guide/function_list/#coalesce
 */}}
 {{- define "gen3.master-postgres" }}
-  {{- $chartName := default "" .context.Chart.Name }}
+  {{- $chartName := .context.Chart.Name }}
   
   {{- $valuesPostgres := get .context.Values.global.postgres.master .key}}
-  {{- $secret :=  (lookup "v1" "Secret" "postgres" "postgres-postgresql" )}}
+  {{- $secret :=  (lookup "v1" "Secret" "default" "gen3-postgresql" )}}
   {{- $devPostgresSecret := "" }}
   {{-  if $secret }}
-    {{- $devPostgresSecret = (index $secret.data "postgres-password") | b64dec }}
+    {{- $devPostgresSecret = (index $secret "data" "postgres-password") | b64dec }}
   {{- end }}
   {{- $value := coalesce $valuesPostgres $devPostgresSecret  }}
   {{- printf "%v" $value -}}
 {{- end }}
 
 
-
-
-
-
-{{/*
- Postgres User lookup
-*/}}
-{{- define "peregrine.postgres.user" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.postgres.password }}
-{{- end }}
-{{- end }}
-
-
-{{- if not (lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" .Chart.Name "dbcreds")) }}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Chart.Name }}-dbcreds
-  annotations:
-    "helm.sh/hook": "pre-install,pre-upgrade"
-    "helm.sh/resource-policy": "keep"
-    "helm.sh/hook-weight": "-10"
-stringData:
-  host: {{ default .Values.global.postgres.host  .Values.postgres.host }}
-  database: "{{ default .Chart.Name .Values.postgres.dbname }}"
-  username: "{{ default .Chart.Name .Values.postgres.user }}"
-  password: "{{ default (randAlphaNum 24 | nospace) .Values.postgres.password }}"
-  port: "{{ default 5432 .Values.postgres.port }}"
-{{- end -}}

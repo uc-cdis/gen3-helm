@@ -2,9 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
-
-#Deployment
+# Deployment
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -38,7 +36,7 @@ livenessProbe:
     port: 8042
   initialDelaySeconds: 5
   periodSeconds: 60
-  timeoutSeconds: 30 
+  timeoutSeconds: 30
 
 ports:
   - containerPort: 8042
@@ -50,19 +48,17 @@ volumeMounts:
     subPath: orthanc_config_overwrites.json
 
 
-#Service and Pod
+# Service and Pod
 service:
   port: 80
   targetport: 8042
 
-
-
-#Secret
+# Secret
 secrets:
   authenticationEnabled: false
   enableIndex: true
   enableStorage: true
-  port: 5432
+  port: "5432"
   host: postgres-postgresql.postgres.svc.cluster.local
   dataBase: postgres
   userName: postgres

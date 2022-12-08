@@ -54,6 +54,30 @@ spec:
               value: "False"
             - name: GEN3_ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: username
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: database
+                  optional: false
             {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
               value: {{ . }}
@@ -88,6 +112,31 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.initVolumeMounts }}
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: username
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: metadata-dbcreds
+                  key: database
+                  optional: false
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}

@@ -4,29 +4,41 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
-  annotations:
-    "helm.sh/hook": "pre-install" #,pre-upgrade"
 spec:
   template:
     metadata:
       labels:
+      # TODO : READ FROM CENTRAL FUNCTION TOO?
         app: gen3job
     spec:
       restartPolicy: OnFailure
       containers:
       - name: db-setup
+        # TODO: READ THIS IMAGE FROM GLOBAL VALUES?
         image: quay.io/cdis/awshelper:master
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         env:
           - name: PGPASSWORD
-            value: "{{ include "gen3.master-postgres" (dict "key" "password" "context" $) }}"
+            {{- if $.Values.global.dev }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-postgresql
+                key: postgres-password
+                optional: false
+            {{- else }}
+            value:  {{ .Values.global.postgres.master.password | quote}}
+            {{- end }}
           - name: PGUSER
-            value: "{{ include "gen3.master-postgres" (dict "key" "username" "context" $) }}"
+            value: {{ .Values.global.postgres.master.username | quote }}
           - name: PGPORT
-            value: "{{ include "gen3.master-postgres" (dict "key" "port" "context" $) }}"
+            value: {{ .Values.global.postgres.master.port | quote }}
           - name: PGHOST
-            value: "{{ include "gen3.master-postgres" (dict "key" "host" "context" $) }}"
+            {{- if $.Values.global.dev }}
+            value: "{{ .Release.Name }}-postgresql"
+            {{- else }}
+            value: {{ .Values.global.postgres.master.host | quote }}
+            {{- end }}
           - name: SERVICE_PGUSER
             valueFrom:
               secretKeyRef:
@@ -47,7 +59,8 @@ spec:
                 optional: false
         args:
           - |
-            env
+            #!/bin/bash
+            set -e
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
@@ -69,20 +82,18 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if not (lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" .Chart.Name "dbcreds")) }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
-  annotations:
-    "helm.sh/hook": "pre-install,pre-upgrade"
-    "helm.sh/resource-policy": "keep"
-    "helm.sh/hook-weight": "-10"
-stringData:
-  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}
-  database: "{{ include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $) }}"
-  username: "{{ include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}"
-  password: "{{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) }}"
-  port: "{{ include "gen3.service-postgres" (dict "key" "port" "service" $.Chart.Name "context" $) }}"
-{{- end -}}
+data:
+  database: {{ $.Values.postgres.database | b64enc | quote}}
+  username: {{ $.Values.postgres.username | b64enc | quote }}
+  port: {{ $.Values.postgres.port | b64enc | quote }}
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+  {{- if $.Values.global.dev }}
+  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- else }}
+  host: {{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) | b64enc | quote }}
+  {{- end }}
 {{- end }}

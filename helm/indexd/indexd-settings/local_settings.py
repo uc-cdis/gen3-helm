@@ -1,25 +1,26 @@
 from indexd.index.drivers.alchemy import SQLAlchemyIndexDriver
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
-import config_helper
+
+
 from os import environ
 import json
 
 APP_NAME = "indexd"
 
 
-def load_json(file_name):
-    return config_helper.load_json(file_name, APP_NAME)
+usr = environ.get("PGUSER", "indexd")
+db = environ.get("PGDB", "indexd")
+psw = environ.get("PGPASSWORD")
+pghost = environ.get("PGHOST")
+pgport = environ.get("PGPORT", 5432)
 
+# TODO: FIX THIS TO READ FROM ENV VARS
+index_config = {
+    "DEFAULT_PREFIX": environ.get("DEFAULT_PREFIX", "testprefix"),
+    "PREPEND_PREFIX": environ.get("PREPEND_PREFIX", True),
+}
 
-conf_data = load_json("creds.json")
-
-usr = conf_data.get("db_username", "{{db_username}}")
-db = conf_data.get("db_database", "{{db_database}}")
-psw = conf_data.get("db_password", "{{db_password}}")
-pghost = conf_data.get("db_host", "{{db_host}}")
-pgport = 5432
-index_config = conf_data.get("index_config")
 CONFIG = {}
 
 CONFIG["JSONIFY_PRETTYPRINT_REGULAR"] = False

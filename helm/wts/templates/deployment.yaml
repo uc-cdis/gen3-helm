@@ -79,6 +79,18 @@ spec:
               path: /_status
               port: 80
           env:
+          - name: OIDC_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wts-oidc-client
+                key: client_id
+                optional: false
+          - name: OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: wts-oidc-client
+                key: client_secret
+                optional: false
           - name: SECRET_CONFIG
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS
@@ -113,8 +125,8 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
       - name: wts-db-migrate
-        imagePullPolicy: Always
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: "wts-secret"
           readOnly: true

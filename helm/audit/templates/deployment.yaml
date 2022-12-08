@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: audit
+  name: audit-deployment
   labels:
     {{- include "audit.labels" . | nindent 4 }}
 spec:
@@ -26,7 +26,7 @@ spec:
       containers:
         - name: audit
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: 80
             name: http
@@ -45,6 +45,30 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: username
+                  optional: false 
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: database
+                  optional: false
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
@@ -52,16 +76,31 @@ spec:
         - name: audit-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
-            - name: container
-              containerPort: 6567
-              protocol: TCP
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: username
+                  optional: false 
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: database
+                  optional: false
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
