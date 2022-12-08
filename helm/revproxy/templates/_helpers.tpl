@@ -48,7 +48,6 @@ Selector labels
 app.kubernetes.io/name: {{ include "revproxy.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app: revproxy
-#GEN3_DATE_LABEL
 {{- end }}
 
 {{/*

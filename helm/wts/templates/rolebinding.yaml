@@ -1,8 +1,7 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  #WTS_BINDING
-  name: wts-role-binding
+  name: wts-role-binding-{{ .Release.Namespace}}
   namespace: {{ $.Release.Namespace }}
 subjects:
 - kind: ServiceAccount

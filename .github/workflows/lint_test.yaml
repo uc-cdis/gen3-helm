@@ -33,8 +33,22 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
+        if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --config .github/ct.yaml
 
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.4.0
+        if: steps.list-changed.outputs.changed == 'true'
+
+      - name: Run chart-testing gen3 (install)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct install --config .github/ct.yaml --charts helm/gen3
+
+      # - name: Run chart-testing gen3 (upgrade)
+      #   if: steps.list-changed.outputs.changed == 'true'
+      #   run: ct install --upgrade --debug --chart-dirs helm --charts helm/gen3
+
+    
   # deploy-charts-to-kind:
   #   name: ${{ matrix.environments }} - gen3 data portal build
   #   timeout-minutes: 20
@@ -42,9 +56,3 @@ jobs:
   #   needs: [get-changes-for-envs]
   #   if: ${{ needs.get-changes-for-envs.outputs.matrix != '[]' && needs.get-changes-for-envs.outputs.matrix != '' }}
   #   steps:
-  #     - name: Create kind cluster
-  #       uses: helm/kind-action@v1.4.0
-  #       if: steps.list-changed.outputs.changed == 'true'
-
-  #     - name: Run chart-testing (install)
-  #       run: ct install
