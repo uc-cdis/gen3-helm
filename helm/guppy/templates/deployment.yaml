@@ -4,16 +4,17 @@ metadata:
   name: guppy-deployment
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "guppy.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -24,34 +25,47 @@ spec:
         tags.datadoghq.com/service: "guppy"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+        tags.datadoghq.com/version: {{ .Chart.AppVersion }}
       {{- end }}
         {{- include "guppy.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - guppy
+            topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes}}
       volumes: 
-        {{- toYaml . | nindent 8}}
-      {{- end }}
+        - name: guppy-config
+          configMap:
+            name: manifest-guppy
+            items:
+              - key: guppy_config.json
+                path: guppy_config.json
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.livenessProbe }}
+        - name: guppy
+          image: "quay.io/cdis/guppy:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+            httpGet:
+              path: /_status
+              port: 8000
           ports:
-            {{- toYaml . | nindent 10}}
-          {{- end }}
+            - containerPort: 8000
           env: 
             - name: GUPPY_PORT
               value: "8000"
@@ -103,10 +117,11 @@ spec:
             {{- end }}
 
 
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: guppy-config
+              readOnly: true
+              mountPath: /guppy/guppy_config.json
+              subPath: guppy_config.json
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

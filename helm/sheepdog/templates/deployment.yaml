@@ -2,24 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sheepdog-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    gen3.io/network-ingress: "sheepdog"
   labels:
     {{- include "sheepdog.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "sheepdog.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -31,14 +30,22 @@ spec:
         tags.datadoghq.com/service: "sheepdog"
         # TODO: move this to helpers so we can have this populated from a configmap
         tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+        tags.datadoghq.com/version: {{ .Chart.AppVersion }}
       {{- end }}
         {{- include "sheepdog.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+          podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - sheepdog
+          topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
         - name: config-volume
@@ -98,18 +105,22 @@ spec:
         - name: sheepdog
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.ports}}
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-           {{- with .Values.livenessProbe }}
+            - containerPort: 80
+            - containerPort: 443
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            initialDelaySeconds: 30
+            httpGet:
+              path: /_status?timeout=2
+              port: 80
           # command: ["/bin/bash" ]
           # args: 
           #   - "-c"
@@ -250,9 +261,18 @@ spec:
             - name: DD_TRACE_AGENT_HOSTNAME
               value: {{ . }}
             {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/sheepdog/wsgi.py"
+              subPath: "wsgi.py"
+            - name: "creds-volume"
+              readOnly: true
+              mountPath: "/var/www/sheepdog/creds.json"
+              subPath: creds.json
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/sheepdog/config_helper.py"
+              subPath: config_helper.py
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

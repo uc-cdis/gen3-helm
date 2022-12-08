@@ -2,17 +2,23 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "metadata-service"
-  {{- with .Values.serviceAnnotations }}
   annotations: 
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    getambassador.io/config: |
+    ---
+    apiVersion: ambassador/v1
+    ambassador_id: "gen3"
+    kind:  Mapping
+    name:  metadata_mapping
+    prefix: /index/
+    service: http://metadata-service:80
   labels:
     {{- include "metadata.labels" . | nindent 4 }}
 spec:
   selector:
     {{- include "metadata.selectorLabels" . | nindent 4 }}
-  {{- with .Values.service.port }}
   ports:
-    {{- toYaml . | nindent 8 }}
-  {{- end }}
-  type: {{ .Values.service.type }}
+    - protocol: TCP
+      port: 80
+      targetPort: 80 
+      name: http
+  type: ClusterIP

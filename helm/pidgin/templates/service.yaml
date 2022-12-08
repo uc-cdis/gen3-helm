@@ -7,8 +7,13 @@ metadata:
 spec:
   selector:
     {{- include "pidgin.selectorLabels" . | nindent 4 }}
-  {{- with .Values.service.port }}
   ports:
-    {{- toYaml . | nindent 8 }}
-  {{- end }}
-  type: {{ .Values.service.type }}
+    - protocol: TCP
+      port: 80
+      targetPort: 80 
+      name: http
+    - protocol: TCP 
+      port: 443 
+      targetPort: 443
+      name: https
+  type: ClusterIP

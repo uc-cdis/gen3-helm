@@ -6,33 +6,31 @@ spec:
   selector:
     matchLabels:
       {{- include "portal.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml .Values.strategy | nindent 8 }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 25%
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "portal.labels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
-      - name: config-volume
-        secret:
-          secretName: "portal-config"
-      - name: sponsor-img-volume
-        secret:
-          secretName: "portal-sponsor-config"
-      - name: privacy-policy
-        configMap:
-          name: "privacy-policy"     
+        - name: docker-config
+          configMap:
+            name: docker-command
+        - name: config-volume
+          secret:
+            secretName: "portal-config"
+        - name: sponsor-img-volume
+          secret:
+            secretName: "portal-sponsor-config"
+        - name: privacy-policy
+          configMap:
+            name: "privacy-policy"    
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -162,6 +160,9 @@ spec:
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
           volumeMounts:
+            - name: "docker-config"
+              mountPath: "/data-portal/dockerStart.sh"
+              subPath: "dockerStart.sh"
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -183,4 +184,3 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
-              

@@ -10,7 +10,7 @@ metadata:
     {{- include "dicom-server.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
@@ -24,27 +24,32 @@ spec:
         release: "production"
         public: "yes"
     spec:
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: config-volume-g3auto
+          secret:
+            secretName: orthanc-g3auto
       containers:
         - name: "dicom-server"
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.readinessProbe}}
+          image: "quay.io/cdis/gen3-orthanc:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           readinessProbe: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.livenessProbe}}
+            httpGet:
+              path: /system
+              port: 8042
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 30
           livenessProbe: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.ports}}
+            httpGet:
+              path: /system
+              port: 8042
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 30 
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
+            - containerPort: 8042
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: config-volume-g3auto
+              readOnly: true
+              mountPath: /etc/orthanc/orthanc_config_overwrites.json
+              subPath: orthanc_config_overwrites.json

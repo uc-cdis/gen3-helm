@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: auspice-deployment
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
       {{- with .Values.selectorLabels }}
       matchLabels:
@@ -21,14 +22,22 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - portal
+              topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       containers:
         - name: auspice
-          image: "quay.io/cdis/gen3-auspice:master"
+          image: "quay.io/cdis/gen3-auspice:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           command:
             - /bin/sh

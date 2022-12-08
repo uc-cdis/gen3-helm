@@ -6,37 +6,25 @@ metadata:
     {{- include "arborist.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "arborist.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "arborist.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: creds-volume
+        secret:
+          secretName: "arborist-dbcreds"
       serviceAccountName: {{ include "arborist.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/cdis/arborist:{{ .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 80
@@ -68,18 +56,37 @@ spec:
               # run arborist
               /go/src/github.com/uc-cdis/arborist/bin/arborist
           env:
-            {{- toYaml .Values.env | nindent 12 }}
-          volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            - name: JWKS_ENDPOINT
+              value: "http://fence-service/.well-known/jwks"
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: password
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: username
+                  optional: false
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: database
+                  optional: false
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: host
+                  optional: false
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: port
+                  optional: false
+            - name: PGSSLMODE
+              value: disable

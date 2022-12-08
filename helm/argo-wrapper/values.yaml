@@ -1,87 +1,22 @@
 # Default values for argo-wrapper.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-# Deployment
-podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
-
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
 
-replicaCount: 1
-
-revisionHistoryLimit: 2
-
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
-
 dataDog:
   enabled: false
   env: dev
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - argo-wrapper
-        topologyKey: "kubernetes.io/hostname"
-
-volumes:
-  - name: argo-config
-    configMap:
-      name: manifest-argo
-      items:
-        - key: argo.json
-          path: argo.json
-
-image:
-  repository: quay.io/cdis/argo-wrapper
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-livenessProbe:
-  httpGet:
-    path: /test
-    port: 8000
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-ports:
-  - containerPort: 8000
-    protocol: TCP
-
-volumeMounts:
-  - name: argo-config
-    readOnly: true
-    mountPath: /argo.json
-    subPath: argo.json
 
 resources:
   limits:
     cpu: 100m
     memory: 128Mi
 
-
-# Service and Pod
-service:
-  type: ClusterIP
-  port: 8000
-
-# Configmap
+#Configmap
 scalingGroups:
 - user1: "workflow1"
 - user2: "workflow2"

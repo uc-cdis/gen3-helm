@@ -4,16 +4,17 @@ metadata:
   name: metadata-deployment
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "metadata.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -29,10 +30,18 @@ spec:
       {{- end }}
         {{- include "metadata.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - metadata
+            topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes: 
         - name: config-volume-g3auto
@@ -48,7 +57,8 @@ spec:
             optional: true
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/cdis/metadata-service:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           env: 
             - name: GEN3_DEBUG
               value: "False"
@@ -86,66 +96,53 @@ spec:
             - name: AGG_MDS_NAMESPACE
               value: {{ . }}
             {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+            httpGet:
+              path: /_status
+              port: 80
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
+            - containerPort: 80
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: config-volume-g3auto
+              readOnly: true
+              mountPath: /src/.env
+              subPath: metadata.env
+            - name: config-volume
+              readOnly: true
+              mountPath: /aggregate_config.json
+              subPath: aggregate_config.json
+            - name: config-manifest
+              readOnly: true
+              mountPath: /metadata.json
+              subPath: json
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       initContainers:
-        - name: {{ .Values.initContainerName }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.initVolumeMounts }}
-          env:
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: metadata-dbcreds
-                  key: host
-                  optional: false  
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: metadata-dbcreds
-                  key: username
-                  optional: false
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: metadata-dbcreds
-                  key: password
-                  optional: false
-            - name: DB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: metadata-dbcreds
-                  key: database
-                  optional: false
+        - name: metadata-db-migrate
+          image: "quay.io/cdis/metadata-service:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: config-volume-g3auto
+              readOnly: true
+              mountPath: /src/.env
+              subPath: metadata.env
           {{- with .Values.initResources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          command: {{ .Values.command }}
+          command: ["/bin/sh"]
           {{- with .Values.args }}
           args: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            - "-c"
+            - |
+              /env/bin/alembic upgrade head

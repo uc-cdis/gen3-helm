@@ -1,43 +1,6 @@
-# Default values for dicom-viewer.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-# Deployment
+#Deployment
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-
-replicaCount: 1
-
-image:
-  repository: quay.io/cdis/ohif-viewer
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 20
-  timeoutSeconds: 30
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-ports:
-  - containerPort: 80
-
-
-# Service and Pod
-service:
-  type: ClusterIP
-  port: 80

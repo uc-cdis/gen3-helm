@@ -55,7 +55,7 @@ Create the name of the service account to use
 */}}
 {{- define "arborist.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "arborist.fullname" .) .Values.serviceAccount.name }}
+{{- include "arborist.fullname" . }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

@@ -10,7 +10,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app: ambassador
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app: ambassador
@@ -45,7 +47,7 @@ spec:
         #fsGroup: 2000
       containers:
         - name: {{ .Chart.Name }}
-          image: "quay.io/datawire/ambassador:1.4.2"
+          image: "quay.io/datawire/ambassador:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           env:
           - name: AMBASSADOR_NAMESPACE
@@ -72,10 +74,5 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 3
           resources:
-            limits:
-              cpu: 500m
-              memory: 400Mi
-            requests:
-              cpu: 100m
-              memory: 100Mi
+            {{- toYaml .Values.resources | nindent 12 }}
 

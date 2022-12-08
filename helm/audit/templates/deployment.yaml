@@ -5,28 +5,24 @@ metadata:
   labels:
     {{- include "audit.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "audit.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "audit.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "audit.serviceAccountName" . }}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
+      - name: config-volume
+        secret:
+          secretName: "audit-g3auto"
       containers:
         - name: audit
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/cdis/audit-service:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           ports:
           - containerPort: 80
             name: http
@@ -45,36 +41,22 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: DB_HOST
+            - name: DEBUG
+              value: "false"
+            - name: ARBORIST_URL
               valueFrom:
-                secretKeyRef:
-                  name: audit-dbcreds
-                  key: host
-                  optional: false  
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: audit-dbcreds
-                  key: username
-                  optional: false 
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: audit-dbcreds
-                  key: password
-                  optional: false
-            - name: DB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: audit-dbcreds
-                  key: database
-                  optional: false
-            {{- toYaml .Values.env | nindent 12 }}
+                configMapKeyRef:
+                  name: manifest-global
+                  key: arborist_url
+        optional: true
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/src/audit-service-config.yaml"
+              subPath: "audit-service-config.yaml" 
       initContainers:
         - name: audit-init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/cdis/audit-service:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DB_HOST
@@ -109,16 +91,19 @@ spec:
             - |
               /env/bin/alembic upgrade head
           volumeMounts:
-            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
+            - name: "config-volume"
+            readOnly: true
+            mountPath: "/src/audit-service-config.yaml"
+            subPath: "audit-service-config.yaml" 
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - audit
+            topologyKey: "kubernetes.io/hostname"

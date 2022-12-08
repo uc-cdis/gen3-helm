@@ -4,16 +4,17 @@ metadata:
   name: pidgin-deployment
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   {{- end }}
   selector:
     matchLabels:
       {{- include "pidgin.selectorLabels" . | nindent 6 }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- with .Values.strategy }}
+  revisionHistoryLimit: 2
   strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -28,14 +29,23 @@ spec:
       {{- end }}
         {{- include "pidgin.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - pidgin
+            topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/cdis/pidgin:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           env: 
             - name: GEN3_DEBUG
               value: "False"
@@ -71,18 +81,21 @@ spec:
             - name: DD_TRACE_AGENT_HOSTNAME
               value: {{ . }}
             {{- end }}
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+            httpGet:
+              path: /_status
+              port: 80
           ports:
-            {{- toYaml . | nindent 10}}
+            - containerPort: 80
+            - containerPort: 443
           {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
