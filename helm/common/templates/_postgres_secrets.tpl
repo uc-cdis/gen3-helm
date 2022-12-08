@@ -64,5 +64,3 @@ Usage:
   {{- $value := coalesce $valuesPostgres $devPostgresSecret  }}
   {{- printf "%v" $value -}}
 {{- end }}
-
-
