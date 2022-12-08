@@ -17,9 +17,9 @@ spec:
         {{- include "arborist.selectorLabels" . | nindent 8 }}
     spec:
       volumes:
-        - name: creds-volume
-        secret:
-          secretName: "arborist-dbcreds"
+      - name: creds-volume
+      secret:
+        secretName: "arborist-dbcreds"
       serviceAccountName: {{ include "arborist.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}

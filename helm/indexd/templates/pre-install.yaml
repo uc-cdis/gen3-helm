@@ -24,12 +24,20 @@ spec:
       containers:
         - name: indexd
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
           volumeMounts:
             - name: "config-volume"
               readOnly: true
               mountPath: "/var/www/indexd/local_settings.py"
               subPath: "local_settings.py"  
-          imagePullPolicy: Always
+            - name: "sheepdog-creds-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/sheepdog_creds.json"
+              subPath: creds.json
+            - name: "indexd-creds-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/creds.json"
+              subPath: creds.json
           command: ["/bin/bash" ]
           args: 
             - "-c"

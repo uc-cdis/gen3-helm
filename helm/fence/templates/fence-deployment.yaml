@@ -186,8 +186,8 @@ spec:
               subPath: "jwt_private_key.pem"
       initContainers:
         - name: fence-init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "quay.io/cdis/fence:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80

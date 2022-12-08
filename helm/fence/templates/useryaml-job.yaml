@@ -26,7 +26,7 @@ spec:
             name: useryaml
       containers:
       - name: fence
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "quay.io/cdis/fence:{{ .Chart.AppVersion }}"
         imagePullPolicy: Always
         env:
           {{- toYaml .Values.env | nindent 10 }}
