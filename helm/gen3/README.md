@@ -60,7 +60,7 @@ Helm chart to deploy Gen3 Data Commons
 | db_restore | bool | `false` |  |
 | fence.enabled | bool | `true` |  |
 | fence.image.repository | string | `nil` |  |
-| fence.image.tag | string | `nil` |  |
+| fence.image.tag | string | `"feat_dbenvvar"` |  |
 | global.aws.account | string | `nil` |  |
 | global.aws.enabled | bool | `false` |  |
 | global.dbRestoreBucket | string | `"gen3-dummy-data"` |  |
