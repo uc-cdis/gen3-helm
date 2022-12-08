@@ -61,7 +61,7 @@ fence:
     tag: feat_dbenvvar
 
 guppy:
-  enabled: true
+  enabled: false
   image:
     repository:
     tag:

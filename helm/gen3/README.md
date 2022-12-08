@@ -84,7 +84,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.syncFromDbgap | bool | `false` |  |
 | global.tierAccessLevel | string | `"libre"` |  |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
-| guppy.enabled | bool | `true` |  |
+| guppy.enabled | bool | `false` |  |
 | guppy.image.repository | string | `nil` |  |
 | guppy.image.tag | string | `nil` |  |
 | hatchery.enabled | bool | `true` |  |
