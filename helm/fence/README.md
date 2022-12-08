@@ -135,7 +135,6 @@ A Helm chart for gen3 Fence
 | FENCE_CONFIG.OPENID_CONNECT.cilogon.mock_default_user | string | `"http://cilogon.org/serverT/users/64703"` |  |
 | FENCE_CONFIG.OPENID_CONNECT.cilogon.redirect_url | string | `"{{BASE_URL}}/login/cilogon/login/"` |  |
 | FENCE_CONFIG.OPENID_CONNECT.cilogon.scope | string | `"openid email profile"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.assume_emails_verified | bool | `false` |  |
 | FENCE_CONFIG.OPENID_CONNECT.cognito.client_id | string | `""` |  |
 | FENCE_CONFIG.OPENID_CONNECT.cognito.client_secret | string | `""` |  |
 | FENCE_CONFIG.OPENID_CONNECT.cognito.discovery_url | string | `"https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration"` |  |
@@ -941,7 +940,7 @@ A Helm chart for gen3 Fence
 | global.hostname | string | `"localhost"` |  |
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | string | `"on"` |  |
+| global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.db_create | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
@@ -955,7 +954,7 @@ A Helm chart for gen3 Fence
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/fence"` |  |
-| image.tag | string | `"feat_dbenvvar"` |  |
+| image.tag | string | `"master"` |  |
 | imagePullSecrets | list | `[]` |  |
 | initEnv[0].name | string | `"PGHOST"` |  |
 | initEnv[0].valueFrom.secretKeyRef.key | string | `"host"` |  |

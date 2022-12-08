@@ -6,9 +6,9 @@ global:
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -17,23 +17,23 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
 postgres:
   db_create:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: fence
   username: fence
-  host: 
+  host:
   port: "5432"
   # If left empty password will be auto-generated
-  password: 
+  password:
 
 replicaCount: 1
 
@@ -41,7 +41,7 @@ image:
   repository: quay.io/cdis/fence
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_dbenvvar"
+  tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -52,7 +52,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
-  annotations: 
+  annotations:
     # TODO: Make this dynamic
     eks.amazonaws.com/role-arn: ""
   # The name of the service account to use.
@@ -61,7 +61,7 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: 
+podSecurityContext:
   fsGroup: 101
 
 securityContext: {}
@@ -78,8 +78,8 @@ service:
   port: 80
 
 
-resources: 
-  requests: 
+resources:
+  requests:
     cpu: 100m
     memory: 128Mi
   limits:
@@ -108,7 +108,7 @@ nodeSelector: {}
 
 tolerations: []
 
-labels: 
+labels:
   app: fence
   release: production
   # for network policy selectors
@@ -120,7 +120,8 @@ labels:
   tags.datadoghq.com/service: "fence"
   tags.datadoghq.com/env: anvilstaging
   tags.datadoghq.com/version: 2021.12
-affinity: 
+
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -133,7 +134,7 @@ affinity:
             - fence
         topologyKey: "kubernetes.io/hostname"
 
-env: 
+env:
   - name: DD_ENABLED
     valueFrom:
       configMapKeyRef:
@@ -185,13 +186,13 @@ env:
       secretKeyRef:
         name: fence-dbcreds
         key: host
-        optional: false  
+        optional: false
   - name: PGUSER
     valueFrom:
       secretKeyRef:
         name: fence-dbcreds
         key: username
-        optional: false 
+        optional: false
   - name: PGPASSWORD
     valueFrom:
       secretKeyRef:
@@ -207,8 +208,7 @@ env:
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
 
-      
-volumes: 
+volumes:
   - name: old-config-volume
     secret:
       secretName: "fence-secret"
@@ -246,7 +246,7 @@ volumes:
       name: "fence-yaml-merge"
       optional: true
 
-volumeMounts: 
+volumeMounts:
   - name: "old-config-volume"
     readOnly: true
     mountPath: "/var/www/fence/local_settings.py"
@@ -290,9 +290,9 @@ volumeMounts:
   - name: "fence-jwt-keys"
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
-    subPath: "jwt_private_key.pem"            
+    subPath: "jwt_private_key.pem"
 
-initVolumeMounts: 
+initVolumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/fence/fence-config.yaml"
@@ -316,13 +316,13 @@ initEnv:
       secretKeyRef:
         name: fence-dbcreds
         key: host
-        optional: false  
+        optional: false
   - name: PGUSER
     valueFrom:
       secretKeyRef:
         name: fence-dbcreds
         key: username
-        optional: false 
+        optional: false
   - name: PGPASSWORD
     valueFrom:
       secretKeyRef:
@@ -346,23 +346,23 @@ initEnv:
         key: fence-config-public.yaml
         optional: true
 
-selectorLabels: 
+selectorLabels:
   app: fence
   release: production
 
 
-logo: 
-privacy_policy: 
+logo:
+privacy_policy:
 
 
 USER_YAML_CRON:
   LOCATION:
-    TYPE: 
-    S3: 
-    github.com: 
+    TYPE:
+    S3:
+    github.com:
 
 ### USER YAML
-USER_YAML: 
+USER_YAML:
   cloud_providers: {}
   groups: {}
   authz:
@@ -372,7 +372,7 @@ USER_YAML:
     # policies automatically given to authenticated users (in addition to their other
     # policies)
     all_users_policies: ['open_data_reader', 'authn_open_access']
-    
+
     user_project_to_resource:
       QA: /programs/QA
       DEV: /programs/DEV
@@ -1238,7 +1238,6 @@ USER_YAML:
 #### FENCE CONFIG ####
 FENCE_CONFIG:
   APP_NAME: 'Gen3 Data Commons'
-  
 
   # A URL-safe base64-encoded 32-byte key for encrypting keys in db
   # in python you can use the following script to generate one:
@@ -1431,7 +1430,7 @@ FENCE_CONFIG:
       # In the case where Cognito is being used solely as an intermediary to a single IdP,
       # and that IdP is a SAML IdP with no 'email_verified' outgoing claim, but it is safe
       # to assume all emails from this SAML IdP are in fact verified, we may set this to True
-      assume_emails_verified: False
+      # assume_emails_verified: False
     # CILogon subscribers can create and manage OIDC clients using COmanage Registry.
     # Free tier users may request OIDC clients at https://cilogon.org/oauth2/register
     cilogon:
@@ -1513,7 +1512,7 @@ FENCE_CONFIG:
   # default to NIH login.
   # - Optional parameters: "desc" (description) and "secondary" (boolean - can
   # be used by the frontend to display secondary buttons differently).
-  LOGIN_OPTIONS: #[] # !!! remove the empty list to enable login options!
+  LOGIN_OPTIONS:
     - name: 'Login from Google'
       desc: 'description'
       idp: google

@@ -219,13 +219,13 @@ spec:
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
             - name: GUPPY_INDICES
-              value: {{ range .Values.indices }} {{ .index }} {{ end }}
+              value: {{ range $.Values.indices }} {{ .index }} {{ end }}
             - name: GUPPY_CONFIGINDEX
               value: {{ .Values.configIndex }}
             - name: ENVIRONMENT
-              value: {{ .Values.global.environment }}
+              value: {{ $.Values.global.environment }}
             - name: BUCKET
-              value: {{ .Values.global.dbRestoreBucket }}
+              value: {{ $.Values.global.dbRestoreBucket }}
             - name: VERSION
               value: {{ .Chart.Version }}
           volumeMounts:

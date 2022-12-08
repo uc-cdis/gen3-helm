@@ -8,9 +8,9 @@ global:
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -19,26 +19,26 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
 postgres:
   db_create:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: sheepdog
   username: sheepdog
   port: "5432"
   # If left empty it will be auto-generated
-  password: 
+  password:
+  # If db_restore is set to true then the database will have fake data/tables dumped into it.
   db_restore: false
-    #If db_restore is set to true then the database will have fake data/tables dumped into it. 
 
-#Deployment
+# Deployment
 releaseLabel: production
 
 podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
@@ -63,7 +63,7 @@ dataDog:
   enabled: false
   env: dev
 
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -94,15 +94,15 @@ indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
 arboristUrl: http://arborist-service.default.svc.cluster.local
 authNamespace: default
-#Placeholders for datadog
-ddTraceEnabled: 
-ddEnv: 
+# Placeholders for datadog
+ddTraceEnabled:
+ddEnv:
 ddService:
 ddVersion:
 ddLogsInjection:
 ddProfilingEnabled:
-ddTraceSampleRate: 
-ddTraceAgentHostname: 
+ddTraceSampleRate:
+ddTraceAgentHostname:
 
 
 livenessProbe:
@@ -145,26 +145,24 @@ resources:
   #   cpu: 2
   #   memory: 2048Mi
 
-#Service and Pod
+# Service and Pod
 service:
   type: ClusterIP
   port: 80
 
 # Secrets
 secrets:
-  fence:    
+  fence:
     host: postgres-postgresql.postgres.svc.cluster.local
     user: postgres
     password: postgres
     database: fence
   sheepdog:
-    host:  postgres-postgresql.postgres.svc.cluster.local
+    host: postgres-postgresql.postgres.svc.cluster.local
     password: postgres
     user: postgres
     database: sheepdog
   gdcapi:
     secretKey:
-  indexd: 
+  indexd:
     password: postgres
-
-

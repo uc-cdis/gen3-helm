@@ -6,9 +6,9 @@ global:
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -17,22 +17,22 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
 postgres:
   db_create:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: requestor
   username: requestor
   port: "5432"
   # If left empty password will be auto-generated
-  password: 
+  password:
 
 
 # Deployment
@@ -58,7 +58,7 @@ dataDog:
   enabled: false
   env: dev
 
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -77,7 +77,7 @@ image:
   repository: quay.io/cdis/requestor
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_dbenvvar"
+  tag: "master"
 
 # Environment Variables
 arboristUrl: http://arborist-service
@@ -97,7 +97,7 @@ readinessProbe:
 containerPort:
   - containerPort: 80
 
-volumeMounts: 
+volumeMounts:
   # - name: "config-volume"
   #   readOnly: true
   #   mountPath: "/src/requestor-config.yaml"
@@ -126,11 +126,11 @@ args:
   - |
     /env/bin/alembic upgrade head
 
-#Service and Pod
+# Service and Pod
 service:
   type: ClusterIP
   port:
     - protocol: TCP
       port: 80
-      targetPort: 80 
+      targetPort: 80
       name: http

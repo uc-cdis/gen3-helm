@@ -1,11 +1,14 @@
+# Default values for wts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 global:
   dev: true
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -14,27 +17,22 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
 postgres:
   db_create:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: wts
   username: wts
   port: "5432"
   # If left empty it will be auto-generated
-  password: 
-
-    
-# Default values for wts.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+  password:
 
 replicaCount: 1
 
@@ -48,11 +46,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-
-
-hostname: 
-oidc_client_id: 
-oidc_client_secret: 
+hostname:
+oidc_client_id:
+oidc_client_secret:
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -90,7 +86,7 @@ service:
   httpPort: 80
   httpsPort: 443
 
-resources: 
+resources:
   requests:
     cpu: 0.1
     memory: 12Mi
@@ -117,14 +113,14 @@ release: production
 
 secrets:
   external_oidc:
-    # - base_url: 
-    #   oidc_client_id: 
-    #   oidc_client_secret: 
+    # - base_url:
+    #   oidc_client_id:
+    #   oidc_client_secret:
     #   login_options:
-    #     example-google-login: 
-    #       name: 
+    #     example-google-login:
+    #       name:
     #       params:
-    #         idp: 
+    #         idp:
 
   # wts-g3auto:
   #   appcreds.json: |
@@ -144,4 +140,3 @@ secrets:
   #       "db_passwurd": "WTS_DB_PWD.REPLACE",
   #       "db_database": "wts_default"
   #     }
-

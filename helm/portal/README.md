@@ -8,7 +8,6 @@ A Helm chart for gen3 data-portal
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"portal"` |  |
@@ -22,7 +21,7 @@ A Helm chart for gen3 data-portal
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/cdis/data-portal-prebuilt"` |  |
-| image.tag | string | `"va.data-commons.org-feat-develop"` |  |
+| image.tag | string | `"brh.data-commons.org-feat-develop"` |  |
 | imagePullSecrets | list | `[]` |  |
 | labels.app | string | `"portal"` |  |
 | labels.public | string | `"yes"` |  |
@@ -32,7 +31,6 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | object | `{}` |  |
 | portalApp | string | `"dev"` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
 | resources.limits.cpu | float | `2` |  |
 | resources.limits.memory | string | `"4096Mi"` |  |
 | resources.requests.cpu | float | `0.6` |  |

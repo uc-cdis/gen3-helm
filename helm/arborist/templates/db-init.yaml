@@ -1,3 +1,4 @@
-{{- include "common.db-setup-job" . }}
 ---
-{{- include "common.db-secret" . }}
+{{ include "common.db-setup-job" . }}
+---
+{{ include "common.db-secret" . }}

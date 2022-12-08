@@ -2,16 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 global:
-  aws: 
-    enabled: false 
+  aws:
+    enabled: false
     account:
   dev: true
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -21,119 +21,117 @@ global:
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
   dbRestoreBucket: gen3-dummy-data
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
-      
-
 # Dependancy Charts
-ambassador: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-arborist: 
+ambassador:
   enabled: true
   image:
     repository:
     tag:
 
-argo-wrapper: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-audit: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-fence: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-guppy: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-hatchery: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-indexd: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-manifestservice: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-metadata: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-peregrine: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-pidgin: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-portal: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-requestor: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-revproxy: 
-  enabled: true
-  image:
-    repository:
-    tag:
-  
-sheepdog: 
+arborist:
   enabled: true
   image:
     repository:
     tag:
 
-ssjdispatcher: 
+argo-wrapper:
   enabled: true
   image:
     repository:
     tag:
-  
+
+audit:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+fence:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+guppy:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+hatchery:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+indexd:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+manifestservice:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+metadata:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+peregrine:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+pidgin:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+portal:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+requestor:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+revproxy:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+sheepdog:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+ssjdispatcher:
+  enabled: true
+  image:
+    repository:
+    tag:
+
 wts:
   enabled: true
   image:
@@ -143,17 +141,17 @@ wts:
 # If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
 db_create: true
 
-#If db_restore is set to true then the database will have fake data/tables dumped into it. 
+# If db_restore is set to true then the database will have fake data/tables dumped into it.
 db_restore: false
 
-#The db restore job requires AWS credentials to access the S3 bucket
+# The db restore job requires AWS credentials to access the S3 bucket
 secrets:
   awsAccessKeyId: test
   awsSecretAccessKey: test
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
-postgresql: 
+postgresql:
   primary:
     persistence:
       enabled: false

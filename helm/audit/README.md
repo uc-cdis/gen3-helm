@@ -38,7 +38,7 @@ A Helm chart for Kubernetes
 | global.hostname | string | `"localhost"` |  |
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | string | `"on"` |  |
+| global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.db_create | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
@@ -52,7 +52,7 @@ A Helm chart for Kubernetes
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/audit-service"` |  |
-| image.tag | string | `"feat_dbenvvar"` |  |
+| image.tag | string | `"master"` |  |
 | imagePullSecrets | list | `[]` |  |
 | initEnv | object | `{}` |  |
 | initVolumeMounts[0].mountPath | string | `"/src/audit-service-config.yaml"` |  |
