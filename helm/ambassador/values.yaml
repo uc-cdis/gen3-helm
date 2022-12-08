@@ -59,7 +59,7 @@ selectorLabels:
 
 userNamespace: "jupyter-pods"
 
-resources: 
+resources:
   limits:
     cpu: 500m
     memory: 400Mi

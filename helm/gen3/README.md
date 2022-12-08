@@ -4,6 +4,16 @@
 
 Helm chart to deploy Gen3 Data Commons
 
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| ahilt | <ahilt@uchicago.edu> |  |
+| ajoaugustine | <ajoa@uchicago.edu> |  |
+| emalinowski | <emalinowski@uchicago.edu> |  |
+| EliseCastle23 | <elisemcastle@uchicago.edu> |  |
+| jawadqur | <qureshi@uchicago.edu> |  |
+
 ## Requirements
 
 | Repository | Name | Version |
@@ -62,7 +72,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.hostname | string | `"localhost"` |  |
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | string | `"on"` |  |
+| global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.db_create | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
@@ -99,7 +109,7 @@ Helm chart to deploy Gen3 Data Commons
 | portal.image.repository | string | `nil` |  |
 | portal.image.tag | string | `nil` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
-| requestor.enabled | bool | `true` |  |
+| requestor.enabled | bool | `false` |  |
 | requestor.image.repository | string | `nil` |  |
 | requestor.image.tag | string | `nil` |  |
 | revproxy.enabled | bool | `true` |  |

@@ -39,7 +39,7 @@ A Helm chart for gen3 Requestor Service
 | global.hostname | string | `"localhost"` |  |
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | string | `"on"` |  |
+| global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.db_create | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
@@ -53,7 +53,7 @@ A Helm chart for gen3 Requestor Service
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/requestor"` |  |
-| image.tag | string | `"feat_dbenvvar"` |  |
+| image.tag | string | `"master"` |  |
 | initContainerName | string | `"requestor-db-migrate"` |  |
 | initResources.limits.cpu | float | `0.8` |  |
 | initResources.limits.memory | string | `"512Mi"` |  |

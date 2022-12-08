@@ -16,7 +16,7 @@ A Helm chart for provisioning databases in gen3
 | global.hostname | string | `"localhost"` |  |
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | string | `"on"` |  |
+| global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.db_create | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |

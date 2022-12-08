@@ -10,10 +10,10 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, develop, --branch, master, --pattern, release/.*]
   
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
-    hooks:
-    - id: helmlint
+  # - repo: https://github.com/gruntwork-io/pre-commit
+  #   rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+  #   hooks:
+  #   - id: helmlint
 
   - repo: local 
     hooks: 

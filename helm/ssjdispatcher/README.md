@@ -28,13 +28,6 @@ A Helm chart for gen3 ssjdispatcher
 | image.tag | string | `""` |  |
 | imagePullSecrets | list | `[]` |  |
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` |  |
-| ingress.annotations | object | `{}` |  |
-| ingress.className | string | `""` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.hosts[0].host | string | `"chart-example.local"` |  |
-| ingress.hosts[0].paths[0].path | string | `"/"` |  |
-| ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
-| ingress.tls | list | `[]` |  |
 | labels.netnolimit | string | `"yes"` |  |
 | labels.public | string | `"yes"` |  |
 | nameOverride | string | `""` |  |
@@ -42,7 +35,6 @@ A Helm chart for gen3 ssjdispatcher
 | podSecurityContext.fsGroup | int | `1000` |  |
 | podSecurityContext.runAsUser | int | `1000` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
 | resources.limits.cpu | float | `1` |  |
 | resources.limits.memory | string | `"2400Mi"` |  |
 | resources.requests.cpu | float | `0.1` |  |
@@ -53,10 +45,7 @@ A Helm chart for gen3 ssjdispatcher
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
-| serviceAccount.create | bool | `true` |  |
-| serviceAccount.name | string | `""` |  |
 | serviceAccount.name | string | `"ssjdispatcher-service-account"` |  |
 | ssjcreds.jobName | string | `"indexing"` |  |
 | ssjcreds.jobPassword | string | `"replace_with_password"` |  |

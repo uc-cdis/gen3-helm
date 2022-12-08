@@ -2,7 +2,7 @@ apiVersion: v2
 name: gen3
 description: Helm chart to deploy Gen3 Data Commons
 
-#Dependancies
+# Dependancies
 dependencies:
 - name: ambassador
   version: "0.1.0"
@@ -89,7 +89,7 @@ dependencies:
   repository: file://../gen3-test-data-job
   condition: db_restore.enabled
 
-#A chart can be either an 'application' or a 'library' chart.
+# A chart can be either an 'application' or a 'library' chart.
 #
 # Application charts are a collection of templates that can be packaged into versioned archives
 # to be deployed.
@@ -109,3 +109,19 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "master"
+
+maintainers:
+  - name: ahilt
+    email: ahilt@uchicago.edu
+
+  - name: ajoaugustine
+    email: ajoa@uchicago.edu
+
+  - name: emalinowski
+    email: emalinowski@uchicago.edu
+
+  - name: EliseCastle23
+    email: elisemcastle@uchicago.edu
+
+  - name: jawadqur
+    email: qureshi@uchicago.edu

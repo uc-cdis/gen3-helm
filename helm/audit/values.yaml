@@ -6,9 +6,9 @@ global:
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -17,25 +17,23 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
 postgres:
   db_create:
-  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you 
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: audit
   username: audit
   host:
   port: "5432"
   # If left empty password will be auto-generated
-  password: 
-
-
+  password:
 
 replicaCount: 1
 
@@ -43,7 +41,7 @@ image:
   repository: quay.io/cdis/audit-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_dbenvvar"
+  tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -53,7 +51,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
-  annotations: 
+  annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/gen3_service/emalinowskiv1--default--audit-sqs-sender
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
@@ -61,7 +59,7 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:  {}
+podSecurityContext: {}
 
 securityContext: {}
 
@@ -77,8 +75,8 @@ service:
   port: 80
 
 
-resources: 
-  requests: 
+resources:
+  requests:
     cpu: 100m
     memory: 128Mi
   limits:
@@ -107,7 +105,7 @@ nodeSelector: {}
 
 tolerations: []
 
-labels: 
+labels:
   app: audit
   release: production
   # for network policy selectors
@@ -117,7 +115,7 @@ labels:
   public: "yes"
   userhelper: "yes"
   tags.datadoghq.com/service: "audit"
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -130,7 +128,7 @@ affinity:
             - audit
         topologyKey: "kubernetes.io/hostname"
 
-env: 
+env:
   - name: DEBUG
     value: "false"
   - name: ARBORIST_URL
@@ -145,21 +143,21 @@ volumes:
     secret:
       secretName: "audit-g3auto"
 
-volumeMounts: 
+volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/src/audit-service-config.yaml"
-    subPath: "audit-service-config.yaml" 
+    subPath: "audit-service-config.yaml"
 
-initVolumeMounts: 
+initVolumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/src/audit-service-config.yaml"
-    subPath: "audit-service-config.yaml" 
+    subPath: "audit-service-config.yaml"
 
 initEnv: {}
 
-selectorLabels: 
+selectorLabels:
   app: audit
 
 server:

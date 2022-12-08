@@ -27,5 +27,3 @@ dependencies:
   version: 0.1.0
   repository: file://../common
   condition: db_creation.enabled
-
-

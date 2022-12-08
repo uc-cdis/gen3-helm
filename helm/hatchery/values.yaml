@@ -3,16 +3,16 @@
 # Declare variables to be passed into your templates.
 # Declare variables to be passed into your templates.
 global:
-  aws: 
-    enabled: false 
+  aws:
+    enabled: false
     account:
   dev: true
   postgres:
     db_create: true
     master:
-      host: 
+      host:
       username: postgres
-      password: 
+      password:
       port: "5432"
   environment: default
   hostname: localhost
@@ -21,11 +21,11 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  syncFromDbgap: False
+  syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
-  netPolicy: on
+  netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
 
@@ -72,7 +72,7 @@ tolerations: []
 
 affinity: {}
 
-env: 
+env:
 - name: HTTP_PORT
   value: "8000"
 - name: POD_NAMESPACE
@@ -143,5 +143,3 @@ hatchery:
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
-
-        
