@@ -56,7 +56,7 @@ Usage:
   {{- $chartName := .context.Chart.Name }}
   
   {{- $valuesPostgres := get .context.Values.global.postgres.master .key}}
-  {{- $secret :=  (lookup "v1" "Secret" "default" "gen3-postgresql" )}}
+  {{- $secret :=  (lookup "v1" "Secret" "default" "{{ .Release.Name }}-postgresql" )}}
   {{- $devPostgresSecret := "" }}
   {{-  if $secret }}
     {{- $devPostgresSecret = (index $secret "data" "postgres-password") | b64dec }}
