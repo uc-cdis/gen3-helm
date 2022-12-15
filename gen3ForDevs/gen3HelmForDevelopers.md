@@ -3,7 +3,6 @@
 ## Welcome
 Welcome to Gen3! If you're reading this, I assume you're a developer looking to get started working with Gen3. If so, this guide will help you get an instance of Gen3 up and running on your laptop, which will let you work on Gen3 from anywhere you can write code, no other setup needed. 
 
-## Getting Kubernetes Set Up
 
 ### Intro to Kubernetes
 Kubernetes is a container orchestrator, and you'll often see it referred to as k8s, or 'k', followed by the 8 letters in 'ubernete', followed by 's'. It is responsible for managing the lifecycle, storage, and networking for a collection of containers, which are packaged into discrete units called "pods". 
@@ -14,6 +13,8 @@ Kubernetes is primarly meant to run on cloud services, and the big 3 (Amazon Web
 
 ### Installing Kubectl
 Kubectl (I pronounce it cube-cuddle, but others say it differently) is an application that allows you to interface with and control a Kubernetes cluster. In this context, "cluster" simply refers to a group of machines, which can be a group of one, that work together to manage containers. It will be an important tool for you as you get more comfortable working with Kubernetes, so we'll install it now. It is a highly-configurable tool that you can install in a lot of ways, so rather than tell you how to do it, we'll let you pick the method that works best for your platform: [Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows) [Mac](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos) [Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux). Once you have kubectl installed, you can verify by running `kubectl`. The output should be a help guide. 
+
+# Do we want this to be Rancher, or Minikube? The command line nature of Minikube means we could build scripts for it, and our local ingress setup is built for Minikube
 
 ### Installing Rancher Desktop
 This guide is primarily written with Mac users in mind, but most Linux users should be able to install Rancher Desktop using their distro's package manager. If you're on Mac and using Homebrew, you can type `brew install --cask rancher`. If not, install directions for Linux, Mac, and Windows are available at [the Rancher website.](https://docs.rancherdesktop.io/getting-started/installation/#macOS) Once you have Rancher succesfully installed and the application opened, we can go over how to get your Kubernetes cluster ready for Gen3!
@@ -42,3 +43,6 @@ This means that Helm was able to connect to your Rancher k8s cluster, and will b
 The first step to installing Gen3 is adding the Gen3 Helm repository. This is just how we package up all the components that make up Gen3, and make them accessible to the public. The command to do this is: `helm repo add gen3 http://helm.gen3.org`. Once you have your repo added, you can install it with the command `helm upgrade --install gen3 gen3/gen3`. This command calls out to the repository you created before, named `gen3`, and grabs an "umbrella chart" containing all the services needed to run Gen3. Confusingly, this umbrella chart is also called `gen3`, and these two parts combine to form the `gen3/gen3` in the command you see. The first `gen3` in that command refers to the "release name," or what Helm will call the deployment of Gen3 on your laptop. If that command runs successfully, you will see an output like this: 
 
 ![image](helmSuccesfulGen3Install.png)
+
+### Accessing Gen3 
+We need instructions on how to set up access to the frontend.
