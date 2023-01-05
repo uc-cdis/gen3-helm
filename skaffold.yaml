@@ -23,7 +23,9 @@ manifests:
       chartPath: ./helm/gen3
       namespace: gen3
       setValues:
-        global.hostname: gen3.localhost
+        global.hostname: localhost
+        portal.image.repository: quay.io/cdis/data-portal
+        portal.image.tag: master
         fence.FENCE_CONFIG.OPENID_CONNECT.google.client_id: "xxx"
         fence.FENCE_CONFIG.OPENID_CONNECT.google.secret: 'xxx'
         # ingress.hostnames.admin: admin.localhost
