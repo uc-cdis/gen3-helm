@@ -28,10 +28,6 @@ manifests:
         portal.image.tag: master
         fence.FENCE_CONFIG.OPENID_CONNECT.google.client_id: 'xxx'
         fence.FENCE_CONFIG.OPENID_CONNECT.google.client_secret: 'xxx'
-        # ingress.hostnames.admin: admin.localhost
-        # ingress.hostnames.backend: hf.localhost
-        # ingress.hostnames.shell: shell.hf.localhost
-        # ingress.hostnames.ui: localhost
       # setValueTemplates:
       #   fence.image.repository: '{{.IMAGE_REPO_gen3_fence}}'
       #   fence.image.tag: '{{.IMAGE_TAG_gen3_fence}}'
