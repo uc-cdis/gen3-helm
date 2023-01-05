@@ -197,10 +197,6 @@ spec:
             - name: INDEX_CLIENT_HOST
               value: {{ . }}
             {{- end }}
-            {{- with .Values.fenceUrl }}
-            - name: FENCE_URL
-              value: {{ . }}
-            {{- end }}
             {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
               value: {{ . }}
