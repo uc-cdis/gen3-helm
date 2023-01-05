@@ -26,8 +26,8 @@ manifests:
         global.hostname: localhost
         portal.image.repository: quay.io/cdis/data-portal
         portal.image.tag: master
-        fence.FENCE_CONFIG.OPENID_CONNECT.google.client_id: "xxx"
-        fence.FENCE_CONFIG.OPENID_CONNECT.google.secret: 'xxx'
+        fence.FENCE_CONFIG.OPENID_CONNECT.google.client_id: 'xxx'
+        fence.FENCE_CONFIG.OPENID_CONNECT.google.client_secret: 'xxx'
         # ingress.hostnames.admin: admin.localhost
         # ingress.hostnames.backend: hf.localhost
         # ingress.hostnames.shell: shell.hf.localhost
