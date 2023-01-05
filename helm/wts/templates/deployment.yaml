@@ -49,7 +49,6 @@ spec:
         - name: wts-secret
           secret:
             secretName: "wts-g3auto"
-      terminationGracePeriodSeconds: 10
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

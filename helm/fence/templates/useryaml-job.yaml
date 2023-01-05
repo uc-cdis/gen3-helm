@@ -30,8 +30,6 @@ spec:
         imagePullPolicy: Always
         env:
           {{- toYaml .Values.env | nindent 10 }}
-          - name: PYTHONPATH
-            value: /var/www/fence
         volumeMounts:
           - name: "fence-config"
             readOnly: true
