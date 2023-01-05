@@ -177,12 +177,12 @@ spec:
             #       name: manifest-global
             #       key: indexd_url
             #       optional: true
-            - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+            # - name: FENCE_URL
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: manifest-global
+            #       key: fence_url
+            #       optional: true
             - name: INDEXD_PASS
               valueFrom:
                 secretKeyRef:
@@ -195,6 +195,10 @@ spec:
               value: {{ include "sheepdog.dictionaryUrl" .}}
             {{- with .Values.indexdUrl }}
             - name: INDEX_CLIENT_HOST
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.fenceUrl }}
+            - name: FENCE_URL
               value: {{ . }}
             {{- end }}
             {{- with .Values.arboristUrl }}
