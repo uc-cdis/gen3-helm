@@ -149,3 +149,15 @@ For local development you must be connected to a kubernetes cluster. As referenc
 Skaffold is a tool for local development that can be used to automatically rebuild and redeploy your application when changes are detected. A minimal skaffold.yaml configuration file has been provided in the gen3-helm directory. Update the values of this file to match your needs.
 
 Follow the steps above, but instead of doing the helm upgrade --install step, use `skaffold dev` to start the development process. Skaffold will automatically build and deploy your application to your kubernetes cluster. 
+
+# Troubleshooting
+
+## Sanity checks
+
+* If deploying from the local repo, make sure you followed the steps for `helm dependency update`. If you make any changes, this must be repeated for those changes to propagate.
+
+## Debugging helm chart issues
+
+* Sometimes there are cryptic errors that occur during use of the helm chart, such as duplicate env vars or other items. Try rendering the resources to a file, in debug mode, and it will help determine where the issues may be taking place
+
+`helm template --debug gen3 ./helm/gen3 -f ./values.yaml > test.yaml`
