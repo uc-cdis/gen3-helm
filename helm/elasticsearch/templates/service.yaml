@@ -8,8 +8,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: 9200
       protocol: TCP
-      name: http
   selector:
     {{- include "elasticsearch.selectorLabels" . | nindent 4 }}
