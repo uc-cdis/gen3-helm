@@ -82,7 +82,10 @@ A Helm chart for gen3 Sheepdog Service
 | readinessProbe.initialDelaySeconds | int | `30` |  |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` |  |
-| resources | string | `nil` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.3` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | secrets.fence.database | string | `"fence"` |  |
 | secrets.fence.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` |  |

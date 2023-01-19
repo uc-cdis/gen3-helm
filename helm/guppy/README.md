@@ -57,9 +57,9 @@ A Helm chart for gen3 Guppy Service
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | int | `1` |  |
-| resources.limits.memory | string | `"2400Mi"` |  |
-| resources.requests.cpu | float | `0.5` |  |
-| resources.requests.memory | string | `"1024Mi"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"500Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |

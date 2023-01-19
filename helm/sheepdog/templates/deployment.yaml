@@ -171,18 +171,6 @@ spec:
                   name: manifest-global
                   key: public_datasets
                   optional: true
-            # - name: INDEX_CLIENT_HOST
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: manifest-global
-            #       key: indexd_url
-            #       optional: true
-            - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
             - name: INDEXD_PASS
               valueFrom:
                 secretKeyRef:

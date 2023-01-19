@@ -77,10 +77,10 @@ A Helm chart for Kubernetes
 | postgres.port | string | `"5432"` |  |
 | postgres.username | string | `"audit"` |  |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | string | `"500m"` |  |
-| resources.limits.memory | string | `"1024Mi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | secrets.sqs.region | string | `"us-east-1"` |  |
 | secrets.sqs.url | string | `"http://sqs.com"` |  |
 | securityContext | object | `{}` |  |

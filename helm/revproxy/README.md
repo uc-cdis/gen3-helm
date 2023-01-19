@@ -52,7 +52,10 @@ A Helm chart for gen3 revproxy
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | replicaCount | int | `1` |  |
-| resources | string | `nil` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | revproxyElb.gen3SecretsFolder | string | `"Gen3Secrets"` |  |
 | revproxyElb.sslCert | string | `""` |  |

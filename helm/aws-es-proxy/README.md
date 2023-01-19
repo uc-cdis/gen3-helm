@@ -20,10 +20,10 @@ A Helm chart for AWS ES Proxy Service for gen3
 | podAnnotations."gen3.io/network-ingress" | string | `"guppy,metadata,spark,tube"` |  |
 | ports[0].containerPort | int | `9200` |  |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | int | `1` |  |
+| resources.limits.cpu | float | `1` |  |
 | resources.limits.memory | string | `"2Gi"` |  |
-| resources.requests.cpu | string | `"250m"` |  |
-| resources.requests.memory | string | `"256Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"250Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | secrets.awsAccessKeyId | string | `"asdpofasdokj"` |  |
 | secrets.awsSecretAccessKey | string | `"asdfjkljklj"` |  |

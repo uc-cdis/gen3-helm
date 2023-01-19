@@ -1019,9 +1019,9 @@ A Helm chart for gen3 Fence
 | privacy_policy | string | `nil` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"2400Mi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
+| resources.requests.cpu | float | `0.3` |  |
+| resources.requests.memory | string | `"250Mi"` |  |
 | securityContext | object | `{}` |  |
 | selectorLabels.app | string | `"fence"` |  |
 | selectorLabels.release | string | `"production"` |  |

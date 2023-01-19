@@ -94,6 +94,7 @@ indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
 arboristUrl: http://arborist-service.default.svc.cluster.local
 authNamespace: default
+
 # Placeholders for datadog
 ddTraceEnabled:
 ddEnv:
@@ -138,12 +139,12 @@ volumeMounts:
     subPath: config_helper.py
 
 resources:
-  # requests:
-  #   cpu: 0.8
-  #   memory: 1024Mi
-  # limits:
-  #   cpu: 2
-  #   memory: 2048Mi
+  requests:
+    cpu: 0.3
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 # Service and Pod
 service:

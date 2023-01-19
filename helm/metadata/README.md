@@ -80,7 +80,10 @@ A Helm chart for gen3 Metadata Service
 | readinessProbe.httpGet.port | int | `80` |  |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` |  |
-| resources | string | `nil` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |

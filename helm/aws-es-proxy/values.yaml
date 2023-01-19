@@ -48,10 +48,10 @@ volumeMounts:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 0.1
+    memory: 250Mi
   limits:
-    cpu: 1
+    cpu: 1.0
     memory: 2Gi
 
 

@@ -44,7 +44,10 @@ A Helm chart for gen3 indexd
 | postgres.port | string | `"5432"` |  |
 | postgres.username | string | `"indexd"` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | secrets.userdb.fence | string | `nil` |  |
 | secrets.userdb.gateway | string | `nil` |  |
 | secrets.userdb.gdcapi | string | `nil` |  |
