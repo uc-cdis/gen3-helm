@@ -79,7 +79,7 @@ dependencies:
 - name: wts
   version: "0.1.0"
   repository: "file://../wts"
-  condition: wts.enabled
+  condition: wts.disabled
 - name: common
   version: 0.1.0
   repository: file://../common

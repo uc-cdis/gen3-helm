@@ -64,7 +64,7 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image.tag | string | `nil` |  |
 | global.aws.account | string | `nil` |  |
 | global.aws.enabled | bool | `false` |  |
-| global.dbRestoreBucket | string | `"gen3-dummy-data"` |  |
+| global.dbRestoreBucket | string | `"gen3-dummy-data-2"` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
@@ -116,8 +116,6 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.enabled | bool | `true` |  |
 | revproxy.image.repository | string | `nil` |  |
 | revproxy.image.tag | string | `nil` |  |
-| secrets.awsAccessKeyId | string | `"test"` |  |
-| secrets.awsSecretAccessKey | string | `"test"` |  |
 | sheepdog.enabled | bool | `true` |  |
 | sheepdog.image.repository | string | `nil` |  |
 | sheepdog.image.tag | string | `nil` |  |

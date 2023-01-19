@@ -33,7 +33,7 @@ A Helm chart for gen3 Metadata Service
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
 | debug | bool | `false` |  |
-| esEndpoint | string | `"elasticsearch:9200"` |  |
+| esEndpoint | string | `"gen3-elasticsearch:9200"` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |

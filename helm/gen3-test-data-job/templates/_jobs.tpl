@@ -239,16 +239,15 @@ spec:
               source "${GEN3_HOME}/gen3/lib/utils.sh"
               gen3_load "gen3/gen3setup"
               export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
-              export ESHOST="${ESHOST:-"elasticsearch:9200"}"
+              export ESHOST="${ESHOST:-"gen3-elasticsearch:9200"}"
+              sleep 75
               echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive"
               aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive
               for index in $indices
               do
-                elasticdump --input /home/ubuntu/"$index"__mapping.json --output=http://elasticsearch:9200/$index --type mapping
-                elasticdump --input /home/ubuntu/"$index"__data.json --output=http://elasticsearch:9200/$index --type data
+                elasticdump --input /home/ubuntu/"$index"__mapping.json --output=http://gen3-elasticsearch:9200/$index --type mapping
+                elasticdump --input /home/ubuntu/"$index"__data.json --output=http://gen3-elasticsearch:9200/$index --type data
               done
-              elasticdump --input=/home/ubuntu/"$configIndex"__mapping.json --output=http://elasticsearch:9200/$configIndex --type mapping
-              elasticdump --input=/home/ubuntu/"$configIndex"__data.json --output=http://elasticsearch:9200/$configIndex --type data
               rm dev*
 {{- end }}
 

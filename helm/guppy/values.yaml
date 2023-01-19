@@ -4,7 +4,6 @@
 
 global:
   dev: true
-  dbRestoreBucket: gen3-dummy-data-2
 
 # Deployment
 autoscaling:
@@ -58,7 +57,7 @@ image:
 
 
 # Environment Variables
-esEndpoint: elasticsearch:9200
+esEndpoint: gen3-elasticsearch:9200
 arboristUrl: http://arborist-service
 tierAccessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
@@ -123,8 +122,5 @@ configIndex: dev_case-array-config
 authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 encryptWhitelist: test1
+db_restore: true
 
-#The db restore job requires AWS credentials to access the S3 bucket
-secrets:
-  awsAccessKeyId: test
-  awsSecretAccessKey: test

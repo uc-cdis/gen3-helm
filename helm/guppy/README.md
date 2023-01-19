@@ -30,6 +30,7 @@ A Helm chart for gen3 Guppy Service
 | containerPort[0].containerPort | int | `8000` |  |
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
+| db_restore | bool | `true` |  |
 | ddEnv | string | `nil` |  |
 | ddLogsInjection | string | `nil` |  |
 | ddProfilingEnabled | string | `nil` |  |
@@ -40,8 +41,7 @@ A Helm chart for gen3 Guppy Service
 | ddVersion | string | `nil` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
-| esEndpoint | string | `"elasticsearch:9200"` |  |
-| global.dbRestoreBucket | string | `"gen3-dummy-data-2"` |  |
+| esEndpoint | string | `"gen3-elasticsearch:9200"` |  |
 | global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |
@@ -63,8 +63,6 @@ A Helm chart for gen3 Guppy Service
 | resources.requests.cpu | float | `0.5` |  |
 | resources.requests.memory | string | `"1024Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
-| secrets.awsAccessKeyId | string | `"test"` |  |
-| secrets.awsSecretAccessKey | string | `"test"` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |
 | service.port[0].protocol | string | `"TCP"` |  |

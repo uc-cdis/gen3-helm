@@ -65,5 +65,5 @@ dependencies:
 - name: gen3-test-data-job
   repository: file://../gen3-test-data-job
   version: 0.1.0
-digest: sha256:ab8794cf7edf65c0e998ad17337086f7f3b40564ecae0572dc316a751ab73534
-generated: "2023-01-19T06:56:23.730655-06:00"
+digest: sha256:416e07dc9d94d16b24096ee5304db2fc5052061efd1453376ec30b1a5c99f900
+generated: "2023-01-19T10:22:39.990926-06:00"

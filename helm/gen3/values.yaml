@@ -20,7 +20,7 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  dbRestoreBucket: gen3-dummy-data
+  dbRestoreBucket: gen3-dummy-data-2
   syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
@@ -145,9 +145,9 @@ db_create: true
 db_restore: false
 
 # The db restore job requires AWS credentials to access the S3 bucket
-secrets:
-  awsAccessKeyId: test
-  awsSecretAccessKey: test
+#secrets:
+#  awsAccessKeyId: test
+#  awsSecretAccessKey: test
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
@@ -155,3 +155,4 @@ postgresql:
   primary:
     persistence:
       enabled: false
+
