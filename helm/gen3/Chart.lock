@@ -11,6 +11,9 @@ dependencies:
 - name: audit
   repository: file://../audit
   version: 0.1.0
+- name: elasticsearch
+  repository: file://../elasticsearch
+  version: 0.1.0
 - name: fence
   repository: file://../fence
   version: 0.1.0
@@ -62,5 +65,5 @@ dependencies:
 - name: gen3-test-data-job
   repository: file://../gen3-test-data-job
   version: 0.1.0
-digest: sha256:330133a1ccfd9678a295c0be86fd23a75344ec10ac2177277cb54020399d3fc1
-generated: "2022-12-07T10:39:13.422735+01:00"
+digest: sha256:ab8794cf7edf65c0e998ad17337086f7f3b40564ecae0572dc316a751ab73534
+generated: "2023-01-19T06:56:23.730655-06:00"

@@ -40,7 +40,9 @@ A Helm chart for gen3 Guppy Service
 | ddVersion | string | `nil` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
-| esEndpoint | string | `"esproxy-service:9200"` |  |
+| esEndpoint | string | `"elasticsearch:9200"` |  |
+| global.dbRestoreBucket | string | `"gen3-dummy-data-2"` |  |
+| global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |
 | image.tag | string | `""` |  |
@@ -61,6 +63,8 @@ A Helm chart for gen3 Guppy Service
 | resources.requests.cpu | float | `0.5` |  |
 | resources.requests.memory | string | `"1024Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
+| secrets.awsAccessKeyId | string | `"test"` |  |
+| secrets.awsSecretAccessKey | string | `"test"` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |
 | service.port[0].protocol | string | `"TCP"` |  |
