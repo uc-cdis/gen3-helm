@@ -8,7 +8,7 @@ Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
 # Deployment instructions
 For a full set of configuration options see the [README.md for gen3](./helm/gen3/README.md)
 
-To see documentation around setting up gen3 developer environments see [gen3HelmForDevelopers.md](./gen3ForDevs/gen3HelmForDevelopers.md)
+To see documentation around setting up gen3 developer environments see [gen3_developer_environments.md](./docs/gen3_developer_environments.md)
 
 ## TL;DR 
 ```
