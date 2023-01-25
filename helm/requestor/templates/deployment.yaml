@@ -68,6 +68,12 @@ spec:
                   name: requestor-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: GEN3_DEBUG
               value: "False"
             {{- with .Values.arboristUrl }}
@@ -125,6 +131,12 @@ spec:
                 secretKeyRef:
                   name: requestor-dbcreds
                   key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: dbcreated
                   optional: false
           {{- with .Values.volumeMounts }}
           volumeMounts:

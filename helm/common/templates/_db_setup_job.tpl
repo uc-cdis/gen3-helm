@@ -1,5 +1,32 @@
 # DB Setup Job
 {{- define "common.db-setup-job" -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Chart.Name }}-dbcreate-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Chart.Name }}-dbcreate-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Chart.Name }}-dbcreate-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: {{ .Chart.Name }}-dbcreate-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Chart.Name }}-dbcreate-role
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -11,6 +38,7 @@ spec:
       # TODO : READ FROM CENTRAL FUNCTION TOO?
         app: gen3job
     spec:
+      serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
       restartPolicy: OnFailure
       containers:
       - name: db-setup
@@ -63,6 +91,15 @@ spec:
             set -e
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
+
+            until pg_isready -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -d template1
+            do
+              >&2 echo "Postgres is unavailable - sleeping"
+              sleep 1
+            done
+            >&2 echo "Postgres is up - executing command"
+
+
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               echo "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
@@ -73,6 +110,9 @@ spec:
               psql -c "GRANT ALL ON DATABASE $SERVICE_PGDB TO $SERVICE_PGUSER WITH GRANT OPTION;"
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE $SERVICE_PGUSER WITH LOGIN"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+
+              # Update secret to signal that db has been created, and services can start
+              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
 {{- end }}
 
