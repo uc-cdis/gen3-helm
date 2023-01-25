@@ -43,6 +43,10 @@ A Helm chart for gen3 arborist
 | env[5].valueFrom.secretKeyRef.optional | bool | `false` |  |
 | env[6].name | string | `"PGSSLMODE"` |  |
 | env[6].value | string | `"disable"` |  |
+| env[7].name | string | `"DBREADY"` |  |
+| env[7].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
+| env[7].valueFrom.secretKeyRef.name | string | `"arborist-dbcreds"` |  |
+| env[7].valueFrom.secretKeyRef.optional | bool | `false` |  |
 | fullnameOverride | string | `""` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
@@ -54,7 +58,7 @@ A Helm chart for gen3 arborist
 | global.logsBucket | string | `"logs-gen3"` |  |
 | global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
+| global.postgres.dbCreate | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
 | global.postgres.master.password | string | `nil` |  |
 | global.postgres.master.port | string | `"5432"` |  |
@@ -73,7 +77,7 @@ A Helm chart for gen3 arborist
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | postgres.database | string | `"arborist"` |  |
-| postgres.db_create | string | `nil` |  |
+| postgres.dbCreate | string | `nil` |  |
 | postgres.host | string | `nil` |  |
 | postgres.password | string | `nil` |  |
 | postgres.port | string | `"5432"` |  |

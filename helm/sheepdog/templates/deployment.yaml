@@ -44,9 +44,6 @@ spec:
         - name: config-volume
           secret:
             secretName: "sheepdog-secret"
-        - name: creds-volume
-          secret:
-            secretName: "sheepdog-creds"
         - name: config-helper
           configMap:
             name: config-helper
@@ -80,6 +77,14 @@ spec:
                 name: sheepdog-dbcreds
                 key: database
                 optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: dbcreated
+                optional: false
+          - name: CONF_HOSTNAME
+            value: {{ .Values.global.hostname }}
           command: ["/bin/bash" ]
           args: 
             - "-c"
@@ -139,6 +144,12 @@ spec:
                   name: fence-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY_FENCE
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: FLASK_SECRET_KEY
               value: "TODO: FIX THIS!!!"
             - name: PGHOST
@@ -164,6 +175,12 @@ spec:
                 secretKeyRef:
                   name: sheepdog-dbcreds
                   key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: dbcreated
                   optional: false
             - name: PUBLIC_DATASETS
               valueFrom:

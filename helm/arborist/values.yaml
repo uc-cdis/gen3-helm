@@ -4,7 +4,7 @@
 global:
   dev: true
   postgres:
-    db_create: true
+    dbCreate: true
     master:
       host:
       username: postgres
@@ -26,7 +26,7 @@ global:
   ddEnabled: false
 
 postgres:
-  db_create:
+  dbCreate:
   host:
   # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: arborist
@@ -141,3 +141,9 @@ env:
       optional: false
 - name: PGSSLMODE
   value: disable
+- name: DBREADY
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: dbcreated
+      optional: false

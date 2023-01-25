@@ -320,6 +320,12 @@ spec:
                   name: {{ .Chart.Name }}-dbcreds
                   key: password
                   optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: ENVIRONMENT
               value: {{ .Values.global.environment }}
             - name: BUCKET
