@@ -79,7 +79,7 @@ dependencies:
 - name: wts
   version: "0.1.0"
   repository: "file://../wts"
-  condition: wts.disabled
+  condition: wts.enabled
 - name: common
   version: 0.1.0
   repository: file://../common
@@ -88,10 +88,6 @@ dependencies:
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
   condition: global.postgres.dev
-- name: gen3-test-data-job
-  version: 0.1.0
-  repository: file://../gen3-test-data-job
-  condition: db_restore.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #

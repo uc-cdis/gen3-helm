@@ -25,7 +25,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.0 |
 | file://../elasticsearch | elasticsearch | 0.1.0 |
 | file://../fence | fence | 0.1.0 |
-| file://../gen3-test-data-job | gen3-test-data-job | 0.1.0 |
 | file://../guppy | guppy | 0.1.0 |
 | file://../hatchery | hatchery | 0.1.0 |
 | file://../indexd | indexd | 0.1.0 |
