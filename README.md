@@ -136,3 +136,30 @@ After configuration is complete, take note of the client ID that was created. Yo
 For production deployments you have to use an external postgres server and elasticsearch server.
 
 NOTE: Gen3 helm charts are currently not used in production by CTDS, but we are aiming to do that soon and will have additional documentation on that.
+
+# Local Development
+
+For local development you must be connected to a kubernetes cluster. As referenced above in the section `Kubernetes cluster` we recommend using [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your local machine, especially on M1 Mac's. You also get ingress and other benefits out of the box.
+
+1. Clone the repository
+2. Navigate to the `gen3-helm/helm/gen3` directory and run `helm dependency update`
+3. Navigate to the back to the `gen3-helm` directory and create your values.yaml file. See the `TL;DR` section for a minimal example.
+4. Run `helm upgrade --install gen3 ./helm/gen3 -f ./values.yaml`
+
+## Using Skaffold
+
+Skaffold is a tool for local development that can be used to automatically rebuild and redeploy your application when changes are detected. A minimal skaffold.yaml configuration file has been provided in the gen3-helm directory. Update the values of this file to match your needs.
+
+Follow the steps above, but instead of doing the helm upgrade --install step, use `skaffold dev` to start the development process. Skaffold will automatically build and deploy your application to your kubernetes cluster. 
+
+# Troubleshooting
+
+## Sanity checks
+
+* If deploying from the local repo, make sure you followed the steps for `helm dependency update`. If you make any changes, this must be repeated for those changes to propagate.
+
+## Debugging helm chart issues
+
+* Sometimes there are cryptic errors that occur during use of the helm chart, such as duplicate env vars or other items. Try rendering the resources to a file, in debug mode, and it will help determine where the issues may be taking place
+
+`helm template --debug gen3 ./helm/gen3 -f ./values.yaml > test.yaml`

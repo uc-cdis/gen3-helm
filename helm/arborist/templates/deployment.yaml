@@ -69,8 +69,10 @@ spec:
               /go/src/github.com/uc-cdis/arborist/bin/arborist
           env:
             {{- toYaml .Values.env | nindent 12 }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            {{- toYaml .Values.volumeMounts | nindent 12 }}  
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
