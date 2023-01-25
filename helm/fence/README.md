@@ -909,8 +909,12 @@ A Helm chart for gen3 Fence
 | env[16].valueFrom.secretKeyRef.key | string | `"database"` |  |
 | env[16].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
 | env[16].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[17].name | string | `"DB"` |  |
-| env[17].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
+| env[17].name | string | `"DBREADY"` |  |
+| env[17].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
+| env[17].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
+| env[17].valueFrom.secretKeyRef.optional | bool | `false` |  |
+| env[18].name | string | `"DB"` |  |
+| env[18].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
 | env[1].name | string | `"DD_ENV"` |  |
 | env[1].valueFrom.fieldRef.fieldPath | string | `"metadata.labels['tags.datadoghq.com/env']"` |  |
 | env[2].name | string | `"DD_SERVICE"` |  |

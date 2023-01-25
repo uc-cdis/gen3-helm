@@ -57,7 +57,7 @@ image:
 
 
 # Environment Variables
-esEndpoint: gen3-elasticsearch:9200
+esEndpoint: ""
 arboristUrl: http://arborist-service
 tierAccessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`

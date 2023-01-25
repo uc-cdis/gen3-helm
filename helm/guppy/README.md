@@ -41,7 +41,7 @@ A Helm chart for gen3 Guppy Service
 | ddVersion | string | `nil` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
-| esEndpoint | string | `"gen3-elasticsearch:9200"` |  |
+| esEndpoint | string | `""` |  |
 | global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |

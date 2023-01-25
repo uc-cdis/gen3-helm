@@ -1,5 +1,6 @@
-# DB Setup Job
-{{- define "common.db-setup-job" -}}
+# DB Setup ServiceAccount
+# Needs to update/ create secrets to signal that db is ready for use.
+{{- define "common.db_setup_sa" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -26,7 +27,10 @@ roleRef:
   kind: Role
   name: {{ .Chart.Name }}-dbcreate-role
   apiGroup: rbac.authorization.k8s.io
----
+{{- end }}
+
+# DB Setup Job
+{{- define "common.db_setup_job" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -85,23 +89,29 @@ spec:
                 name: {{ .Chart.Name }}-dbcreds
                 key: password
                 optional: false
+          - name: GEN3_HOME
+            value: /home/ubuntu/cloud-automation
         args:
           - |
             #!/bin/bash
             set -e
+
+            source "${GEN3_HOME}/gen3/lib/utils.sh"
+            gen3_load "gen3/gen3setup"
+
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
             until pg_isready -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -d template1
             do
               >&2 echo "Postgres is unavailable - sleeping"
-              sleep 1
+              sleep 5
             done
             >&2 echo "Postgres is up - executing command"
 
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-              echo "Database exists"
+              gen3_log_info "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
             else
               echo "database does not exist"
