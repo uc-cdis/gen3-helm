@@ -93,11 +93,11 @@ volumeMounts:
 
 resources:
   requests:
-    cpu: 0.5
-    memory: 1024Mi
+    cpu: 0.1
+    memory: 500Mi
   limits:
     cpu: 1
-    memory: 2400Mi
+    memory: 2Gi
 
 
 # Service and Pod

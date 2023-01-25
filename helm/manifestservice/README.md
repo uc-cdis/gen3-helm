@@ -33,9 +33,9 @@ A Helm chart for Kubernetes
 | manifestserviceG3auto.hostname | string | `"testinstall"` |  |
 | manifestserviceG3auto.prefix | string | `"test"` |  |
 | resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"1024Mi"` |  |
-| resources.requests.cpu | float | `0.5` |  |
-| resources.requests.memory | string | `"512Mi"` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | selectorLabels.app | string | `"manifestservice"` |  |
 | selectorLabels.release | string | `"production"` |  |

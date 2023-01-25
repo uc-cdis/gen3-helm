@@ -75,11 +75,11 @@ volumeMounts:
 
 resources:
   requests:
-    cpu: 0.5
-    memory: 512Mi
+    cpu: 0.1
+    memory: 12Mi
   limits:
     cpu: 1.0
-    memory: 1024Mi
+    memory: 512Mi
 
 manifestserviceG3auto:
   hostname: testinstall

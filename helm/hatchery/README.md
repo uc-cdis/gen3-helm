@@ -66,8 +66,7 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.args | list | `[]` |  |
 | hatchery.sidecarContainer.command[0] | string | `"/bin/bash"` |  |
 | hatchery.sidecarContainer.command[1] | string | `"./sidecar.sh"` |  |
-| hatchery.sidecarContainer.cpu-limit | string | `"1.0"` |  |
-| hatchery.sidecarContainer.env.GEN3_ENDPOINT | string | `"{{ .Values.global.hostname }}"` |  |
+| hatchery.sidecarContainer.cpu-limit | string | `"0.1"` |  |
 | hatchery.sidecarContainer.env.HOSTNAME | string | `"{{ .Values.global.hostname }}"` |  |
 | hatchery.sidecarContainer.env.NAMESPACE | string | `"{{ .Release.Namespace }}"` |  |
 | hatchery.sidecarContainer.image | string | `"quay.io/cdis/ecs-ws-sidecar:master"` |  |
@@ -85,7 +84,10 @@ A Helm chart for gen3 Hatchery
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | tolerations | list | `[]` |  |

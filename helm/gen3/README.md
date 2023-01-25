@@ -56,7 +56,7 @@ Helm chart to deploy Gen3 Data Commons
 | audit.enabled | bool | `true` |  |
 | audit.image.repository | string | `nil` |  |
 | audit.image.tag | string | `nil` |  |
-| db_create | bool | `true` |  |
+| dbCreate | bool | `true` |  |
 | db_restore | bool | `false` |  |
 | fence.enabled | bool | `true` |  |
 | fence.image.repository | string | `nil` |  |
@@ -74,7 +74,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.logsBucket | string | `"logs-gen3"` |  |
 | global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
+| global.postgres.dbCreate | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
 | global.postgres.master.password | string | `nil` |  |
 | global.postgres.master.port | string | `"5432"` |  |
@@ -84,7 +84,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.syncFromDbgap | bool | `false` |  |
 | global.tierAccessLevel | string | `"libre"` |  |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
-| guppy.enabled | bool | `true` |  |
+| guppy.enabled | bool | `false` |  |
 | guppy.image.repository | string | `nil` |  |
 | guppy.image.tag | string | `nil` |  |
 | hatchery.enabled | bool | `true` |  |
@@ -120,7 +120,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` |  |
 | sheepdog.image.repository | string | `nil` |  |
 | sheepdog.image.tag | string | `nil` |  |
-| ssjdispatcher.enabled | bool | `true` |  |
+| ssjdispatcher.enabled | bool | `false` |  |
 | ssjdispatcher.image.repository | string | `nil` |  |
 | ssjdispatcher.image.tag | string | `nil` |  |
 | wts.enabled | bool | `true` |  |

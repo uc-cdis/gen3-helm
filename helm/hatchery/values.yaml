@@ -47,17 +47,13 @@ service:
   type: ClusterIP
   port: 80
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -95,12 +91,11 @@ volumeMounts:
 
 hatchery:
   sidecarContainer:
-    cpu-limit: '1.0'
+    cpu-limit: '0.1'
     memory-limit: 256Mi
     image: quay.io/cdis/ecs-ws-sidecar:master
     env:
       NAMESPACE: "{{ .Release.Namespace }}"
-      GEN3_ENDPOINT: "{{ .Values.global.hostname }}"
       HOSTNAME: "{{ .Values.global.hostname }}"
     args: []
     command:

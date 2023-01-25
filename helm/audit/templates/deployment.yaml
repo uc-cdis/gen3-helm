@@ -69,6 +69,12 @@ spec:
                   name: audit-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: dbcreated
+                  optional: false
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
@@ -100,6 +106,12 @@ spec:
                 secretKeyRef:
                   name: audit-dbcreds
                   key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: audit-dbcreds
+                  key: dbcreated
                   optional: false
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

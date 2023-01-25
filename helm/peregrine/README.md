@@ -15,6 +15,7 @@ A Helm chart for gen3 Peregrine service
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| arboristUrl | string | `nil` |  |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
@@ -31,7 +32,7 @@ A Helm chart for gen3 Peregrine service
 | global.logsBucket | string | `"logs-gen3"` |  |
 | global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
+| global.postgres.dbCreate | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
 | global.postgres.master.password | string | `nil` |  |
 | global.postgres.master.port | string | `"5432"` |  |
@@ -50,13 +51,16 @@ A Helm chart for gen3 Peregrine service
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | postgres.database | string | `"peregrine"` |  |
-| postgres.db_create | string | `nil` |  |
+| postgres.dbCreate | string | `nil` |  |
 | postgres.host | string | `nil` |  |
 | postgres.password | string | `nil` |  |
 | postgres.port | string | `"5432"` |  |
 | postgres.username | string | `"peregrine"` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | securityContext | object | `{}` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
