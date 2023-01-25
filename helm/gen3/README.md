@@ -23,6 +23,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.0 |
 | file://../audit | audit | 0.1.0 |
 | file://../common | common | 0.1.0 |
+| file://../elasticsearch | elasticsearch | 0.1.0 |
 | file://../fence | fence | 0.1.0 |
 | file://../gen3-test-data-job | gen3-test-data-job | 0.1.0 |
 | file://../guppy | guppy | 0.1.0 |
@@ -63,7 +64,7 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image.tag | string | `nil` |  |
 | global.aws.account | string | `nil` |  |
 | global.aws.enabled | bool | `false` |  |
-| global.dbRestoreBucket | string | `"gen3-dummy-data"` |  |
+| global.dbRestoreBucket | string | `"gen3-dummy-data-2"` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
@@ -115,8 +116,6 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.enabled | bool | `true` |  |
 | revproxy.image.repository | string | `nil` |  |
 | revproxy.image.tag | string | `nil` |  |
-| secrets.awsAccessKeyId | string | `"test"` |  |
-| secrets.awsSecretAccessKey | string | `"test"` |  |
 | sheepdog.enabled | bool | `true` |  |
 | sheepdog.image.repository | string | `nil` |  |
 | sheepdog.image.tag | string | `nil` |  |

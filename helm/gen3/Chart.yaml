@@ -20,6 +20,10 @@ dependencies:
   version: "0.1.0"
   repository: "file://../audit"
   condition: audit.enabled
+- name: elasticsearch
+  version: "0.1.0"
+  repository: "file://../elasticsearch"
+  condition: elasticsearch.enabled
 - name: fence
   version: "0.1.0"
   repository: "file://../fence"
@@ -75,7 +79,7 @@ dependencies:
 - name: wts
   version: "0.1.0"
   repository: "file://../wts"
-  condition: wts.enabled
+  condition: wts.disabled
 - name: common
   version: 0.1.0
   repository: file://../common

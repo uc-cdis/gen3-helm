@@ -30,6 +30,7 @@ A Helm chart for gen3 Guppy Service
 | containerPort[0].containerPort | int | `8000` |  |
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
+| db_restore | bool | `true` |  |
 | ddEnv | string | `nil` |  |
 | ddLogsInjection | string | `nil` |  |
 | ddProfilingEnabled | string | `nil` |  |
@@ -40,7 +41,8 @@ A Helm chart for gen3 Guppy Service
 | ddVersion | string | `nil` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
-| esEndpoint | string | `"esproxy-service:9200"` |  |
+| esEndpoint | string | `"gen3-elasticsearch:9200"` |  |
+| global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |
 | image.tag | string | `""` |  |
