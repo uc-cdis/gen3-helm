@@ -11,5 +11,5 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  selector:k get 
+  selector:
     {{- include "ssjdispatcher.selectorLabels" . | nindent 4 }}

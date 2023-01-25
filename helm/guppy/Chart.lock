@@ -1,0 +1,6 @@
+dependencies:
+- name: gen3-test-data-job
+  repository: file://../gen3-test-data-job
+  version: 0.1.0
+digest: sha256:8749d68f47ad3f94b51f802b0ebf869982c07167eccb23fbeff58f9648d20d49
+generated: "2022-12-07T10:38:58.726895+01:00"

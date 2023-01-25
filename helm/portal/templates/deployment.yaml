@@ -24,33 +24,41 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}      
+      - name: config-volume
+        secret:
+          secretName: "portal-config"
+      - name: sponsor-img-volume
+        secret:
+          secretName: "portal-sponsor-config"
+      - name: privacy-policy
+        configMap:
+          name: "privacy-policy"     
       containers:
         - name: portal
-          image: "quay.io/cdis/data-portal:latest"
-          # imagePullPolicy: Never
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
-          #     path: /portal/
+          #     path: /
           #     port: 80
           #   initialDelaySeconds: 60
           #   periodSeconds: 30
           #   timeoutSeconds: 30
           #   failureThreshold: 30
-          # readinessProbe:
-          #   httpGet:
-          #     path: /portal/
-          #     port: 80
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
             # TODO: re-add resources
           ports:
             - containerPort: 80
             - containerPort: 443
-          command:
-            - /bin/bash
-            - ./dockerStart.sh
+          # command:
+          #   - /bin/bash
+          #   - ./dockerStart.sh
           env:
             - name: HOSTNAME
               value: revproxy-service
@@ -152,7 +160,27 @@ spec:
             {{- end }}
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
-            - name: BASENAME
+            # - name: BASENAME
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-      
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/logo/gitops-logo.png"
+              subPath: "gitops-logo.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/createdby/gitops.png"
+              subPath: "gitops-createdby.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+              subPath: "gitops-favicon.ico"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/css/gitops.css"
+              subPath: "gitops.css"
+            - name: "sponsor-img-volume"
+              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/data-portal/custom/privacy_policy.md"
+              subPath: "privacy_policy.md"
+              

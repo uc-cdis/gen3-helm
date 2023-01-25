@@ -1,7 +1,40 @@
-
 # Default values for arborist.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  dev: true
+  postgres:
+    dbCreate: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  dbCreate:
+  host:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: arborist
+  username: arborist
+  port: "5432"
+  # If left empty password will be auto-generated
+  password:
+
 
 replicaCount: 1
 
@@ -41,36 +74,13 @@ service:
   type: ClusterIP
   port: 80
 
-ingress:
-  enabled: true
-  className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx"
-  }
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ingress.local
-      paths:
-        - path: /authz(/|$)(.*)
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -89,29 +99,51 @@ affinity: {}
 volumes:
 - name: creds-volume
   secret:
-    secretName: "arborist-creds"
+    secretName: "arborist-dbcreds"
 
 
 volumeMounts:
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/arborist/dbcreds.json"
-  subPath: dbcreds.json
+# TODO: REMOVE?
 
 env:
+# TODO: Revisit this?
 - name: JWKS_ENDPOINT
   value: "http://fence-service/.well-known/jwks"
-
-
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: arborist
+- name: PGPASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: password
+      optional: false
+- name: PGUSER
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: username
+      optional: false
+- name: PGDATABASE
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: database
+      optional: false
+- name: PGHOST
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: host
+      optional: false
+- name: PGPORT
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: port
+      optional: false
+- name: PGSSLMODE
+  value: disable
+- name: DBREADY
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: dbcreated
+      optional: false

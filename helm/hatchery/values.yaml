@@ -1,77 +1,59 @@
 # Default values for hatchery.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+# Declare variables to be passed into your templates.
+global:
+  aws:
+    enabled: false
+    account:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
 
 replicaCount: 1
 
 image:
-  # repository: mendhak/http-https-echo
   repository: quay.io/cdis/hatchery
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 80
 
-ingress:
-  enabled: true
-  className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx",
-    nginx.ingress.kubernetes.io/allow-headers: REMOTE_USER
-  }
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ingress.local
-      paths:
-        - path: "/lw-workspace(/|$)(.*)"
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -86,9 +68,14 @@ tolerations: []
 
 affinity: {}
 
-env: 
+env:
 - name: HTTP_PORT
   value: "8000"
+- name: POD_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+
 
 volumes:
 - name: hatchery-config
@@ -100,3 +87,54 @@ volumeMounts:
   readOnly: true
   mountPath: /hatchery.json
   subPath: json
+
+
+hatchery:
+  sidecarContainer:
+    cpu-limit: '0.1'
+    memory-limit: 256Mi
+    image: quay.io/cdis/ecs-ws-sidecar:master
+    env:
+      NAMESPACE: "{{ .Release.Namespace }}"
+      HOSTNAME: "{{ .Values.global.hostname }}"
+    args: []
+    command:
+    - "/bin/bash"
+    - "./sidecar.sh"
+    lifecycle-pre-stop:
+    - su
+    - "-c"
+    - echo test
+    - "-s"
+    - "/bin/sh"
+    - root
+
+  containers:
+    - target-port: 8888
+      cpu-limit: '1.0'
+      memory-limit: 2Gi
+      name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
+      image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+      env:
+        FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
+      args:
+      - "--NotebookApp.base_url=/lw-workspace/proxy/"
+      - "--NotebookApp.default_url=/lab"
+      - "--NotebookApp.password=''"
+      - "--NotebookApp.token=''"
+      - "--NotebookApp.shutdown_no_activity_timeout=5400"
+      - "--NotebookApp.quit_button=False"
+      command:
+      - start-notebook.sh
+      path-rewrite: "/lw-workspace/proxy/"
+      use-tls: 'false'
+      ready-probe: "/lw-workspace/proxy/"
+      lifecycle-post-start:
+      - "/bin/sh"
+      - "-c"
+      - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
+        ln -s /data /home/$IAM/pd/; true
+      user-uid: 1000
+      fs-gid: 100
+      user-volume-location: "/home/jovyan/pd"
+      gen3-volume-location: "/home/jovyan/.gen3"

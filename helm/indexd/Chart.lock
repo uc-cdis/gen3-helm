@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: file://../common
+  version: 0.1.0
+- name: gen3-test-data-job
+  repository: file://../gen3-test-data-job
+  version: 0.1.0
+digest: sha256:69c9702ec96903c40a92569ca312d854a7dc2dc85be0fdbf75408a54df8beaf6
+generated: "2022-12-07T10:38:58.725167+01:00"

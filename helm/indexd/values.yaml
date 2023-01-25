@@ -1,7 +1,28 @@
-
 # Default values for indexd.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+global:
+  dev: true
+  # Default values are for postgres deployed as a helm chart
+  postgres:
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+
+db_create: true
+postgres:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: indexd
+  username: indexd
+  host:
+  port: "5432"
+  # If left empty password will be auto-generated
+  password:
+  # If db_restore is set to true then the database will have fake data/tables dumped into it.
+  db_restore: false
 
 replicaCount: 1
 
@@ -42,17 +63,13 @@ service:
   port: 80
 
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -71,7 +88,7 @@ affinity: {}
 volumes:
 - name: config-volume
   secret:
-    secretName: "indexd-secret"
+    secretName: "indexd-settings"
 - name: creds-volume
   secret:
     secretName: "indexd-creds"
@@ -82,31 +99,10 @@ volumeMounts:
   readOnly: true
   mountPath: "/var/www/indexd/local_settings.py"
   subPath: "local_settings.py"
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/creds.json"
-  subPath: creds.json
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/config_helper.py"
-  subPath: config_helper.py
 
 env:
   - name: "GEN3_DEBUG"
-    value: "false"
-
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: indexd
+    value: "False"
 
 secrets:
   userdb:

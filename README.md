@@ -1,55 +1,118 @@
+
 # gen3-helm
-Helm charts for Gen3 Deployments
+<img src="docs/images/gen3-blue-dark.png" width=250px>
 
 
-# Local deployment
+Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
+
+# Deployment instructions
+For a full set of configuration options see the [README.md for gen3](./helm/gen3/README.md)
+
+To see documentation around setting up gen3 developer environments see [gen3HelmForDevelopers.md](./gen3ForDevs/gen3HelmForDevelopers.md)
+
+## TL;DR 
+```
+helm repo add gen3 http://helm.gen3.org
+helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
+```
+
+Use the following as a template for your `values.yaml` file for a minimum deployment of gen3 using these helm charts.
+
+
+
+```
+global:
+  hostname: example-commons.com
+
+fence: 
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: "insert.google.client_id.here"
+        client_secret: "insert.google.client_secret.here"
+```
+
+This is to have a gen3 deployment with google login. You may also use MOCK_AUTH using the following config. NB! This will bypass any login and is only recommended for testing environments
+
+
+```
+global:
+  hostname: example-commons.com
+
+fence: 
+  FENCE_CONFIG:
+    # if true, will automatically login a user with username "test"
+    # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
+    MOCK_AUTH: true
+```
+
+
+## Selective deployments 
+All service helm charts are sub-charts of the gen3 chart (which acts as an umbrella chart)
+To enable or disable a service you can add this pattern to your values.yaml
+
+```
+fence:
+  enable: true
+
+wts:
+  enable: false
+```
+
 
 ## Prerequisites
 
-### Kubernetes
-It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's
+### Kubernetes cluster
+Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE and Rancher Desktop. 
+
+It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's. You also get ingress and other benefits out of the box. 
 
 ### Postgres 
-We need a postgres deployment, for databases and stuff. 
+We need a postgres database. For development/CI clusters an instance of postgres is deployed and automatically configured for you.
 
-Our helm charts expects this postgres installation in a namespace called `postgres` 
-
-
+For production environments please fill out these values and provide a master password for postgres
 
 ```
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install postgres bitnami/postgresql -n postgres --create-namespace
-```
-
-
-After deployment we also need to create databases for our services (This is going to be automated in future versions)
-
-To create databases run this 
-
-```
-export POSTGRES_PASSWORD=$(kubectl get secret --namespace postgres postgres-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
-
-kubectl run postgres-postgresql-client --rm --tty -i --restart='Never' --namespace postgres --image docker.io/bitnami/postgresql:14.5.0-debian-11-r6 --env="PGPASSWORD=$POSTGRES_PASSWORD" \
-      --command -- psql --host postgres-postgresql -U postgres -d postgres -p 5432
-
-```
-
-Once you get a PSQL shell into postgres create databses by running the following
-```
-CREATE DATBASE arborist;
-CREATE DATBASE audit;
-CREATE DATBASE fence;
-CREATE DATBASE indexd;
-CREATE DATBASE metadata;
-CREATE DATBASE peregrine;
-CREATE DATBASE sheepdog;
+global:
+  postgres:
+    db_create: true
+    master:
+      host: insert.postgres.hostname.here
+      username: postgres
+      password: <Insert.Password.Here>
+      port: "5432"
 ```
 
 
-You should now be ready to deploy the helm charts from this repository. 
+### Login Options
+Gen3 does not have any IDP, but can integrate with many. We will cover Google login here, but refer to the fence documentation for additional options. 
+
+TL/DR: At minimum to have google logins working you need to set these settings in your `values.yaml` file
+
+```
+global:
+  aws:
+    # If you're deploying to an EKS set this to true. This will annotate ingress/service accounts appropriately. 
+    # In the future we will be adding support for GKE/AKS using same method.
+    enabled: true
+      aws_access_key_id: 
+      aws_secret_access_key:
+  postgres:
+    master:
+      host: "rds.host.com"
+      username: "postgres"
+      password: "test"
+      port: "5432"
+fence: 
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: "insert.google.client_id.here"
+        client_secret: "insert.google.client_secret.here"
+```
 
 
-# Google login
+#### Google login generation
 
 You need to set up a google credential for google login as that's the default enabled option in fence. 
 
@@ -63,50 +126,13 @@ Click Create credentials > OAuth client ID.
 Select the Web application application type.
 Name your OAuth 2.0 client and click Create.
 
-For `Authorized Javascript Origins` add `https://localhost`
+For `Authorized Javascript Origins` add `https://<hostname>`
 
-For `"Authorized redirect URIs"` add  `https://localhost/user/login/google/login/` 
+For `"Authorized redirect URIs"` add  `https://<hostname>/user/login/google/login/` 
 
 After configuration is complete, take note of the client ID that was created. You will need the client ID and client secret to complete the next steps. 
 
+# Production deployments
+For production deployments you have to use an external postgres server and elasticsearch server.
 
-## Helm chart deployment
-
-### Install all charts
-```
-cd ./helm
-for i in $(ls); do helm upgrade --install $i ./$i; done
-```
-
-### Install fence with google login secrets
-
-```
-helm upgrade fence ./fence --set FENCE_CONFIG.OPENID_CONNECT.google.client_id="xxx" --set FENCE_CONFIG.OPENID_CONNECT.google.client_secret="YYYYY"
-
-```
-
-To restart fence to pick up these changes run 
-
-```
-kubectl rollout restart deployment fence-deployment
-```
-
-### Install WTS 
-
-WTS is a service that needs a fence client. We need to manually create this client and populate the values for WTS using the following steps
-
-1. Make sure fence is running and is healthy
-2. Exec into a running fence pod and generate a fence client for WTS by runningthe following commands
-```
-kubectl exec -it <FENCE-POD> bash
-fence-create client-create --client wts --urls https://localhost/wts/oauth2/authorize --username wts
-```
-
-Note down the client_id and secret and install wts again by running this command
-
-```
-helm upgrade wts . --set oidc_client_id=<CLIENT_ID> --set oidc_client_secret=<CLIENT_SECRET>
-```
-
-# Production Deployment
-These helm charts are not yet ready for production, but check back again soon. 
+NOTE: Gen3 helm charts are currently not used in production by CTDS, but we are aiming to do that soon and will have additional documentation on that.

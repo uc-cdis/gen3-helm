@@ -1,0 +1,7 @@
+{{- include "common.db-setup-job" . }}
+---
+{{ include "common.db-secret" . }}
+---
+{{- if .Values.db_restore }}
+{{ include "gen3-test-data-job.create-test-dbs" . }}
+{{- end -}}

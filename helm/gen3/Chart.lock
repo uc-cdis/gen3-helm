@@ -50,5 +50,17 @@ dependencies:
 - name: ssjdispatcher
   repository: file://../ssjdispatcher
   version: 0.1.0
-digest: sha256:7363cb3f2fc0db97142131a851ea7e637772ee83ce1d33164b9886fd4745678a
-generated: "2022-09-19T14:49:52.41625-06:00"
+- name: wts
+  repository: file://../wts
+  version: 0.1.0
+- name: common
+  repository: file://../common
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.9.13
+- name: gen3-test-data-job
+  repository: file://../gen3-test-data-job
+  version: 0.1.0
+digest: sha256:330133a1ccfd9678a295c0be86fd23a75344ec10ac2177277cb54020399d3fc1
+generated: "2022-12-07T10:39:13.422735+01:00"

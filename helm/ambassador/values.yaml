@@ -59,7 +59,7 @@ selectorLabels:
 
 userNamespace: "jupyter-pods"
 
-resources: 
+resources:
   limits:
     cpu: 500m
     memory: 400Mi
@@ -79,7 +79,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-rbac:
-  rbacServiceName: ambassador-admin
-  servicePort: 8877

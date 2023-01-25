@@ -1,6 +1,6 @@
 apiVersion: v2
 name: aws-es-proxy
-description: A Helm chart for AWS ES Proxy Service
+description: A Helm chart for AWS ES Proxy Service for gen3
 
 # A chart can be either an 'application' or a 'library' chart.
 #

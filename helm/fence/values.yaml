@@ -1,6 +1,39 @@
 # Default values for fence.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  db_create:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: fence
+  username: fence
+  host:
+  port: "5432"
+  # If left empty password will be auto-generated
+  password:
 
 replicaCount: 1
 
@@ -8,32 +41,18 @@ image:
   repository: quay.io/cdis/fence
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "master"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 
-hostname: localhost
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: fence
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
-  annotations: 
+  annotations:
     # TODO: Make this dynamic
     eks.amazonaws.com/role-arn: ""
   # The name of the service account to use.
@@ -42,7 +61,7 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: 
+podSecurityContext:
   fsGroup: 101
 
 securityContext: {}
@@ -58,42 +77,13 @@ service:
   type: ClusterIP
   port: 80
 
-# ingress:
-#   enabled: true
-#   annotations: {
-#     nginx.ingress.kubernetes.io/rewrite-target: /$2,
-#     kubernetes.io/ingress.class: "nginx"
-#   }
-#     # kubernetes.io/ingress.class: nginx
-#     # kubernetes.io/tls-acme: "true"
-#   hosts:
-#     - host: ingress.local
-#       paths:
-#         - path: "/user(/|$)(.*)"
-#           pathType: Prefix
-#   tls: []
-#   #  - secretName: chart-example-tls
-#   #    hosts:
-#   #      - chart-example.local
-
-resources: 
-  requests: 
-    cpu: 100m
-    memory: 128Mi
+resources:
+  requests:
+    cpu: 0.3
+    memory: 250Mi
   limits:
     cpu: 1.0
-    memory: 2400Mi
-
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+    memory: 2Gi
 
 autoscaling:
   enabled: enabled
@@ -106,7 +96,7 @@ nodeSelector: {}
 
 tolerations: []
 
-labels: 
+labels:
   app: fence
   release: production
   # for network policy selectors
@@ -118,7 +108,8 @@ labels:
   tags.datadoghq.com/service: "fence"
   tags.datadoghq.com/env: anvilstaging
   tags.datadoghq.com/version: 2021.12
-affinity: 
+
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -131,7 +122,7 @@ affinity:
             - fence
         topologyKey: "kubernetes.io/hostname"
 
-env: 
+env:
   - name: DD_ENABLED
     valueFrom:
       configMapKeyRef:
@@ -178,9 +169,34 @@ env:
         name: manifest-fence
         key: fence-config-public.yaml
         optional: true
+  - name: PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: host
+        optional: false
+  - name: PGUSER
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: username
+        optional: false
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: password
+        optional: false
+  - name: PGDB
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: database
+        optional: false
+  - name: DB
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
 
-      
-volumes: 
+volumes:
   - name: old-config-volume
     secret:
       secretName: "fence-secret"
@@ -218,7 +234,7 @@ volumes:
       name: "fence-yaml-merge"
       optional: true
 
-volumeMounts: 
+volumeMounts:
   - name: "old-config-volume"
     readOnly: true
     mountPath: "/var/www/fence/local_settings.py"
@@ -262,9 +278,9 @@ volumeMounts:
   - name: "fence-jwt-keys"
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
-    subPath: "jwt_private_key.pem"            
+    subPath: "jwt_private_key.pem"
 
-initVolumeMounts: 
+initVolumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/fence/fence-config.yaml"
@@ -282,7 +298,33 @@ initVolumeMounts:
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
 
-initEnv: 
+initEnv:
+  - name: PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: host
+        optional: false
+  - name: PGUSER
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: username
+        optional: false
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: password
+        optional: false
+  - name: PGDB
+    valueFrom:
+      secretKeyRef:
+        name: fence-dbcreds
+        key: database
+        optional: false
+  - name: DB
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
   - name: FENCE_PUBLIC_CONFIG
@@ -292,20 +334,898 @@ initEnv:
         key: fence-config-public.yaml
         optional: true
 
-selectorLabels: 
+selectorLabels:
   app: fence
   release: production
 
 
-logo: 
-privacy_policy: 
+logo:
+privacy_policy:
+
+
+USER_YAML_CRON:
+  LOCATION:
+    TYPE:
+    S3:
+    github.com:
+
+### USER YAML
+USER_YAML:
+  cloud_providers: {}
+  groups: {}
+  authz:
+    # policies automatically given to anyone, even if they haven't authenticated
+    anonymous_policies: ['open_data_reader', 'full_open_access']
+
+    # policies automatically given to authenticated users (in addition to their other
+    # policies)
+    all_users_policies: ['open_data_reader', 'authn_open_access']
+
+    user_project_to_resource:
+      QA: /programs/QA
+      DEV: /programs/DEV
+      test: /programs/QA/projects/test
+      jenkins: /programs/jnkns/projects/jenkins
+      jenkins2: /programs/jnkns/projects/jenkins2
+      jnkns: /programs/jnkns
+
+    policies:
+      # General Access
+      - id: 'workspace'
+        description: 'be able to use workspace'
+        resource_paths: ['/workspace']
+        role_ids: ['workspace_user']
+      - id: 'dashboard'
+        description: 'be able to use the commons dashboard'
+        resource_paths: ['/dashboard']
+        role_ids: ['dashboard_user']
+      - id: 'prometheus'
+        description: 'be able to use prometheus'
+        resource_paths: ['/prometheus']
+        role_ids: ['prometheus_user']
+      - id: 'ttyadmin'
+        description: 'be able to use the admin tty'
+        resource_paths: ['/ttyadmin']
+        role_ids: ['ttyadmin_user']
+      - id: 'mds_admin'
+        description: 'be able to use metadata service'
+        resource_paths: ['/mds_gateway']
+        role_ids: ['mds_user']
+      - id: 'data_upload'
+        description: 'upload raw data files to S3'
+        role_ids: ['file_uploader']
+        resource_paths: ['/data_file']
+      - description: be able to use sower job
+        id: sower
+        resource_paths: [/sower]
+        role_ids: [sower_user]
+      - id: 'mariner_admin'
+        description: 'full access to mariner API'
+        resource_paths: ['/mariner']
+        role_ids: ['mariner_admin']
+      - id: audit_reader
+        role_ids:
+        - audit_reader
+        resource_paths:
+        - /services/audit
+      - id: audit_login_reader
+        role_ids:
+        - audit_reader
+        resource_paths:
+        - /services/audit/login
+      - id: audit_presigned_url_reader
+        role_ids:
+        - audit_reader
+        resource_paths:
+        - /services/audit/presigned_url
+      - id: requestor_admin
+        role_ids:
+        - requestor_admin
+        resource_paths:
+        - /programs
+      - id: requestor_reader
+        role_ids:
+        - requestor_reader
+        resource_paths:
+        - /programs
+      - id: requestor_creator
+        role_ids:
+        - requestor_creator
+        resource_paths:
+        - /programs
+      - id: requestor_updater
+        role_ids:
+        - requestor_updater
+        resource_paths:
+        - /programs
+      - id: requestor_deleter
+        role_ids:
+        - requestor_deleter
+        resource_paths:
+        - /programs
+      # Data Access
+
+      # All programs policy
+      - id: 'all_programs_reader'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths: ['/programs']
+
+      # # example if need access to write to storage
+      # - id: 'programs.jnkns-storage_writer'
+      #   description: ''
+      #   role_ids:
+      #     - 'storage_writer'
+      #   resource_paths: ['/programs/jnkns']
+
+      - id: 'programs.jnkns-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/jnkns'
+          - '/gen3/programs/jnkns'
+
+      - id: 'programs.jnkns-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/jnkns'
+          - '/gen3/programs/jnkns'
+
+
+      - id: 'programs.QA-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/QA'
+          - '/gen3/programs/QA'
+
+      - id: 'programs.QA-admin-no-storage'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+        resource_paths:
+          - '/programs/QA'
+          - '/gen3/programs/QA'
+
+      - id: 'programs.QA-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/QA'
+          - '/gen3/programs/QA'
+
+      - id: 'programs.DEV-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+          - 'storage_writer'
+        resource_paths:
+          - '/programs/DEV'
+          - '/gen3/programs/DEV'
+
+      - id: 'programs.DEV-storage_writer'
+        description: ''
+        role_ids:
+          - 'storage_writer'
+        resource_paths: ['/programs/DEV']
+
+      - id: 'programs.DEV-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/DEV'
+          - '/gen3/programs/DEV'
+
+      - id: 'programs.test-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/test'
+          - '/gen3/programs/test'
+
+      - id: 'programs.test-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/programs/test'
+          - '/gen3/programs/test'
+
+      - id: 'abc-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/abc'
+
+      - id: 'gen3-admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/gen3'
+
+      - id: 'gen3-hmb-researcher'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_reader'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+          - '/consents/HMB'
+          - '/gen3'
+
+      - id: 'abc.programs.test_program.projects.test_project1-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/abc/programs/test_program/projects/test_project1'
+
+      - id: 'abc.programs.test_program.projects.test_project2-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/abc/programs/test_program/projects/test_project2'
+
+      - id: 'abc.programs.test_program2.projects.test_project3-viewer'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths:
+          - '/abc/programs/test_program2/projects/test_project3'
+
+      # Open data policies
+      - id: 'authn_open_access'
+        resource_paths: ['/programs/open/projects/authnRequired']
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+      - id: 'full_open_access'
+        resource_paths: ['/programs/open/projects/1000G']
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+      - id: 'open_data_reader'
+        description: ''
+        role_ids:
+          - 'reader'
+          - 'storage_reader'
+        resource_paths: ['/open']
+      - id: 'open_data_admin'
+        description: ''
+        role_ids:
+          - 'creator'
+          - 'reader'
+          - 'updater'
+          - 'deleter'
+          - 'storage_writer'
+          - 'storage_reader'
+        resource_paths: ['/open']
+
+      # Consent Code Policies
+      - id: 'not-for-profit-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NPU'
+
+      - id: 'publication-required-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/PUB'
+
+      - id: 'gru-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+
+      - id: 'gru-cc-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+
+      - id: 'hmb-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+          - '/consents/HMB'
+
+      - id: 'poa-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+          - '/consents/POA'
+
+      - id: 'ds-lung-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+          - '/consents/HMB'
+          - '/consents/DS_LungDisease'
+
+      - id: 'ds-chronic-obstructive-pulmonary-disease-researcher'
+        description: ''
+        role_ids:
+          - 'admin'
+        resource_paths:
+          - '/consents/NRES'
+          - '/consents/GRU'
+          - '/consents/GRU_CC'
+          - '/consents/HMB'
+          - '/consents/DS_ChronicObstructivePulmonaryDisease'
+
+      - id: 'services.sheepdog-admin'
+        description: 'CRUD access to programs and projects'
+        role_ids:
+          - 'sheepdog_admin'
+        resource_paths:
+          - '/services/sheepdog/submission/program'
+          - '/services/sheepdog/submission/project'
+
+      # indexd
+      - id: 'indexd_admin'
+        description: 'full access to indexd API'
+        role_ids:
+          - 'indexd_admin'
+        resource_paths:
+          - '/programs'
+          - '/services/indexd/admin'
+      # # TODO resource path '/' is not valid right now in arborist, trying to decide
+      # #      how to handle all resources
+      # - id: 'indexd_admin'
+      #   description: ''
+      #   role_ids:
+      #     - 'indexd_record_creator'
+      #     - 'indexd_record_reader'
+      #     - 'indexd_record_updater'
+      #     - 'indexd_delete_record'
+      #     - 'indexd_storage_reader'
+      #     - 'indexd_storage_writer'
+      #   resource_paths: ['/']
+      # - id: 'indexd_record_reader'
+      #   description: ''
+      #   role_ids:
+      #     - 'indexd_record_reader'
+      #   resource_paths: ['/']
+      # - id: 'indexd_record_editor'
+      #   description: ''
+      #   role_ids:
+      #     - 'indexd_record_creator'
+      #     - 'indexd_record_reader'
+      #     - 'indexd_record_updater'
+      #     - 'indexd_delete_record'
+      #   resource_paths: ['/']
+      # - id: 'indexd_storage_reader'
+      #   description: ''
+      #   role_ids:
+      #     - 'indexd_storage_reader'
+      #   resource_paths: ['/']
+      # - id: 'indexd_storage_editor'
+      #   description: ''
+      #   role_ids:
+      #     - 'indexd_storage_reader'
+      #     - 'indexd_storage_writer'
+      #   resource_paths: ['/']
+
+      # argo
+      - id: argo
+        description: be able to use argo
+        resource_paths: [/argo]
+        role_ids: [argo_user]
+
+    resources:
+      # General Access
+      - name: 'data_file'
+        description: 'data files, stored in S3'
+      - name: 'dashboard'
+        description: 'commons /dashboard'
+      - name: 'mds_gateway'
+        description: 'commons /mds-admin'
+      - name: 'prometheus'
+        description: 'commons /prometheus and /grafana'
+      - name: 'ttyadmin'
+        description: 'commons /ttyadmin'
+      - name: 'workspace'
+      - name: "sower"
+      - name: 'mariner'
+        description: 'workflow execution service'
+      - name: argo
+
+      # OLD Data
+      - name: 'programs'
+        subresources:
+          - name: 'open'
+            subresources:
+              - name: 'projects'
+                subresources:
+                  - name: '1000G'
+                  - name: 'authnRequired'
+          - name: 'QA'
+            subresources:
+              - name: 'projects'
+                subresources:
+                  - name: 'test'
+          - name: 'DEV'
+            subresources:
+              - name: 'projects'
+                subresources:
+                  - name: 'test'
+          - name: 'jnkns'
+            subresources:
+              - name: 'projects'
+                subresources:
+                  - name: 'jenkins'
+                  - name: 'jenkins2'
+          - name: 'test'
+            subresources:
+              - name: 'projects'
+                subresources:
+                  - name: 'test'
+
+      # NEW Data WITH PREFIX
+      - name: 'gen3'
+        subresources:
+          - name: 'programs'
+            subresources:
+              - name: 'QA'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'test'
+              - name: 'DEV'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'test'
+              - name: 'jnkns'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'jenkins'
+                      - name: 'jenkins2'
+              - name: 'test'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'test'
+
+      # consents obtained from DUO and NIH
+      # https://github.com/EBISPOT/DUO
+      # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4721915/
+      - name: 'consents'
+        subresources:
+          - name: 'NRES'
+            description: 'no restriction'
+          - name: 'GRU'
+            description: 'general research use'
+          - name: 'GRU_CC'
+            description: 'general research use and clinical care'
+          - name: 'HMB'
+            description: 'health/medical/biomedical research'
+          - name: 'POA'
+            description: 'population origins or ancestry research'
+          - name: 'NMDS'
+            description: 'no general methods research'
+          - name: 'NPU'
+            description: 'not-for-profit use only'
+          - name: 'PUB'
+            description: 'publication required'
+          - name: 'DS_LungDisease'
+            description: 'disease-specific research for lung disease'
+          - name: 'DS_ChronicObstructivePulmonaryDisease'
+            description: 'disease-specific research for chronic obstructive pulmonary disease'
+
+      - name: 'abc'
+        subresources:
+          - name: 'programs'
+            subresources:
+              - name: 'foo'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'bar'
+              - name: 'test_program'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'test_project1'
+                      - name: 'test_project2'
+              - name: 'test_program2'
+                subresources:
+                  - name: 'projects'
+                    subresources:
+                      - name: 'test_project3'
+
+
+      # "Sheepdog admin" resources
+      - name: 'services'
+        subresources:
+          - name: 'sheepdog'
+            subresources:
+              - name: 'submission'
+                subresources:
+                  - name: 'program'
+                  - name: 'project'
+          - name: 'indexd'
+            subresources:
+              - name: 'admin'
+              - name: 'bundles'
+          - name: audit
+            subresources:
+              - name: presigned_url
+              - name: login
+
+
+      - name: 'open'
+
+    # action/methods:
+    #     create, read, update, delete, read-storage, write-storage,
+    #     file_upload, access
+    roles:
+      # General Access
+      - id: 'file_uploader'
+        description: 'can upload data files'
+        permissions:
+          - id: 'file_upload'
+            action:
+              service: '*'
+              method: 'file_upload'
+      - id: 'workspace_user'
+        permissions:
+          - id: 'workspace_access'
+            action:
+              service: 'jupyterhub'
+              method: 'access'
+      - id: 'dashboard_user'
+        permissions:
+          - id: 'dashboard_access'
+            action:
+              service: 'dashboard'
+              method: 'access'
+      - id: 'mds_user'
+        permissions:
+          - id: 'mds_access'
+            action:
+              service: 'mds_gateway'
+              method: 'access'
+      - id: 'prometheus_user'
+        permissions:
+          - id: 'prometheus_access'
+            action:
+              service: 'prometheus'
+              method: 'access'
+      - id: 'ttyadmin_user'
+        permissions:
+          - id: 'ttyadmin_access'
+            action:
+              service: 'ttyadmin'
+              method: 'access'
+      - id: 'sower_user'
+        permissions:
+          - id: 'sower_access'
+            action:
+              service: 'job'
+              method: 'access'
+      - id: 'mariner_admin'
+        permissions:
+          - id: 'mariner_access'
+            action:
+              service: 'mariner'
+              method: 'access'
+      - id: audit_reader
+        permissions:
+          - id: audit_reader_action
+            action:
+              service: audit
+              method: read
+
+      # All services
+      - id: 'admin'
+        description: ''
+        permissions:
+          - id: 'admin'
+            action:
+              service: '*'
+              method: '*'
+      - id: 'creator'
+        description: ''
+        permissions:
+          - id: 'creator'
+            action:
+              service: '*'
+              method: 'create'
+      - id: 'reader'
+        description: ''
+        permissions:
+          - id: 'reader'
+            action:
+              service: '*'
+              method: 'read'
+      - id: 'updater'
+        description: ''
+        permissions:
+          - id: 'updater'
+            action:
+              service: '*'
+              method: 'update'
+      - id: 'deleter'
+        description: ''
+        permissions:
+          - id: 'deleter'
+            action:
+              service: '*'
+              method: 'delete'
+      - id: 'storage_writer'
+        description: ''
+        permissions:
+          - id: 'storage_writer'
+            action:
+              service: '*'
+              method: 'write-storage'
+      - id: 'storage_reader'
+        description: ''
+        permissions:
+          - id: 'storage_reader'
+            action:
+              service: '*'
+              method: 'read-storage'
+
+
+      # Sheepdog admin role
+      - id: 'sheepdog_admin'
+        description: 'sheepdog admin role for program project crud'
+        permissions:
+          - id: 'sheepdog_admin_action'
+            action:
+              service: 'sheepdog'
+              method: '*'
+
+
+      # indexd
+      - id: 'indexd_admin'
+        # this only works if indexd.arborist is enabled in manifest!
+        description: 'full access to indexd API'
+        permissions:
+          - id: 'indexd_admin'
+            action:
+              service: 'indexd'
+              method: '*'
+      - id: 'indexd_record_creator'
+        description: ''
+        permissions:
+          - id: 'indexd_record_creator'
+            action:
+              service: 'indexd'
+              method: 'create'
+      - id: 'indexd_record_reader'
+        description: ''
+        permissions:
+          - id: 'indexd_record_reader'
+            action:
+              service: 'indexd'
+              method: 'read'
+      - id: 'indexd_record_updater'
+        description: ''
+        permissions:
+          - id: 'indexd_record_updater'
+            action:
+              service: 'indexd'
+              method: 'update'
+      - id: 'indexd_delete_record'
+        description: ''
+        permissions:
+          - id: 'indexd_delete_record'
+            action:
+              service: 'indexd'
+              method: 'delete'
+      - id: 'indexd_storage_reader'
+        description: ''
+        permissions:
+          - id: 'indexd_storage_reader'
+            action:
+              service: 'indexd'
+              method: 'read-storage'
+      - id: 'indexd_storage_writer'
+        description: ''
+        permissions:
+          - id: 'indexd_storage_writer'
+            action:
+              service: 'indexd'
+              method: 'write-storage'
+
+      # arborist
+      - id: 'arborist_creator'
+        description: ''
+        permissions:
+          - id: 'arborist_creator'
+            action:
+              service: 'arborist'
+              method: 'create'
+      - id: 'arborist_reader'
+        description: ''
+        permissions:
+          - id: 'arborist_reader'
+            action:
+              service: 'arborist'
+              method: 'read'
+      - id: 'arborist_updater'
+        description: ''
+        permissions:
+          - id: 'arborist_updater'
+            action:
+              service: 'arborist'
+              method: 'update'
+      - id: 'arborist_deleter'
+        description: ''
+        permissions:
+          - id: 'arborist_deleter'
+            action:
+              service: 'arborist'
+              method: 'delete'
+
+      # requestor
+      - id: requestor_admin
+        permissions:
+        - id: requestor_admin_action
+          action:
+            service: requestor
+            method: '*'
+      - id: requestor_reader
+        permissions:
+        - id: requestor_reader_action
+          action:
+            service: requestor
+            method: read
+      - id: requestor_creator
+        permissions:
+        - id: requestor_creator_action
+          action:
+            service: requestor
+            method: create
+      - id: requestor_updater
+        permissions:
+        - id: requestor_updater_action
+          action:
+            service: requestor
+            method: update
+      - id: requestor_deleter
+        permissions:
+        - id: requestor_deleter_action
+          action:
+            service: requestor
+            method: delete
+      # argo
+      - id: argo_user
+        permissions:
+          - id: argo_access
+            action:
+              service: argo
+              method: access
+
+  clients:
+    basic-test-client:
+      policies:
+      - abc-admin
+      - gen3-admin
+    basic-test-abc-client:
+      policies:
+      - abc-admin
+    wts:
+      policies:
+      - all_programs_reader
+      - workspace
+
+  users:
+    ### BEGIN INTERNS SECTION ###
+    ### END INTERNS SECTION ###
+    qureshi@uchicago.edu:
+      admin: true
+      policies:
+      - data_upload
+      - workspace
+      - dashboard
+      - mds_admin
+      - prometheus
+      - sower
+      - services.sheepdog-admin
+      - programs.QA-admin
+      - programs.test-admin
+      - programs.DEV-admin
+      - programs.jnkns-admin
+      - indexd_admin
+      - ttyadmin
+      projects:
+      - auth_id: QA
+        privilege: [create, read, update, delete, upload, read-storage]
+      - auth_id: test
+        privilege: [create, read, update, delete, upload, read-storage]
+      - auth_id: DEV
+        privilege: [create, read, update, delete, upload, read-storage]
+      - auth_id: jenkins
+        privilege: [create, read, update, delete, upload, read-storage]
+      - auth_id: jenkins2
+        privilege: [create, read, update, delete, upload, read-storage]
+      - auth_id: jnkns
+        privilege: [create, read, update, delete, upload, read-storage]
+
 
 #### FENCE CONFIG ####
-
 FENCE_CONFIG:
   APP_NAME: 'Gen3 Data Commons'
-  BASE_URL: 'http://localhost/user'
-  
 
   # A URL-safe base64-encoded 32-byte key for encrypting keys in db
   # in python you can use the following script to generate one:
@@ -498,7 +1418,7 @@ FENCE_CONFIG:
       # In the case where Cognito is being used solely as an intermediary to a single IdP,
       # and that IdP is a SAML IdP with no 'email_verified' outgoing claim, but it is safe
       # to assume all emails from this SAML IdP are in fact verified, we may set this to True
-      assume_emails_verified: False
+      # assume_emails_verified: False
     # CILogon subscribers can create and manage OIDC clients using COmanage Registry.
     # Free tier users may request OIDC clients at https://cilogon.org/oauth2/register
     cilogon:
@@ -580,7 +1500,7 @@ FENCE_CONFIG:
   # default to NIH login.
   # - Optional parameters: "desc" (description) and "secondary" (boolean - can
   # be used by the frontend to display secondary buttons differently).
-  LOGIN_OPTIONS: #[] # !!! remove the empty list to enable login options!
+  LOGIN_OPTIONS:
     - name: 'Login from Google'
       desc: 'description'
       idp: google

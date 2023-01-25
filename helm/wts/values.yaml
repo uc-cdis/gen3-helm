@@ -1,6 +1,38 @@
 # Default values for wts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  db_create:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: wts
+  username: wts
+  port: "5432"
+  # If left empty it will be auto-generated
+  password:
 
 replicaCount: 1
 
@@ -8,14 +40,14 @@ image:
   repository: quay.io/cdis/workspace-token-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2022.09"
+  tag: "feat_wts_internalfence"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostname: localhost
-oidc_client_id: 
+hostname:
+oidc_client_id:
 oidc_client_secret:
 
 serviceAccount:
@@ -33,9 +65,7 @@ podLabels:
   netnolimit: "yes"
   userhelper: "yes"
   tags.datadoghq.com/service: "token-service"
-  #GEN3_DATE_LABEL
-  #GEN3_WTS_VERSION
-  #GEN3_ENV_LABEL
+
 
 podAnnotations: {}
 
@@ -50,20 +80,13 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  user: postgres
-  password: 
-  dbname: wts
 
 service:
   type: ClusterIP
   httpPort: 80
   httpsPort: 443
 
-resources: 
+resources:
   requests:
     cpu: 0.1
     memory: 12Mi
@@ -89,6 +112,16 @@ roleName: workspace-token-service
 release: production
 
 secrets:
+  external_oidc:
+    # - base_url:
+    #   oidc_client_id:
+    #   oidc_client_secret:
+    #   login_options:
+    #     example-google-login:
+    #       name:
+    #       params:
+    #         idp:
+
   # wts-g3auto:
   #   appcreds.json: |
   #     {
@@ -107,16 +140,3 @@ secrets:
   #       "db_passwurd": "WTS_DB_PWD.REPLACE",
   #       "db_database": "wts_default"
   #     }
-
-postgres:
-  host: postgres-postgresql.postgres.svc.cluster.local
-  
-  master:
-    username: postgres
-    password: TEnTIpzG2I
-    port: 5432
-  
-  databases:
-  - databaseName: wts
-    username: wts
-    password: wts_password

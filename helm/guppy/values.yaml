@@ -2,9 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
-
-#Deployment
+# Deployment
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -20,12 +18,12 @@ strategy:
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
-  
+
 dataDog:
   enabled: false
   env: dev
 
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -61,15 +59,15 @@ arboristUrl: http://arborist-service
 tierAccessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
 tierAccessLimit: 1000
-#Placeholders for datadog
-ddTraceEnabled: 
-ddEnv: 
+# Placeholders for datadog
+ddTraceEnabled:
+ddEnv:
 ddService:
 ddVersion:
 ddLogsInjection:
 ddProfilingEnabled:
-ddTraceSampleRate: 
-ddTraceAgentHostname: 
+ddTraceSampleRate:
+ddTraceAgentHostname:
 
 
 livenessProbe:
@@ -95,14 +93,14 @@ volumeMounts:
 
 resources:
   requests:
-    cpu: 0.5
-    memory: 1024Mi
+    cpu: 0.1
+    memory: 500Mi
   limits:
     cpu: 1
-    memory: 2400Mi
+    memory: 2Gi
 
 
-#Service and Pod
+# Service and Pod
 service:
   type: ClusterIP
   port:
@@ -111,13 +109,13 @@ service:
       targetPort: 8000
       name: http
 
-#Configmap
-indices: 
-- index: etl
-  type: subject
-- index: file
+# Configmap
+indices:
+- index: dev_case
+  type: case
+- index: dev_file
   type: file
-configIndex: array-config
+configIndex: dev_case-array-config
 authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 encryptWhitelist: test1

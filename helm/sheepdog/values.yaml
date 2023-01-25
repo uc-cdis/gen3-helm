@@ -2,7 +2,43 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#Deployment
+# GLOBAL
+global:
+  dev: true
+  postgres:
+    db_create: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  db_create:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: sheepdog
+  username: sheepdog
+  port: "5432"
+  # If left empty it will be auto-generated
+  password:
+  # If db_restore is set to true then the database will have fake data/tables dumped into it.
+  db_restore: false
+
+# Deployment
 releaseLabel: production
 
 podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
@@ -27,7 +63,7 @@ dataDog:
   enabled: false
   env: dev
 
-affinity: 
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -58,15 +94,16 @@ indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
 arboristUrl: http://arborist-service.default.svc.cluster.local
 authNamespace: default
-#Placeholders for datadog
-ddTraceEnabled: 
-ddEnv: 
+
+# Placeholders for datadog
+ddTraceEnabled:
+ddEnv:
 ddService:
 ddVersion:
 ddLogsInjection:
 ddProfilingEnabled:
-ddTraceSampleRate: 
-ddTraceAgentHostname: 
+ddTraceSampleRate:
+ddTraceAgentHostname:
 
 
 livenessProbe:
@@ -92,41 +129,33 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/sheepdog/wsgi.py"
     subPath: "wsgi.py"
-  - name: "creds-volume"
-    readOnly: true
-    mountPath: "/var/www/sheepdog/creds.json"
-    subPath: creds.json
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/var/www/sheepdog/config_helper.py"
-    subPath: config_helper.py
 
 resources:
-  # requests:
-  #   cpu: 0.8
-  #   memory: 1024Mi
-  # limits:
-  #   cpu: 2
-  #   memory: 2048Mi
+  requests:
+    cpu: 0.3
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
-#Service and Pod
+# Service and Pod
 service:
   type: ClusterIP
   port: 80
 
 # Secrets
 secrets:
-  fence:    
+  fence:
     host: postgres-postgresql.postgres.svc.cluster.local
     user: postgres
     password: postgres
     database: fence
   sheepdog:
-    host:  postgres-postgresql.postgres.svc.cluster.local
+    host: postgres-postgresql.postgres.svc.cluster.local
     password: postgres
     user: postgres
     database: sheepdog
   gdcapi:
     secretKey:
-  indexd: 
+  indexd:
     password: postgres

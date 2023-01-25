@@ -66,11 +66,12 @@ Create the name of the service account to use
  Postgres Password lookup
 */}}
 {{- define "peregrine.postgres.password" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- $masterpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+# {{- $localpass := (lookup "v1" "Secret" .Release.Namespace "{{ .Chart.Name }}-dbcreds" ) -}}
 {{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- default (index $masterpass.data "postgres-password" | b64dec) }}
 {{- else }}
-{{- default .Values.database.password }}
+{{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
 

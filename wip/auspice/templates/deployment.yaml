@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auspice-deployment
+spec:
+  selector:
+      {{- with .Values.selectorLabels }}
+      matchLabels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  revisionHistoryLimit: 2
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}  
+  template:
+    metadata:
+      {{- with .Values.labels }}
+      labels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.selectorLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      containers:
+        - name: auspice
+          image: "quay.io/cdis/gen3-auspice:master"
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - ./dockerStart.sh
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: MAPBOX_API_TOKEN
+              # Optional token for mapbox api
+              valueFrom:
+                configMapKeyRef:
+                  name: global
+                  key: mapbox_token
+                  optional: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+

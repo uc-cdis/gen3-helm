@@ -1,17 +1,15 @@
-# TODO: evaluate if we need this
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.rbac.rbacServiceName }}
+  name: ambassador-admin
   labels:
-    service: {{ .Values.rbac.rbacServiceName }}
+    service: ambassador-admin
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - name: {{ .Values.rbac.rbacServiceName }}
-      port: {{ .Values.rbac.servicePort }}
-      targetPort: {{ .Values.rbac.servicePort }}
-      nodePort: null
+    - name: ambassador-admin
+      port: 8877
+      targetPort: 8877
   selector:
     {{- include "ambassador.selectorLabels" . | nindent 4 }}
 ---

@@ -44,15 +44,63 @@ spec:
         - name: config-volume
           secret:
             secretName: "sheepdog-secret"
-        - name: creds-volume
-          secret:
-            secretName: "sheepdog-creds"
         - name: config-helper
           configMap:
             name: config-helper
-
+      initContainers:
+        - name: sheepdog-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+          - name: DICTIONARY_URL
+            value: {{ .Values.dictionaryUrl }}
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: host
+                optional: false  
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: username
+                optional: false 
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: password
+                optional: false
+          - name: PGDB
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: database
+                optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: dbcreated
+                optional: false
+          - name: CONF_HOSTNAME
+            value: {{ .Values.global.hostname }}
+          command: ["/bin/bash" ]
+          args: 
+            - "-c"
+            # Script always succeeds if it runs (echo exits with 0)  
+            - |
+              #
+              # sheepdog sets up core data model now,
+              # but suffers from a race condition doing it ...
+              #
+              echo datamodel_postgres_admin create-all -U "${PGUSER}" -P XXXXXXX -H "${PGHOST}" -D "${PGDB}"
+              datamodel_postgres_admin create-all -U "${PGUSER}" -P "${PGPASSWORD}" -H "${PGHOST}" -D "${PGDB}"
+              
+              echo python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password XXXXX --host "${PGHOST}" --database "${PGDB}"
+              python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password "${PGPASSWORD}" --host "${PGHOST}" --database "${PGDB}"
       containers:
-        - name: {{ .Chart.Name }}
+        - name: sheepdog
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.ports}}
@@ -72,6 +120,74 @@ spec:
           #   - "-c"
           #   - "sleep infinity"
           env: 
+            - name: FENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false
+            - name: FENCE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: FENCE_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false
+            - name: FENCE_DB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY_FENCE
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: dbcreated
+                  optional: false
+            - name: FLASK_SECRET_KEY
+              value: "TODO: FIX THIS!!!"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: dbcreated
+                  optional: false
+            - name: PUBLIC_DATASETS
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: public_datasets
+                  optional: true
             - name: INDEXD_PASS
               valueFrom:
                 secretKeyRef:
@@ -98,13 +214,13 @@ spec:
             - name: AUTH_NAMESPACE
               value: {{ . }}
             {{- end }}
-            - name: REQUESTS_CA_BUNDLE
-              #
-              # override python 'requests' SSL certificate bundle
-              # to use system trusted certs
-              # which includes our private certificate authority
-              #
-              value: /etc/ssl/certs/ca-certificates.crt
+            # - name: REQUESTS_CA_BUNDLE
+            #   #
+            #   # override python 'requests' SSL certificate bundle
+            #   # to use system trusted certs
+            #   # which includes our private certificate authority
+            #   #
+            #   value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "True"
             {{- with .Values.ddTraceEnabled }}

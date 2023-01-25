@@ -6,11 +6,11 @@ type: Opaque
 stringData:
   creds.json: |-
       {
-        "db_host": "{{ .Values.database.host }}",
-        "db_username": "{{ .Values.database.user }}",
-        "db_password": "{{ .Values.database.password }}",
-        "db_database": "{{ .Values.database.dbname }}",
-        "hostname": "{{ .Values.hostname }}",
+        "db_host": "{{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}",
+        "db_username": "{{include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}",
+        "db_password": "{{include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) }}",
+        "db_database": "{{ include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $)}}",
+        "hostname": "{{ .Values.global.hostname }}",
         "indexd_password": "",
         "google_client_secret": "YOUR.GOOGLE.SECRET",
         "google_client_id": "YOUR.GOOGLE.CLIENT",

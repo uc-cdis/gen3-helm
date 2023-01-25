@@ -1,15 +1,40 @@
-global:
-  postgresql:
-    auth:
-      postgresPassword: "password!123"
-      database: "peregrine"
-
-postgres:
-  enabled: false
-
 # Default values for peregrine.
 # This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+global:
+  dev: true
+  postgres:
+    dbCreate: true
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+  environment: default
+  hostname: localhost
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  portalApp: gitops
+  kubeBucket: kube-gen3
+  logsBucket: logs-gen3
+  syncFromDbgap: false
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  publicDataSets: true
+  tierAccessLevel: libre
+  netPolicy: true
+  dispatcherJobNum: 10
+  ddEnabled: false
+
+postgres:
+  dbCreate:
+  host:
+  # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
+  database: peregrine
+  username: peregrine
+  port: "5432"
+  # If left empty password will be auto-generated
+  password:
+
+arboristUrl: 
 
 replicaCount: 1
 
@@ -49,36 +74,14 @@ service:
   type: ClusterIP
   port: 80
 
-ingress:
-  enabled: true
-  className: ""
-  annotations: {
-    nginx.ingress.kubernetes.io/rewrite-target: /$2,
-    kubernetes.io/ingress.class: "nginx"
-  }
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: ingress.local
-      paths:
-        - path: /peregrine(/|$)(.*)
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -95,57 +98,6 @@ affinity: {}
 
 
 env:
-- name: GEN3_UWSGI_TIMEOUT
-  value: "600"
-- name: DICTIONARY_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: dictionary_url
-      optional: true
-#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
-#adding a var in helpers.tpl for later- Elise
-- name: PUBLIC_DATASETS
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: public_datasets
-      optional: true
-# Signpost is deprecated; replace this w INDEX_CLIENT_HOST block
-- name: SIGNPOST_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: indexd_url
-      optional: true
-- name: INDEX_CLIENT_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: indexd_url
-      optional: true
-- name: GRAPHQL_TIMEOUT
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-peregrine
-      key: peregrine_timeout
-      optional: true
-- name: FENCE_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: fence_url
-      optional: true
-- name: ARBORIST_URL
-  valueFrom:
-    configMapKeyRef:
-      name: manifest-global
-      key: arborist_url
-      optional: true
-- name: GEN3_DEBUG
-  value: "False"
-- name: GEN3_SIDECAR
-  value: "False"
 
 volumes:
 - name: shared-data
@@ -153,46 +105,5 @@ volumes:
 - name: config-volume
   secret:
     secretName: "peregrine-secret"
-- name: creds-volume
-  secret:
-    secretName: "peregrine-creds"
-- name: config-helper
-  configMap:
-    name: config-helper
 
 volumeMounts:
-- name: "shared-data"
-  mountPath: "/var/run/gen3"
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/wsgi.py"
-  subPath: "wsgi.py"
-- name: "creds-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/creds.json"
-  subPath: creds.json
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/peregrine/config_helper.py"
-  subPath: config_helper.py
-
-secrets:
-  fence:
-    db:
-      host: 
-      user: 
-      pass: 
-
-
-database: 
-  port: 5432
-  host: postgres-postgresql.postgres.svc.cluster.local
-
-  # Credentials used to initialize fence db if it doesn't exist. 
-  master_user: postgres
-  master_pass: postgres
-
-  # Actual fence db creds
-  user: postgres
-  password: postgres
-  dbname: peregrine

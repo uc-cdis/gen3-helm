@@ -39,9 +39,41 @@ spec:
           secret:
             secretName: "requestor-g3auto"
       containers:
-        - name: {{ .Chart.Name }}
+        - name: requestor
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          env: 
+          env:
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: username
+                  optional: false 
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: GEN3_DEBUG
               value: "False"
             {{- with .Values.arboristUrl }}
@@ -70,9 +102,42 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       initContainers:
-        - name: {{ .Values.initContainerName }}
+        - name: requestor-db-migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: username
+                  optional: false 
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: requestor-dbcreds
+                  key: dbcreated
+                  optional: false
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
@@ -81,8 +146,8 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          command: {{ .Values.command }}
-          {{- with .Values.args }}
-          args: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              /env/bin/alembic upgrade head
