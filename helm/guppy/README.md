@@ -1,6 +1,6 @@
 # guppy
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Guppy Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Guppy Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../gen3-test-data-job | gen3-test-data-job | 0.1.0 |
+| file://../common | common | 0.1.1 |
 
 ## Values
 
@@ -30,6 +30,7 @@ A Helm chart for gen3 Guppy Service
 | containerPort[0].containerPort | int | `8000` |  |
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
+| db_restore | bool | `true` |  |
 | ddEnv | string | `nil` |  |
 | ddLogsInjection | string | `nil` |  |
 | ddProfilingEnabled | string | `nil` |  |
@@ -40,7 +41,8 @@ A Helm chart for gen3 Guppy Service
 | ddVersion | string | `nil` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
-| esEndpoint | string | `"esproxy-service:9200"` |  |
+| esEndpoint | string | `""` |  |
+| global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |
 | image.tag | string | `""` |  |
@@ -57,9 +59,9 @@ A Helm chart for gen3 Guppy Service
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | int | `1` |  |
-| resources.limits.memory | string | `"2400Mi"` |  |
-| resources.requests.cpu | float | `0.5` |  |
-| resources.requests.memory | string | `"1024Mi"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"500Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |

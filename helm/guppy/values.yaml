@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  dev: true
+
 # Deployment
 autoscaling:
   enabled: false
@@ -54,7 +57,7 @@ image:
 
 
 # Environment Variables
-esEndpoint: esproxy-service:9200
+esEndpoint: ""
 arboristUrl: http://arborist-service
 tierAccessLevel: regular
 # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
@@ -93,11 +96,11 @@ volumeMounts:
 
 resources:
   requests:
-    cpu: 0.5
-    memory: 1024Mi
+    cpu: 0.1
+    memory: 500Mi
   limits:
     cpu: 1
-    memory: 2400Mi
+    memory: 2Gi
 
 
 # Service and Pod
@@ -119,3 +122,4 @@ configIndex: dev_case-array-config
 authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 encryptWhitelist: test1
+db_restore: true

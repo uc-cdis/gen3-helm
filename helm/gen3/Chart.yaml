@@ -5,11 +5,11 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependancies
 dependencies:
 - name: ambassador
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../arborist"
   condition: arborist.enabled
 - name: argo-wrapper
@@ -17,39 +17,43 @@ dependencies:
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../audit"
   condition: audit.enabled
-- name: fence
+- name: elasticsearch
   version: "0.1.0"
+  repository: "file://../elasticsearch"
+  condition: elasticsearch.enabled
+- name: fence
+  version: "0.1.1"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../guppy"
   condition: guppy.enabled
 - name: hatchery
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../manifestservice"
   condition: manifestservice.enabled
 - name: metadata
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../metadata"
   condition: metadata.enabled
 - name: peregrine
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../peregrine"
   condition: peregrine.enabled
 - name: pidgin
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
@@ -57,15 +61,15 @@ dependencies:
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -73,21 +77,16 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../wts"
   condition: wts.enabled
 - name: common
-  version: 0.1.0
+  version: 0.1.1
   repository: file://../common
-  condition: db_creation.enabled
 - name: postgresql
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
   condition: global.postgres.dev
-- name: gen3-test-data-job
-  version: 0.1.0
-  repository: file://../gen3-test-data-job
-  condition: db_restore.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -102,7 +101,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.1.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

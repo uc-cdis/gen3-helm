@@ -1,0 +1,37 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: gen3
+# build:
+#   artifacts:
+#   - image: quay.io/cdis/fence:2021.03
+#     context: ../fence
+#     sync:
+#       manual:
+#       - src: '**/*'
+#         dest: /
+#     docker:
+#       dockerfile: Dockerfile
+#   local:
+#     push: false
+#     concurrency: 0
+manifests:
+  helm:
+    releases:
+    - name: gen3
+      skipBuildDependencies: true
+      chartPath: ./helm/gen3
+      namespace: gen3
+      setValues:
+        global.hostname: localhost
+        portal.image.repository: quay.io/cdis/data-portal
+        portal.image.tag: master
+        fence.FENCE_CONFIG.OPENID_CONNECT.google.client_id: 'xxx'
+        fence.FENCE_CONFIG.OPENID_CONNECT.google.client_secret: 'xxx'
+      # setValueTemplates:
+      #   fence.image.repository: '{{.IMAGE_REPO_gen3_fence}}'
+      #   fence.image.tag: '{{.IMAGE_TAG_gen3_fence}}'
+      createNamespace: true
+deploy:
+  helm: {}
+  kubeContext: rancher-desktop

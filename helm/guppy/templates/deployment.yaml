@@ -58,7 +58,7 @@ spec:
             - name: GUPPY_CONFIG_FILEPATH
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint }}
+              value: {{ default ( printf "%s-%s" .Release.Name "elasticsearch:9200")  .Values.esEndpoint }}
             {{- with .Values.arboristUrl }}
             - name: GEN3_ARBORIST_ENDPOINT
               value: {{ . }}

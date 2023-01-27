@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,26 +18,26 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.0 |
-| file://../arborist | arborist | 0.1.0 |
+| file://../ambassador | ambassador | 0.1.1 |
+| file://../arborist | arborist | 0.1.1 |
 | file://../argo-wrapper | argo-wrapper | 0.1.0 |
-| file://../audit | audit | 0.1.0 |
-| file://../common | common | 0.1.0 |
-| file://../fence | fence | 0.1.0 |
-| file://../gen3-test-data-job | gen3-test-data-job | 0.1.0 |
-| file://../guppy | guppy | 0.1.0 |
-| file://../hatchery | hatchery | 0.1.0 |
-| file://../indexd | indexd | 0.1.0 |
-| file://../manifestservice | manifestservice | 0.1.0 |
-| file://../metadata | metadata | 0.1.0 |
-| file://../peregrine | peregrine | 0.1.0 |
-| file://../pidgin | pidgin | 0.1.0 |
+| file://../audit | audit | 0.1.1 |
+| file://../common | common | 0.1.1 |
+| file://../elasticsearch | elasticsearch | 0.1.0 |
+| file://../fence | fence | 0.1.1 |
+| file://../guppy | guppy | 0.1.1 |
+| file://../hatchery | hatchery | 0.1.1 |
+| file://../indexd | indexd | 0.1.1 |
+| file://../manifestservice | manifestservice | 0.1.1 |
+| file://../metadata | metadata | 0.1.1 |
+| file://../peregrine | peregrine | 0.1.1 |
+| file://../pidgin | pidgin | 0.1.1 |
 | file://../portal | portal | 0.1.0 |
-| file://../requestor | requestor | 0.1.0 |
-| file://../revproxy | revproxy | 0.1.0 |
-| file://../sheepdog | sheepdog | 0.1.0 |
+| file://../requestor | requestor | 0.1.1 |
+| file://../revproxy | revproxy | 0.1.1 |
+| file://../sheepdog | sheepdog | 0.1.1 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.0 |
-| file://../wts | wts | 0.1.0 |
+| file://../wts | wts | 0.1.1 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -56,14 +56,14 @@ Helm chart to deploy Gen3 Data Commons
 | audit.enabled | bool | `true` |  |
 | audit.image.repository | string | `nil` |  |
 | audit.image.tag | string | `nil` |  |
-| db_create | bool | `true` |  |
+| dbCreate | bool | `true` |  |
 | db_restore | bool | `false` |  |
 | fence.enabled | bool | `true` |  |
 | fence.image.repository | string | `nil` |  |
 | fence.image.tag | string | `nil` |  |
 | global.aws.account | string | `nil` |  |
 | global.aws.enabled | bool | `false` |  |
-| global.dbRestoreBucket | string | `"gen3-dummy-data"` |  |
+| global.dbRestoreBucket | string | `"gen3-dummy-data-2"` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
@@ -74,7 +74,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.logsBucket | string | `"logs-gen3"` |  |
 | global.netPolicy | bool | `true` |  |
 | global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
+| global.postgres.dbCreate | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
 | global.postgres.master.password | string | `nil` |  |
 | global.postgres.master.port | string | `"5432"` |  |
@@ -84,7 +84,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.syncFromDbgap | bool | `false` |  |
 | global.tierAccessLevel | string | `"libre"` |  |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
-| guppy.enabled | bool | `true` |  |
+| guppy.enabled | bool | `false` |  |
 | guppy.image.repository | string | `nil` |  |
 | guppy.image.tag | string | `nil` |  |
 | hatchery.enabled | bool | `true` |  |
@@ -120,7 +120,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` |  |
 | sheepdog.image.repository | string | `nil` |  |
 | sheepdog.image.tag | string | `nil` |  |
-| ssjdispatcher.enabled | bool | `true` |  |
+| ssjdispatcher.enabled | bool | `false` |  |
 | ssjdispatcher.image.repository | string | `nil` |  |
 | ssjdispatcher.image.tag | string | `nil` |  |
 | wts.enabled | bool | `true` |  |

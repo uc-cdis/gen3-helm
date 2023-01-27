@@ -5,9 +5,12 @@ global:
   aws:
     enabled: false
     account:
+    # Prep move of these keys here.
+    # aws_access_key_id:
+    # aws_secret_access_key:
   dev: true
   postgres:
-    db_create: true
+    dbCreate: true
     master:
       host:
       username: postgres
@@ -20,7 +23,7 @@ global:
   portalApp: gitops
   kubeBucket: kube-gen3
   logsBucket: logs-gen3
-  dbRestoreBucket: gen3-dummy-data
+  dbRestoreBucket: gen3-dummy-data-2
   syncFromDbgap: false
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
@@ -61,7 +64,7 @@ fence:
     tag:
 
 guppy:
-  enabled: true
+  enabled: false
   image:
     repository:
     tag:
@@ -127,7 +130,7 @@ sheepdog:
     tag:
 
 ssjdispatcher:
-  enabled: true
+  enabled: false
   image:
     repository:
     tag:
@@ -138,8 +141,8 @@ wts:
     repository:
     tag:
 
-# If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
-db_create: true
+# If db does not exist in postgres cluster and dbCreate is set ot true then all relevant dbs will be created
+dbCreate: true
 
 # If db_restore is set to true then the database will have fake data/tables dumped into it.
 db_restore: false

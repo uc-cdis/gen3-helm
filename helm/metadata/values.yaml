@@ -85,7 +85,7 @@ image:
 debug: false
 
 # Environment Variables
-esEndpoint: esproxy-service:9200
+esEndpoint: gen3-elasticsearch:9200
 useAggMds:
 aggMdsNamespace:
 
@@ -119,12 +119,12 @@ volumeMounts:
     subPath: json
 
 resources:
-  # requests:
-  #   cpu: 0.4
-  #   memory: 512Mi
-  # limits:
-  #   cpu: 1
-  #   memory: 2048Mi
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 # Init Container
 initContainerName: metadata-db-migrate

@@ -1,6 +1,6 @@
 # requestor
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Requestor Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.0 |
+| file://../common | common | 0.1.1 |
 
 ## Values
 
@@ -71,10 +71,10 @@ A Helm chart for gen3 Requestor Service
 | readinessProbe.httpGet.port | int | `80` |  |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `0.8` |  |
-| resources.limits.memory | string | `"1024Mi"` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
 | resources.requests.cpu | float | `0.1` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |

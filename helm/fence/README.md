@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.0 |
+| file://../common | common | 0.1.1 |
 
 ## Values
 
@@ -909,8 +909,12 @@ A Helm chart for gen3 Fence
 | env[16].valueFrom.secretKeyRef.key | string | `"database"` |  |
 | env[16].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
 | env[16].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[17].name | string | `"DB"` |  |
-| env[17].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
+| env[17].name | string | `"DBREADY"` |  |
+| env[17].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
+| env[17].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
+| env[17].valueFrom.secretKeyRef.optional | bool | `false` |  |
+| env[18].name | string | `"DB"` |  |
+| env[18].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
 | env[1].name | string | `"DD_ENV"` |  |
 | env[1].valueFrom.fieldRef.fieldPath | string | `"metadata.labels['tags.datadoghq.com/env']"` |  |
 | env[2].name | string | `"DD_SERVICE"` |  |
@@ -972,14 +976,18 @@ A Helm chart for gen3 Fence
 | initEnv[3].valueFrom.secretKeyRef.key | string | `"database"` |  |
 | initEnv[3].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
 | initEnv[3].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[4].name | string | `"DB"` |  |
-| initEnv[4].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
-| initEnv[5].name | string | `"PYTHONPATH"` |  |
-| initEnv[5].value | string | `"/var/www/fence"` |  |
-| initEnv[6].name | string | `"FENCE_PUBLIC_CONFIG"` |  |
-| initEnv[6].valueFrom.configMapKeyRef.key | string | `"fence-config-public.yaml"` |  |
-| initEnv[6].valueFrom.configMapKeyRef.name | string | `"manifest-fence"` |  |
-| initEnv[6].valueFrom.configMapKeyRef.optional | bool | `true` |  |
+| initEnv[4].name | string | `"DBREADY"` |  |
+| initEnv[4].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
+| initEnv[4].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
+| initEnv[4].valueFrom.secretKeyRef.optional | bool | `false` |  |
+| initEnv[5].name | string | `"DB"` |  |
+| initEnv[5].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
+| initEnv[6].name | string | `"PYTHONPATH"` |  |
+| initEnv[6].value | string | `"/var/www/fence"` |  |
+| initEnv[7].name | string | `"FENCE_PUBLIC_CONFIG"` |  |
+| initEnv[7].valueFrom.configMapKeyRef.key | string | `"fence-config-public.yaml"` |  |
+| initEnv[7].valueFrom.configMapKeyRef.name | string | `"manifest-fence"` |  |
+| initEnv[7].valueFrom.configMapKeyRef.optional | bool | `true` |  |
 | initVolumeMounts[0].mountPath | string | `"/var/www/fence/fence-config.yaml"` |  |
 | initVolumeMounts[0].name | string | `"config-volume"` |  |
 | initVolumeMounts[0].readOnly | bool | `true` |  |
@@ -1019,9 +1027,9 @@ A Helm chart for gen3 Fence
 | privacy_policy | string | `nil` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"2400Mi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
+| resources.requests.cpu | float | `0.3` |  |
+| resources.requests.memory | string | `"250Mi"` |  |
 | securityContext | object | `{}` |  |
 | selectorLabels.app | string | `"fence"` |  |
 | selectorLabels.release | string | `"production"` |  |

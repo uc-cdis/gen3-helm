@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -8,8 +8,7 @@ A Helm chart for gen3 Metadata Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.0 |
-| file://../gen3-test-data-job | gen3-test-data-job | 0.1.0 |
+| file://../common | common | 0.1.1 |
 
 ## Values
 
@@ -33,7 +32,7 @@ A Helm chart for gen3 Metadata Service
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
 | debug | bool | `false` |  |
-| esEndpoint | string | `"esproxy-service:9200"` |  |
+| esEndpoint | string | `"gen3-elasticsearch:9200"` |  |
 | global.ddEnabled | bool | `false` |  |
 | global.dev | bool | `true` |  |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
@@ -80,7 +79,10 @@ A Helm chart for gen3 Metadata Service
 | readinessProbe.httpGet.port | int | `80` |  |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` |  |
-| resources | string | `nil` |  |
+| resources.limits.cpu | float | `1` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `0.1` |  |
+| resources.requests.memory | string | `"12Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |

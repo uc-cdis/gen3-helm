@@ -4,7 +4,7 @@
 global:
   dev: true
   postgres:
-    db_create: true
+    dbCreate: true
     master:
       host:
       username: postgres
@@ -26,7 +26,7 @@ global:
   ddEnabled: false
 
 postgres:
-  db_create:
+  dbCreate:
   host:
   # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
   database: arborist
@@ -74,17 +74,13 @@ service:
   type: ClusterIP
   port: 80
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 0.1
+    memory: 12Mi
+  limits:
+    cpu: 1.0
+    memory: 512Mi
 
 autoscaling:
   enabled: false
@@ -145,3 +141,9 @@ env:
       optional: false
 - name: PGSSLMODE
   value: disable
+- name: DBREADY
+  valueFrom:
+    secretKeyRef:
+      name: arborist-dbcreds
+      key: dbcreated
+      optional: false
