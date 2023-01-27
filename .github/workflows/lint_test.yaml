@@ -6,20 +6,43 @@ jobs:
   lint-test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          check-latest: true
+
+      - name: Install bump2version
+        run: pip install bump2version
+
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Get current version
+        id: current-version
+        run: echo "::set-output name=version::$(bump2version --list --dry-run patch | grep current_version= | sed -r s,"^.*=",,)"
+
+      - name: Checkout master
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          ref: master
+
+      - name: Get ${{ github.base_ref }} version
+        id: old-version
+        run: |
+          echo "::set-output name=version::$(bump2version --dry-run --list --allow-dirty patch | grep current_version= | sed -r s,"^.*=",,)"
+
+      - name: Check version has been bumped
+        run: "python .github/workflows/version_compare.py --current-branch ${{ steps.current-version.outputs.version }} --target-branch ${{ steps.old-version.outputs.version }}"
+
+
+      - name: Checkout current branch
+        uses: actions/checkout@v2
 
       - name: Set up Helm
         uses: azure/setup-helm@v3
         with:
           version: v3.10.0
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          check-latest: true
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.3.1
