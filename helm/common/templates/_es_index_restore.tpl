@@ -28,6 +28,8 @@ spec:
           env:
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
+            - name: ESHOST
+              value: {{ .Release.Name}}-elasticsearch:9200
             - name: GUPPY_INDICES
               value: {{ range $.Values.indices }} {{ .index }} {{ end }}
             - name: GUPPY_CONFIGINDEX
@@ -51,17 +53,29 @@ spec:
               gen3_load "gen3/gen3setup"
               export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
               export ESHOST="${ESHOST:-"gen3-elasticsearch:9200"}"
-              sleep 75
+              until curl -s -f -o /dev/null "http://$ESHOST"
+              do
+                gen3_log_info "ES not available at http://$ESHOST. Sleeping."
+                sleep 5
+              done
+
               mkdir -p es
               cd es
               gen3_log_info "aws sts get-caller-identity"
               aws sts get-caller-identity
-              echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive"
-              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/ . --recursive
-              ls
+              
               for index in $indices
               do
-                elasticdump --input /home/ubuntu/es/"$index"__mapping.json --output=http://{{ .Release.Name }}-elasticsearch:9200/$index --type mapping
-                elasticdump --input /home/ubuntu/es/"$index"__data.json --output=http://{{ .Release.Name }}-elasticsearch:9200/$index --type data
+                echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/${index}__data.json ."
+                aws s3 cp "s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/${index}__data.json" .
+                
+                echo "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/$i{ndex}__mapping.json ."
+                aws s3 cp "s3://$BUCKET/$ENVIRONMENT/$VERSION/elasticsearch/${index}__mapping.json" .
+
+                
+                gen3_log_info "ls"
+                ls
+                elasticdump --input /home/ubuntu/es/"$index"__mapping.json --output=http://$ESHOST/$index --type mapping
+                elasticdump --input /home/ubuntu/es/"$index"__data.json --output=http://$ESHOST/$index --type data
               done
 {{- end }}

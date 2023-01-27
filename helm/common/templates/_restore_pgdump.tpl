@@ -93,8 +93,8 @@ spec:
               gen3_log_info "aws sts get-caller-identity"
               aws sts get-caller-identity
 
-              gen3_log_info "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/ . --recursive"
-              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/ . --recursive
+              gen3_log_info "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/db$SERVICE_PGDB.backup . "
+              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/db$SERVICE_PGDB.backup . 
 
               gen3_log_info "S3 Copy finished. Moving on to DB restore"
 
@@ -109,7 +109,6 @@ spec:
 
               if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
                 gen3_log_err "Database exists. Please drop database, or use another database as target"
-                exit 1
               else
                 gen3_log_info "Attempting to create database, and restore pg_dump"
                 psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE $SERVICE_PGDB;"
@@ -117,15 +116,14 @@ spec:
                 psql -c "GRANT ALL ON DATABASE $SERVICE_PGDB TO $SERVICE_PGUSER WITH GRANT OPTION;"
                 psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE $SERVICE_PGUSER WITH LOGIN"
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-
-                gen3_log_info "db created and configured. Starting restore.."
-                gen3_log_info "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup"
-                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
-
-                gen3_log_info "db restored. Updating secreted with dbcreated=true"
-
-                # Update secret to signal that db has been created, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               fi
+              gen3_log_info "Starting restore.."
+              gen3_log_info "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup"
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
+
+              gen3_log_info "db restored"
+              
+              # Update secret to signal that db has been created, and services can start
+              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               
 {{- end }}
