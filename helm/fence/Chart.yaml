@@ -24,6 +24,5 @@ appVersion: "2022.10"
 
 dependencies:
 - name: common
-  version: 0.1.0
+  version: 0.1.1
   repository: file://../common
-  condition: db_creation.enabled

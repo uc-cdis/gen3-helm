@@ -34,7 +34,8 @@ for i in $diff; do
             # https://stackoverflow.com/questions/16745988/sed-command-with-i-option-in-place-editing-works-fine-on-ubuntu-but-not-mac
             sed -i.bak "s#^version:.*#version: ${new_version/v/}#g" "helm/$i/Chart.yaml" && rm "helm/$i/Chart.yaml.bak"
 
-            # TODO: Update all versions in gen3 umbrella chart too 
+            # TODO: Update all versions in gen3 umbrella chart too
+            # TODO: Also check if common chart is being updated, and bump it in all charts. 
             # echo "update version in gen3 umbrella chart too."
 
         else 

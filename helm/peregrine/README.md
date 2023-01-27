@@ -8,7 +8,7 @@ A Helm chart for gen3 Peregrine service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.0 |
+| file://../common | common | 0.1.1 |
 
 ## Values
 
