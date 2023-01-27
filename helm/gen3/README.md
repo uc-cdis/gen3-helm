@@ -115,6 +115,8 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.enabled | bool | `true` |  |
 | revproxy.image.repository | string | `nil` |  |
 | revproxy.image.tag | string | `nil` |  |
+| secrets.awsAccessKeyId | string | `"test"` |  |
+| secrets.awsSecretAccessKey | string | `"test"` |  |
 | sheepdog.enabled | bool | `true` |  |
 | sheepdog.image.repository | string | `nil` |  |
 | sheepdog.image.tag | string | `nil` |  |

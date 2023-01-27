@@ -34,7 +34,7 @@ postgres:
   # If left empty password will be auto-generated
   password:
 
-arboristUrl: 
+arboristUrl:
 
 replicaCount: 1
 

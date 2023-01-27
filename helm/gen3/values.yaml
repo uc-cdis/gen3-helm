@@ -6,7 +6,7 @@ global:
     enabled: false
     account:
     # Prep move of these keys here.
-    # aws_access_key_id: 
+    # aws_access_key_id:
     # aws_secret_access_key:
   dev: true
   postgres:
@@ -148,9 +148,9 @@ dbCreate: true
 db_restore: false
 
 # The db restore job requires AWS credentials to access the S3 bucket
-#secrets:
-#  awsAccessKeyId: test
-#  awsSecretAccessKey: test
+secrets:
+  awsAccessKeyId: test
+  awsSecretAccessKey: test
 
 # This is to configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
@@ -158,4 +158,3 @@ postgresql:
   primary:
     persistence:
       enabled: false
-

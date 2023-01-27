@@ -123,4 +123,3 @@ authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 encryptWhitelist: test1
 db_restore: true
-
