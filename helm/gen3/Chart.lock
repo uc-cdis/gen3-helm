@@ -1,69 +1,66 @@
 dependencies:
 - name: ambassador
   repository: file://../ambassador
-  version: 0.1.0
+  version: 0.1.1
 - name: arborist
   repository: file://../arborist
-  version: 0.1.0
+  version: 0.1.1
 - name: argo-wrapper
   repository: file://../argo-wrapper
   version: 0.1.0
 - name: audit
   repository: file://../audit
-  version: 0.1.0
+  version: 0.1.1
 - name: elasticsearch
   repository: file://../elasticsearch
   version: 0.1.0
 - name: fence
   repository: file://../fence
-  version: 0.1.0
+  version: 0.1.1
 - name: guppy
   repository: file://../guppy
-  version: 0.1.0
+  version: 0.1.1
 - name: hatchery
   repository: file://../hatchery
-  version: 0.1.0
+  version: 0.1.1
 - name: indexd
   repository: file://../indexd
-  version: 0.1.0
+  version: 0.1.1
 - name: manifestservice
   repository: file://../manifestservice
-  version: 0.1.0
+  version: 0.1.1
 - name: metadata
   repository: file://../metadata
-  version: 0.1.0
+  version: 0.1.1
 - name: peregrine
   repository: file://../peregrine
-  version: 0.1.0
+  version: 0.1.1
 - name: pidgin
   repository: file://../pidgin
-  version: 0.1.0
+  version: 0.1.1
 - name: portal
   repository: file://../portal
   version: 0.1.0
 - name: requestor
   repository: file://../requestor
-  version: 0.1.0
+  version: 0.1.1
 - name: revproxy
   repository: file://../revproxy
-  version: 0.1.0
+  version: 0.1.1
 - name: sheepdog
   repository: file://../sheepdog
-  version: 0.1.0
+  version: 0.1.1
 - name: ssjdispatcher
   repository: file://../ssjdispatcher
   version: 0.1.0
 - name: wts
   repository: file://../wts
-  version: 0.1.0
+  version: 0.1.1
 - name: common
   repository: file://../common
-  version: 0.1.0
+  version: 0.1.1
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.9.13
-- name: gen3-test-data-job
-  repository: file://../gen3-test-data-job
-  version: 0.1.0
-digest: sha256:416e07dc9d94d16b24096ee5304db2fc5052061efd1453376ec30b1a5c99f900
-generated: "2023-01-19T10:22:39.990926-06:00"
+digest: sha256:2e0bc56da13851d378f8b04f5a63db62a13838c93a6b20aa146237f6ef30735b
+generated: "2023-01-27T12:03:58.990517-06:00"
