@@ -24,3 +24,13 @@ repos:
       language: script
       name: Helm Docs
       require_serial: true
+  
+  - repo: local 
+    hooks: 
+    - id: helm-chart-bump
+      args: []
+      description: Updates the .Chart.yaml with updates version if there are changes since master branch. This is to ensure we bump our charts for updates.
+      entry: git-hook/helm-bump.sh
+      language: script
+      name: Helm Docs
+      require_serial: true
