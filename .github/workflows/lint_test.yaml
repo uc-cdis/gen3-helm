@@ -12,7 +12,7 @@ jobs:
           check-latest: true
 
       - name: Install bump2version
-        run: pip install bump2version
+        run: pip install bump2version packaging
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,7 +36,7 @@ jobs:
       
       
       - name: Check version has been bumped
-        run: "python .github/workflows/version_compare.py --current-branch ${{ steps.current-version.outputs.version }} --target-branch ${{ steps.old-version.outputs.version }}"
+        run: "python3 .github/workflows/version_compare.py --current-branch ${{ steps.current-version.outputs.version }} --target-branch ${{ steps.old-version.outputs.version }}"
 
 
       - name: Set up Helm
