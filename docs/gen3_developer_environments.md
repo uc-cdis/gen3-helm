@@ -78,6 +78,7 @@ The command to do this is:
 
 ```
 helm repo add gen3 http://helm.gen3.org
+helm repo update
 ```
 
 Once you have your repo added, you can install it with the command 
