@@ -121,8 +121,43 @@ kubectl get ingress
 If you used Rancher Desktop, and used localhost as your hostname, you should be able to access your application at `https://localhost/` 
 
 
-# Nice to have tools
-Another way to interact with and manage a Kubernetes cluster on your laptop is by using command-line tools, such as k9s. k9s is a terminal-based tool that provides a simple and intuitive UI for interacting with your local Kubernetes cluster. It includes features such as pod management, resource monitoring, and log viewing. k9s also provides a live view of your cluster, making it easy to identify and troubleshoot issues.
+# Troubleshooting
+
+## Elasticsearch error: 
+
+When you deploy the elasticsearch chart to Rancher Desktop you may see this error and elasticsearch failing to start:
+
+```
+ERROR: [1] bootstrap checks failed
+[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+```
+
+To fix it do the following:
+
+Get a shell to the VM running k8s/docker in rancher
+```
+rdctl shell
+```
+
+Run this:
+
+```
+sudo sysctl -w vm.max_map_count=262144
+```
+
+If you want to set this permanently, you need to edit `/etc/sysctl.conf` and set `vm.max_map_count` to `262144` . Remember to do this inside the `rdctl shell` too.
+
+When the host reboots, you can verify that the setting is still correct by running 
+
+```
+sysctl vm.max_map_count
+```
+
+
+# Cool kubernetes tools
+Another way to interact with and manage a Kubernetes cluster is by using command-line tools, such as k9s. 
+
+K9s is a terminal-based tool that provides a simple and intuitive UI for interacting with your local Kubernetes cluster. It includes features such as pod management, resource monitoring, and log viewing. k9s also provides a live view of your cluster, making it easy to identify and troubleshoot issues.
 
 Other similar tools for developers include:
 
