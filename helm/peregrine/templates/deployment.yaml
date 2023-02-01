@@ -38,6 +38,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: CONF_HOSTNAME
+              value: localhost
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -67,25 +69,25 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: host
                   optional: false  
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: username
                   optional: false 
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: password
                   optional: false
             - name: PGDB
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Chart.Name }}-dbcreds
+                  name: sheepdog-dbcreds
                   key: database
                   optional: false
             - name: GEN3_UWSGI_TIMEOUT

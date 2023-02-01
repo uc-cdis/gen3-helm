@@ -58,7 +58,7 @@ config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL','https://s3.amazonaws.co
 #     }
 # }
 
-hostname = environ.get("CONF_HOSTNAME")
+hostname = environ.get("CONF_HOSTNAME", "localhost")
 config['OIDC_ISSUER'] = 'https://%s/user' % hostname
 
 # config['OAUTH2'] = {
