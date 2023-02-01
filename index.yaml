@@ -303,6 +303,111 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2023-02-01T16:18:00.689771734Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.1
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.1
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.0
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.1
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: file://../elasticsearch
+      version: 0.1.0
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.1
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.1
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.1
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.1
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.1
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.1
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.1
+    - condition: pidgin.enabled
+      name: pidgin
+      repository: file://../pidgin
+      version: 0.1.1
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.0
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.1
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.1
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.1
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.0
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.2
+    - name: common
+      repository: file://../common
+      version: 0.1.1
+    - condition: global.postgres.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 2281985ed587e137525bbc4b1ac1467747ed079bfbab48e5e1f33621f4d56e93
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.2/gen3-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: master
     created: "2023-01-27T21:54:02.150669465Z"
     dependencies:
     - condition: ambassador.enabled
@@ -1104,6 +1209,20 @@ entries:
   wts:
   - apiVersion: v2
     appVersion: "2022.10"
+    created: "2023-02-01T16:18:00.911722171Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.1
+    description: A Helm chart for gen3 workspace token service
+    digest: e106e9fdb95a9eef1d562d7f0ecb4c2da36b7a223a3f5ab1603e5b458ccdaf66
+    name: wts
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.1.2/wts-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: "2022.10"
     created: "2023-01-27T21:54:04.264408063Z"
     dependencies:
     - name: common
@@ -1144,4 +1263,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2023-01-27T21:54:04.264567973Z"
+generated: "2023-02-01T16:18:00.911824972Z"
