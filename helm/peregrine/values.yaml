@@ -100,6 +100,7 @@ affinity: {}
 
 
 env:
+  CONF_HOSTNAME: localhost
 
 volumes:
 - name: shared-data

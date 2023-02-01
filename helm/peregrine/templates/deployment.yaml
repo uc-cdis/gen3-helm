@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: CONF_HOSTNAME
-              value: localhost
+              value: {{ .Values.env.CONF_HOSTNAME }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
