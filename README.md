@@ -12,7 +12,8 @@ To see documentation around setting up gen3 developer environments see [gen3_dev
 
 ## TL;DR 
 ```
-helm repo add gen3 http://helm.gen3.org
+helm repo add gen3 https://helm.gen3.org
+helm repo update
 helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
 ```
 
