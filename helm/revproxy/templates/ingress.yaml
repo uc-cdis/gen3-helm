@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: revproxy
   annotations:
+    acme.cert-manager.io/http01-edit-in-place: 'true'
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.io/issue-temporary-certificate: 'true'
   {{- if .Values.global.aws.enabled }}
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: Environment={{ .Values.global.environment }}
@@ -13,8 +16,12 @@ metadata:
   {{- end }}
 spec:
   {{- if .Values.global.aws.enabled }}
-  ingressClassName: alb
+  ingressClassName: nginx
   {{- end }}
+  tls:
+  - hosts:
+      - heal.krum.app
+    secretName: heal-krum-app-tls
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:
