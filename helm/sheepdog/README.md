@@ -1,6 +1,6 @@
 # sheepdog
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Sheepdog Service
 
@@ -70,12 +70,12 @@ A Helm chart for gen3 Sheepdog Service
 | podAnnotations."gen3.io/network-ingress" | string | `"sheepdog"` |  |
 | ports[0].containerPort | int | `80` |  |
 | ports[1].containerPort | int | `443` |  |
-| postgres.database | string | `"sheepdog"` |  |
+| postgres.database | string | `nil` |  |
+| postgres.dbRestore | bool | `false` |  |
 | postgres.db_create | string | `nil` |  |
-| postgres.db_restore | bool | `false` |  |
 | postgres.password | string | `nil` |  |
 | postgres.port | string | `"5432"` |  |
-| postgres.username | string | `"sheepdog"` |  |
+| postgres.username | string | `nil` |  |
 | readinessProbe.httpGet.path | string | `"/_status?timeout=2"` |  |
 | readinessProbe.httpGet.port | int | `80` |  |
 | readinessProbe.initialDelaySeconds | int | `30` |  |

@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -38,7 +38,7 @@ A Helm chart for gen3 revproxy
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"nginx"` |  |
-| image.tag | string | `"1.13.9-perl"` |  |
+| image.tag | string | `"stable-perl"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |

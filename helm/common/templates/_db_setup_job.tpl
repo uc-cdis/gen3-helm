@@ -43,7 +43,7 @@ spec:
         app: gen3job
     spec:
       serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
-      restartPolicy: OnFailure
+      restartPolicy: Never
       containers:
       - name: db-setup
         # TODO: READ THIS IMAGE FROM GLOBAL VALUES?
@@ -99,6 +99,10 @@ spec:
             source "${GEN3_HOME}/gen3/lib/utils.sh"
             gen3_load "gen3/gen3setup"
 
+            echo "PGHOST=$PGHOST"
+            echo "PGPORT=$PGPORT"
+            echo "PGUSER=$PGUSER"
+            
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
@@ -113,9 +117,13 @@ spec:
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+
+              # Update secret to signal that db is ready, and services can start
+              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
               echo "database does not exist"
               psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE $SERVICE_PGDB;"
+              gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER $SERVICE_PGUSER WITH PASSWORD '$SERVICE_PGPASS';"
               psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER $SERVICE_PGUSER WITH PASSWORD '$SERVICE_PGPASS';"
               psql -c "GRANT ALL ON DATABASE $SERVICE_PGDB TO $SERVICE_PGUSER WITH GRANT OPTION;"
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE $SERVICE_PGUSER WITH LOGIN"
@@ -137,8 +145,8 @@ kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
-  database: {{ $.Values.postgres.database | b64enc | quote}}
-  username: {{ $.Values.postgres.username | b64enc | quote }}
+  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}

@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -29,7 +29,7 @@ A Helm chart for gen3 data-portal
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
-| portalApp | string | `"dev"` |  |
+| portalApp | string | `"gitops"` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | float | `2` |  |
 | resources.limits.memory | string | `"4096Mi"` |  |

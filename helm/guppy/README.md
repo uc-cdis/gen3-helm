@@ -1,6 +1,6 @@
 # guppy
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
 
 A Helm chart for gen3 Guppy Service
 
@@ -9,6 +9,7 @@ A Helm chart for gen3 Guppy Service
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.1 |
+| file://../elasticsearch | elasticsearch | 0.1.0 |
 
 ## Values
 
@@ -30,7 +31,7 @@ A Helm chart for gen3 Guppy Service
 | containerPort[0].containerPort | int | `8000` |  |
 | dataDog.enabled | bool | `false` |  |
 | dataDog.env | string | `"dev"` |  |
-| db_restore | bool | `true` |  |
+| dbRestore | bool | `true` |  |
 | ddEnv | string | `nil` |  |
 | ddLogsInjection | string | `nil` |  |
 | ddProfilingEnabled | string | `nil` |  |
@@ -39,9 +40,12 @@ A Helm chart for gen3 Guppy Service
 | ddTraceEnabled | string | `nil` |  |
 | ddTraceSampleRate | string | `nil` |  |
 | ddVersion | string | `nil` |  |
+| elasticsearch.separate | bool | `false` |  |
 | enableEncryptWhitelist | bool | `true` |  |
 | encryptWhitelist | string | `"test1"` |  |
 | esEndpoint | string | `""` |  |
+| global.aws.awsAccessKeyId | string | `nil` |  |
+| global.aws.awsSecretAccessKey | string | `nil` |  |
 | global.dev | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/guppy"` |  |
@@ -63,6 +67,8 @@ A Helm chart for gen3 Guppy Service
 | resources.requests.cpu | float | `0.1` |  |
 | resources.requests.memory | string | `"500Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
+| secrets.awsAccessKeyId | string | `nil` |  |
+| secrets.awsSecretAccessKey | string | `nil` |  |
 | service.port[0].name | string | `"http"` |  |
 | service.port[0].port | int | `80` |  |
 | service.port[0].protocol | string | `"TCP"` |  |

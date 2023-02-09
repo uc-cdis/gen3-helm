@@ -28,8 +28,8 @@ global:
 postgres:
   db_create:
   # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
-  database: wts
-  username: wts
+  database:
+  username:
   port: "5432"
   # If left empty it will be auto-generated
   password:

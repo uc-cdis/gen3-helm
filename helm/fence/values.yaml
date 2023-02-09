@@ -27,9 +27,10 @@ global:
 
 postgres:
   db_create:
+  separate: false
   # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
-  database: fence
-  username: fence
+  database:
+  username:
   host:
   port: "5432"
   # If left empty password will be auto-generated

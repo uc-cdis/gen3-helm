@@ -4,6 +4,9 @@
 
 global:
   dev: true
+  aws:
+    awsAccessKeyId:
+    awsSecretAccessKey:
 
 # Deployment
 autoscaling:
@@ -11,6 +14,10 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
+
+secrets:
+  awsAccessKeyId: 
+  awsSecretAccessKey:
 
 replicaCount: 1
 
@@ -122,4 +129,7 @@ configIndex: dev_case-array-config
 authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 encryptWhitelist: test1
-db_restore: true
+dbRestore: true
+
+elasticsearch:
+  separate: false

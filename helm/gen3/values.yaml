@@ -28,9 +28,15 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   publicDataSets: true
   tierAccessLevel: libre
+  origins_allow_credentials: []
   netPolicy: true
   dispatcherJobNum: 10
   ddEnabled: false
+
+
+tags:
+  # controls whether or not to deploy postgres/ elasticsearch as local services.
+  dev: false
 
 # Dependancy Charts
 ambassador:
@@ -144,8 +150,8 @@ wts:
 # If db does not exist in postgres cluster and dbCreate is set ot true then all relevant dbs will be created
 dbCreate: true
 
-# If db_restore is set to true then the database will have fake data/tables dumped into it.
-db_restore: false
+# If dbRestore is set to true then the database will have fake data/tables dumped into it.
+dbRestore: false
 
 # The db restore job requires AWS credentials to access the S3 bucket
 secrets:

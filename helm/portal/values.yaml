@@ -91,4 +91,5 @@ resources:
     cpu: 2.0
     memory: 4096Mi
 
-portalApp: "dev"
+portalApp: "gitops"
+

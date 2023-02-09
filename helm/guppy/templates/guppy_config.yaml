@@ -6,7 +6,9 @@ data:
   guppy_config.json: |
       {
         "indices": {{ .Values.indices  | toJson }},
-        "config_index": {{ .Values.configIndex | quote }},
+        {{- with .Values.configIndex }}
+        "config_index": {{ . | quote }},
+        {{- end }}
         "auth_filter_field": {{ .Values.authFilterField | quote }},
         "enable_encrypt_whitelist": {{ .Values.enableEncryptWhitelist | quote }},
         "encrypt_whitelist":  {{ .Values.encryptWhitelist | quote }}

@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -22,6 +22,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../arborist | arborist | 0.1.1 |
 | file://../argo-wrapper | argo-wrapper | 0.1.0 |
 | file://../audit | audit | 0.1.1 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.1 |
 | file://../common | common | 0.1.1 |
 | file://../elasticsearch | elasticsearch | 0.1.0 |
 | file://../fence | fence | 0.1.1 |
@@ -57,7 +58,7 @@ Helm chart to deploy Gen3 Data Commons
 | audit.image.repository | string | `nil` |  |
 | audit.image.tag | string | `nil` |  |
 | dbCreate | bool | `true` |  |
-| db_restore | bool | `false` |  |
+| dbRestore | bool | `false` |  |
 | fence.enabled | bool | `true` |  |
 | fence.image.repository | string | `nil` |  |
 | fence.image.tag | string | `nil` |  |
@@ -73,6 +74,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.kubeBucket | string | `"kube-gen3"` |  |
 | global.logsBucket | string | `"logs-gen3"` |  |
 | global.netPolicy | bool | `true` |  |
+| global.origins_allow_credentials | list | `[]` |  |
 | global.portalApp | string | `"gitops"` |  |
 | global.postgres.dbCreate | bool | `true` |  |
 | global.postgres.master.host | string | `nil` |  |
@@ -123,6 +125,7 @@ Helm chart to deploy Gen3 Data Commons
 | ssjdispatcher.enabled | bool | `false` |  |
 | ssjdispatcher.image.repository | string | `nil` |  |
 | ssjdispatcher.image.tag | string | `nil` |  |
+| tags.dev | bool | `false` |  |
 | wts.enabled | bool | `true` |  |
 | wts.image.repository | string | `nil` |  |
 | wts.image.tag | string | `nil` |  |

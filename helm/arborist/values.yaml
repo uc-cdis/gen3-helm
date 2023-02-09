@@ -29,8 +29,8 @@ postgres:
   dbCreate:
   host:
   # If db does not exist in postgres cluster and db_creation is set ot true then these databases will be created for you
-  database: arborist
-  username: arborist
+  database:
+  username:
   port: "5432"
   # If left empty password will be auto-generated
   password:

@@ -28,14 +28,14 @@ global:
 
 postgres:
   db_create:
-  database: metadata
-  username: metadata
+  database:
+  username:
   host:
   port: "5432"
   # If left empty password will be auto-generated
   password:
-  # If db_restore is set to true then the database will have fake data/tables dumped into it.
-  db_restore: false
+  # If dbRestore is set to true then the database will have fake data/tables dumped into it.
+  dbRestore: false
 
 
 # Deployment
