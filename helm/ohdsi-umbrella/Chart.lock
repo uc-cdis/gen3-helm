@@ -1,0 +1,9 @@
+dependencies:
+- name: ohdsi-atlas
+  repository: file://../ohdsi-atlas
+  version: 0.1.0
+- name: ohdsi-webapi
+  repository: file://../ohdsi-webapi
+  version: 0.1.0
+digest: sha256:167e5b9f5e27f0921a36170d393c582c094de6120ffeabdd7a70bb37f88dd266
+generated: "2022-10-05T15:34:24.341657-04:00"
