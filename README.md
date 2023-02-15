@@ -21,7 +21,7 @@ Use the following as a template for your `values.yaml` file for a minimum deploy
 
 
 
-```
+```yaml
 global:
   hostname: example-commons.com
 
@@ -36,7 +36,7 @@ fence:
 This is to have a gen3 deployment with google login. You may also use MOCK_AUTH using the following config. NB! This will bypass any login and is only recommended for testing environments
 
 
-```
+```yaml
 global:
   hostname: example-commons.com
 
@@ -50,14 +50,14 @@ fence:
 
 ## Selective deployments 
 All service helm charts are sub-charts of the gen3 chart (which acts as an umbrella chart)
-To enable or disable a service you can add this pattern to your values.yaml
+To enable or disable a service you can add this pattern to your `values.yaml`
 
-```
+```yaml
 fence:
-  enable: true
+  enabled: true
 
 wts:
-  enable: false
+  enabled: false
 ```
 
 
