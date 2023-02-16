@@ -18,7 +18,7 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.1 |
+| file://../ambassador | ambassador | 0.1.2 |
 | file://../arborist | arborist | 0.1.2 |
 | file://../argo-wrapper | argo-wrapper | 0.1.0 |
 | file://../audit | audit | 0.1.2 |
@@ -27,9 +27,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../elasticsearch | elasticsearch | 0.1.1 |
 | file://../fence | fence | 0.1.2 |
 | file://../guppy | guppy | 0.1.2 |
-| file://../hatchery | hatchery | 0.1.1 |
+| file://../hatchery | hatchery | 0.1.2 |
 | file://../indexd | indexd | 0.1.2 |
-| file://../manifestservice | manifestservice | 0.1.1 |
+| file://../manifestservice | manifestservice | 0.1.2 |
 | file://../metadata | metadata | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.2 |
 | file://../pidgin | pidgin | 0.1.2 |
@@ -37,7 +37,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../requestor | requestor | 0.1.2 |
 | file://../revproxy | revproxy | 0.1.2 |
 | file://../sheepdog | sheepdog | 0.1.2 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.0 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.1 |
 | file://../wts | wts | 0.1.3 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
