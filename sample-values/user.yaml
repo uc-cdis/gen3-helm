@@ -1,90 +1,92 @@
-authz:
-  # policies automatically given to anyone, even if they are not authenticated
-  anonymous_policies:
-  - open_data_reader
+fence:
+  USER_YAML: |
+    authz:
+      # policies automatically given to anyone, even if they are not authenticated
+      anonymous_policies:
+      - open_data_reader
 
-  # policies automatically given to authenticated users (in addition to their other policies)
-  all_users_policies: []
+      # policies automatically given to authenticated users (in addition to their other policies)
+      all_users_policies: []
 
-  # each group can contain multiple policies and multiple users
-  groups:
-  - name: program1_readers
-    policies:
-    - program1_reader
+      # each group can contain multiple policies and multiple users
+      groups:
+      - name: program1_readers
+        policies:
+        - program1_reader
+        users:
+        - username1@domain.com
+
+      # resource tree
+      resources:
+      - name: open
+      - name: programs
+        subresources:
+        - name: program1
+
+      # each policy can contain multiple roles and multiple resources
+      policies:
+      - id: open_data_reader
+        role_ids:
+        - reader
+        - storage_reader
+        resource_paths:
+        - /open
+      - id: program1_reader
+        description: Read access to program1
+        role_ids:
+        - reader
+        - storage_reader
+        resource_paths:
+        - /programs/program1
+      - id: program1_indexd_admin
+        description: Admin access to program1
+        role_ids:
+        - indexd_admin
+        resource_paths:
+        - /programs/program1
+
+      # currently existing methods are `read`, `create`, `update`,
+      # `delete`, `read-storage` and `write-storage`
+      roles:
+      - id: reader
+        permissions:
+        - id: reader
+          action:
+            method: read
+            service: '*'
+      - id: storage_reader
+        permissions:
+        - id: storage_reader
+          action:
+            method: read-storage
+            service: '*'
+      - id: creator
+        permissions:
+        - id: creator
+          action:
+            method: create
+            service: '*'
+      - id: indexd_admin
+        permissions:
+        - id: indexd_admin
+          action:
+            method: '*'
+            service: indexd
+
+    # OIDC clients
+    clients:
+      client1:
+        policies:
+        - open_data_reader
+
+    # all users must be defined here, even if they are not granted
+    # any individual permissions outside of the groups they are in.
+    # additional arbitrary information can be added in `tags`.
     users:
-    - username1@domain.com
-
-  # resource tree
-  resources:
-  - name: open
-  - name: programs
-    subresources:
-    - name: program1
-
-  # each policy can contain multiple roles and multiple resources
-  policies:
-  - id: open_data_reader
-    role_ids:
-    - reader
-    - storage_reader
-    resource_paths:
-    - /open
-  - id: program1_reader
-    description: Read access to program1
-    role_ids:
-    - reader
-    - storage_reader
-    resource_paths:
-    - /programs/program1
-  - id: program1_indexd_admin
-    description: Admin access to program1
-    role_ids:
-    - indexd_admin
-    resource_paths:
-    - /programs/program1
-
-  # currently existing methods are `read`, `create`, `update`,
-  # `delete`, `read-storage` and `write-storage`
-  roles:
-  - id: reader
-    permissions:
-    - id: reader
-      action:
-        method: read
-        service: '*'
-  - id: storage_reader
-    permissions:
-    - id: storage_reader
-      action:
-        method: read-storage
-        service: '*'
-  - id: creator
-    permissions:
-    - id: creator
-      action:
-        method: create
-        service: '*'
-  - id: indexd_admin
-    permissions:
-    - id: indexd_admin
-      action:
-        method: '*'
-        service: indexd
-
-# OIDC clients
-clients:
-  client1:
-    policies:
-    - open_data_reader
-
-# all users must be defined here, even if they are not granted
-# any individual permissions outside of the groups they are in.
-# additional arbitrary information can be added in `tags`.
-users:
-  username1@domain.com: {}
-  username2:
-    tags:
-      name: John Doe
-      email: johndoe@domain.com
-    policies:
-    - program1_reader
+      username1@domain.com: {}
+      username2:
+        tags:
+          name: John Doe
+          email: johndoe@domain.com
+        policies:
+        - program1_reader

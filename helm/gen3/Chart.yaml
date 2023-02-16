@@ -9,7 +9,7 @@ dependencies:
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../arborist"
   condition: arborist.enabled
 - name: argo-wrapper
@@ -17,19 +17,19 @@ dependencies:
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../audit"
   condition: audit.enabled
 - name: aws-es-proxy
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../aws-es-proxy"
   condition: aws-es-proxy.enabled
 - name: fence
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../guppy"
   condition: guppy.enabled
 - name: hatchery
@@ -37,7 +37,7 @@ dependencies:
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
@@ -45,31 +45,31 @@ dependencies:
   repository: "file://../manifestservice"
   condition: manifestservice.enabled
 - name: metadata
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../metadata"
   condition: metadata.enabled
 - name: peregrine
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../peregrine"
   condition: peregrine.enabled
 - name: pidgin
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -77,15 +77,15 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
-  version: "0.1.2"
+  version: "0.1.3"
   repository: "file://../wts"
   condition: wts.enabled
 - name: common
-  version: 0.1.1
+  version: 0.1.2
   repository: file://../common
 
 - name: elasticsearch
-  version: "0.1.0"
+  version: "0.1.1"
   repository: "file://../elasticsearch"
   tags:
   - dev
