@@ -14,7 +14,7 @@ global:
       aws_access_key_id:
       aws_secret_access_key:
   # -- (bool) Whether the deployment is for development purposes.
-  dev: false
+  dev: true
   # -- (map) Postgres database configuration.
   postgres:
     # -- (bool) Whether the database should be created.

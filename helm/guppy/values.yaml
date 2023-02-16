@@ -66,7 +66,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 secrets:
-  awsAccessKeyId: 
+  awsAccessKeyId:
   awsSecretAccessKey:
 
 replicaCount: 1
