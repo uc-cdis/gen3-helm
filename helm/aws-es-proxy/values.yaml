@@ -1,5 +1,5 @@
 # -- (map) Annotations to add to the pod
-podAnnotations: 
+podAnnotations:
 
 # -- (bool) Enable autoscaling
 autoscaling:

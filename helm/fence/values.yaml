@@ -22,7 +22,7 @@ global:
       port: "5432"
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
   environment: default
-  # -- (string) Hostname for the deployment. 
+  # -- (string) Hostname for the deployment.
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
@@ -1364,7 +1364,7 @@ FENCE_CONFIG:
     # configured without code changes
     generic_oidc_idp:  # choose a unique ID and replace this key
       # -- (str) Optional; display name for this IDP
-      name: 'some_idp' 
+      name: 'some_idp'
       # -- (str) Client ID
       client_id: ''
       # -- (str) Client secret
@@ -1383,7 +1383,7 @@ FENCE_CONFIG:
         # -- (str) JSON Web Key Set (JWKS) URI
         jwks_uri: ''
       # -- (str) Optional; claims field to get the user_id from (default "sub")
-      user_id_field: ''  
+      user_id_field: ''
       # -- (str) Optional; claims field to get the user email from (default "email")
       email_field: ''
       # -- (str) Optional; default is "openid"

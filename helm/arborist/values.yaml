@@ -22,7 +22,7 @@ global:
       port: "5432"
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
   environment: default
-  # -- (string) Hostname for the deployment. 
+  # -- (string) Hostname for the deployment.
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
@@ -176,7 +176,7 @@ volumes: []
 volumeMounts: []
 
 # -- (list) Environment variables to pass to the container
-env: 
+env:
   # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
   - name: JWKS_ENDPOINT
     value: "http://fence-service/.well-known/jwks"

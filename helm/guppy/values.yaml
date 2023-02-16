@@ -9,8 +9,8 @@ global:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
     # -- (string) Credentials for AWS stuff.
-    awsAccessKeyId: 
-    # -- (string) Credentials for AWS stuff. 
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
@@ -30,7 +30,7 @@ global:
       port: "5432"
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
   environment: default
-  # -- (string) Hostname for the deployment. 
+  # -- (string) Hostname for the deployment.
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
@@ -172,10 +172,10 @@ service:
 # Configmap
 # -- (list) Elasticsearch index configurations
 indices:
-- index: dev_case # name of the Elasticsearch index for case data
-  type: case # type of documents stored in the Elasticsearch index
-- index: dev_file # name of the Elasticsearch index for file data
-  type: file # type of documents stored in the Elasticsearch index
+- index: dev_case
+  type: case
+- index: dev_file
+  type: file
 # -- (string) The Elasticsearch configuration index
 configIndex: dev_case-array-config
 # -- (string) The field used for access control and authorization filters
