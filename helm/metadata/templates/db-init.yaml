@@ -2,7 +2,7 @@
 ---
 {{ include "common.db_setup_sa" . }}
 ---
-{{- if .Values.db_restore }}
+{{- if .Values.dbRestore }}
 {{ include "common.s3_pg_restore" . }}
 {{- else }}
 {{ include "common.db_setup_job" . }}

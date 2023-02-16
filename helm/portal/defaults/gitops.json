@@ -1,258 +1,351 @@
 {
-    "graphql": {
-      "boardCounts": [
-        {
-          "graphql": "_case_count",
-          "name": "Case",
-          "plural": "Cases"
-        },
-        {
-          "graphql": "_experiment_count",
-          "name": "Experiment",
-          "plural": "Experiments"
-        },
-        {
-          "graphql": "_aliquot_count",
-          "name": "Aliquot",
-          "plural": "Aliquots"
-        }
-      ],
-      "chartCounts": [
-        {
-          "graphql": "_case_count",
-          "name": "Case"
-        },
-        {
-          "graphql": "_experiment_count",
-          "name": "Experiment"
-        },
-        {
-          "graphql": "_aliquot_count",
-          "name": "Aliquot"
-        }
-      ],
-      "projectDetails": "boardCounts"
+  "subcommons": [
+    {
+      "URL": "https://tb.diseasedatahub.org/",
+      "name": "TB"
     },
-    "components": {
-      "appName": "Generic Data Commons Portal",
-      "index": {
-        "introduction": {
-          "heading": "Data Commons",
-          "text": "The Generic Data Commons supports the management, analysis and sharing of data for the research community.",
-          "link": "/submission"
-        },
-        "buttons": [
-          {
-            "name": "Define Data Field",
-            "icon": "data-field-define",
-            "body": "The Generic Data Commons define the data in a general way. Please study the dictionary before you start browsing.",
-            "link": "/DD",
-            "label": "Learn more"
-          },
-          {
-            "name": "Explore Data",
-            "icon": "data-explore",
-            "body": "The Exploration Page gives you insights and a clear overview under selected factors.",
-            "link": "/explorer",
-            "label": "Explore data"
-          },
-          {
-            "name": "Access Data",
-            "icon": "data-access",
-            "body": "Use our selected tool to filter out the data you need.",
-            "link": "/query",
-            "label": "Query data"
-          },
-          {
-            "name": "Submit Data",
-            "icon": "data-submit",
-            "body": "Submit Data based on the dictionary.",
-            "link": "/submission",
-            "label": "Submit data"
-          }
-        ]
+    {
+      "URL": "https://aids.diseasedatahub.org/",
+      "name": "AIDS"
+    },
+    {
+      "URL": "https://flu.diseasedatahub.org/",
+      "name": "FLU"
+    },
+    {
+      "URL": "https://microbiome.diseasedatahub.org/",
+      "name": "Microbiome"
+    }
+  ],
+  "gaTrackingId": "UA-119127212-1",
+  "graphql": {
+    "boardCounts": [
+      {
+        "graphql": "_subject_count",
+        "name": "Subject",
+        "plural": "Subjects"
       },
-      "navigation": {
-        "title": "Generic Data Commons",
-        "items": [
-          {
-            "icon": "dictionary",
-            "link": "/DD",
-            "color": "#a2a2a2",
-            "name": "Dictionary"
-          },
-          {
-            "icon": "exploration",
-            "link": "/explorer",
-            "color": "#a2a2a2",
-            "name": "Exploration"
-          },
-          {
-            "icon": "query",
-            "link": "/query",
-            "color": "#a2a2a2",
-            "name": "Query"
-          },
-          {
-            "icon": "workspace",
-            "link": "/workspace",
-            "color": "#a2a2a2",
-            "name": "Workspace"
-          },
-          {
-            "icon": "profile",
-            "link": "/identity",
-            "color": "#a2a2a2",
-            "name": "Profile"
-          }
-        ]
+      {
+        "graphql": "_study_count",
+        "name": "Study",
+        "plural": "Studies"
       },
-      "topBar": {
-        "items": [
-          {
-            "icon": "upload",
-            "link": "/submission",
-            "name": "Submit Data"
-          },
-          {
-            "link": "https://gen3.org/resources/user",
-            "name": "Documentation"
-          }
-        ]
+      {
+        "graphql": "_summary_lab_result_count",
+        "name": "Lab record",
+        "plural": "Lab records"
+      }
+    ],
+    "chartCounts": [
+      {
+        "graphql": "_subject_count",
+        "name": "Subject"
       },
-      "login": {
-        "title": "Generic Data Commons",
-        "subTitle": "Explore, Analyze, and Share Data",
-        "text": "This website supports the management, analysis and sharing of human disease data for the research community and aims to advance basic understanding of the genetic basis of complex traits and accelerate discovery and development of therapies, diagnostic tests, and other technologies for diseases like cancer.",
-        "contact": "If you have any questions about access or the registration process, please contact ",
-        "email": "support@datacommons.io"
+      {
+        "graphql": "_study_count",
+        "name": "Study"
+      }
+    ],
+    "projectDetails": "boardCounts"
+  },
+  "components": {
+    "appName": "Gen3 Disease Data Hub",
+    "index": {
+      "introduction": {
+        "heading": "Gen3 Disease Data Hub Datasets",
+        "text": "The Gen3 Disease Data Hub hosts data related to infectious diseases and aims to make data findable, accessible, interoperable, and reusable (FAIR).",
+        "link": "/datasets"
       },
-      "certs": {},
-      "footerLogos": [
+      "buttons": [
         {
-          "src": "/src/img/gen3.png",
-          "href": "https://ctds.uchicago.edu/gen3",
-          "alt": "Gen3 Data Commons"
+          "name": "TB Environment",
+          "icon": "data-explore",
+          "body": "Explore TB data.",
+          "external_link": "https://tb.diseasedatahub.org"
         },
         {
-          "src": "/src/img/createdby.png",
-          "href": "https://ctds.uchicago.edu/",
-          "alt": "Center for Translational Data Science at the University of Chicago"
+          "name": "AIDS Environment",
+          "icon": "data-explore",
+          "body": "Explore AIDS data.",
+          "external_link": "https://aids.diseasedatahub.org"
+        },
+        {
+          "name": "Flu Environment",
+          "icon": "data-explore",
+          "body": "Explore influenza data.",
+          "external_link": "https://flu.diseasedatahub.org"
+        },
+        {
+          "name": "Microbiome Environment",
+          "icon": "data-explore",
+          "body": "Explore data from a collection of open-access microbiome-related studies.",
+          "external_link": "https://microbiome.diseasedatahub.org"
         }
       ]
     },
-    "requiredCerts": [],
-    "featureFlags": {
-      "explorer": true,
-      "noIndex": true,
-      "analysis": false,
-      "discovery": false,
-      "discoveryUseAggMDS": false,
-      "studyRegistration": false
-    },
-    "dataExplorerConfig": {
-      "charts": {
-        "project_id": {
-          "chartType": "count",
-          "title": "Projects"
+    "navigation": {
+      "items": [
+        {
+          "icon": "query",
+          "link": "/datasets",
+          "color": "#a2a2a2",
+          "name": "Dataset Browser"
         },
-        "case_id": {
-          "chartType": "count",
-          "title": "Cases"
-        },
-        "gender": {
-          "chartType": "pie",
-          "title": "Gender"
-        },
-        "race": {
-          "chartType": "bar",
-          "title": "Race"
+        {
+          "icon": "exploration",
+          "link": "/explorer",
+          "color": "#a2a2a2",
+          "name": "Eco Explorer"
         }
+      ]
+    },
+    "topBar": {
+      "items": [
+        {
+          "link": "https://gen3.org/resources/user/",
+          "name": "Documentation"
+        }
+      ]
+    },
+    "login": {
+      "title": "Gen3 Disease Data Hub",
+      "subTitle": "Cross Environment Datasets",
+      "text": "The website combines open access datasets from multiple disciplines to create clean, easy to navigate visualizations for data-driven discovery within the fields of allergy and infectious diseases.",
+      "contact": "If you have any questions about access or the registration process, please contact ",
+      "email": "support@datacommons.io"
+    },
+    "footerLogos": [
+      {
+        "src": "/custom/sponsors/gitops-sponsors/gen3.png",
+        "href": "https://ctds.uchicago.edu/gen3",
+        "alt": "Gen3 Data Commons"
       },
-      "filters": {
-        "tabs": [
-          {
-            "title": "Case",
-            "fields":[
-              "project_id",
-              "gender",
-              "race",
-              "ethnicity"
-            ]
-          }
+      {
+        "src": "/src/img/createdby.png",
+        "href": "https://ctds.uchicago.edu/",
+        "alt": "Center for Translational Data Science at the University of Chicago"
+      }
+    ]
+  },
+  "requiredCerts": [],
+  "featureFlags": {
+    "explorer": true,
+    "analysis": true
+  },
+  "datasetBrowserConfig": {
+    "filterSections": [
+      {
+        "title": "Supported Data Resources",
+        "options": [
+          { "text": "TB", "filterType": "singleSelect"},
+          { "text": "AIDS", "filterType": "singleSelect"},
+          { "text": "Flu", "filterType": "singleSelect"},
+          { "text": "Microbiome", "filterType": "singleSelect"}
         ]
       },
-      "table": {
-        "enabled": false
+      {
+        "title": "Research Focus",
+        "options": [
+          { "text": "AIDS", "filterType": "singleSelect"},
+          { "text": "TB", "filterType": "singleSelect"},
+          { "text": "Flu", "filterType": "singleSelect"},
+          { "text": "Immune Response", "filterType": "singleSelect"},
+          { "text": "Immune Phenotype", "filterType": "singleSelect"},
+          { "text": "Allergy", "filterType": "singleSelect"},
+          { "text": "Atopy", "filterType": "singleSelect"},
+          { "text": "Infection Response", "filterType": "singleSelect"},
+          { "text": "Vaccine Response", "filterType": "singleSelect"},
+          { "text": "Transplantation", "filterType": "singleSelect"},
+          { "text": "Oncology", "filterType": "singleSelect"},
+          { "text": "Autoimmune", "filterType": "singleSelect"},
+          { "text": "Preterm Birth", "filterType": "singleSelect"}
+        ]
+      }
+    ],
+    "fieldMapping" : [
+      { "field": "link", "name": "View" },
+      { "field": "dataset_name", "name": "Study" },
+      { "field": "supported_data_resource", "name": "Supported Data Resource" },
+      { "field": "research_focus", "name": "Research Focus" },
+      { "field": "description", "name": "Description of Dataset" }
+    ],
+    "filterConfig": {
+      "tabs": [{
+        "title": "Filters",
+        "fields": ["supported_data_resource", "research_focus"]
+      }]
+    }
+  },
+  "dataExplorerConfig": {
+    "charts": {
+      "project_id": {
+        "chartType": "count",
+        "title": "Projects"
       },
-      "dropdowns": {},
-      "buttons": [],
-      "guppyConfig": {
-        "dataType": "case",
-        "nodeCountTitle": "Cases",
-        "fieldMapping": [
-          { "field": "disease_type", "name": "Disease type" },
-          { "field": "primary_site", "name": "Site where samples were collected"}
-        ],
-        "manifestMapping": {
-          "resourceIndexType": "file",
-          "resourceIdField": "object_id",
-          "referenceIdFieldInResourceIndex": "case_id",
-          "referenceIdFieldInDataIndex": "node_id"
-        },
-        "accessibleFieldCheckList": ["case_id"],
-        "accessibleValidationField": "case_id"
+      "subject_id": {
+        "chartType": "count",
+        "title": "Subjects"
+      },
+      "dataset": {
+        "chartType": "pie",
+        "title": "Resources",
+        "chartRow": 0
+      },
+      "data_format": {
+        "chartType": "bar",
+        "title": "Data Format",
+        "chartRow": 0
+      },
+      "data_type": {
+        "chartType": "pie",
+        "title": "Data Type",
+        "chartRow": 0
+      },
+      "experimental_strategies": {
+        "chartType": "bar",
+        "title": "Experimental Strategies",
+        "chartRow": 0
+      },
+      "species": {
+        "chartType": "bar",
+        "title": "Genus species",
+        "chartRow": 0
+      },
+      "gender": {
+        "chartType": "pie",
+        "title": "Gender",
+        "chartRow": 1
+      },
+      "race": {
+        "chartType": "pie",
+        "title": "Race",
+        "chartRow": 1
+      },
+      "ethnicity": {
+        "chartType": "pie",
+        "title": "Ethnicity",
+        "chartRow": 1
+      },
+      "biospecimen_anatomic_site": {
+        "chartType": "pie",
+        "title": "Biospecimen Anatomic Site",
+        "chartRow": 1
       }
     },
-    "fileExplorerConfig": {
-      "charts": {
-        "data_type": {
-          "chartType": "stackedBar",
-          "title": "File Type"
-        },
-        "data_format": {
-          "chartType": "stackedBar",
-          "title": "File Format"
-        }
+    "fieldMapping" : [
+      { "field": "dataset", "name": "Resource" },
+      { "field": "studyAccession", "name": "Study" },
+      { "field": "phenotype", "name": "Phenotype" },
+      { "field": "gender", "name": "Gender" },
+      { "field": "ethnicity", "name": "Ethnicity" },
+      { "field": "strain", "name": "Strain" },
+      { "field": "species", "name": "Genus species" },
+      { "field": "submitter_id", "name": "Submitter ID" },
+      { "field": "race", "name": "Race" },
+      { "field": "hiv_status", "name": "HIV Status" },
+      { "field": "study_submitter_id", "name": "Study"},
+      { "field": "frstdthd", "name": "Year of Death" },
+      { "field": "arthxbase", "name": "ART Use Prior to Baseline"},
+      { "field": "bshbvstat", "name": "Baseline HBV Sero-status"},
+      { "field": "bshcvstat", "name": "Baseline HCV Sero-status"},
+      { "field": "cd4nadir", "name": "CD4 Nadir Prior to HAART"},
+      { "field": "status", "name": "Summarized HIV Sero-status"},
+      {"field": "project_id", "name": "Project ID"},
+      {"field": "frstcncrd", "name": "First Confirmed Cancer Year"},
+      {"field": "frstdmd", "name": "First Visit Year with Diabetes"},
+      {"field": "frstdmmd", "name": "First Visit Year with All Necessary Components to Determine Diabetes"},
+      {"field": "frsthtnd", "name": "First Visit Year with Hypertension"},
+      {"field": "frsthtnmd", "name": "First Visit Year with All Necessary Components to Determine Hypertension"},
+      {"field": "fcd4lowd", "name": "First Year Seen CD4N < 200 or CD4% < 14"},
+      {"field": "fposdate", "name": "First Year Seen Seropositive"},
+      {"field": "frstaidd", "name": "First Reported AIDS Year"},
+      {"field": "lastafrd", "name": "Last Reported AIDS Free Year"},
+      {"field": "lastcond", "name": "Year of Last Study Visit Attended"},
+      {"field": "lastcontact", "name": "Last Year of Contact"},
+      {"field": "lcd4higd", "name": "Last Year Seen with CD4N >= 200 and CD4% >= 14"},
+      {"field": "lnegdate", "name": "Last Year Seen Seronegative"},
+      {"field": "amikacin_res_phenotype", "name": "Amikacin Phenotype" },
+      {"field": "capreomycin_res_phenotype", "name": "Capreomycin Phenotype" },
+      {"field": "isoniazid_res_phenotype", "name": "Isoniazid Phenotype" },
+      {"field": "kanamycin_res_phenotype", "name": "Kanamycin Phenotype" },
+      {"field": "ofloxacin_res_phenotype", "name": "Ofloxacin Phenotype" },
+      {"field": "pyrazinamide_res_phenotype", "name": "Pyrazinamide Phenotype" },
+      {"field": "rifampicin_res_phenotype", "name": "Rifampicin Phenotype" },
+      {"field": "rifampin_res_phenotype", "name": "Rifampin Phenotype" },
+      {"field": "streptomycin_res_phenotype", "name": "streptomycin Phenotype" }
+    ],
+    "filterConfig": {
+      "tabs": [{
+        "title": "Resource",
+        "fields": ["dataset", "data_format", "data_type"]
       },
-      "filters": {
-        "tabs": [
-          {
-            "title": "File",
-            "fields": [
-              "project_id",
-              "data_type",
-              "data_format"
-            ]
-          }
-        ]
+      {
+        "title": "Subject",
+        "fields": ["ethnicity", "gender", "species", "race"]
       },
-      "table": {
-        "enabled": true,
+      {
+        "title": "Diagnosis",
         "fields": [
-          "project_id",
-          "file_name",
-          "file_size",
-          "object_id"
+          "arthxbase",
+          "bshbvstat",
+          "bshcvstat",
+          "cd4nadir",
+          "status",
+          "hiv_status"
         ]
       },
-      "dropdowns": {},
-      "guppyConfig": {
-        "dataType": "file",
-        "fieldMapping": [
-          { "field": "object_id", "name": "GUID" }
-        ],
-        "nodeCountTitle": "Files",
-        "manifestMapping": {
-          "resourceIndexType": "case",
-          "resourceIdField": "case_id",
-          "referenceIdFieldInResourceIndex": "object_id",
-          "referenceIdFieldInDataIndex": "object_id"
-        },
-        "accessibleFieldCheckList": ["case_id"],
-        "accessibleValidationField": "case_id",
-        "downloadAccessor": "object_id"
-      }
+      {
+        "title": "Comorbidity",
+        "fields": [
+          "frstcncrd",
+          "frstdmd",
+          "frstdmmd",
+          "frsthtnd",
+          "frsthtnmd"
+        ]
+      }, {
+        "title": "HIV History",
+        "fields": [
+          "cd4nadir",
+          "fcd4lowd",
+          "fposdate",
+          "frstaidd",
+          "lastafrd",
+          "lastcond",
+          "lastcontact",
+          "lcd4higd",
+          "lnegdate",
+          "status"
+        ]
+      },
+      {
+        "title": "Drug Resistance",
+        "fields": [
+          "amikacin_res_phenotype",
+          "capreomycin_res_phenotype",
+          "isoniazid_res_phenotype",
+          "kanamycin_res_phenotype",
+          "ofloxacin_res_phenotype",
+          "pyrazinamide_res_phenotype",
+          "rifampicin_res_phenotype",
+          "rifampin_res_phenotype",
+          "streptomycin_res_phenotype"
+        ]
+      },
+      {
+        "title": "Experiment",
+        "fields": [
+          "experimental_strategies",
+          "virus_type",
+          "virus_subtype",
+          "analyte_type",
+          "biospecimen_anatomic_site",
+          "cell_line",
+          "sample_type",
+          "composition",
+          "strain"
+        ]
+      }]
     }
   }
-
+}
