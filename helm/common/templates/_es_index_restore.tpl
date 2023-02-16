@@ -21,7 +21,7 @@ spec:
       volumes:
         - name: cred-volume
           secret:
-            secretName: aws-config
+            secretName: aws-config-{{ .Chart.Name }}
       containers:
         - name: create-indices
           image: quay.io/cdis/awshelper:master
@@ -29,7 +29,7 @@ spec:
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
             - name: ESHOST
-              value: {{ .Release.Name}}-elasticsearch:9200
+              value: elasticsearch:9200
             - name: GUPPY_INDICES
               value: {{ range $.Values.indices }} {{ .index }} {{ end }}
             - name: GUPPY_CONFIGINDEX
@@ -52,7 +52,7 @@ spec:
               source "${GEN3_HOME}/gen3/lib/utils.sh"
               gen3_load "gen3/gen3setup"
               export indices="$GUPPY_CONFIGINDEX $GUPPY_INDICES"
-              export ESHOST="${ESHOST:-"gen3-elasticsearch:9200"}"
+              export ESHOST="${ESHOST:-"elasticsearch:9200"}"
               until curl -s -f -o /dev/null "http://$ESHOST"
               do
                 gen3_log_info "ES not available at http://$ESHOST. Sleeping."
@@ -75,7 +75,10 @@ spec:
                 
                 gen3_log_info "ls"
                 ls
-                elasticdump --input /home/ubuntu/es/"$index"__mapping.json --output=http://$ESHOST/$index --type mapping
-                elasticdump --input /home/ubuntu/es/"$index"__data.json --output=http://$ESHOST/$index --type data
+                gen3_log_info "Creating Mapping ..."
+                elasticdump --input "/home/ubuntu/es/${index}__mapping.json" --output=http://$ESHOST/$index --type mapping
+                sleep 10
+                gen3_log_info "Restoring data...."
+                elasticdump --input "/home/ubuntu/es/${index}__data.json" --output=http://$ESHOST/$index --type data --limit 10000
               done
 {{- end }}

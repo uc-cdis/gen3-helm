@@ -1,3 +1,3 @@
-{{- if .Values.db_restore }}
+{{- if .Values.dbRestore }}
 {{ include "common.s3_restore_indices" . }}
 {{- end  }}

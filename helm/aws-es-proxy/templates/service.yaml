@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "esproxy-service"
+  name: elasticsearch
   labels:
     {{- include "aws-es-proxy.labels" . | nindent 4 }}
 spec:

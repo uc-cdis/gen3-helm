@@ -57,13 +57,13 @@ portal:
 
 guppy:
   enabled: true
-  db_restore: true
+  dbRestore: true
 
 indexd:
-  db_restore: true
+  dbRestore: true
 
 metadata:
-  db_restore: true
+  dbRestore: true
 
 sheepdog:
-  db_restore: true
+  dbRestore: true

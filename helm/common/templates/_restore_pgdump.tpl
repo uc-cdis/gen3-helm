@@ -13,10 +13,7 @@ spec:
         app: gen3job
     spec:
       serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
-      restartPolicy: OnFailure
-    #   serviceAccountName: gitops-sa
-    #   securityContext:
-    #     fsGroup: 1000
+      restartPolicy: Never
       volumes:
         - name: cred-volume
           secret:
@@ -87,17 +84,8 @@ spec:
               set -e
               source "${GEN3_HOME}/gen3/lib/utils.sh"
               gen3_load "gen3/gen3setup"
-              gen3_log_info "Starting the s3_pg_restore job. Grabbing dumps from s3."
+              gen3_log_info "Starting the s3_pg_restore job."
               
-              gen3_log_info "Verify aws cli is setup properly"
-              gen3_log_info "aws sts get-caller-identity"
-              aws sts get-caller-identity
-
-              gen3_log_info "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/db$SERVICE_PGDB.backup . "
-              aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/db$SERVICE_PGDB.backup . 
-
-              gen3_log_info "S3 Copy finished. Moving on to DB restore"
-
               
               until pg_isready -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -d template1
               do
@@ -109,20 +97,38 @@ spec:
 
               if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
                 gen3_log_err "Database exists. Please drop database, or use another database as target"
+                # Test connection before patching secret
+                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+
+                # Update secret to signal that db has been created, and services can start
+                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               else
+                gen3_log_info "Verify aws cli is setup properly"
+                gen3_log_info "aws sts get-caller-identity"
+                aws sts get-caller-identity
+
+                FILE={{ .Chart.Name }}.sql
+                gen3_log_info "aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/$FILE . "
+                aws s3 cp s3://$BUCKET/$ENVIRONMENT/$VERSION/pgdumps/$FILE . 
+
+                gen3_log_info "S3 Copy finished. Moving on to DB restore"
                 gen3_log_info "Attempting to create database, and restore pg_dump"
                 psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE $SERVICE_PGDB;"
                 psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER $SERVICE_PGUSER WITH PASSWORD '$SERVICE_PGPASS';"
                 psql -c "GRANT ALL ON DATABASE $SERVICE_PGDB TO $SERVICE_PGUSER WITH GRANT OPTION;"
                 psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE $SERVICE_PGUSER WITH LOGIN"
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-              fi
-              gen3_log_info "Starting restore.."
-              gen3_log_info "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup"
-              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f db$SERVICE_PGDB.backup
+                
+                gen3_log_info "Starting restore.."
+                gen3_log_info "PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f $FILE"
+                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -f $FILE
 
-              gen3_log_info "db restored"
+                gen3_log_info "db restored"
+              fi
               
+              # Test connection before patching secret
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               

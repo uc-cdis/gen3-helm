@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2022.10](https://img.shields.io/badge/AppVersion-2022.10-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,879 +8,79 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.1 |
+| file://../common | common | 0.1.2 |
+| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| FENCE_CONFIG.ACCESS_TOKEN_COOKIE_NAME | string | `"access_token"` |  |
-| FENCE_CONFIG.ACCESS_TOKEN_EXPIRES_IN | int | `1200` |  |
-| FENCE_CONFIG.ALLOWED_USER_SERVICE_ACCOUNT_DOMAINS[0] | string | `"developer.gserviceaccount.com"` |  |
-| FENCE_CONFIG.ALLOWED_USER_SERVICE_ACCOUNT_DOMAINS[1] | string | `"appspot.gserviceaccount.com"` |  |
-| FENCE_CONFIG.ALLOWED_USER_SERVICE_ACCOUNT_DOMAINS[2] | string | `"iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.ALLOW_GOOGLE_LINKING | bool | `true` |  |
-| FENCE_CONFIG.APPLICATION_ROOT | string | `"/user"` |  |
-| FENCE_CONFIG.APP_NAME | string | `"Gen3 Data Commons"` |  |
-| FENCE_CONFIG.ARBORIST | string | `nil` |  |
-| FENCE_CONFIG.ASSUME_ROLE_CACHE_SECONDS | int | `1800` |  |
-| FENCE_CONFIG.AUDIT_SERVICE | string | `"http://audit-service"` |  |
-| FENCE_CONFIG.AUTHLIB_INSECURE_TRANSPORT | bool | `true` |  |
-| FENCE_CONFIG.AWS_CREDENTIALS | object | `{}` |  |
-| FENCE_CONFIG.AZ_BLOB_CONTAINER_URL | string | `"https://myfakeblob.blob.core.windows.net/my-fake-container/"` |  |
-| FENCE_CONFIG.AZ_BLOB_CREDENTIALS | string | `nil` |  |
-| FENCE_CONFIG.BILLING_PROJECT_FOR_SA_CREDS | string | `nil` |  |
-| FENCE_CONFIG.BILLING_PROJECT_FOR_SIGNED_URLS | string | `nil` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_ADMIN_EMAIL | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_API_KEY | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_APPLICATION_CREDENTIALS | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_CLOUD_IDENTITY_ADMIN_EMAIL | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_IDENTITY_DOMAIN | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_PROJECT_ID | string | `""` |  |
-| FENCE_CONFIG.CIRRUS_CFG.GOOGLE_STORAGE_CREDS | string | `""` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[0] | string | `"openid"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[1] | string | `"user"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[2] | string | `"data"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[3] | string | `"google_credentials"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[4] | string | `"google_service_account"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[5] | string | `"google_link"` |  |
-| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES[6] | string | `"ga4gh_passport_v1"` |  |
-| FENCE_CONFIG.DATA_UPLOAD_BUCKET | string | `"bucket1"` |  |
-| FENCE_CONFIG.DBGAP_ACCESSION_WITH_CONSENT_REGEX | string | `"(?P<phsid>phs[0-9]+)(.(?P<version>v[0-9]+)){0,1}(.(?P<participant_set>p[0-9]+)){0,1}.(?P<consent>c[0-9]+)"` |  |
-| FENCE_CONFIG.DEBUG | bool | `false` |  |
-| FENCE_CONFIG.DEFAULT_LOGIN_IDP | string | `"google"` |  |
-| FENCE_CONFIG.DEFAULT_LOGIN_URL | string | `"{{BASE_URL}}/login/google"` |  |
-| FENCE_CONFIG.DEV_LOGIN_COOKIE_NAME | string | `"dev_login"` |  |
-| FENCE_CONFIG.DREAM_CHALLENGE_GROUP | string | `"DREAM"` |  |
-| FENCE_CONFIG.DREAM_CHALLENGE_TEAM | string | `"DREAM"` |  |
-| FENCE_CONFIG.EMAIL_SERVER | string | `"localhost"` |  |
-| FENCE_CONFIG.ENABLED_IDENTITY_PROVIDERS | object | `{}` |  |
-| FENCE_CONFIG.ENABLE_AUDIT_LOGS.login | bool | `false` |  |
-| FENCE_CONFIG.ENABLE_AUDIT_LOGS.presigned_url | bool | `false` |  |
-| FENCE_CONFIG.ENABLE_AUTOMATIC_BILLING_PERMISSION_SA_CREDS | bool | `false` |  |
-| FENCE_CONFIG.ENABLE_AUTOMATIC_BILLING_PERMISSION_SIGNED_URLS | bool | `false` |  |
-| FENCE_CONFIG.ENABLE_CSRF_PROTECTION | bool | `true` |  |
-| FENCE_CONFIG.ENABLE_DB_MIGRATION | bool | `true` |  |
-| FENCE_CONFIG.ENABLE_PROMETHEUS_METRICS | bool | `false` |  |
-| FENCE_CONFIG.ENCRYPTION_KEY | string | `"REPLACEME"` |  |
-| FENCE_CONFIG.GA4GH_VISA_ISSUER_ALLOWLIST[0] | string | `"{{BASE_URL}}"` |  |
-| FENCE_CONFIG.GA4GH_VISA_ISSUER_ALLOWLIST[1] | string | `"https://sts.nih.gov"` |  |
-| FENCE_CONFIG.GA4GH_VISA_ISSUER_ALLOWLIST[2] | string | `"https://stsstg.nih.gov"` |  |
-| FENCE_CONFIG.GEN3_PASSPORT_EXPIRES_IN | int | `43200` |  |
-| FENCE_CONFIG.GLOBAL_PARSE_VISAS_ON_LOGIN | string | `nil` |  |
-| FENCE_CONFIG.GOOGLE_ACCOUNT_ACCESS_EXPIRES_IN | int | `86400` |  |
-| FENCE_CONFIG.GOOGLE_BULK_UPDATES | bool | `false` |  |
-| FENCE_CONFIG.GOOGLE_GROUP_PREFIX | string | `""` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[0] | string | `"dataflow-service-producer-prod.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[10] | string | `"container-analysis.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[11] | string | `"cloudservices.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[12] | string | `"stackdriver-service.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[13] | string | `"appspot.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[14] | string | `"partnercontent.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[15] | string | `"trifacta-gcloud-prod.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[16] | string | `"gcf-admin-robot.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[17] | string | `"compute-system.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[18] | string | `"gcp-sa-websecurityscanner.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[19] | string | `"storage-transfer-service.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[1] | string | `"cloudbuild.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[20] | string | `"firebase-sa-management.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[21] | string | `"firebase-rules.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[22] | string | `"gcp-sa-cloudbuild.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[23] | string | `"gcp-sa-automl.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[24] | string | `"gcp-sa-datalabeling.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[25] | string | `"gcp-sa-cloudscheduler.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[2] | string | `"cloud-ml.google.com.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[3] | string | `"container-engine-robot.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[4] | string | `"dataflow-service-producer-prod.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[5] | string | `"sourcerepo-service-accounts.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[6] | string | `"dataproc-accounts.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[7] | string | `"gae-api-prod.google.com.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[8] | string | `"genomics-api.google.com.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS[9] | string | `"containerregistry.iam.gserviceaccount.com"` |  |
-| FENCE_CONFIG.GOOGLE_SERVICE_ACCOUNT_KEY_FOR_URL_SIGNING_EXPIRES_IN | int | `2592000` |  |
-| FENCE_CONFIG.GOOGLE_SERVICE_ACCOUNT_PREFIX | string | `""` |  |
-| FENCE_CONFIG.GOOGLE_USER_SERVICE_ACCOUNT_ACCESS_EXPIRES_IN | int | `604800` |  |
-| FENCE_CONFIG.GUN_MAIL."datacommons.io".api_key | string | `""` |  |
-| FENCE_CONFIG.GUN_MAIL."datacommons.io".api_url | string | `"https://api.mailgun.net/v3/mailgun.example.com"` |  |
-| FENCE_CONFIG.GUN_MAIL."datacommons.io".default_login | string | `"postmaster@mailgun.example.com"` |  |
-| FENCE_CONFIG.GUN_MAIL."datacommons.io".smtp_hostname | string | `"smtp.mailgun.org"` |  |
-| FENCE_CONFIG.GUN_MAIL."datacommons.io".smtp_password | string | `""` |  |
-| FENCE_CONFIG.HTTP_PROXY.host | string | `nil` |  |
-| FENCE_CONFIG.HTTP_PROXY.port | int | `3128` |  |
-| FENCE_CONFIG.INDEXD | string | `nil` |  |
-| FENCE_CONFIG.INDEXD_PASSWORD | string | `""` |  |
-| FENCE_CONFIG.INDEXD_USERNAME | string | `"fence"` |  |
-| FENCE_CONFIG.ITRUST_GLOBAL_LOGOUT | string | `"https://auth.nih.gov/siteminderagent/smlogout.asp?mode=nih&AppReturnUrl="` |  |
-| FENCE_CONFIG.LOGIN_OPTIONS[0].desc | string | `"description"` |  |
-| FENCE_CONFIG.LOGIN_OPTIONS[0].idp | string | `"google"` |  |
-| FENCE_CONFIG.LOGIN_OPTIONS[0].name | string | `"Login from Google"` |  |
-| FENCE_CONFIG.LOGIN_REDIRECT_WHITELIST | list | `[]` |  |
-| FENCE_CONFIG.MAX_ACCESS_TOKEN_TTL | int | `3600` |  |
-| FENCE_CONFIG.MAX_API_KEY_TTL | int | `2592000` |  |
-| FENCE_CONFIG.MAX_PRESIGNED_URL_TTL | int | `3600` |  |
-| FENCE_CONFIG.MAX_ROLE_SESSION_INCREASE | bool | `false` |  |
-| FENCE_CONFIG.MOCK_AUTH | bool | `false` |  |
-| FENCE_CONFIG.MOCK_GOOGLE_AUTH | bool | `false` |  |
-| FENCE_CONFIG.MOCK_STORAGE | bool | `false` |  |
-| FENCE_CONFIG.OAUTH2_JWT_ALG | string | `"RS256"` |  |
-| FENCE_CONFIG.OAUTH2_JWT_ENABLED | bool | `true` |  |
-| FENCE_CONFIG.OAUTH2_JWT_ISS | string | `"{{BASE_URL}}"` |  |
-| FENCE_CONFIG.OAUTH2_PROVIDER_ERROR_URI | string | `"/api/oauth2/errors"` |  |
-| FENCE_CONFIG.OAUTH2_TOKEN_EXPIRES_IN.authorization_code | int | `1200` |  |
-| FENCE_CONFIG.OAUTH2_TOKEN_EXPIRES_IN.implicit | int | `1200` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.discovery_url | string | `"https://cilogon.org/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.mock | bool | `false` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.mock_default_user | string | `"http://cilogon.org/serverT/users/64703"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.redirect_url | string | `"{{BASE_URL}}/login/cilogon/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cilogon.scope | string | `"openid email profile"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.discovery_url | string | `"https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.redirect_url | string | `"{{BASE_URL}}/login/cognito/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.cognito.scope | string | `"openid email"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.access_token_url | string | `"{{api_base_url}}/oauth2/token"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.api_base_url | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.authorize_url | string | `"{{api_base_url}}/oauth2/authorize"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.redirect_uri | string | `"{{BASE_URL}}/login/fence/login"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.scope | string | `"openid"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.mock | bool | `false` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.mock_default_user | string | `"test@example.com"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.name | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.refresh_token_url | string | `"{{api_base_url}}/oauth2/token"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.fence.shibboleth_discovery_url | string | `"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.authorization_endpoint | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.jwks_uri | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.token_endpoint | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery_url | string | `"https://server.com/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.email_field | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.name | string | `"some_idp"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.redirect_url | string | `"{{BASE_URL}}/login/some_idp/login"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.scope | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.user_id_field | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.discovery_url | string | `"https://accounts.google.com/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.mock | string | `"{{MOCK_GOOGLE_AUTH}}"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.mock_default_user | string | `"test@example.com"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.redirect_url | string | `"{{BASE_URL}}/login/google/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.google.scope | string | `"openid email"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.discovery_url | string | `"https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.mock | bool | `false` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.mock_default_user | string | `"test@example.com"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.redirect_url | string | `"{{BASE_URL}}/login/microsoft/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.microsoft.scope | string | `"openid email"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.okta.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.okta.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.okta.discovery_url | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.okta.redirect_url | string | `"{{BASE_URL}}/login/okta/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.okta.scope | string | `"openid email"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.discovery_url | string | `"https://orcid.org/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.mock | bool | `false` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.mock_default_user | string | `"0000-0002-2601-8132"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.redirect_url | string | `"{{BASE_URL}}/login/orcid/login/"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.orcid.scope | string | `"openid"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.discovery_url | string | `"https://sts.nih.gov/.well-known/openid-configuration"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.mock | bool | `false` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.mock_default_user | string | `"test@example.com"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.redirect_url | string | `"{{BASE_URL}}/login/ras/callback"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.ras.scope | string | `"openid email profile ga4gh_passport_v1"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.shibboleth.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.shibboleth.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.shibboleth.redirect_url | string | `"{{BASE_URL}}/login/shib/login"` |  |
-| FENCE_CONFIG.OPENID_CONNECT.synapse.client_id | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.synapse.client_secret | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.synapse.discovery_url | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.synapse.redirect_url | string | `""` |  |
-| FENCE_CONFIG.OPENID_CONNECT.synapse.scope | string | `"openid"` |  |
-| FENCE_CONFIG.OVERRIDE_NGINX_RATE_LIMIT | int | `18` |  |
-| FENCE_CONFIG.PRIVACY_POLICY_URL | string | `nil` |  |
-| FENCE_CONFIG.PROBLEM_USER_EMAIL_NOTIFICATION.admin[0] | string | `"admin@example.edu"` |  |
-| FENCE_CONFIG.PROBLEM_USER_EMAIL_NOTIFICATION.content | string | `"The Data Commons Framework utilizes dbGaP for data access authorization. Another member of a Google project you belong to ({}) is attempting to register a service account to the following additional datasets ({}). Please contact dbGaP to request access.\n"` |  |
-| FENCE_CONFIG.PROBLEM_USER_EMAIL_NOTIFICATION.domain | string | `"example.com"` |  |
-| FENCE_CONFIG.PROBLEM_USER_EMAIL_NOTIFICATION.from | string | `"do-not-reply@example.com"` |  |
-| FENCE_CONFIG.PROBLEM_USER_EMAIL_NOTIFICATION.subject | string | `"Account access error notification"` |  |
-| FENCE_CONFIG.PUSH_AUDIT_LOGS_CONFIG.aws_sqs_config.aws_cred | string | `nil` |  |
-| FENCE_CONFIG.PUSH_AUDIT_LOGS_CONFIG.aws_sqs_config.region | string | `nil` |  |
-| FENCE_CONFIG.PUSH_AUDIT_LOGS_CONFIG.aws_sqs_config.sqs_url | string | `nil` |  |
-| FENCE_CONFIG.PUSH_AUDIT_LOGS_CONFIG.type | string | `"aws_sqs"` |  |
-| FENCE_CONFIG.RAS_REFRESH_EXPIRATION | int | `1296000` |  |
-| FENCE_CONFIG.RAS_USERINFO_ENDPOINT | string | `"/openid/connect/v1.1/userinfo"` |  |
-| FENCE_CONFIG.REFRESH_TOKEN_EXPIRES_IN | int | `2592000` |  |
-| FENCE_CONFIG.REGISTERED_USERS_GROUP | string | `""` |  |
-| FENCE_CONFIG.REGISTER_USERS_ON | bool | `false` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.admin[0] | string | `"admin@example.edu"` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.content | string | `"Service accounts were removed from access control data because some users or service accounts of GCP Project {} are not authorized to access the data sets associated to the service accounts, or do not adhere to the security policies.\n"` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.domain | string | `"example.com"` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.enable | bool | `false` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.from | string | `"do-not-reply@example.com"` |  |
-| FENCE_CONFIG.REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION.subject | string | `"User service account removal notification"` |  |
-| FENCE_CONFIG.RENEW_ACCESS_TOKEN_BEFORE_EXPIRATION | bool | `false` |  |
-| FENCE_CONFIG.S3_BUCKETS | object | `{}` |  |
-| FENCE_CONFIG.SEND_FROM | string | `"example@gmail.com"` |  |
-| FENCE_CONFIG.SEND_TO | string | `"example@gmail.com"` |  |
-| FENCE_CONFIG.SERVICE_ACCOUNT_LIMIT | int | `6` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[0] | string | `"openid"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[1] | string | `"user"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[2] | string | `"credentials"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[3] | string | `"data"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[4] | string | `"admin"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[5] | string | `"google_credentials"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[6] | string | `"google_service_account"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[7] | string | `"google_link"` |  |
-| FENCE_CONFIG.SESSION_ALLOWED_SCOPES[8] | string | `"ga4gh_passport_v1"` |  |
-| FENCE_CONFIG.SESSION_COOKIE_DOMAIN | string | `nil` |  |
-| FENCE_CONFIG.SESSION_COOKIE_NAME | string | `"fence"` |  |
-| FENCE_CONFIG.SESSION_COOKIE_SECURE | bool | `true` |  |
-| FENCE_CONFIG.SESSION_LIFETIME | int | `28800` |  |
-| FENCE_CONFIG.SESSION_TIMEOUT | int | `1800` |  |
-| FENCE_CONFIG.SHIBBOLETH_HEADER | string | `"persistent_id"` |  |
-| FENCE_CONFIG.SSO_URL | string | `"https://auth.nih.gov/affwebservices/public/saml2sso?SPID={{BASE_URL}}/shibboleth&RelayState="` |  |
-| FENCE_CONFIG.STORAGE_CREDENTIALS | object | `{}` |  |
-| FENCE_CONFIG.SUPPORT_EMAIL_FOR_ERRORS | string | `nil` |  |
-| FENCE_CONFIG.SYNAPSE_AUTHZ_TTL | int | `86400` |  |
-| FENCE_CONFIG.SYNAPSE_DISCOVERY_URL | string | `nil` |  |
-| FENCE_CONFIG.SYNAPSE_JWKS_URI | string | `nil` |  |
-| FENCE_CONFIG.SYNAPSE_URI | string | `"https://repo-prod.prod.sagebase.org/auth/v1"` |  |
-| FENCE_CONFIG.TOKEN_PROJECTS_CUTOFF | int | `10` |  |
-| FENCE_CONFIG.USERSYNC.fallback_to_dbgap_sftp | bool | `false` |  |
-| FENCE_CONFIG.USERSYNC.sync_from_visas | bool | `false` |  |
-| FENCE_CONFIG.USERSYNC.visa_types.ras[0] | string | `"https://ras.nih.gov/visas/v1"` |  |
-| FENCE_CONFIG.USERSYNC.visa_types.ras[1] | string | `"https://ras.nih.gov/visas/v1.1"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[0] | string | `"fence"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[1] | string | `"openid"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[2] | string | `"user"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[3] | string | `"data"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[4] | string | `"admin"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[5] | string | `"google_credentials"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[6] | string | `"google_service_account"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[7] | string | `"google_link"` |  |
-| FENCE_CONFIG.USER_ALLOWED_SCOPES[8] | string | `"ga4gh_passport_v1"` |  |
-| FENCE_CONFIG.WHITE_LISTED_GOOGLE_PARENT_ORGS | list | `[]` |  |
-| FENCE_CONFIG.WHITE_LISTED_SERVICE_ACCOUNT_EMAILS | list | `[]` |  |
-| FENCE_CONFIG.WTF_CSRF_SECRET_KEY | string | `"{{ENCRYPTION_KEY}}"` |  |
-| FENCE_CONFIG.dbGaP[0].decrypt_key | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].enable_common_exchange_area_access | bool | `false` |  |
-| FENCE_CONFIG.dbGaP[0].info.host | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].info.password | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].info.port | int | `22` |  |
-| FENCE_CONFIG.dbGaP[0].info.proxy | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].info.proxy_user | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].info.username | string | `""` |  |
-| FENCE_CONFIG.dbGaP[0].parse_consent_code | bool | `true` |  |
-| FENCE_CONFIG.dbGaP[0].protocol | string | `"sftp"` |  |
-| FENCE_CONFIG.dbGaP[0].study_common_exchange_areas.example | string | `"test_common_exchange_area"` |  |
-| FENCE_CONFIG.dbGaP[0].study_to_resource_namespaces._default[0] | string | `"/"` |  |
-| FENCE_CONFIG.dbGaP[0].study_to_resource_namespaces.test_common_exchange_area[0] | string | `"/dbgap/"` |  |
-| USER_YAML.authz.all_users_policies[0] | string | `"open_data_reader"` |  |
-| USER_YAML.authz.all_users_policies[1] | string | `"authn_open_access"` |  |
-| USER_YAML.authz.anonymous_policies[0] | string | `"open_data_reader"` |  |
-| USER_YAML.authz.anonymous_policies[1] | string | `"full_open_access"` |  |
-| USER_YAML.authz.policies[0].description | string | `"be able to use workspace"` |  |
-| USER_YAML.authz.policies[0].id | string | `"workspace"` |  |
-| USER_YAML.authz.policies[0].resource_paths[0] | string | `"/workspace"` |  |
-| USER_YAML.authz.policies[0].role_ids[0] | string | `"workspace_user"` |  |
-| USER_YAML.authz.policies[10].id | string | `"audit_presigned_url_reader"` |  |
-| USER_YAML.authz.policies[10].resource_paths[0] | string | `"/services/audit/presigned_url"` |  |
-| USER_YAML.authz.policies[10].role_ids[0] | string | `"audit_reader"` |  |
-| USER_YAML.authz.policies[11].id | string | `"requestor_admin"` |  |
-| USER_YAML.authz.policies[11].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[11].role_ids[0] | string | `"requestor_admin"` |  |
-| USER_YAML.authz.policies[12].id | string | `"requestor_reader"` |  |
-| USER_YAML.authz.policies[12].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[12].role_ids[0] | string | `"requestor_reader"` |  |
-| USER_YAML.authz.policies[13].id | string | `"requestor_creator"` |  |
-| USER_YAML.authz.policies[13].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[13].role_ids[0] | string | `"requestor_creator"` |  |
-| USER_YAML.authz.policies[14].id | string | `"requestor_updater"` |  |
-| USER_YAML.authz.policies[14].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[14].role_ids[0] | string | `"requestor_updater"` |  |
-| USER_YAML.authz.policies[15].id | string | `"requestor_deleter"` |  |
-| USER_YAML.authz.policies[15].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[15].role_ids[0] | string | `"requestor_deleter"` |  |
-| USER_YAML.authz.policies[16].description | string | `""` |  |
-| USER_YAML.authz.policies[16].id | string | `"all_programs_reader"` |  |
-| USER_YAML.authz.policies[16].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[16].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[16].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[17].description | string | `""` |  |
-| USER_YAML.authz.policies[17].id | string | `"programs.jnkns-admin"` |  |
-| USER_YAML.authz.policies[17].resource_paths[0] | string | `"/programs/jnkns"` |  |
-| USER_YAML.authz.policies[17].resource_paths[1] | string | `"/gen3/programs/jnkns"` |  |
-| USER_YAML.authz.policies[17].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[17].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[17].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[17].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[17].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[18].description | string | `""` |  |
-| USER_YAML.authz.policies[18].id | string | `"programs.jnkns-viewer"` |  |
-| USER_YAML.authz.policies[18].resource_paths[0] | string | `"/programs/jnkns"` |  |
-| USER_YAML.authz.policies[18].resource_paths[1] | string | `"/gen3/programs/jnkns"` |  |
-| USER_YAML.authz.policies[18].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[18].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[19].description | string | `""` |  |
-| USER_YAML.authz.policies[19].id | string | `"programs.QA-admin"` |  |
-| USER_YAML.authz.policies[19].resource_paths[0] | string | `"/programs/QA"` |  |
-| USER_YAML.authz.policies[19].resource_paths[1] | string | `"/gen3/programs/QA"` |  |
-| USER_YAML.authz.policies[19].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[19].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[19].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[19].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[19].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[1].description | string | `"be able to use the commons dashboard"` |  |
-| USER_YAML.authz.policies[1].id | string | `"dashboard"` |  |
-| USER_YAML.authz.policies[1].resource_paths[0] | string | `"/dashboard"` |  |
-| USER_YAML.authz.policies[1].role_ids[0] | string | `"dashboard_user"` |  |
-| USER_YAML.authz.policies[20].description | string | `""` |  |
-| USER_YAML.authz.policies[20].id | string | `"programs.QA-admin-no-storage"` |  |
-| USER_YAML.authz.policies[20].resource_paths[0] | string | `"/programs/QA"` |  |
-| USER_YAML.authz.policies[20].resource_paths[1] | string | `"/gen3/programs/QA"` |  |
-| USER_YAML.authz.policies[20].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[20].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[20].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[20].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[21].description | string | `""` |  |
-| USER_YAML.authz.policies[21].id | string | `"programs.QA-viewer"` |  |
-| USER_YAML.authz.policies[21].resource_paths[0] | string | `"/programs/QA"` |  |
-| USER_YAML.authz.policies[21].resource_paths[1] | string | `"/gen3/programs/QA"` |  |
-| USER_YAML.authz.policies[21].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[21].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[22].description | string | `""` |  |
-| USER_YAML.authz.policies[22].id | string | `"programs.DEV-admin"` |  |
-| USER_YAML.authz.policies[22].resource_paths[0] | string | `"/programs/DEV"` |  |
-| USER_YAML.authz.policies[22].resource_paths[1] | string | `"/gen3/programs/DEV"` |  |
-| USER_YAML.authz.policies[22].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[22].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[22].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[22].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[22].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[22].role_ids[5] | string | `"storage_writer"` |  |
-| USER_YAML.authz.policies[23].description | string | `""` |  |
-| USER_YAML.authz.policies[23].id | string | `"programs.DEV-storage_writer"` |  |
-| USER_YAML.authz.policies[23].resource_paths[0] | string | `"/programs/DEV"` |  |
-| USER_YAML.authz.policies[23].role_ids[0] | string | `"storage_writer"` |  |
-| USER_YAML.authz.policies[24].description | string | `""` |  |
-| USER_YAML.authz.policies[24].id | string | `"programs.DEV-viewer"` |  |
-| USER_YAML.authz.policies[24].resource_paths[0] | string | `"/programs/DEV"` |  |
-| USER_YAML.authz.policies[24].resource_paths[1] | string | `"/gen3/programs/DEV"` |  |
-| USER_YAML.authz.policies[24].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[24].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[25].description | string | `""` |  |
-| USER_YAML.authz.policies[25].id | string | `"programs.test-admin"` |  |
-| USER_YAML.authz.policies[25].resource_paths[0] | string | `"/programs/test"` |  |
-| USER_YAML.authz.policies[25].resource_paths[1] | string | `"/gen3/programs/test"` |  |
-| USER_YAML.authz.policies[25].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[25].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[25].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[25].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[25].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[26].description | string | `""` |  |
-| USER_YAML.authz.policies[26].id | string | `"programs.test-viewer"` |  |
-| USER_YAML.authz.policies[26].resource_paths[0] | string | `"/programs/test"` |  |
-| USER_YAML.authz.policies[26].resource_paths[1] | string | `"/gen3/programs/test"` |  |
-| USER_YAML.authz.policies[26].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[26].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[27].description | string | `""` |  |
-| USER_YAML.authz.policies[27].id | string | `"abc-admin"` |  |
-| USER_YAML.authz.policies[27].resource_paths[0] | string | `"/abc"` |  |
-| USER_YAML.authz.policies[27].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[27].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[27].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[27].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[27].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[28].description | string | `""` |  |
-| USER_YAML.authz.policies[28].id | string | `"gen3-admin"` |  |
-| USER_YAML.authz.policies[28].resource_paths[0] | string | `"/gen3"` |  |
-| USER_YAML.authz.policies[28].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[28].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[28].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[28].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[28].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[29].description | string | `""` |  |
-| USER_YAML.authz.policies[29].id | string | `"gen3-hmb-researcher"` |  |
-| USER_YAML.authz.policies[29].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[29].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[29].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[29].resource_paths[3] | string | `"/consents/HMB"` |  |
-| USER_YAML.authz.policies[29].resource_paths[4] | string | `"/gen3"` |  |
-| USER_YAML.authz.policies[29].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[29].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[29].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[29].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[29].role_ids[4] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[2].description | string | `"be able to use prometheus"` |  |
-| USER_YAML.authz.policies[2].id | string | `"prometheus"` |  |
-| USER_YAML.authz.policies[2].resource_paths[0] | string | `"/prometheus"` |  |
-| USER_YAML.authz.policies[2].role_ids[0] | string | `"prometheus_user"` |  |
-| USER_YAML.authz.policies[30].description | string | `""` |  |
-| USER_YAML.authz.policies[30].id | string | `"abc.programs.test_program.projects.test_project1-viewer"` |  |
-| USER_YAML.authz.policies[30].resource_paths[0] | string | `"/abc/programs/test_program/projects/test_project1"` |  |
-| USER_YAML.authz.policies[30].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[30].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[31].description | string | `""` |  |
-| USER_YAML.authz.policies[31].id | string | `"abc.programs.test_program.projects.test_project2-viewer"` |  |
-| USER_YAML.authz.policies[31].resource_paths[0] | string | `"/abc/programs/test_program/projects/test_project2"` |  |
-| USER_YAML.authz.policies[31].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[31].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[32].description | string | `""` |  |
-| USER_YAML.authz.policies[32].id | string | `"abc.programs.test_program2.projects.test_project3-viewer"` |  |
-| USER_YAML.authz.policies[32].resource_paths[0] | string | `"/abc/programs/test_program2/projects/test_project3"` |  |
-| USER_YAML.authz.policies[32].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[32].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[33].description | string | `""` |  |
-| USER_YAML.authz.policies[33].id | string | `"authn_open_access"` |  |
-| USER_YAML.authz.policies[33].resource_paths[0] | string | `"/programs/open/projects/authnRequired"` |  |
-| USER_YAML.authz.policies[33].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[33].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[34].description | string | `""` |  |
-| USER_YAML.authz.policies[34].id | string | `"full_open_access"` |  |
-| USER_YAML.authz.policies[34].resource_paths[0] | string | `"/programs/open/projects/1000G"` |  |
-| USER_YAML.authz.policies[34].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[34].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[35].description | string | `""` |  |
-| USER_YAML.authz.policies[35].id | string | `"open_data_reader"` |  |
-| USER_YAML.authz.policies[35].resource_paths[0] | string | `"/open"` |  |
-| USER_YAML.authz.policies[35].role_ids[0] | string | `"reader"` |  |
-| USER_YAML.authz.policies[35].role_ids[1] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[36].description | string | `""` |  |
-| USER_YAML.authz.policies[36].id | string | `"open_data_admin"` |  |
-| USER_YAML.authz.policies[36].resource_paths[0] | string | `"/open"` |  |
-| USER_YAML.authz.policies[36].role_ids[0] | string | `"creator"` |  |
-| USER_YAML.authz.policies[36].role_ids[1] | string | `"reader"` |  |
-| USER_YAML.authz.policies[36].role_ids[2] | string | `"updater"` |  |
-| USER_YAML.authz.policies[36].role_ids[3] | string | `"deleter"` |  |
-| USER_YAML.authz.policies[36].role_ids[4] | string | `"storage_writer"` |  |
-| USER_YAML.authz.policies[36].role_ids[5] | string | `"storage_reader"` |  |
-| USER_YAML.authz.policies[37].description | string | `""` |  |
-| USER_YAML.authz.policies[37].id | string | `"not-for-profit-researcher"` |  |
-| USER_YAML.authz.policies[37].resource_paths[0] | string | `"/consents/NPU"` |  |
-| USER_YAML.authz.policies[37].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[38].description | string | `""` |  |
-| USER_YAML.authz.policies[38].id | string | `"publication-required-researcher"` |  |
-| USER_YAML.authz.policies[38].resource_paths[0] | string | `"/consents/PUB"` |  |
-| USER_YAML.authz.policies[38].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[39].description | string | `""` |  |
-| USER_YAML.authz.policies[39].id | string | `"gru-researcher"` |  |
-| USER_YAML.authz.policies[39].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[39].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[39].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[3].description | string | `"be able to use the admin tty"` |  |
-| USER_YAML.authz.policies[3].id | string | `"ttyadmin"` |  |
-| USER_YAML.authz.policies[3].resource_paths[0] | string | `"/ttyadmin"` |  |
-| USER_YAML.authz.policies[3].role_ids[0] | string | `"ttyadmin_user"` |  |
-| USER_YAML.authz.policies[40].description | string | `""` |  |
-| USER_YAML.authz.policies[40].id | string | `"gru-cc-researcher"` |  |
-| USER_YAML.authz.policies[40].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[40].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[40].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[40].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[41].description | string | `""` |  |
-| USER_YAML.authz.policies[41].id | string | `"hmb-researcher"` |  |
-| USER_YAML.authz.policies[41].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[41].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[41].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[41].resource_paths[3] | string | `"/consents/HMB"` |  |
-| USER_YAML.authz.policies[41].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[42].description | string | `""` |  |
-| USER_YAML.authz.policies[42].id | string | `"poa-researcher"` |  |
-| USER_YAML.authz.policies[42].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[42].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[42].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[42].resource_paths[3] | string | `"/consents/POA"` |  |
-| USER_YAML.authz.policies[42].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[43].description | string | `""` |  |
-| USER_YAML.authz.policies[43].id | string | `"ds-lung-researcher"` |  |
-| USER_YAML.authz.policies[43].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[43].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[43].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[43].resource_paths[3] | string | `"/consents/HMB"` |  |
-| USER_YAML.authz.policies[43].resource_paths[4] | string | `"/consents/DS_LungDisease"` |  |
-| USER_YAML.authz.policies[43].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[44].description | string | `""` |  |
-| USER_YAML.authz.policies[44].id | string | `"ds-chronic-obstructive-pulmonary-disease-researcher"` |  |
-| USER_YAML.authz.policies[44].resource_paths[0] | string | `"/consents/NRES"` |  |
-| USER_YAML.authz.policies[44].resource_paths[1] | string | `"/consents/GRU"` |  |
-| USER_YAML.authz.policies[44].resource_paths[2] | string | `"/consents/GRU_CC"` |  |
-| USER_YAML.authz.policies[44].resource_paths[3] | string | `"/consents/HMB"` |  |
-| USER_YAML.authz.policies[44].resource_paths[4] | string | `"/consents/DS_ChronicObstructivePulmonaryDisease"` |  |
-| USER_YAML.authz.policies[44].role_ids[0] | string | `"admin"` |  |
-| USER_YAML.authz.policies[45].description | string | `"CRUD access to programs and projects"` |  |
-| USER_YAML.authz.policies[45].id | string | `"services.sheepdog-admin"` |  |
-| USER_YAML.authz.policies[45].resource_paths[0] | string | `"/services/sheepdog/submission/program"` |  |
-| USER_YAML.authz.policies[45].resource_paths[1] | string | `"/services/sheepdog/submission/project"` |  |
-| USER_YAML.authz.policies[45].role_ids[0] | string | `"sheepdog_admin"` |  |
-| USER_YAML.authz.policies[46].description | string | `"full access to indexd API"` |  |
-| USER_YAML.authz.policies[46].id | string | `"indexd_admin"` |  |
-| USER_YAML.authz.policies[46].resource_paths[0] | string | `"/programs"` |  |
-| USER_YAML.authz.policies[46].resource_paths[1] | string | `"/services/indexd/admin"` |  |
-| USER_YAML.authz.policies[46].role_ids[0] | string | `"indexd_admin"` |  |
-| USER_YAML.authz.policies[47].description | string | `"be able to use argo"` |  |
-| USER_YAML.authz.policies[47].id | string | `"argo"` |  |
-| USER_YAML.authz.policies[47].resource_paths[0] | string | `"/argo"` |  |
-| USER_YAML.authz.policies[47].role_ids[0] | string | `"argo_user"` |  |
-| USER_YAML.authz.policies[4].description | string | `"be able to use metadata service"` |  |
-| USER_YAML.authz.policies[4].id | string | `"mds_admin"` |  |
-| USER_YAML.authz.policies[4].resource_paths[0] | string | `"/mds_gateway"` |  |
-| USER_YAML.authz.policies[4].role_ids[0] | string | `"mds_user"` |  |
-| USER_YAML.authz.policies[5].description | string | `"upload raw data files to S3"` |  |
-| USER_YAML.authz.policies[5].id | string | `"data_upload"` |  |
-| USER_YAML.authz.policies[5].resource_paths[0] | string | `"/data_file"` |  |
-| USER_YAML.authz.policies[5].role_ids[0] | string | `"file_uploader"` |  |
-| USER_YAML.authz.policies[6].description | string | `"be able to use sower job"` |  |
-| USER_YAML.authz.policies[6].id | string | `"sower"` |  |
-| USER_YAML.authz.policies[6].resource_paths[0] | string | `"/sower"` |  |
-| USER_YAML.authz.policies[6].role_ids[0] | string | `"sower_user"` |  |
-| USER_YAML.authz.policies[7].description | string | `"full access to mariner API"` |  |
-| USER_YAML.authz.policies[7].id | string | `"mariner_admin"` |  |
-| USER_YAML.authz.policies[7].resource_paths[0] | string | `"/mariner"` |  |
-| USER_YAML.authz.policies[7].role_ids[0] | string | `"mariner_admin"` |  |
-| USER_YAML.authz.policies[8].id | string | `"audit_reader"` |  |
-| USER_YAML.authz.policies[8].resource_paths[0] | string | `"/services/audit"` |  |
-| USER_YAML.authz.policies[8].role_ids[0] | string | `"audit_reader"` |  |
-| USER_YAML.authz.policies[9].id | string | `"audit_login_reader"` |  |
-| USER_YAML.authz.policies[9].resource_paths[0] | string | `"/services/audit/login"` |  |
-| USER_YAML.authz.policies[9].role_ids[0] | string | `"audit_reader"` |  |
-| USER_YAML.authz.resources[0].description | string | `"data files, stored in S3"` |  |
-| USER_YAML.authz.resources[0].name | string | `"data_file"` |  |
-| USER_YAML.authz.resources[10].name | string | `"gen3"` |  |
-| USER_YAML.authz.resources[10].subresources[0].name | string | `"programs"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[0].name | string | `"QA"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[0].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[0].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[1].name | string | `"DEV"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[1].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[1].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[2].name | string | `"jnkns"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[2].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[2].subresources[0].subresources[0].name | string | `"jenkins"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[2].subresources[0].subresources[1].name | string | `"jenkins2"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[3].name | string | `"test"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[3].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[10].subresources[0].subresources[3].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.resources[11].name | string | `"consents"` |  |
-| USER_YAML.authz.resources[11].subresources[0].description | string | `"no restriction"` |  |
-| USER_YAML.authz.resources[11].subresources[0].name | string | `"NRES"` |  |
-| USER_YAML.authz.resources[11].subresources[1].description | string | `"general research use"` |  |
-| USER_YAML.authz.resources[11].subresources[1].name | string | `"GRU"` |  |
-| USER_YAML.authz.resources[11].subresources[2].description | string | `"general research use and clinical care"` |  |
-| USER_YAML.authz.resources[11].subresources[2].name | string | `"GRU_CC"` |  |
-| USER_YAML.authz.resources[11].subresources[3].description | string | `"health/medical/biomedical research"` |  |
-| USER_YAML.authz.resources[11].subresources[3].name | string | `"HMB"` |  |
-| USER_YAML.authz.resources[11].subresources[4].description | string | `"population origins or ancestry research"` |  |
-| USER_YAML.authz.resources[11].subresources[4].name | string | `"POA"` |  |
-| USER_YAML.authz.resources[11].subresources[5].description | string | `"no general methods research"` |  |
-| USER_YAML.authz.resources[11].subresources[5].name | string | `"NMDS"` |  |
-| USER_YAML.authz.resources[11].subresources[6].description | string | `"not-for-profit use only"` |  |
-| USER_YAML.authz.resources[11].subresources[6].name | string | `"NPU"` |  |
-| USER_YAML.authz.resources[11].subresources[7].description | string | `"publication required"` |  |
-| USER_YAML.authz.resources[11].subresources[7].name | string | `"PUB"` |  |
-| USER_YAML.authz.resources[11].subresources[8].description | string | `"disease-specific research for lung disease"` |  |
-| USER_YAML.authz.resources[11].subresources[8].name | string | `"DS_LungDisease"` |  |
-| USER_YAML.authz.resources[11].subresources[9].description | string | `"disease-specific research for chronic obstructive pulmonary disease"` |  |
-| USER_YAML.authz.resources[11].subresources[9].name | string | `"DS_ChronicObstructivePulmonaryDisease"` |  |
-| USER_YAML.authz.resources[12].name | string | `"abc"` |  |
-| USER_YAML.authz.resources[12].subresources[0].name | string | `"programs"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[0].name | string | `"foo"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[0].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[0].subresources[0].subresources[0].name | string | `"bar"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[1].name | string | `"test_program"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[1].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[1].subresources[0].subresources[0].name | string | `"test_project1"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[1].subresources[0].subresources[1].name | string | `"test_project2"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[2].name | string | `"test_program2"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[2].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[12].subresources[0].subresources[2].subresources[0].subresources[0].name | string | `"test_project3"` |  |
-| USER_YAML.authz.resources[13].name | string | `"services"` |  |
-| USER_YAML.authz.resources[13].subresources[0].name | string | `"sheepdog"` |  |
-| USER_YAML.authz.resources[13].subresources[0].subresources[0].name | string | `"submission"` |  |
-| USER_YAML.authz.resources[13].subresources[0].subresources[0].subresources[0].name | string | `"program"` |  |
-| USER_YAML.authz.resources[13].subresources[0].subresources[0].subresources[1].name | string | `"project"` |  |
-| USER_YAML.authz.resources[13].subresources[1].name | string | `"indexd"` |  |
-| USER_YAML.authz.resources[13].subresources[1].subresources[0].name | string | `"admin"` |  |
-| USER_YAML.authz.resources[13].subresources[1].subresources[1].name | string | `"bundles"` |  |
-| USER_YAML.authz.resources[13].subresources[2].name | string | `"audit"` |  |
-| USER_YAML.authz.resources[13].subresources[2].subresources[0].name | string | `"presigned_url"` |  |
-| USER_YAML.authz.resources[13].subresources[2].subresources[1].name | string | `"login"` |  |
-| USER_YAML.authz.resources[14].name | string | `"open"` |  |
-| USER_YAML.authz.resources[1].description | string | `"commons /dashboard"` |  |
-| USER_YAML.authz.resources[1].name | string | `"dashboard"` |  |
-| USER_YAML.authz.resources[2].description | string | `"commons /mds-admin"` |  |
-| USER_YAML.authz.resources[2].name | string | `"mds_gateway"` |  |
-| USER_YAML.authz.resources[3].description | string | `"commons /prometheus and /grafana"` |  |
-| USER_YAML.authz.resources[3].name | string | `"prometheus"` |  |
-| USER_YAML.authz.resources[4].description | string | `"commons /ttyadmin"` |  |
-| USER_YAML.authz.resources[4].name | string | `"ttyadmin"` |  |
-| USER_YAML.authz.resources[5].name | string | `"workspace"` |  |
-| USER_YAML.authz.resources[6].name | string | `"sower"` |  |
-| USER_YAML.authz.resources[7].description | string | `"workflow execution service"` |  |
-| USER_YAML.authz.resources[7].name | string | `"mariner"` |  |
-| USER_YAML.authz.resources[8].name | string | `"argo"` |  |
-| USER_YAML.authz.resources[9].name | string | `"programs"` |  |
-| USER_YAML.authz.resources[9].subresources[0].name | string | `"open"` |  |
-| USER_YAML.authz.resources[9].subresources[0].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[9].subresources[0].subresources[0].subresources[0].name | string | `"1000G"` |  |
-| USER_YAML.authz.resources[9].subresources[0].subresources[0].subresources[1].name | string | `"authnRequired"` |  |
-| USER_YAML.authz.resources[9].subresources[1].name | string | `"QA"` |  |
-| USER_YAML.authz.resources[9].subresources[1].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[9].subresources[1].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.resources[9].subresources[2].name | string | `"DEV"` |  |
-| USER_YAML.authz.resources[9].subresources[2].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[9].subresources[2].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.resources[9].subresources[3].name | string | `"jnkns"` |  |
-| USER_YAML.authz.resources[9].subresources[3].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[9].subresources[3].subresources[0].subresources[0].name | string | `"jenkins"` |  |
-| USER_YAML.authz.resources[9].subresources[3].subresources[0].subresources[1].name | string | `"jenkins2"` |  |
-| USER_YAML.authz.resources[9].subresources[4].name | string | `"test"` |  |
-| USER_YAML.authz.resources[9].subresources[4].subresources[0].name | string | `"projects"` |  |
-| USER_YAML.authz.resources[9].subresources[4].subresources[0].subresources[0].name | string | `"test"` |  |
-| USER_YAML.authz.roles[0].description | string | `"can upload data files"` |  |
-| USER_YAML.authz.roles[0].id | string | `"file_uploader"` |  |
-| USER_YAML.authz.roles[0].permissions[0].action.method | string | `"file_upload"` |  |
-| USER_YAML.authz.roles[0].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[0].permissions[0].id | string | `"file_upload"` |  |
-| USER_YAML.authz.roles[10].description | string | `""` |  |
-| USER_YAML.authz.roles[10].id | string | `"creator"` |  |
-| USER_YAML.authz.roles[10].permissions[0].action.method | string | `"create"` |  |
-| USER_YAML.authz.roles[10].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[10].permissions[0].id | string | `"creator"` |  |
-| USER_YAML.authz.roles[11].description | string | `""` |  |
-| USER_YAML.authz.roles[11].id | string | `"reader"` |  |
-| USER_YAML.authz.roles[11].permissions[0].action.method | string | `"read"` |  |
-| USER_YAML.authz.roles[11].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[11].permissions[0].id | string | `"reader"` |  |
-| USER_YAML.authz.roles[12].description | string | `""` |  |
-| USER_YAML.authz.roles[12].id | string | `"updater"` |  |
-| USER_YAML.authz.roles[12].permissions[0].action.method | string | `"update"` |  |
-| USER_YAML.authz.roles[12].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[12].permissions[0].id | string | `"updater"` |  |
-| USER_YAML.authz.roles[13].description | string | `""` |  |
-| USER_YAML.authz.roles[13].id | string | `"deleter"` |  |
-| USER_YAML.authz.roles[13].permissions[0].action.method | string | `"delete"` |  |
-| USER_YAML.authz.roles[13].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[13].permissions[0].id | string | `"deleter"` |  |
-| USER_YAML.authz.roles[14].description | string | `""` |  |
-| USER_YAML.authz.roles[14].id | string | `"storage_writer"` |  |
-| USER_YAML.authz.roles[14].permissions[0].action.method | string | `"write-storage"` |  |
-| USER_YAML.authz.roles[14].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[14].permissions[0].id | string | `"storage_writer"` |  |
-| USER_YAML.authz.roles[15].description | string | `""` |  |
-| USER_YAML.authz.roles[15].id | string | `"storage_reader"` |  |
-| USER_YAML.authz.roles[15].permissions[0].action.method | string | `"read-storage"` |  |
-| USER_YAML.authz.roles[15].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[15].permissions[0].id | string | `"storage_reader"` |  |
-| USER_YAML.authz.roles[16].description | string | `"sheepdog admin role for program project crud"` |  |
-| USER_YAML.authz.roles[16].id | string | `"sheepdog_admin"` |  |
-| USER_YAML.authz.roles[16].permissions[0].action.method | string | `"*"` |  |
-| USER_YAML.authz.roles[16].permissions[0].action.service | string | `"sheepdog"` |  |
-| USER_YAML.authz.roles[16].permissions[0].id | string | `"sheepdog_admin_action"` |  |
-| USER_YAML.authz.roles[17].description | string | `"full access to indexd API"` |  |
-| USER_YAML.authz.roles[17].id | string | `"indexd_admin"` |  |
-| USER_YAML.authz.roles[17].permissions[0].action.method | string | `"*"` |  |
-| USER_YAML.authz.roles[17].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[17].permissions[0].id | string | `"indexd_admin"` |  |
-| USER_YAML.authz.roles[18].description | string | `""` |  |
-| USER_YAML.authz.roles[18].id | string | `"indexd_record_creator"` |  |
-| USER_YAML.authz.roles[18].permissions[0].action.method | string | `"create"` |  |
-| USER_YAML.authz.roles[18].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[18].permissions[0].id | string | `"indexd_record_creator"` |  |
-| USER_YAML.authz.roles[19].description | string | `""` |  |
-| USER_YAML.authz.roles[19].id | string | `"indexd_record_reader"` |  |
-| USER_YAML.authz.roles[19].permissions[0].action.method | string | `"read"` |  |
-| USER_YAML.authz.roles[19].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[19].permissions[0].id | string | `"indexd_record_reader"` |  |
-| USER_YAML.authz.roles[1].id | string | `"workspace_user"` |  |
-| USER_YAML.authz.roles[1].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[1].permissions[0].action.service | string | `"jupyterhub"` |  |
-| USER_YAML.authz.roles[1].permissions[0].id | string | `"workspace_access"` |  |
-| USER_YAML.authz.roles[20].description | string | `""` |  |
-| USER_YAML.authz.roles[20].id | string | `"indexd_record_updater"` |  |
-| USER_YAML.authz.roles[20].permissions[0].action.method | string | `"update"` |  |
-| USER_YAML.authz.roles[20].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[20].permissions[0].id | string | `"indexd_record_updater"` |  |
-| USER_YAML.authz.roles[21].description | string | `""` |  |
-| USER_YAML.authz.roles[21].id | string | `"indexd_delete_record"` |  |
-| USER_YAML.authz.roles[21].permissions[0].action.method | string | `"delete"` |  |
-| USER_YAML.authz.roles[21].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[21].permissions[0].id | string | `"indexd_delete_record"` |  |
-| USER_YAML.authz.roles[22].description | string | `""` |  |
-| USER_YAML.authz.roles[22].id | string | `"indexd_storage_reader"` |  |
-| USER_YAML.authz.roles[22].permissions[0].action.method | string | `"read-storage"` |  |
-| USER_YAML.authz.roles[22].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[22].permissions[0].id | string | `"indexd_storage_reader"` |  |
-| USER_YAML.authz.roles[23].description | string | `""` |  |
-| USER_YAML.authz.roles[23].id | string | `"indexd_storage_writer"` |  |
-| USER_YAML.authz.roles[23].permissions[0].action.method | string | `"write-storage"` |  |
-| USER_YAML.authz.roles[23].permissions[0].action.service | string | `"indexd"` |  |
-| USER_YAML.authz.roles[23].permissions[0].id | string | `"indexd_storage_writer"` |  |
-| USER_YAML.authz.roles[24].description | string | `""` |  |
-| USER_YAML.authz.roles[24].id | string | `"arborist_creator"` |  |
-| USER_YAML.authz.roles[24].permissions[0].action.method | string | `"create"` |  |
-| USER_YAML.authz.roles[24].permissions[0].action.service | string | `"arborist"` |  |
-| USER_YAML.authz.roles[24].permissions[0].id | string | `"arborist_creator"` |  |
-| USER_YAML.authz.roles[25].description | string | `""` |  |
-| USER_YAML.authz.roles[25].id | string | `"arborist_reader"` |  |
-| USER_YAML.authz.roles[25].permissions[0].action.method | string | `"read"` |  |
-| USER_YAML.authz.roles[25].permissions[0].action.service | string | `"arborist"` |  |
-| USER_YAML.authz.roles[25].permissions[0].id | string | `"arborist_reader"` |  |
-| USER_YAML.authz.roles[26].description | string | `""` |  |
-| USER_YAML.authz.roles[26].id | string | `"arborist_updater"` |  |
-| USER_YAML.authz.roles[26].permissions[0].action.method | string | `"update"` |  |
-| USER_YAML.authz.roles[26].permissions[0].action.service | string | `"arborist"` |  |
-| USER_YAML.authz.roles[26].permissions[0].id | string | `"arborist_updater"` |  |
-| USER_YAML.authz.roles[27].description | string | `""` |  |
-| USER_YAML.authz.roles[27].id | string | `"arborist_deleter"` |  |
-| USER_YAML.authz.roles[27].permissions[0].action.method | string | `"delete"` |  |
-| USER_YAML.authz.roles[27].permissions[0].action.service | string | `"arborist"` |  |
-| USER_YAML.authz.roles[27].permissions[0].id | string | `"arborist_deleter"` |  |
-| USER_YAML.authz.roles[28].id | string | `"requestor_admin"` |  |
-| USER_YAML.authz.roles[28].permissions[0].action.method | string | `"*"` |  |
-| USER_YAML.authz.roles[28].permissions[0].action.service | string | `"requestor"` |  |
-| USER_YAML.authz.roles[28].permissions[0].id | string | `"requestor_admin_action"` |  |
-| USER_YAML.authz.roles[29].id | string | `"requestor_reader"` |  |
-| USER_YAML.authz.roles[29].permissions[0].action.method | string | `"read"` |  |
-| USER_YAML.authz.roles[29].permissions[0].action.service | string | `"requestor"` |  |
-| USER_YAML.authz.roles[29].permissions[0].id | string | `"requestor_reader_action"` |  |
-| USER_YAML.authz.roles[2].id | string | `"dashboard_user"` |  |
-| USER_YAML.authz.roles[2].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[2].permissions[0].action.service | string | `"dashboard"` |  |
-| USER_YAML.authz.roles[2].permissions[0].id | string | `"dashboard_access"` |  |
-| USER_YAML.authz.roles[30].id | string | `"requestor_creator"` |  |
-| USER_YAML.authz.roles[30].permissions[0].action.method | string | `"create"` |  |
-| USER_YAML.authz.roles[30].permissions[0].action.service | string | `"requestor"` |  |
-| USER_YAML.authz.roles[30].permissions[0].id | string | `"requestor_creator_action"` |  |
-| USER_YAML.authz.roles[31].id | string | `"requestor_updater"` |  |
-| USER_YAML.authz.roles[31].permissions[0].action.method | string | `"update"` |  |
-| USER_YAML.authz.roles[31].permissions[0].action.service | string | `"requestor"` |  |
-| USER_YAML.authz.roles[31].permissions[0].id | string | `"requestor_updater_action"` |  |
-| USER_YAML.authz.roles[32].id | string | `"requestor_deleter"` |  |
-| USER_YAML.authz.roles[32].permissions[0].action.method | string | `"delete"` |  |
-| USER_YAML.authz.roles[32].permissions[0].action.service | string | `"requestor"` |  |
-| USER_YAML.authz.roles[32].permissions[0].id | string | `"requestor_deleter_action"` |  |
-| USER_YAML.authz.roles[33].id | string | `"argo_user"` |  |
-| USER_YAML.authz.roles[33].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[33].permissions[0].action.service | string | `"argo"` |  |
-| USER_YAML.authz.roles[33].permissions[0].id | string | `"argo_access"` |  |
-| USER_YAML.authz.roles[3].id | string | `"mds_user"` |  |
-| USER_YAML.authz.roles[3].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[3].permissions[0].action.service | string | `"mds_gateway"` |  |
-| USER_YAML.authz.roles[3].permissions[0].id | string | `"mds_access"` |  |
-| USER_YAML.authz.roles[4].id | string | `"prometheus_user"` |  |
-| USER_YAML.authz.roles[4].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[4].permissions[0].action.service | string | `"prometheus"` |  |
-| USER_YAML.authz.roles[4].permissions[0].id | string | `"prometheus_access"` |  |
-| USER_YAML.authz.roles[5].id | string | `"ttyadmin_user"` |  |
-| USER_YAML.authz.roles[5].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[5].permissions[0].action.service | string | `"ttyadmin"` |  |
-| USER_YAML.authz.roles[5].permissions[0].id | string | `"ttyadmin_access"` |  |
-| USER_YAML.authz.roles[6].id | string | `"sower_user"` |  |
-| USER_YAML.authz.roles[6].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[6].permissions[0].action.service | string | `"job"` |  |
-| USER_YAML.authz.roles[6].permissions[0].id | string | `"sower_access"` |  |
-| USER_YAML.authz.roles[7].id | string | `"mariner_admin"` |  |
-| USER_YAML.authz.roles[7].permissions[0].action.method | string | `"access"` |  |
-| USER_YAML.authz.roles[7].permissions[0].action.service | string | `"mariner"` |  |
-| USER_YAML.authz.roles[7].permissions[0].id | string | `"mariner_access"` |  |
-| USER_YAML.authz.roles[8].id | string | `"audit_reader"` |  |
-| USER_YAML.authz.roles[8].permissions[0].action.method | string | `"read"` |  |
-| USER_YAML.authz.roles[8].permissions[0].action.service | string | `"audit"` |  |
-| USER_YAML.authz.roles[8].permissions[0].id | string | `"audit_reader_action"` |  |
-| USER_YAML.authz.roles[9].description | string | `""` |  |
-| USER_YAML.authz.roles[9].id | string | `"admin"` |  |
-| USER_YAML.authz.roles[9].permissions[0].action.method | string | `"*"` |  |
-| USER_YAML.authz.roles[9].permissions[0].action.service | string | `"*"` |  |
-| USER_YAML.authz.roles[9].permissions[0].id | string | `"admin"` |  |
-| USER_YAML.authz.user_project_to_resource.DEV | string | `"/programs/DEV"` |  |
-| USER_YAML.authz.user_project_to_resource.QA | string | `"/programs/QA"` |  |
-| USER_YAML.authz.user_project_to_resource.jenkins | string | `"/programs/jnkns/projects/jenkins"` |  |
-| USER_YAML.authz.user_project_to_resource.jenkins2 | string | `"/programs/jnkns/projects/jenkins2"` |  |
-| USER_YAML.authz.user_project_to_resource.jnkns | string | `"/programs/jnkns"` |  |
-| USER_YAML.authz.user_project_to_resource.test | string | `"/programs/QA/projects/test"` |  |
-| USER_YAML.clients.basic-test-abc-client.policies[0] | string | `"abc-admin"` |  |
-| USER_YAML.clients.basic-test-client.policies[0] | string | `"abc-admin"` |  |
-| USER_YAML.clients.basic-test-client.policies[1] | string | `"gen3-admin"` |  |
-| USER_YAML.clients.wts.policies[0] | string | `"all_programs_reader"` |  |
-| USER_YAML.clients.wts.policies[1] | string | `"workspace"` |  |
-| USER_YAML.cloud_providers | object | `{}` |  |
-| USER_YAML.groups | object | `{}` |  |
-| USER_YAML.users."qureshi@uchicago.edu".admin | bool | `true` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[0] | string | `"data_upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[10] | string | `"programs.jnkns-admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[11] | string | `"indexd_admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[12] | string | `"ttyadmin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[1] | string | `"workspace"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[2] | string | `"dashboard"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[3] | string | `"mds_admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[4] | string | `"prometheus"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[5] | string | `"sower"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[6] | string | `"services.sheepdog-admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[7] | string | `"programs.QA-admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[8] | string | `"programs.test-admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".policies[9] | string | `"programs.DEV-admin"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].auth_id | string | `"QA"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[0].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].auth_id | string | `"test"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[1].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].auth_id | string | `"DEV"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[2].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].auth_id | string | `"jenkins"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[3].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].auth_id | string | `"jenkins2"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[4].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].auth_id | string | `"jnkns"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[0] | string | `"create"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[1] | string | `"read"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[2] | string | `"update"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[3] | string | `"delete"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[4] | string | `"upload"` |  |
-| USER_YAML.users."qureshi@uchicago.edu".projects[5].privilege[5] | string | `"read-storage"` |  |
-| USER_YAML_CRON.LOCATION."github.com" | string | `nil` |  |
-| USER_YAML_CRON.LOCATION.S3 | string | `nil` |  |
-| USER_YAML_CRON.LOCATION.TYPE | string | `nil` |  |
+| FENCE_CONFIG | map | `{"ACCESS_TOKEN_COOKIE_NAME":"access_token","ACCESS_TOKEN_EXPIRES_IN":1200,"ALLOWED_USER_SERVICE_ACCOUNT_DOMAINS":["developer.gserviceaccount.com","appspot.gserviceaccount.com","iam.gserviceaccount.com"],"ALLOW_GOOGLE_LINKING":true,"APPLICATION_ROOT":"/user","APP_NAME":"Gen3 Data Commons","ARBORIST":null,"ASSUME_ROLE_CACHE_SECONDS":1800,"AUDIT_SERVICE":"http://audit-service","AUTHLIB_INSECURE_TRANSPORT":true,"AWS_CREDENTIALS":{},"AZ_BLOB_CONTAINER_URL":"https://myfakeblob.blob.core.windows.net/my-fake-container/","AZ_BLOB_CREDENTIALS":null,"BILLING_PROJECT_FOR_SA_CREDS":null,"BILLING_PROJECT_FOR_SIGNED_URLS":null,"CIRRUS_CFG":{"GOOGLE_ADMIN_EMAIL":"","GOOGLE_API_KEY":"","GOOGLE_APPLICATION_CREDENTIALS":"","GOOGLE_CLOUD_IDENTITY_ADMIN_EMAIL":"","GOOGLE_IDENTITY_DOMAIN":"","GOOGLE_PROJECT_ID":"","GOOGLE_STORAGE_CREDS":""},"CLIENT_ALLOWED_SCOPES":["openid","user","data","google_credentials","google_service_account","google_link","ga4gh_passport_v1"],"DATA_UPLOAD_BUCKET":"bucket1","DBGAP_ACCESSION_WITH_CONSENT_REGEX":"(?P<phsid>phs[0-9]+)(.(?P<version>v[0-9]+)){0,1}(.(?P<participant_set>p[0-9]+)){0,1}.(?P<consent>c[0-9]+)","DEBUG":false,"DEFAULT_LOGIN_IDP":"google","DEFAULT_LOGIN_URL":"{{BASE_URL}}/login/google","DEV_LOGIN_COOKIE_NAME":"dev_login","DREAM_CHALLENGE_GROUP":"DREAM","DREAM_CHALLENGE_TEAM":"DREAM","EMAIL_SERVER":"localhost","ENABLED_IDENTITY_PROVIDERS":{},"ENABLE_AUDIT_LOGS":{"login":false,"presigned_url":false},"ENABLE_AUTOMATIC_BILLING_PERMISSION_SA_CREDS":false,"ENABLE_AUTOMATIC_BILLING_PERMISSION_SIGNED_URLS":false,"ENABLE_CSRF_PROTECTION":true,"ENABLE_DB_MIGRATION":true,"ENABLE_PROMETHEUS_METRICS":false,"ENCRYPTION_KEY":"REPLACEME","GA4GH_VISA_ISSUER_ALLOWLIST":["{{BASE_URL}}","https://sts.nih.gov","https://stsstg.nih.gov"],"GEN3_PASSPORT_EXPIRES_IN":43200,"GLOBAL_PARSE_VISAS_ON_LOGIN":null,"GOOGLE_ACCOUNT_ACCESS_EXPIRES_IN":86400,"GOOGLE_BULK_UPDATES":false,"GOOGLE_GROUP_PREFIX":"","GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS":["dataflow-service-producer-prod.iam.gserviceaccount.com","cloudbuild.gserviceaccount.com","cloud-ml.google.com.iam.gserviceaccount.com","container-engine-robot.iam.gserviceaccount.com","dataflow-service-producer-prod.iam.gserviceaccount.com","sourcerepo-service-accounts.iam.gserviceaccount.com","dataproc-accounts.iam.gserviceaccount.com","gae-api-prod.google.com.iam.gserviceaccount.com","genomics-api.google.com.iam.gserviceaccount.com","containerregistry.iam.gserviceaccount.com","container-analysis.iam.gserviceaccount.com","cloudservices.gserviceaccount.com","stackdriver-service.iam.gserviceaccount.com","appspot.gserviceaccount.com","partnercontent.gserviceaccount.com","trifacta-gcloud-prod.iam.gserviceaccount.com","gcf-admin-robot.iam.gserviceaccount.com","compute-system.iam.gserviceaccount.com","gcp-sa-websecurityscanner.iam.gserviceaccount.com","storage-transfer-service.iam.gserviceaccount.com","firebase-sa-management.iam.gserviceaccount.com","firebase-rules.iam.gserviceaccount.com","gcp-sa-cloudbuild.iam.gserviceaccount.com","gcp-sa-automl.iam.gserviceaccount.com","gcp-sa-datalabeling.iam.gserviceaccount.com","gcp-sa-cloudscheduler.iam.gserviceaccount.com"],"GOOGLE_SERVICE_ACCOUNT_KEY_FOR_URL_SIGNING_EXPIRES_IN":2592000,"GOOGLE_SERVICE_ACCOUNT_PREFIX":"","GOOGLE_USER_SERVICE_ACCOUNT_ACCESS_EXPIRES_IN":604800,"GUN_MAIL":{"datacommons.io":{"api_key":"","api_url":"https://api.mailgun.net/v3/mailgun.example.com","default_login":"postmaster@mailgun.example.com","smtp_hostname":"smtp.mailgun.org","smtp_password":""}},"HTTP_PROXY":{"host":null,"port":3128},"INDEXD":null,"INDEXD_PASSWORD":"","INDEXD_USERNAME":"fence","ITRUST_GLOBAL_LOGOUT":"https://auth.nih.gov/siteminderagent/smlogout.asp?mode=nih&AppReturnUrl=","LOGIN_OPTIONS":[{"desc":"description","idp":"google","name":"Login from Google"}],"LOGIN_REDIRECT_WHITELIST":[],"MAX_ACCESS_TOKEN_TTL":3600,"MAX_API_KEY_TTL":2592000,"MAX_PRESIGNED_URL_TTL":3600,"MAX_ROLE_SESSION_INCREASE":false,"MOCK_AUTH":false,"MOCK_GOOGLE_AUTH":false,"MOCK_STORAGE":false,"OAUTH2_JWT_ALG":"RS256","OAUTH2_JWT_ENABLED":true,"OAUTH2_JWT_ISS":"{{BASE_URL}}","OAUTH2_PROVIDER_ERROR_URI":"/api/oauth2/errors","OAUTH2_TOKEN_EXPIRES_IN":{"authorization_code":1200,"implicit":1200},"OPENID_CONNECT":{"cilogon":{"client_id":"","client_secret":"","discovery_url":"https://cilogon.org/.well-known/openid-configuration","mock":false,"mock_default_user":"http://cilogon.org/serverT/users/64703","redirect_url":"{{BASE_URL}}/login/cilogon/login/","scope":"openid email profile"},"cognito":{"client_id":"","client_secret":"","discovery_url":"https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration","redirect_url":"{{BASE_URL}}/login/cognito/login/","scope":"openid email"},"fence":{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"},"generic_oidc_idp":{"client_id":"","client_secret":"","discovery":{"authorization_endpoint":"","jwks_uri":"","token_endpoint":""},"discovery_url":"https://server.com/.well-known/openid-configuration","email_field":"","name":"some_idp","redirect_url":"{{BASE_URL}}/login/some_idp/login","scope":"","user_id_field":""},"google":{"client_id":"","client_secret":"","discovery_url":"https://accounts.google.com/.well-known/openid-configuration","mock":"","mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/google/login/","scope":"openid email"},"microsoft":{"client_id":"","client_secret":"","discovery_url":"https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/microsoft/login/","scope":"openid email"},"okta":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"{{BASE_URL}}/login/okta/login/","scope":"openid email"},"orcid":{"client_id":"","client_secret":"","discovery_url":"https://orcid.org/.well-known/openid-configuration","mock":false,"mock_default_user":"0000-0002-2601-8132","redirect_url":"{{BASE_URL}}/login/orcid/login/","scope":"openid"},"ras":{"client_id":"","client_secret":"","discovery_url":"https://sts.nih.gov/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/ras/callback","scope":"openid email profile ga4gh_passport_v1"},"shibboleth":{"client_id":"","client_secret":"","redirect_url":"{{BASE_URL}}/login/shib/login"},"synapse":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"","scope":"openid"}},"OVERRIDE_NGINX_RATE_LIMIT":18,"PRIVACY_POLICY_URL":null,"PROBLEM_USER_EMAIL_NOTIFICATION":{"admin":["admin@example.edu"],"content":"The Data Commons Framework utilizes dbGaP for data access authorization. Another member of a Google project you belong to ({}) is attempting to register a service account to the following additional datasets ({}). Please contact dbGaP to request access.\n","domain":"example.com","from":"do-not-reply@example.com","subject":"Account access error notification"},"PUSH_AUDIT_LOGS_CONFIG":{"aws_sqs_config":{"aws_cred":null,"region":null,"sqs_url":null},"type":"aws_sqs"},"RAS_REFRESH_EXPIRATION":1296000,"RAS_USERINFO_ENDPOINT":"/openid/connect/v1.1/userinfo","REFRESH_TOKEN_EXPIRES_IN":2592000,"REGISTERED_USERS_GROUP":"","REGISTER_USERS_ON":false,"REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION":{"admin":["admin@example.edu"],"content":"Service accounts were removed from access control data because some users or service accounts of GCP Project {} are not authorized to access the data sets associated to the service accounts, or do not adhere to the security policies.\n","domain":"example.com","enable":false,"from":"do-not-reply@example.com","subject":"User service account removal notification"},"RENEW_ACCESS_TOKEN_BEFORE_EXPIRATION":false,"S3_BUCKETS":{},"SEND_FROM":"example@gmail.com","SEND_TO":"example@gmail.com","SERVICE_ACCOUNT_LIMIT":6,"SESSION_ALLOWED_SCOPES":["openid","user","credentials","data","admin","google_credentials","google_service_account","google_link","ga4gh_passport_v1"],"SESSION_COOKIE_DOMAIN":null,"SESSION_COOKIE_NAME":"fence","SESSION_COOKIE_SECURE":true,"SESSION_LIFETIME":28800,"SESSION_TIMEOUT":1800,"SHIBBOLETH_HEADER":"persistent_id","SSO_URL":"https://auth.nih.gov/affwebservices/public/saml2sso?SPID={{BASE_URL}}/shibboleth&RelayState=","STORAGE_CREDENTIALS":{},"SUPPORT_EMAIL_FOR_ERRORS":null,"SYNAPSE_AUTHZ_TTL":86400,"SYNAPSE_DISCOVERY_URL":null,"SYNAPSE_JWKS_URI":null,"SYNAPSE_URI":"https://repo-prod.prod.sagebase.org/auth/v1","TOKEN_PROJECTS_CUTOFF":10,"USERSYNC":{"fallback_to_dbgap_sftp":false,"sync_from_visas":false,"visa_types":{"ras":["https://ras.nih.gov/visas/v1","https://ras.nih.gov/visas/v1.1"]}},"USER_ALLOWED_SCOPES":["fence","openid","user","data","admin","google_credentials","google_service_account","google_link","ga4gh_passport_v1"],"WHITE_LISTED_GOOGLE_PARENT_ORGS":[],"WHITE_LISTED_SERVICE_ACCOUNT_EMAILS":[],"WTF_CSRF_SECRET_KEY":"{{ENCRYPTION_KEY}}","dbGaP":[{"decrypt_key":"","enable_common_exchange_area_access":false,"info":{"host":"","password":"","port":22,"proxy":"","proxy_user":"","username":""},"parse_consent_code":true,"protocol":"sftp","study_common_exchange_areas":{"example":"test_common_exchange_area"},"study_to_resource_namespaces":{"_default":["/"],"test_common_exchange_area":["/dbgap/"]}}]}` | Configuration settings for Fence app |
+| FENCE_CONFIG.APP_NAME | string | `"Gen3 Data Commons"` | Name of the Fence app |
+| FENCE_CONFIG.AUTHLIB_INSECURE_TRANSPORT | bool | `true` | allow OIDC traffic on http for development. By default it requires https.  WARNING: ONLY set to true when fence will be deployed in such a way that it will          ONLY receive traffic from internal clients and can safely use HTTP. |
+| FENCE_CONFIG.CLIENT_ALLOWED_SCOPES | list | `["openid","user","data","google_credentials","google_service_account","google_link","ga4gh_passport_v1"]` | These are the *possible* scopes a client can be given, NOT scopes that are given to all clients. You can be more restrictive during client creation |
+| FENCE_CONFIG.DEBUG | map | `false` | Debug and security settings Modify based on whether you're in a dev environment or in production |
+| FENCE_CONFIG.DEFAULT_LOGIN_IDP | string | `"google"` | Default login provider. - must be configured in LOGIN_OPTIONS and OPENID_CONNECT - - if several options in LOGIN_OPTIONS are defined for this IDP, will default to the first one |
+| FENCE_CONFIG.DEFAULT_LOGIN_URL | string | `"{{BASE_URL}}/login/google"` | Default login URL: DEPRECATED and replaced by LOGIN_OPTIONS + DEFAULT_LOGIN_IDP configs |
+| FENCE_CONFIG.DEV_LOGIN_COOKIE_NAME | str | `"dev_login"` | the name of the cookie set by mock authentication (used for testing only) |
+| FENCE_CONFIG.ENABLE_CSRF_PROTECTION | bool | `true` | enable CSRF protection |
+| FENCE_CONFIG.ENABLE_DB_MIGRATION | bool | `true` | fence (at the moment) attempts a migration on startup. setting this to false will disable that WARNING: ONLY set to false if you do NOT want to automatically migrate your database.          You should be careful about incompatible versions of your db schema with what          fence expects. In other words, things could be broken if you update to a later          fence that expects a schema your database isn't migrated to. NOTE: We are working to improve the migration process in the near future |
+| FENCE_CONFIG.ENABLE_PROMETHEUS_METRICS | bool | `false` | enable Prometheus Metrics for observability purposes  WARNING: Any counters, gauges, histograms, etc. should be carefully reviewed to make sure its labels do not contain any PII / PHI |
+| FENCE_CONFIG.ENCRYPTION_KEY | string | `"REPLACEME"` | A URL-safe base64-encoded 32-byte key for encrypting keys in db in python you can use the following script to generate one:     import base64     import os     key = base64.urlsafe_b64encode(os.urandom(32))     print(key) |
+| FENCE_CONFIG.LOGIN_OPTIONS | list | `[{"desc":"description","idp":"google","name":"Login from Google"}]` | List of enabled login options (used by data-portal to display login buttons). |
+| FENCE_CONFIG.MOCK_AUTH | bool | `false` | if true, will automatically login a user with username "test" WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) |
+| FENCE_CONFIG.MOCK_GOOGLE_AUTH | bool | `false` | if true, will fake a successful login response from Google in /login/google     NOTE: this will also modify the behavior of /link/google endpoints WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) will login as the username set in cookie DEV_LOGIN_COOKIE_NAME |
+| FENCE_CONFIG.MOCK_STORAGE | bool | `false` | if true, will ignore anything configured in STORAGE_CREDENTIALS |
+| FENCE_CONFIG.OPENID_CONNECT | dict | `{"cilogon":{"client_id":"","client_secret":"","discovery_url":"https://cilogon.org/.well-known/openid-configuration","mock":false,"mock_default_user":"http://cilogon.org/serverT/users/64703","redirect_url":"{{BASE_URL}}/login/cilogon/login/","scope":"openid email profile"},"cognito":{"client_id":"","client_secret":"","discovery_url":"https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration","redirect_url":"{{BASE_URL}}/login/cognito/login/","scope":"openid email"},"fence":{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"},"generic_oidc_idp":{"client_id":"","client_secret":"","discovery":{"authorization_endpoint":"","jwks_uri":"","token_endpoint":""},"discovery_url":"https://server.com/.well-known/openid-configuration","email_field":"","name":"some_idp","redirect_url":"{{BASE_URL}}/login/some_idp/login","scope":"","user_id_field":""},"google":{"client_id":"","client_secret":"","discovery_url":"https://accounts.google.com/.well-known/openid-configuration","mock":"","mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/google/login/","scope":"openid email"},"microsoft":{"client_id":"","client_secret":"","discovery_url":"https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/microsoft/login/","scope":"openid email"},"okta":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"{{BASE_URL}}/login/okta/login/","scope":"openid email"},"orcid":{"client_id":"","client_secret":"","discovery_url":"https://orcid.org/.well-known/openid-configuration","mock":false,"mock_default_user":"0000-0002-2601-8132","redirect_url":"{{BASE_URL}}/login/orcid/login/","scope":"openid"},"ras":{"client_id":"","client_secret":"","discovery_url":"https://sts.nih.gov/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/ras/callback","scope":"openid email profile ga4gh_passport_v1"},"shibboleth":{"client_id":"","client_secret":"","redirect_url":"{{BASE_URL}}/login/shib/login"},"synapse":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"","scope":"openid"}}` | Configurations for OpenID Connect (OIDC) authentication   - Fully configure at least one client so login works   - WARNING: Be careful changing the *_ALLOWED_SCOPES as you can break basic              and optional functionality |
+| FENCE_CONFIG.OPENID_CONNECT.fence | object | `{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"}` | dict: Contains multi-tenant Fence configuration Support for multi-tenant fence (another fence is this fence's IDP) If this fence instance is a client of another fence, fill this cfg out. REMOVE if not needed |
+| FENCE_CONFIG.OPENID_CONNECT.fence.access_token_url | string | `"{{api_base_url}}/oauth2/token"` | str: URL for access token endpoint of the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.api_base_url | string | `""` | str: Root URL for the other fence this api_base_url should be the root url for the OTHER fence something like: https://example.com |
+| FENCE_CONFIG.OPENID_CONNECT.fence.authorize_url | string | `"{{api_base_url}}/oauth2/authorize"` | str: URL for authorization endpoint of the other fence The next 3 should not need to be changed if the provider is following Oauth2 endpoint naming conventions |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_id | string | `""` | str: ID of the client of this fence on the other fence this client_id and client_secret should be obtained by registering THIS fence as a new client of the OTHER fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs | object | `{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"}` | dict: Additional client parameters |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.redirect_uri | string | `"{{BASE_URL}}/login/fence/login"` | str: The URL to which the other fence will redirect after logging in |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.scope | string | `"openid"` | str: Space-separated string of scopes openid is required to use OIDC flow |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_secret | string | `""` | str: Secret of the client of this fence on the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.mock | bool | `false` | bool: Whether to mock a successful login response for testing purposes if mock is true, will fake a successful login response for login WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) |
+| FENCE_CONFIG.OPENID_CONNECT.fence.mock_default_user | string | `"test@example.com"` | str: Default user for mock login |
+| FENCE_CONFIG.OPENID_CONNECT.fence.name | string | `""` | str: Name of the provider for consent screens Custom name to display for consent screens. If not provided, will use `fence`. If the other fence is using NIH Login, you should make name: `NIH Login` |
+| FENCE_CONFIG.OPENID_CONNECT.fence.refresh_token_url | string | `"{{api_base_url}}/oauth2/token"` | str: URL for refresh token endpoint of the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.shibboleth_discovery_url | string | `"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"` | str: URL of the shibboleth discovery endpoint if needed for InCommon login this is needed to enable InCommon login, if some LOGIN_OPTIONS are configured with idp=fence and a list of shib_idps: |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_id | str | `""` | Client ID |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_secret | str | `""` | Client secret |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.authorization_endpoint | str | `""` | Authorization endpoint URL |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.jwks_uri | str | `""` | JSON Web Key Set (JWKS) URI |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.token_endpoint | str | `""` | Token endpoint URL |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery_url | str | `"https://server.com/.well-known/openid-configuration"` | URL of the OIDC discovery endpoint for the IDP |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.email_field | str | `""` | Optional; claims field to get the user email from (default "email") |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.name | str | `"some_idp"` | Optional; display name for this IDP |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.redirect_url | str | `"{{BASE_URL}}/login/some_idp/login"` | Redirect URL for this IDP |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.scope | str | `""` | Optional; default is "openid" |
+| FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.user_id_field | str | `""` | Optional; claims field to get the user_id from (default "sub") |
+| FENCE_CONFIG.OPENID_CONNECT.google | dict | `{"client_id":"","client_secret":"","discovery_url":"https://accounts.google.com/.well-known/openid-configuration","mock":"","mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/google/login/","scope":"openid email"}` | Configuration for Google authentication provider |
+| FENCE_CONFIG.OPENID_CONNECT.google.client_id | str | `""` | Client ID |
+| FENCE_CONFIG.OPENID_CONNECT.google.client_secret | str | `""` | Client secret |
+| FENCE_CONFIG.OPENID_CONNECT.google.discovery_url | str | `"https://accounts.google.com/.well-known/openid-configuration"` | URL of the OIDC discovery endpoint for Google |
+| FENCE_CONFIG.OPENID_CONNECT.google.mock | str | `""` | Optional; defaults to '{{MOCK_GOOGLE_AUTH}}' for backwards compatibility with older cfg files |
+| FENCE_CONFIG.OPENID_CONNECT.google.mock_default_user | str | `"test@example.com"` | Optional; defaults to 'test@example.com' |
+| FENCE_CONFIG.OPENID_CONNECT.google.redirect_url | str | `"{{BASE_URL}}/login/google/login/"` | The allowed redirect back to fence, should not need to change |
+| FENCE_CONFIG.OPENID_CONNECT.google.scope | str | `"openid email"` | The scope to request from Google (default "openid email") |
+| FENCE_CONFIG.SESSION_ALLOWED_SCOPES | list | `["openid","user","credentials","data","admin","google_credentials","google_service_account","google_link","ga4gh_passport_v1"]` | these are the scopes that a browser session can create for a user (very similar to USER_ALLOWED_SCOPES, as the session will actually create access_tokens for an actively logged in user) |
+| FENCE_CONFIG.SESSION_COOKIE_SECURE | bool | `true` | set if you want browsers to only send cookies with requests over HTTPS |
+| FENCE_CONFIG.USER_ALLOWED_SCOPES | list | `["fence","openid","user","data","admin","google_credentials","google_service_account","google_link","ga4gh_passport_v1"]` | these are the scopes that CAN be included in a user's own access_token |
+| FENCE_CONFIG.WTF_CSRF_SECRET_KEY | str | `"{{ENCRYPTION_KEY}}"` | signing key for WTForms to sign CSRF tokens with |
+| USER_YAML | string | `"cloud_providers: {}\ngroups: {}\nauthz:\n  # policies automatically given to anyone, even if they haven't authenticated\n  anonymous_policies: ['open_data_reader', 'full_open_access']\n\n  # policies automatically given to authenticated users (in addition to their other\n  # policies)\n  all_users_policies: ['open_data_reader', 'authn_open_access']\n\n  user_project_to_resource:\n    QA: /programs/QA\n    DEV: /programs/DEV\n    test: /programs/QA/projects/test\n    jenkins: /programs/jnkns/projects/jenkins\n    jenkins2: /programs/jnkns/projects/jenkins2\n    jnkns: /programs/jnkns\n\n  policies:\n    # General Access\n    - id: 'workspace'\n      description: 'be able to use workspace'\n      resource_paths: ['/workspace']\n      role_ids: ['workspace_user']\n    - id: 'dashboard'\n      description: 'be able to use the commons dashboard'\n      resource_paths: ['/dashboard']\n      role_ids: ['dashboard_user']\n    - id: 'prometheus'\n      description: 'be able to use prometheus'\n      resource_paths: ['/prometheus']\n      role_ids: ['prometheus_user']\n    - id: 'ttyadmin'\n      description: 'be able to use the admin tty'\n      resource_paths: ['/ttyadmin']\n      role_ids: ['ttyadmin_user']\n    - id: 'mds_admin'\n      description: 'be able to use metadata service'\n      resource_paths: ['/mds_gateway']\n      role_ids: ['mds_user']\n    - id: 'data_upload'\n      description: 'upload raw data files to S3'\n      role_ids: ['file_uploader']\n      resource_paths: ['/data_file']\n    - description: be able to use sower job\n      id: sower\n      resource_paths: [/sower]\n      role_ids: [sower_user]\n    - id: 'mariner_admin'\n      description: 'full access to mariner API'\n      resource_paths: ['/mariner']\n      role_ids: ['mariner_admin']\n    - id: audit_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit\n    - id: audit_login_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit/login\n    - id: audit_presigned_url_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit/presigned_url\n    - id: requestor_admin\n      role_ids:\n      - requestor_admin\n      resource_paths:\n      - /programs\n    - id: requestor_reader\n      role_ids:\n      - requestor_reader\n      resource_paths:\n      - /programs\n    - id: requestor_creator\n      role_ids:\n      - requestor_creator\n      resource_paths:\n      - /programs\n    - id: requestor_updater\n      role_ids:\n      - requestor_updater\n      resource_paths:\n      - /programs\n    - id: requestor_deleter\n      role_ids:\n      - requestor_deleter\n      resource_paths:\n      - /programs\n    # Data Access\n\n    # All programs policy\n    - id: 'all_programs_reader'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths: ['/programs']\n\n    # # example if need access to write to storage\n    # - id: 'programs.jnkns-storage_writer'\n    #   description: ''\n    #   role_ids:\n    #     - 'storage_writer'\n    #   resource_paths: ['/programs/jnkns']\n\n    - id: 'programs.jnkns-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/jnkns'\n        - '/gen3/programs/jnkns'\n\n    - id: 'programs.jnkns-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/jnkns'\n        - '/gen3/programs/jnkns'\n\n\n    - id: 'programs.QA-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.QA-admin-no-storage'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.QA-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.DEV-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n        - 'storage_writer'\n      resource_paths:\n        - '/programs/DEV'\n        - '/gen3/programs/DEV'\n\n    - id: 'programs.DEV-storage_writer'\n      description: ''\n      role_ids:\n        - 'storage_writer'\n      resource_paths: ['/programs/DEV']\n\n    - id: 'programs.DEV-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/DEV'\n        - '/gen3/programs/DEV'\n\n    - id: 'programs.test-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/test'\n        - '/gen3/programs/test'\n\n    - id: 'programs.test-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/test'\n        - '/gen3/programs/test'\n\n    - id: 'abc-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc'\n\n    - id: 'gen3-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/gen3'\n\n    - id: 'gen3-hmb-researcher'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/gen3'\n\n    - id: 'abc.programs.test_program.projects.test_project1-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program/projects/test_project1'\n\n    - id: 'abc.programs.test_program.projects.test_project2-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program/projects/test_project2'\n\n    - id: 'abc.programs.test_program2.projects.test_project3-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program2/projects/test_project3'\n\n    # Open data policies\n    - id: 'authn_open_access'\n      resource_paths: ['/programs/open/projects/authnRequired']\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n    - id: 'full_open_access'\n      resource_paths: ['/programs/open/projects/1000G']\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n    - id: 'open_data_reader'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths: ['/open']\n    - id: 'open_data_admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_writer'\n        - 'storage_reader'\n      resource_paths: ['/open']\n\n    # Consent Code Policies\n    - id: 'not-for-profit-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NPU'\n\n    - id: 'publication-required-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/PUB'\n\n    - id: 'gru-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n\n    - id: 'gru-cc-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n\n    - id: 'hmb-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n\n    - id: 'poa-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/POA'\n\n    - id: 'ds-lung-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/consents/DS_LungDisease'\n\n    - id: 'ds-chronic-obstructive-pulmonary-disease-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/consents/DS_ChronicObstructivePulmonaryDisease'\n\n    - id: 'services.sheepdog-admin'\n      description: 'CRUD access to programs and projects'\n      role_ids:\n        - 'sheepdog_admin'\n      resource_paths:\n        - '/services/sheepdog/submission/program'\n        - '/services/sheepdog/submission/project'\n\n    # indexd\n    - id: 'indexd_admin'\n      description: 'full access to indexd API'\n      role_ids:\n        - 'indexd_admin'\n      resource_paths:\n        - '/programs'\n        - '/services/indexd/admin'\n    # # TODO resource path '/' is not valid right now in arborist, trying to decide\n    # #      how to handle all resources\n    # - id: 'indexd_admin'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_creator'\n    #     - 'indexd_record_reader'\n    #     - 'indexd_record_updater'\n    #     - 'indexd_delete_record'\n    #     - 'indexd_storage_reader'\n    #     - 'indexd_storage_writer'\n    #   resource_paths: ['/']\n    # - id: 'indexd_record_reader'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_reader'\n    #   resource_paths: ['/']\n    # - id: 'indexd_record_editor'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_creator'\n    #     - 'indexd_record_reader'\n    #     - 'indexd_record_updater'\n    #     - 'indexd_delete_record'\n    #   resource_paths: ['/']\n    # - id: 'indexd_storage_reader'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_storage_reader'\n    #   resource_paths: ['/']\n    # - id: 'indexd_storage_editor'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_storage_reader'\n    #     - 'indexd_storage_writer'\n    #   resource_paths: ['/']\n\n    # argo\n    - id: argo\n      description: be able to use argo\n      resource_paths: [/argo]\n      role_ids: [argo_user]\n\n  resources:\n    # General Access\n    - name: 'data_file'\n      description: 'data files, stored in S3'\n    - name: 'dashboard'\n      description: 'commons /dashboard'\n    - name: 'mds_gateway'\n      description: 'commons /mds-admin'\n    - name: 'prometheus'\n      description: 'commons /prometheus and /grafana'\n    - name: 'ttyadmin'\n      description: 'commons /ttyadmin'\n    - name: 'workspace'\n    - name: \"sower\"\n    - name: 'mariner'\n      description: 'workflow execution service'\n    - name: argo\n\n    # OLD Data\n    - name: 'programs'\n      subresources:\n        - name: 'open'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: '1000G'\n                - name: 'authnRequired'\n        - name: 'QA'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n        - name: 'DEV'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n        - name: 'jnkns'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'jenkins'\n                - name: 'jenkins2'\n        - name: 'test'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n\n    # NEW Data WITH PREFIX\n    - name: 'gen3'\n      subresources:\n        - name: 'programs'\n          subresources:\n            - name: 'QA'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n            - name: 'DEV'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n            - name: 'jnkns'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'jenkins'\n                    - name: 'jenkins2'\n            - name: 'test'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n\n    # consents obtained from DUO and NIH\n    # https://github.com/EBISPOT/DUO\n    # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4721915/\n    - name: 'consents'\n      subresources:\n        - name: 'NRES'\n          description: 'no restriction'\n        - name: 'GRU'\n          description: 'general research use'\n        - name: 'GRU_CC'\n          description: 'general research use and clinical care'\n        - name: 'HMB'\n          description: 'health/medical/biomedical research'\n        - name: 'POA'\n          description: 'population origins or ancestry research'\n        - name: 'NMDS'\n          description: 'no general methods research'\n        - name: 'NPU'\n          description: 'not-for-profit use only'\n        - name: 'PUB'\n          description: 'publication required'\n        - name: 'DS_LungDisease'\n          description: 'disease-specific research for lung disease'\n        - name: 'DS_ChronicObstructivePulmonaryDisease'\n          description: 'disease-specific research for chronic obstructive pulmonary disease'\n\n    - name: 'abc'\n      subresources:\n        - name: 'programs'\n          subresources:\n            - name: 'foo'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'bar'\n            - name: 'test_program'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test_project1'\n                    - name: 'test_project2'\n            - name: 'test_program2'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test_project3'\n\n\n    # \"Sheepdog admin\" resources\n    - name: 'services'\n      subresources:\n        - name: 'sheepdog'\n          subresources:\n            - name: 'submission'\n              subresources:\n                - name: 'program'\n                - name: 'project'\n        - name: 'indexd'\n          subresources:\n            - name: 'admin'\n            - name: 'bundles'\n        - name: audit\n          subresources:\n            - name: presigned_url\n            - name: login\n\n\n    - name: 'open'\n\n  # action/methods:\n  #     create, read, update, delete, read-storage, write-storage,\n  #     file_upload, access\n  roles:\n    # General Access\n    - id: 'file_uploader'\n      description: 'can upload data files'\n      permissions:\n        - id: 'file_upload'\n          action:\n            service: '*'\n            method: 'file_upload'\n    - id: 'workspace_user'\n      permissions:\n        - id: 'workspace_access'\n          action:\n            service: 'jupyterhub'\n            method: 'access'\n    - id: 'dashboard_user'\n      permissions:\n        - id: 'dashboard_access'\n          action:\n            service: 'dashboard'\n            method: 'access'\n    - id: 'mds_user'\n      permissions:\n        - id: 'mds_access'\n          action:\n            service: 'mds_gateway'\n            method: 'access'\n    - id: 'prometheus_user'\n      permissions:\n        - id: 'prometheus_access'\n          action:\n            service: 'prometheus'\n            method: 'access'\n    - id: 'ttyadmin_user'\n      permissions:\n        - id: 'ttyadmin_access'\n          action:\n            service: 'ttyadmin'\n            method: 'access'\n    - id: 'sower_user'\n      permissions:\n        - id: 'sower_access'\n          action:\n            service: 'job'\n            method: 'access'\n    - id: 'mariner_admin'\n      permissions:\n        - id: 'mariner_access'\n          action:\n            service: 'mariner'\n            method: 'access'\n    - id: audit_reader\n      permissions:\n        - id: audit_reader_action\n          action:\n            service: audit\n            method: read\n\n    # All services\n    - id: 'admin'\n      description: ''\n      permissions:\n        - id: 'admin'\n          action:\n            service: '*'\n            method: '*'\n    - id: 'creator'\n      description: ''\n      permissions:\n        - id: 'creator'\n          action:\n            service: '*'\n            method: 'create'\n    - id: 'reader'\n      description: ''\n      permissions:\n        - id: 'reader'\n          action:\n            service: '*'\n            method: 'read'\n    - id: 'updater'\n      description: ''\n      permissions:\n        - id: 'updater'\n          action:\n            service: '*'\n            method: 'update'\n    - id: 'deleter'\n      description: ''\n      permissions:\n        - id: 'deleter'\n          action:\n            service: '*'\n            method: 'delete'\n    - id: 'storage_writer'\n      description: ''\n      permissions:\n        - id: 'storage_writer'\n          action:\n            service: '*'\n            method: 'write-storage'\n    - id: 'storage_reader'\n      description: ''\n      permissions:\n        - id: 'storage_reader'\n          action:\n            service: '*'\n            method: 'read-storage'\n\n\n    # Sheepdog admin role\n    - id: 'sheepdog_admin'\n      description: 'sheepdog admin role for program project crud'\n      permissions:\n        - id: 'sheepdog_admin_action'\n          action:\n            service: 'sheepdog'\n            method: '*'\n\n\n    # indexd\n    - id: 'indexd_admin'\n      # this only works if indexd.arborist is enabled in manifest!\n      description: 'full access to indexd API'\n      permissions:\n        - id: 'indexd_admin'\n          action:\n            service: 'indexd'\n            method: '*'\n    - id: 'indexd_record_creator'\n      description: ''\n      permissions:\n        - id: 'indexd_record_creator'\n          action:\n            service: 'indexd'\n            method: 'create'\n    - id: 'indexd_record_reader'\n      description: ''\n      permissions:\n        - id: 'indexd_record_reader'\n          action:\n            service: 'indexd'\n            method: 'read'\n    - id: 'indexd_record_updater'\n      description: ''\n      permissions:\n        - id: 'indexd_record_updater'\n          action:\n            service: 'indexd'\n            method: 'update'\n    - id: 'indexd_delete_record'\n      description: ''\n      permissions:\n        - id: 'indexd_delete_record'\n          action:\n            service: 'indexd'\n            method: 'delete'\n    - id: 'indexd_storage_reader'\n      description: ''\n      permissions:\n        - id: 'indexd_storage_reader'\n          action:\n            service: 'indexd'\n            method: 'read-storage'\n    - id: 'indexd_storage_writer'\n      description: ''\n      permissions:\n        - id: 'indexd_storage_writer'\n          action:\n            service: 'indexd'\n            method: 'write-storage'\n\n    # arborist\n    - id: 'arborist_creator'\n      description: ''\n      permissions:\n        - id: 'arborist_creator'\n          action:\n            service: 'arborist'\n            method: 'create'\n    - id: 'arborist_reader'\n      description: ''\n      permissions:\n        - id: 'arborist_reader'\n          action:\n            service: 'arborist'\n            method: 'read'\n    - id: 'arborist_updater'\n      description: ''\n      permissions:\n        - id: 'arborist_updater'\n          action:\n            service: 'arborist'\n            method: 'update'\n    - id: 'arborist_deleter'\n      description: ''\n      permissions:\n        - id: 'arborist_deleter'\n          action:\n            service: 'arborist'\n            method: 'delete'\n\n    # requestor\n    - id: requestor_admin\n      permissions:\n      - id: requestor_admin_action\n        action:\n          service: requestor\n          method: '*'\n    - id: requestor_reader\n      permissions:\n      - id: requestor_reader_action\n        action:\n          service: requestor\n          method: read\n    - id: requestor_creator\n      permissions:\n      - id: requestor_creator_action\n        action:\n          service: requestor\n          method: create\n    - id: requestor_updater\n      permissions:\n      - id: requestor_updater_action\n        action:\n          service: requestor\n          method: update\n    - id: requestor_deleter\n      permissions:\n      - id: requestor_deleter_action\n        action:\n          service: requestor\n          method: delete\n    # argo\n    - id: argo_user\n      permissions:\n        - id: argo_access\n          action:\n            service: argo\n            method: access\n\nclients:\n  basic-test-client:\n    policies:\n    - abc-admin\n    - gen3-admin\n  basic-test-abc-client:\n    policies:\n    - abc-admin\n  wts:\n    policies:\n    - all_programs_reader\n    - workspace\n\nusers:\n  ### BEGIN INTERNS SECTION ###\n  ### END INTERNS SECTION ###\n  qureshi@uchicago.edu:\n    admin: true\n    policies:\n    - data_upload\n    - workspace\n    - dashboard\n    - mds_admin\n    - prometheus\n    - sower\n    - services.sheepdog-admin\n    - programs.QA-admin\n    - programs.test-admin\n    - programs.DEV-admin\n    - programs.jnkns-admin\n    - indexd_admin\n    - ttyadmin\n    projects:\n    - auth_id: QA\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: test\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: DEV\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jenkins\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jenkins2\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jnkns\n      privilege: [create, read, update, delete, upload, read-storage]\n"` | USER YAML. Passed in as a multiline string. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"fence"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
-| autoscaling.enabled | string | `"enabled"` |  |
-| autoscaling.maxReplicas | int | `4` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| autoscaling | map | `{"enabled":false,"maxReplicas":4,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
+| autoscaling.maxReplicas | int | `4` | Maximum number of replicas |
+| autoscaling.minReplicas | int | `1` | Minimum number of replicas |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
+| autoscaling.targetMemoryUtilizationPercentage | int | `80` | Target Memory utilization percentage |
 | env[0].name | string | `"DD_ENABLED"` |  |
 | env[0].valueFrom.configMapKeyRef.key | string | `"dd_enabled"` |  |
 | env[0].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
@@ -936,29 +136,32 @@ A Helm chart for gen3 Fence
 | env[9].name | string | `"AWS_STS_REGIONAL_ENDPOINTS"` |  |
 | env[9].value | string | `"regional"` |  |
 | fullnameOverride | string | `""` |  |
-| global.ddEnabled | bool | `false` |  |
-| global.dev | bool | `true` |  |
-| global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
-| global.dispatcherJobNum | int | `10` |  |
-| global.environment | string | `"default"` |  |
-| global.hostname | string | `"localhost"` |  |
-| global.kubeBucket | string | `"kube-gen3"` |  |
-| global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | bool | `true` |  |
-| global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
-| global.postgres.master.host | string | `nil` |  |
-| global.postgres.master.password | string | `nil` |  |
-| global.postgres.master.port | string | `"5432"` |  |
-| global.postgres.master.username | string | `"postgres"` |  |
-| global.publicDataSets | bool | `true` |  |
-| global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` |  |
-| global.syncFromDbgap | bool | `false` |  |
-| global.tierAccessLevel | string | `"libre"` |  |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/fence"` |  |
-| image.tag | string | `"master"` |  |
+| global | map | `{"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
+| global.dev | bool | `true` | Whether the deployment is for development purposes. |
+| global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
+| global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
+| global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
+| global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
+| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.portalApp | string | `"gitops"` | Portal application name. |
+| global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
+| global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `nil` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
+| global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
+| image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
+| image.tag | string | `"master"` | The tag to use for the image. |
 | imagePullSecrets | list | `[]` |  |
 | initEnv[0].name | string | `"PGHOST"` |  |
 | initEnv[0].valueFrom.secretKeyRef.key | string | `"host"` |  |
@@ -1015,30 +218,35 @@ A Helm chart for gen3 Fence
 | labels.userhelper | string | `"yes"` |  |
 | logo | string | `nil` |  |
 | nameOverride | string | `""` |  |
-| nodeSelector | object | `{}` |  |
-| podAnnotations | object | `{}` |  |
-| podSecurityContext.fsGroup | int | `101` |  |
-| postgres.database | string | `"fence"` |  |
-| postgres.db_create | string | `nil` |  |
-| postgres.host | string | `nil` |  |
-| postgres.password | string | `nil` |  |
-| postgres.port | string | `"5432"` |  |
-| postgres.username | string | `"fence"` |  |
+| nodeSelector | map | `{}` | Node Selector for the pods |
+| podAnnotations | map | `{}` | Annotations to add to the pod |
+| podSecurityContext | map | `{"fsGroup":101}` | Security context for the pod |
+| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
+| postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
+| postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
+| postgres.port | string | `"5432"` | Port for Postgres. |
+| postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | privacy_policy | string | `nil` |  |
-| replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"2Gi"` |  |
-| resources.requests.cpu | float | `0.3` |  |
-| resources.requests.memory | string | `"250Mi"` |  |
-| securityContext | object | `{}` |  |
+| replicaCount | int | `1` | Number of desired replicas |
+| resources | map | `{"limits":{"cpu":1,"memory":"2Gi"},"requests":{"cpu":0.3,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":1,"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
+| securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels.app | string | `"fence"` |  |
 | selectorLabels.release | string | `"production"` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `""` |  |
-| serviceAccount.create | bool | `true` |  |
-| serviceAccount.name | string | `"fence-sa"` |  |
-| tolerations | list | `[]` |  |
+| service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
+| service.port | int | `80` | Port on which the service is exposed |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
+| serviceAccount.create | bool | `true` | Whether to create a service account |
+| serviceAccount.name | string | `"fence-sa"` | The name of the service account |
+| tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts[0].mountPath | string | `"/var/www/fence/local_settings.py"` |  |
 | volumeMounts[0].name | string | `"old-config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
