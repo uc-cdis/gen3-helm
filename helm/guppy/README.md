@@ -9,7 +9,7 @@ A Helm chart for gen3 Guppy Service
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.2 |
-| file://../elasticsearch | elasticsearch | 0.1.0 |
+| file://../elasticsearch | elasticsearch | 0.1.1 |
 
 ## Values
 

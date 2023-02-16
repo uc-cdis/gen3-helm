@@ -28,6 +28,6 @@ dependencies:
   version: 0.1.2
   repository: file://../common
 - name: elasticsearch
-  version: 0.1.0
+  version: 0.1.1
   repository: file://../elasticsearch
   condition: elasticsearch.separate
