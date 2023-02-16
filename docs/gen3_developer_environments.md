@@ -123,6 +123,32 @@ If you used Rancher Desktop, and used localhost as your hostname, you should be 
 
 # Troubleshooting
 
+## Error: couldn't find key dbcreated in Secret default/\*-dbcreds
+
+This is by design, it’s waiting for your dbcreate job(s) to finish which signals that the services can start.
+
+## Local Dev Linux (Ubuntu) / Rancher Desktop Problems:
+
+If you've followed the instructions, see services running, but can't go to `https://localhost` to see portal... keep reading.
+
+If you see an Apache webpage at `localhost` (installed by default in Ubuntu), you have to kill the Apache service.
+
+```
+sudo systemctl stop apache2
+``` 
+
+If things still aren't working, reference [this](https://github.com/rancher-sandbox/rancher-desktop/issues/1668), which suggests trying this:
+
+```
+sudo sysctl net.ipv4.ip_unprivileged_port_start
+sudo sysctl net.ipv4.ip_unprivileged_port_start=80
+```
+
+Then restart Rancher and try again.
+
+If things still aren't working, double check your `values.yaml` and make sure you don't have anything in the `global` block (if you're doing local development). Just let it use the defaults (so don't put anything in `values.yaml` for `global`).
+
+
 ## Elasticsearch error: 
 
 When you deploy the elasticsearch chart to Rancher Desktop you may see this error and elasticsearch failing to start:
