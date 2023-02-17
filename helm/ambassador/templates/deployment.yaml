@@ -44,7 +44,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: AMBASSADOR_NAMESPACE
-            value: {{ .Values.userNamespace | quote }}
+            value: {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
           - name: AMBASSADOR_SINGLE_NAMESPACE
             value: "true"
           ports:
@@ -59,13 +59,13 @@ spec:
               path: /ambassador/v0/check_alive
               port: 8877
             initialDelaySeconds: 30
-            periodSeconds: 3
+            periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /ambassador/v0/check_ready
               port: 8877
             initialDelaySeconds: 30
-            periodSeconds: 3
+            periodSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

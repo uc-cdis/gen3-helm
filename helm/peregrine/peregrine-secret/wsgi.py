@@ -47,36 +47,36 @@ config['PSQL_USER_DB_CONNECTION'] = 'postgresql://%s:%s@%s:5432/%s' % (fence_use
 config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL','https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json')
 
 # config['SUBMISSION'] = {
-#     'bucket': conf_data.get( 'bagit_bucket', '{{bagit_bucket}}' )
+#     'bucket': conf_data.get( 'bagit_bucket', '' )
 # }
 
 # config['STORAGE'] = {
 #     "s3":
 #     {
-#         "access_key": conf_data.get( 's3_access', '{{s3_access}}' ),
-#         'secret_key': conf_data.get( 's3_secret', '{{s3_secret}}' )
+#         "access_key": conf_data.get( 's3_access', '' ),
+#         'secret_key': conf_data.get( 's3_secret', '' )
 #     }
 # }
 
 hostname = environ.get("CONF_HOSTNAME", "localhost")
 config['OIDC_ISSUER'] = 'https://%s/user' % hostname
 
-# config['OAUTH2'] = {
-#     'client_id': conf_data.get('oauth2_client_id', '{{oauth2_client_id}}'),
-#     'client_secret': conf_data.get('oauth2_client_secret', '{{oauth2_client_secret}}'),
-#     'api_base_url': 'https://%s/user/' % conf_data['hostname'],
-#     'authorize_url': 'https://%s/user/oauth2/authorize' % hostname,
-#     'access_token_url': 'https://%s/user/oauth2/token' % hostname,
-#     'refresh_token_url': 'https://%s/user/oauth2/token' % hostname,
-#     'client_kwargs': {
-#         'redirect_uri': 'https://%s/api/v0/oauth2/authorize' % hostname,
-#         'scope': 'openid data user',
-#     },
-#     # deprecated key values, should be removed after all commons use new oidc
-#     'internal_oauth_provider': 'http://fence-service/oauth2/',
-#     'oauth_provider': 'https://%s/user/oauth2/' % hostname,
-#     'redirect_uri': 'https://%s/api/v0/oauth2/authorize'  % hostname
-# }
+config['OAUTH2'] = {
+    'client_id': "conf_data.get('oauth2_client_id', '{{oauth2_client_id}}')",
+    'client_secret': "conf_data.get('oauth2_client_secret', '{{oauth2_client_secret}}')",
+    'api_base_url': 'https://%s/user/' % hostname,
+    'authorize_url': 'https://%s/user/oauth2/authorize' % hostname,
+    'access_token_url': 'https://%s/user/oauth2/token' % hostname,
+    'refresh_token_url': 'https://%s/user/oauth2/token' % hostname,
+    'client_kwargs': {
+        'redirect_uri': 'https://%s/api/v0/oauth2/authorize' % hostname,
+        'scope': 'openid data user',
+    },
+    # deprecated key values, should be removed after all commons use new oidc
+    'internal_oauth_provider': 'http://fence-service/oauth2/',
+    'oauth_provider': 'https://%s/user/oauth2/' % hostname,
+    'redirect_uri': 'https://%s/api/v0/oauth2/authorize'  % hostname
+}
 
 config['USER_API'] = environ.get('FENCE_URL') or 'http://fence-service/'
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys

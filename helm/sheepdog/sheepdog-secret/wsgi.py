@@ -14,13 +14,6 @@ APP_NAME='sheepdog'
 # conf_data = load_json('creds.json')
 config = app.config
 
-# config["AUTH"] = 'https://auth.service.consul:5000/v3/'
-# config["AUTH_ADMIN_CREDS"] = None
-# config["INTERNAL_AUTH"] = None
-
-# ARBORIST deprecated, replaced by ARBORIST_URL
-# ARBORIST_URL is initialized in app_init() directly
-# config["ARBORIST"] = "http://arborist-service/"
 
 config['INDEX_CLIENT'] = {
     'host': environ.get('INDEX_CLIENT_HOST') or 'http://indexd-service',
@@ -46,6 +39,7 @@ config['PSQL_USER_DB_CONNECTION'] = 'postgresql://%s:%s@%s:5432/%s' % (fence_use
 
 config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL','https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json')
 
+
 # config['SUBMISSION'] = {
 #     'bucket': conf_data.get( 'bagit_bucket', '{{bagit_bucket}}' )
 # }
@@ -58,11 +52,10 @@ config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL','https://s3.amazonaws.co
 #     }
 # }
 
-# NOT BEING USED? 
 hostname = environ.get("CONF_HOSTNAME", "localhost")
+
 config['OIDC_ISSUER'] = 'https://%s/user' % hostname
 
-# TODO: REMOVE THIS???
 config['OAUTH2'] = {
     'client_id': "conf_data.get('oauth2_client_id', '{{oauth2_client_id}}')",
     'client_secret': "conf_data.get('oauth2_client_secret', '{{oauth2_client_secret}}')",
@@ -82,7 +75,7 @@ config['OAUTH2'] = {
 
 config['USER_API'] = environ.get('FENCE_URL') or 'http://fence-service/'
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
-# config['FORCE_ISSUER'] = True
+config['FORCE_ISSUER'] = True
 print(config)
 app_init(app)
 application = app

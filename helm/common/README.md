@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for provisioning databases in gen3
 
@@ -8,27 +8,29 @@ A Helm chart for provisioning databases in gen3
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| global.ddEnabled | bool | `false` |  |
-| global.dev | bool | `true` |  |
-| global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
-| global.dispatcherJobNum | int | `10` |  |
-| global.environment | string | `"default"` |  |
-| global.hostname | string | `"localhost"` |  |
-| global.kubeBucket | string | `"kube-gen3"` |  |
-| global.logsBucket | string | `"logs-gen3"` |  |
-| global.netPolicy | bool | `true` |  |
-| global.portalApp | string | `"gitops"` |  |
-| global.postgres.db_create | bool | `true` |  |
-| global.postgres.master.host | string | `nil` |  |
-| global.postgres.master.password | string | `nil` |  |
-| global.postgres.master.port | string | `"5432"` |  |
-| global.postgres.master.username | string | `"postgres"` |  |
-| global.publicDataSets | bool | `true` |  |
-| global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` |  |
-| global.syncFromDbgap | bool | `false` |  |
-| global.tierAccessLevel | string | `"libre"` |  |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` |  |
-| postgres.db_create | string | `nil` |  |
+| global | map | `{"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
+| global.dev | bool | `true` | Whether the deployment is for development purposes. |
+| global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
+| global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
+| global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
+| global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
+| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.portalApp | string | `"gitops"` | Portal application name. |
+| global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
+| global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `nil` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
+| global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

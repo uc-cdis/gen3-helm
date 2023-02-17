@@ -44,9 +44,6 @@ spec:
         - name: config-volume
           secret:
             secretName: "sheepdog-secret"
-        - name: creds-volume
-          secret:
-            secretName: "sheepdog-creds"
         - name: config-helper
           configMap:
             name: config-helper
@@ -80,6 +77,14 @@ spec:
                 name: sheepdog-dbcreds
                 key: database
                 optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: dbcreated
+                optional: false
+          - name: CONF_HOSTNAME
+            value: {{ .Values.global.hostname }}
           command: ["/bin/bash" ]
           args: 
             - "-c"
@@ -139,6 +144,12 @@ spec:
                   name: fence-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY_FENCE
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: FLASK_SECRET_KEY
               value: "TODO: FIX THIS!!!"
             - name: PGHOST
@@ -165,24 +176,19 @@ spec:
                   name: sheepdog-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: dbcreated
+                  optional: false
             - name: PUBLIC_DATASETS
               valueFrom:
                 configMapKeyRef:
                   name: manifest-global
                   key: public_datasets
                   optional: true
-            # - name: INDEX_CLIENT_HOST
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: manifest-global
-            #       key: indexd_url
-            #       optional: true
-            # - name: FENCE_URL
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: manifest-global
-            #       key: fence_url
-            #       optional: true
+
             - name: INDEXD_PASS
               valueFrom:
                 secretKeyRef:

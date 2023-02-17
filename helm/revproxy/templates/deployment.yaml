@@ -128,6 +128,10 @@ spec:
             readOnly: true
             mountPath: "/etc/nginx/nginx.conf"
             subPath: nginx.conf
+          - name: "revproxy-conf"
+            readOnly: true
+            mountPath: "/etc/nginx/helpers.js"
+            subPath: helpers.js
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"

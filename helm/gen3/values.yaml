@@ -1,33 +1,67 @@
 # Default values for gen3.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# -- (map) Global configuration options.
 global:
+  # -- (map) AWS configuration
   aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
+    # -- (map) Credentials for AWS stuff. TBD on IAM permissions as we experiment more.
     account:
+      # Prep move of these keys here.
+      aws_access_key_id:
+      aws_secret_access_key:
+  # -- (bool) Whether the deployment is for development purposes.
   dev: true
+  # -- (map) Postgres database configuration.
   postgres:
-    db_create: true
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
+      # -- (string) hostname of postgres server
       host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
       username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
       password:
+      # -- (string) Port for Postgres.
       port: "5432"
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
   environment: default
+  # -- (string) Hostname for the deployment.
   hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
   dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
   portalApp: gitops
+  # -- (string) S3 bucket name for Kubernetes manifest files.
   kubeBucket: kube-gen3
+  # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  dbRestoreBucket: gen3-dummy-data
+  # -- (bool) Whether to sync data from dbGaP.
   syncFromDbgap: false
+  # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
+  # -- (string) Access level for tiers.
   tierAccessLevel: libre
+  # -- (bool) Whether network policies are enabled.
   netPolicy: true
+  # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
+  # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+
+
+tags:
+  # controls whether or not to deploy postgres/ elasticsearch as local services.
+  dev: false
 
 # Dependancy Charts
 ambassador:
@@ -61,7 +95,7 @@ fence:
     tag:
 
 guppy:
-  enabled: true
+  enabled: false
   image:
     repository:
     tag:
@@ -127,7 +161,7 @@ sheepdog:
     tag:
 
 ssjdispatcher:
-  enabled: true
+  enabled: false
   image:
     repository:
     tag:
@@ -137,12 +171,6 @@ wts:
   image:
     repository:
     tag:
-
-# If db does not exist in postgres cluster and db_create is set ot true then all relevant dbs will be created
-db_create: true
-
-# If db_restore is set to true then the database will have fake data/tables dumped into it.
-db_restore: false
 
 # The db restore job requires AWS credentials to access the S3 bucket
 secrets:

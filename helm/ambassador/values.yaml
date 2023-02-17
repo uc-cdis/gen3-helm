@@ -2,46 +2,50 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/datawire/ambassador
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "1.4.2"
 
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
 nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ambassador-deployment
 
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created.
   create: true
-  # Annotations to add to the service account
+  # -- (map) Annotations to add to the service account.
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account to use.
+  # -- If not set and create is true, a name is generated using the fullname template.
   name: ""
 
+# -- (map) Annotations to add to the pod.
 podAnnotations:
-  sidecar.istio.io/inject: "false"
-  "consul.hashicorp.com/connect-inject": "false"
-  # see: https://github.com/helm/charts/tree/master/stable/prometheus
-  prometheus.io/scrape: "true"
-  prometheus.io/path: /metrics
-  prometheus.io/port: "8877"
 
+# -- (map) Labels to add to the pod.
 podLabels:
-  app: ambassador
-  service: ambassador
-  public: "yes"
-  netnolimit: "yes"
-  userhelper: "yes"
 
+
+# -- (map) Pod-level security context.
 podSecurityContext:
   runAsUser: 8888
   # fsGroup: 2000
 
+# -- (map) Container-level security context.
 securityContext: {}
   # capabilities:
   #   drop:
@@ -50,23 +54,29 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Service type to use.
   type: ClusterIP
+  # -- (int) Service port to use.
   port: 8877
 
+# -- (map) Labels to use for selecting the deployment.
 selectorLabels:
   service: ambassador
 
+# -- (string) Namespace to use for user resources.
 userNamespace: "jupyter-pods"
 
+# -- (map) Resource limits and requests.
 resources:
   limits:
-    cpu: 500m
     memory: 400Mi
   requests:
     cpu: 100m
     memory: 100Mi
 
+# -- (map) Autoscaling options.
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -74,8 +84,11 @@ autoscaling:
   targetCPUUtilizationPercentage: 60
   # targetMemoryUtilizationPercentage: 80
 
+# -- (map) Node selector labels.
 nodeSelector: {}
 
+# -- (list) Tolerations to use for the deployment.
 tolerations: []
 
+# -- (map) Affinity to use for the deployment.
 affinity: {}
