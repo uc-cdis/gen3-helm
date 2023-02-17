@@ -38,7 +38,7 @@ podAnnotations:
 
 # -- (map) Labels to add to the pod.
 podLabels:
-
+  
 
 # -- (map) Pod-level security context.
 podSecurityContext:
