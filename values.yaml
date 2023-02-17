@@ -1,0 +1,69 @@
+global:
+  hostname: heal.krum.app
+  dev: true
+  postgress: 
+    dev: true
+    db_create: true
+    # master:
+    #   username: "db1user"
+    #   password: "p6iVzUrBipnYrLZMdnah"
+    #   host: "10.86.80.5"
+    #   port: 5432
+    master:
+      host:
+      username: postgres
+      password:
+      port: "5432"
+postgresql:
+  primary:
+    persistence:
+      enabled: false
+
+
+portal:
+  dataUploadBucket: krum-gen3-private-bucket
+  image:
+    repository: quay.io/cdis/data-portal
+    tag: master
+
+peregrine:
+  env:
+    CONF_HOSTNAME: heal.krum.app
+
+
+fence:
+  enabled: true
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: "875385230842-da0i9hk4s40g1b3pks5ulojdmj30asvo.apps.googleusercontent.com"
+        client_secret: "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"
+    GLOBAL_PARSE_VISAS_ON_LOGIN: true
+    DATA_UPLOAD_BUCKET:
+    AWS_CREDENTIALS:
+      cred1: 
+        aws_access_key_id: 'GOOG1EBCB5SSHW47NQ5P7SQWLBVAF4BOZ4FT446TCBG4YDZQ4Z4KV36EFTUOY'
+        aws_secret_access_key: 'QcPKuAvGLXOGqf3wMlW/FBU3p3ZE8F78WsoC8Y7T'
+    S3_BUCKETS:
+      krum-gen3-private-bucket:
+        cred: 'cred1'
+        region: 'us-central1'
+        # optionally you can manually specify an s3-compliant endpoint for this bucket
+        endpoint_url: 'https://storage.googleapis.com/'
+
+requestor:
+  enabled: false
+  image:
+    repository: quay.io/cdis/requestor
+    tag: master
+
+guppy:
+  enabled: true
+  esEndpoint: "https://krum-gen3-sandbox-elastic.es.us-central1.gcp.cloud.es.io"
+  image:
+    repository: quay.io/cdis/guppy
+    tag: master
+    pullPolicy: Always
+
+aws_es_proxy:
+  enabled: false

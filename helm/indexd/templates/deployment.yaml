@@ -62,9 +62,18 @@ spec:
                   name: indexd-dbcreds
                   key: database
                   optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-dbcreds
+                  key: dbcreated
+                  optional: false
             {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/indexd/local_settings.py"
+              subPath: "local_settings.py"
           ports:
             - name: http
               containerPort: 80
@@ -74,72 +83,13 @@ spec:
               path: /_status
               port: http
             initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /_status
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      initContainers:
-        - name: indexd-init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          command: ["/bin/bash" ]
-          args: 
-            - "-c"
-            # Script always succeeds if it runs (echo exits with 0)
-            # indexd image does not include jq, so use python 
-            - |
-              eval $(python 2> /dev/null <<EOM
-              import json
-
-              # sheepdog_data = json.load(open('/var/www/indexd/sheepdog_creds.json', 'r'))
-              indexd_data = json.load(open('/var/www/indexd/creds.json', 'r'))
-              user_db = { 'gdcapi': 'indexd_password' }
-              if 'user_db' in indexd_data:
-                more_users = indexd_data['user_db']
-                for user in more_users:
-                  user_db[user] = more_users[user]
-              print('declare -A user_db')
-              for user in user_db:
-                print("user_db['%s']='%s'" % (user, user_db[user]))
-              EOM
-              )
-              for user in "${!user_db[@]}"; do
-                python /indexd/bin/index_admin.py create --username "$user" --password "${user_db[$user]}"
-              done
-              echo "Exit code: $?"
-          volumeMounts:
-            {{- toYaml .Values.initVolumeMounts | nindent 12 }}
-          env:
-            - name: PGHOST
-              valueFrom:
-                secretKeyRef:
-                  name: indexd-dbcreds
-                  key: host
-                  optional: false  
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: indexd-dbcreds
-                  key: username
-                  optional: false 
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: indexd-dbcreds
-                  key: password
-                  optional: false
-            - name: PGDB
-              valueFrom:
-                secretKeyRef:
-                  name: indexd-dbcreds
-                  key: database
-                  optional: false
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

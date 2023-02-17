@@ -8,9 +8,12 @@ Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
 # Deployment instructions
 For a full set of configuration options see the [README.md for gen3](./helm/gen3/README.md)
 
+To see documentation around setting up gen3 developer environments see [gen3_developer_environments.md](./docs/gen3_developer_environments.md)
+
 ## TL;DR 
 ```
-helm repo add gen3 http://helm.gen3.org
+helm repo add gen3 https://helm.gen3.org
+helm repo update
 helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
 ```
 
@@ -18,7 +21,7 @@ Use the following as a template for your `values.yaml` file for a minimum deploy
 
 
 
-```
+```yaml
 global:
   hostname: example-commons.com
 
@@ -33,7 +36,7 @@ fence:
 This is to have a gen3 deployment with google login. You may also use MOCK_AUTH using the following config. NB! This will bypass any login and is only recommended for testing environments
 
 
-```
+```yaml
 global:
   hostname: example-commons.com
 
@@ -47,14 +50,14 @@ fence:
 
 ## Selective deployments 
 All service helm charts are sub-charts of the gen3 chart (which acts as an umbrella chart)
-To enable or disable a service you can add this pattern to your values.yaml
+To enable or disable a service you can add this pattern to your `values.yaml`
 
-```
+```yaml
 fence:
-  enable: true
+  enabled: true
 
 wts:
-  enable: false
+  enabled: false
 ```
 
 

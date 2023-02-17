@@ -118,6 +118,12 @@ spec:
                 name: {{ .Chart.Name }}-dbcreds
                 key: database
                 optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: dbcreated
+                optional: false
           - name: SQLALCHEMY_DATABASE_URI
             value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
           resources:
@@ -155,6 +161,12 @@ spec:
             secretKeyRef:
               name: {{ .Chart.Name }}-dbcreds
               key: database
+              optional: false
+        - name: DBREADY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Chart.Name }}-dbcreds
+              key: dbcreated
               optional: false
         - name: SQLALCHEMY_DATABASE_URI
           value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)

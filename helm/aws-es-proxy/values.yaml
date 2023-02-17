@@ -1,66 +1,74 @@
-# Default values for aws-es-proxy.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# -- (map) Annotations to add to the pod
+podAnnotations:
 
-# Deployment
-podAnnotations: {"gen3.io/network-ingress": "guppy,metadata,spark,tube"}
-
+# -- (bool) Enable autoscaling
 autoscaling:
   enabled: false
+  # -- (int) Minimum number of replicas
   minReplicas: 1
+  # -- (int) Maximum number of replicas
   maxReplicas: 100
+  # -- (int) Target CPU utilization percentage
   targetCPUUtilizationPercentage: 80
 
+# -- (int) Number of replicas
 replicaCount: 1
 
+# -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
 
+# -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
+# -- (list) List of volumes
 volumes:
   - name: credentials
     secret:
       secretName: aws-es-proxy
 
+# -- (map) Image information
 image:
   repository: quay.io/cdis/aws-es-proxy
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (str) Image tag
   tag: ""
 
+# -- (list) List of container ports
 ports:
   - containerPort: 9200
 
-# Environment Variables
+# -- (str) Elasticsearch endpoint in AWS
 esEndpoint: test.us-east-1.es.amazonaws.com
 
-
+# -- (list) List of volume mounts
 volumeMounts:
   - name: credentials
     readOnly: true
     mountPath: /root/.aws
 
+# -- (map) Resource limits
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 0.1
+    memory: 250Mi
   limits:
-    cpu: 1
     memory: 2Gi
 
-
-# Service and Pod
+# -- (map) Service information
 service:
   type: ClusterIP
   port: 9200
 
-# Secret
+# -- (map) Secret information
 secrets:
-  awsAccessKeyId: "asdpofasdokj"
-  awsSecretAccessKey: "asdfjkljklj"
+  # -- (str) AWS access key ID
+  awsAccessKeyId: ""
+  # -- (str) AWS secret access key
+  awsSecretAccessKey: ""

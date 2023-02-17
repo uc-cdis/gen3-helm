@@ -1,0 +1,10 @@
+global:
+  dev: true
+  hostname: localhost
+fence: 
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: "" 
+        client_secret: ""
+

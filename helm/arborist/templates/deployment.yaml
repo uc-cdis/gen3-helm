@@ -69,6 +69,45 @@ spec:
               /go/src/github.com/uc-cdis/arborist/bin/arborist
           env:
             {{- toYaml .Values.env | nindent 12 }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: password
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: username
+                  optional: false
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: database
+                  optional: false
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: host
+                  optional: false
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: port
+                  optional: false
+            - name: PGSSLMODE
+              value: disable
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: arborist-dbcreds
+                  key: dbcreated
+                  optional: false
+
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}  
