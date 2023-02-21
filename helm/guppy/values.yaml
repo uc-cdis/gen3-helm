@@ -167,7 +167,7 @@ service:
     - protocol: TCP
       port: 80
       targetPort: 8000
-      name: http  
+      name: http
 
 # Configmap
 # -- (list) Elasticsearch index configurations
