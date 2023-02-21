@@ -39,8 +39,6 @@ A Helm chart for gen3 Guppy Service
 | ddTraceEnabled | string | `nil` |  |
 | ddTraceSampleRate | string | `nil` |  |
 | ddVersion | string | `nil` |  |
-| elasticsearch.separate | bool | `false` |  |
-| elasticsearch.separate | bool | `false` |  |
 | enableEncryptWhitelist | bool | `true` | Whether or not to enable encryption for specified fields |
 | encryptWhitelist | string | `"test1"` | A comma-separated list of fields to encrypt |
 | esEndpoint | string | `""` |  |

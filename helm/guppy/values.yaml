@@ -167,10 +167,7 @@ service:
     - protocol: TCP
       port: 80
       targetPort: 8000
-      name: http
-
-elasticsearch:
-  separate: false
+      name: http  
 
 # Configmap
 # -- (list) Elasticsearch index configurations
@@ -190,7 +187,3 @@ encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
 dbRestore: true
-
-
-elasticsearch:
-  separate: false
