@@ -99,7 +99,7 @@ spec:
                 secretKeyRef:
                   name: audit-dbcreds
                   key: host
-                  optional: false  
+                  # optional: true
             - name: DB_USER
               valueFrom:
                 secretKeyRef:

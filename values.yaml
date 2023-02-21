@@ -3,7 +3,7 @@ global:
   dev: true
   postgress: 
     dev: true
-    db_create: true
+    dbCreate: true
     # master:
     #   username: "db1user"
     #   password: "p6iVzUrBipnYrLZMdnah"
@@ -19,6 +19,21 @@ postgresql:
     persistence:
       enabled: false
 
+aws-es-proxy:
+  enabled: false
+  esEndpoint: krum-gen3-sandbox-elastic.es.us-central1.gcp.cloud.es.io
+
+metadata:
+  esEndpoint: https://admin_user:SuperCoolPassword1@krum-gen3-sandbox.es.us-central1.gcp.cloud.es.io
+
+guppy:
+  esEndpoint: https://admin_user:SuperCoolPassword1@krum-gen3-sandbox.es.us-central1.gcp.cloud.es.io
+  # Configmap
+  indices:
+  - index: gen3-dev-subject
+    type: subject
+  - index: gen3-dev-file
+    type: file
 
 portal:
   dataUploadBucket: krum-gen3-private-bucket
@@ -26,20 +41,28 @@ portal:
     repository: quay.io/cdis/data-portal
     tag: master
 
-peregrine:
-  env:
-    CONF_HOSTNAME: heal.krum.app
+# peregrine:
+#   env:
+#     CONF_HOSTNAME: heal.krum.app
 
+indexd:
+  db-secret: indexd-dbcreds
+  enabled: true
+  env:
+  - name: GEN3_DEBUG
+    value: "True"
 
 fence:
   enabled: true
+  db-secret: fence-dbcreds
   FENCE_CONFIG:
     OPENID_CONNECT:
       google:
         client_id: "875385230842-da0i9hk4s40g1b3pks5ulojdmj30asvo.apps.googleusercontent.com"
         client_secret: "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"
     GLOBAL_PARSE_VISAS_ON_LOGIN: true
-    DATA_UPLOAD_BUCKET:
+    ENABLE_DB_MIGRATION: true
+    DATA_UPLOAD_BUCKET: krum-gen3-private-bucket
     AWS_CREDENTIALS:
       cred1: 
         aws_access_key_id: 'GOOG1EBCB5SSHW47NQ5P7SQWLBVAF4BOZ4FT446TCBG4YDZQ4Z4KV36EFTUOY'
@@ -56,14 +79,21 @@ requestor:
   image:
     repository: quay.io/cdis/requestor
     tag: master
+  
+# common:
+#   db-secret: "{{ $.Chart.Name }}-dbcreds"
 
-guppy:
+# arborist:
+#   db-secret: arborist-dbcreds
+
+# audit:
+#   db-secret: audit-dbcreds
+
+ambassador:
   enabled: true
-  esEndpoint: "https://krum-gen3-sandbox-elastic.es.us-central1.gcp.cloud.es.io"
-  image:
-    repository: quay.io/cdis/guppy
-    tag: master
-    pullPolicy: Always
-
-aws_es_proxy:
-  enabled: false
+  podLabels: {
+    name: ambassidor
+    }
+  selectorLabels: {
+    name: ambassidor
+  }

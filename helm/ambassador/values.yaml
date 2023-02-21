@@ -34,10 +34,10 @@ serviceAccount:
   name: ""
 
 # -- (map) Annotations to add to the pod.
-podAnnotations:
+podAnnotations: {}
 
 # -- (map) Labels to add to the pod.
-podLabels:
+podLabels: {}
 
 
 # -- (map) Pod-level security context.
