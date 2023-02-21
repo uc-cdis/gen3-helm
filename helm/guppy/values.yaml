@@ -187,7 +187,3 @@ encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
 dbRestore: true
-
-
-elasticsearch:
-  separate: false

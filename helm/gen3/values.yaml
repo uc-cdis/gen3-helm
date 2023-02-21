@@ -5,10 +5,14 @@
 # -- (map) Global configuration options.
 global:
   # -- (map) AWS configuration
+  gcp: true
+  tls:
+    cert:
+    key:
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
-    # -- (map) Credentials for AWS stuff. TBD on IAM permissions as we experiment more.
+    # -- (map) Credentials for AWS
     account:
       # Prep move of these keys here.
       aws_access_key_id:
@@ -87,6 +91,9 @@ audit:
   image:
     repository:
     tag:
+
+aws-es-proxy:
+  enabled: false
 
 fence:
   enabled: true

@@ -4,6 +4,9 @@
 
 # -- (map) Global configuration options.
 global:
+  tls:
+    cert:
+    key:
   # -- (map) AWS configuration
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.

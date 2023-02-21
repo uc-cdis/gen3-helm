@@ -25,7 +25,7 @@ config = app.config
 config['INDEX_CLIENT'] = {
     'host': environ.get('INDEX_CLIENT_HOST') or 'http://indexd-service',
     'version': 'v0',
-    # 'auth': ('gdcapi', environ.get( "PGHOST") ),
+    'auth': ('gdcapi', environ.get( "PGHOST") ),
 }
 # config["FAKE_AUTH"] = environ.get( "FAKE_AUTH", False)
 config["PSQLGRAPH"] = {
