@@ -5,9 +5,7 @@ metadata:
   # A little helper jobs for creating new indexd
   # users with basic-auth access to indexd update
   # endpoints.
-  # Loads the list of users from the indexd
-  # creds.json
-  #
+  # Loads the list of users from env var.
   name: indexd-userdb
 spec:
   backoffLimit: 0
@@ -17,10 +15,10 @@ spec:
         app: gen3job
     spec:
       automountServiceAccountToken: false
+      {{- with .Values.volumes }}
       volumes:
-        - name: config-volume
-          secret:
-            secretName: "indexd-settings"
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: indexd
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -28,7 +26,50 @@ spec:
             - name: "config-volume"
               readOnly: true
               mountPath: "/var/www/indexd/local_settings.py"
-              subPath: "local_settings.py"  
+              subPath: "local_settings.py"
+          env:
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: indexd-dbcreds
+                key: host
+                optional: false  
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: indexd-dbcreds
+                key: username
+                optional: false 
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: indexd-dbcreds
+                key: password
+                optional: false
+          - name: PGDB
+            valueFrom:
+              secretKeyRef:
+                name: indexd-dbcreds
+                key: database
+                optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: indexd-dbcreds
+                key: dbcreated
+                optional: false
+          - name: FENCE_PASS
+            valueFrom:
+              secretKeyRef:
+                name: indexd-service-creds
+                key: fence
+                optional: false
+          - name: SHEEPDOG_PASS
+            valueFrom:
+              secretKeyRef:
+                name: indexd-service-creds
+                key: fence
+                optional: false
           imagePullPolicy: Always
           command: ["/bin/bash" ]
           args: 
@@ -36,22 +77,8 @@ spec:
             # Script always succeeds if it runs (echo exits with 0)
             # indexd image does not include jq, so use python 
             - |
-              eval $(python 2> /dev/null <<EOM
-              import json
-
-              sheepdog_data = json.load(open('/var/www/indexd/sheepdog_creds.json', 'r'))
-              indexd_data = json.load(open('/var/www/indexd/creds.json', 'r'))
-              user_db = { 'gdcapi': sheepdog_data['indexd_password'] }
-              if 'user_db' in indexd_data:
-                more_users = indexd_data['user_db']
-                for user in more_users:
-                  user_db[user] = more_users[user]
-              print('declare -A user_db')
-              for user in user_db:
-                print("user_db['%s']='%s'" % (user, user_db[user]))
-              EOM
-              )
-              for user in "${!user_db[@]}"; do
-                python /indexd/bin/index_admin.py create --username "$user" --password "${user_db[$user]}"
-              done
+              echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
+              python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
+              echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
+              python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
       restartPolicy: Never

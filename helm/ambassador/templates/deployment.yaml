@@ -18,7 +18,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- toYaml .Values.podLabels | nindent 8 }}
+        app: ambassador
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
     spec:
       affinity:
         podAntiAffinity:

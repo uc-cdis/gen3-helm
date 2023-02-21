@@ -22,6 +22,10 @@ spec:
   - hosts:
       - heal.krum.app
     secretName: heal-krum-app-tls
+  # {{- if .Values.global.dev }}
+  # tls:
+  # - secretName: gen3-certs
+  # {{- end  }}
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:

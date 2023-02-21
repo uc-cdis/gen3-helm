@@ -1,0 +1,22 @@
+{{/*
+Generate certificates for custom-metrics api server 
+*/}}
+{{- define "gen-certs" -}}
+{{- $ca := genCA "gen3" 365 -}}
+{{- $cert := genSignedCert .Values.global.hostname nil nil 365 $ca -}}
+tls.crt: {{ (.Values.global.tls.cert | default $cert.Cert) | b64enc }}
+tls.key: {{ (.Values.global.tls.key | default $cert.Key) | b64enc }}
+{{- end -}}
+
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: gen3-certs
+  labels:
+    app: gen3
+    chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+{{ ( include "gen-certs" . ) | indent 2 }}
