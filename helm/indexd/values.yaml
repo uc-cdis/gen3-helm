@@ -156,6 +156,6 @@ env:
 
 secrets:
   userdb:
-    fence:
+    fence: test
     gdcapi:
     gateway:

@@ -169,6 +169,9 @@ service:
       targetPort: 8000
       name: http
 
+elasticsearch:
+  separate: false
+
 # Configmap
 # -- (list) Elasticsearch index configurations
 indices:

@@ -15,6 +15,10 @@ spec:
   {{- if .Values.global.aws.enabled }}
   ingressClassName: alb
   {{- end }}
+  {{- if .Values.global.dev }}
+  tls:
+  - secretName: gen3-certs
+  {{- end  }}
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:
