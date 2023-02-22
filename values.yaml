@@ -1,7 +1,9 @@
 global:
+  aws:
+    enabled: false
   hostname: heal.krum.app
   dev: true
-  postgress: 
+  postgres: 
     dev: true
     dbCreate: true
     # master:
@@ -21,25 +23,38 @@ postgresql:
 
 aws-es-proxy:
   enabled: false
-  esEndpoint: krum-gen3-sandbox-elastic.es.us-central1.gcp.cloud.es.io
+  esEndpoint: http://elasticsearch:9200
 
 metadata:
-  esEndpoint: https://admin_user:SuperCoolPassword1@krum-gen3-sandbox.es.us-central1.gcp.cloud.es.io
+  esEndpoint: http://elasticsearch:9200
 
 guppy:
-  esEndpoint: https://admin_user:SuperCoolPassword1@krum-gen3-sandbox.es.us-central1.gcp.cloud.es.io
+  enabled: true
+  esEndpoint: http://elasticsearch:9200
   # Configmap
   indices:
   - index: gen3-dev-subject
     type: subject
   - index: gen3-dev-file
     type: file
+  configIndex: gen3-dev-config
 
 portal:
   dataUploadBucket: krum-gen3-private-bucket
   image:
     repository: quay.io/cdis/data-portal
     tag: master
+
+revproxy:
+  ingress:
+    annotations:
+      acme.cert-manager.io/http01-edit-in-place: 'true'
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      cert-manager.io/issue-temporary-certificate: 'true'
+    tls:
+    - hosts:
+        - heal.krum.app
+      secretName: heal-krum-app-tls
 
 # peregrine:
 #   env:
@@ -53,20 +68,28 @@ indexd:
     value: "True"
 
 fence:
+  serviceAccount:
+    # Specifies whether a service account should be created
+    # -- (bool) Whether to create a service account
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+      # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
+      # eks.amazonaws.com/role-arn:
   enabled: true
   db-secret: fence-dbcreds
   FENCE_CONFIG:
     OPENID_CONNECT:
       google:
-        client_id: "875385230842-da0i9hk4s40g1b3pks5ulojdmj30asvo.apps.googleusercontent.com"
-        client_secret: "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"
+        client_id: ""
+        client_secret: ""
     GLOBAL_PARSE_VISAS_ON_LOGIN: true
     ENABLE_DB_MIGRATION: true
     DATA_UPLOAD_BUCKET: krum-gen3-private-bucket
     AWS_CREDENTIALS:
       cred1: 
-        aws_access_key_id: 'GOOG1EBCB5SSHW47NQ5P7SQWLBVAF4BOZ4FT446TCBG4YDZQ4Z4KV36EFTUOY'
-        aws_secret_access_key: 'QcPKuAvGLXOGqf3wMlW/FBU3p3ZE8F78WsoC8Y7T'
+        aws_access_key_id: ''
+        aws_secret_access_key: ''
     S3_BUCKETS:
       krum-gen3-private-bucket:
         cred: 'cred1'
@@ -89,11 +112,14 @@ requestor:
 # audit:
 #   db-secret: audit-dbcreds
 
+tags:
+  dev: true
+
 ambassador:
   enabled: true
-  podLabels: {
-    name: ambassidor
-    }
-  selectorLabels: {
-    name: ambassidor
-  }
+  labels:
+    app: ambassador
+  podLabels:
+    app: ambassador
+  selectorLabels:
+    app: ambassador

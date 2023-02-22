@@ -2,10 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: revproxy
+  {{- with .Values.ingress.annotations }}
   annotations:
-    acme.cert-manager.io/http01-edit-in-place: 'true'
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    cert-manager.io/issue-temporary-certificate: 'true'
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- if .Values.global.aws.enabled }}
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: Environment={{ .Values.global.environment }}
@@ -18,14 +18,10 @@ spec:
   {{- if .Values.global.aws.enabled }}
   ingressClassName: nginx
   {{- end }}
+  {{- with .Values.ingress.tls }}
   tls:
-  - hosts:
-      - heal.krum.app
-    secretName: heal-krum-app-tls
-  # {{- if .Values.global.dev }}
-  # tls:
-  # - secretName: gen3-certs
-  # {{- end  }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:

@@ -126,7 +126,8 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: []
+  tls:
+    - secretName: gen3-certs
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
