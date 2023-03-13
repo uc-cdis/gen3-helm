@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -57,8 +57,8 @@ A Helm chart for gen3 data-portal
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
-| image.repository | string | `"quay.io/cdis/data-portal-prebuilt"` | Docker repository. |
-| image.tag | string | `"brh.data-commons.org-feat-develop"` | Overrides the image tag whose default is the chart appVersion. |
+| image.repository | string | `"quay.io/cdis/data-portal"` | Docker repository. |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | labels | map | `{"app":"portal","public":"yes"}` | Labels for the portal service. |
 | labels.app | string | `"portal"` | The application name. |
@@ -69,11 +69,11 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | portalApp | string | `"gitops"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"cpu":0.6,"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"cpu":2,"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"4096Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":2.0,"memory":"4096Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `2.0` | The amount of CPU requested |
+| resources.requests | map | `{"cpu":2,"memory":"4096Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `2` | The amount of CPU requested |
 | resources.requests.memory | string | `"4096Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |

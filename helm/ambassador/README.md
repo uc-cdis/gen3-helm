@@ -12,7 +12,7 @@ A Helm chart for deploying ambassador for gen3
 | autoscaling | map | `{"enabled":false,"maxReplicas":10,"minReplicas":1,"targetCPUUtilizationPercentage":60}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
 | autoscaling.maxReplicas | int | `10` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to  |
 | autoscaling.targetCPUUtilizationPercentage | int | `60` | The target CPU utilization percentage for autoscaling |
 | fullnameOverride | string | `"ambassador-deployment"` | Override the full name of the deployment. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/datawire/ambassador","tag":"1.4.2"}` | Docker image information. |
