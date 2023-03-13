@@ -40,18 +40,20 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
           ports:
-            {{- toYaml . | nindent 10}}
-          {{- end }}
+            - containerPort: 8000
           env: 
             - name: GUPPY_PORT
               value: "8000"
@@ -68,38 +70,6 @@ spec:
             {{- with .Values.tierAccessLimit }}
             - name: TIER_ACCESS_LIMIT
               value: {{ . | quote }}
-            {{- end }}
-            {{- with .Values.ddTraceEnabled }}
-            - name: DD_TRACE_ENABLED
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddEnv }}
-            - name: DD_ENV
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddService }}
-            - name: DD_SERVICE
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddVersion }}
-            - name: DD_VERSION
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddLogsInjection }}
-            - name: DD_LOGS_INJECTION
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddProfilingEnabled }}
-            - name: DD_PROFILING_ENABLED
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddTraceSampleRate }}
-            - name: DD_TRACE_SAMPLE_RATE
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddTraceAgentHostname }}
-            - name: DD_TRACE_AGENT_HOSTNAME
-              value: {{ . }}
             {{- end }}
 
 

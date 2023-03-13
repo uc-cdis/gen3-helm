@@ -48,7 +48,7 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -76,39 +76,53 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# This is to configure postgresql subchart
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
+      # -- (bool) Option to persist the dbs data. 
       enabled: false
 
+# -- (int) Number of desired replicas
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
+  # -- (string) The Docker image repository for the indexd service
   repository: quay.io/cdis/indexd
+  # -- (string) When to pull the image.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
 nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created.
   create: false
-  # Annotations to add to the service account
+  # -- (map) Annotations to add to the service account.
   annotations: {}
-  # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account
   name: ""
 
+# -- (map) Annotations to add to the pod
 podAnnotations: {}
 
+# -- (map) Security context for the pod
 podSecurityContext: {}
   # fsGroup: 2000
 
+# -- (map) Security context for the containers in the pod
 securityContext: {}
   # capabilities:
   #   drop:
@@ -117,33 +131,49 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 80
 
-
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
     cpu: 0.1
+    # -- (string) The amount of memory requested
     memory: 12Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
+    # -- (string) The maximum amount of CPU the container can use
     cpu: 1.0
+    # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
+# -- (map) Autoscaling options.
 autoscaling:
   enabled: false
+  # -- (int) Minimum number of replicas
   minReplicas: 1
+  # -- (int) Maximum number of replicas
   maxReplicas: 100
+  # -- (int) Target CPU utilization percentage
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- (map) Node Selector for the pods
 nodeSelector: {}
 
+# -- (list) Tolerations for the pods
 tolerations: []
 
+# -- (map) Affinity to use for the deployment.
 affinity: {}
 
-
+# -- (list) Volumes to attach to the pod
 volumes:
 - name: config-volume
   secret:
@@ -152,17 +182,19 @@ volumes:
   secret:
     secretName: "indexd-creds"
 
-
+# -- (list) Volumes to mount to the container.
 volumeMounts:
 - name: "config-volume"
   readOnly: true
   mountPath: "/var/www/indexd/local_settings.py"
   subPath: "local_settings.py"
 
+# -- (list) Environment variables to pass to the container
 env:
   - name: "GEN3_DEBUG"
     value: "False"
 
+# -- (map) Values for indexd secret.
 secrets:
   userdb:
     fence: test

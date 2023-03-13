@@ -45,15 +45,17 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            httpGet:
+              path: /test
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.ports}}
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            - containerPort: 8000
+              protocol: TCP
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

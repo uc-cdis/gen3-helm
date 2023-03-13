@@ -40,7 +40,7 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -66,11 +66,12 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# This is to configure postgresql subchart
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
+      # -- (bool) Option to persist the dbs data. 
       enabled: false
 
 
@@ -102,6 +103,7 @@ serviceAccount:
   # -- (map) Annotations to add to the service account.
   annotations: {}
   # -- (string) The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
   name: ""
 # Declare variables to be passed into your templates.
 
@@ -129,44 +131,38 @@ securityContext: {}
   # -- (int) The user ID to run the container as
   # runAsUser: 1000
 
-# -- (map) Kubernetes service settings
+# -- (map) Kubernetes service information.
 service:
-  # -- (string) The type of the Kubernetes service
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-
-  # -- (int) The port number that the service exposes
+  # -- (int) The port number that the service exposes.
   port: 80
 
-# -- (map) Resource requests and limits
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
-  # -- (map) Resource requests
+  # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) CPU request
+    # -- (string) The amount of CPU requested
     cpu: 0.1
-    # -- (string) Memory request
+    # -- (string) The amount of memory requested
     memory: 12Mi
-
-  # -- (map) Resource limits
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) CPU limit
+    # -- (string) The maximum amount of CPU the container can use
     cpu: 1.0
-    # -- (string) Memory limit
+    # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
-# -- (map) Autoscaling settings
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
   # -- (bool) Whether autoscaling is enabled
   enabled: false
-
   # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
-
   # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
-
   # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
-
   # -- (int) The target memory utilization percentage for autoscaling
   # targetMemoryUtilizationPercentage: 80
 

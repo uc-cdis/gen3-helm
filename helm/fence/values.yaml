@@ -40,7 +40,7 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -68,11 +68,12 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# This is to configure postgresql subchart
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
+      # -- (bool) Option to persist the dbs data. 
       enabled: false
 
 # -- (int) Number of desired replicas
@@ -83,24 +84,26 @@ image:
   repository: quay.io/cdis/fence
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  # -- (string) The tag to use for the image.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
 nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
-
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
-  # -- (bool) Whether to create a service account
+  # -- (bool) Specifies whether a service account should be created.
   create: true
-  # Annotations to add to the service account
+  # -- (map) Annotations to add to the service account.
   annotations:
     # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
     eks.amazonaws.com/role-arn:
-  # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   # -- (string) The name of the service account
   name: "fence-sa"
@@ -121,11 +124,11 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# -- (map) Configuration for the service
+# -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # -- (int) Port on which the service is exposed
+  # -- (int) The port number that the service exposes.
   port: 80
 
 # -- (map) Resource requests and limits for the containers in the pod
@@ -146,11 +149,11 @@ resources:
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
-  # -- (bool) Whether autoscaling is enabled or not
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
-  # -- (int) Minimum number of replicas
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
-  # -- (int) Maximum number of replicas
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 4
   # -- (int) Target CPU utilization percentage
   targetCPUUtilizationPercentage: 80
@@ -163,32 +166,45 @@ nodeSelector: {}
 # -- (list) Tolerations for the pods
 tolerations: []
 
+# -- (map) Labels to add to the pod.
 labels:
+  # -- (string) Application name.
   app: fence
+  # -- (string) Release name.
   release: production
-  # for network policy selectors
+  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors. 
   authprovider: "yes"
-  # uses explicit proxy and AWS APIs
+  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
   netnolimit: "yes"
+  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
   public: "yes"
+  # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
   userhelper: "yes"
   tags.datadoghq.com/service: "fence"
   tags.datadoghq.com/env: anvilstaging
   tags.datadoghq.com/version: 2021.12
 
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred. 
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling. 
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression. 
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key. 
             values:
             - fence
+        # -- (string) Value for topology key label. 
         topologyKey: "kubernetes.io/hostname"
 
+# -- (list) Environment variables to pass to the container
 env:
   - name: DD_ENABLED
     valueFrom:
@@ -269,6 +285,7 @@ env:
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
 
+# -- (list) Volumes to attach to the container.
 volumes:
   - name: old-config-volume
     secret:
@@ -307,6 +324,7 @@ volumes:
       name: "fence-yaml-merge"
       optional: true
 
+# -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: "old-config-volume"
     readOnly: true
@@ -353,6 +371,7 @@ volumeMounts:
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
 
+# -- (list) Volumes to mount to the init container.
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
@@ -371,6 +390,7 @@ initVolumeMounts:
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
 
+# -- (list) Volumes to attach to the init container.
 initEnv:
   - name: PGHOST
     valueFrom:
@@ -413,10 +433,10 @@ initEnv:
         key: fence-config-public.yaml
         optional: true
 
+# -- (map) Labels to use for selecting the deployment.
 selectorLabels:
   app: fence
   release: production
-
 
 logo:
 privacy_policy:
@@ -1425,58 +1445,58 @@ FENCE_CONFIG:
       # -- (str) Optional; defaults to 'test@example.com'
       mock_default_user: 'test@example.com'
 
-    # -- dict: Contains multi-tenant Fence configuration
+    # -- (dict): Contains multi-tenant Fence configuration
     # Support for multi-tenant fence (another fence is this fence's IDP)
     # If this fence instance is a client of another fence, fill this cfg out.
     # REMOVE if not needed
     fence:
-      # -- str: Root URL for the other fence
+      # -- (str): Root URL for the other fence
       # this api_base_url should be the root url for the OTHER fence
       # something like: https://example.com
       api_base_url: ''
 
-      # -- str: ID of the client of this fence on the other fence
+      # -- (str): ID of the client of this fence on the other fence
       # this client_id and client_secret should be obtained by registering THIS fence as
       # a new client of the OTHER fence
       client_id: ''
 
-      # -- str: Secret of the client of this fence on the other fence
+      # -- (str): Secret of the client of this fence on the other fence
       client_secret: ''
 
       # -- dict: Additional client parameters
       client_kwargs:
-        # -- str: Space-separated string of scopes
+        # -- (str): Space-separated string of scopes
         # openid is required to use OIDC flow
         scope: 'openid'
 
-        # -- str: The URL to which the other fence will redirect after logging in
+        # -- (str): The URL to which the other fence will redirect after logging in
         redirect_uri: '{{BASE_URL}}/login/fence/login'
 
-      # -- str: URL for authorization endpoint of the other fence
+      # -- (str): URL for authorization endpoint of the other fence
       # The next 3 should not need to be changed if the provider is following
       # Oauth2 endpoint naming conventions
       authorize_url: '{{api_base_url}}/oauth2/authorize'
 
-      # -- str: URL for access token endpoint of the other fence
+      # -- (str): URL for access token endpoint of the other fence
       access_token_url: '{{api_base_url}}/oauth2/token'
 
-      # -- str: URL for refresh token endpoint of the other fence
+      # -- (str): URL for refresh token endpoint of the other fence
       refresh_token_url: '{{api_base_url}}/oauth2/token'
 
-      # -- str: Name of the provider for consent screens
+      # -- (str): Name of the provider for consent screens
       # Custom name to display for consent screens. If not provided, will use `fence`.
       # If the other fence is using NIH Login, you should make name: `NIH Login`
       name: ''
 
-      # -- bool: Whether to mock a successful login response for testing purposes
+      # -- (bool): Whether to mock a successful login response for testing purposes
       # if mock is true, will fake a successful login response for login
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       mock: false
 
-      # -- str: Default user for mock login
+      # -- (str): Default user for mock login
       mock_default_user: 'test@example.com'
 
-      # -- str: URL of the shibboleth discovery endpoint if needed for InCommon login
+      # -- (str): URL of the shibboleth discovery endpoint if needed for InCommon login
       # this is needed to enable InCommon login, if some LOGIN_OPTIONS are configured with idp=fence and a list of shib_idps:
       shibboleth_discovery_url: 'https://login.bionimbus.org/Shibboleth.sso/DiscoFeed'
 

@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
 
 A Helm chart for deploying ambassador for gen3
 
@@ -9,7 +9,11 @@ A Helm chart for deploying ambassador for gen3
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
-| autoscaling | map | `{"enabled":false,"maxReplicas":10,"minReplicas":1,"targetCPUUtilizationPercentage":60}` | Autoscaling options. |
+| autoscaling | map | `{"enabled":false,"maxReplicas":10,"minReplicas":1,"targetCPUUtilizationPercentage":60}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
+| autoscaling.maxReplicas | int | `10` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `60` | The target CPU utilization percentage for autoscaling |
 | fullnameOverride | string | `"ambassador-deployment"` | Override the full name of the deployment. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/datawire/ambassador","tag":"1.4.2"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
@@ -22,16 +26,21 @@ A Helm chart for deploying ambassador for gen3
 | podLabels | map | `nil` | Labels to add to the pod. |
 | podSecurityContext | map | `{"runAsUser":8888}` | Pod-level security context. |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource limits and requests. |
+| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"400Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.memory | string | `"400Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":"100m","memory":"100Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
+| resources.requests.memory | string | `"100Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Container-level security context. |
 | selectorLabels | map | `{"service":"ambassador"}` | Labels to use for selecting the deployment. |
 | service | map | `{"port":8877,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `8877` | Service port to use. |
-| service.type | string | `"ClusterIP"` | Service type to use. |
+| service.port | int | `8877` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
-| serviceAccount.name | string | `""` | If not set and create is true, a name is generated using the fullname template. |
+| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. |
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | userNamespace | string | `"jupyter-pods"` | Namespace to use for user resources. |
 

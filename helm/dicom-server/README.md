@@ -1,6 +1,6 @@
 # dicom-server
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -8,43 +8,32 @@ A Helm chart for gen3 Dicom Server
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/gen3-orthanc"` |  |
-| image.tag | string | `"master"` |  |
-| livenessProbe.httpGet.path | string | `"/system"` |  |
-| livenessProbe.httpGet.port | int | `8042` |  |
-| livenessProbe.initialDelaySeconds | int | `5` |  |
-| livenessProbe.periodSeconds | int | `60` |  |
-| livenessProbe.timeoutSeconds | int | `30` |  |
-| ports[0].containerPort | int | `8042` |  |
-| readinessProbe.httpGet.path | string | `"/system"` |  |
-| readinessProbe.httpGet.port | int | `8042` |  |
-| readinessProbe.initialDelaySeconds | int | `5` |  |
-| readinessProbe.periodSeconds | int | `20` |  |
-| readinessProbe.timeoutSeconds | int | `30` |  |
-| replicaCount | int | `1` |  |
-| secrets.authenticationEnabled | bool | `false` |  |
-| secrets.dataBase | string | `"postgres"` |  |
-| secrets.enableIndex | bool | `true` |  |
-| secrets.enableStorage | bool | `true` |  |
-| secrets.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` |  |
-| secrets.indexConnectionsCount | int | `5` |  |
-| secrets.lock | bool | `false` |  |
-| secrets.password | string | `"postgres"` |  |
-| secrets.port | string | `"5432"` |  |
-| secrets.userName | string | `"postgres"` |  |
-| service.port | int | `80` |  |
-| service.targetport | int | `8042` |  |
-| volumeMounts[0].mountPath | string | `"/etc/orthanc/orthanc_config_overwrites.json"` |  |
-| volumeMounts[0].name | string | `"config-volume-g3auto"` |  |
-| volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"orthanc_config_overwrites.json"` |  |
-| volumes[0].name | string | `"config-volume-g3auto"` |  |
-| volumes[0].secret.secretName | string | `"orthanc-g3auto"` |  |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
+| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"master"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| replicaCount | int | `1` | Number of replicas for the deployment. |
+| secrets | map | `{"authenticationEnabled":false,"dataBase":"postgres","enableIndex":true,"enableStorage":true,"host":"postgres-postgresql.postgres.svc.cluster.local","indexConnectionsCount":5,"lock":false,"password":"postgres","port":"5432","userName":"postgres"}` | Secret information |
+| secrets.authenticationEnabled | bool | `false` | Whether or not the password protection is enabled. |
+| secrets.dataBase | string | `"postgres"` | Database name for postgres. |
+| secrets.enableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
+| secrets.enableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
+| secrets.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Hostname for postgres server.  |
+| secrets.indexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database.  |
+| secrets.lock | bool | `false` | Whether to lock the database.  |
+| secrets.password | string | `"postgres"` | Password for Postgres.  |
+| secrets.port | string | `"5432"` | Port for Postgres. |
+| secrets.userName | string | `"postgres"` | Username for postgres. |
+| service | map | `{"port":80,"targetport":8042}` | Kubernetes service information. |
+| service.port | int | `80` | The port number that the service exposes. |
+| service.targetport | int | `8042` | The port on the host machine that traffic is directed to. |
+| volumeMounts | list | `[{"mountPath":"/etc/orthanc/orthanc_config_overwrites.json","name":"config-volume-g3auto","readOnly":true,"subPath":"orthanc_config_overwrites.json"}]` | Volumes to mount to the pod. |
+| volumes | list | `[{"name":"config-volume-g3auto","secret":{"secretName":"orthanc-g3auto"}}]` | Volumes to attach to the pod. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

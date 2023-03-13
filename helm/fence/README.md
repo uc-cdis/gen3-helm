@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -32,20 +32,20 @@ A Helm chart for gen3 Fence
 | FENCE_CONFIG.MOCK_GOOGLE_AUTH | bool | `false` | if true, will fake a successful login response from Google in /login/google     NOTE: this will also modify the behavior of /link/google endpoints WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) will login as the username set in cookie DEV_LOGIN_COOKIE_NAME |
 | FENCE_CONFIG.MOCK_STORAGE | bool | `false` | if true, will ignore anything configured in STORAGE_CREDENTIALS |
 | FENCE_CONFIG.OPENID_CONNECT | dict | `{"cilogon":{"client_id":"","client_secret":"","discovery_url":"https://cilogon.org/.well-known/openid-configuration","mock":false,"mock_default_user":"http://cilogon.org/serverT/users/64703","redirect_url":"{{BASE_URL}}/login/cilogon/login/","scope":"openid email profile"},"cognito":{"client_id":"","client_secret":"","discovery_url":"https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration","redirect_url":"{{BASE_URL}}/login/cognito/login/","scope":"openid email"},"fence":{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"},"generic_oidc_idp":{"client_id":"","client_secret":"","discovery":{"authorization_endpoint":"","jwks_uri":"","token_endpoint":""},"discovery_url":"https://server.com/.well-known/openid-configuration","email_field":"","name":"some_idp","redirect_url":"{{BASE_URL}}/login/some_idp/login","scope":"","user_id_field":""},"google":{"client_id":"","client_secret":"","discovery_url":"https://accounts.google.com/.well-known/openid-configuration","mock":"","mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/google/login/","scope":"openid email"},"microsoft":{"client_id":"","client_secret":"","discovery_url":"https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/microsoft/login/","scope":"openid email"},"okta":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"{{BASE_URL}}/login/okta/login/","scope":"openid email"},"orcid":{"client_id":"","client_secret":"","discovery_url":"https://orcid.org/.well-known/openid-configuration","mock":false,"mock_default_user":"0000-0002-2601-8132","redirect_url":"{{BASE_URL}}/login/orcid/login/","scope":"openid"},"ras":{"client_id":"","client_secret":"","discovery_url":"https://sts.nih.gov/.well-known/openid-configuration","mock":false,"mock_default_user":"test@example.com","redirect_url":"{{BASE_URL}}/login/ras/callback","scope":"openid email profile ga4gh_passport_v1"},"shibboleth":{"client_id":"","client_secret":"","redirect_url":"{{BASE_URL}}/login/shib/login"},"synapse":{"client_id":"","client_secret":"","discovery_url":"","redirect_url":"","scope":"openid"}}` | Configurations for OpenID Connect (OIDC) authentication   - Fully configure at least one client so login works   - WARNING: Be careful changing the *_ALLOWED_SCOPES as you can break basic              and optional functionality |
-| FENCE_CONFIG.OPENID_CONNECT.fence | object | `{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"}` | dict: Contains multi-tenant Fence configuration Support for multi-tenant fence (another fence is this fence's IDP) If this fence instance is a client of another fence, fill this cfg out. REMOVE if not needed |
-| FENCE_CONFIG.OPENID_CONNECT.fence.access_token_url | string | `"{{api_base_url}}/oauth2/token"` | str: URL for access token endpoint of the other fence |
-| FENCE_CONFIG.OPENID_CONNECT.fence.api_base_url | string | `""` | str: Root URL for the other fence this api_base_url should be the root url for the OTHER fence something like: https://example.com |
-| FENCE_CONFIG.OPENID_CONNECT.fence.authorize_url | string | `"{{api_base_url}}/oauth2/authorize"` | str: URL for authorization endpoint of the other fence The next 3 should not need to be changed if the provider is following Oauth2 endpoint naming conventions |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_id | string | `""` | str: ID of the client of this fence on the other fence this client_id and client_secret should be obtained by registering THIS fence as a new client of the OTHER fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence | dict | `{"access_token_url":"{{api_base_url}}/oauth2/token","api_base_url":"","authorize_url":"{{api_base_url}}/oauth2/authorize","client_id":"","client_kwargs":{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"},"client_secret":"","mock":false,"mock_default_user":"test@example.com","name":"","refresh_token_url":"{{api_base_url}}/oauth2/token","shibboleth_discovery_url":"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"}` | : Contains multi-tenant Fence configuration Support for multi-tenant fence (another fence is this fence's IDP) If this fence instance is a client of another fence, fill this cfg out. REMOVE if not needed |
+| FENCE_CONFIG.OPENID_CONNECT.fence.access_token_url | str | `"{{api_base_url}}/oauth2/token"` | : URL for access token endpoint of the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.api_base_url | str | `""` | : Root URL for the other fence this api_base_url should be the root url for the OTHER fence something like: https://example.com |
+| FENCE_CONFIG.OPENID_CONNECT.fence.authorize_url | str | `"{{api_base_url}}/oauth2/authorize"` | : URL for authorization endpoint of the other fence The next 3 should not need to be changed if the provider is following Oauth2 endpoint naming conventions |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_id | str | `""` | : ID of the client of this fence on the other fence this client_id and client_secret should be obtained by registering THIS fence as a new client of the OTHER fence |
 | FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs | object | `{"redirect_uri":"{{BASE_URL}}/login/fence/login","scope":"openid"}` | dict: Additional client parameters |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.redirect_uri | string | `"{{BASE_URL}}/login/fence/login"` | str: The URL to which the other fence will redirect after logging in |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.scope | string | `"openid"` | str: Space-separated string of scopes openid is required to use OIDC flow |
-| FENCE_CONFIG.OPENID_CONNECT.fence.client_secret | string | `""` | str: Secret of the client of this fence on the other fence |
-| FENCE_CONFIG.OPENID_CONNECT.fence.mock | bool | `false` | bool: Whether to mock a successful login response for testing purposes if mock is true, will fake a successful login response for login WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) |
-| FENCE_CONFIG.OPENID_CONNECT.fence.mock_default_user | string | `"test@example.com"` | str: Default user for mock login |
-| FENCE_CONFIG.OPENID_CONNECT.fence.name | string | `""` | str: Name of the provider for consent screens Custom name to display for consent screens. If not provided, will use `fence`. If the other fence is using NIH Login, you should make name: `NIH Login` |
-| FENCE_CONFIG.OPENID_CONNECT.fence.refresh_token_url | string | `"{{api_base_url}}/oauth2/token"` | str: URL for refresh token endpoint of the other fence |
-| FENCE_CONFIG.OPENID_CONNECT.fence.shibboleth_discovery_url | string | `"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"` | str: URL of the shibboleth discovery endpoint if needed for InCommon login this is needed to enable InCommon login, if some LOGIN_OPTIONS are configured with idp=fence and a list of shib_idps: |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.redirect_uri | str | `"{{BASE_URL}}/login/fence/login"` | : The URL to which the other fence will redirect after logging in |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_kwargs.scope | str | `"openid"` | : Space-separated string of scopes openid is required to use OIDC flow |
+| FENCE_CONFIG.OPENID_CONNECT.fence.client_secret | str | `""` | : Secret of the client of this fence on the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.mock | bool | `false` | : Whether to mock a successful login response for testing purposes if mock is true, will fake a successful login response for login WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only) |
+| FENCE_CONFIG.OPENID_CONNECT.fence.mock_default_user | str | `"test@example.com"` | : Default user for mock login |
+| FENCE_CONFIG.OPENID_CONNECT.fence.name | str | `""` | : Name of the provider for consent screens Custom name to display for consent screens. If not provided, will use `fence`. If the other fence is using NIH Login, you should make name: `NIH Login` |
+| FENCE_CONFIG.OPENID_CONNECT.fence.refresh_token_url | str | `"{{api_base_url}}/oauth2/token"` | : URL for refresh token endpoint of the other fence |
+| FENCE_CONFIG.OPENID_CONNECT.fence.shibboleth_discovery_url | str | `"https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"` | : URL of the shibboleth discovery endpoint if needed for InCommon login this is needed to enable InCommon login, if some LOGIN_OPTIONS are configured with idp=fence and a list of shib_idps: |
 | FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_id | str | `""` | Client ID |
 | FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.client_secret | str | `""` | Client secret |
 | FENCE_CONFIG.OPENID_CONNECT.generic_oidc_idp.discovery.authorization_endpoint | str | `""` | Authorization endpoint URL |
@@ -70,72 +70,21 @@ A Helm chart for gen3 Fence
 | FENCE_CONFIG.USER_ALLOWED_SCOPES | list | `["fence","openid","user","data","admin","google_credentials","google_service_account","google_link","ga4gh_passport_v1"]` | these are the scopes that CAN be included in a user's own access_token |
 | FENCE_CONFIG.WTF_CSRF_SECRET_KEY | str | `"{{ENCRYPTION_KEY}}"` | signing key for WTForms to sign CSRF tokens with |
 | USER_YAML | string | `"cloud_providers: {}\ngroups: {}\nauthz:\n  # policies automatically given to anyone, even if they haven't authenticated\n  anonymous_policies: ['open_data_reader', 'full_open_access']\n\n  # policies automatically given to authenticated users (in addition to their other\n  # policies)\n  all_users_policies: ['open_data_reader', 'authn_open_access']\n\n  user_project_to_resource:\n    QA: /programs/QA\n    DEV: /programs/DEV\n    test: /programs/QA/projects/test\n    jenkins: /programs/jnkns/projects/jenkins\n    jenkins2: /programs/jnkns/projects/jenkins2\n    jnkns: /programs/jnkns\n\n  policies:\n    # General Access\n    - id: 'workspace'\n      description: 'be able to use workspace'\n      resource_paths: ['/workspace']\n      role_ids: ['workspace_user']\n    - id: 'dashboard'\n      description: 'be able to use the commons dashboard'\n      resource_paths: ['/dashboard']\n      role_ids: ['dashboard_user']\n    - id: 'prometheus'\n      description: 'be able to use prometheus'\n      resource_paths: ['/prometheus']\n      role_ids: ['prometheus_user']\n    - id: 'ttyadmin'\n      description: 'be able to use the admin tty'\n      resource_paths: ['/ttyadmin']\n      role_ids: ['ttyadmin_user']\n    - id: 'mds_admin'\n      description: 'be able to use metadata service'\n      resource_paths: ['/mds_gateway']\n      role_ids: ['mds_user']\n    - id: 'data_upload'\n      description: 'upload raw data files to S3'\n      role_ids: ['file_uploader']\n      resource_paths: ['/data_file']\n    - description: be able to use sower job\n      id: sower\n      resource_paths: [/sower]\n      role_ids: [sower_user]\n    - id: 'mariner_admin'\n      description: 'full access to mariner API'\n      resource_paths: ['/mariner']\n      role_ids: ['mariner_admin']\n    - id: audit_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit\n    - id: audit_login_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit/login\n    - id: audit_presigned_url_reader\n      role_ids:\n      - audit_reader\n      resource_paths:\n      - /services/audit/presigned_url\n    - id: requestor_admin\n      role_ids:\n      - requestor_admin\n      resource_paths:\n      - /programs\n    - id: requestor_reader\n      role_ids:\n      - requestor_reader\n      resource_paths:\n      - /programs\n    - id: requestor_creator\n      role_ids:\n      - requestor_creator\n      resource_paths:\n      - /programs\n    - id: requestor_updater\n      role_ids:\n      - requestor_updater\n      resource_paths:\n      - /programs\n    - id: requestor_deleter\n      role_ids:\n      - requestor_deleter\n      resource_paths:\n      - /programs\n    # Data Access\n\n    # All programs policy\n    - id: 'all_programs_reader'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths: ['/programs']\n\n    # # example if need access to write to storage\n    # - id: 'programs.jnkns-storage_writer'\n    #   description: ''\n    #   role_ids:\n    #     - 'storage_writer'\n    #   resource_paths: ['/programs/jnkns']\n\n    - id: 'programs.jnkns-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/jnkns'\n        - '/gen3/programs/jnkns'\n\n    - id: 'programs.jnkns-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/jnkns'\n        - '/gen3/programs/jnkns'\n\n\n    - id: 'programs.QA-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.QA-admin-no-storage'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.QA-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/QA'\n        - '/gen3/programs/QA'\n\n    - id: 'programs.DEV-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n        - 'storage_writer'\n      resource_paths:\n        - '/programs/DEV'\n        - '/gen3/programs/DEV'\n\n    - id: 'programs.DEV-storage_writer'\n      description: ''\n      role_ids:\n        - 'storage_writer'\n      resource_paths: ['/programs/DEV']\n\n    - id: 'programs.DEV-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/DEV'\n        - '/gen3/programs/DEV'\n\n    - id: 'programs.test-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/test'\n        - '/gen3/programs/test'\n\n    - id: 'programs.test-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/programs/test'\n        - '/gen3/programs/test'\n\n    - id: 'abc-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc'\n\n    - id: 'gen3-admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/gen3'\n\n    - id: 'gen3-hmb-researcher'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_reader'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/gen3'\n\n    - id: 'abc.programs.test_program.projects.test_project1-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program/projects/test_project1'\n\n    - id: 'abc.programs.test_program.projects.test_project2-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program/projects/test_project2'\n\n    - id: 'abc.programs.test_program2.projects.test_project3-viewer'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths:\n        - '/abc/programs/test_program2/projects/test_project3'\n\n    # Open data policies\n    - id: 'authn_open_access'\n      resource_paths: ['/programs/open/projects/authnRequired']\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n    - id: 'full_open_access'\n      resource_paths: ['/programs/open/projects/1000G']\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n    - id: 'open_data_reader'\n      description: ''\n      role_ids:\n        - 'reader'\n        - 'storage_reader'\n      resource_paths: ['/open']\n    - id: 'open_data_admin'\n      description: ''\n      role_ids:\n        - 'creator'\n        - 'reader'\n        - 'updater'\n        - 'deleter'\n        - 'storage_writer'\n        - 'storage_reader'\n      resource_paths: ['/open']\n\n    # Consent Code Policies\n    - id: 'not-for-profit-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NPU'\n\n    - id: 'publication-required-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/PUB'\n\n    - id: 'gru-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n\n    - id: 'gru-cc-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n\n    - id: 'hmb-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n\n    - id: 'poa-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/POA'\n\n    - id: 'ds-lung-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/consents/DS_LungDisease'\n\n    - id: 'ds-chronic-obstructive-pulmonary-disease-researcher'\n      description: ''\n      role_ids:\n        - 'admin'\n      resource_paths:\n        - '/consents/NRES'\n        - '/consents/GRU'\n        - '/consents/GRU_CC'\n        - '/consents/HMB'\n        - '/consents/DS_ChronicObstructivePulmonaryDisease'\n\n    - id: 'services.sheepdog-admin'\n      description: 'CRUD access to programs and projects'\n      role_ids:\n        - 'sheepdog_admin'\n      resource_paths:\n        - '/services/sheepdog/submission/program'\n        - '/services/sheepdog/submission/project'\n\n    # indexd\n    - id: 'indexd_admin'\n      description: 'full access to indexd API'\n      role_ids:\n        - 'indexd_admin'\n      resource_paths:\n        - '/programs'\n        - '/services/indexd/admin'\n    # # TODO resource path '/' is not valid right now in arborist, trying to decide\n    # #      how to handle all resources\n    # - id: 'indexd_admin'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_creator'\n    #     - 'indexd_record_reader'\n    #     - 'indexd_record_updater'\n    #     - 'indexd_delete_record'\n    #     - 'indexd_storage_reader'\n    #     - 'indexd_storage_writer'\n    #   resource_paths: ['/']\n    # - id: 'indexd_record_reader'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_reader'\n    #   resource_paths: ['/']\n    # - id: 'indexd_record_editor'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_record_creator'\n    #     - 'indexd_record_reader'\n    #     - 'indexd_record_updater'\n    #     - 'indexd_delete_record'\n    #   resource_paths: ['/']\n    # - id: 'indexd_storage_reader'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_storage_reader'\n    #   resource_paths: ['/']\n    # - id: 'indexd_storage_editor'\n    #   description: ''\n    #   role_ids:\n    #     - 'indexd_storage_reader'\n    #     - 'indexd_storage_writer'\n    #   resource_paths: ['/']\n\n    # argo\n    - id: argo\n      description: be able to use argo\n      resource_paths: [/argo]\n      role_ids: [argo_user]\n\n  resources:\n    # General Access\n    - name: 'data_file'\n      description: 'data files, stored in S3'\n    - name: 'dashboard'\n      description: 'commons /dashboard'\n    - name: 'mds_gateway'\n      description: 'commons /mds-admin'\n    - name: 'prometheus'\n      description: 'commons /prometheus and /grafana'\n    - name: 'ttyadmin'\n      description: 'commons /ttyadmin'\n    - name: 'workspace'\n    - name: \"sower\"\n    - name: 'mariner'\n      description: 'workflow execution service'\n    - name: argo\n\n    # OLD Data\n    - name: 'programs'\n      subresources:\n        - name: 'open'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: '1000G'\n                - name: 'authnRequired'\n        - name: 'QA'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n        - name: 'DEV'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n        - name: 'jnkns'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'jenkins'\n                - name: 'jenkins2'\n        - name: 'test'\n          subresources:\n            - name: 'projects'\n              subresources:\n                - name: 'test'\n\n    # NEW Data WITH PREFIX\n    - name: 'gen3'\n      subresources:\n        - name: 'programs'\n          subresources:\n            - name: 'QA'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n            - name: 'DEV'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n            - name: 'jnkns'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'jenkins'\n                    - name: 'jenkins2'\n            - name: 'test'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test'\n\n    # consents obtained from DUO and NIH\n    # https://github.com/EBISPOT/DUO\n    # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4721915/\n    - name: 'consents'\n      subresources:\n        - name: 'NRES'\n          description: 'no restriction'\n        - name: 'GRU'\n          description: 'general research use'\n        - name: 'GRU_CC'\n          description: 'general research use and clinical care'\n        - name: 'HMB'\n          description: 'health/medical/biomedical research'\n        - name: 'POA'\n          description: 'population origins or ancestry research'\n        - name: 'NMDS'\n          description: 'no general methods research'\n        - name: 'NPU'\n          description: 'not-for-profit use only'\n        - name: 'PUB'\n          description: 'publication required'\n        - name: 'DS_LungDisease'\n          description: 'disease-specific research for lung disease'\n        - name: 'DS_ChronicObstructivePulmonaryDisease'\n          description: 'disease-specific research for chronic obstructive pulmonary disease'\n\n    - name: 'abc'\n      subresources:\n        - name: 'programs'\n          subresources:\n            - name: 'foo'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'bar'\n            - name: 'test_program'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test_project1'\n                    - name: 'test_project2'\n            - name: 'test_program2'\n              subresources:\n                - name: 'projects'\n                  subresources:\n                    - name: 'test_project3'\n\n\n    # \"Sheepdog admin\" resources\n    - name: 'services'\n      subresources:\n        - name: 'sheepdog'\n          subresources:\n            - name: 'submission'\n              subresources:\n                - name: 'program'\n                - name: 'project'\n        - name: 'indexd'\n          subresources:\n            - name: 'admin'\n            - name: 'bundles'\n        - name: audit\n          subresources:\n            - name: presigned_url\n            - name: login\n\n\n    - name: 'open'\n\n  # action/methods:\n  #     create, read, update, delete, read-storage, write-storage,\n  #     file_upload, access\n  roles:\n    # General Access\n    - id: 'file_uploader'\n      description: 'can upload data files'\n      permissions:\n        - id: 'file_upload'\n          action:\n            service: '*'\n            method: 'file_upload'\n    - id: 'workspace_user'\n      permissions:\n        - id: 'workspace_access'\n          action:\n            service: 'jupyterhub'\n            method: 'access'\n    - id: 'dashboard_user'\n      permissions:\n        - id: 'dashboard_access'\n          action:\n            service: 'dashboard'\n            method: 'access'\n    - id: 'mds_user'\n      permissions:\n        - id: 'mds_access'\n          action:\n            service: 'mds_gateway'\n            method: 'access'\n    - id: 'prometheus_user'\n      permissions:\n        - id: 'prometheus_access'\n          action:\n            service: 'prometheus'\n            method: 'access'\n    - id: 'ttyadmin_user'\n      permissions:\n        - id: 'ttyadmin_access'\n          action:\n            service: 'ttyadmin'\n            method: 'access'\n    - id: 'sower_user'\n      permissions:\n        - id: 'sower_access'\n          action:\n            service: 'job'\n            method: 'access'\n    - id: 'mariner_admin'\n      permissions:\n        - id: 'mariner_access'\n          action:\n            service: 'mariner'\n            method: 'access'\n    - id: audit_reader\n      permissions:\n        - id: audit_reader_action\n          action:\n            service: audit\n            method: read\n\n    # All services\n    - id: 'admin'\n      description: ''\n      permissions:\n        - id: 'admin'\n          action:\n            service: '*'\n            method: '*'\n    - id: 'creator'\n      description: ''\n      permissions:\n        - id: 'creator'\n          action:\n            service: '*'\n            method: 'create'\n    - id: 'reader'\n      description: ''\n      permissions:\n        - id: 'reader'\n          action:\n            service: '*'\n            method: 'read'\n    - id: 'updater'\n      description: ''\n      permissions:\n        - id: 'updater'\n          action:\n            service: '*'\n            method: 'update'\n    - id: 'deleter'\n      description: ''\n      permissions:\n        - id: 'deleter'\n          action:\n            service: '*'\n            method: 'delete'\n    - id: 'storage_writer'\n      description: ''\n      permissions:\n        - id: 'storage_writer'\n          action:\n            service: '*'\n            method: 'write-storage'\n    - id: 'storage_reader'\n      description: ''\n      permissions:\n        - id: 'storage_reader'\n          action:\n            service: '*'\n            method: 'read-storage'\n\n\n    # Sheepdog admin role\n    - id: 'sheepdog_admin'\n      description: 'sheepdog admin role for program project crud'\n      permissions:\n        - id: 'sheepdog_admin_action'\n          action:\n            service: 'sheepdog'\n            method: '*'\n\n\n    # indexd\n    - id: 'indexd_admin'\n      # this only works if indexd.arborist is enabled in manifest!\n      description: 'full access to indexd API'\n      permissions:\n        - id: 'indexd_admin'\n          action:\n            service: 'indexd'\n            method: '*'\n    - id: 'indexd_record_creator'\n      description: ''\n      permissions:\n        - id: 'indexd_record_creator'\n          action:\n            service: 'indexd'\n            method: 'create'\n    - id: 'indexd_record_reader'\n      description: ''\n      permissions:\n        - id: 'indexd_record_reader'\n          action:\n            service: 'indexd'\n            method: 'read'\n    - id: 'indexd_record_updater'\n      description: ''\n      permissions:\n        - id: 'indexd_record_updater'\n          action:\n            service: 'indexd'\n            method: 'update'\n    - id: 'indexd_delete_record'\n      description: ''\n      permissions:\n        - id: 'indexd_delete_record'\n          action:\n            service: 'indexd'\n            method: 'delete'\n    - id: 'indexd_storage_reader'\n      description: ''\n      permissions:\n        - id: 'indexd_storage_reader'\n          action:\n            service: 'indexd'\n            method: 'read-storage'\n    - id: 'indexd_storage_writer'\n      description: ''\n      permissions:\n        - id: 'indexd_storage_writer'\n          action:\n            service: 'indexd'\n            method: 'write-storage'\n\n    # arborist\n    - id: 'arborist_creator'\n      description: ''\n      permissions:\n        - id: 'arborist_creator'\n          action:\n            service: 'arborist'\n            method: 'create'\n    - id: 'arborist_reader'\n      description: ''\n      permissions:\n        - id: 'arborist_reader'\n          action:\n            service: 'arborist'\n            method: 'read'\n    - id: 'arborist_updater'\n      description: ''\n      permissions:\n        - id: 'arborist_updater'\n          action:\n            service: 'arborist'\n            method: 'update'\n    - id: 'arborist_deleter'\n      description: ''\n      permissions:\n        - id: 'arborist_deleter'\n          action:\n            service: 'arborist'\n            method: 'delete'\n\n    # requestor\n    - id: requestor_admin\n      permissions:\n      - id: requestor_admin_action\n        action:\n          service: requestor\n          method: '*'\n    - id: requestor_reader\n      permissions:\n      - id: requestor_reader_action\n        action:\n          service: requestor\n          method: read\n    - id: requestor_creator\n      permissions:\n      - id: requestor_creator_action\n        action:\n          service: requestor\n          method: create\n    - id: requestor_updater\n      permissions:\n      - id: requestor_updater_action\n        action:\n          service: requestor\n          method: update\n    - id: requestor_deleter\n      permissions:\n      - id: requestor_deleter_action\n        action:\n          service: requestor\n          method: delete\n    # argo\n    - id: argo_user\n      permissions:\n        - id: argo_access\n          action:\n            service: argo\n            method: access\n\nclients:\n  basic-test-client:\n    policies:\n    - abc-admin\n    - gen3-admin\n  basic-test-abc-client:\n    policies:\n    - abc-admin\n  wts:\n    policies:\n    - all_programs_reader\n    - workspace\n\nusers:\n  ### BEGIN INTERNS SECTION ###\n  ### END INTERNS SECTION ###\n  qureshi@uchicago.edu:\n    admin: true\n    policies:\n    - data_upload\n    - workspace\n    - dashboard\n    - mds_admin\n    - prometheus\n    - sower\n    - services.sheepdog-admin\n    - programs.QA-admin\n    - programs.test-admin\n    - programs.DEV-admin\n    - programs.jnkns-admin\n    - indexd_admin\n    - ttyadmin\n    projects:\n    - auth_id: QA\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: test\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: DEV\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jenkins\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jenkins2\n      privilege: [create, read, update, delete, upload, read-storage]\n    - auth_id: jnkns\n      privilege: [create, read, update, delete, upload, read-storage]\n"` | USER YAML. Passed in as a multiline string. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"fence"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
+| affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["fence"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["fence"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["fence"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["fence"]}` | Label key for match expression.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["fence"]` | Value for the match expression key.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label.  |
 | autoscaling | map | `{"enabled":false,"maxReplicas":4,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
-| autoscaling.maxReplicas | int | `4` | Maximum number of replicas |
-| autoscaling.minReplicas | int | `1` | Minimum number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
+| autoscaling.maxReplicas | int | `4` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` | Target Memory utilization percentage |
-| env[0].name | string | `"DD_ENABLED"` |  |
-| env[0].valueFrom.configMapKeyRef.key | string | `"dd_enabled"` |  |
-| env[0].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
-| env[0].valueFrom.configMapKeyRef.optional | bool | `true` |  |
-| env[10].name | string | `"PYTHONPATH"` |  |
-| env[10].value | string | `"/var/www/fence"` |  |
-| env[11].name | string | `"GEN3_DEBUG"` |  |
-| env[11].value | string | `"False"` |  |
-| env[12].name | string | `"FENCE_PUBLIC_CONFIG"` |  |
-| env[12].valueFrom.configMapKeyRef.key | string | `"fence-config-public.yaml"` |  |
-| env[12].valueFrom.configMapKeyRef.name | string | `"manifest-fence"` |  |
-| env[12].valueFrom.configMapKeyRef.optional | bool | `true` |  |
-| env[13].name | string | `"PGHOST"` |  |
-| env[13].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| env[13].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| env[13].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[14].name | string | `"PGUSER"` |  |
-| env[14].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| env[14].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| env[14].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[15].name | string | `"PGPASSWORD"` |  |
-| env[15].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| env[15].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| env[15].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[16].name | string | `"PGDB"` |  |
-| env[16].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| env[16].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| env[16].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[17].name | string | `"DBREADY"` |  |
-| env[17].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
-| env[17].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| env[17].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| env[18].name | string | `"DB"` |  |
-| env[18].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
-| env[1].name | string | `"DD_ENV"` |  |
-| env[1].valueFrom.fieldRef.fieldPath | string | `"metadata.labels['tags.datadoghq.com/env']"` |  |
-| env[2].name | string | `"DD_SERVICE"` |  |
-| env[2].valueFrom.fieldRef.fieldPath | string | `"metadata.labels['tags.datadoghq.com/service']"` |  |
-| env[3].name | string | `"DD_VERSION"` |  |
-| env[3].valueFrom.fieldRef.fieldPath | string | `"metadata.labels['tags.datadoghq.com/version']"` |  |
-| env[4].name | string | `"DD_LOGS_INJECTION"` |  |
-| env[4].value | string | `"true"` |  |
-| env[5].name | string | `"DD_PROFILING_ENABLED"` |  |
-| env[5].value | string | `"true"` |  |
-| env[6].name | string | `"DD_TRACE_SAMPLE_RATE"` |  |
-| env[6].value | string | `"1"` |  |
-| env[7].name | string | `"GEN3_UWSGI_TIMEOUT"` |  |
-| env[7].valueFrom.configMapKeyRef.key | string | `"uwsgi-timeout"` |  |
-| env[7].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
-| env[7].valueFrom.configMapKeyRef.optional | bool | `true` |  |
-| env[8].name | string | `"DD_AGENT_HOST"` |  |
-| env[8].valueFrom.fieldRef.fieldPath | string | `"status.hostIP"` |  |
-| env[9].name | string | `"AWS_STS_REGIONAL_ENDPOINTS"` |  |
-| env[9].value | string | `"regional"` |  |
-| fullnameOverride | string | `""` |  |
+| env | list | `[{"name":"DD_ENABLED","valueFrom":{"configMapKeyRef":{"key":"dd_enabled","name":"manifest-global","optional":true}}},{"name":"DD_ENV","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/env']"}}},{"name":"DD_SERVICE","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/service']"}}},{"name":"DD_VERSION","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/version']"}}},{"name":"DD_LOGS_INJECTION","value":"true"},{"name":"DD_PROFILING_ENABLED","value":"true"},{"name":"DD_TRACE_SAMPLE_RATE","value":"1"},{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"FENCE_PUBLIC_CONFIG","valueFrom":{"configMapKeyRef":{"key":"fence-config-public.yaml","name":"manifest-fence","optional":true}}},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"}]` | Environment variables to pass to the container |
+| fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global | map | `{"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
@@ -157,67 +106,23 @@ A Helm chart for gen3 Fence
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
-| image.tag | string | `"master"` | The tag to use for the image. |
-| imagePullSecrets | list | `[]` |  |
-| initEnv[0].name | string | `"PGHOST"` |  |
-| initEnv[0].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| initEnv[0].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| initEnv[0].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[1].name | string | `"PGUSER"` |  |
-| initEnv[1].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| initEnv[1].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| initEnv[1].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[2].name | string | `"PGPASSWORD"` |  |
-| initEnv[2].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| initEnv[2].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| initEnv[2].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[3].name | string | `"PGDB"` |  |
-| initEnv[3].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| initEnv[3].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| initEnv[3].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[4].name | string | `"DBREADY"` |  |
-| initEnv[4].valueFrom.secretKeyRef.key | string | `"dbcreated"` |  |
-| initEnv[4].valueFrom.secretKeyRef.name | string | `"fence-dbcreds"` |  |
-| initEnv[4].valueFrom.secretKeyRef.optional | bool | `false` |  |
-| initEnv[5].name | string | `"DB"` |  |
-| initEnv[5].value | string | `"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"` |  |
-| initEnv[6].name | string | `"PYTHONPATH"` |  |
-| initEnv[6].value | string | `"/var/www/fence"` |  |
-| initEnv[7].name | string | `"FENCE_PUBLIC_CONFIG"` |  |
-| initEnv[7].valueFrom.configMapKeyRef.key | string | `"fence-config-public.yaml"` |  |
-| initEnv[7].valueFrom.configMapKeyRef.name | string | `"manifest-fence"` |  |
-| initEnv[7].valueFrom.configMapKeyRef.optional | bool | `true` |  |
-| initVolumeMounts[0].mountPath | string | `"/var/www/fence/fence-config.yaml"` |  |
-| initVolumeMounts[0].name | string | `"config-volume"` |  |
-| initVolumeMounts[0].readOnly | bool | `true` |  |
-| initVolumeMounts[0].subPath | string | `"fence-config.yaml"` |  |
-| initVolumeMounts[1].mountPath | string | `"/var/www/fence/yaml_merge.py"` |  |
-| initVolumeMounts[1].name | string | `"yaml-merge"` |  |
-| initVolumeMounts[1].readOnly | bool | `true` |  |
-| initVolumeMounts[1].subPath | string | `"yaml_merge.py"` |  |
-| initVolumeMounts[2].mountPath | string | `"/var/www/fence/fence_google_app_creds_secret.json"` |  |
-| initVolumeMounts[2].name | string | `"fence-google-app-creds-secret-volume"` |  |
-| initVolumeMounts[2].readOnly | bool | `true` |  |
-| initVolumeMounts[2].subPath | string | `"fence_google_app_creds_secret.json"` |  |
-| initVolumeMounts[3].mountPath | string | `"/var/www/fence/fence_google_storage_creds_secret.json"` |  |
-| initVolumeMounts[3].name | string | `"fence-google-storage-creds-secret-volume"` |  |
-| initVolumeMounts[3].readOnly | bool | `true` |  |
-| initVolumeMounts[3].subPath | string | `"fence_google_storage_creds_secret.json"` |  |
-| labels."tags.datadoghq.com/env" | string | `"anvilstaging"` |  |
-| labels."tags.datadoghq.com/service" | string | `"fence"` |  |
-| labels."tags.datadoghq.com/version" | float | `2021.12` |  |
-| labels.app | string | `"fence"` |  |
-| labels.authprovider | string | `"yes"` |  |
-| labels.netnolimit | string | `"yes"` |  |
-| labels.public | string | `"yes"` |  |
-| labels.release | string | `"production"` |  |
-| labels.userhelper | string | `"yes"` |  |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| initEnv | list | `[{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"FENCE_PUBLIC_CONFIG","valueFrom":{"configMapKeyRef":{"key":"fence-config-public.yaml","name":"manifest-fence","optional":true}}}]` | Volumes to attach to the init container. |
+| initVolumeMounts | list | `[{"mountPath":"/var/www/fence/fence-config.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"}]` | Volumes to mount to the init container. |
+| labels | map | `{"app":"fence","authprovider":"yes","netnolimit":"yes","public":"yes","release":"production","tags.datadoghq.com/env":"anvilstaging","tags.datadoghq.com/service":"fence","tags.datadoghq.com/version":2021.12,"userhelper":"yes"}` | Labels to add to the pod. |
+| labels.app | string | `"fence"` | Application name. |
+| labels.authprovider | string | `"yes"` | Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.  |
+| labels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
+| labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
+| labels.release | string | `"production"` | Release name. |
+| labels.userhelper | string | `"yes"` | Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes |
 | logo | string | `nil` |  |
-| nameOverride | string | `""` |  |
+| nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{"fsGroup":101}` | Security context for the pod |
@@ -229,7 +134,8 @@ A Helm chart for gen3 Fence
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql.primary.persistence.enabled | bool | `false` |  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true".  Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
 | privacy_policy | string | `nil` |  |
 | replicaCount | int | `1` | Number of desired replicas |
 | resources | map | `{"limits":{"cpu":1,"memory":"2Gi"},"requests":{"cpu":0.3,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -240,84 +146,18 @@ A Helm chart for gen3 Fence
 | resources.requests.cpu | string | `0.3` | The amount of CPU requested |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context for the containers in the pod |
-| selectorLabels.app | string | `"fence"` |  |
-| selectorLabels.release | string | `"production"` |  |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
-| service.port | int | `80` | Port on which the service is exposed |
+| selectorLabels | map | `{"app":"fence","release":"production"}` | Labels to use for selecting the deployment. |
+| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"fence-sa"}` | Service account to use or create. |
+| serviceAccount.annotations | map | `{"eks.amazonaws.com/role-arn":null}` | Annotations to add to the service account. |
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
-| serviceAccount.create | bool | `true` | Whether to create a service account |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| volumeMounts[0].mountPath | string | `"/var/www/fence/local_settings.py"` |  |
-| volumeMounts[0].name | string | `"old-config-volume"` |  |
-| volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"local_settings.py"` |  |
-| volumeMounts[10].mountPath | string | `"/fence/keys/key/jwt_private_key.pem"` |  |
-| volumeMounts[10].name | string | `"fence-jwt-keys"` |  |
-| volumeMounts[10].readOnly | bool | `true` |  |
-| volumeMounts[10].subPath | string | `"jwt_private_key.pem"` |  |
-| volumeMounts[1].mountPath | string | `"/var/www/fence/fence_credentials.json"` |  |
-| volumeMounts[1].name | string | `"json-secret-volume"` |  |
-| volumeMounts[1].readOnly | bool | `true` |  |
-| volumeMounts[1].subPath | string | `"fence_credentials.json"` |  |
-| volumeMounts[2].mountPath | string | `"/var/www/fence/creds.json"` |  |
-| volumeMounts[2].name | string | `"creds-volume"` |  |
-| volumeMounts[2].readOnly | bool | `true` |  |
-| volumeMounts[2].subPath | string | `"creds.json"` |  |
-| volumeMounts[3].mountPath | string | `"/var/www/fence/config_helper.py"` |  |
-| volumeMounts[3].name | string | `"config-helper"` |  |
-| volumeMounts[3].readOnly | bool | `true` |  |
-| volumeMounts[3].subPath | string | `"config_helper.py"` |  |
-| volumeMounts[4].mountPath | string | `"/fence/fence/static/img/logo.svg"` |  |
-| volumeMounts[4].name | string | `"logo-volume"` |  |
-| volumeMounts[4].readOnly | bool | `true` |  |
-| volumeMounts[4].subPath | string | `"logo.svg"` |  |
-| volumeMounts[5].mountPath | string | `"/fence/fence/static/privacy_policy.md"` |  |
-| volumeMounts[5].name | string | `"privacy-policy"` |  |
-| volumeMounts[5].readOnly | bool | `true` |  |
-| volumeMounts[5].subPath | string | `"privacy_policy.md"` |  |
-| volumeMounts[6].mountPath | string | `"/var/www/fence/fence-config.yaml"` |  |
-| volumeMounts[6].name | string | `"config-volume"` |  |
-| volumeMounts[6].readOnly | bool | `true` |  |
-| volumeMounts[6].subPath | string | `"fence-config.yaml"` |  |
-| volumeMounts[7].mountPath | string | `"/var/www/fence/yaml_merge.py"` |  |
-| volumeMounts[7].name | string | `"yaml-merge"` |  |
-| volumeMounts[7].readOnly | bool | `true` |  |
-| volumeMounts[7].subPath | string | `"yaml_merge.py"` |  |
-| volumeMounts[8].mountPath | string | `"/var/www/fence/fence_google_app_creds_secret.json"` |  |
-| volumeMounts[8].name | string | `"fence-google-app-creds-secret-volume"` |  |
-| volumeMounts[8].readOnly | bool | `true` |  |
-| volumeMounts[8].subPath | string | `"fence_google_app_creds_secret.json"` |  |
-| volumeMounts[9].mountPath | string | `"/var/www/fence/fence_google_storage_creds_secret.json"` |  |
-| volumeMounts[9].name | string | `"fence-google-storage-creds-secret-volume"` |  |
-| volumeMounts[9].readOnly | bool | `true` |  |
-| volumeMounts[9].subPath | string | `"fence_google_storage_creds_secret.json"` |  |
-| volumes[0].name | string | `"old-config-volume"` |  |
-| volumes[0].secret.secretName | string | `"fence-secret"` |  |
-| volumes[10].configMap.name | string | `"fence-yaml-merge"` |  |
-| volumes[10].configMap.optional | bool | `true` |  |
-| volumes[10].name | string | `"yaml-merge"` |  |
-| volumes[1].name | string | `"json-secret-volume"` |  |
-| volumes[1].secret.optional | bool | `true` |  |
-| volumes[1].secret.secretName | string | `"fence-json-secret"` |  |
-| volumes[2].name | string | `"creds-volume"` |  |
-| volumes[2].secret.secretName | string | `"fence-creds"` |  |
-| volumes[3].configMap.name | string | `"config-helper"` |  |
-| volumes[3].configMap.optional | bool | `true` |  |
-| volumes[3].name | string | `"config-helper"` |  |
-| volumes[4].configMap.name | string | `"logo-config"` |  |
-| volumes[4].name | string | `"logo-volume"` |  |
-| volumes[5].name | string | `"config-volume"` |  |
-| volumes[5].secret.secretName | string | `"fence-config"` |  |
-| volumes[6].name | string | `"fence-google-app-creds-secret-volume"` |  |
-| volumes[6].secret.secretName | string | `"fence-google-app-creds-secret"` |  |
-| volumes[7].name | string | `"fence-google-storage-creds-secret-volume"` |  |
-| volumes[7].secret.secretName | string | `"fence-google-storage-creds-secret"` |  |
-| volumes[8].name | string | `"fence-jwt-keys"` |  |
-| volumes[8].secret.secretName | string | `"fence-jwt-keys"` |  |
-| volumes[9].configMap.name | string | `"privacy-policy"` |  |
-| volumes[9].name | string | `"privacy-policy"` |  |
+| volumeMounts | list | `[{"mountPath":"/var/www/fence/local_settings.py","name":"old-config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/var/www/fence/fence_credentials.json","name":"json-secret-volume","readOnly":true,"subPath":"fence_credentials.json"},{"mountPath":"/var/www/fence/creds.json","name":"creds-volume","readOnly":true,"subPath":"creds.json"},{"mountPath":"/var/www/fence/config_helper.py","name":"config-helper","readOnly":true,"subPath":"config_helper.py"},{"mountPath":"/fence/fence/static/img/logo.svg","name":"logo-volume","readOnly":true,"subPath":"logo.svg"},{"mountPath":"/fence/fence/static/privacy_policy.md","name":"privacy-policy","readOnly":true,"subPath":"privacy_policy.md"},{"mountPath":"/var/www/fence/fence-config.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"},{"mountPath":"/fence/keys/key/jwt_private_key.pem","name":"fence-jwt-keys","readOnly":true,"subPath":"jwt_private_key.pem"}]` | Volumes to mount to the container. |
+| volumes | list | `[{"name":"old-config-volume","secret":{"secretName":"fence-secret"}},{"name":"json-secret-volume","secret":{"optional":true,"secretName":"fence-json-secret"}},{"name":"creds-volume","secret":{"secretName":"fence-creds"}},{"configMap":{"name":"config-helper","optional":true},"name":"config-helper"},{"configMap":{"name":"logo-config"},"name":"logo-volume"},{"name":"config-volume","secret":{"secretName":"fence-config"}},{"name":"fence-google-app-creds-secret-volume","secret":{"secretName":"fence-google-app-creds-secret"}},{"name":"fence-google-storage-creds-secret-volume","secret":{"secretName":"fence-google-storage-creds-secret"}},{"name":"fence-jwt-keys","secret":{"secretName":"fence-jwt-keys"}},{"configMap":{"name":"privacy-policy"},"name":"privacy-policy"},{"configMap":{"name":"fence-yaml-merge","optional":true},"name":"yaml-merge"}]` | Volumes to attach to the container. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

@@ -1,6 +1,6 @@
 # sheepdog
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Sheepdog Service
 
@@ -15,30 +15,24 @@ A Helm chart for gen3 Sheepdog Service
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"sheepdog"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
-| arboristUrl | string | `"http://arborist-service.default.svc.cluster.local"` |  |
+| affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["sheepdog"]}` | Label key for match expression.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["sheepdog"]` | Value for the match expression key.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label.  |
+| arboristUrl | string | `"http://arborist-service.default.svc.cluster.local"` | URL for the arborist service |
 | authNamespace | string | `"default"` |  |
-| automountServiceAccountToken | bool | `false` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| dataDog.enabled | bool | `false` |  |
-| dataDog.env | string | `"dev"` |  |
-| ddEnv | string | `nil` |  |
-| ddLogsInjection | string | `nil` |  |
-| ddProfilingEnabled | string | `nil` |  |
-| ddService | string | `nil` |  |
-| ddTraceAgentHostname | string | `nil` |  |
-| ddTraceEnabled | string | `nil` |  |
-| ddTraceSampleRate | string | `nil` |  |
-| ddVersion | string | `nil` |  |
-| dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` |  |
-| fenceUrl | string | `"http://fence-service"` |  |
+| automountServiceAccountToken | bool | `false` | Automount the default service account token |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
+| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| dataDog | bool | `{"enabled":false,"env":"dev"}` | Whether Datadog is enabled. |
+| dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
+| fenceUrl | string | `"http://fence-service"` | URL for the fence service |
 | global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
@@ -64,20 +58,14 @@ A Helm chart for gen3 Sheepdog Service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/sheepdog"` |  |
-| image.tag | string | `"helm-test"` |  |
-| indexdUrl | string | `"http://indexd-service"` |  |
-| livenessProbe.httpGet.path | string | `"/_status?timeout=20"` |  |
-| livenessProbe.httpGet.port | int | `80` |  |
-| livenessProbe.initialDelaySeconds | int | `30` |  |
-| livenessProbe.periodSeconds | int | `60` |  |
-| livenessProbe.timeoutSeconds | int | `30` |  |
-| podAnnotations."gen3.io/network-ingress" | string | `"sheepdog"` |  |
-| ports[0].containerPort | int | `80` |  |
-| ports[1].containerPort | int | `443` |  |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/sheepdog","tag":"helm-test"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/sheepdog"` | Docker repository. |
+| image.tag | string | `"helm-test"` | Overrides the image tag whose default is the chart appVersion. |
+| indexdUrl | string | `"http://indexd-service"` | URL for the indexd service |
+| podAnnotations | map | `{"gen3.io/network-ingress":"sheepdog"}` | Annotations to add to the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
@@ -86,37 +74,40 @@ A Helm chart for gen3 Sheepdog Service
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql.primary.persistence.enabled | bool | `false` |  |
-| readinessProbe.httpGet.path | string | `"/_status?timeout=2"` |  |
-| readinessProbe.httpGet.port | int | `80` |  |
-| readinessProbe.initialDelaySeconds | int | `30` |  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true".  Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
 | releaseLabel | string | `"production"` |  |
-| replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"512Mi"` |  |
-| resources.requests.cpu | float | `0.3` |  |
-| resources.requests.memory | string | `"12Mi"` |  |
-| revisionHistoryLimit | int | `2` |  |
-| secrets.fence.database | string | `"fence"` |  |
-| secrets.fence.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` |  |
-| secrets.fence.password | string | `"postgres"` |  |
-| secrets.fence.user | string | `"postgres"` |  |
-| secrets.gdcapi.secretKey | string | `nil` |  |
-| secrets.indexd.password | string | `"postgres"` |  |
-| secrets.sheepdog.database | string | `"sheepdog"` |  |
-| secrets.sheepdog.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` |  |
-| secrets.sheepdog.password | string | `"postgres"` |  |
-| secrets.sheepdog.user | string | `"postgres"` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| strategy.rollingUpdate.maxSurge | int | `1` |  |
-| strategy.rollingUpdate.maxUnavailable | int | `0` |  |
-| strategy.type | string | `"RollingUpdate"` |  |
-| terminationGracePeriodSeconds | int | `50` |  |
-| volumeMounts[0].mountPath | string | `"/var/www/sheepdog/wsgi.py"` |  |
-| volumeMounts[0].name | string | `"config-volume"` |  |
-| volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"wsgi.py"` |  |
+| replicaCount | int | `1` | Number of replicas for the deployment. |
+| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.3,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.3,"memory":"12Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
+| revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| secrets | map | `{"fence":{"database":"fence","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"},"gdcapi":{"secretKey":null},"indexd":{"password":"postgres"},"sheepdog":{"database":"sheepdog","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}}` | Values for sheepdog secret. |
+| secrets.fence | map | `{"database":"fence","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}` | Values for sheepdog's access to the fence database. |
+| secrets.fence.database | string | `"fence"` | Database name for fence's db.  |
+| secrets.fence.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for fence's db.  |
+| secrets.fence.password | string | `"postgres"` | Password to fence's db.  |
+| secrets.fence.user | string | `"postgres"` | User for fence's db.  |
+| secrets.gdcapi.secretKey | string | `nil` | GDCAPI token. |
+| secrets.indexd | map | `{"password":"postgres"}` | Values for sheepdog's access to indexd database. |
+| secrets.indexd.password | string | `"postgres"` | Password to indexd's db.  |
+| secrets.sheepdog | map | `{"database":"sheepdog","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}` | Values for sheepdog's database. |
+| secrets.sheepdog.database | string | `"sheepdog"` | Database name for sheepdog's db.  |
+| secrets.sheepdog.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for sheepdog's db.  |
+| secrets.sheepdog.password | string | `"postgres"` | Password to sheepdog's db.  |
+| secrets.sheepdog.user | string | `"postgres"` | User for sheepdog's db.  |
+| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `80` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
+| strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
+| strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| terminationGracePeriodSeconds | int | `50` | sheepdog transactions take forever - try to let the complete before termination |
+| volumeMounts | list | `[{"mountPath":"/var/www/sheepdog/wsgi.py","name":"config-volume","readOnly":true,"subPath":"wsgi.py"}]` | Volumes to mount to the container. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

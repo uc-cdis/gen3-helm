@@ -1,6 +1,6 @@
 # arborist
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 arborist
 
@@ -16,7 +16,7 @@ A Helm chart for gen3 arborist
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity rules to apply to the pod |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling settings |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
 | autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
@@ -45,7 +45,7 @@ A Helm chart for gen3 arborist
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/arborist","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
@@ -64,23 +64,24 @@ A Helm chart for gen3 arborist
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql.primary.persistence.enabled | bool | `false` |  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true".  Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits |
-| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | Resource limits |
-| resources.limits.cpu | string | `1` | CPU limit |
-| resources.limits.memory | string | `"512Mi"` | Memory limit |
-| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | Resource requests |
-| resources.requests.cpu | string | `0.1` | CPU request |
-| resources.requests.memory | string | `"12Mi"` | Memory request |
+| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context to apply to the container |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service settings |
-| service.port | int | `80` | The port number that the service exposes |
-| service.type | string | `"ClusterIP"` | The type of the Kubernetes service |
+| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `80` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
-| serviceAccount.name | string | `""` | The name of the service account to use. |
+| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
 | volumeMounts | list | `[]` | Volume mounts to attach to the container |
 | volumes | list | `[]` | Volumes to attach to the pod |
