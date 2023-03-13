@@ -9,7 +9,7 @@ dependencies:
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../arborist"
   condition: arborist.enabled
 - name: argo-wrapper
@@ -17,7 +17,7 @@ dependencies:
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../audit"
   condition: audit.enabled
 - name: aws-es-proxy
@@ -28,7 +28,7 @@ dependencies:
   version: 0.1.3
   repository: file://../common
 - name: fence
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
@@ -40,7 +40,7 @@ dependencies:
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
@@ -48,11 +48,11 @@ dependencies:
   repository: "file://../manifestservice"
   condition: manifestservice.enabled
 - name: metadata
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../metadata"
   condition: metadata.enabled
 - name: peregrine
-  version: "0.1.3"
+  version: "0.1.5"
   repository: "file://../peregrine"
   condition: peregrine.enabled
 - name: pidgin
@@ -60,19 +60,19 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.1"
+  version: "0.1.2"
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.3"
+  version: "0.1.4"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -80,7 +80,7 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
-  version: "0.1.4"
+  version: "0.1.5"
   repository: "file://../wts"
   condition: wts.enabled
 
@@ -107,7 +107,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.4
+version: 0.1.5
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
