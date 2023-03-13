@@ -31,11 +31,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../indexd | indexd | 0.1.4 |
 | file://../manifestservice | manifestservice | 0.1.2 |
 | file://../metadata | metadata | 0.1.4 |
-| file://../peregrine | peregrine | 0.1.4 |
+| file://../peregrine | peregrine | 0.1.5 |
 | file://../pidgin | pidgin | 0.1.3 |
-| file://../portal | portal | 0.1.1 |
+| file://../portal | portal | 0.1.2 |
 | file://../requestor | requestor | 0.1.4 |
-| file://../revproxy | revproxy | 0.1.3 |
+| file://../revproxy | revproxy | 0.1.4 |
 | file://../sheepdog | sheepdog | 0.1.4 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.1 |
 | file://../wts | wts | 0.1.5 |
