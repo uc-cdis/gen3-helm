@@ -55,7 +55,7 @@ A Helm chart for gen3 data-portal
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal-prebuilt","tag":"brh.data-commons.org-feat-develop"}` | Docker image information. |
+| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/data-portal-prebuilt"` | Docker repository. |
 | image.tag | string | `"brh.data-commons.org-feat-develop"` | Overrides the image tag whose default is the chart appVersion. |
@@ -69,13 +69,12 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | portalApp | string | `"gitops"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":2,"memory":"4096Mi"},"requests":{"cpu":0.6,"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":2,"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `2` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"cpu":0.6,"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"4096Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.6,"memory":"512Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.6` | The amount of CPU requested |
-| resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
+| resources.requests | map | `{"cpu":2.0,"memory":"4096Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `2.0` | The amount of CPU requested |
+| resources.requests.memory | string | `"4096Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |
 | selectorLabels | map | `{"app":"portal"}` | Labels to use for selecting the deployment. |

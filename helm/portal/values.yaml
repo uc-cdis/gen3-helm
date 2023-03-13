@@ -62,11 +62,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: quay.io/cdis/data-portal-prebuilt
+  repository: quay.io/cdis/data-portal
   # -- (string) Docker pull policy.
   pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "brh.data-commons.org-feat-develop"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -179,13 +179,11 @@ resources:
   # -- (map) The amount of resources that the container requests
   requests:
     # -- (string) The amount of CPU requested
-    cpu: 0.6
+    cpu: 2.0
     # -- (string) The amount of memory requested
-    memory: 512Mi
+    memory: 4096Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 2.0
     # -- (string) The maximum amount of memory the container can use
     memory: 4096Mi
 

@@ -37,6 +37,7 @@ FROM nginx:latest
 
 COPY overrides/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /data-portal/build/*.js /data-portal/build/index.html /usr/share/nginx/html/
+COPY --from=builder /data-portal/data /usr/share/nginx/html/data
 COPY --from=builder /data-portal/src/img/ /usr/share/nginx/html/src/img/
 COPY --from=builder /data-portal/src/css/ /usr/share/nginx/html/src/css/
 
