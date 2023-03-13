@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -53,8 +53,8 @@ A Helm chart for gen3 data-portal
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"quay.io/cdis/data-portal-prebuilt"` |  |
-| image.tag | string | `"brh.data-commons.org-feat-develop"` |  |
+| image.repository | string | `"quay.io/cdis/data-portal"` |  |
+| image.tag | string | `"master"` |  |
 | imagePullSecrets | list | `[]` |  |
 | labels.app | string | `"portal"` |  |
 | labels.public | string | `"yes"` |  |
@@ -64,10 +64,9 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | object | `{}` |  |
 | portalApp | string | `"gitops"` |  |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `2` |  |
 | resources.limits.memory | string | `"4096Mi"` |  |
-| resources.requests.cpu | float | `0.6` |  |
-| resources.requests.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | float | `2` |  |
+| resources.requests.memory | string | `"4096Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | securityContext | object | `{}` |  |
 | selectorLabels.app | string | `"portal"` |  |

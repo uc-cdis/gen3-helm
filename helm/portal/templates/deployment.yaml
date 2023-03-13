@@ -52,7 +52,8 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
-            # TODO: re-add resources
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           ports:
             - containerPort: 80
             - containerPort: 443
