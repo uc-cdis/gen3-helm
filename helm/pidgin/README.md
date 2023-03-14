@@ -8,7 +8,7 @@ A Helm chart for gen3 Pidgin Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.3 |
+| file://../common | common | 0.1.4 |
 
 ## Values
 

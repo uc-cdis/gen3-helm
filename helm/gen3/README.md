@@ -18,27 +18,27 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.3 |
-| file://../arborist | arborist | 0.1.4 |
-| file://../argo-wrapper | argo-wrapper | 0.1.0 |
-| file://../audit | audit | 0.1.4 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.2 |
-| file://../common | common | 0.1.3 |
+| file://../ambassador | ambassador | 0.1.4 |
+| file://../arborist | arborist | 0.1.5 |
+| file://../argo-wrapper | argo-wrapper | 0.1.1 |
+| file://../audit | audit | 0.1.5 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.3 |
+| file://../common | common | 0.1.4 |
 | file://../elasticsearch | elasticsearch | 0.1.1 |
-| file://../fence | fence | 0.1.4 |
-| file://../guppy | guppy | 0.1.3 |
-| file://../hatchery | hatchery | 0.1.2 |
-| file://../indexd | indexd | 0.1.4 |
-| file://../manifestservice | manifestservice | 0.1.2 |
-| file://../metadata | metadata | 0.1.4 |
-| file://../peregrine | peregrine | 0.1.5 |
-| file://../pidgin | pidgin | 0.1.3 |
-| file://../portal | portal | 0.1.2 |
-| file://../requestor | requestor | 0.1.4 |
-| file://../revproxy | revproxy | 0.1.4 |
-| file://../sheepdog | sheepdog | 0.1.4 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.1 |
-| file://../wts | wts | 0.1.5 |
+| file://../fence | fence | 0.1.5 |
+| file://../guppy | guppy | 0.1.4 |
+| file://../hatchery | hatchery | 0.1.3 |
+| file://../indexd | indexd | 0.1.5 |
+| file://../manifestservice | manifestservice | 0.1.3 |
+| file://../metadata | metadata | 0.1.5 |
+| file://../peregrine | peregrine | 0.1.6 |
+| file://../pidgin | pidgin | 0.1.4 |
+| file://../portal | portal | 0.1.3 |
+| file://../requestor | requestor | 0.1.5 |
+| file://../revproxy | revproxy | 0.1.5 |
+| file://../sheepdog | sheepdog | 0.1.5 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.2 |
+| file://../wts | wts | 0.1.6 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
