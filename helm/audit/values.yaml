@@ -70,7 +70,7 @@ postgres:
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data. 
+      # -- (bool) Option to persist the dbs data.
       enabled: false
 
 # -- (int) Number of desired replicas
@@ -171,7 +171,7 @@ labels:
   app: audit
   # -- (string) Release name.
   release: production
-  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors. 
+  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.
   authprovider: "yes"
   # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
   netnolimit: "yes"
@@ -184,21 +184,21 @@ labels:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
     # -- (int) Weight value for preferred scheduling. 
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - audit
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container
@@ -225,13 +225,13 @@ initVolumeMounts: []
 initEnv: {}
 
 server:
-  # -- (bool) Whether to pull logs from sqs queue. 
+  # -- (bool) Whether to pull logs from sqs queue.
   pull_from_queue: false
-  # -- (bool) Whether to enable or disable debug mode. 
+  # -- (bool) Whether to enable or disable debug mode.
   debug: false
   # -- (map) AWS SQS queue information.
   sqs:
-    # -- (string) SQS queue AWS region. 
+    # -- (string) SQS queue AWS region.
     region: "us-east-1"
     # -- (string) The URL for the SQS queue. 
     url: "http://sqs.com"

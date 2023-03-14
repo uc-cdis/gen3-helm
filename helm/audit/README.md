@@ -16,12 +16,12 @@ A Helm chart for Kubernetes
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling.  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["audit"]}` | Label key for match expression.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["audit"]}` | Label key for match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["audit"]` | Value for the match expression key.  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["audit"]` | Value for the match expression key. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | api.QUERY_PAGE_SIZE | int | `1000` | The maximum number of entires the query endpoint will return. |
 | api.QUERY_TIMEBOX_MAX_DAYS | int | `nil` | Amount to time-box queries.  |
 | api.QUERY_USERNAMES | bool | `true` | Whether to return usernames in query responses and allow querying by username. |
@@ -64,7 +64,7 @@ A Helm chart for Kubernetes
 | initVolumeMounts | list | `[]` | Volumes to mount to the init container. |
 | labels | map | `{"app":"audit","authprovider":"yes","netnolimit":"yes","public":"yes","release":"production","tags.datadoghq.com/service":"audit","userhelper":"yes"}` | Labels to add to the pod. |
 | labels.app | string | `"audit"` | Application name. |
-| labels.authprovider | string | `"yes"` | Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.  |
+| labels.authprovider | string | `"yes"` | Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors. |
 | labels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
 | labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
 | labels.release | string | `"production"` | Release name. |
@@ -82,7 +82,7 @@ A Helm chart for Kubernetes
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
-| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | replicaCount | int | `1` | Number of desired replicas |
 | resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
@@ -93,10 +93,10 @@ A Helm chart for Kubernetes
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | server.AWS_CREDENTIALS | map | `{}` | AWS credentials to access SQS queue. |
-| server.debug | bool | `false` | Whether to enable or disable debug mode.  |
-| server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue.  |
+| server.debug | bool | `false` | Whether to enable or disable debug mode. |
+| server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
 | server.sqs | map | `{"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
-| server.sqs.region | string | `"us-east-1"` | SQS queue AWS region.  |
+| server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue.  |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
