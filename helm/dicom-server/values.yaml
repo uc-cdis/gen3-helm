@@ -58,15 +58,15 @@ secrets:
   enableStorage: true
   # -- (string) Port for Postgres.
   port: "5432"
-  # -- (string) Hostname for postgres server. 
+  # -- (string) Hostname for postgres server.
   host: postgres-postgresql.postgres.svc.cluster.local
   # -- (string) Database name for postgres.
   dataBase: postgres
   # -- (string) Username for postgres.
   userName: postgres
-  # -- (string) Password for Postgres. 
+  # -- (string) Password for Postgres.
   password: postgres
-  # -- (int) The number of connections from the index plugin to the PostgreSQL database. 
+  # -- (int) The number of connections from the index plugin to the PostgreSQL database.
   indexConnectionsCount: 5
-  # -- (bool) Whether to lock the database. 
+  # -- (bool) Whether to lock the database.
   lock: false

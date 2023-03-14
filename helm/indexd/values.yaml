@@ -76,12 +76,12 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data. 
+      # -- (bool) Option to persist the dbs data.
       enabled: false
 
 # -- (int) Number of desired replicas

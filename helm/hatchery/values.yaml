@@ -156,13 +156,13 @@ hatchery:
     env:
       NAMESPACE: "{{ .Release.Namespace }}"
       HOSTNAME: "{{ .Values.global.hostname }}"
-    # -- (list) Arguments to pass to the sidecare container. 
+    # -- (list) Arguments to pass to the sidecare container.
     args: []
     # -- (list) Commands to run for the sidecar container.
     command:
     - "/bin/bash"
     - "./sidecar.sh"
-    # -- (list) Commands that are run before the container is stopped. 
+    # -- (list) Commands that are run before the container is stopped.
     lifecycle-pre-stop:
     - su
     - "-c"

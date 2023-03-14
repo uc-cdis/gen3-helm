@@ -23,10 +23,10 @@ A Helm chart for gen3 Dicom Server
 | secrets.dataBase | string | `"postgres"` | Database name for postgres. |
 | secrets.enableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
 | secrets.enableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
-| secrets.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Hostname for postgres server.  |
-| secrets.indexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database.  |
-| secrets.lock | bool | `false` | Whether to lock the database.  |
-| secrets.password | string | `"postgres"` | Password for Postgres.  |
+| secrets.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Hostname for postgres server. |
+| secrets.indexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database. |
+| secrets.lock | bool | `false` | Whether to lock the database. |
+| secrets.password | string | `"postgres"` | Password for Postgres. |
 | secrets.port | string | `"5432"` | Port for Postgres. |
 | secrets.userName | string | `"postgres"` | Username for postgres. |
 | service | map | `{"port":80,"targetport":8042}` | Kubernetes service information. |

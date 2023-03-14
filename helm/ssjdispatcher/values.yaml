@@ -134,18 +134,18 @@ podSecurityContext:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - ssjdispatcher
         # -- (string) Value for topology key label. 
@@ -211,7 +211,7 @@ ssjcreds:
   jobPattern: "s3://test-12345678901234-upload/*"
   # -- (string) Indexd service URL.
   jobUrl: "http://indexd-service/index"
-  # -- (string) Name of the user the job will run with. 
+  # -- (string) Name of the user the job will run with.
   jobUser: "ssj"
   # -- (string) Password for the job.
   jobPassword: "replace_with_password"
@@ -223,7 +223,7 @@ ssjcreds:
   metadataserviceUrl: "http://revproxy-service/mds"
   # -- (string) Username for the metadata service. 
   metadataserviceUsername: "gateway"
-  # -- (string) Password for the metadata service. 
+  # -- (string) Password for the metadata service.
   metadataservicePassword: "replace_with_password"
 
 # -- (map) Service account to use or create.

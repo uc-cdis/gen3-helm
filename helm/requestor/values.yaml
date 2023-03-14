@@ -76,7 +76,7 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
@@ -121,21 +121,21 @@ dataDog:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - requestor
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (bool) Automount the default service account token
@@ -179,7 +179,7 @@ resources:
 # Init Container
 # -- (string) Name of the init container.
 initContainerName: requestor-db-migrate
-# -- (map) Resource limits for the init container. 
+# -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
@@ -189,7 +189,7 @@ initResources:
     memory: 512Mi
 # -- (list) Command to run for the init container.
 command: ["/bin/sh"]
-# -- (list) Arguments to pass to the init container. 
+# -- (list) Arguments to pass to the init container.
 args:
   - "-c"
   - |

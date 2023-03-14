@@ -203,7 +203,7 @@ strategy:
 
 userhelperEnabled: false
 
-# -- (map) Configuration for depricated revproxy service ELB. 
+# -- (map) Configuration for depricated revproxy service ELB.
 revproxyElb:
   sslCert: ""
   targetPortHTTPS: 443

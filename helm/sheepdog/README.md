@@ -16,12 +16,12 @@ A Helm chart for gen3 Sheepdog Service
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred.  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling.  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["sheepdog"]}` | Label key for match expression.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["sheepdog"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["sheepdog"]}` | Label key for match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["sheepdog"]` | Value for the match expression key.  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["sheepdog"]` | Value for the match expression key. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | arboristUrl | string | `"http://arborist-service.default.svc.cluster.local"` | URL for the arborist service |
 | authNamespace | string | `"default"` |  |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
@@ -74,8 +74,8 @@ A Helm chart for gen3 Sheepdog Service
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true".  Disable persistence by default so we can spin up and down ephemeral environments |
-| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.3,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -88,18 +88,18 @@ A Helm chart for gen3 Sheepdog Service
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | secrets | map | `{"fence":{"database":"fence","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"},"gdcapi":{"secretKey":null},"indexd":{"password":"postgres"},"sheepdog":{"database":"sheepdog","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}}` | Values for sheepdog secret. |
 | secrets.fence | map | `{"database":"fence","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}` | Values for sheepdog's access to the fence database. |
-| secrets.fence.database | string | `"fence"` | Database name for fence's db.  |
-| secrets.fence.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for fence's db.  |
-| secrets.fence.password | string | `"postgres"` | Password to fence's db.  |
-| secrets.fence.user | string | `"postgres"` | User for fence's db.  |
+| secrets.fence.database | string | `"fence"` | Database name for fence's db. |
+| secrets.fence.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for fence's db. |
+| secrets.fence.password | string | `"postgres"` | Password to fence's db. |
+| secrets.fence.user | string | `"postgres"` | User for fence's db. |
 | secrets.gdcapi.secretKey | string | `nil` | GDCAPI token. |
 | secrets.indexd | map | `{"password":"postgres"}` | Values for sheepdog's access to indexd database. |
-| secrets.indexd.password | string | `"postgres"` | Password to indexd's db.  |
+| secrets.indexd.password | string | `"postgres"` | Password to indexd's db. |
 | secrets.sheepdog | map | `{"database":"sheepdog","host":"postgres-postgresql.postgres.svc.cluster.local","password":"postgres","user":"postgres"}` | Values for sheepdog's database. |
-| secrets.sheepdog.database | string | `"sheepdog"` | Database name for sheepdog's db.  |
-| secrets.sheepdog.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for sheepdog's db.  |
-| secrets.sheepdog.password | string | `"postgres"` | Password to sheepdog's db.  |
-| secrets.sheepdog.user | string | `"postgres"` | User for sheepdog's db.  |
+| secrets.sheepdog.database | string | `"sheepdog"` | Database name for sheepdog's db. |
+| secrets.sheepdog.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Host for sheepdog's db. |
+| secrets.sheepdog.password | string | `"postgres"` | Password to sheepdog's db. |
+| secrets.sheepdog.user | string | `"postgres"` | User for sheepdog's db. |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

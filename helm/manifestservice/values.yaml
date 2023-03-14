@@ -54,7 +54,7 @@ labels:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
     # -- (int) Weight value for preferred scheduling. 
     - weight: 100
@@ -65,10 +65,10 @@ affinity:
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - manifestservice
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (bool) Automount the default service account token

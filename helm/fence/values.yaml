@@ -68,7 +68,7 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
@@ -172,7 +172,7 @@ labels:
   app: fence
   # -- (string) Release name.
   release: production
-  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors. 
+  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.
   authprovider: "yes"
   # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
   netnolimit: "yes"
@@ -187,7 +187,7 @@ labels:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
     # -- (int) Weight value for preferred scheduling. 
     - weight: 100
@@ -198,7 +198,7 @@ affinity:
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - fence
         # -- (string) Value for topology key label. 

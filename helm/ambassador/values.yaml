@@ -84,7 +84,7 @@ resources:
 autoscaling:
   # -- (bool) Whether autoscaling is enabled or not
   enabled: false
-  # -- (int) The minimum number of replicas to scale down to 
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
   # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 10

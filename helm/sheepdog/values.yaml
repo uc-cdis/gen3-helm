@@ -76,12 +76,12 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true". 
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data. 
+      # -- (bool) Option to persist the dbs data.
       enabled: false
 
 # Deployment
@@ -124,21 +124,21 @@ dataDog:
 # -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
-    # -- (map) Option for scheduling to be required or preferred. 
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
-            # -- (list) Value for the match expression key. 
+            # -- (list) Value for the match expression key.
             values:
             - sheepdog
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (bool) Automount the default service account token
@@ -202,28 +202,28 @@ service:
 secrets:
   # -- (map) Values for sheepdog's access to the fence database.
   fence:
-    # -- (string) Host for fence's db. 
+    # -- (string) Host for fence's db.
     host: postgres-postgresql.postgres.svc.cluster.local
-    # -- (string) User for fence's db. 
+    # -- (string) User for fence's db.
     user: postgres
-    # -- (string) Password to fence's db. 
+    # -- (string) Password to fence's db.
     password: postgres
-    # -- (string) Database name for fence's db. 
+    # -- (string) Database name for fence's db.
     database: fence
   # -- (map) Values for sheepdog's database.
   sheepdog:
-    # -- (string) Host for sheepdog's db. 
+    # -- (string) Host for sheepdog's db.
     host: postgres-postgresql.postgres.svc.cluster.local
-    # -- (string) Password to sheepdog's db. 
+    # -- (string) Password to sheepdog's db.
     password: postgres
-    # -- (string) User for sheepdog's db. 
+    # -- (string) User for sheepdog's db.
     user: postgres
-    # -- (string) Database name for sheepdog's db. 
+    # -- (string) Database name for sheepdog's db.
     database: sheepdog
   gdcapi:
     # -- (string) GDCAPI token.
     secretKey:
   # -- (map) Values for sheepdog's access to indexd database.
   indexd:
-    # -- (string) Password to indexd's db. 
+    # -- (string) Password to indexd's db.
     password: postgres

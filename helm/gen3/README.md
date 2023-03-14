@@ -45,30 +45,30 @@ Helm chart to deploy Gen3 Data Commons
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ambassador | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for ambassador chart.  |
-| ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart.  |
+| ambassador | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for ambassador chart. |
+| ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart. |
 | ambassador.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | ambassador.image.repository | string | `nil` | The Docker image repository for the ambassador service. |
 | ambassador.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| arborist | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for arborist chart.  |
-| arborist.enabled | bool | `true` | Whether to deploy the arborist subchart.  |
+| arborist | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for arborist chart. |
+| arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | arborist.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | arborist.image.repository | string | `nil` | The Docker image repository for the arborist service. |
 | arborist.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| argo-wrapper | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for argo-wrapper chart.  |
-| argo-wrapper.enabled | bool | `true` | Whether to deploy the argo-wrapper subchart.  |
+| argo-wrapper | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for argo-wrapper chart. |
+| argo-wrapper.enabled | bool | `true` | Whether to deploy the argo-wrapper subchart. |
 | argo-wrapper.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | argo-wrapper.image.repository | string | `nil` | The Docker image repository for the argo-wrapper service. |
 | argo-wrapper.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| audit | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for audit chart.  |
-| audit.enabled | bool | `true` | Whether to deploy the audit subchart.  |
+| audit | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for audit chart. |
+| audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
 | audit.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | audit.image.repository | string | `nil` | The Docker image repository for the audit service. |
 | audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| aws-es-proxy | map | `{"enabled":false}` | Configurations for aws-es-proxy chart.  |
-| aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart.  |
-| fence | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for fence chart.  |
-| fence.enabled | bool | `true` | Whether to deploy the fence subchart.  |
+| aws-es-proxy | map | `{"enabled":false}` | Configurations for aws-es-proxy chart. |
+| aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
+| fence | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for fence chart. |
+| fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
@@ -98,55 +98,55 @@ Helm chart to deploy Gen3 Data Commons
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| guppy | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for guppy chart.  |
-| guppy.enabled | bool | `false` | Whether to deploy the guppy subchart.  |
+| guppy | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for guppy chart. |
+| guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | guppy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | guppy.image.repository | string | `nil` | The Docker image repository for the guppy service. |
 | guppy.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| hatchery | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for hatchery chart.  |
-| hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart.  |
+| hatchery | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for hatchery chart. |
+| hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
 | hatchery.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | hatchery.image.repository | string | `nil` | The Docker image repository for the hatchery service. |
 | hatchery.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| indexd | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for indexd chart.  |
-| indexd.enabled | bool | `true` | Whether to deploy the indexd subchart.  |
+| indexd | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for indexd chart. |
+| indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | indexd.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | indexd.image.repository | string | `nil` | The Docker image repository for the indexd service. |
 | indexd.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| manifestservice | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for manifest service chart.  |
-| manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart.  |
+| manifestservice | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for manifest service chart. |
+| manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | manifestservice.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | manifestservice.image.repository | string | `nil` | The Docker image repository for the manifest service service. |
 | manifestservice.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| metadata | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for metadata chart.  |
-| metadata.enabled | bool | `true` | Whether to deploy the metadata subchart.  |
+| metadata | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for metadata chart. |
+| metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | metadata.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | metadata.image.repository | string | `nil` | The Docker image repository for the metadata service. |
 | metadata.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| peregrine | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for peregrine chart.  |
-| peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart.  |
+| peregrine | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for peregrine chart. |
+| peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | peregrine.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | peregrine.image.repository | string | `nil` | The Docker image repository for the peregrine service. |
 | peregrine.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| pidgin | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for pidgin chart.  |
-| pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart.  |
+| pidgin | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for pidgin chart. |
+| pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
 | pidgin.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | pidgin.image.repository | string | `nil` | The Docker image repository for the pidgin service. |
 | pidgin.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| portal | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for portal chart.  |
-| portal.enabled | bool | `true` | Whether to deploy the portal subchart.  |
+| portal | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for portal chart. |
+| portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
 | portal.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | portal.image.repository | string | `nil` | The Docker image repository for the portal service. |
 | portal.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
-| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
-| requestor | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for requestor chart.  |
-| requestor.enabled | bool | `false` | Whether to deploy the requestor subchart.  |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| requestor | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for requestor chart. |
+| requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | requestor.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | requestor.image.repository | string | `nil` | The Docker image repository for the requestor service. |
 | requestor.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| revproxy | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for revproxy chart.  |
-| revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart.  |
+| revproxy | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for revproxy chart. |
+| revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
 | revproxy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | revproxy.image.repository | string | `nil` | The Docker image repository for the revproxy service. |
 | revproxy.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
@@ -158,14 +158,14 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | sheepdog.image.repository | string | `nil` | The Docker image repository for the sheepdog service. |
 | sheepdog.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| ssjdispatcher | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for ssjdispatcher chart.  |
-| ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart.  |
+| ssjdispatcher | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for ssjdispatcher chart. |
+| ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
 | ssjdispatcher.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | ssjdispatcher.image.repository | string | `nil` | The Docker image repository for the ssjdispatcher service. |
 | ssjdispatcher.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | tags.dev | bool | `false` |  |
-| wts | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for wts chart.  |
-| wts.enabled | bool | `true` | Whether to deploy the wts subchart.  |
+| wts | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for wts chart. |
+| wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
 | wts.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | wts.image.repository | string | `nil` | The Docker image repository for the wts service. |
 | wts.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |

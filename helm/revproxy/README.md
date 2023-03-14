@@ -73,7 +73,7 @@ A Helm chart for gen3 revproxy
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
-| revproxyElb | map | `{"gen3SecretsFolder":"Gen3Secrets","sslCert":"","targetPortHTTP":80,"targetPortHTTPS":443}` | Configuration for depricated revproxy service ELB.  |
+| revproxyElb | map | `{"gen3SecretsFolder":"Gen3Secrets","sslCert":"","targetPortHTTP":80,"targetPortHTTPS":443}` | Configuration for depricated revproxy service ELB. |
 | securityContext | map | `{}` | Container-level security context. |
 | service | map | `{"port":80,"type":"NodePort"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |

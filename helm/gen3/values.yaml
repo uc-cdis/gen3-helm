@@ -69,9 +69,9 @@ tags:
 
 # Dependancy Charts
 
-# -- (map) Configurations for ambassador chart. 
+# -- (map) Configurations for ambassador chart.
 ambassador:
-  # -- (bool) Whether to deploy the ambassador subchart. 
+  # -- (bool) Whether to deploy the ambassador subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -80,9 +80,9 @@ ambassador:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for arborist chart. 
+# -- (map) Configurations for arborist chart.
 arborist:
-  # -- (bool) Whether to deploy the arborist subchart. 
+  # -- (bool) Whether to deploy the arborist subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -91,9 +91,9 @@ arborist:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for argo-wrapper chart. 
+# -- (map) Configurations for argo-wrapper chart.
 argo-wrapper:
-  # -- (bool) Whether to deploy the argo-wrapper subchart. 
+  # -- (bool) Whether to deploy the argo-wrapper subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -102,9 +102,9 @@ argo-wrapper:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for audit chart. 
+# -- (map) Configurations for audit chart.
 audit:
-  # -- (bool) Whether to deploy the audit subchart. 
+  # -- (bool) Whether to deploy the audit subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -113,14 +113,14 @@ audit:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for aws-es-proxy chart. 
+# -- (map) Configurations for aws-es-proxy chart.
 aws-es-proxy:
-  # -- (bool) Whether to deploy the aws-es-proxy subchart. 
+  # -- (bool) Whether to deploy the aws-es-proxy subchart.
   enabled: false
 
-# -- (map) Configurations for fence chart. 
+# -- (map) Configurations for fence chart.
 fence:
-  # -- (bool) Whether to deploy the fence subchart. 
+  # -- (bool) Whether to deploy the fence subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -129,9 +129,9 @@ fence:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for guppy chart. 
+# -- (map) Configurations for guppy chart.
 guppy:
-  # -- (bool) Whether to deploy the guppy subchart. 
+  # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
   # -- (map) Docker image information.
   image:
@@ -140,9 +140,9 @@ guppy:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for hatchery chart. 
+# -- (map) Configurations for hatchery chart.
 hatchery:
-  # -- (bool) Whether to deploy the hatchery subchart. 
+  # -- (bool) Whether to deploy the hatchery subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -151,9 +151,9 @@ hatchery:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for indexd chart. 
+# -- (map) Configurations for indexd chart.
 indexd:
-  # -- (bool) Whether to deploy the indexd subchart. 
+  # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -162,9 +162,9 @@ indexd:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for manifest service chart. 
+# -- (map) Configurations for manifest service chart.
 manifestservice:
-  # -- (bool) Whether to deploy the manifest service subchart. 
+  # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -173,9 +173,9 @@ manifestservice:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for metadata chart. 
+# -- (map) Configurations for metadata chart.
 metadata:
-  # -- (bool) Whether to deploy the metadata subchart. 
+  # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -184,9 +184,9 @@ metadata:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for peregrine chart. 
+# -- (map) Configurations for peregrine chart.
 peregrine:
-  # -- (bool) Whether to deploy the peregrine subchart. 
+  # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -195,9 +195,9 @@ peregrine:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for pidgin chart. 
+# -- (map) Configurations for pidgin chart.
 pidgin:
-  # -- (bool) Whether to deploy the pidgin subchart. 
+  # -- (bool) Whether to deploy the pidgin subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -206,9 +206,9 @@ pidgin:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for portal chart. 
+# -- (map) Configurations for portal chart.
 portal:
-  # -- (bool) Whether to deploy the portal subchart. 
+  # -- (bool) Whether to deploy the portal subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -217,9 +217,9 @@ portal:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for requestor chart. 
+# -- (map) Configurations for requestor chart.
 requestor:
-  # -- (bool) Whether to deploy the requestor subchart. 
+  # -- (bool) Whether to deploy the requestor subchart.
   enabled: false
   # -- (map) Docker image information.
   image:
@@ -228,9 +228,9 @@ requestor:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for revproxy chart. 
+# -- (map) Configurations for revproxy chart.
 revproxy:
-  # -- (bool) Whether to deploy the revproxy subchart. 
+  # -- (bool) Whether to deploy the revproxy subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -250,9 +250,9 @@ sheepdog:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for ssjdispatcher chart. 
+# -- (map) Configurations for ssjdispatcher chart.
 ssjdispatcher:
-  # -- (bool) Whether to deploy the ssjdispatcher subchart. 
+  # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
   # -- (map) Docker image information.
   image:
@@ -261,9 +261,9 @@ ssjdispatcher:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for wts chart. 
+# -- (map) Configurations for wts chart.
 wts:
-  # -- (bool) Whether to deploy the wts subchart. 
+  # -- (bool) Whether to deploy the wts subchart.
   enabled: true
   # -- (map) Docker image information.
   image:
@@ -284,5 +284,5 @@ secrets:
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data. 
+      # -- (bool) Option to persist the dbs data.
       enabled: false
