@@ -150,7 +150,7 @@ hatchery:
     cpu-limit: '0.1'
     # -- (string) The maximum amount of memory the sidecar container can use
     memory-limit: 256Mi
-    # -- (string) The sidecar image. 
+    # -- (string) The sidecar image.
     image: quay.io/cdis/ecs-ws-sidecar:master
     # -- (map) Environment variables to pass to the sidecar container
     env:

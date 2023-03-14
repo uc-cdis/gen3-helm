@@ -73,7 +73,7 @@ postgres:
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data. 
+      # -- (bool) Option to persist the dbs data.
       enabled: false
 
 # -- (int) Number of desired replicas
@@ -189,19 +189,19 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In
             # -- (list) Value for the match expression key.
             values:
             - fence
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container

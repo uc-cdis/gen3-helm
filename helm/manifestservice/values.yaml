@@ -56,12 +56,12 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
-          # -- (list) Label key for match expression. 
+          # -- (list) Label key for match expression.
           - key: app
             # -- (string) Operation type for the match expression.
             operator: In

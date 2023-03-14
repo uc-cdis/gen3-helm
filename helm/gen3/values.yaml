@@ -239,9 +239,9 @@ revproxy:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for sheepdog chart. 
+# -- (map) Configurations for sheepdog chart.
 sheepdog:
-  # -- (bool) Whether to deploy the sheepdog subchart. 
+  # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
   # -- (map) Docker image information.
   image:

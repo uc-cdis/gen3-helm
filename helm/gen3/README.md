@@ -153,8 +153,8 @@ Helm chart to deploy Gen3 Data Commons
 | secrets | map | `{"awsAccessKeyId":"test","awsSecretAccessKey":"test"}` | AWS credentials to access the db restore job S3 bucket |
 | secrets.awsAccessKeyId | string | `"test"` | AWS access key. |
 | secrets.awsSecretAccessKey | string | `"test"` | AWS secret access key. |
-| sheepdog | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for sheepdog chart.  |
-| sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart.  |
+| sheepdog | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for sheepdog chart. |
+| sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sheepdog.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | sheepdog.image.repository | string | `nil` | The Docker image repository for the sheepdog service. |
 | sheepdog.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |

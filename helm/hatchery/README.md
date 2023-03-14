@@ -48,7 +48,7 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
 | hatchery.sidecarContainer.env | map | `{"HOSTNAME":"{{ .Values.global.hostname }}","NAMESPACE":"{{ .Release.Namespace }}"}` | Environment variables to pass to the sidecar container |
-| hatchery.sidecarContainer.image | string | `"quay.io/cdis/ecs-ws-sidecar:master"` | The sidecar image.  |
+| hatchery.sidecarContainer.image | string | `"quay.io/cdis/ecs-ws-sidecar:master"` | The sidecar image. |
 | hatchery.sidecarContainer.lifecycle-pre-stop | list | `["su","-c","echo test","-s","/bin/sh","root"]` | Commands that are run before the container is stopped. |
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
