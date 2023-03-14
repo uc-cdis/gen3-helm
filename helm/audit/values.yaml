@@ -186,7 +186,7 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling. 
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
@@ -233,7 +233,7 @@ server:
   sqs:
     # -- (string) SQS queue AWS region.
     region: "us-east-1"
-    # -- (string) The URL for the SQS queue. 
+    # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
   # -- (map) AWS credentials to access SQS queue.
   AWS_CREDENTIALS: {}
@@ -242,7 +242,7 @@ server:
     #   aws_secret_access_key:
 
 api:
-  # -- (int) Amount to time-box queries. 
+  # -- (int) Amount to time-box queries.
   QUERY_TIMEBOX_MAX_DAYS:
 
   # -- (int) The maximum number of entires the query endpoint will return.

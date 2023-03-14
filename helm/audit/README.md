@@ -17,13 +17,13 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["audit"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["audit"]}` | Label key for match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["audit"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | api.QUERY_PAGE_SIZE | int | `1000` | The maximum number of entires the query endpoint will return. |
-| api.QUERY_TIMEBOX_MAX_DAYS | int | `nil` | Amount to time-box queries.  |
+| api.QUERY_TIMEBOX_MAX_DAYS | int | `nil` | Amount to time-box queries. |
 | api.QUERY_USERNAMES | bool | `true` | Whether to return usernames in query responses and allow querying by username. |
 | autoscaling | map | `{"enabled":false,"maxReplicas":4,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
@@ -97,7 +97,7 @@ A Helm chart for Kubernetes
 | server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
 | server.sqs | map | `{"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
-| server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue.  |
+| server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
