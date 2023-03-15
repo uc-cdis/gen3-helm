@@ -148,7 +148,7 @@ affinity:
             # -- (list) Value for the match expression key.
             values:
             - ssjdispatcher
-        # -- (string) Value for topology key label. 
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the container.
@@ -165,7 +165,7 @@ volumeMounts:
 
 # -- (string) AWS region to be used.
 awsRegion: us-east-1
-# -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. 
+# -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
 awsStsRegionalEndpoints: regional
 # -- (string) Namespace to deploy the job.
 gen3Namespace: default
@@ -221,7 +221,7 @@ ssjcreds:
   jobRequestMem: "0.5Gi"
   # -- (string) URL to reach metadata service endpoint.
   metadataserviceUrl: "http://revproxy-service/mds"
-  # -- (string) Username for the metadata service. 
+  # -- (string) Username for the metadata service.
   metadataserviceUsername: "gateway"
   # -- (string) Password for the metadata service.
   metadataservicePassword: "replace_with_password"

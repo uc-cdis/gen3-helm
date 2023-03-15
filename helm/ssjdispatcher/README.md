@@ -14,7 +14,7 @@ A Helm chart for gen3 ssjdispatcher
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["ssjdispatcher"]}` | Label key for match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["ssjdispatcher"]` | Value for the match expression key. |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label.  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | automountServiceAccountToken | bool | `true` | Automount the default service account token |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
@@ -22,7 +22,7 @@ A Helm chart for gen3 ssjdispatcher
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | awsRegion | string | `"us-east-1"` | AWS region to be used. |
-| awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.  |
+| awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. |
 | dispatcherJobNum | string | `"10"` | Ssjdispater job number. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
@@ -94,7 +94,7 @@ A Helm chart for gen3 ssjdispatcher
 | ssjcreds.jobUser | string | `"ssj"` | Name of the user the job will run with. |
 | ssjcreds.metadataservicePassword | string | `"replace_with_password"` | Password for the metadata service. |
 | ssjcreds.metadataserviceUrl | string | `"http://revproxy-service/mds"` | URL to reach metadata service endpoint. |
-| ssjcreds.metadataserviceUsername | string | `"gateway"` | Username for the metadata service.  |
+| ssjcreds.metadataserviceUsername | string | `"gateway"` | Username for the metadata service. |
 | ssjcreds.sqsUrl | string | `"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"` | Sqs queue to monitor. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |

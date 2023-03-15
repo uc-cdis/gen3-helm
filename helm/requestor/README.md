@@ -77,7 +77,7 @@ A Helm chart for gen3 Requestor Service
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
-| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data.  |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |

@@ -147,7 +147,7 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  # -- (list) To secure an Ingress by specifying a secret that contains a TLS private key and certificate. 
+  # -- (list) To secure an Ingress by specifying a secret that contains a TLS private key and certificate.
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

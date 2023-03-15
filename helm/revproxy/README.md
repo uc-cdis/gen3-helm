@@ -52,7 +52,7 @@ A Helm chart for gen3 revproxy
 | ingress.className | string | `""` | The ingress class name. |
 | ingress.enabled | bool | `false` | Whether to create the ingress |
 | ingress.hosts | list | `[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}]` | Where to route the traffic. |
-| ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate.  |
+| ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
