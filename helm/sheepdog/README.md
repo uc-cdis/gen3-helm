@@ -1,6 +1,6 @@
 # sheepdog
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Sheepdog Service
 
@@ -20,7 +20,7 @@ A Helm chart for gen3 Sheepdog Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"sheepdog"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
-| arboristUrl | string | `"http://arborist-service.default.svc.cluster.local"` |  |
+| arboristUrl | string | `"http://arborist-service"` |  |
 | authNamespace | string | `"default"` |  |
 | automountServiceAccountToken | bool | `false` |  |
 | autoscaling.enabled | bool | `false` |  |

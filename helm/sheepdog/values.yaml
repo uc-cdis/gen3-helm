@@ -137,7 +137,7 @@ image:
 dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
 indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
-arboristUrl: http://arborist-service.default.svc.cluster.local
+arboristUrl: http://arborist-service
 authNamespace: default
 
 # Placeholders for datadog
