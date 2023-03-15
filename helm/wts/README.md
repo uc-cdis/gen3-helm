@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -8,19 +8,20 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.3 |
+| file://../common | common | 0.1.4 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| fullnameOverride | string | `""` |  |
+| affinity | map | `{}` | Affinity to use for the deployment. |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
+| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
@@ -46,24 +47,25 @@ A Helm chart for gen3 workspace token service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| hostname | string | `nil` |  |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/workspace-token-service"` |  |
-| image.tag | string | `"feat_wts_internalfence"` |  |
-| imagePullSecrets | list | `[]` |  |
-| nameOverride | string | `""` |  |
-| nodeSelector | object | `{}` |  |
-| oidc_client_id | string | `nil` |  |
-| oidc_client_secret | string | `nil` |  |
-| podAnnotations | object | `{}` |  |
-| podLabels."tags.datadoghq.com/service" | string | `"token-service"` |  |
-| podLabels.netnolimit | string | `"yes"` |  |
-| podLabels.public | string | `"yes"` |  |
-| podLabels.release | string | `"production"` |  |
-| podLabels.userhelper | string | `"yes"` |  |
-| podSecurityContext | object | `{}` |  |
+| hostname | string | `nil` | Hostname for the deployment. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/workspace-token-service","tag":"feat_wts_internalfence"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/workspace-token-service"` | Docker repository. |
+| image.tag | string | `"feat_wts_internalfence"` | Overrides the image tag whose default is the chart appVersion. |
+| imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| nameOverride | string | `""` | Override the name of the chart. |
+| nodeSelector | map | `{}` | Node Selector for the pods |
+| oidc_client_id | string | `nil` | Id for the OIDC client. |
+| oidc_client_secret | string | `nil` | Secret for the OIDC client. |
+| podAnnotations | map | `{}` | Annotations to add to the pod. |
+| podLabels | map | `{"netnolimit":"yes","public":"yes","release":"production","tags.datadoghq.com/service":"token-service","userhelper":"yes"}` | Labels to add to the pod. |
+| podLabels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
+| podLabels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
+| podLabels.release | string | `"production"` | Release name. |
+| podLabels.userhelper | string | `"yes"` | Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes |
+| podSecurityContext | map | `{}` | Security context for the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
@@ -72,23 +74,28 @@ A Helm chart for gen3 workspace token service
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql.primary.persistence.enabled | bool | `false` |  |
-| release | string | `"production"` |  |
-| replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `0.5` |  |
-| resources.limits.memory | string | `"512Mi"` |  |
-| resources.requests.cpu | float | `0.1` |  |
-| resources.requests.memory | string | `"12Mi"` |  |
-| roleName | string | `"workspace-token-service"` |  |
-| secrets.external_oidc | string | `nil` |  |
-| securityContext | object | `{}` |  |
-| service.httpPort | int | `80` |  |
-| service.httpsPort | int | `443` |  |
-| service.type | string | `"ClusterIP"` |  |
-| serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.create | bool | `true` |  |
-| serviceAccount.name | string | `""` |  |
-| tolerations | list | `[]` |  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| release | string | `"production"` | Release name. |
+| replicaCount | int | `1` | Number of replicas for the deployment. |
+| resources | map | `{"limits":{"cpu":0.5,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":0.5,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `0.5` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
+| roleName | string | `"workspace-token-service"` | Name of the role to be used for the role binding. |
+| secrets | map | `{"external_oidc":null}` | Values for wts secret. |
+| securityContext | map | `{}` | Security context for the containers in the pod |
+| service | map | `{"httpPort":80,"httpsPort":443,"type":"ClusterIP"}` | Configuration for the service |
+| service.httpPort | int | `80` | Port on which the service is exposed |
+| service.httpsPort | int | `443` | Secure port on which the service is exposed |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
+| serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
+| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| tolerations | list | `[]` | Tolerations for the pods |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

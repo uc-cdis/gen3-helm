@@ -48,7 +48,7 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -57,18 +57,28 @@ global:
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: nginx
+  # -- (string) Docker pull policy.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
 nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
+# -- (map) Security context for the containers in the pod
 securityContext: {}
   # capabilities:
   #   drop:
@@ -77,96 +87,151 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 80
 
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) Target CPU utilization percentage
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- (map) Node Selector for the pods
 nodeSelector: {}
 
+# -- (list) Tolerations for the pods
 tolerations: []
 
+# -- (map) Labels to use for selecting the deployment.
 selectorLabels:
   app: ssjdispatcher
   release: production
 
+# -- (map) Labels for the ssjdispatcher service.
 labels:
+  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
   netnolimit: "yes"
+  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
   public: "yes"
 
+# -- (map) Security context to apply to the pod
 podSecurityContext:
+  # -- (int) User that all the processes will run under in the container.
   runAsUser: 1000
+  # -- (int) Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod.
   fsGroup: 1000
 
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - ssjdispatcher
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
+
+# -- (list) Volumes to attach to the container.
 volumes:
   - name: ssjdispatcher-creds-volume
     secret:
       secretName: "ssjdispatcher-creds"
+# -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: "ssjdispatcher-creds-volume"
     readOnly: true
     mountPath: "/credentials.json"
     subPath: credentials.json
 
+# -- (string) AWS region to be used.
 awsRegion: us-east-1
+# -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
 awsStsRegionalEndpoints: regional
+# -- (string) Namespace to deploy the job.
 gen3Namespace: default
+# -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
-
+# -- (string) Image to use for the "indexing" job.
 indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
 
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
     cpu: 0.1
+    # -- (string) The amount of memory requested
     memory: 128Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
+    # -- (string) The maximum amount of CPU the container can use
     cpu: 1.0
+    # -- (string) The maximum amount of memory the container can use
     memory: 2400Mi
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
 
+# -- (bool) Automount the default service account token
 automountServiceAccountToken: true
 
+# -- (map) Values for ssjdispatcher secret.
 ssjcreds:
+  # -- (string) Sqs queue to monitor.
   sqsUrl: "https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"
+  # -- (string) Name of the ssj job.
   jobName: "indexing"
+  # -- (string) URL upload pattern that will trigger an event in S3 to send a message to SQS.
   jobPattern: "s3://test-12345678901234-upload/*"
+  # -- (string) Indexd service URL.
   jobUrl: "http://indexd-service/index"
+  # -- (string) Name of the user the job will run with.
   jobUser: "ssj"
+  # -- (string) Password for the job.
   jobPassword: "replace_with_password"
+  # -- (string) The amount of CPU the job requests.
   jobRequestCpu: "500m"
+  # -- (string) The amount of memory the job requests.
   jobRequestMem: "0.5Gi"
+  # -- (string) URL to reach metadata service endpoint.
   metadataserviceUrl: "http://revproxy-service/mds"
+  # -- (string) Username for the metadata service.
   metadataserviceUsername: "gateway"
+  # -- (string) Password for the metadata service.
   metadataservicePassword: "replace_with_password"
 
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created.
   create: true
-  # Annotations to add to the service account
+  # -- (map) Annotations to add to the service account.
   annotations: {}
-  # The name of the service account to use.
+  # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: "ssjdispatcher-service-account"

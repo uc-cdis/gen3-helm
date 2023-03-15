@@ -32,18 +32,22 @@ spec:
         - name: "dicom-server"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.readinessProbe}}
           readinessProbe: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.livenessProbe}}
+            httpGet:
+              path: /system
+              port: 8042
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 30
           livenessProbe: 
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.ports}}
+            httpGet:
+              path: /system
+              port: 8042
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 30
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            - containerPort: 8042
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

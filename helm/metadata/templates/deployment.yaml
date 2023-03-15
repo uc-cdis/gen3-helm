@@ -93,18 +93,19 @@ spec:
               value: {{ . }}
             {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.containerPort}}
+            httpGet:
+              path: /_status
+              port: 80
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            - containerPort: 80
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

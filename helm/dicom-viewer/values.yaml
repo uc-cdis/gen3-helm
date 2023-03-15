@@ -3,41 +3,34 @@
 # Declare variables to be passed into your templates.
 
 # Deployment
+
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/cdis/ohif-viewer
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-readinessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 20
-  timeoutSeconds: 30
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-ports:
-  - containerPort: 80
-
-
 # Service and Pod
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 80

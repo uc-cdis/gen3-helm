@@ -39,7 +39,7 @@ global:
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -65,25 +65,27 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
-# This is to configure postgresql subchart
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
+      # -- (bool) Option to persist the dbs data.
       enabled: false
 
 # -- (int) Number of desired replicas
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
   # -- (string) The Docker image repository for the audit service
   repository: quay.io/cdis/audit-service
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  # -- (string) The tag to use for the image.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
 
 # -- (string) Override the name of the chart. This can be used to provide a unique name for a chart
@@ -92,6 +94,7 @@ nameOverride: ""
 # -- (string) Override the full name of the chart, which is used as the name of resources created by the chart
 fullnameOverride: ""
 
+# -- (map) Service account to use or create.
 serviceAccount:
   # Specifies whether a service account should be created
   # -- (bool) Whether to create a service account
@@ -147,11 +150,11 @@ resources:
 autoscaling:
   # -- (bool) Whether autoscaling is enabled or not
   enabled: false
-  # -- (int) Minimum number of replicas
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
-  # -- (int) Maximum number of replicas
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 4
-  # -- (int) Target CPU utilization percentage
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
@@ -162,31 +165,43 @@ nodeSelector: {}
 # -- (list) Tolerations for the pods
 tolerations: []
 
-
+# -- (map) Labels to add to the pod.
 labels:
+  # -- (string) Application name.
   app: audit
+  # -- (string) Release name.
   release: production
-  # for network policy selectors
+  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.
   authprovider: "yes"
-  # uses explicit proxy and AWS APIs
+  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
   netnolimit: "yes"
+  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
   public: "yes"
+  # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
   userhelper: "yes"
   tags.datadoghq.com/service: "audit"
 
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - audit
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
+# -- (list) Environment variables to pass to the container
 env:
   - name: DEBUG
     value: "false"
@@ -197,31 +212,41 @@ env:
         key: arborist_url
         optional: true
 
+# -- (list) Volumes to attach to the container.
 volumes: []
 
+# -- (list) Volumes to mount to the container.
 volumeMounts: []
 
+# -- (list) Volumes to mount to the init container.
 initVolumeMounts: []
 
+# -- (list) Volumes to attach to the init container.
 initEnv: {}
 
 server:
+  # -- (bool) Whether to pull logs from sqs queue.
   pull_from_queue: false
+  # -- (bool) Whether to enable or disable debug mode.
   debug: false
+  # -- (map) AWS SQS queue information.
   sqs:
+    # -- (string) SQS queue AWS region.
     region: "us-east-1"
+    # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
+  # -- (map) AWS credentials to access SQS queue.
   AWS_CREDENTIALS: {}
     # cred1:
     #   aws_access_key_id:
     #   aws_secret_access_key:
 
 api:
-  # if left empty, queries are not time-boxed
+  # -- (int) Amount to time-box queries.
   QUERY_TIMEBOX_MAX_DAYS:
 
+  # -- (int) The maximum number of entires the query endpoint will return.
   QUERY_PAGE_SIZE: 1000
 
-  # whether to return usernames in query responses,
-  # and to allow querying by username
+  # -- (bool) Whether to return usernames in query responses and allow querying by username.
   QUERY_USERNAMES: true
