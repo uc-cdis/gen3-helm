@@ -1969,6 +1969,16 @@ entries:
   manifestservice:
   - apiVersion: v2
     appVersion: master
+    created: "2023-03-16T20:59:43.219702215Z"
+    description: A Helm chart for Kubernetes
+    digest: 8ba1f6b3dbb02333fecd172a40d6f643f8345e399afb35d5bcd9fa68d2ca41e2
+    name: manifestservice
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/manifestservice-0.1.6/manifestservice-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: master
     created: "2023-03-16T15:58:51.626507995Z"
     description: A Helm chart for Kubernetes
     digest: a4b521c4f130f91603aa75a6a41bb05c14dd0b778634a674d475d0eea4aab5d4
@@ -2897,4 +2907,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2023-03-16T15:58:51.626807196Z"
+generated: "2023-03-16T20:59:43.219933917Z"
