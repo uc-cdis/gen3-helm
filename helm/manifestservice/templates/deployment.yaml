@@ -15,8 +15,7 @@ spec:
       labels:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        app: manifestservice
-        release: production
+        {{- include "manifestservice.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.affinity }}
       affinity:

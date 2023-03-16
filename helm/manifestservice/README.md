@@ -1,6 +1,6 @@
 # manifestservice
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -39,6 +39,8 @@ A Helm chart for Kubernetes
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| selectorLabels.app | string | `"manifestservice"` |  |
+| selectorLabels.release | string | `"production"` |  |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
