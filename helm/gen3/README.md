@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../portal | portal | 0.1.3 |
 | file://../requestor | requestor | 0.1.5 |
 | file://../revproxy | revproxy | 0.1.5 |
-| file://../sheepdog | sheepdog | 0.1.5 |
+| file://../sheepdog | sheepdog | 0.1.6 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.2 |
 | file://../wts | wts | 0.1.6 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |

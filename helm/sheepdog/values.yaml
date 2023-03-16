@@ -164,7 +164,7 @@ indexdUrl: http://indexd-service
 # -- (string) URL for the fence service
 fenceUrl: http://fence-service
 # -- (string) URL for the arborist service
-arboristUrl: http://arborist-service.default.svc.cluster.local
+arboristUrl: http://arborist-service
 authNamespace: default
 
 # -- (list) Volumes to mount to the container.

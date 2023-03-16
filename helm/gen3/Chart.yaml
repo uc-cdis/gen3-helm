@@ -72,7 +72,7 @@ dependencies:
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.5"
+  version: "0.1.6"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
