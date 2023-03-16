@@ -633,6 +633,115 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2023-03-16T15:58:51.466087499Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.4
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.5
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.1
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.5
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.3
+    - name: common
+      repository: file://../common
+      version: 0.1.4
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.5
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.4
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.3
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.5
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.4
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.5
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.6
+    - condition: pidgin.enabled
+      name: pidgin
+      repository: file://../pidgin
+      version: 0.1.4
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.3
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.5
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.5
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.6
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.2
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.6
+    - condition: global.dev
+      name: elasticsearch
+      repository: file://../elasticsearch
+      version: 0.1.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: a92e9b458866a414035bac1f4b806a05969de38b7a6641d967a09ebc07047434
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.8/gen3-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: master
     created: "2023-03-15T21:42:00.988226557Z"
     dependencies:
     - condition: ambassador.enabled
@@ -1860,6 +1969,16 @@ entries:
   manifestservice:
   - apiVersion: v2
     appVersion: master
+    created: "2023-03-16T15:58:51.626507995Z"
+    description: A Helm chart for Kubernetes
+    digest: a4b521c4f130f91603aa75a6a41bb05c14dd0b778634a674d475d0eea4aab5d4
+    name: manifestservice
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/manifestservice-0.1.4/manifestservice-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: master
     created: "2023-03-15T19:50:07.664664453Z"
     description: A Helm chart for Kubernetes
     digest: a8838d7d2c282957ab4b60ea772207c00d96273a380558423635f883290c9cf4
@@ -2778,4 +2897,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2023-03-15T21:42:01.191771582Z"
+generated: "2023-03-16T15:58:51.626807196Z"
