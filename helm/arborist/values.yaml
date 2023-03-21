@@ -186,3 +186,19 @@ env:
   # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
   - name: JWKS_ENDPOINT
     value: "http://fence-service/.well-known/jwks"
+
+#Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are true or false. 
+criticalService: "true"
+# -- (string) Label to help organize pods and their user. Any value is valid, but use "_" or "-" to divide words. 
+partOf: "Workspace-Tab"
+
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels: 
+
+#will add ability to override some DD values here: 
+datadogLogsInjection:

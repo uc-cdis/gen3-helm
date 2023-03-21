@@ -4,6 +4,9 @@ metadata:
   name: arborist-deployment
   labels:
     {{- include "arborist.labels" . | nindent 4 }}
+    {{- if .Values.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -68,6 +71,9 @@ spec:
               # run arborist
               /go/src/github.com/uc-cdis/arborist/bin/arborist
           env:
+            {{- if .Values.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
             - name: PGPASSWORD
               valueFrom:

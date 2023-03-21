@@ -1,6 +1,6 @@
 # arborist
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 arborist
 
@@ -21,6 +21,9 @@ A Helm chart for gen3 arborist
 | autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"true"` | Valid options are true or false.  |
+| datadogLogsInjection | string | `nil` |  |
 | env | list | `[{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}]` | Environment variables to pass to the container |
 | env[0] | string | `{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}` | The URL of the JSON Web Key Set (JWKS) endpoint for authentication |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -54,6 +57,7 @@ A Helm chart for gen3 arborist
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
+| partOf | string | `"Workspace-Tab"` | Label to help organize pods and their user. Any value is valid, but use "_" or "-" to divide words.  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `nil` | Security context to apply to the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
@@ -66,6 +70,7 @@ A Helm chart for gen3 arborist
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
@@ -75,6 +80,7 @@ A Helm chart for gen3 arborist
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context to apply to the container |
+| selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
