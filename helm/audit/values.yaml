@@ -185,7 +185,7 @@ env:
     valueFrom:
       configMapKeyRef:
         name: manifest-global
-        key: arborist_url
+        key: arboristUrl
         optional: true
 
 volumes: []

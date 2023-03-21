@@ -50,6 +50,9 @@ spec:
         - name: revproxy-subconf
           configMap:
             name: revproxy-nginx-subconf
+        - name: revproxy-static-dictionary-content
+          configMap:
+            name: revproxy-static-dictionary-content
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -135,6 +138,9 @@ spec:
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"
+          - name: "revproxy-static-dictionary-content"
+            readOnly: true
+            mountPath: "/var/www/dictionary"
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"

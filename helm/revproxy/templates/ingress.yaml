@@ -15,8 +15,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
   {{- end }}
 spec:
-  {{- if .Values.global.aws.enabled }}
   ingressClassName: nginx
+  {{- if .Values.global.aws.enabled }}
   {{- end }}
   {{- with .Values.ingress.tls }}
   tls:

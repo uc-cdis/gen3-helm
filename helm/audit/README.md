@@ -30,7 +30,7 @@ A Helm chart for Kubernetes
 | env[0].name | string | `"DEBUG"` |  |
 | env[0].value | string | `"false"` |  |
 | env[1].name | string | `"ARBORIST_URL"` |  |
-| env[1].valueFrom.configMapKeyRef.key | string | `"arborist_url"` |  |
+| env[1].valueFrom.configMapKeyRef.key | string | `"arboristUrl"` |  |
 | env[1].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
 | env[1].valueFrom.configMapKeyRef.optional | bool | `true` |  |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |

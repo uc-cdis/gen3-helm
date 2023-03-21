@@ -124,7 +124,7 @@ if data:
     S3_BUCKETS = data["S3_BUCKETS"]
     DEFAULT_LOGIN_URL = data["DEFAULT_LOGIN_URL"]
     OPENID_CONNECT.update(data["OPENID_CONNECT"])
-    OIDC_ISSUER = data["OIDC_ISSUER"]
+    OIDC_ISSUER = data["OIDC_ISSUER"] or "https://heal.krum.app/user"
     ENABLED_IDENTITY_PROVIDERS = data["ENABLED_IDENTITY_PROVIDERS"]
     APP_NAME = data["APP_NAME"]
     HTTP_PROXY = data["HTTP_PROXY"]
@@ -164,7 +164,7 @@ CIRRUS_CFG[
 ] = "/var/www/fence/fence_google_storage_creds_secret.json"
 
 DEFAULT_LOGIN_URL_REDIRECT_PARAM = "redirect"
-
+INDEXD_PASSWORD = "test"
 INDEXD = "http://indexd-service/"
 
 ARBORIST = "http://arborist-service/"

@@ -45,13 +45,13 @@ spec:
           #   periodSeconds: 30
           #   timeoutSeconds: 30
           #   failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 30
             # TODO: re-add resources
           ports:
             - containerPort: 80
@@ -169,8 +169,8 @@ spec:
               mountPath: "/data-portal/custom/logo/gitops-logo.png"
               subPath: "gitops-logo.png"
             - name: "config-volume"
-              mountPath: "/data-portal/custom/createdby/gitops.png"
-              subPath: "gitops-createdby.png"
+              mountPath: "/data-portal/custom/createdby/gitops-createdby.png"
+              subPath: "gitops-createdby"
             - name: "config-volume"
               mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
               subPath: "gitops-favicon.ico"

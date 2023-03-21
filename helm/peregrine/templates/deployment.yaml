@@ -38,8 +38,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: CONF_HOSTNAME
-              value: {{ .Values.env.CONF_HOSTNAME }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -117,11 +115,7 @@ spec:
                   key: public_datasets
                   optional: true
             - name: INDEX_CLIENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
+              value: http://indexd-service
             - name: GRAPHQL_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -129,15 +123,20 @@ spec:
                   key: peregrine_timeout
                   optional: true
             - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+              value: http://fence-service
+              # valueFrom:
+              #   configMapKeyRef:
+              #     name: manifest-global
+              #     key: fence_url
+              #     optional: true
             - name: ARBORIST_URL
-              value: {{ .Values.arborist_url }}
+              value: {{ .Values.arboristUrl }}
+            - name: ARBORIST
+              value: {{ .Values.arboristUrl }}
             - name: GEN3_SIDECAR
               value: "False"
+            - name: GEN3_DEBUG
+              value: "True"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
           volumeMounts:

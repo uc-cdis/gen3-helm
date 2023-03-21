@@ -221,7 +221,7 @@ env:
   - name: PYTHONPATH
     value: /var/www/fence
   - name: GEN3_DEBUG
-    value: "False"
+    value: "True"
   - name: FENCE_PUBLIC_CONFIG
     valueFrom:
       configMapKeyRef:
@@ -298,8 +298,13 @@ volumes:
     configMap:
       name: "fence-yaml-merge"
       optional: true
-
+  - name: useryaml
+    configMap:
+      name: useryaml
 volumeMounts:
+  - name: "useryaml"
+    mountPath: "/var/www/fence/user.yaml"
+    subPath: useryaml
   - name: "old-config-volume"
     readOnly: true
     mountPath: "/var/www/fence/local_settings.py"
@@ -334,12 +339,12 @@ volumeMounts:
     subPath: yaml_merge.py
   - name: "fence-google-app-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
+    mountPath: "/var/www/fence/fence_google_app_creds_secret"
+    subPath: credentials.json
   - name: "fence-google-storage-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
+    mountPath: "/var/www/fence/fence_google_storage_creds_secret"
+    subPath: credentials.json
   - name: "fence-jwt-keys"
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
@@ -356,12 +361,12 @@ initVolumeMounts:
     subPath: yaml_merge.py
   - name: "fence-google-app-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
-    subPath: fence_google_app_creds_secret.json
+    mountPath: "/var/www/fence/fence_google_app_creds_secret"
+    subPath: credentials.json
   - name: "fence-google-storage-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
-    subPath: fence_google_storage_creds_secret.json
+    mountPath: "/var/www/fence/fence_google_storage_creds_secret"
+    subPath: credentials.json
 
 initEnv:
   - name: PGHOST
