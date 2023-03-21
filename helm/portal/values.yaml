@@ -397,238 +397,238 @@ gitops:
           "accessibleValidationField": "study_id",
           "downloadAccessor": "object_id"
         },
-        "useArboristUI": false,
-        "showArboristAuthzOnProfile": false,
-        "showFenceAuthzOnProfile": true,
-        "discoveryConfig": {
-          "requireLogin": false,
-          "public": true,
-          "features": {
-            "exportToWorkspace": {
-                "enable": false,
-                "enableDownloadManifest": false,
-                "downloadManifestButtonText": "Download Manifest",
-                "manifestFieldName": "string",
-                "documentationLinks": {
-                    "gen3Client": "string",
-                    "gen3Workspaces": "string"
-                }
-            },
-            "pageTitle": {
+      },
+      "useArboristUI": false,
+      "showArboristAuthzOnProfile": false,
+      "showFenceAuthzOnProfile": true,
+      "discoveryConfig": {
+        "requireLogin": false,
+        "public": true,
+        "features": {
+          "exportToWorkspace": {
+              "enable": false,
+              "enableDownloadManifest": false,
+              "downloadManifestButtonText": "Download Manifest",
+              "manifestFieldName": "string",
+              "documentationLinks": {
+                  "gen3Client": "string",
+                  "gen3Workspaces": "string"
+              }
+          },
+          "pageTitle": {
+            "enabled": true,
+            "text": "My Special Test Discovery Page"
+          },
+          "search": {
+            "searchBar": {
               "enabled": true,
-              "text": "My Special Test Discovery Page"
+              "inputSubtitle": "Search Bar",
+              "placeholder": "Search studies by keyword"
             },
-            "search": {
-              "searchBar": {
+            "tagSearchDropdown": {
+              "enabled": true,
+              "collapseOnDefault": false,
+              "collapsibleButtonText": "Study Characteristics"
+            }
+          },
+          "advSearchFilters": {
+            "enabled": true,
+            "field": "advSearchFilters",
+            "displayName": "Filters"
+          },
+          "authorization": {
+            "enabled": true,
+            "supportedValues": {
+              "accessible": {
                 "enabled": true,
-                "inputSubtitle": "Search Bar",
-                "placeholder": "Search studies by keyword"
+                "menuText": "Available"
               },
-              "tagSearchDropdown": {
-                "enabled": true,
-                "collapseOnDefault": false,
-                "collapsibleButtonText": "Study Characteristics"
+              "unaccessible": {
+                "enabled": false,
+                "menuText": "Not Accessible"
+              },
+              "pending": {
+                "enabled": false,
+                "menuText": "Not Accessible"
+              },
+              "notAvailable": {
+                "enabled": false,
+                "menuText": "Not Accessible"
               }
-            },
-            "advSearchFilters": {
-              "enabled": true,
-              "field": "advSearchFilters",
-              "displayName": "Filters"
-            },
-            "authorization": {
-              "enabled": true,
-              "supportedValues": {
-                "accessible": {
-                  "enabled": true,
-                  "menuText": "Available"
-                },
-                "unaccessible": {
-                  "enabled": false,
-                  "menuText": "Not Accessible"
-                },
-                "pending": {
-                  "enabled": false,
-                  "menuText": "Not Accessible"
-                },
-                "notAvailable": {
-                  "enabled": false,
-                  "menuText": "Not Accessible"
-                }
-              }
-            },
-            "tagsColumn" : {
-              "enabled": true
-            },
-            "tagsInDescription" : {
-              "enabled": false
             }
           },
-          "aggregations": [
-            {
-              "name": "Studies",
-              "field": "study_id",
-              "type": "count"
-            },
-            {
-              "name": "Total Subjects",
-              "field": "_subjects_count",
-              "type": "sum"
-            }
-          ],
-          "tagSelector": {
-            "title": "Associated tags organized by category"
+          "tagsColumn" : {
+            "enabled": true
           },
-          "studyColumns": [
-            {
-              "name": "Study Name",
-              "field": "name"
-            },
-            {
-              "name": "Full Name",
-              "field": "full_name",
-              "contentType": "string",
-              "width": 300
-            },
-            {
-              "name": "Number of Subjects",
-              "field": "_subjects_count",
-              "errorIfNotAvailable": false,
-              "valueIfNotAvailable": "n/a",
-              "contentType": "number"
-            },
-            {
-              "name": "Long Text",
-              "field": "long_text",
-              "contentType": "string",
-              "ellipsis": true
-            },
-            {
-              "name": "dbGaP Accession Number",
-              "field": "study_id"
-            },
-            {
-              "name": "Commons",
-              "field": "commons_of_origin",
-              "hrefValueFromField": "commons_url"
-            }
-          ],
-          "studyPreviewField": {
-            "name": "Description",
-            "field": "study_description",
+          "tagsInDescription" : {
+            "enabled": false
+          }
+        },
+        "aggregations": [
+          {
+            "name": "Studies",
+            "field": "study_id",
+            "type": "count"
+          },
+          {
+            "name": "Total Subjects",
+            "field": "_subjects_count",
+            "type": "sum"
+          }
+        ],
+        "tagSelector": {
+          "title": "Associated tags organized by category"
+        },
+        "studyColumns": [
+          {
+            "name": "Study Name",
+            "field": "name"
+          },
+          {
+            "name": "Full Name",
+            "field": "full_name",
             "contentType": "string",
-            "includeName": false,
-            "includeIfNotAvailable": true,
-            "valueIfNotAvailable": "No description has been provided for this study."
+            "width": 300
           },
-          "studyPageFields": {
-            "header": {
-              "field": "name"
-            },
-            "fieldsToShow": [
-              {
-                "groupName": "Study Identifiers",
-                "includeName": true,
-                "fields": [
-                  {
-                    "name": "Number of Subjects",
-                    "field": "_subjects_count",
-                    "contentType": "number"
+          {
+            "name": "Number of Subjects",
+            "field": "_subjects_count",
+            "errorIfNotAvailable": false,
+            "valueIfNotAvailable": "n/a",
+            "contentType": "number"
+          },
+          {
+            "name": "Long Text",
+            "field": "long_text",
+            "contentType": "string",
+            "ellipsis": true
+          },
+          {
+            "name": "dbGaP Accession Number",
+            "field": "study_id"
+          },
+          {
+            "name": "Commons",
+            "field": "commons_of_origin",
+            "hrefValueFromField": "commons_url"
+          }
+        ],
+        "studyPreviewField": {
+          "name": "Description",
+          "field": "study_description",
+          "contentType": "string",
+          "includeName": false,
+          "includeIfNotAvailable": true,
+          "valueIfNotAvailable": "No description has been provided for this study."
+        },
+        "studyPageFields": {
+          "header": {
+            "field": "name"
+          },
+          "fieldsToShow": [
+            {
+              "groupName": "Study Identifiers",
+              "includeName": true,
+              "fields": [
+                {
+                  "name": "Number of Subjects",
+                  "field": "_subjects_count",
+                  "contentType": "number"
 
-                  },
-                  {
-                    "name": "Full Name",
-                    "field": "full_name",
-                    "contentType": "string"
+                },
+                {
+                  "name": "Full Name",
+                  "field": "full_name",
+                  "contentType": "string"
 
-                  },
-                  {
-                    "name": "Short Name",
-                    "field": "short_name",
-                    "contentType": "string",
-                    "includeName": true,
-                    "includeIfNotAvailable": true,
-                    "valueIfNotAvailable": "N/A"
-                  },
-                  {
-                    "name": "dbGaP Study Accession",
-                    "field": "dbgap_accession",
-                    "contentType": "string",
-                    "includeName": true,
-                    "includeIfNotAvailable": false
-                  },
-                  {
-                    "name": "Project ID",
-                    "field": "project_id",
-                    "contentType": "string",
-                    "includeIfNotAvailable": false
-                  }
-                ]
-              },
-              {
-                "fields": [
-                  {
-                    "name": "Description",
-                    "field": "study_description",
-                    "contentType": "paragraphs",
-                    "includeName": false,
-                    "includeIfNotAvailable": true,
-                    "valueIfNotAvailable": "No description has been provided for this study."
-                  }
-                ]
-              }
-            ]
-          },
-          "detailView": {
-            "headerField": "project_title",
-            "tabs": [
-              {
-                "tabName": "Study",
-                "groups": [
-                  {
-                    "header": "Study Description Summary",
-                    "fields": [
-                      {
-                        "header": "Study Description Summary",
-                        "fields": [
-                          {
-                            "type": "block",
-                            "sourceField": "study_description_summary"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "minimalFieldMapping": {
-            "tagsListFieldName": "tags",
-            "authzField": "authz",
-            "dataAvailabilityField": "data_availability",
-            "uid": "study_id"
-          },
-          "tagCategories": [
-            {
-              "name": "Program",
-              "color": "rgba(129, 211, 248, 1)",
-              "display": true,
-              "displayName": "All Programs"
+                },
+                {
+                  "name": "Short Name",
+                  "field": "short_name",
+                  "contentType": "string",
+                  "includeName": true,
+                  "includeIfNotAvailable": true,
+                  "valueIfNotAvailable": "N/A"
+                },
+                {
+                  "name": "dbGaP Study Accession",
+                  "field": "dbgap_accession",
+                  "contentType": "string",
+                  "includeName": true,
+                  "includeIfNotAvailable": false
+                },
+                {
+                  "name": "Project ID",
+                  "field": "project_id",
+                  "contentType": "string",
+                  "includeIfNotAvailable": false
+                }
+              ]
             },
             {
-              "name": "Study Registration",
-              "color": "rgba(236, 128, 141, 1)",
-              "display": true
-            },
-            {
-              "name": "Data Type",
-              "color": "rgba(112, 182, 3, 1)",
-              "display": true
+              "fields": [
+                {
+                  "name": "Description",
+                  "field": "study_description",
+                  "contentType": "paragraphs",
+                  "includeName": false,
+                  "includeIfNotAvailable": true,
+                  "valueIfNotAvailable": "No description has been provided for this study."
+                }
+              ]
             }
-          ],
-          "tagsDisplayName": "Tags",
-          "tableScrollHeight": 450
-        }
+          ]
+        },
+        "detailView": {
+          "headerField": "project_title",
+          "tabs": [
+            {
+              "tabName": "Study",
+              "groups": [
+                {
+                  "header": "Study Description Summary",
+                  "fields": [
+                    {
+                      "header": "Study Description Summary",
+                      "fields": [
+                        {
+                          "type": "block",
+                          "sourceField": "study_description_summary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "minimalFieldMapping": {
+          "tagsListFieldName": "tags",
+          "authzField": "authz",
+          "dataAvailabilityField": "data_availability",
+          "uid": "study_id"
+        },
+        "tagCategories": [
+          {
+            "name": "Program",
+            "color": "rgba(129, 211, 248, 1)",
+            "display": true,
+            "displayName": "All Programs"
+          },
+          {
+            "name": "Study Registration",
+            "color": "rgba(236, 128, 141, 1)",
+            "display": true
+          },
+          {
+            "name": "Data Type",
+            "color": "rgba(112, 182, 3, 1)",
+            "display": true
+          }
+        ],
+        "tagsDisplayName": "Tags",
+        "tableScrollHeight": 450
       }
     }
   # -- (string) - favicon in base64
