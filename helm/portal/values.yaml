@@ -717,6 +717,14 @@ gitops:
       border-right: 2px solid var(--wfg3-white-text);
     }
 
+    a {
+      color: var(--wfg3-brown);
+    }
+    a:hover,
+    a:focus {
+      color: var(--wfg3-dark-brown);
+    }
+
 
   # -- (string) - logo in base64
   logo:
