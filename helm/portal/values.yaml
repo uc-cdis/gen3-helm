@@ -396,7 +396,7 @@ gitops:
           "accessibleFieldCheckList": ["study_id"],
           "accessibleValidationField": "study_id",
           "downloadAccessor": "object_id"
-        },
+        }
       },
       "useArboristUI": false,
       "showArboristAuthzOnProfile": false,
@@ -723,6 +723,14 @@ gitops:
     a:hover,
     a:focus {
       color: var(--wfg3-dark-brown);
+    }
+
+    .login-page__side-box {
+      -webkit-mask-image: url(/src/img/icons/gene.svg);
+      mask-image: url(/src/img/icons/gene.svg);
+      -webkit-mask-size: cover;
+      background: var(--wfg3-brown);
+      background-image: unset !important;
     }
 
 
