@@ -705,7 +705,18 @@ gitops:
     }
 
     /* gitops default css */
-    
+    .top-bar__header {
+      background-color: var(--wfg3-black);
+    }
+
+    .top-icon-button.body-typo {
+      background-color: unset;
+    }
+
+    .top-bar__link {
+      border-right: 2px solid var(--wfg3-white-text);
+    }
+
 
   # -- (string) - logo in base64
   logo:
