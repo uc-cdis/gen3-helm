@@ -8,7 +8,7 @@ A Helm chart for gen3 arborist
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.4 |
+| file://../common | common | 0.1.5 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -22,8 +22,10 @@ A Helm chart for gen3 arborist
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
-| criticalService | string | `"true"` | Valid options are true or false.  |
-| datadogLogsInjection | string | `nil` |  |
+| criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
+| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
+| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | env | list | `[{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}]` | Environment variables to pass to the container |
 | env[0] | string | `{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}` | The URL of the JSON Web Key Set (JWKS) endpoint for authentication |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -57,7 +59,7 @@ A Helm chart for gen3 arborist
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
-| partOf | string | `"Workspace-Tab"` | Label to help organize pods and their user. Any value is valid, but use "_" or "-" to divide words.  |
+| partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `nil` | Security context to apply to the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
