@@ -193,12 +193,12 @@ env:
 release: "production"
 # -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
 criticalService: "true"
-# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. 
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
 partOf: "Workspace-Tab"
 # -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
-commonLabels: 
+commonLabels:
 
 # Values to configure datadog if ddEnabled is set to "true".
 # -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
