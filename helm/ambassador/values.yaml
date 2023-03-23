@@ -64,10 +64,6 @@ service:
   # -- (int) The port number that the service exposes.
   port: 8877
 
-# -- (map) Labels to use for selecting the deployment.
-selectorLabels:
-  service: ambassador
-
 # -- (string) Namespace to use for user resources.
 userNamespace: "jupyter-pods"
 

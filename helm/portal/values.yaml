@@ -128,10 +128,6 @@ nodeSelector: {}
 # -- (list) Tolerations to apply to the pod
 tolerations: []
 
-# -- (map) Labels to use for selecting the deployment.
-selectorLabels:
-  app: portal
-
 # -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 

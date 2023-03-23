@@ -184,8 +184,6 @@ affinity: {}
 
 # -- (string) Name of the role to be used for the role binding.
 roleName: workspace-token-service
-# -- (string) Release name.
-release: production
 
 # -- (map) Values for wts secret.
 secrets:

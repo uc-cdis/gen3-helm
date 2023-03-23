@@ -88,7 +88,6 @@ A Helm chart for gen3 data-portal
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| selectorLabels | map | `{"app":"portal"}` | Labels to use for selecting the deployment. |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

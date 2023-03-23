@@ -49,7 +49,6 @@ A Helm chart for deploying ambassador for gen3
 | resources.requests.memory | string | `"100Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Container-level security context. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| selectorLabels | map | `{"service":"ambassador"}` | Labels to use for selecting the deployment. |
 | service | map | `{"port":8877,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `8877` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
