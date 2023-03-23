@@ -2,9 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-selectorLabels:
-  app: manifestservice
-  release: production
+# -- (map) Global configuration options.
+global:
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
 
 # -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
@@ -45,15 +48,6 @@ strategy:
     maxSurge: 1
     # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
-
-# -- (map) Labels to use for the deployment
-labels:
-  # -- (string) Grants egress to AWS S3 addresses for pods labeled with s3=yes - note that the networkpolicy-s3 grants permissions to a superset of ip addresses that includes S3
-  s3: "yes"
-  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
-  public: "yes"
-  # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
-  userhelper: "yes"
 
 # -- (map) Affinity to use for the deployment.
 affinity:
@@ -128,3 +122,23 @@ manifestserviceG3auto:
   awsaccesskey: ""
   # -- (string) AWS secret access key.
   awssecretkey: ""
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "S3/GS,Workspace-tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

@@ -34,22 +34,26 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "requestor.labels" -}}
-helm.sh/chart: {{ include "requestor.chart" . }}
-{{ include "requestor.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "requestor.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "requestor.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "requestor.name" . }}
-release: {{ .Values.releaseLabel }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -60,17 +64,6 @@ Create the name of the service account to use
 {{- default (include "requestor.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Define ddEnabled
-*/}}
-{{- define "requestor.ddEnabled" -}}
-{{- if .Values.global }}
-{{- .Values.global.ddEnabled }}
-{{- else}}
-{{- .Values.dataDog.enabled }}
 {{- end }}
 {{- end }}
 

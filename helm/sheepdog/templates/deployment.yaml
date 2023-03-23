@@ -8,6 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "sheepdog.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -23,17 +26,14 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
         s3: 'yes'
-      {{- if eq (include "sheepdog.ddEnabled" . ) "true" }}
-        tags.datadoghq.com/service: "sheepdog"
-        # TODO: move this to helpers so we can have this populated from a configmap
-        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
-      {{- end }}
-        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -51,6 +51,9 @@ spec:
         - name: sheepdog-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
           - name: DICTIONARY_URL
             value: {{ .Values.dictionaryUrl }}
           - name: PGHOST

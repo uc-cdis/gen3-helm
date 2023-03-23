@@ -2,6 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: manifestservice-deployment
+  labels:
+    {{- include "manifestservice.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
       matchLabels:
@@ -11,11 +16,14 @@ spec:
     {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.labels }}
       labels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
         {{- include "manifestservice.selectorLabels" . | nindent 8 }}
+        s3: "yes"
+        public: "yes"
+        userhelper: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -30,6 +38,9 @@ spec:
           image: "quay.io/cdis/manifestservice:2022.09"
           imagePullPolicy: Always
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}

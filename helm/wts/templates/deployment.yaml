@@ -4,6 +4,9 @@ metadata:
   name: wts-deployment
   labels:
     {{- include "wts.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
   annotations:
     gen3.io/network-ingress: "mariner"
 spec:
@@ -26,11 +29,14 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.podLabels }}
       labels:
         {{- include "wts.selectorLabels" . | nindent 8 }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        public: "yes"
+        netnolimit: "yes"
+        userhelper: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       affinity:
         podAntiAffinity:
@@ -78,6 +84,9 @@ spec:
               path: /_status
               port: 80
           env:
+          {{- if .Values.global.ddEnabled }}
+          {{- include "common.datadogEnvVar" . | nindent 11 }}
+          {{- end }}
           - name: OIDC_CLIENT_ID
             valueFrom:
               secretKeyRef:
