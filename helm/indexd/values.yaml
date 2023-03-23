@@ -207,7 +207,7 @@ release: "production"
 # -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
 criticalService: "true"
 # -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
-partOf: "S3/GS"
+partOf: "S3-GS"
 # -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl

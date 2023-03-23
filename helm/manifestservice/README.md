@@ -41,7 +41,7 @@ A Helm chart for Kubernetes
 | manifestserviceG3auto.awssecretkey | string | `""` | AWS secret access key. |
 | manifestserviceG3auto.bucketName | string | `"testbucket"` | Bucket for the manifestservice to read and write to. |
 | manifestserviceG3auto.prefix | string | `"test"` | Directory name to use within the s3 bucket. |
-| partOf | string | `"S3/GS,Workspace-tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| partOf | string | `"Workspace-tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |

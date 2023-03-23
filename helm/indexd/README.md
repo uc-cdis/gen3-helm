@@ -61,7 +61,7 @@ A Helm chart for gen3 indexd
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
-| partOf | string | `"S3/GS"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| partOf | string | `"S3-GS"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{}` | Security context for the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
