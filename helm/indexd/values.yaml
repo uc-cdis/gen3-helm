@@ -175,6 +175,9 @@ affinity: {}
 
 # -- (list) Volumes to attach to the pod
 volumes:
+- name: uwsgi-config
+  configMap:
+    name: indexd-uwsgi
 - name: config-volume
   secret:
     secretName: "indexd-settings"
@@ -200,6 +203,10 @@ secrets:
     fence: test
     gdcapi:
     gateway:
+
+# -- (map) Values for overriding uwsgi settings
+uwsgi:
+  listen: 1024
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

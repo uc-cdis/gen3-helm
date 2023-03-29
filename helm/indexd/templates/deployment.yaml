@@ -79,6 +79,9 @@ spec:
                   optional: false
             {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
+            - name: "uwsgi-config"
+              mountPath: "/etc/uwsgi/uwsgi.ini"
+              subPath: uwsgi.ini
             - name: "config-volume"
               readOnly: true
               mountPath: "/var/www/indexd/local_settings.py"
