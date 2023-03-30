@@ -84,6 +84,11 @@ dependencies:
   repository: "file://../wts"
   condition: wts.enabled
 
+- name: gcp-pubsub-indexing
+  version: "0.1.4"
+  repository: "file://../gcp-pubsub-indexing"
+  condition: gcp-pubsub-indexing.enabled
+
 
 - name: elasticsearch
   version: "0.1.1"

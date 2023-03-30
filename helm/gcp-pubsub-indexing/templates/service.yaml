@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gcp-pubsub-indexing.fullname" . }}
+  labels:
+    {{- include "gcp-pubsub-indexing.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "gcp-pubsub-indexing.selectorLabels" . | nindent 4 }}

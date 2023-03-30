@@ -75,6 +75,10 @@ spec:
                   name: indexd-dbcreds
                   key: dbcreated
                   optional: false
+            - name: ARBORIST
+              value: "False"
+            - name: HOSTNAME
+              value: "https://heal.krum.app/"
             {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
             - name: "config-volume"

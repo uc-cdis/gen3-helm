@@ -34,8 +34,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -214,8 +213,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -456,8 +454,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -641,8 +638,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -704,8 +700,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -761,8 +756,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -818,8 +812,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -875,8 +868,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -932,8 +924,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1066,8 +1057,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1123,8 +1113,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1180,8 +1169,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1242,8 +1230,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1299,8 +1286,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1476,8 +1462,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1671,8 +1656,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1812,8 +1796,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1869,8 +1852,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -1991,8 +1973,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2048,8 +2029,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2105,8 +2085,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2224,8 +2203,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2281,8 +2259,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2338,8 +2315,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2893,8 +2869,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -2950,8 +2925,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -3007,8 +2981,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -3348,8 +3321,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -3405,8 +3377,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4007,8 +3978,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4132,8 +4102,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4189,8 +4158,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4246,8 +4214,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4303,8 +4270,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -4592,8 +4558,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -5057,8 +5022,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -8995,8 +8959,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -9052,8 +9015,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -9109,8 +9071,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -9350,8 +9311,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -9412,8 +9372,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -9968,8 +9927,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10014,7 +9972,7 @@
         "links":
         [
             {
-                "name": "studies",
+                "name": "projects",
                 "backref": "protocols_impowr",
                 "label": "derived_from",
                 "target_type": "project",
@@ -10025,8 +9983,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10041,7 +9998,7 @@
         "properties":
         {
             "$ref": "_definitions.yaml#/ubiquitous_properties",
-            "studies":
+            "projects":
             {
                 "$ref": "_definitions.yaml#/to_many"
             }
@@ -10082,8 +10039,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10523,8 +10479,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10718,8 +10673,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10775,8 +10729,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10832,8 +10785,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10889,8 +10841,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -10946,8 +10897,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11090,8 +11040,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11147,8 +11096,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11204,8 +11152,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11522,8 +11469,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11709,8 +11655,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11838,8 +11783,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -11895,8 +11839,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12069,8 +12012,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12252,8 +12194,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12445,8 +12386,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12502,8 +12442,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12559,8 +12498,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12678,8 +12616,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -12888,8 +12825,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -13059,8 +12995,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -13116,8 +13051,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14026,8 +13960,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14275,8 +14208,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14332,8 +14264,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14389,8 +14320,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14746,8 +14676,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14803,8 +14732,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14860,8 +14788,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -14917,8 +14844,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -15089,8 +15015,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [
@@ -15146,8 +15071,7 @@
         "required":
         [
             "submitter_id",
-            "type",
-            "studies"
+            "type"
         ],
         "uniqueKeys":
         [

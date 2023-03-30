@@ -53,7 +53,6 @@ config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL','https://s3.amazonaws.co
 # }
 
 hostname = environ.get("CONF_HOSTNAME", "localhost")
-
 config['OIDC_ISSUER'] = 'https://%s/user' % hostname
 
 config['OAUTH2'] = {
@@ -73,7 +72,7 @@ config['OAUTH2'] = {
     'redirect_uri': 'https://%s/api/v0/oauth2/authorize'  % hostname
 }
 
-config['USER_API'] = environ.get('FENCE_URL') or 'http://fence-service/'
+config['USER_API'] = config['OIDC_ISSUER']
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config['FORCE_ISSUER'] = True
 print(config)

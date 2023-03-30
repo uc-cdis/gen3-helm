@@ -51,9 +51,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env: 
             - name: GEN3_DEBUG
-              value: "False"
+              value: {{ .Values.GEN3_DEBUG | quote }}
             - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint }}
+              value: {{ .Values.esEndpoint | quote }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -84,14 +84,10 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
-            {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.aggMdsNamespace}}
+              value: {{ .Values.useAggMds | quote }}
             - name: AGG_MDS_NAMESPACE
-              value: {{ . }}
-            {{- end }}
+              value: {{ .Values.aggMdsNamespace | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.livenessProbe }}
           livenessProbe:

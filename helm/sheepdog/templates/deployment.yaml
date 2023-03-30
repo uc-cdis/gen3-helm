@@ -119,7 +119,9 @@ spec:
           # args: 
           #   - "-c"
           #   - "sleep infinity"
-          env: 
+          env:
+            - name: CONF_HOSTNAME
+              value: {{ .Values.global.hostname }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -188,13 +190,15 @@ spec:
                   name: manifest-global
                   key: public_datasets
                   optional: true
-
+            - name: INDEXD_USER
+              value: {{ .Values.INDEXD_USER }}
             - name: INDEXD_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: indexd-service-creds
-                  key: gdcapi
-                  optional: false
+              value: {{ .Values.INDEXD_PASS }}
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: indexd-service-creds
+              #     key: gdcapi
+              #     optional: false
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gcp-pubsub-indexing.fullname" . }}
+  labels:
+    {{- include "gcp-pubsub-indexing.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gcp-pubsub-indexing.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gcp-pubsub-indexing.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "gcp-pubsub-indexing.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: google-application-credentials-volume
+        secret:
+          secretName: gcp-pubsub-indexing-secret
+          items:
+          - key: GOOGLE_APPLICATION_CREDENTIALS.json
+            path: GOOGLE_APPLICATION_CREDENTIALS.json
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          volumeMounts:
+          - name: google-application-credentials-volume
+            mountPath: /etc/gcp
+            readOnly: true
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/gcp/GOOGLE_APPLICATION_CREDENTIALS.json
+          - name: GCP_PROJECT_ID
+            value: {{ .Values.GCP_PROJECT_ID }}
+          - name: GCP_SUBSCRIPTION_ID
+            value: {{ .Values.GCP_SUBSCRIPTION_ID }}
+          - name: INDEXD_BASIC_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: gcp-pubsub-indexing-secret
+                key: INDEXD_BASIC_AUTH
+                optional: false
+          - name: HOSTNAME
+            value: {{ .Values.HOSTNAME }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

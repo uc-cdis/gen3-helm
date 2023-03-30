@@ -37,22 +37,28 @@ spec:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 30
-          #   timeoutSeconds: 30
-          #   failureThreshold: 30
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 30
-            # TODO: re-add resources
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 30
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          resources:
+            requests:
+              cpu: 0.8
+              memory: 4096Mi
+            limits:
+              cpu: 2.0
+              memory: 4096Mi
           ports:
             - containerPort: 80
             - containerPort: 443
@@ -60,6 +66,8 @@ spec:
           #   - /bin/bash
           #   - ./dockerStart.sh
           env:
+            - name: DOIT
+              value: "TOIT"
             - name: HOSTNAME
               value: revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
