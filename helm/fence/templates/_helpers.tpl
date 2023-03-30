@@ -34,20 +34,26 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "fence.labels" -}}
-helm.sh/chart: {{ include "fence.chart" . }}
-{{ include "fence.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "fence.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fence.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*

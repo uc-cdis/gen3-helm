@@ -8,6 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "argo-wrapper.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -23,16 +26,13 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-      {{- if eq (include "argo-wrapper.ddEnabled" . ) "true" }}
-        tags.datadoghq.com/service: "argo-wrapper"
-        # TODO: move this to helpers so we can have this populated from a configmap
-        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
-      {{- end }}
-        {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -62,3 +62,7 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}

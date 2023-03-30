@@ -168,10 +168,6 @@ tolerations: []
 
 # -- (map) Labels to add to the pod.
 labels:
-  # -- (string) Application name.
-  app: fence
-  # -- (string) Release name.
-  release: production
   # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.
   authprovider: "yes"
   # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
@@ -180,9 +176,6 @@ labels:
   public: "yes"
   # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
   userhelper: "yes"
-  tags.datadoghq.com/service: "fence"
-  tags.datadoghq.com/env: anvilstaging
-  tags.datadoghq.com/version: 2021.12
 
 # -- (map) Affinity to use for the deployment.
 affinity:
@@ -206,30 +199,6 @@ affinity:
 
 # -- (list) Environment variables to pass to the container
 env:
-  - name: DD_ENABLED
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-global
-        key: dd_enabled
-        optional: true
-  - name: DD_ENV
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/env']
-  - name: DD_SERVICE
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/service']
-  - name: DD_VERSION
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['tags.datadoghq.com/version']
-  - name: DD_LOGS_INJECTION
-    value: "true"
-  - name: DD_PROFILING_ENABLED
-    value: "true"
-  - name: DD_TRACE_SAMPLE_RATE
-    value: "1"
   - name: GEN3_UWSGI_TIMEOUT
     valueFrom:
       configMapKeyRef:
@@ -433,10 +402,25 @@ initEnv:
         key: fence-config-public.yaml
         optional: true
 
-# -- (map) Labels to use for selecting the deployment.
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Authentication"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
 selectorLabels:
-  app: fence
-  release: production
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1
 
 logo:
 privacy_policy:

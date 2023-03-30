@@ -4,13 +4,16 @@ metadata:
   name: ambassador-deployment
   labels:
     {{- include "ambassador.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app: ambassador
+      {{- include "ambassador.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,10 +21,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: ambassador
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end}}
+        {{- include "ambassador.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       affinity:
         podAntiAffinity:
@@ -46,6 +49,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 10 }}
+            {{- end }}
           - name: AMBASSADOR_NAMESPACE
             value: {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
           - name: AMBASSADOR_SINGLE_NAMESPACE

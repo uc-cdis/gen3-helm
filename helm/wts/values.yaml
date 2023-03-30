@@ -121,18 +121,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# -- (map) Labels to add to the pod.
-podLabels:
-  # -- (string) Release name.
-  release: production
-  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
-  public: "yes"
-  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
-  netnolimit: "yes"
-  # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
-  userhelper: "yes"
-  tags.datadoghq.com/service: "token-service"
-
 # -- (map) Annotations to add to the pod.
 podAnnotations: {}
 
@@ -196,8 +184,6 @@ affinity: {}
 
 # -- (string) Name of the role to be used for the role binding.
 roleName: workspace-token-service
-# -- (string) Release name.
-release: production
 
 # -- (map) Values for wts secret.
 secrets:
@@ -229,3 +215,23 @@ secrets:
   #       "db_passwurd": "WTS_DB_PWD.REPLACE",
   #       "db_database": "wts_default"
   #     }
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Authentication"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

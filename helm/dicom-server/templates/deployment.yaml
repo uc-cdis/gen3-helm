@@ -8,6 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "dicom-server.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -21,8 +24,10 @@ spec:
     metadata:
       labels:
         {{- include "dicom-server.selectorLabels" . | nindent 8 }}
-        release: "production"
         public: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -48,6 +53,10 @@ spec:
             timeoutSeconds: 30
           ports:
             - containerPort: 8042
+          env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

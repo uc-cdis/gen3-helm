@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.4 |
+| file://../common | common | 0.1.5 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -83,7 +83,12 @@ A Helm chart for gen3 Fence
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` | Target Memory utilization percentage |
-| env | list | `[{"name":"DD_ENABLED","valueFrom":{"configMapKeyRef":{"key":"dd_enabled","name":"manifest-global","optional":true}}},{"name":"DD_ENV","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/env']"}}},{"name":"DD_SERVICE","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/service']"}}},{"name":"DD_VERSION","valueFrom":{"fieldRef":{"fieldPath":"metadata.labels['tags.datadoghq.com/version']"}}},{"name":"DD_LOGS_INJECTION","value":"true"},{"name":"DD_PROFILING_ENABLED","value":"true"},{"name":"DD_TRACE_SAMPLE_RATE","value":"1"},{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"FENCE_PUBLIC_CONFIG","valueFrom":{"configMapKeyRef":{"key":"fence-config-public.yaml","name":"manifest-fence","optional":true}}},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"}]` | Environment variables to pass to the container |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
+| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
+| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
+| env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"FENCE_PUBLIC_CONFIG","valueFrom":{"configMapKeyRef":{"key":"fence-config-public.yaml","name":"manifest-fence","optional":true}}},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"}]` | Environment variables to pass to the container |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global | map | `{"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
@@ -114,16 +119,15 @@ A Helm chart for gen3 Fence
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | initEnv | list | `[{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"FENCE_PUBLIC_CONFIG","valueFrom":{"configMapKeyRef":{"key":"fence-config-public.yaml","name":"manifest-fence","optional":true}}}]` | Volumes to attach to the init container. |
 | initVolumeMounts | list | `[{"mountPath":"/var/www/fence/fence-config.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"}]` | Volumes to mount to the init container. |
-| labels | map | `{"app":"fence","authprovider":"yes","netnolimit":"yes","public":"yes","release":"production","tags.datadoghq.com/env":"anvilstaging","tags.datadoghq.com/service":"fence","tags.datadoghq.com/version":2021.12,"userhelper":"yes"}` | Labels to add to the pod. |
-| labels.app | string | `"fence"` | Application name. |
+| labels | map | `{"authprovider":"yes","netnolimit":"yes","public":"yes","userhelper":"yes"}` | Labels to add to the pod. |
 | labels.authprovider | string | `"yes"` | Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors. |
 | labels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
 | labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
-| labels.release | string | `"production"` | Release name. |
 | labels.userhelper | string | `"yes"` | Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes |
 | logo | string | `nil` |  |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
+| partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{"fsGroup":101}` | Security context for the pod |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
@@ -137,6 +141,7 @@ A Helm chart for gen3 Fence
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | privacy_policy | string | `nil` |  |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
 | resources | map | `{"limits":{"cpu":1,"memory":"2Gi"},"requests":{"cpu":0.3,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":1,"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
@@ -146,7 +151,7 @@ A Helm chart for gen3 Fence
 | resources.requests.cpu | string | `0.3` | The amount of CPU requested |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context for the containers in the pod |
-| selectorLabels | map | `{"app":"fence","release":"production"}` | Labels to use for selecting the deployment. |
+| selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

@@ -34,21 +34,26 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "pidgin.labels" -}}
-helm.sh/chart: {{ include "pidgin.chart" . }}
-{{ include "pidgin.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "pidgin.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pidgin.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "pidgin.name" . }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -59,16 +64,5 @@ Create the name of the service account to use
 {{- default (include "pidgin.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Define ddEnabled
-*/}}
-{{- define "pidgin.ddEnabled" -}}
-{{- if .Values.global }}
-{{- .Values.global.ddEnabled }}
-{{- else}}
-{{- .Values.dataDog.enabled }}
 {{- end }}
 {{- end }}
