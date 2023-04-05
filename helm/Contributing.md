@@ -3,10 +3,12 @@
 We welcome contributions to the gen3-helm repository! This document outlines the guidelines for contributing to this project.
 
 ## Git and GitHub resources
+
 Before starting a new contribution, you need to be familiar with [Git](https://git-scm.com/) and [GitHub](https://github.com/) concepts like: ***commit, branch, push, pull, remote, fork, repository***, etc. There are plenty of resources online to learn Git and GitHub, for example:
 - [Git Guide](https://github.com/git-guides/)
 - [GitHub Quick start](https://docs.github.com/en/get-started/quickstart)
 - [GitHub on YouTube](https://www.youtube.com/github)
+
 - [Git and GitHub learning resources](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources)
 - [Collaborating with Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests)
 - [GitHub Documentation, guides and help topics](https://docs.github.com/en/github)
@@ -15,7 +17,8 @@ Before starting a new contribution, you need to be familiar with [Git](https://g
 
 ## Before You Begin
 
-If you have an idea for a new feature or a bugfix, it is best to communicate with the University of Chciago Center for Translational Data Science (CTDS) developers early. The primary venue for this is the [GitHub issue tracker](https://github.com/uc-cdis/gen3-helm/issues). Browse through existing GitHub issues and if one seems related, comment on it. For more direct communication, CTDS developers are generally available via Slack.
+
+If you have an idea for a new feature or a bugfix, it is best to communicate with the University of Chicago Center for Translational Data Science (CTDS) developers early. The primary venue for this is the [GitHub issue tracker](https://github.com/uc-cdis/gen3-helm/issues). Browse through existing GitHub issues and if one seems related, comment on it. For more direct communication, CTDS developers are generally available via Slack.
 
 
 ## Reporting a New Issue
@@ -47,6 +50,7 @@ All changes to the gen3-helm repository should be made through pull requests.
 ## Documentation
 
 Documentation is found in the ``docs/`` directory.
+
 The documentation source files are written in [Markdown](https://daringfireball.net/projects/markdown/syntax) format.
 
 Each chart has it's own README.md that is automatically built with [helm-docs](https://github.com/norwoodj/helm-docs). This happens in the pre-commit so make sure to check in all the changed files.
