@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,28 +18,28 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.9 |
-| file://../arborist | arborist | 0.1.9 |
-| file://../argo-wrapper | argo-wrapper | 0.1.5 |
-| file://../audit | audit | 0.1.10 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.7 |
-| file://../common | common | 0.1.8 |
-| file://../etl | etl | 0.1.0 |
-| file://../fence | fence | 0.1.14 |
-| file://../guppy | guppy | 0.1.9 |
-| file://../hatchery | hatchery | 0.1.7 |
-| file://../indexd | indexd | 0.1.11 |
-| file://../manifestservice | manifestservice | 0.1.11 |
-| file://../metadata | metadata | 0.1.9 |
-| file://../peregrine | peregrine | 0.1.10 |
-| file://../pidgin | pidgin | 0.1.8 |
-| file://../portal | portal | 0.1.8 |
-| file://../requestor | requestor | 0.1.9 |
-| file://../revproxy | revproxy | 0.1.12 |
-| file://../sheepdog | sheepdog | 0.1.11 |
-| file://../sower | sower | 0.1.7 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.7 |
-| file://../wts | wts | 0.1.11 |
+| file://../ambassador | ambassador | 0.1.5 |
+| file://../arborist | arborist | 0.1.6 |
+| file://../argo-wrapper | argo-wrapper | 0.1.2 |
+| file://../audit | audit | 0.1.6 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.4 |
+| file://../common | common | 0.1.5 |
+| file://../elasticsearch | elasticsearch | 0.1.3 |
+| file://../fence | fence | 0.1.6 |
+| file://../frontend-framework | frontend-framework | 0.0.5 |
+| file://../guppy | guppy | 0.1.5 |
+| file://../hatchery | hatchery | 0.1.4 |
+| file://../indexd | indexd | 0.1.6 |
+| file://../manifestservice | manifestservice | 0.1.7 |
+| file://../metadata | metadata | 0.1.6 |
+| file://../peregrine | peregrine | 0.1.7 |
+| file://../pidgin | pidgin | 0.1.5 |
+| file://../portal | portal | 0.1.4 |
+| file://../requestor | requestor | 0.1.6 |
+| file://../revproxy | revproxy | 0.1.6 |
+| file://../sheepdog | sheepdog | 0.1.7 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.3 |
+| file://../wts | wts | 0.1.7 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -63,18 +63,15 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
-| fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
-| fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
-| fence.usersync.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
-| fence.usersync.schedule | string | `"*/30 * * * *"` | The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default. |
-| fence.usersync.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
-| fence.usersync.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
-| fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
-| fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
-| global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
-| global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
+| fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
+| fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
+| fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
+| frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
+| frontend-framework.image | map | `{"repository":null,"tag":null}` | Docker image information. |
+| frontend-framework.image.repository | string | `nil` | The Docker image repository for the guppy service. |
+| frontend-framework.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
+| global | map | `{"aws":{"account":{"aws_access_key_id":null,"aws_secret_access_key":null},"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","gcp":true,"hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","tls":{"cert":null,"key":null},"userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| global.aws.account | map | `{"aws_access_key_id":null,"aws_secret_access_key":null}` | Credentials for AWS |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |

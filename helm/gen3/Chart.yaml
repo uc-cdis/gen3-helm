@@ -27,10 +27,10 @@ dependencies:
 - name: common
   version: 0.1.9
   repository: file://../common
-- name: etl
-  version: 0.1.0
-  repository: file://../etl
-  condition: etl.enabled
+- name: frontend-framework
+  version: "0.0.5"
+  repository: "file://../frontend-framework"
+  condition: frontend-framework.enabled
 - name: fence
   version: 0.1.17
   repository: "file://../fence"
@@ -91,8 +91,6 @@ dependencies:
   version: 0.1.12
   repository: "file://../wts"
   condition: wts.enabled
-
-
 - name: elasticsearch
   version: 7.17.3
   repository: "https://helm.elastic.co"
@@ -115,7 +113,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.19
+version: 0.1.10
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

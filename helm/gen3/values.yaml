@@ -129,6 +129,18 @@ fence:
     # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
     slack_send_dbgap: false
 
+  # -- (map) Configurations for frontend-framework chart.
+frontend-framework:
+  # -- (bool) Whether to deploy the frontend-framework subchart.
+  enabled: true
+  # -- (map) Docker image information.
+  image:
+    # -- (string) The Docker image repository for the guppy service.
+    repository:
+    # -- (string) Overrides the image tag whose default is the chart appVersion.
+    tag:
+
+# -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
