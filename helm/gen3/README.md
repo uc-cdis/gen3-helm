@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -26,6 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.5 |
 | file://../elasticsearch | elasticsearch | 0.1.3 |
 | file://../fence | fence | 0.1.6 |
+| file://../frontend-framework | frontend-framework | 0.0.5 |
 | file://../guppy | guppy | 0.1.5 |
 | file://../hatchery | hatchery | 0.1.4 |
 | file://../indexd | indexd | 0.1.6 |
@@ -72,6 +73,10 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
+| frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
+| frontend-framework.image | map | `{"repository":null,"tag":null}` | Docker image information. |
+| frontend-framework.image.repository | string | `nil` | The Docker image repository for the guppy service. |
+| frontend-framework.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | global | map | `{"aws":{"account":{"aws_access_key_id":null,"aws_secret_access_key":null},"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","gcp":true,"hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","tls":{"cert":null,"key":null},"userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws.account | map | `{"aws_access_key_id":null,"aws_secret_access_key":null}` | Credentials for AWS |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
