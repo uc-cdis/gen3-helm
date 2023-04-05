@@ -3,10 +3,11 @@
 We welcome contributions to the gen3-helm repository! This document outlines the guidelines for contributing to this project.
 
 ## Git and GitHub resources
-Before starting a new contribution, you need to be familiar with [Git](https://git-scm.com/) and [GitHub](https://github.com/) concepts like: ***commit, branch, push, pull, remote, fork, repository***, etc. There are plenty resources online to learn Git and GitHub, for example:
+
+Before starting a new contribution, you need to be familiar with [Git](https://git-scm.com/) and [GitHub](https://github.com/) concepts like: ***commit, branch, push, pull, remote, fork, repository***, etc. There are plenty of resources online to learn Git and GitHub, for example:
 - [Git Guide](https://github.com/git-guides/)
 - [GitHub Quick start](https://docs.github.com/en/get-started/quickstart)
-- [GitHub guide on YouTube](https://www.youtube.com/githubguides)
+- [GitHub on YouTube](https://www.youtube.com/github)
 - [Git and GitHub learning resources](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources)
 - [Collaborating with Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests)
 - [GitHub Documentation, guides and help topics](https://docs.github.com/en/github)
@@ -15,7 +16,8 @@ Before starting a new contribution, you need to be familiar with [Git](https://g
 
 ## Before You Begin
 
-If you have an idea for a new feature or a bugfix, it is best to communicate with the UC-CDIS developers early. The primary venue for this is the [GitHub issue tracker](https://github.com/uc-cdis/gen3-helm/issues). Browse through existing GitHub issues and if one seems related, comment on it. For more direct communication, UC-CDIS developers are generally available via Slack.
+
+If you have an idea for a new feature or a bugfix, it is best to communicate with the University of Chicago Center for Translational Data Science (CTDS) developers early. The primary venue for this is the [GitHub issue tracker](https://github.com/uc-cdis/gen3-helm/issues). Browse through existing GitHub issues and if one seems related, comment on it. For more direct communication, CTDS developers are generally available via Slack.
 
 
 ## Reporting a New Issue
@@ -47,7 +49,8 @@ All changes to the gen3-helm repository should be made through pull requests.
 ## Documentation
 
 Documentation is found in the ``docs/`` directory.
-The documentation source files are written in [Markdown](https://daringfireball.net/projects/markdown/syntax) format. 
+
+The documentation source files are written in [Markdown](https://daringfireball.net/projects/markdown/syntax) format.
 
 Each chart has it's own README.md that is automatically built with [helm-docs](https://github.com/norwoodj/helm-docs). This happens in the pre-commit so make sure to check in all the changed files.
 
@@ -72,10 +75,10 @@ If a modification to the Helm chart is made (an update to the values.yaml file f
    name: Sheepdog
    description: A Helm chart for Kubernetes
    type: application
-   version: 0.1.1 # version updates to 0.1.1
+   version: 0.2.0 # version updates to 0.2.0
    ```
 
-Once the associated branch is merged into the main branch, the GitHub action packages and publishes an artifact, making it available for consumption. The release name is based off the 'name' field and the 'version' field in the Chart.yaml file. Given the example above, GitHub action will produce a release called `sheepdog-0.1.1`.
+Once the associated branch is merged into the main branch, the GitHub action packages and publishes an artifact, making it available for consumption. The release name is based off the 'name' field and the 'version' field in the Chart.yaml file. Given the example above, GitHub action will produce a release called `sheepdog-0.2.0`.
 
 
 ## Branch Naming Conventions
@@ -88,7 +91,7 @@ Branches are named as `type/scope`, and commit messages are written as `type(sco
     ```
     type = "chore" | "docs" | "feat" | "fix" | "refactor" | "style" | "test"
     ```
-    
+
 Some example branch names:
 
 - `refactor/db-calls`
@@ -103,8 +106,6 @@ Some example commit messages:
 
 ## Pull Requests (PRs)
 
-
-To link a PR on GitHub to Jira, add its identifier `GPE-{NUMBER}` in the PR title.
 
 Before submitting a PR for review, try to make sure you’ve accomplished these things:
 
@@ -129,4 +130,3 @@ git commit
 git push
 
 ```
-
