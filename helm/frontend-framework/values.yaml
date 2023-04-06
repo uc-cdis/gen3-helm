@@ -168,12 +168,13 @@ resources:
   # -- (map) The amount of resources that the container requests
   requests:
     # -- (string) The amount of CPU requested
-    cpu: 1.0
+    cpu: 0.6
     # -- (string) The amount of memory requested
-    memory: 4096Mi
+    memory: 512Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
     # -- (string) The maximum amount of memory the container can use
+    cpu: 0.6
     memory: 4096Mi
 
 # Values to determine the labels that are used for the deployment, pod, etc.
