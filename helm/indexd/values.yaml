@@ -194,6 +194,8 @@ volumeMounts:
 
 # -- (list) Environment variables to pass to the container
 env:
+  - name: "ARBORIST"
+    value: "true"
   - name: "GEN3_DEBUG"
     value: "False"
 
