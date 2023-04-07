@@ -46,7 +46,7 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /ff
+              path: /
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 60
@@ -55,9 +55,6 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
             - containerPort: 3000
-          # command:
-          #   - /bin/bash
-          #   - ./dockerStart.sh
           env:
             {{- if .Values.global.ddEnabled }}
             {{- include "common.datadogEnvVar" . | nindent 12 }}
@@ -96,4 +93,17 @@ spec:
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
+          volumeMounts:
+            - name: "cert-volume"
+              readOnly: true
+              mountPath: "/mnt/ssl/service.crt"
+              subPath: "service.crt"
+            - name: "cert-volume"
+              readOnly: true
+              mountPath: "/mnt/ssl/service.key"
+              subPath: "service.key"
+            - name: "ca-volume"
+              readOnly: true
+              mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
+              subPath: "ca.pem"
               
