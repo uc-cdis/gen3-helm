@@ -1,6 +1,6 @@
 # frontend-framework
 
-![Version: 0.0.5](https://img.shields.io/badge/Version-0.0.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: PXP-10877](https://img.shields.io/badge/AppVersion-PXP--10877-informational?style=flat-square)
+![Version: 0.0.8](https://img.shields.io/badge/Version-0.0.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: PXP-10877](https://img.shields.io/badge/AppVersion-PXP--10877-informational?style=flat-square)
 
 A Helm chart for the gen3 frontend framework
 
@@ -81,8 +81,8 @@ A Helm chart for the gen3 frontend framework
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":3000,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `3000` | The port number that the service exposes. |
+| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |

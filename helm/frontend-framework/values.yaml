@@ -108,7 +108,7 @@ service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   # -- (int) The port number that the service exposes.
-  port: 3000
+  port: 80
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
