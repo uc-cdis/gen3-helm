@@ -61,6 +61,8 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- which frontend to use "portal" or "gen3ff"
+  frontendRoot: gen3ff
 
 
 tags:

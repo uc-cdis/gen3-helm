@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
-          #     path: /
+          #     path: /ff
           #     port: 80
           #   initialDelaySeconds: 60
           #   periodSeconds: 30
@@ -47,7 +47,13 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
+              path: /ff
+              {{- else }}
               path: /
+              {{- end }}
+              # name:
+              #  {{ .Values.global.frontendRoot }}
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 60
@@ -64,6 +70,13 @@ spec:
             {{- end }}
             - name: HOSTNAME
               value: revproxy-service
+            {{- if eq "portal" .Values.global.frontendRoot }}
+            - name: BASE_PATH
+              value: /ff
+            {{- else}}
+            - name: NEXT_PUBLIC_PORTAL_BASENAME
+              value: /portal
+            {{- end }}
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
             # see https://github.com/npm/cli/issues/3163
             - name: NPM_CONFIG_UPDATE_NOTIFIER
