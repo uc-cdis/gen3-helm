@@ -57,14 +57,13 @@ global:
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-  # -- (map) If you would like to add any extra values to the manifest-global configmap.
-  manifestGlobalExtraValues: {}
-  # -- (map) External Secrets settings.
-  externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
-    deploy: false
-    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+  # -- which frontend to use "portal" or "gen3ff"
+  frontendRoot: gen3ff
+
+
+tags:
+  # controls whether or not to deploy postgres/ elasticsearch as local services.
+  dev: false
 
 # Dependancy Charts
 

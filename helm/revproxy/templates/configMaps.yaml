@@ -7,6 +7,18 @@ data:
   {{ ($a := split "/" $path)._1 }}: |
   {{- $bytes | toString | nindent 4 }}  
 {{- end}}
+{{- if eq "portal" .Values.global.frontendRoot }}
+  {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/portal-as-root/*.conf" }}
+  {{ ($a := split "/" $path)._2 }}: |
+  {{- $bytes | toString | nindent 4 }}
+  {{- end}}
+{{- end}}
+{{- if eq "gen3ff" .Values.global.frontendRoot }}
+  {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/gen3ff-as-root/*.conf" }}
+  {{ ($a := split "/" $path)._2 }}: |
+  {{- $bytes | toString | nindent 4 }}
+  {{- end}}
+{{- end}}
 ---
 apiVersion: v1
 kind: ConfigMap
