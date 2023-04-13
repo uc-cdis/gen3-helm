@@ -54,7 +54,7 @@ Documentation is found in the ``docs/`` directory.
 
 The documentation source files are written in [Markdown](https://daringfireball.net/projects/markdown/syntax) format.
 
-Each chart has it's own README.md that is automatically built with [helm-docs](https://github.com/norwoodj/helm-docs). This happens in the pre-commit so make sure to check in all the changed files.
+Each chart has its own README.md that is automatically built with [helm-docs](https://github.com/norwoodj/helm-docs). This happens in the pre-commit so make sure to check in all the changed files.
 
 ## Helm chart release strategy
 
