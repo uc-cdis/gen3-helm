@@ -22,7 +22,9 @@ If you have an idea for a new feature or a bugfix, it is best to communicate wit
 
 ## Reporting a New Issue
 
-If no existing gen3-helm issue seems appropriate, a new issue can be opened using [this form](https://github.com/uc-cdis/gen3-helm/issues/new).
+If you have identified a potential new issue the first step is to ask the community whether this is something they are familiar with and for which they may already have a solution.  The slack channel #gen3_helm_ext is the preferred forum for communication regarding helm.  Please inquire in #gen3_community if you would like access ([request access here](https://docs.google.com/forms/d/e/1FAIpQLSczyhhOXeCK9FdVtpQpelOHYnRj1EAq1rwwnm9q6cPAe5a7ug/viewform)).
+
+If the community has no solution and no existing gen3-helm issue seems appropriate, a new issue can be opened using [this form](https://github.com/uc-cdis/gen3-helm/issues/new). Please be specific in your comment and include instructions on how to reproduce the issue.  Please also make sure to add a short descriptive title.
 
 ## How to Contribute
 
