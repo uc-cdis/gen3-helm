@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    service: ambassador
+    app: ambassador
   name: ambassador-service
 spec:
   ports:
@@ -25,4 +25,4 @@ spec:
     targetPort: 8080
     name: proxy
   selector:
-    service: ambassador
+    {{- include "ambassador.selectorLabels" . | nindent 4 }}

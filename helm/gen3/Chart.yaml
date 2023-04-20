@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependancies
 dependencies:
 - name: ambassador
-  version: "0.1.5"
+  version: "0.1.6"
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
@@ -25,14 +25,14 @@ dependencies:
   repository: "file://../aws-es-proxy"
   condition: aws-es-proxy.enabled
 - name: common
-  version: "0.1.5"
+  version: "0.1.6"
   repository: file://../common
 - name: fence
-  version: "0.1.6"
+  version: "0.1.7"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
-  version: "0.1.5"
+  version: "0.1.6"
   repository: "file://../guppy"
   condition: guppy.enabled
 - name: hatchery
@@ -40,7 +40,7 @@ dependencies:
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.7"
+  version: "0.1.8"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
@@ -60,7 +60,7 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.4"
+  version: "0.1.5"
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
@@ -68,11 +68,11 @@ dependencies:
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.7"
+  version: "0.1.8"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.7"
+  version: "0.1.8"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -107,7 +107,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.10
+version: 0.1.11
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

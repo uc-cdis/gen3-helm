@@ -82,7 +82,7 @@ spec:
             - name: NODE_ENV
               value: "dev"
             - name: APP
-              value: {{ .Values.portalApp | quote }}
+              value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
               # optional: true
               value: ""
@@ -102,12 +102,8 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: manifest-global
-                  # acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
                   key: tier_access_level
-                  # for now making it optional so won't break anything
                   optional: true
-#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
-#adding a var in helpers.tpl for later- Elise
             - name: TIER_ACCESS_LIMIT
               valueFrom:
                 configMapKeyRef:

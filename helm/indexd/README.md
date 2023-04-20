@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -25,9 +25,10 @@ A Helm chart for gen3 indexd
 | datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
+| defaultPrefix | string | `"PREFIX/"` | default prefix for indexd |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","tierAccessLimit":1000,"userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -53,6 +54,7 @@ A Helm chart for gen3 indexd
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+| global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
@@ -83,7 +85,7 @@ A Helm chart for gen3 indexd
 | resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
-| secrets | map | `{"userdb":{"fence":"test","gateway":null,"gdcapi":null}}` | Values for indexd secret. |
+| secrets | map | `{"userdb":{"fence":null,"sheepdog":null}}` | Values for indexd secret. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
@@ -96,7 +98,7 @@ A Helm chart for gen3 indexd
 | tolerations | list | `[]` | Tolerations for the pods |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
 | volumeMounts | list | `[{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"}]` | Volumes to mount to the container. |
-| volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}},{"name":"creds-volume","secret":{"secretName":"indexd-creds"}}]` | Volumes to attach to the pod |
+| volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}}]` | Volumes to attach to the pod |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

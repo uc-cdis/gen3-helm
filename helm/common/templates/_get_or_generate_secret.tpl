@@ -17,7 +17,7 @@ Usage:
 {{- $secretLength := index . 3 -}}
 {{- $nameSpace := index . 4 -}}
 {{- if $value -}}
-{{- $value = $value | b64enc -}}
+{{- $value = $value  -}}
 {{- end -}}
 {{- if not $value -}}
   {{- if $secret := lookup "v1" "Secret" $nameSpace $secretName -}}
@@ -27,7 +27,7 @@ Usage:
   {{- end -}}
   {{- if not $value -}}
     {{- $value = randAlphaNum $secretLength -}}
-    {{- $value = $value | b64enc -}}
+    {{- $value = $value  -}}
   {{- end -}}
 {{- end -}}
 {{- $value -}}
