@@ -38,7 +38,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../revproxy | revproxy | 0.1.8 |
 | file://../sheepdog | sheepdog | 0.1.8 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.3 |
-| file://../wts | wts | 0.1.7 |
+| file://../wts | wts | 0.1.8 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -137,8 +137,8 @@ Helm chart to deploy Gen3 Data Commons
 | portal.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | portal.image.repository | string | `nil` | The Docker image repository for the portal service. |
 | portal.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
-| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| postgresql | map | `{"primary":{"persistence":{"enabled":true}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `true` | Option to persist the dbs data. |
 | requestor | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for requestor chart. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | requestor.image | map | `{"repository":null,"tag":null}` | Docker image information. |

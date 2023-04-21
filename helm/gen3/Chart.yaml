@@ -80,7 +80,7 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
-  version: "0.1.7"
+  version: "0.1.8"
   repository: "file://../wts"
   condition: wts.enabled
 

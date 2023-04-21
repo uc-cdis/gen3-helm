@@ -283,4 +283,4 @@ postgresql:
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
-      enabled: false
+      enabled: true

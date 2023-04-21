@@ -182,9 +182,7 @@ spec:
         - name: SECRET_CONFIG
           value: "/var/www/wts/appcreds.json"
         resources:
-          limits:
-            cpu: 0.8
-            memory: 512Mi
+          {{- toYaml .Values.resources | nindent 12 }}
         command: ["/bin/sh"]
         args:
           - "-c"
