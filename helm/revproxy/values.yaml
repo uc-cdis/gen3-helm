@@ -148,7 +148,7 @@ ingress:
     - host: chart-example.local
       paths:
         - path: /
-          pathType: ImplementationSpecific
+          pathType: Prefix
   # -- (list) To secure an Ingress by specifying a secret that contains a TLS private key and certificate.
   tls: []
   #  - secretName: chart-example-tls
