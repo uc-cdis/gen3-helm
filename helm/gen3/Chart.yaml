@@ -17,7 +17,7 @@ dependencies:
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
-  version: "0.1.6"
+  version: "0.1.7"
   repository: "file://../audit"
   condition: audit.enabled
 - name: aws-es-proxy

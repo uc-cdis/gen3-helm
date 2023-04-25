@@ -78,13 +78,13 @@ A Helm chart for gen3 workspace token service
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":0.5,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"cpu":0.5,"memory":"512Mi"},"requests":{"cpu":0.2,"memory":"120Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":0.5,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.cpu | string | `0.5` | The maximum amount of CPU the container can use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
-| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
+| resources.requests | map | `{"cpu":0.2,"memory":"120Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.2` | The amount of CPU requested |
+| resources.requests.memory | string | `"120Mi"` | The amount of memory requested |
 | roleName | string | `"workspace-token-service"` | Name of the role to be used for the role binding. |
 | secrets | map | `{"external_oidc":null}` | Values for wts secret. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
