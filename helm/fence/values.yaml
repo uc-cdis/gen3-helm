@@ -87,7 +87,7 @@ image:
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_config_env"
+  tag: "feat_indexd_password"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -255,9 +255,7 @@ env:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-  - name: FENCE_DB
-    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-  - name: FENCE_INDEXD_PASSWORD
+  - name: INDEXD_PASSWORD
     valueFrom:
       secretKeyRef:
         name: indexd-service-creds
