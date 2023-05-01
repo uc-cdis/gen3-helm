@@ -187,8 +187,13 @@ strategy:
 automountServiceAccountToken: true
 
 pelican:
-  # -- (string) The image to use for pelican exports
-  image: "2023.02"
+  image: 
+    # -- (string) Docker repository.
+    repository: quay.io/cdis/pelican-export
+    # -- (string) Docker pull policy.
+    pullPolicy: Always
+    # -- (string) Overrides the image tag whose default is the chart appVersion.
+    tag: ""
   # -- (string) The bucket for pelican exports
   bucket: ""
   # -- (map) Resource requests and limits for the containers in the pod

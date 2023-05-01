@@ -10,7 +10,7 @@ data:
         "action": "export",
         "container": {
           "name": "job-task",
-          "image": "{{ .Values.pelican.image }}",
+          "image": "{{ .Values.pelican.image.repository }}:{{ .Values.pelican.image.tag | default .Chart.AppVersion }}",
           "pull_policy": "Always",
           "env": [
             {
@@ -74,7 +74,7 @@ data:
         "action": "export-files",
         "container": {
           "name": "job-task",
-          "image": "{{ .Values.pelican.image }}",
+          "image": "{{ .Values.pelican.image.repository }}:{{ .Values.pelican.image.tag | default .Chart.AppVersion }}",
           "pull_policy": "Always",
           "env": [
             {

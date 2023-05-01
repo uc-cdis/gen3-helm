@@ -29,7 +29,7 @@ spec:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: sower
-          image: "quay.io/cdis/sower:2022.08"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
