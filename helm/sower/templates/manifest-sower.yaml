@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-sower
+data:
+  json: |-
+    [
+      {
+        "name": "pelican-export",
+        "action": "export",
+        "container": {
+          "name": "job-task",
+          "image": "{{ .Values.pelican.image }}",
+          "pull_policy": "Always",
+          "env": [
+            {
+              "name": "DICTIONARY_URL",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "name": "manifest-global",
+                  "key": "dictionary_url"
+                }
+              }
+            },
+            {
+              "name": "GEN3_HOSTNAME",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "name": "manifest-global",
+                  "key": "hostname"
+                }
+              }
+            },
+            {
+              "name": "ROOT_NODE",
+              "value": "subject"
+            }
+          ],
+          "volumeMounts": [
+            {
+              "name": "pelican-creds-volume",
+              "readOnly": true,
+              "mountPath": "/pelican-creds.json",
+              "subPath": "config.json"
+            },
+            {
+              "name": "peregrine-creds-volume",
+              "readOnly": true,
+              "mountPath": "/peregrine-creds.json",
+              "subPath": "creds.json"
+            }
+          ],
+          "cpu-limit": "{{ .Values.pelican.resources.limits.cpu }}",
+          "memory-limit": "{{ .Values.pelican.resources.limits.memory }}"
+        },
+        "volumes": [
+          {
+            "name": "pelican-creds-volume",
+            "secret": {
+              "secretName": "pelicanservice-g3auto"
+            }
+          },
+          {
+            "name": "peregrine-creds-volume",
+            "secret": {
+              "secretName": "peregrine-creds"
+            }
+          }
+        ],
+        "restart_policy": "Never"
+      },
+      {
+        "name": "pelican-export-files",
+        "action": "export-files",
+        "container": {
+          "name": "job-task",
+          "image": "{{ .Values.pelican.image }}",
+          "pull_policy": "Always",
+          "env": [
+            {
+              "name": "DICTIONARY_URL",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "name": "manifest-global",
+                  "key": "dictionary_url"
+                }
+              }
+            },
+            {
+              "name": "GEN3_HOSTNAME",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "name": "manifest-global",
+                  "key": "hostname"
+                }
+              }
+            },
+            {
+              "name": "ROOT_NODE",
+              "value": "file"
+            },
+            {
+              "name": "EXTRA_NODES",
+              "value": ""
+            }
+          ],
+          "volumeMounts": [
+            {
+              "name": "pelican-creds-volume",
+              "readOnly": true,
+              "mountPath": "/pelican-creds.json",
+              "subPath": "config.json"
+            },
+            {
+              "name": "peregrine-creds-volume",
+              "readOnly": true,
+              "mountPath": "/peregrine-creds.json",
+              "subPath": "creds.json"
+            }
+          ],
+          "cpu-limit": "{{ .Values.pelican.resources.limits.cpu }}",
+          "memory-limit": "{{ .Values.pelican.resources.limits.memory }}"
+        },
+        "volumes": [
+          {
+            "name": "pelican-creds-volume",
+            "secret": {
+              "secretName": "pelicanservice-g3auto"
+            }
+          },
+          {
+            "name": "peregrine-creds-volume",
+            "secret": {
+              "secretName": "peregrine-creds"
+            }
+          }
+        ],
+        "restart_policy": "Never"
+      }
+    ]
