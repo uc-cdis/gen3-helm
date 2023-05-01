@@ -4,7 +4,6 @@
 
 # -- (map) Global configuration options.
 global:
-  
   # -- (map) AWS configuration
   aws:
     enabled: false
