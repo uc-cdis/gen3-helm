@@ -187,7 +187,7 @@ strategy:
 automountServiceAccountToken: true
 
 pelican:
-  image: 
+  image:
     # -- (string) Docker repository.
     repository: quay.io/cdis/pelican-export
     # -- (string) Docker pull policy.
@@ -207,9 +207,9 @@ pelican:
     # -- (map) The maximum amount of resources that the container is allowed to use
     limits:
        # -- (string) The maximum amount of CPU the container can use
-      cpu: 1    
+      cpu: 1
       # -- (string) The maximum amount of memory the container can use
-      memory: 12Gi 
+      memory: 12Gi
 
 # -- (map) Service account to use or create.
 serviceAccount:
@@ -232,4 +232,3 @@ partOf: "Core-Service"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
