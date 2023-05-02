@@ -5,12 +5,38 @@ global:
   tls:
     cert:
     key:
-  # Postgres instance that is managed outside of k8s
+  # Postgres instance that is managed outside of helm
   postgres:
     master:
       host: "postgres-host-address"
       username: "postgres"
       password: "postgres-password"
+
+
+# configuration for fence helm chart. You can add it for all our services.
+fence:
+  # Fence config overrides 
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: ""
+        client_secret: ""
+
+    AWS_CREDENTIALS:
+      'fence-bot':
+        aws_access_key_id: ''
+        aws_secret_access_key: ''
+
+    S3_BUCKETS:
+      # Name of the actual s3 bucket
+      jq-helm-testing:
+        cred: 'fence-bot'
+        region: us-east-1
+    
+    # This is important for data upload.
+    DATA_UPLOAD_BUCKET: 'jq-helm-testing'
+
+
 
 revproxy:
   ingress:
@@ -29,6 +55,15 @@ revproxy:
         hosts:
         # Replace with your hostname
           - qureshi.planx-pla.net
+
+
+# -- (map) To configure postgresql subchart
+# Persistence is disabled by default
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: true
 
 
 # Add configuration overrides for fence and other services below as needed
