@@ -67,7 +67,9 @@ Helm chart to deploy Gen3 Data Commons
 | audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | aws-es-proxy | map | `{"enabled":false}` | Configurations for aws-es-proxy chart. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
-| fence | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for fence chart. |
+| fence | map | `{"FENCE_CONFIG":null,"USER_YAML":null,"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for fence chart. |
+| fence.FENCE_CONFIG | map | `nil` | Configuration settings for Fence app |
+| fence.USER_YAML | string | `nil` | USER YAML. Passed in as a multiline string. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |

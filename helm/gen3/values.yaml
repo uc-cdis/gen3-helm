@@ -125,6 +125,10 @@ fence:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (map) Configuration settings for Fence app
+  FENCE_CONFIG:
+  # -- (string) USER YAML. Passed in as a multiline string.
+  USER_YAML:
 
 # -- (map) Configurations for guppy chart.
 guppy:
