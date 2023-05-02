@@ -53,7 +53,7 @@ fence:
 
 
 # -- (map) To configure postgresql subchart
-# Disable persistence by default so we can spin up and down ephemeral environments
+# Persistence is disabled by default
 postgresql:
   primary:
     persistence:
