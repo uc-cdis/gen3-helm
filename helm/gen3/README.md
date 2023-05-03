@@ -81,7 +81,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
-| global.environment | string | `"default"` | Environment name.  This should be the same as vpcname if you're doing an AWS deployment.  Currently this is being used to share ALB's if you have multiple namespaces in same cluster.  |
+| global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
