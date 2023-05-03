@@ -142,7 +142,7 @@ hatchery:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
- 
+
   hatchery:
     sidecarContainer:
       # -- (string) The maximum amount of CPU the sidecar container can use
