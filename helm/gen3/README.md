@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.7 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.5 |
 | file://../common | common | 0.1.6 |
-| file://../elasticsearch | elasticsearch | 0.1.3 |
+| file://../elasticsearch | elasticsearch | 0.1.4 |
 | file://../fence | fence | 0.1.7 |
 | file://../guppy | guppy | 0.1.6 |
 | file://../hatchery | hatchery | 0.1.5 |
