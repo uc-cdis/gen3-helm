@@ -8,7 +8,7 @@ A Helm chart for gen3 indexd
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.5 |
+| file://../common | common | 0.1.6 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
