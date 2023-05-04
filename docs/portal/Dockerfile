@@ -33,7 +33,7 @@ COPY overrides/runWebpack.sh runWebpack.sh
 COPY overrides/getSchema.js /data-portal/data/getSchema.js
 RUN bash runWebpack.sh
 
-FROM nginx:latest
+FROM nginx:1-bullseye
 
 COPY overrides/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /data-portal/build/*.js /data-portal/build/index.html /usr/share/nginx/html/
