@@ -69,7 +69,9 @@ A Helm chart for gen3 sower
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | pelican.bucket | string | `""` | The bucket for pelican exports |
-| pelican.image | string | `"2023.02"` | The image to use for pelican exports |
+| pelican.image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| pelican.image.repository | string | `"quay.io/cdis/pelican-export"` | Docker repository. |
+| pelican.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | pelican.resources | map | `{"limits":{"cpu":1,"memory":"12Gi"},"requests":{"cpu":"100m","memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
 | pelican.resources.limits | map | `{"cpu":1,"memory":"12Gi"}` | The maximum amount of resources that the container is allowed to use |
 | pelican.resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |

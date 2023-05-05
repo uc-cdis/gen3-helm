@@ -6,6 +6,7 @@ description: Helm chart to deploy Gen3 Data Commons
 dependencies:
 - name: ambassador
   version: "0.1.6"
+  version: "0.1.6"
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
@@ -17,6 +18,7 @@ dependencies:
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
+  version: "0.1.7"
   version: "0.1.7"
   repository: "file://../audit"
   condition: audit.enabled
@@ -73,6 +75,7 @@ dependencies:
   condition: revproxy.enabled
 - name: sheepdog
   version: "0.1.8"
+  version: "0.1.8"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -80,6 +83,7 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
+  version: "0.1.8"
   version: "0.1.8"
   repository: "file://../wts"
   condition: wts.enabled

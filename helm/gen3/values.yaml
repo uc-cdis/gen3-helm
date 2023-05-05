@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
 global:
   # -- (map) AWS configuration
   aws:
@@ -12,23 +11,24 @@ global:
     #   # Prep move of these keys here.
     #   aws_access_key_id:
     #   aws_secret_access_key:
-  # -- (bool) Whether the deployment is for development purposes. Deploys postgres/es charts alongside gen3.
+
+  # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
-  # -- (map) Postgres database configuration.
   postgres:
-    # -- (bool) Whether the database should be created.
+    # -- (bool) Whether the database create job should run.
     dbCreate: true
-    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
-      # -- (string) hostname of postgres server
-      host:
-      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      # -- global postgres master username
       username: postgres
-      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      # -- global postgres master password
       password:
-      # -- (string) Port for Postgres.
+      # -- global postgres master host
+      host:
+      # -- global postgres master port
       port: "5432"
-  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  # -- (string) Environment name.
+  # This should be the same as vpcname if you're doing an AWS deployment.
+  # Currently this is being used to share ALB's if you have multiple namespaces in same cluster.
   environment: default
   # -- (string) Hostname for the deployment.
   hostname: localhost
@@ -38,10 +38,6 @@ global:
   dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
   # -- (string) Portal application name.
   portalApp: gitops
-  # -- (string) S3 bucket name for Kubernetes manifest files.
-  kubeBucket: kube-gen3
-  # -- (string) S3 bucket name for log files.
-  logsBucket: logs-gen3
   # -- (bool) Whether to sync data from dbGaP.
   syncFromDbgap: false
   # -- (string) Path to the user.yaml file in S3.
@@ -58,30 +54,19 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
-  pdb: false
-  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
 
-
-tags:
-  # controls whether or not to deploy postgres/ elasticsearch as local services.
-  dev: false
 
 # Dependancy Charts
 
-# -- (map) Configurations for ambassador chart.
 ambassador:
   # -- (bool) Whether to deploy the ambassador subchart.
   enabled: true
-  # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the ambassador service.
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for arborist chart.
 arborist:
   # -- (bool) Whether to deploy the arborist subchart.
   enabled: true
@@ -92,7 +77,6 @@ arborist:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for argo-wrapper chart.
 argo-wrapper:
   # -- (bool) Whether to deploy the argo-wrapper subchart.
   enabled: true
@@ -103,7 +87,6 @@ argo-wrapper:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for audit chart.
 audit:
   # -- (bool) Whether to deploy the audit subchart.
   enabled: true
@@ -114,12 +97,18 @@ audit:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for aws-es-proxy chart.
+
 aws-es-proxy:
   # -- (bool) Whether to deploy the aws-es-proxy subchart.
   enabled: false
+  # -- (str) Elasticsearch endpoint in AWS
+  esEndpoint: test.us-east-1.es.amazonaws.com
+  secrets:
+    # -- (str) AWS access key ID for aws-es-proxy
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for aws-es-proxy
+    awsSecretAccessKey: ""
 
-# -- (map) Configurations for fence chart.
 fence:
   # -- (bool) Whether to deploy the fence subchart.
   enabled: true
@@ -129,8 +118,11 @@ fence:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (map) Configuration settings for Fence app
+  FENCE_CONFIG:
+  # -- (string) USER YAML. Passed in as a multiline string.
+  USER_YAML:
 
-# -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
@@ -141,7 +133,6 @@ guppy:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for hatchery chart.
 hatchery:
   # -- (bool) Whether to deploy the hatchery subchart.
   enabled: true
@@ -152,7 +143,69 @@ hatchery:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for indexd chart.
+  hatchery:
+    sidecarContainer:
+      # -- (string) The maximum amount of CPU the sidecar container can use
+      cpu-limit: '0.1'
+      # -- (string) The maximum amount of memory the sidecar container can use
+      memory-limit: 256Mi
+      # -- (string) The sidecar image.
+      image: quay.io/cdis/ecs-ws-sidecar:master
+      # -- (map) Environment variables to pass to the sidecar container
+      env:
+        NAMESPACE: "{{ .Release.Namespace }}"
+        HOSTNAME: "{{ .Values.global.hostname }}"
+      # -- (list) Arguments to pass to the sidecare container.
+      args: []
+      # -- (list) Commands to run for the sidecar container.
+      command:
+      - "/bin/bash"
+      - "./sidecar.sh"
+      lifecycle-pre-stop:
+      - su
+      - "-c"
+      - echo test
+      - "-s"
+      - "/bin/sh"
+      - root
+    containers:
+      -
+        # -- (int) port to proxy traffic to in docker contaniner
+        target-port: 8888
+        # -- (string) cpu limit of workspace container
+        cpu-limit: '1.0'
+        # -- (string) memory limit of workspace container
+        memory-limit: 2Gi
+        # -- (string) name of workspace
+        name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
+        # -- (string) docker image for workspace
+        image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+        # -- environment variables for workspace container
+        env:
+          FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
+        args:
+        - "--NotebookApp.base_url=/lw-workspace/proxy/"
+        - "--NotebookApp.default_url=/lab"
+        - "--NotebookApp.password=''"
+        - "--NotebookApp.token=''"
+        - "--NotebookApp.shutdown_no_activity_timeout=5400"
+        - "--NotebookApp.quit_button=False"
+        command:
+        - start-notebook.sh
+        path-rewrite: "/lw-workspace/proxy/"
+        use-tls: 'false'
+        ready-probe: "/lw-workspace/proxy/"
+        lifecycle-post-start:
+        - "/bin/sh"
+        - "-c"
+        - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
+          ln -s /data /home/$IAM/pd/; true
+        user-uid: 1000
+        fs-gid: 100
+        user-volume-location: "/home/jovyan/pd"
+        gen3-volume-location: "/home/jovyan/.gen3"
+
+
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
@@ -162,8 +215,10 @@ indexd:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (string) the default prefix for indexd records
+  defaultPrefix: "PREFIX/"
 
-# -- (map) Configurations for manifest service chart.
+
 manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
@@ -174,7 +229,6 @@ manifestservice:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for metadata chart.
 metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
@@ -185,7 +239,6 @@ metadata:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for peregrine chart.
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true
@@ -196,7 +249,6 @@ peregrine:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for pidgin chart.
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
   enabled: true
@@ -207,7 +259,6 @@ pidgin:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for portal chart.
 portal:
   # -- (bool) Whether to deploy the portal subchart.
   enabled: true
@@ -217,8 +268,21 @@ portal:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (map) GitOps configuration for portal
+gitops:
+  # -- (string) multiline string - gitops.json
+  json:
+  # -- (string) - favicon in base64
+  favicon:
+  # -- (string) - multiline string - gitops.css
+  css:
+  # -- (string) - logo in base64
+  logo:
+  # -- (string) - createdby.png - base64
+  createdby:
+  sponsors:
 
-# -- (map) Configurations for requestor chart.
+
 requestor:
   # -- (bool) Whether to deploy the requestor subchart.
   enabled: false
@@ -229,7 +293,6 @@ requestor:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for revproxy chart.
 revproxy:
   # -- (bool) Whether to deploy the revproxy subchart.
   enabled: true
@@ -240,7 +303,21 @@ revproxy:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for sheepdog chart.
+  ingress:
+    # -- (bool) Whether to create the custom revproxy ingress
+    enabled: false
+    # -- (string) The ingress class name.
+    className: ""
+    # -- (map) Annotations to add to the ingress.
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # -- (list) Where to route the traffic.
+    hosts:
+      - host: chart-example.local
+    # -- (list) To secure an Ingress by specifying a secret that contains a TLS private key and certificate.
+    tls: []
+
 sheepdog:
   # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
@@ -251,7 +328,6 @@ sheepdog:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for ssjdispatcher chart.
 ssjdispatcher:
   # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
@@ -262,7 +338,7 @@ ssjdispatcher:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for wts chart.
+
 wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
@@ -280,7 +356,6 @@ secrets:
   # -- (string) AWS secret access key.
   awsSecretAccessKey: test
 
-# -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:

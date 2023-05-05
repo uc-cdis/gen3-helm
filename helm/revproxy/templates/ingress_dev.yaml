@@ -4,6 +4,10 @@ kind: Ingress
 metadata:
   name: revproxy-dev
 spec:
+{{- if .Values.global.dev }}
+  tls:
+  - secretName: gen3-certs
+  {{- end  }}
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:
