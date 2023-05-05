@@ -5,31 +5,9 @@ We hihgly recommend the use of a managed postgres service such as AWS RDS/Aurora
 
 The bundled version of postgres, that is used for development purposes, is deployed using this helm chart https://bitnami.com/stack/postgresql/helm
 
-# Changes compared to cloud-automation deployments
-
-In cloud-automation all the database credentials were embedded in `creds.json` files, rather than pure kubernetes secrets. 
-
-<!-- Add in info about how it was done in cloud-automation, where the user would from the  adminvm run a set of bash script to set up and configure databases.  -->
-<!-- Credentials used to live in g3auto folder, and a `gen3 kube-setup-secrets` would update json files that were consumed by the microservices.  -->
-
-<!-- With helm we are first generating kubernetes secrets for database connections for each microservice. These can either be auto-generated, or populated via Values.yaml overrides. 
-
-Tell that each service that require databases gets it's own kubernetes secret. 
-
-Go in a little detail about the dbCreate job: 
-  - Connects to the master postgres host, with the master user. 
-  - Sets up user according to the kubernetes secrets
-  - Sets up database that is used by the service. 
-  - sets "dbCreated" to true, signaling to the service that it can now start up. Services will be in `pending` state until this secret is populated, as this is required for a service to start. 
-
-  If a user and database already exist, populate the values.yaml with the credentials for the user/database and set dbCreate to false. 
-
-
- -->
 ## Database credentials
 
 Every service that requires a postgres database, has the it's credentials stored in a kubernetes secret. 
-
 
 Example (The secret values have been base64 decoded for documentation purposes): 
 
@@ -72,7 +50,7 @@ If you set the `global.postgres.dbCreate` value to true, then a job is kicked of
 This will kick off a [database creation job](../helm/common/templates/_db_setup_job.tpl)
 
 
-
+<!-- Describe the database creation job -->
 
 
 ## Database restoration. (BETA)
