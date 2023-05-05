@@ -18,10 +18,10 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.6 |
+| file://../ambassador | ambassador | 0.1.7 |
 | file://../arborist | arborist | 0.1.7 |
 | file://../argo-wrapper | argo-wrapper | 0.1.3 |
-| file://../audit | audit | 0.1.7 |
+| file://../audit | audit | 0.1.8 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.5 |
 | file://../common | common | 0.1.6 |
 | file://../elasticsearch | elasticsearch | 0.1.4 |
@@ -36,9 +36,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../portal | portal | 0.1.6 |
 | file://../requestor | requestor | 0.1.7 |
 | file://../revproxy | revproxy | 0.1.9 |
-| file://../sheepdog | sheepdog | 0.1.8 |
+| file://../sheepdog | sheepdog | 0.1.9 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.4 |
-| file://../wts | wts | 0.1.8 |
+| file://../wts | wts | 0.1.9 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -70,19 +70,20 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| global | map | `{"aws":{"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","minAvialable":1,"netPolicy":true,"pdb":false,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","tierAccessLimit":1000,"userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| gitops.createdby | string | `nil` | - createdby.png - base64 |
+| gitops.css | string | `nil` | - multiline string - gitops.css |
+| gitops.favicon | string | `nil` | - favicon in base64 |
+| gitops.json | string | `nil` | multiline string - gitops.json |
+| gitops.logo | string | `nil` | - logo in base64 |
+| gitops.sponsors | string | `nil` |  |
 | global.aws | map | `{"enabled":false}` | AWS configuration |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
-| global.dev | bool | `true` | Whether the deployment is for development purposes. Deploys postgres/es charts alongside gen3. |
+| global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
-| global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
-| global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
-| global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
-| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.master.host | string | `nil` | global postgres master host |
@@ -93,7 +94,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
