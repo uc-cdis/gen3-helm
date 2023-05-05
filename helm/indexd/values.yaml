@@ -50,6 +50,8 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
@@ -185,9 +187,6 @@ volumes:
 - name: config-volume
   secret:
     secretName: "indexd-settings"
-- name: creds-volume
-  secret:
-    secretName: "indexd-creds"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -206,13 +205,16 @@ env:
 # -- (map) Values for indexd secret.
 secrets:
   userdb:
-    fence: test
-    gdcapi:
-    gateway:
+    fence:
+    sheepdog:
+    # gateway:
 
 # -- (map) Values for overriding uwsgi settings
 uwsgi:
   listen: 1024
+
+# -- (string) default prefix for indexd
+defaultPrefix: "PREFIX/"
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

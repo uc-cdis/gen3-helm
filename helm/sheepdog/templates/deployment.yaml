@@ -200,7 +200,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: indexd-service-creds
-                  key: gdcapi
+                  key: sheepdog
                   optional: false
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"

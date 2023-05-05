@@ -1,21 +1,59 @@
 # Databases in gen3 helm charts
-This document will describe how databases are provisioned in gen3 when deploying with helm charts
+This document will describe how databases are provisioned, and used in gen3 when deploying gen3 with helm charts. 
 
+We hihgly recommend the use of a managed postgres service such as AWS RDS/Aurora, or manage postgres outside of the helm deployment, when deploying gen3 to production environments. 
+
+The bundled version of postgres, that is used for development purposes, is deployed using this helm chart https://bitnami.com/stack/postgresql/helm
+
+# Changes compared to cloud-automation deployments
+
+In cloud-automation all the database credentials were embedded in `creds.json` files, rather than pure kubernetes secrets. 
+
+<!-- Add in info about how it was done in cloud-automation, where the user would from the  adminvm run a set of bash script to set up and configure databases.  -->
+<!-- Credentials used to live in g3auto folder, and a `gen3 kube-setup-secrets` would update json files that were consumed by the microservices.  -->
+
+<!-- With helm we are first generating kubernetes secrets for database connections for each microservice. These can either be auto-generated, or populated via Values.yaml overrides. 
+
+Tell that each service that require databases gets it's own kubernetes secret. 
+
+Go in a little detail about the dbCreate job: 
+  - Connects to the master postgres host, with the master user. 
+  - Sets up user according to the kubernetes secrets
+  - Sets up database that is used by the service. 
+  - sets "dbCreated" to true, signaling to the service that it can now start up. Services will be in `pending` state until this secret is populated, as this is required for a service to start. 
+
+  If a user and database already exist, populate the values.yaml with the credentials for the user/database and set dbCreate to false. 
+
+
+ -->
 ## Database credentials
-The detault behaviour of gen3 helm charts is to auto-generate database credentials and save them as kubernetes secrets. 
+
+Every service that requires a postgres database, has the it's credentials stored in a kubernetes secret. 
+
+
+Example (The secret values have been base64 decoded for documentation purposes): 
+
+```yaml
+kubectl get secret fence-dbcreds -o yaml
+apiVersion: v1
+kind: Secret
+data:
+  database: fence_gen3             # The default value of this is <service_name>_<release_name>
+  dbcreated: true                  # This is updated by the dbCreate job, when a database is created, and configured. 
+  host: gen3-postgresql            # Default depends on whether or not `global.dev` is true or false. If it's true this will default to <release_name>-postgresql. If this is a production deployment, it will look for either `global.postgres.master.host` or `postgres.host` in the Values.yaml
+  password: example_pass           # If not explicitely provided via the values, this is auto-generated.   
+  port: 5432                       # Defaults to 5432, will read from `global.postgres.master.port` or `postgres.port` for ovverrides.
+  username: fence_gen3             # Defaults to <service_name>_<release_name>. Will look for overrides in `postgres.username`.
+```
 
 Each service then consumes this same secret and mounts them as ENV vars to access databases. 
 
-You can override this default behaviour by providing postgres credentials through Values.yaml files.
-
-If you are deploying a dev/CI environment, a postgres server is deployed alongside gen3, and that is used to hold databases for testing. 
-
-For production deployments you need to provide the master credentials for a postgres server through these values. 
+For production deployments you must at minimum provide the master credentials for a postgres server through these values. 
 
 ```
 global:
   postgres:
-    db_create: true
+    dbCreate: true
     master:
       host: insert.postgres.hostname.here
       username: postgres
@@ -24,23 +62,20 @@ global:
 
 ```
 
-These values will then be used to provision databases for the environment.
+These values can then be used to provision and configure databases for the gen3 environment.
 
 ## Automatic database creation through jobs
-When deploying gen3 helm charts you need to specifiy a postgres server. For dev/CI environments an installation of postgres is included, and is not intended for use in production. 
 
-We hihgly recommend the use of a managed postgres service such as RDS when deploying gen3 to cloud environments. 
 
-The dev/ci postgres is deployed using this helm chart https://bitnami.com/stack/postgresql/helm
-
-If you set the `global.postgres.db_create` value to true, then a job is kicked off for each service that relies on postgres to provision databases. 
+If you set the `global.postgres.dbCreate` value to true, then a job is kicked off for each service that relies on postgres to provision databases. 
 
 This will kick off a [database creation job](../helm/common/templates/_db_setup_job.tpl)
 
 
 
 
-## Database restoration.
+
+## Database restoration. (BETA)
 There is a job to restore dummy data for Postgres and Elasticsearch to speed up setting up ephemeral enviornments for testing purposes, and to avoid running expensive ETL jobs in CI to have a fully featured gen3 environment
 
 In the future this job may be used to set up fully tested production environments, negating the need to run ETL in production, and have all your databases tested before doing a data-release.

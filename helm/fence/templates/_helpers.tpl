@@ -5,6 +5,24 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+
+
+{{/*
+a function to generate or get the jwt keys
+*/}}
+
+{{- define "getOrCreatePrivateKey" -}}
+{{- $secretName := "fence-jwt-keys" }}
+{{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
+{{- if $existingSecret }}
+{{- index $existingSecret.data "jwt_private_key.pem" }}
+{{- else }}
+{{- genPrivateKey "rsa" | b64enc }}
+{{- end }}
+{{- end -}}
+
+
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).

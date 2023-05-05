@@ -71,11 +71,9 @@ spec:
               value: {{ . }}
             {{- end }}
             - name: TIER_ACCESS_LEVEL
-              value: {{ include "guppy.tierAccessLevel" . }}
-            {{- with .Values.tierAccessLimit }}
+              value: {{ .Values.global.tierAccessLevel }}
             - name: TIER_ACCESS_LIMIT
-              value: {{ . | quote }}
-            {{- end }}
+              value: {{ .Values.global.tierAccessLimit }}
 
 
           {{- with .Values.volumeMounts }}

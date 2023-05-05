@@ -1,9 +1,0 @@
-global:
-  dev: true
-  hostname: qureshi.planx-pla.net
-fence: 
-  FENCE_CONFIG:
-    OPENID_CONNECT:
-      google:
-        client_id: "" 
-        client_secret: ""
