@@ -26,6 +26,7 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
