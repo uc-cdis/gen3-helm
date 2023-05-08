@@ -55,10 +55,6 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
-  pdb: false
-  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
