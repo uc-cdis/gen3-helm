@@ -58,10 +58,10 @@ A Helm chart for gen3 indexd
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/indexd","tag":"jawadqur-patch-1"}` | Docker image information. |
+| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
-| image.tag | string | `"jawadqur-patch-1"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
