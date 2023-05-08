@@ -57,6 +57,10 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
