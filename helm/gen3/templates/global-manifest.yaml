@@ -8,8 +8,8 @@ data:
   "revproxy_arn": {{ .Values.global.revproxyArn | quote }}
   "dictionary_url": {{ .Values.global.dictionaryUrl | quote }}
   "portal_app": {{ .Values.global.portalApp | quote }}
-  "kube_bucket": {{ .Values.global.kubeBucket | quote }}
-  "logs_bucket": {{ .Values.global.logsBucket | quote }}
+  # "kube_bucket": {{ .Values.global.kubeBucket | quote }}
+  # "logs_bucket": {{ .Values.global.logsBucket | quote }}
   "sync_from_dbgap": {{ .Values.global.syncFromDbgap | quote }}
   "useryaml_s3path": {{ .Values.global.userYamlS3Path | quote }}
   "public_datasets": {{ .Values.global.publicDataSets | quote }}
