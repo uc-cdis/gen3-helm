@@ -91,7 +91,7 @@ image:
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_indexd_password"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

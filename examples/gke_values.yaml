@@ -1,7 +1,8 @@
 global:
   # to disable local es/postgre
-  dev: true
+  dev: false
   hostname: qureshi.planx-pla.net
+  esEndpoint: ""
   tls:
     cert:
     key:
@@ -11,6 +12,55 @@ global:
       host: "postgres-host-address"
       username: "postgres"
       password: "postgres-password"
+
+# configuration for fence helm chart. You can add it for all our services.
+fence:
+  # Override image
+  image:
+    repository: quay.io/cdis/fence
+    tag: master
+
+  # Fence config overrides 
+  FENCE_CONFIG:
+    APP_NAME: 'Gen3 Data Commons'
+    # A URL-safe base64-encoded 32-byte key for encrypting keys in db
+    # in python you can use the following script to generate one:
+    #     import base64
+    #     import os
+    #     key = base64.urlsafe_b64encode(os.urandom(32))
+    #     print(key)
+    ENCRYPTION_KEY: REPLACEME
+
+    DEBUG: True
+    OPENID_CONNECT:
+      google:
+        client_id: ""
+        client_secret: ""
+
+    AWS_CREDENTIALS:
+      'fence-bot':
+        aws_access_key_id: ''
+        aws_secret_access_key: ''
+
+    S3_BUCKETS:
+      # Name of the actual s3 bucket
+      jq-helm-testing:
+        cred: 'fence-bot'
+        region: us-east-1
+    
+    # This is important for data upload.
+    DATA_UPLOAD_BUCKET: 'jq-helm-testing'
+
+
+
+# -- (map) To configure postgresql subchart
+# Persistence is disabled by default
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: true
+
 
 revproxy:
   ingress:
