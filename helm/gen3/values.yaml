@@ -65,6 +65,12 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: true
+  # -- (string) Slack webhook endpoint used with certain jobs. 
+  slack_webhook: none
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
 
 
 tags:
@@ -76,7 +82,7 @@ tags:
 # -- (map) Configurations for ambassador chart.
 ambassador:
   # -- (bool) Whether to deploy the ambassador subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the ambassador service.
@@ -98,7 +104,7 @@ arborist:
 # -- (map) Configurations for argo-wrapper chart.
 argo-wrapper:
   # -- (bool) Whether to deploy the argo-wrapper subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the argo-wrapper service.
@@ -109,7 +115,7 @@ argo-wrapper:
 # -- (map) Configurations for audit chart.
 audit:
   # -- (bool) Whether to deploy the audit subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the audit service.
@@ -147,7 +153,7 @@ guppy:
 # -- (map) Configurations for hatchery chart.
 hatchery:
   # -- (bool) Whether to deploy the hatchery subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the hatchery service.
@@ -169,7 +175,7 @@ indexd:
 # -- (map) Configurations for manifest service chart.
 manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the manifest service service.
@@ -180,7 +186,7 @@ manifestservice:
 # -- (map) Configurations for metadata chart.
 metadata:
   # -- (bool) Whether to deploy the metadata subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the metadata service.
@@ -191,7 +197,7 @@ metadata:
 # -- (map) Configurations for peregrine chart.
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the peregrine service.
@@ -202,7 +208,7 @@ peregrine:
 # -- (map) Configurations for pidgin chart.
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the pidgin service.
@@ -213,7 +219,7 @@ pidgin:
 # -- (map) Configurations for portal chart.
 portal:
   # -- (bool) Whether to deploy the portal subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the portal service.
@@ -235,7 +241,7 @@ requestor:
 # -- (map) Configurations for revproxy chart.
 revproxy:
   # -- (bool) Whether to deploy the revproxy subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the revproxy service.
@@ -246,7 +252,7 @@ revproxy:
 # -- (map) Configurations for sheepdog chart.
 sheepdog:
   # -- (bool) Whether to deploy the sheepdog subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the sheepdog service.
@@ -268,7 +274,7 @@ ssjdispatcher:
 # -- (map) Configurations for wts chart.
 wts:
   # -- (bool) Whether to deploy the wts subchart.
-  enabled: true
+  enabled: false
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the wts service.

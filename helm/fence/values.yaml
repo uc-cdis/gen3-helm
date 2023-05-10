@@ -52,6 +52,14 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: false
+  # -- (string) Slack webhook endpoint used with certain jobs. 
+  slack_webhook: none
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
+  # # -- (bool) Option to generate ssh keys to be used in dbgap sync.
+  # generate_dbgap_sshkeys: true
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -71,6 +79,7 @@ postgres:
   password:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
+
 
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
@@ -257,6 +266,39 @@ env:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+  - name: INDEXD_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: indexd-dbcreds
+        key: password
+        optional: false
+  - name: SYNC_FROM_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: syncFromDbgap
+        optional: true
+  - name: ADD_DBGAP
+    value: "false"
+  - name: ONLY_DBGAP
+    value: "false"
+  - name: SLACK_SEND_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: slack_send_dbgap
+        optional: true
+  - name: slackWebHook
+    valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: slack_webhook
+          optional: true
+  - name: gen3Env
+    valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: hostname
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -428,7 +470,13 @@ datadogTraceSampleRate: 1
 
 logo:
 privacy_policy:
-
+projects: 
+# -- (string) The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory. 
+sshconfig:
+# -- (string) The ssh Private Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
+ssh_private_key: |
+# -- (string) The ssh Public Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
+ssh_public_key: |
 
 # USER_SYNC_CRON:
 #   LOCATION:

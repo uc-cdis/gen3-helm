@@ -17,6 +17,8 @@ data:
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
+  "slack_webhook": {{ .Values.global.slack_webhook | quote }}
+  "slack_send_dbgap": {{ .Values.global.slack_send_dbgap | quote }}
   {{- with .Values.global.origins_allow_credentials }}
   "origins_allow_credentials": {{ . | toJson | quote }}
   {{- end -}}
