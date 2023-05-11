@@ -49,8 +49,18 @@ global:
   logsBucket: logs-gen3
   # -- (bool) Whether to sync data from dbGaP.
   syncFromDbgap: false
+  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+  addDbgap: false
+  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+  onlyDbgap: false
   # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: true
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
@@ -65,13 +75,6 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
-  # -- (bool) Whether to run Fence usersync or not.
-  usersync: true
-  # -- (string) Slack webhook endpoint used with certain jobs. 
-  slack_webhook: none
-  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
-  slack_send_dbgap: false
-
 
 tags:
   # controls whether or not to deploy postgres/ elasticsearch as local services.
@@ -82,7 +85,7 @@ tags:
 # -- (map) Configurations for ambassador chart.
 ambassador:
   # -- (bool) Whether to deploy the ambassador subchart.
-  enabled: false
+  enabled: true
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the ambassador service.
@@ -115,7 +118,7 @@ argo-wrapper:
 # -- (map) Configurations for audit chart.
 audit:
   # -- (bool) Whether to deploy the audit subchart.
-  enabled: false
+  enabled: true
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the audit service.
@@ -153,7 +156,7 @@ guppy:
 # -- (map) Configurations for hatchery chart.
 hatchery:
   # -- (bool) Whether to deploy the hatchery subchart.
-  enabled: false
+  enabled: true
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the hatchery service.

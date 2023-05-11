@@ -4,6 +4,19 @@
 
 # -- (map) Global configuration options.
 global:
+  # -- (map) AWS configuration
+  gcp: true
+  tls:
+    cert:
+    key:
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (map) Credentials for AWS
+    account:
+      # Prep move of these keys here.
+      aws_access_key_id:
+      aws_secret_access_key:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
   # -- (map) Postgres database configuration.
@@ -35,9 +48,19 @@ global:
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
   # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
+  syncFromDbgap: True
+  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+  addDbgap: True
+  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+  onlyDbgap: False
   # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: true
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
@@ -52,12 +75,6 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
-  # -- (bool) Whether to run Fence usersync or not.
-  usersync: false
-  # -- (string) Slack webhook endpoint used with certain jobs. 
-  slack_webhook: none
-  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
-  slack_send_dbgap: false
   # # -- (bool) Option to generate ssh keys to be used in dbgap sync.
   # generate_dbgap_sshkeys: true
 
@@ -79,7 +96,6 @@ postgres:
   password:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
-
 
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
@@ -276,12 +292,20 @@ env:
     valueFrom:
       configMapKeyRef:
         name: manifest-global
-        key: syncFromDbgap
+        key: sync_from_dbgap
         optional: true
   - name: ADD_DBGAP
-    value: "false"
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: add_dbgap
+        optional: true
   - name: ONLY_DBGAP
-    value: "false"
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: only_dbgap
+        optional: true
   - name: SLACK_SEND_DBGAP
     valueFrom:
       configMapKeyRef:
@@ -474,9 +498,9 @@ projects:
 # -- (string) The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory. 
 sshconfig:
 # -- (string) The ssh Private Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
-ssh_private_key: |
+ssh_private_key:
 # -- (string) The ssh Public Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
-ssh_public_key: |
+ssh_public_key:
 
 # USER_SYNC_CRON:
 #   LOCATION:

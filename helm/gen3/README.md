@@ -45,8 +45,8 @@ Helm chart to deploy Gen3 Data Commons
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ambassador | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for ambassador chart. |
-| ambassador.enabled | bool | `false` | Whether to deploy the ambassador subchart. |
+| ambassador | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for ambassador chart. |
+| ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart. |
 | ambassador.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | ambassador.image.repository | string | `nil` | The Docker image repository for the ambassador service. |
 | ambassador.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
@@ -60,8 +60,8 @@ Helm chart to deploy Gen3 Data Commons
 | argo-wrapper.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | argo-wrapper.image.repository | string | `nil` | The Docker image repository for the argo-wrapper service. |
 | argo-wrapper.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| audit | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for audit chart. |
-| audit.enabled | bool | `false` | Whether to deploy the audit subchart. |
+| audit | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for audit chart. |
+| audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
 | audit.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | audit.image.repository | string | `nil` | The Docker image repository for the audit service. |
 | audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
@@ -72,7 +72,8 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| global | map | `{"aws":{"account":{"aws_access_key_id":null,"aws_secret_access_key":null},"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","gcp":true,"hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","minAvialable":1,"netPolicy":true,"pdb":false,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","slack_send_dbgap":false,"slack_webhook":"none","syncFromDbgap":false,"tierAccessLevel":"libre","tls":{"cert":null,"key":null},"userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml","usersync":true}` | Global configuration options. |
+| global | map | `{"addDbgap":false,"aws":{"account":{"aws_access_key_id":null,"aws_secret_access_key":null},"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","gcp":true,"hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","minAvialable":1,"netPolicy":true,"onlyDbgap":false,"pdb":false,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"tierAccessLevel":"libre","tls":{"cert":null,"key":null},"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":true}` | Global configuration options. |
+| global.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | global.aws.account | map | `{"aws_access_key_id":null,"aws_secret_access_key":null}` | Credentials for AWS |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
@@ -86,6 +87,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
@@ -98,18 +100,18 @@ Helm chart to deploy Gen3 Data Commons
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
-| global.slack_webhook | string | `"none"` | Slack webhook endpoint used with certain jobs.  |
+| global.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
+| global.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | global.usersync | bool | `true` | Whether to run Fence usersync or not. |
 | guppy | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | guppy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | guppy.image.repository | string | `nil` | The Docker image repository for the guppy service. |
 | guppy.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| hatchery | map | `{"enabled":false,"image":{"repository":null,"tag":null}}` | Configurations for hatchery chart. |
-| hatchery.enabled | bool | `false` | Whether to deploy the hatchery subchart. |
+| hatchery | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for hatchery chart. |
+| hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
 | hatchery.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | hatchery.image.repository | string | `nil` | The Docker image repository for the hatchery service. |
 | hatchery.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
