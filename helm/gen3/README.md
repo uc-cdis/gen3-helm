@@ -28,17 +28,17 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.9 |
 | file://../guppy | guppy | 0.1.8 |
 | file://../hatchery | hatchery | 0.1.6 |
-| file://../indexd | indexd | 0.2.0 |
+| file://../indexd | indexd | 0.1.10 |
 | file://../manifestservice | manifestservice | 0.1.8 |
 | file://../metadata | metadata | 0.1.8 |
 | file://../peregrine | peregrine | 0.1.9 |
 | file://../pidgin | pidgin | 0.1.7 |
 | file://../portal | portal | 0.1.7 |
 | file://../requestor | requestor | 0.1.8 |
-| file://../revproxy | revproxy | 0.2.0 |
-| file://../sheepdog | sheepdog | 0.2.0 |
+| file://../revproxy | revproxy | 0.1.10 |
+| file://../sheepdog | sheepdog | 0.1.10 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.5 |
-| file://../wts | wts | 0.2.0 |
+| file://../wts | wts | 0.1.10 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

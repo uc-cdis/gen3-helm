@@ -40,7 +40,7 @@ dependencies:
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.2.0"
+  version: "0.1.10"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
@@ -68,11 +68,11 @@ dependencies:
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.2.0"
+  version: "0.1.10"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.2.0"
+  version: "0.1.10"
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
@@ -80,7 +80,7 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
-  version: "0.2.0"
+  version: "0.1.10"
   repository: "file://../wts"
   condition: wts.enabled
 
