@@ -36,8 +36,20 @@ global:
   logsBucket: logs-gen3
   # -- (bool) Whether to sync data from dbGaP.
   syncFromDbgap: false
+  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+  addDbgap: false
+  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+  onlyDbgap: false
   # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: true
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
+  # # -- (bool) Option to generate ssh keys to be used in dbgap sync.
+  # generate_dbgap_sshkeys: true
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
@@ -81,6 +93,19 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+
+# -- (map) Configuration options for usersync cronjob.
+usersync:
+  # -- (map) Secret information
+  secrets:
+    # -- (str) AWS access key ID for usersync S3 bucket
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for usersync S3 bucket
+    awsSecretAccessKey: ""
+  # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
+  schedule: "*/30 * * * *"
+  # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
+  custom_image:
 
 # -- (int) Number of desired replicas
 replicaCount: 1
@@ -264,6 +289,41 @@ env:
       secretKeyRef:
         name: indexd-service-creds
         key: fence
+  - name: SYNC_FROM_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: sync_from_dbgap
+        optional: true
+  - name: ADD_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: add_dbgap
+        optional: true
+  - name: ONLY_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: only_dbgap
+        optional: true
+  - name: SLACK_SEND_DBGAP
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: slack_send_dbgap
+        optional: true
+  - name: slackWebHook
+    valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: slack_webhook
+          optional: true
+  - name: gen3Env
+    valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: hostname
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -437,7 +497,13 @@ datadogTraceSampleRate: 1
 
 logo:
 privacy_policy:
-
+projects: 
+# -- (string) The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory. 
+sshconfig:
+# -- (string) The ssh Private Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
+ssh_private_key:
+# -- (string) The ssh Public Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
+ssh_public_key:
 
 # USER_SYNC_CRON:
 #   LOCATION:

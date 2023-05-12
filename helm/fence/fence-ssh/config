@@ -1,0 +1,25 @@
+      Host squid.internal
+        ServerAliveInterval 120
+        HostName cloud-proxy.internal.io
+        User ubuntu
+        ForwardAgent yes
+
+      Host sftp.planx
+        ServerAliveInterval 120
+        HostName sftp.planx-pla.net
+        User foo
+        ForwardAgent yes
+        IdentityFile ~/.ssh/id_rsa
+        ProxyCommand ssh ubuntu@squid.internal nc %h %p 2> /dev/null
+
+      Host sftp.dbgap
+        ServerAliveInterval 120
+        HostName ftp-private.ncbi.nlm.nih.gov
+        User BDC-TP
+        ForwardAgent yes
+        IdentityFile ~/.ssh/id_rsa
+        ProxyCommand ssh ubuntu@squid.internal nc %h %p 2> /dev/null
+
+      Host cloud-proxy.internal.io
+        StrictHostKeyChecking no
+        UserKnownHostsFile=/dev/null

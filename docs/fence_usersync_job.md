@@ -1,0 +1,69 @@
+# Fence Usersync CronJob
+
+If `global.usersync` is set to true, the Fence usersync-cron.yaml will be deployed to the cluster.
+
+User lists can be synced from three sources:
+
+1. A ftp/sftp server that hosts user csv files that follows the format provided by dbgap, enabled if `global.syncFromDbgap` is set to "true". Please follow the [Sftp Setup](#sftp-setup) guide before enabling this option.
+
+2. A user.yaml file that is pulled from the S3 bucket specified in the `global.usersync` field is used to update fence's user-access database. Please note an IAM policy with S3 read is required for this option. Please follow [S3 user.yaml Setup](#s3-setup) guide below.
+
+3. If the `global.userYamlS3Path` string is set to "none", the user.yaml file specified in the fence values.yaml [HERE](https://github.com/uc-cdis/gen3-helm/blob/c7b8959cdf5f7756b29c33ff330923e95981827c/helm/fence/values.yaml#L449-L1319) will be used.
+ 
+
+
+# S3 user.yaml Setup {#s3-setup}
+Please see [this](https://github.com/uc-cdis/fence/blob/master/docs/user.yaml_guide.md) documentation that details user.yaml formatting.
+
+You can pull this file from an S3 bucket that is set in the `global.usersync` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in the `.Values.usersync.secrets.awsAccessKeyId` and `.Values.usersync.secrets.awsSecretAccessKey` fields. 
+
+As previously mentioned, if the `global.userYamlS3Path` string is set to "none", the user.yaml file from Fence values.yaml will be used. 
+ 
+
+
+# Dbgap
+## Sftp Setup {#sftp-setup}
+You can configure one or more dbGaP SFTP servers to sync telemetry files from. To configure one single dbGaP server, add credentials and information to the fence-config.yaml under dbGaP, this is outlined [here](https://github.com/uc-cdis/gen3-helm/blob/c7b8959cdf5f7756b29c33ff330923e95981827c/helm/fence/values.yaml#L1796).
+
+To configure additional dbGaP servers, include in the config.yaml a list of dbGaP servers under dbGaP, like so:
+
+```
+dbGaP:
+- info:
+    host:
+    username:
+    password:
+    ...
+  protocol: 'sftp'
+  ...
+  ...
+- info:
+    host:
+    username:
+    ...
+````
+
+You can find more detailed information on the setup with examples [here](https://github.com/uc-cdis/fence/blob/master/docs/usersync.md).
+
+Create a proxy user specifically for the purpose of acting as a proxy between Gen3 Fence and the DBGaP server. This user account will be used to authenticate and authorize access to DBGaP resources on behalf of authenticated Gen3 user. Update the "proxy_user" field [here](https://github.com/uc-cdis/gen3-helm/blob/c7b8959cdf5f7756b29c33ff330923e95981827c/helm/fence/values.yaml#LL1803C10-L1803C19).
+
+Generate an ssh key pair for the proxy user (ssh-keygen -t rsa -b 4096) and insert the values into the Fence `.Values.ssh_private_key` and `.Values.ssh_public_key` fields. Add the public key to the SFTP server for authentication if it is not already present. 
+
+For an example of a dbGap auth file (csv), please see [this](https://github.com/uc-cdis/fence/blob/master/docs/usersync.md#example-of-dbgap-authorization-file-csv-format) example for formatting. 
+
+## Dbgap Options
+ Set `global.addDbgap` to "true" to attempt a dbgap sync and fall back on user.yaml.
+
+ Set `global.onlyDbgap` to "true" to run only a dbgap sync and ignore the user.yaml. 
+
+## Slack Options
+  Set `global.slack_webhook` to configure a webhook endpoint to be used for regular usersync updates to Slack.
+
+  Set `slack_send_dbgap` to "true" to echo the files that are being seen on dbgap ftp to Slack.
+ 
+
+
+# Other Customizations
+  The `.Values.usersync.schedule` option can be set to customize the cron schedule expression. The default setting is to have the job run once every 30 minutes. 
+
+  The `.Values.usersync.custom_image` can be set to override the default "awshelper" image for the init container of the userync cronjob.
