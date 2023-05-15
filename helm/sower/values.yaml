@@ -51,7 +51,7 @@ global:
   # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
   # -- (bool) Whether to run Fence usersync or not.
-  usersync: true
+  usersync: false
   # -- (string) Slack webhook endpoint used with certain jobs.
   slack_webhook: None
   # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
