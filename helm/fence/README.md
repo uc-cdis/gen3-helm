@@ -171,7 +171,7 @@ A Helm chart for gen3 Fence
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
 | ssh_private_key | string | `nil` | The ssh Private Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string. |
 | ssh_public_key | string | `nil` | The ssh Public Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string. |
-| sshconfig | string | `nil` | The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory.  |
+| sshconfig | string | `nil` | The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | usersync | map | `{"custom_image":null,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""}}` | Configuration options for usersync cronjob. |
 | usersync.custom_image | string | `nil` | To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image. |

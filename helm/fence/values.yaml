@@ -315,15 +315,15 @@ env:
         optional: true
   - name: slackWebHook
     valueFrom:
-        configMapKeyRef:
-          name: manifest-global
-          key: slack_webhook
-          optional: true
+      configMapKeyRef:
+        name: manifest-global
+        key: slack_webhook
+        optional: true
   - name: gen3Env
     valueFrom:
-        configMapKeyRef:
-          name: manifest-global
-          key: hostname
+      configMapKeyRef:
+        name: manifest-global
+        key: hostname
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -497,8 +497,8 @@ datadogTraceSampleRate: 1
 
 logo:
 privacy_policy:
-projects: 
-# -- (string) The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory. 
+projects:
+# -- (string) The ssh configuration for connecting to SFTP server if useing Fence dbgap sync. Will overwrite the default file provided in the fence-ssh directory.
 sshconfig:
 # -- (string) The ssh Private Key for connecting to SFTP server if using Fence dbgap sync. Passed in as a multiline string.
 ssh_private_key:
