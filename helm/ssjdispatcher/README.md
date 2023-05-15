@@ -8,7 +8,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.6 |
+| file://../common | common | 0.1.7 |
 
 ## Values
 
