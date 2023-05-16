@@ -4,5 +4,5 @@ metadata:
   name: fence-ssh-keys
 type: Opaque
 data:
-  id_rsa: {{   .Values.ssh_private_key }}
-  id_rsa.pub: {{   .Values.ssh_public_key }}
+  id_rsa: {{   .Values.usersync.ssh_private_key }}
+  id_rsa.pub: {{   .Values.usersync.ssh_public_key }}

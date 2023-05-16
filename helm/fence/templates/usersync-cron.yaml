@@ -1,4 +1,4 @@
-{{- if .Values.global.usersync -}}
+{{- if .Values.usersync.usersync -}}
 #
 # run with:
 # gen3 job run usersync
@@ -17,9 +17,6 @@ metadata:
   name: usersync
 spec:
   schedule: {{ .Values.usersync.schedule | quote }}
-  # Kill the job if it has not finished within 4 hours
-  activeDeadlineSeconds: 14400
-  backoffLimit: 0
   jobTemplate:
     spec:
       template:
@@ -52,13 +49,6 @@ spec:
                 secretName: "fence-google-storage-creds-secret"
             - name: shared-data
               emptyDir: {}
-            - name: fence-sshconfig
-              configMap:
-                name: "fence-sshconfig"
-            - name: fence-ssh-keys
-              secret:
-                secretName: "fence-ssh-keys"
-                defaultMode: 0400
             - name: cred-volume
               secret:
                 secretName: aws-config-fence
@@ -72,7 +62,17 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
-              {{- toYaml .Values.env | nindent 12 }}
+            - name: SYNC_FROM_DBGAP
+              value: {{ .Values.usersync.syncFromDbgap | quote }}
+            - name: ADD_DBGAP
+              value: {{ .Values.usersync.addDbgap | quote }}
+            - name: ONLY_DBGAP
+              value: {{ .Values.usersync.onlyDbgap | quote }}
+            - name: SLACK_SEND_DBGAP
+              value: {{ .Values.usersync.slack_send_dbgap | quote }}
+            - name: slackWebHook
+              value: {{ .Values.usersync.slack_webhook | quote }}
+            {{- toYaml .Values.env | nindent 12 }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -95,15 +95,6 @@ spec:
                 readOnly: true
                 mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
                 subPath: fence_google_storage_creds_secret.json
-              - name: "fence-sshconfig"
-                mountPath: "/root/.ssh/config"
-                subPath: "config"
-              - name: "fence-ssh-keys"
-                mountPath: "/root/.ssh/id_rsa"
-                subPath: "id_rsa"
-              - name: "fence-ssh-keys"
-                mountPath: "/root/.ssh/id_rsa.pub"
-                subPath: "id_rsa.pub"
             command: ["/bin/bash" ]
             args:
               - "-c"
@@ -165,10 +156,7 @@ spec:
                     name: manifest-global
                     key: hostname
             - name: userYamlS3Path
-              valueFrom:
-                  configMapKeyRef:
-                    name: manifest-global
-                    key: useryaml_s3path
+              value: {{ .Values.usersync.userYamlS3Path | quote }}
             volumeMounts:
               - name: user-yaml
                 mountPath: /var/www/fence

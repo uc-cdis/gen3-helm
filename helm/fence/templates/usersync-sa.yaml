@@ -1,4 +1,4 @@
-{{- if .Values.global.usersync -}}
+{{- if .Values.usersync.usersync -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

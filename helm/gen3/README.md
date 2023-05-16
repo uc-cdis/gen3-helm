@@ -71,19 +71,25 @@ Helm chart to deploy Gen3 Data Commons
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| fence.usersync | map | `{"custom_image":null,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""}}` | Configuration options for usersync cronjob. |
+| fence.usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""},"slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
+| fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | fence.usersync.custom_image | string | `nil` | To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image. |
+| fence.usersync.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | fence.usersync.schedule | string | `"*/30 * * * *"` | The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default. |
 | fence.usersync.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | fence.usersync.secrets.awsAccessKeyId | str | `""` | AWS access key ID for usersync S3 bucket |
 | fence.usersync.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for usersync S3 bucket |
+| fence.usersync.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
+| fence.usersync.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
+| fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
+| fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
+| fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
 | gitops.createdby | string | `nil` | - createdby.png - base64 |
 | gitops.css | string | `nil` | - multiline string - gitops.css |
 | gitops.favicon | string | `nil` | - favicon in base64 |
 | gitops.json | string | `nil` | multiline string - gitops.json |
 | gitops.logo | string | `nil` | - logo in base64 |
 | gitops.sponsors | string | `nil` |  |
-| global.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | global.aws | map | `{"enabled":false}` | AWS configuration |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
@@ -92,7 +98,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
-| global.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.master.host | string | `nil` | global postgres master host |
@@ -101,13 +106,8 @@ Helm chart to deploy Gen3 Data Commons
 | global.postgres.master.username | string | `"postgres"` | global postgres master username |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
-| global.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
-| global.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
-| global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
-| global.usersync | bool | `false` | Whether to run Fence usersync or not. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | guppy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | guppy.image.repository | string | `nil` | The Docker image repository for the guppy service. |

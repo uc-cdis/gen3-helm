@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: projects
 data:
-  projects.yaml: {{   .Values.projects | default ((.Files.Get "projects/projects.yaml")) }}
+  projects.yaml: {{   .Values.usersync.projects | default ((.Files.Get "projects/projects.yaml")) }}

@@ -10,18 +10,12 @@ data:
   "portal_app": {{ .Values.global.portalApp | quote }}
   "kube_bucket": {{ .Values.global.kubeBucket | quote }}
   "logs_bucket": {{ .Values.global.logsBucket | quote }}
-  "sync_from_dbgap": {{ .Values.global.syncFromDbgap | quote }}
-  "add_dbgap": {{ .Values.global.addDbgap | quote }}
-  "only_dbgap": {{ .Values.global.onlyDbgap | quote }}
-  "useryaml_s3path": {{ .Values.global.userYamlS3Path | quote }}
   "public_datasets": {{ .Values.global.publicDataSets | quote }}
   "tier_access_level": {{ .Values.global.tierAccessLevel | quote }}
   "tier_access_limit": {{ .Values.global.tierAccessLimit | quote }}
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
-  "slack_webhook": {{ .Values.global.slack_webhook | quote }}
-  "slack_send_dbgap": {{ .Values.global.slack_send_dbgap | quote }}
   {{- with .Values.global.origins_allow_credentials }}
   "origins_allow_credentials": {{ . | toJson | quote }}
   {{- end -}}

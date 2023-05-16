@@ -42,20 +42,6 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
-  addDbgap: false
-  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
-  onlyDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
-  # -- (bool) Whether to run Fence usersync or not.
-  usersync: false
-  # -- (string) Slack webhook endpoint used with certain jobs.
-  slack_webhook: None
-  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
-  slack_send_dbgap: false
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers.
