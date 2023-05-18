@@ -157,6 +157,8 @@ spec:
                     key: hostname
             - name: userYamlS3Path
               value: {{ .Values.usersync.userYamlS3Path | quote }}
+            - name: slackWebHook
+              value: {{ .Values.usersync.slack_webhook | quote }}
             volumeMounts:
               - name: user-yaml
                 mountPath: /var/www/fence
