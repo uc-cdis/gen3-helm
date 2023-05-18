@@ -1,0 +1,28 @@
+{{- if .Values.usersync.usersync -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: usersync-job
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: usersync-job-role
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: usersync-job-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: usersync-job-role
+subjects:
+  - kind: ServiceAccount
+    name: usersync-job
+    namespace: default
+{{- end }}
