@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etl-mapping
+data:
+   etlMapping.yaml: {{ .Files.Get "definitions/etl.yaml" | quote }}
+   settings.py: {{ .Files.Get "settings/settings.py" | quote }}

@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark.fullname" . }}
+  labels:
+    {{- include "spark.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "spark.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "spark.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "spark.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: sshd-config
+        configMap:
+          name: sshd-config
+      - name: ssh-pubkey
+        secret:
+          secretName: ssh-pubkey
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args: 
+          - "-c"
+          - |
+            # get /usr/local/share/ca-certificates/cdis-ca.crt into system bundle
+            ssh-keygen -t ed25519 -N '' -f /root/.ssh/id_ed25519 <<<y >/dev/null 2>&1
+            cat /root/.ssh/id_ed25519.pub >> /root/.ssh/authorized_keys
+            cat /tmp/sparkssh/authorized_keys >> /root/.ssh/authorized_keys
+            service ssh start
+            /usr/sbin/sshd -D
+            update-ca-certificates
+            python run_config.py
+            hdfs namenode -format
+            hdfs --daemon start namenode
+            hdfs --daemon start datanode
+            yarn --daemon start resourcemanager
+            yarn --daemon start nodemanager
+            hdfs dfsadmin -safemode leave
+            hdfs dfs -mkdir /result
+            hdfs dfs -mkdir /jars
+            hdfs dfs -mkdir /archive
+            /bin/bash /spark/sbin/start-all.sh
+            mapred historyserver
+            while true; do sleep 5; done
+          ports:
+          - containerPort: 22
+          - containerPort: 9000
+          - containerPort: 8030
+          - containerPort: 8031
+          - containerPort: 8032
+          - containerPort: 8080
+          - containerPort: 8081
+          - containerPort: 7077
+          - containerPort: 9870
+          - containerPort: 8088
+          - containerPort: 8042
+          - containerPort: 8044
+          - containerPort: 50070
+          - containerPort: 10020
+          - containerPort: 19888
+          env:
+          - name: HADOOP_URL
+            value: hdfs://0.0.0.0:9000
+          - name: HADOOP_HOST
+            value: 0.0.0.0
+          - name: HADOOP_YARN_HOME
+            value: /hadoop
+          - name: YARN_HOME
+            value: /hadoop
+          - name: JAVA_HOME
+            value: /usr/lib/jvm/java-8-openjdk-amd64/
+          - name: HADOOP_OPTS
+            value: "${HADOOP_OPTS} --add-modules java.activation"
+          volumeMounts:
+          - name: sshd-config
+            mountPath: /etc/ssh/sshd_config
+            subPath: sshd_config
+            readOnly: false
+          - name: sshd-config
+            mountPath: /hadoop/etc/hadoop/yarn-site.xml
+            subPath: yarn-site.xml
+            readOnly: false
+          - name: sshd-config
+            mountPath: /hadoop/etc/hadoop/mapred-site.xml
+            subPath: mapred-site.xml
+            readOnly: false
+          - name: ssh-pubkey
+            mountPath: /tmp/sparkssh/authorized_keys
+            subPath: authorized_keys
+            readOnly: true
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tube.fullname" . }}
+  labels:
+    {{- include "tube.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tube.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tube.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes: 
+      - name: creds-volume
+        secret:
+          secretName: "tube-creds"
+      - name: etl-mapping
+        configMap:
+          name: etl-mapping
+      - name: useryaml
+        configMap:
+          name: useryaml
+      - name: hadoop
+        configMap:
+          name: tube-hadoop-config
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+          - "-c"
+          - |
+            ssh-keygen -t ed25519 -N '' -f /root/.ssh/id_ed25519 <<<y >/dev/null 2>&1
+            cat /root/.ssh/id_ed25519.pub
+            python run_config.py
+            while true; do sleep 5; done
+          ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          volumeMounts: 
+          - name: creds-volume
+            readOnly: true
+            mountPath: "/gen3/tube/creds.json"
+            subPath: dbcreds.json
+          - name: creds-volume
+            readOnly: true
+            mountPath: "/tube/creds.json"
+            subPath: dbcreds.json
+          - name: etl-mapping
+            readOnly: true
+            mountPath: "/tube/tube/settings.py"
+            subPath: settings.py
+          - name: etl-mapping
+            readOnly: true
+            mountPath: "/gen3/tube/settings.py"
+            subPath: settings.py
+          - name: etl-mapping
+            readOnly: true
+            mountPath: "/gen3/tube/etlMapping.yaml"
+            subPath: etlMapping.yaml
+          - name: useryaml
+            mountPath: "/gen3/tube/user.yaml"
+            subPath: useryaml
+          - name: hadoop
+            mountPath: /hadoop/etc/hadoop/yarn-site.xml
+            subPath: yarn-site.xml
+            readOnly: false
+          - name: hadoop
+            mountPath: /hadoop/etc/hadoop/mapred-site.xml
+            subPath: mapred-site.xml
+            readOnly: false
+          env:
+          - name: DICTIONARY_URL
+            value: http://revproxy-service/dictionary_schema
+          - name: ES_URL
+            value: elasticsearch
+          - name: ES_INDEX_NAME
+            value: dev_etl
+          - name: HADOOP_URL
+            value: hdfs://spark-service:9000
+          - name: HADOOP_HOST
+            value: spark-service
+          - name: HADOOP_CLIENT_OPTS
+            value: -Xmx1g
+          - name: SPARK_EXECUTOR_MEMORY
+            value: 4g
+          - name: SPARK_DRIVER_MEMORY
+            value: 6g
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-service
+  labels:
+    {{- include "spark.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
+    nodePort: null
+  - protocol: TCP
+    port: 9000
+    targetPort: 9000
+    name: hdfs
+    nodePort: null
+  - protocol: TCP
+    port: 8030
+    targetPort: 8030
+    name: yarn-scheduler
+    nodePort: null
+  - protocol: TCP
+    port: 8031
+    targetPort: 8031
+    name: yarn-resource-tracker
+    nodePort: null
+  - protocol: TCP
+    port: 8032
+    targetPort: 8032
+    name: yarn-address-manager
+    nodePort: null
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+    name: ssl
+    nodePort: null
+  - protocol: TCP
+    port: 7077
+    targetPort: 7077
+    name: spark-master
+    nodePort: null
+  - protocol: TCP
+    port: 9870
+    targetPort: 9870
+    name: spark-web-ui
+    nodePort: null
+  - protocol: TCP
+    port: 50070
+    targetPort: 50070
+    name: spark-rm
+    nodePort: null
+  - protocol: TCP
+    port: 8088
+    targetPort: 8088
+    name: spark-rm-ui
+    nodePort: null
+  - protocol: TCP
+    port: 10020
+    targetPort: 10020
+    name: mapred-job-history
+    nodePort: null
+  - protocol: TCP
+    port: 19888
+    targetPort: 19888
+    name: mapred-job-history-web-ui
+    nodePort: null
+  selector:
+    {{- include "spark.selectorLabels" . | nindent 4 }}

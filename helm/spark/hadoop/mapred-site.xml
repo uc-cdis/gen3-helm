@@ -1,0 +1,39 @@
+<configuration>
+    <property>
+       <name>mapreduce.framework.name</name>
+       <value>yarn</value>
+    </property>
+
+    <property>
+       <name>yarn.app.mapreduce.am.env</name>
+       <value>HADOOP_MAPRED_HOME=/hadoop</value>
+    </property>
+
+    <property>
+       <name>mapreduce.map.env</name>
+       <value>HADOOP_MAPRED_HOME=/hadoop</value>
+    </property>
+
+    <property>
+       <name>mapreduce.reduce.env</name>
+       <value>HADOOP_MAPRED_HOME=/hadoop</value>
+    </property>
+
+    <property> 
+        <name>mapreduce.application.classpath</name>
+        <value>/hadoop/etc/hadoop:/hadoop/share/hadoop/common/lib/*:/hadoop/share/hadoop/common/*:/hadoop/share/hadoop/hdfs:/hadoop/share/hadoop/hdfs/lib/*:/hadoop/share/hadoop/hdfs/*:/hadoop/share/hadoop/mapreduce/lib/*:/hadoop/share/hadoop/mapreduce/*:/hadoop/share/hadoop/yarn:/hadoop/share/hadoop/yarn/lib/*:/hadoop/share/hadoop/yarn/*:/hadoop/sh
+are/hadoop/tools/lib</value>
+    </property>
+
+
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>0.0.0.0:10020</value>
+    </property>
+
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>0.0.0.0:19888</value>
+    </property>
+
+</configuration>

@@ -1,0 +1,46 @@
+mappings:
+  - name: dev_etl
+    doc_type: study
+    type: aggregator
+    root: study
+    props:
+      - name: submitter_id
+      - name: project_id
+    flatten_props:
+      - path: protocols_impowr.participants.patients.patient_baselines.pb_demographics.pb_impowr_demographics
+        props:
+          - name: impdgenid
+          - name: impdsex
+          - name: impd_race
+          - name: impd_ethnic
+          - name: imp_relat
+          - name: imp_age
+      - path: protocols_impowr.participants.patients.patient_baselines.pb_substance_uses.pb_impowr_overdose_screenings
+        props:
+          - name: opioidodnumtimes
+    aggregated_props:
+      - name: _participants_count
+        path: protocols_impowr.participants
+        fn: count
+      - name: _providers_count
+        path: protocols_impowr.participants.providers
+        fn: count
+      - name: _patients_count
+        path: protocols_impowr.participants.patients
+        fn: count
+  - name: dev_file
+    doc_type: file
+    type: collector
+    root: None
+    props:
+      - name: object_id
+      - name: md5sum
+      - name: file_name
+      - name: file_size
+      - name: state
+    injecting_props:
+      subject:
+        props:
+          - name: subject_id
+            src: id
+          - name: project_id

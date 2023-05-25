@@ -1,0 +1,36 @@
+<configuration>
+    <property>
+      <name>yarn.resourcemanager.hostname</name>
+      <value>spark-service</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>spark-service:8030</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>spark-service:8031</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>spark-service:8032</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>spark-service:8088</value>
+    </property>
+    <property> 
+        <name>yarn.application.classpath</name>
+        <value>/hadoop/etc/hadoop:/hadoop/share/hadoop/common/lib/*:/hadoop/share/hadoop/common/*:/hadoop/share/hadoop/hdfs:/hadoop/share/hadoop/hdfs/lib/*:/hadoop/share/hadoop/hdfs/*:/hadoop/share/hadoop/mapreduce/lib/*:/hadoop/share/hadoop/mapreduce/*:/hadoop/share/hadoop/yarn:/hadoop/share/hadoop/yarn/lib/*:/hadoop/share/hadoop/yarn/*:/hadoop/sh
+are/hadoop/tools/lib</value>
+    </property>
+
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>5</value>
+    </property>
+</configuration>
