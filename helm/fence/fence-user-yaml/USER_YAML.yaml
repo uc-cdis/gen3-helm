@@ -1,0 +1,513 @@
+cloud_providers: {}
+groups: {}
+authz:
+  groups:
+  - name: krum_admins
+    policies:
+    - indexd_admin
+    - data_upload
+    - open_data_admin
+    - open_data_reader
+    users:
+    - hunter@krum.io
+    - stephen@krum.io
+  # policies automatically given to anyone, even if they haven't authenticated
+  anonymous_policies: ['open_data_reader']
+  # policies automatically given to authenticated users (in addition to their other policies)
+  all_users_policies: ['open_data_reader']
+  user_project_to_resource:
+    sim: /programs/sim
+    GEN: /programs/sim/projects/GEN
+  policies:
+    # General Access
+    - id: 'workspace'
+      description: 'be able to use workspace'
+      resource_paths: ['/workspace']
+      role_ids: ['workspace_user']
+    - id: 'dashboard'
+      description: 'be able to use the commons dashboard'
+      resource_paths: ['/dashboard']
+      role_ids: ['dashboard_user']
+    - id: 'prometheus'
+      description: 'be able to use prometheus'
+      resource_paths: ['/prometheus']
+      role_ids: ['prometheus_user']
+    - id: 'ttyadmin'
+      description: 'be able to use the admin tty'
+      resource_paths: ['/ttyadmin']
+      role_ids: ['ttyadmin_user']
+    - id: 'mds_admin'
+      description: 'be able to use metadata service'
+      resource_paths: ['/mds_gateway']
+      role_ids: ['mds_user']
+    - id: 'data_upload'
+      description: 'upload raw data files to S3'
+      role_ids: ['file_uploader']
+      resource_paths: ['/data_file']
+    - description: be able to use sower job
+      id: sower
+      resource_paths: [/sower]
+      role_ids: [sower_user]
+    - id: 'mariner_admin'
+      description: 'full access to mariner API'
+      resource_paths: ['/mariner']
+      role_ids: ['mariner_admin']
+    - id: audit_reader
+      role_ids:
+      - audit_reader
+      resource_paths:
+      - /services/audit
+    - id: audit_login_reader
+      role_ids:
+      - audit_reader
+      resource_paths:
+      - /services/audit/login
+    - id: audit_presigned_url_reader
+      role_ids:
+      - audit_reader
+      resource_paths:
+      - /services/audit/presigned_url
+    - id: requestor_admin
+      role_ids:
+      - requestor_admin
+      resource_paths:
+      - /programs
+    - id: requestor_reader
+      role_ids:
+      - requestor_reader
+      resource_paths:
+      - /programs
+    - id: requestor_creator
+      role_ids:
+      - requestor_creator
+      resource_paths:
+      - /programs
+    - id: requestor_updater
+      role_ids:
+      - requestor_updater
+      resource_paths:
+      - /programs
+    - id: requestor_deleter
+      role_ids:
+      - requestor_deleter
+      resource_paths:
+      - /programs
+    # Data Access
+    # All programs policy
+    - id: 'all_programs_reader'
+      description: ''
+      role_ids:
+        - 'reader'
+        - 'storage_reader'
+      resource_paths: ['/programs']
+    - id: 'programs.sim-admin'
+      description: ''
+      role_ids:
+        - 'creator'
+        - 'reader'
+        - 'updater'
+        - 'deleter'
+        - 'storage_reader'
+      resource_paths:
+        - '/programs/sim'
+        - '/gen3/programs/sim'
+    - id: 'gen3-admin'
+      description: ''
+      role_ids:
+        - 'creator'
+        - 'reader'
+        - 'updater'
+        - 'deleter'
+        - 'storage_reader'
+      resource_paths:
+        - '/gen3'
+    # Open data policies
+    - id: 'open_data_reader'
+      description: ''
+      role_ids:
+        - 'reader'
+        - 'storage_reader'
+      resource_paths: ['/open']
+    - id: 'open_data_admin'
+      description: ''
+      role_ids:
+        - 'creator'
+        - 'reader'
+        - 'updater'
+        - 'deleter'
+        - 'storage_writer'
+        - 'storage_reader'
+      resource_paths: ['/open']
+    - id: 'services.sheepdog-admin'
+      description: 'CRUD access to programs and projects'
+      role_ids:
+        - 'sheepdog_admin'
+      resource_paths:
+        - '/services/sheepdog/submission/program'
+        - '/services/sheepdog/submission/project'
+    - id: 'services.peregrine-admin'
+      description: 'CRUD access to programs and projects'
+      role_ids:
+        - 'peregrine_admin'
+      resource_paths:
+        - '/programs'
+        - '/services/peregrine/admin'
+    # indexd
+    - id: 'indexd_admin'
+      description: 'full access to indexd API'
+      role_ids:
+        - 'indexd_admin'
+      resource_paths:
+        - '/programs'
+        - '/services/indexd/admin'
+    - id: argo
+      description: be able to use argo
+      resource_paths: [/argo]
+      role_ids: [argo_user]
+  resources:
+    # General Access
+    - name: 'data_file'
+      description: 'data files, stored in S3'
+    - name: 'dashboard'
+      description: 'commons /dashboard'
+    - name: 'mds_gateway'
+      description: 'commons /mds-admin'
+    - name: 'prometheus'
+      description: 'commons /prometheus and /grafana'
+    - name: 'ttyadmin'
+      description: 'commons /ttyadmin'
+    - name: 'workspace'
+    - name: "sower"
+    - name: 'mariner'
+      description: 'workflow execution service'
+    - name: argo
+    # OLD Data
+    - name: 'programs'
+      subresources:
+        - name: 'sim'
+          subresources:
+            - name: 'projects'
+              subresources:
+                - name: 'GEN'
+    # NEW Data WITH PREFIX
+    - name: 'gen3'
+      subresources:
+        - name: 'programs'
+          subresources:
+            - name: 'sim'
+              subresources:
+                - name: 'projects'
+                  subresources:
+                    - name: 'GEN'
+    # "Sheepdog admin" resources
+    - name: 'services'
+      subresources:
+        - name: 'peregrine'
+          subresources:
+            - name: 'program'
+            - name: 'project'
+            - name: 'admin'
+        - name: 'sheepdog'
+          subresources:
+            - name: 'submission'
+              subresources:
+                - name: 'program'
+                - name: 'project'
+        - name: 'indexd'
+          subresources:
+            - name: 'admin'
+            - name: 'bundles'
+        - name: audit
+          subresources:
+            - name: presigned_url
+            - name: login
+    - name: 'open'
+  roles:
+    # General Access
+    - id: 'file_uploader'
+      description: 'can upload data files'
+      permissions:
+        - id: 'file_upload'
+          action:
+            service: '*'
+            method: 'file_upload'
+    - id: 'workspace_user'
+      permissions:
+        - id: 'workspace_access'
+          action:
+            service: 'jupyterhub'
+            method: 'access'
+    - id: 'dashboard_user'
+      permissions:
+        - id: 'dashboard_access'
+          action:
+            service: 'dashboard'
+            method: 'access'
+    - id: 'mds_user'
+      permissions:
+        - id: 'mds_access'
+          action:
+            service: 'mds_gateway'
+            method: 'access'
+    - id: 'prometheus_user'
+      permissions:
+        - id: 'prometheus_access'
+          action:
+            service: 'prometheus'
+            method: 'access'
+    - id: 'ttyadmin_user'
+      permissions:
+        - id: 'ttyadmin_access'
+          action:
+            service: 'ttyadmin'
+            method: 'access'
+    - id: 'sower_user'
+      permissions:
+        - id: 'sower_access'
+          action:
+            service: 'job'
+            method: 'access'
+    - id: 'mariner_admin'
+      permissions:
+        - id: 'mariner_access'
+          action:
+            service: 'mariner'
+            method: 'access'
+    - id: audit_reader
+      permissions:
+        - id: audit_reader_action
+          action:
+            service: audit
+            method: read
+    # All services
+    - id: 'admin'
+      description: ''
+      permissions:
+        - id: 'admin'
+          action:
+            service: '*'
+            method: '*'
+    - id: 'creator'
+      description: ''
+      permissions:
+        - id: 'creator'
+          action:
+            service: '*'
+            method: 'create'
+    - id: 'reader'
+      description: ''
+      permissions:
+        - id: 'reader'
+          action:
+            service: '*'
+            method: 'read'
+    - id: 'updater'
+      description: ''
+      permissions:
+        - id: 'updater'
+          action:
+            service: '*'
+            method: 'update'
+    - id: 'deleter'
+      description: ''
+      permissions:
+        - id: 'deleter'
+          action:
+            service: '*'
+            method: 'delete'
+    - id: 'storage_writer'
+      description: ''
+      permissions:
+        - id: 'storage_writer'
+          action:
+            service: '*'
+            method: 'write-storage'
+    - id: 'storage_reader'
+      description: ''
+      permissions:
+        - id: 'storage_reader'
+          action:
+            service: '*'
+            method: 'read-storage'
+    # Sheepdog admin role
+    - id: 'sheepdog_admin'
+      description: 'sheepdog admin role for program project crud'
+      permissions:
+        - id: 'sheepdog_admin_action'
+          action:
+            service: 'sheepdog'
+            method: '*'
+    - id: 'peregrine_admin'
+      description: 'sheepdog admin role for program project crud'
+      permissions:
+        - id: 'peregrine_admin_action'
+          action:
+            service: 'peregrine'
+            method: '*'
+    # indexd
+    - id: 'indexd_admin'
+      # this only works if indexd.arborist is enabled in manifest!
+      description: 'full access to indexd API'
+      permissions:
+        - id: 'indexd_admin'
+          action:
+            service: 'indexd'
+            method: '*'
+    - id: 'indexd_record_creator'
+      description: ''
+      permissions:
+        - id: 'indexd_record_creator'
+          action:
+            service: 'indexd'
+            method: 'create'
+    - id: 'indexd_record_reader'
+      description: ''
+      permissions:
+        - id: 'indexd_record_reader'
+          action:
+            service: 'indexd'
+            method: 'read'
+    - id: 'indexd_record_updater'
+      description: ''
+      permissions:
+        - id: 'indexd_record_updater'
+          action:
+            service: 'indexd'
+            method: 'update'
+    - id: 'indexd_delete_record'
+      description: ''
+      permissions:
+        - id: 'indexd_delete_record'
+          action:
+            service: 'indexd'
+            method: 'delete'
+    - id: 'indexd_storage_reader'
+      description: ''
+      permissions:
+        - id: 'indexd_storage_reader'
+          action:
+            service: 'indexd'
+            method: 'read-storage'
+    - id: 'indexd_storage_writer'
+      description: ''
+      permissions:
+        - id: 'indexd_storage_writer'
+          action:
+            service: 'indexd'
+            method: 'write-storage'
+    # arborist
+    - id: 'arborist_creator'
+      description: ''
+      permissions:
+        - id: 'arborist_creator'
+          action:
+            service: 'arborist'
+            method: 'create'
+    - id: 'arborist_reader'
+      description: ''
+      permissions:
+        - id: 'arborist_reader'
+          action:
+            service: 'arborist'
+            method: 'read'
+    - id: 'arborist_updater'
+      description: ''
+      permissions:
+        - id: 'arborist_updater'
+          action:
+            service: 'arborist'
+            method: 'update'
+    - id: 'arborist_deleter'
+      description: ''
+      permissions:
+        - id: 'arborist_deleter'
+          action:
+            service: 'arborist'
+            method: 'delete'
+    # requestor
+    - id: requestor_admin
+      permissions:
+      - id: requestor_admin_action
+        action:
+          service: requestor
+          method: '*'
+    - id: requestor_reader
+      permissions:
+      - id: requestor_reader_action
+        action:
+          service: requestor
+          method: read
+    - id: requestor_creator
+      permissions:
+      - id: requestor_creator_action
+        action:
+          service: requestor
+          method: create
+    - id: requestor_updater
+      permissions:
+      - id: requestor_updater_action
+        action:
+          service: requestor
+          method: update
+    - id: requestor_deleter
+      permissions:
+      - id: requestor_deleter_action
+        action:
+          service: requestor
+          method: delete
+    # argo
+    - id: argo_user
+      permissions:
+        - id: argo_access
+          action:
+            service: argo
+            method: access
+clients:
+  basic-test-client:
+    policies:
+    - gen3-admin
+  wts:
+    policies:
+    - all_programs_reader
+    - workspace
+users:
+  ### BEGIN INTERNS SECTION ###
+  ### END INTERNS SECTION ###
+  stephen@krum.io:
+    admin: true
+    policies:
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - services.sheepdog-admin
+    - services.peregrine-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: GEN
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: sim
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  hunter@krum.io:
+    admin: true
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - services.sheepdog-admin
+    - services.peregrine-admin
+    - programs.sim-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: GEN
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: sim
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]

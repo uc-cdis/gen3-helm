@@ -88,6 +88,14 @@ dependencies:
   version: "0.1.4"
   repository: "file://../gcp-pubsub-indexing"
   condition: gcp-pubsub-indexing.enabled
+- name: tube
+  version: "0.1.4"
+  repository: "file://../tube"
+  condition: tube.enabled
+- name: spark
+  version: "0.1.4"
+  repository: "file://../spark"
+  condition: spark.enabled
 
 
 - name: elasticsearch

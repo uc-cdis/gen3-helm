@@ -1,8 +1,107 @@
-.nav-bar__logo {
-  padding: 15px 0;
+:root {
+  --g3-color__base-blue-light: #05B8EE;
+  --g3-color__lime: #7EC500;
+  --g3-color__iris: #AD91FF;
+  --g3-color__rose: #E74C3C;
+  --g3-color__bee: #F4B940;
+  --g3-color__pink: #FF7ABC;
+  --g3-color__highlight-orange: #EF8523;
+  --g3-color__highlight-orange-light: #FF9635;
+  --g3-color__mint: #26D9B1;
+  --g3-color__bg-coal: #4A4A4A;
+  --g3-color__bg-cloud: #F5F5F5;
+  --g3-color__gray: #525252;
+  --g3-color__lightgray: #9B9B9B;
+  --g3-color__smoke: #D1D1D1;
+  --g3-color__silver: #E7E7E7;
+  --g3-color__black: #000000;
+  --g3-color__white: #FFFFFF;
+  --g3-color__titanium: #707070;
+  --g3-color__obsidian: #757575;
+
+
+  --wfg3-black: #1a1a1a;
+  --wfg3-gray:  #333;
+  --wfg3-brown: #8c6d2c;
+  --wfg3-dark-brown: #755a23;
+  --wfg3-white-text: #fff;
+  --wfg3-dark-text: #222;
+
+  --g3-color__base-blue: var(--wfg3-brown);
+
+
+  --g3-primary-btn__color: var(--wfg3-white-text);
+  --g3-primary-btn__bg-color: var(--wfg3-brown);
+  --g3-primary-btn__bg-color--hover: var(--wfg3-dark-brown);
+  --g3-primary-btn__border-color: var(--g3-color__lightgray);
+  --g3-primary-btn__border-color--hover: var(--wfg3-gray);
+  --g3-primary-btn__border-color--active: var(--g3-color__lightgray);
+
+  --g3-secondary-btn__color: var(--wfg3-dark-text);
+  --g3-secondary-btn__bg-color: var(--wfg3-white-text);
+  --g3-secondary-btn__bg-color--hover: var(--wfg3-brown);
+  --g3-secondary-btn__color--hover: var(--wfg3-white-text);
+  --g3-secondary-btn__border-color: var(--g3-color__lightgray);
+  --g3-secondary-btn__border-color--hover: var(--wfg3-gray);
+  --g3-secondary-btn__border-color--active: var(--g3-color__lightgray);
+
+  --g3-default-btn__color: var(--g3-color__gray);
+  --g3-default-btn__color--hover: var(--g3-color__black);
+  --g3-default-btn__color--active: var(--wfg3-brown);
+  --g3-default-btn__bg-color: var(--g3-color__white);
+  --g3-default-btn__border-color: var(--g3-color__gray);
+  --g3-default-btn__border-color--hover: var(--g3-color__black);
+  --g3-default-btn__border-color--active: var(--wfg3-brown);
+
+  --g3-disabled-btn__color: var(--g3-color__titanium);
+  --g3-disabled-btn__bg-color: var(--g3-color__white);
+  --g3-disabled-btn__border-color: var(--g3-color__silver);
+  --g3-dropdown-item__bg-color: var(--g3-color__gray);
+  --g3-dropdown-item__color: var(--g3-color__white);
+  --g3-dropdown-menu__border-color: var(--g3-color__gray);
+
+  --g3-footer-color: var(--wfg3-gray);
+
+  --g3-font__medium-weight: 500;
+  --g3-font__semi-bold-weight: 600;
+}
+
+/* gitops default css */
+.top-bar__header {
+  background-color: var(--wfg3-black);
+}
+
+.top-icon-button.body-typo {
+  background-color: unset;
+}
+
+.top-bar__link {
+  border-right: 2px solid var(--wfg3-white-text);
+}
+
+a {
+  color: var(--wfg3-brown);
+}
+a:hover,
+a:focus {
+  color: var(--wfg3-dark-brown);
+}
+
+.login-page__side-box {
+  -webkit-mask-image: url(/src/img/icons/gene.svg);
+  mask-image: url(/src/img/icons/gene.svg);
+  -webkit-mask-size: cover;
+  background: var(--wfg3-brown);
+  background-image: unset !important;
 }
 
 .nav-bar__logo-img {
-  height: 50px;
+  width: 248px;
+  margin-top: 8px;
+  margin-right: 8px;
+  height: unset;
 }
 
+.footer__img {
+  height: 48px !important;
+}
