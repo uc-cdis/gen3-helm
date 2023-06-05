@@ -9,9 +9,3 @@ stringData:
     {{- toYaml . | nindent 4 }}
     {{ end }}
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fence-sshconfig
-data:
-  projects.yaml: {{  .Values.usersync.sshconfig | default ((.Files.Get "fence-ssh/config")) }}
