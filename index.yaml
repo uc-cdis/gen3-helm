@@ -938,6 +938,24 @@ entries:
   fence:
   - apiVersion: v2
     appVersion: master
+    created: "2023-06-05T18:54:58.063850735Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.7
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Fence
+    digest: a35f1013f6dad624844e20642af1ff1a625a08f1d890db0e5f9e7c17945e316a
+    name: fence
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/fence-0.1.11/fence-0.1.11.tgz
+    version: 0.1.11
+  - apiVersion: v2
+    appVersion: master
     created: "2023-06-05T18:19:33.184922074Z"
     dependencies:
     - name: common
@@ -4957,4 +4975,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2023-06-05T18:19:33.410889248Z"
+generated: "2023-06-05T18:54:58.064324136Z"
