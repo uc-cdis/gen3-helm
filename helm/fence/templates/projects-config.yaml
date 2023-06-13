@@ -1,6 +1,8 @@
+{{- with .Values.usersync.projects }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: projects
 data:
-  projects.yaml: {{   .Values.usersync.projects | default ((.Files.Get "projects/projects.yaml")) }}
+  projects.yaml: {{ . }}
+{{- end }}

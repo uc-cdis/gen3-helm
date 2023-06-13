@@ -41,6 +41,7 @@ spec:
             - name: projects
               configMap:
                 name: "projects"
+                optional: true
             - name: fence-google-app-creds-secret-volume
               secret:
                 secretName: "fence-google-app-creds-secret"
