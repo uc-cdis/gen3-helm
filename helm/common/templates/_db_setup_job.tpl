@@ -46,6 +46,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-setup
+        securityContext:
+          allowPrivilegeEscalation: false
         # TODO: READ THIS IMAGE FROM GLOBAL VALUES?
         image: quay.io/cdis/awshelper:master
         imagePullPolicy: Always
