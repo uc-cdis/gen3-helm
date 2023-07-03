@@ -28,7 +28,7 @@ dependencies:
   version: "0.1.7"
   repository: file://../common
 - name: fence
-  version: "0.1.12"
+  version: "0.1.13"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
@@ -44,7 +44,7 @@ dependencies:
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
-  version: "0.1.9"
+  version: "0.1.10"
   repository: "file://../manifestservice"
   condition: manifestservice.enabled
 - name: metadata
@@ -76,7 +76,7 @@ dependencies:
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
-  version: "0.1.5"
+  version: "0.1.6"
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: wts
@@ -107,7 +107,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.17
+version: 0.1.18
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

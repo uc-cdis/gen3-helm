@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -64,10 +64,10 @@ A Helm chart for gen3 ssjdispatcher
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"nginx","tag":""}` | Docker image information. |
-| image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
-| image.repository | string | `"nginx"` | Docker repository. |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ssjdispatcher","tag":"2022.08"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
+| image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
 | nameOverride | string | `""` | Override the name of the chart. |

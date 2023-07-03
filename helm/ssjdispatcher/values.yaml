@@ -63,11 +63,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: nginx
+  repository: quay.io/cdis/ssjdispatcher
   # -- (string) Docker pull policy.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "2022.08"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
