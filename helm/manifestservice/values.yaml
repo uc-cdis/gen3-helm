@@ -19,6 +19,15 @@ revisionHistoryLimit: 2
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/manifestservice
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "2022.09"
+
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".

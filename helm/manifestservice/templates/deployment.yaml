@@ -38,8 +38,8 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
       containers:
         - name: manifestservice
-          image: "quay.io/cdis/manifestservice:2022.09"
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{- if .Values.global.ddEnabled }}
             {{- include "common.datadogEnvVar" . | nindent 12 }}
