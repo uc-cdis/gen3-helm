@@ -52,8 +52,6 @@ spec:
               {{- else }}
               path: /
               {{- end }}
-              # name:
-              #  {{ .Values.global.frontendRoot }}
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 60
