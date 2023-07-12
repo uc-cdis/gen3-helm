@@ -191,8 +191,8 @@ commonLabels:
 
 # Values to configure datadog if ddEnabled is set to "true".
 # -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
+datadogLogsInjection: false
 # -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
+datadogProfilingEnabled: false
 # -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
 datadogTraceSampleRate: 1
