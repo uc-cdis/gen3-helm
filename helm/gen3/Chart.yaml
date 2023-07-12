@@ -28,7 +28,7 @@ dependencies:
   version: "0.1.7"
   repository: file://../common
 - name: frontend-framework
-  version: "0.0.8"
+  version: "0.0.9"
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
@@ -64,7 +64,7 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.7"
+  version: "0.1.8"
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
@@ -72,7 +72,7 @@ dependencies:
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.10"
+  version: "0.1.11"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
@@ -87,8 +87,6 @@ dependencies:
   version: "0.1.10"
   repository: "file://../wts"
   condition: wts.enabled
-
-
 - name: elasticsearch
   version: "0.1.5"
   repository: "file://../elasticsearch"
