@@ -8,9 +8,25 @@ global:
   environment: default
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
 # -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
+
+# -- (int) Number of replicas for the deployment.
+replicaCount: 1
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/manifestservice
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "2022.09"
 
 # -- (map) Kubernetes service information.
 service:

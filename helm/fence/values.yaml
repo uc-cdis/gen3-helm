@@ -36,18 +36,22 @@ global:
   logsBucket: logs-gen3
   # -- (bool) Whether to sync data from dbGaP.
   syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -75,6 +79,33 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+
+# -- (map) Configuration options for usersync cronjob.
+usersync:
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: false
+  # -- (map) Secret information
+  secrets:
+    # -- (str) AWS access key ID for usersync S3 bucket
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for usersync S3 bucket
+    awsSecretAccessKey: ""
+  # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
+  schedule: "*/30 * * * *"
+  # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
+  custom_image:
+  # -- (bool) Whether to sync data from dbGaP.
+  syncFromDbgap: false
+  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+  addDbgap: false
+  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+  onlyDbgap: false
+  # -- (string) Path to the user.yaml file in S3.
+  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
 
 # -- (int) Number of desired replicas
 replicaCount: 1
@@ -253,6 +284,16 @@ env:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+  - name: INDEXD_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: indexd-service-creds
+        key: fence
+  - name: gen3Env
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: hostname
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -393,6 +434,8 @@ initEnv:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+  - name: FENCE_DB
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
   - name: FENCE_PUBLIC_CONFIG
@@ -424,7 +467,7 @@ datadogTraceSampleRate: 1
 
 logo:
 privacy_policy:
-
+projects:
 
 # USER_SYNC_CRON:
 #   LOCATION:
@@ -1787,7 +1830,6 @@ FENCE_CONFIG:
         password: ''
         port: 22
         proxy: ''
-        proxy_user: ''
       protocol: 'sftp'
       decrypt_key: ''
       # parse out the consent from the dbgap accession number such that something
@@ -1930,7 +1972,7 @@ FENCE_CONFIG:
   # url where indexd microservice is running (for signed urls primarily)
   # NOTE: Leaving as null will force fence to default to {{BASE_URL}}/index
   # example value: 'https://example.com/index'
-  INDEXD: null
+  INDEXD: http://indexd-service
 
   # this is the username which fence uses to make authenticated requests to indexd
   INDEXD_USERNAME: 'fence'
@@ -1952,7 +1994,7 @@ FENCE_CONFIG:
   AZ_BLOB_CONTAINER_URL: 'https://myfakeblob.blob.core.windows.net/my-fake-container/'
 
   # url where authz microservice is running
-  ARBORIST: null
+  ARBORIST: http://arborist-service
 
   # url where the audit-service is running
   AUDIT_SERVICE: 'http://audit-service'
@@ -2188,7 +2230,7 @@ FENCE_CONFIG:
   # None(Default): Allow per client i.e. a fence client can pick whether or not to sync their visas during login with parse_visas param in /authorization endpoint
   # True: Parse for all clients i.e. a fence client will always sync their visas during login
   # False: Parse for no clients i.e. a fence client will not be able to sync visas during login even with parse_visas param
-  GLOBAL_PARSE_VISAS_ON_LOGIN:
+  GLOBAL_PARSE_VISAS_ON_LOGIN: false
   # Settings for usersync with visas
   USERSYNC:
     sync_from_visas: false

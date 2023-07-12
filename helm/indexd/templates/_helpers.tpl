@@ -81,9 +81,6 @@ Create the name of the service account to use
 {{- end }}
 
 
-# fence: {{ default (randAlphaNum 32) .Values.secrets.userdb.fence | quote }},
-# gdcapi: {{ default (randAlphaNum 32) .Values.secrets.userdb.gdcapi | quote }},
-# gateway: {{ default (randAlphaNum 32) .Values.secrets.userdb.gateway | quote }}
 
 {{/*
   Indexd Fence Creds

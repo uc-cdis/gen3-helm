@@ -19,6 +19,11 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: wait-for-indexd
+          image: curlimages/curl:latest
+          command: ["/bin/sh","-c"]
+          args: ["while [ $(curl -sw '%{http_code}' http://indexd-service/index -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for indexd...'; done"]
       containers:
         - name: indexd
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -68,7 +73,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: indexd-service-creds
-                key: fence
+                key: sheepdog
                 optional: false
           imagePullPolicy: Always
           command: ["/bin/bash" ]

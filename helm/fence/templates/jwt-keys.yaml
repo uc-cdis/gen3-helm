@@ -4,4 +4,4 @@ metadata:
   name: fence-jwt-keys
 type: Opaque
 data:
-    jwt_private_key.pem: {{ genPrivateKey "rsa" | b64enc }}
+    jwt_private_key.pem: {{ include "getOrCreatePrivateKey" . }}

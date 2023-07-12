@@ -8,4 +8,4 @@ stringData:
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
-  
+---

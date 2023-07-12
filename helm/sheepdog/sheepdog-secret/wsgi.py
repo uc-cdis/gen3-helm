@@ -18,7 +18,7 @@ config = app.config
 config['INDEX_CLIENT'] = {
     'host': environ.get('INDEX_CLIENT_HOST') or 'http://indexd-service',
     'version': 'v0',
-    'auth': (environ.get( "INDEXD_USER", 'gdcapi'), environ.get( "INDEXD_PASS") ),
+    'auth': (environ.get( "INDEXD_USER", 'sheepdog'), environ.get( "INDEXD_PASS") ),
 }
 
 config["PSQLGRAPH"] = {

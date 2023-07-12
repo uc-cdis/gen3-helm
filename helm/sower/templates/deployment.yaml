@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sower
+  annotations:
+    gen3.io/network-ingress: "pidgin"   
+  labels:
+    {{- include "sower.labels" . | nindent 4 }}
+spec:
+  selector:
+      matchLabels:
+        {{- include "sower.selectorLabels" . | nindent 8 }}
+  revisionHistoryLimit: 2
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}  
+  template:
+    metadata:
+      labels:
+        {{- include "sower.selectorLabels" . | nindent 8 }}
+        public: "yes"        
+        netnolimit: "yes"
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sower.serviceAccountName" . }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      containers:
+        - name: sower
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DICTIONARY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: dictionary_url
+                  optional: true
+            - name: GEN3_HOSTNAME
+              value: {{ .Values.global.hostname }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -26,13 +26,14 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 80

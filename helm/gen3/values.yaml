@@ -12,28 +12,31 @@ global:
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
-    # -- (map) Credentials for AWS
-    account:
-      # Prep move of these keys here.
-      aws_access_key_id:
-      aws_secret_access_key:
-  # -- (bool) Whether the deployment is for development purposes.
+    # # -- (map) Credentials for AWS
+    # account:
+    #   # Prep move of these keys here.
+    #   aws_access_key_id:
+    #   aws_secret_access_key:
+
+  # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   # -- (map) Postgres database configuration.
   postgres:
-    # -- (bool) Whether the database should be created.
+    # -- (bool) Whether the database create job should run.
     dbCreate: true
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
-      # -- (string) hostname of postgres server
-      host:
-      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      # -- global postgres master username
       username: postgres
-      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      # -- global postgres master password
       password:
-      # -- (string) Port for Postgres.
+      # -- global postgres master host
+      host:
+      # -- global postgres master port
       port: "5432"
-  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  # -- (string) Environment name.
+  # This should be the same as vpcname if you're doing an AWS deployment.
+  # Currently this is being used to share ALB's if you have multiple namespaces in same cluster.
   environment: default
   # -- (string) Hostname for the deployment.
   hostname: localhost
@@ -55,14 +58,14 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-  # -- which frontend to use "portal" or "gen3ff"
-  frontendRoot: gen3ff
 
 
 tags:
@@ -115,10 +118,18 @@ audit:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for aws-es-proxy chart.
+
 aws-es-proxy:
   # -- (bool) Whether to deploy the aws-es-proxy subchart.
   enabled: false
+  # -- (str) Elasticsearch endpoint in AWS
+  esEndpoint: test.us-east-1.es.amazonaws.com
+  # -- (map) Secret information
+  secrets:
+    # -- (str) AWS access key ID for aws-es-proxy
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for aws-es-proxy
+    awsSecretAccessKey: ""
 
 # -- (map) Configurations for fence chart.
 fence:
@@ -130,8 +141,36 @@ fence:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
-
-  # -- (map) Configurations for frontend-framework chart.
+  # -- (map) Configuration settings for Fence app
+  FENCE_CONFIG:
+  # -- (string) USER YAML. Passed in as a multiline string.
+  USER_YAML:
+  # -- (map) Configuration options for usersync cronjob.
+  usersync:
+    # -- (bool) Whether to run Fence usersync or not.
+    usersync: false
+    # -- (map) Secret information
+    secrets:
+      # -- (str) AWS access key ID for usersync S3 bucket
+      awsAccessKeyId: ""
+      # -- (str) AWS secret access key for usersync S3 bucket
+      awsSecretAccessKey: ""
+    # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
+    schedule: "*/30 * * * *"
+    # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
+    custom_image:
+    # -- (bool) Whether to sync data from dbGaP.
+    syncFromDbgap: false
+    # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+    addDbgap: false
+    # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+    onlyDbgap: false
+    # -- (string) Path to the user.yaml file in S3.
+    userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+    # -- (string) Slack webhook endpoint used with certain jobs.
+    slack_webhook: None
+    # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+    slack_send_dbgap: false
 frontend-framework:
   # -- (bool) Whether to deploy the frontend-framework subchart.
   enabled: true
@@ -164,7 +203,69 @@ hatchery:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for indexd chart.
+  hatchery:
+    sidecarContainer:
+      # -- (string) The maximum amount of CPU the sidecar container can use
+      cpu-limit: '0.1'
+      # -- (string) The maximum amount of memory the sidecar container can use
+      memory-limit: 256Mi
+      # -- (string) The sidecar image.
+      image: quay.io/cdis/ecs-ws-sidecar:master
+      # -- (map) Environment variables to pass to the sidecar container
+      env:
+        NAMESPACE: "{{ .Release.Namespace }}"
+        HOSTNAME: "{{ .Values.global.hostname }}"
+      # -- (list) Arguments to pass to the sidecare container.
+      args: []
+      # -- (list) Commands to run for the sidecar container.
+      command:
+      - "/bin/bash"
+      - "./sidecar.sh"
+      lifecycle-pre-stop:
+      - su
+      - "-c"
+      - echo test
+      - "-s"
+      - "/bin/sh"
+      - root
+    containers:
+      -
+        # -- (int) port to proxy traffic to in docker contaniner
+        target-port: 8888
+        # -- (string) cpu limit of workspace container
+        cpu-limit: '1.0'
+        # -- (string) memory limit of workspace container
+        memory-limit: 2Gi
+        # -- (string) name of workspace
+        name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
+        # -- (string) docker image for workspace
+        image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+        # -- environment variables for workspace container
+        env:
+          FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
+        args:
+        - "--NotebookApp.base_url=/lw-workspace/proxy/"
+        - "--NotebookApp.default_url=/lab"
+        - "--NotebookApp.password=''"
+        - "--NotebookApp.token=''"
+        - "--NotebookApp.shutdown_no_activity_timeout=5400"
+        - "--NotebookApp.quit_button=False"
+        command:
+        - start-notebook.sh
+        path-rewrite: "/lw-workspace/proxy/"
+        use-tls: 'false'
+        ready-probe: "/lw-workspace/proxy/"
+        lifecycle-post-start:
+        - "/bin/sh"
+        - "-c"
+        - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
+          ln -s /data /home/$IAM/pd/; true
+        user-uid: 1000
+        fs-gid: 100
+        user-volume-location: "/home/jovyan/pd"
+        gen3-volume-location: "/home/jovyan/.gen3"
+
+
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
@@ -174,8 +275,10 @@ indexd:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (string) the default prefix for indexd records
+  defaultPrefix: "PREFIX/"
 
-# -- (map) Configurations for manifest service chart.
+
 manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
@@ -229,8 +332,21 @@ portal:
     repository:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
+  # -- (map) GitOps configuration for portal
+gitops:
+  # -- (string) multiline string - gitops.json
+  json:
+  # -- (string) - favicon in base64
+  favicon:
+  # -- (string) - multiline string - gitops.css
+  css:
+  # -- (string) - logo in base64
+  logo:
+  # -- (string) - createdby.png - base64
+  createdby:
+  sponsors:
 
-# -- (map) Configurations for requestor chart.
+
 requestor:
   # -- (bool) Whether to deploy the requestor subchart.
   enabled: false
@@ -252,7 +368,21 @@ revproxy:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for sheepdog chart.
+  ingress:
+    # -- (bool) Whether to create the custom revproxy ingress
+    enabled: false
+    # -- (string) The ingress class name.
+    className: ""
+    # -- (map) Annotations to add to the ingress.
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # -- (list) Where to route the traffic.
+    hosts:
+      - host: chart-example.local
+    # -- (list) To secure an Ingress by specifying a secret that contains a TLS private key and certificate.
+    tls: []
+
 sheepdog:
   # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
@@ -274,7 +404,7 @@ ssjdispatcher:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) Configurations for wts chart.
+
 wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
