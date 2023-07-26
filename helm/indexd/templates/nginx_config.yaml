@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+data:
+  default.conf: |
+      server {
+          listen 80;
+          server_name localhost;  # Replace with your domain or IP address
+
+          location / {
+              proxy_pass http://127.0.0.1:8000;  # Gunicorn binds to this address
+          }
+      }

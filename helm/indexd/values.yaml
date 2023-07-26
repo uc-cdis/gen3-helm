@@ -94,9 +94,20 @@ image:
   # -- (string) The Docker image repository for the indexd service
   repository: quay.io/cdis/indexd
   # -- (string) When to pull the image.
-  pullPolicy: IfNotPresent
+  pullPolicy: Never
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "feat_GPE-788"
+
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  # -- (bool) Whether to enable the nginx sidecar image.
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx
+  # -- (string) When to pull the image.
+  pullPolicy: Always
+  # -- (string) Image tag.
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -177,12 +188,15 @@ affinity: {}
 
 # -- (list) Volumes to attach to the pod
 volumes:
-- name: uwsgi-config
+- name: wsgi-config
   configMap:
-    name: indexd-uwsgi
+    name: indexd-wsgi
 - name: config-volume
   secret:
     secretName: "indexd-settings"
+- name: nginx-config
+  configMap:
+    name: nginx-configmap
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -204,10 +218,6 @@ secrets:
     fence:
     sheepdog:
     # gateway:
-
-# -- (map) Values for overriding uwsgi settings
-uwsgi:
-  listen: 1024
 
 # -- (string) default prefix for indexd
 defaultPrefix: "PREFIX/"

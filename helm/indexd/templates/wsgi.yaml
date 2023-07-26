@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: indexd-wsgi
+data:
+  gunicorn.conf.py: |
+    wsgi_app = "deployment.wsgi.wsgi:application"
+    bind = "0.0.0.0:{{ include "indexd.gunicornPort" . }}"
+    workers = 1

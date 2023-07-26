@@ -82,8 +82,9 @@ spec:
             # Script always succeeds if it runs (echo exits with 0)
             # indexd image does not include jq, so use python 
             - |
-              echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
-              python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
-              echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
-              python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+              source /root/.cache/pypoetry/virtualenvs/indexd-25E0ynMx-py3.9/bin/activate
+              echo 'python3 /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
+              python3 /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
+              echo 'python3 /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
+              python3 /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
       restartPolicy: Never
