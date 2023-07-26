@@ -7,3 +7,5 @@ data:
     wsgi_app = "deployment.wsgi.wsgi:application"
     bind = "0.0.0.0:{{ include "indexd.gunicornPort" . }}"
     workers = 1
+    user = 'nobody'
+    group = 'nobody'
