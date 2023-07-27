@@ -15,6 +15,16 @@ const {
   printSchema,
 } = require('graphql/utilities/index');
 
+const schemaPath = `${__dirname}/schema.json`;
+const dictPath = `${__dirname}/dictionary.json`;
+schemaExists = fs.existsSync(schemaPath);
+dictionaryExists = fs.existsSync(dictPath);
+
+if (schemaExists && dictionaryExists) {
+  console.log('schema and dictionary already present.');
+  process.exit(0);
+}
+
 const { gdcSubPath } = (function () {
   function addSlash(path) { return (`${path}/`).replace(/\/+$/, '/'); }
 
@@ -53,9 +63,7 @@ if (!gdcSubPath) {
 }
 
 const schemaUrl = `${gdcSubPath}getschema`;
-const schemaPath = `${__dirname}/schema.json`;
 const dictUrl = `${gdcSubPath}_dictionary/_all`;
-const dictPath = `${__dirname}/dictionary.json`;
 const httpAgent = new http.Agent({
   rejectUnauthorized: false,
 });

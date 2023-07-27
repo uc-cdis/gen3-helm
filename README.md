@@ -11,7 +11,7 @@ Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
 ```
 helm repo add gen3 https://helm.gen3.org
 helm repo update
-helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
+helm upgrade --install gen3 gen3/gen3 -f values.yaml -f fence-config.yaml -f user.yaml --set manifestservice.enabled=false
 ```
 
 Assuming you already have the [prerequisites](./docs/PREREQUISITES.md) installed and configured, you can deploy Gen3 with the helm command.

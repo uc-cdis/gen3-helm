@@ -131,7 +131,11 @@ service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: NodePort
   # -- (int) The port number that the service exposes.
-  port: 80
+  port:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
 
 # -- (map) Configuration for revproxy ingress.
 ingress:

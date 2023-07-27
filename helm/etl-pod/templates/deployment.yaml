@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "etl-pod.fullname" . }}
+  labels:
+    {{- include "etl-pod.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "etl-pod.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "etl-pod.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: gen3-credentials
+          configMap:
+            name: gen3-credentials
+       
+        - name: aws-creds
+          configMap: 
+            name: aws-creds
+
+        - name: sheepdog-dbcreds
+          secret:
+            secretName: sheepdog-dbcreds
+
+        - name: useryaml
+          configMap:
+            name: useryaml
+
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "etl-pod.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+               
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          #ports:
+            #- name: http
+              #containerPort: {{ .Values.service.port }}
+              #protocol: TCP
+          #livenessProbe:
+            #httpGet:
+              #path: /
+              #port: http
+          #readinessProbe:
+            #httpGet:
+              #path: /
+              #port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            # Gen3 credentials file
+            - name: gen3-credentials
+              mountPath: /creds/credentials.json
+              subPath: credentials.json
+            
+            - name: aws-creds
+              mountPath: /root/.aws/
+
+            # Sheepdog creds, secrets defined in helm/sheepdog/templates/deployment.yaml
+            - name: sheepdog-dbcreds
+              mountPath: /creds/sheepdog-creds
+
+            # User yaml, configmap defined in helm/fence/templates/useryaml-job.yaml
+            - name: useryaml
+              mountPath: /creds/user.yaml
+              subPath: useryaml
+
+          command: ["/bin/bash" ]
+          args:
+            - "-c"
+            - |   
+              cat  << EOF >> ~/.bashrc
+              export PGDB=`cat /creds/sheepdog-creds/database`
+              export PGPASSWORD=`cat /creds/sheepdog-creds/password`
+              export PGUSER=`cat /creds/sheepdog-creds/username`
+              export PGHOST=`cat /creds/sheepdog-creds/host`
+              export DBREADY=`cat /creds/sheepdog-creds/dbcreated`
+              export PGPORT=`cat /creds/sheepdog-creds/port`
+              EOF
+
+              #this varifies credentials work
+              apt-get update
+              apt-get install less
+              aws sts get-caller-identity
+
+              echo "aws s3 cp s3://$S3_BUCKET/$S3_PATH"
+              aws s3 cp "s3://$S3_BUCKET/$S3_PATH" .
+
+              echo "Done setting up data_model"
+              while true; do sleep 30; done;
+              #while true; do echo "$S3_BUCKET/$S3_PATH"; sleep 10; done; 
+
+      {{ if eq .Values.global.deployment "development" }}
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: aced-commons-development-etl-node-group-large
+      {{ else if eq .Values.global.deployment "staging" }}
+      nodeSelector:
+          eks.amazonaws.com/nodegroup: aced-commons-staging-etl-node-group
+      {{ else if eq .Values.global.deployment "production" }}
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: aced-commons-production-etl-node-group
+      {{- end }}

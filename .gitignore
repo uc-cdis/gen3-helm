@@ -2,5 +2,14 @@ postgres.txt
 **/charts/
 notes/
 Chart.lock
+service.*
+*.crt
+*.key
+*.csr
+gen3-certs.yaml
+Secrets/
 .DS_Store
 _sample-*/
+credentials-templates/
+fence-config.yaml
+user.yaml

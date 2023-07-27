@@ -29,6 +29,9 @@ RUN npm ci
 RUN npm i --save speed-measure-webpack-plugin
 ENV NODE_ENV=production
 
+COPY configurations/${PORTAL_HOSTNAME}/schema.json /data-portal/data/schema.json
+COPY configurations/${PORTAL_HOSTNAME}/dictionary.json /data-portal/data/dictionary.json
+
 COPY overrides/runWebpack.sh runWebpack.sh
 COPY overrides/getSchema.js /data-portal/data/getSchema.js
 RUN bash runWebpack.sh

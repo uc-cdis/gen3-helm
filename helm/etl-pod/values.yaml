@@ -1,0 +1,109 @@
+# Default values for etl-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# expected form: "aws s3 cp s3://$S3_BUCKET/$S3_PATH"
+# where S3_BUCKET is the bucket name and S3_PATH is the rest of the path
+env:
+  S3_BUCKET: aced-development
+  S3_PATH: meta_graph_load.py
+
+global:
+  environment: default
+  ddEnabled: false
+
+  # this chooses what node group to use
+  deployment: development
+  # as example variables just going to get a small python file
+
+
+replicaCount: 1
+
+image:
+  repository: quay.io/ohsu-comp-bio/aced-etl
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "x86"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount: 
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+   limits:
+     cpu: 1.0
+     memory: 1Gi
+   requests:
+     cpu: 0.2
+     memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+tolerations: []
+
+affinity: {}
+
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Core-Service"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

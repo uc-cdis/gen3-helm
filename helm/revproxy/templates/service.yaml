@@ -6,10 +6,9 @@ metadata:
     {{- include "revproxy.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- with .Values.service.port }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: 80
-      protocol: TCP
-      name: http
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
   selector:
     {{- include "revproxy.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,637 @@
+{
+  "gaTrackingId": "UA-119127212-1",
+  "showArboristAuthzOnProfile": true,
+  "showFenceAuthzOnProfile": false,
+  "useArboristUI": true,
+
+
+  "featureFlags": {
+    "explorer": true,
+    "discovery": true,
+    "discoveryUseAggMDS": false
+  },
+
+
+  "explorerConfig":[
+
+    {
+      "tabTitle": "Patient",
+      "charts": {
+        "project_id": {
+          "chartType": "stackedBar",
+          "title": "project_id"
+        },
+        "us_core_race": {
+          "chartType": "stackedBar",
+          "title": "us_core_race"
+        },
+        "us_core_ethnicity": {
+          "chartType": "stackedBar",
+          "title": "us_core_ethnicity"
+        },
+        "gender": {
+          "chartType": "stackedBar",
+          "title": "gender"
+        },
+        "maritalStatus": {
+          "chartType": "stackedBar",
+          "title": "maritalStatus"
+        }
+      },
+      "filters": {
+        "tabs": [
+          {
+            "title": "Patient",
+            "fields": [
+              "project_id",
+              "us_core_race",
+              "us_core_ethnicity",
+              "gender",
+              "maritalStatus",
+              "quality_adjusted_life_years_valueDecimal",
+              "disability_adjusted_life_years_valueDecimal"
+            ]
+          }
+        ]
+      },
+      "table": {
+        "enabled": true,
+        "fields": [
+          "id",
+          "project_id",
+          "us_core_race",
+          "us_core_ethnicity",
+          "gender",
+          "maritalStatus",
+          "quality_adjusted_life_years_valueDecimal",
+          "disability_adjusted_life_years_valueDecimal"
+        ]
+      },
+      "dropdowns": {},
+      "guppyConfig": {
+        "dataType": "patient",
+        "fieldMapping":   [
+          { "field": "quality_adjusted_life_years_valueDecimal", "name": "quality_adjusted_life_years" },
+          { "field": "disability_adjusted_life_years_valueDecimal", "name": "disability_adjusted_life_years" }
+        ],
+        "nodeCountTitle": "Patients",
+        "manifestMapping": {
+          "resourceIndexType": "Patient",
+          "resourceIdField": "id",
+          "referenceIdFieldInResourceIndex": "id",
+          "referenceIdFieldInDataIndex": "id"
+        },
+        "accessibleFieldCheckList": ["project_id"],
+        "accessibleValidationField": "project_id"
+      }
+    },
+
+    {
+      "tabTitle": "Observation",
+      "charts": {
+        "project_id": {
+          "chartType": "stackedBar",
+          "title": "Project"
+        },
+        "category": {
+          "chartType": "stackedBar",
+          "title": "Category"
+        },
+        "code": {
+          "chartType": "stackedBar",
+          "title": "Code"
+        }
+      },
+      "filters": {
+        "tabs": [
+          {
+            "title": "Observation",
+            "fields": [
+              "project_id",
+              "category",
+              "code"
+            ]
+          }
+        ]
+      },
+      "table": {
+        "enabled": true,
+        "fields": [
+          "patient_id",
+          "project_id",
+          "category",
+          "code",
+          "bodySite",
+          "effectiveDateTime",
+          "valueBoolean",
+          "valueCodeableConcept",
+          "valueDateTime",
+          "valueInteger",
+          "valueQuantity",
+          "valueRange",
+          "valueRatio",
+          "valueSampledData",
+          "valueString",
+          "diastolic_blood_pressure",
+          "systolic_blood_pressure",
+          "conclusion_string",
+          "evidence_level",
+          "evidence_level_coding",
+          "gene_studied_id",
+          "gene_studied_id_coding",
+          "genomic_reference_sequence_id",
+          "genomic_reference_sequence_id_coding",
+          "interpretation",
+          "observation_interpretation",
+          "predicted_phenotype",
+          "predicted_phenotype_coding"
+        ]
+      },
+      "dropdowns": {},
+      "guppyConfig": {
+        "dataType": "observation",
+        "fieldMapping":   [],
+        "nodeCountTitle": "Observations",
+        "manifestMapping": {
+          "resourceIndexType": "Patient",
+          "resourceIdField": "_patient_id",
+          "referenceIdFieldInResourceIndex": "object_id",
+          "referenceIdFieldInDataIndex": "object_id"
+        },
+        "accessibleFieldCheckList": ["project_id"],
+        "accessibleValidationField": "project_id"
+      }
+    },
+
+    {
+
+      "tabTitle": "File",
+      "charts": {
+        "data_type": {
+          "chartType": "stackedBar",
+          "title": "File Type"
+        },
+        "data_format": {
+          "chartType": "stackedBar",
+          "title": "File Format"
+        }
+      },
+      "filters": {
+        "tabs": [
+          {
+            "title": "File",
+            "fields": [
+              "project_id",
+              "data_type",
+              "data_format"
+            ]
+          }
+        ]
+      },
+      "table": {
+        "enabled": true,
+        "fields": [
+          "project_id",
+          "patient_id",
+          "object_id",
+          "author",
+          "content_url",
+          "category_coding",
+          "category_coding_display",
+          "date",
+          "data_type",
+          "data_format",
+          "file_name",
+          "file_size",
+          "id",
+          "status",
+          "type_coding"
+        ]
+      },
+      "dropdowns": {},
+      "guppyConfig": {
+        "dataType": "file",
+        "fieldMapping": [
+          { "field": "object_id", "name": "Download ID" },
+          { "field": "file_name", "name": "Name" },
+          { "field": "data_type", "name": "Type" },
+          { "field": "data_format", "name": "Format" }
+        ],
+        "nodeCountTitle": "Files",
+        "manifestMapping": {
+          "resourceIndexType": "Patient",
+          "resourceIdField": "_patient_id",
+          "referenceIdFieldInResourceIndex": "object_id",
+          "referenceIdFieldInDataIndex": "object_id"
+        },
+        "accessibleFieldCheckList": ["project_id"],
+        "accessibleValidationField": "project_id",
+        "downloadAccessor": "object_id"
+      }
+    }
+  ],
+
+
+  "discoveryConfig": {
+    "features": {
+      "advSearchFilters": {
+        "enabled": true,
+        "field": "advSearchFilters",
+        "filters": [
+          {
+            "key": "Research Focus Area"
+          },
+          {
+            "key": "Administering IC(s)"
+          },
+          {
+            "key": "Simulated vs. Real Data"
+          },
+          {
+            "key": "Year Grant Awarded"
+          },
+          {
+            "key": "Study Description"
+          }
+        ]
+      },
+      "exportToWorkspace": {
+        "enabled": true,
+        "manifestFieldName": "__manifest",
+        "enableDownloadManifest": true,
+        "downloadManifestButtonText": "Download",
+        "documentationLinks": {
+          "gen3Client": "https://gen3.org/resources/user/gen3-client/",
+          "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
+        }
+      },
+      "pageTitle": {
+        "enabled": false,
+        "text": "Study Discovery"
+      },
+      "search": {
+        "searchBar": {
+          "enabled": true
+        },
+        "tagSearchDropdown": {
+          "enabled": true,
+          "collapsibleButtonText": "Study Characteristics"
+        }
+      },
+      "authorization": {
+        "enabled": false
+      }
+    },
+    "aggregations": [
+      {
+        "name": "Studies",
+        "field": "frontend_uid",
+        "type": "count"
+      },
+      {
+        "name": "Total Subjects",
+        "field": "_research_subject_count",
+        "type": "sum"
+      }
+    ],
+    "tagSelector": {
+      "title": "Tags by category"
+    },
+    "studyColumns": [
+      {
+        "name": "Study Name",
+        "field": "name",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a",
+        "width": "157px"
+      },
+      {
+        "name": "Full Name",
+        "field": "full_name",
+        "contentType": "string",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a",
+        "width": "400px"
+      },
+      {
+        "name": "Number of Subjects",
+        "field": "_research_subject_count",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a",
+        "contentType": "number",
+        "width": "98px"
+      },
+      {
+        "name": "ID Number",
+        "field": "study_id",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a",
+        "width": "152px"
+      },
+      {
+        "name": "Data Commons",
+        "field": "commons",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a",
+        "hrefValueFromField": "commons_url"
+      }
+    ],
+    "studyPreviewField": {
+      "name": "Description",
+      "field": "study_description",
+      "contentType": "string",
+      "includeName": false,
+      "includeIfNotAvailable": true,
+      "valueIfNotAvailable": "No description has been provided for this study."
+    },
+    "studyPageFields": {
+      "showAllAvailableFields": false,
+      "header": {
+        "field": "name"
+      },
+      "fieldsToShow": [
+        {
+          "groupName": "Study Identifiers",
+          "groupWidth": "half",
+          "includeName": false,
+          "fields": [
+            {
+              "name": "Number of Subjects",
+              "field": "_subjects_count",
+              "contentType": "number"
+            },
+            {
+              "name": "Full Name",
+              "field": "full_name",
+              "contentType": "string"
+            },
+            {
+              "name": "Short Name",
+              "field": "short_name",
+              "contentType": "string",
+              "includeName": true,
+              "includeIfNotAvailable": true,
+              "valueIfNotAvailable": "N/A"
+            },
+            {
+              "name": "dbGaP Accession Number",
+              "field": "dbgap_accession",
+              "contentType": "string",
+              "includeName": true,
+              "includeIfNotAvailable": false
+            },
+            {
+              "name": "Project ID",
+              "field": "project_id",
+              "contentType": "string",
+              "includeIfNotAvailable": false
+            },
+            {
+              "name": "Data Commons",
+              "field": "commons",
+              "contentType": "string",
+              "includeIfNotAvailable": false
+            }
+          ]
+        },
+        {
+          "groupWidth": "full",
+          "fields": [
+            {
+              "name": "Description",
+              "field": "study_description",
+              "contentType": "paragraphs",
+              "includeName": true,
+              "includeIfNotAvailable": true,
+              "valueIfNotAvailable": "No description has been provided for this study."
+            }
+          ]
+        }
+      ]
+    },
+    "minimalFieldMapping": {
+      "tagsListFieldName": "tags",
+      "authzField": "authz",
+      "uid": "frontend_uid"
+    },
+    "tagCategories": [
+      {
+        "name": "Commons",
+        "displayName": "Data Commons",
+        "color": "rgba(129, 211, 248, 1)",
+        "display": true
+      },
+      {
+        "name": "Program",
+        "color": "rgba(129, 211, 248, 1)",
+        "display": false
+      },
+      {
+        "name": "Study Registration",
+        "color": "rgba(236, 128, 141, 1)",
+        "display": false
+      },
+      {
+        "name": "Data Type",
+        "color": "rgba(112, 182, 3, 1)",
+        "display": false
+      },
+      {
+        "name": "primary_site",
+        "color": "rgba(112, 182, 3, 1)",
+        "display": false
+      },
+      {
+        "name": "disease_type",
+        "color": "rgba(112, 182, 3, 1)",
+        "display": false
+      },
+      {
+        "name": "data_type",
+        "color": "rgba(112, 182, 3, 1)",
+        "display": false
+      },
+      {
+        "name": "clinical_study_type",
+        "color": "rgba(112, 182, 3, 1)",
+        "display": false
+      }
+    ]
+  },
+
+  "components": {
+    "appName": "The Open Access Data Commons Portal",
+    "index": {
+      "introduction": {
+        "heading": "Open Access Data Commons",
+        "text": "The Open Access Data Commons supports the management, analysis and sharing of data for the research community with the aim of accelerating discovery and development of diagnostics, treatment and prevention of diseases.",
+        "link": "/submission"
+      },
+      "buttons": [
+        {
+          "name": "Data Dictionary",
+          "icon": "data-field-define",
+          "body": "Browse the nodes and properties of the graph data model used in the Open Access Data Commons.",
+          "link": "/DD",
+          "label": "Explore Data Model"
+        },
+        {
+          "name": "Explore Data",
+          "icon": "data-explore",
+          "body": "Search and download subsets of data from the Open Access Data Commons using intuitive navigation tools.",
+          "link": "/explorer",
+          "label": "Explore data"
+        },
+        {
+          "name": "Query Data",
+          "icon": "data-access",
+          "body": "Search and download subsets of data from the Open Access Data Commons using GraphQL queries.",
+          "link": "/query",
+          "label": "Query data"
+        },
+        {
+          "name": "Discover Study Metadata",
+          "icon": "data-explore",
+          "body": "Discover study descriptions and other metadata stored on the Data Commons",
+          "link": "/discovery",
+          "label": "Discover Study Metadata"
+        },
+        {
+          "name": "Analyze Data",
+          "icon": "data-analyze",
+          "body": "Perform analysis on the Open Access Data Commons data using Jupyter Notebooks.",
+          "link": "/workspace",
+          "label": "Run analysis"
+        }
+      ]
+    },
+    "navigation": {
+      "items": [
+        {
+          "icon": "query",
+          "link": "/discovery",
+          "name": "Discovery",
+          "tooltip": "Use free-text search and tags to rapidly find relevant studies."
+        },
+        {
+          "icon": "dictionary",
+          "link": "/DD",
+          "color": "#a2a2a2",
+          "name": "Dictionary",
+          "tooltip": "The Data Dictionary serves to inform the data model and is updated as new data is ingested."
+        },
+        {
+          "icon": "exploration",
+          "link": "/explorer",
+          "color": "#a2a2a2",
+          "name": "Exploration",
+          "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+        },
+        {
+          "icon": "query",
+          "link": "/query",
+          "color": "#a2a2a2",
+          "name": "Query",
+          "tooltip": "Query the databases using GraphiQL."
+        },
+        {
+          "name": "Notebook Browser",
+          "link": "/resource-browser",
+          "icon": "analysis",
+          "tooltip": "Learn how to use Jupyter Notebooks to explore and visualize data available by running a tutorial notebook, or use one of these examples as a launching point for your own custom analysis."
+        },
+        {
+          "icon": "workspace",
+          "link": "#hostname#workspace/",
+          "color": "#a2a2a2",
+          "name": "Workspace",
+          "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
+        },
+        {
+          "icon": "profile",
+          "link": "/identity",
+          "color": "#a2a2a2",
+          "name": "Profile",
+          "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
+        }
+      ]
+    },
+    "topBar": {
+      "items": [
+        {
+          "icon": "upload",
+          "link": "/submission",
+          "name": "Submit Data"
+        },
+        {
+          "link": "https://gen3.org/resources/user",
+          "name": "Documentation"
+        }
+      ]
+    },
+    "login": {
+      "title": "Open Access Data Commons",
+      "subTitle": "Explore, Analyze, and Share Data",
+      "text": "The Open Access Data Commons is a scalable cloud-based platform for computational discovery designed for the health community.",
+      "contact": "If you have any questions about access or the registration process, please contact ",
+      "email": "support@datacommons.io",
+      "image": "/../../../../custom/sponsors/gitops-sponsors/gene_bgy"
+    },
+    "footerLogos": [
+      {
+        "src": "/src/img/gen3.png",
+        "href": "https://ctds.uchicago.edu/gen3",
+        "alt": "Gen3 Data Commons"
+      },
+      {
+        "src": "/src/img/createdby.png",
+        "href": "https://ctds.uchicago.edu/",
+        "alt": "Center for Translational Data Science at the University of Chicago"
+      }
+    ]
+  },
+
+  "resourceBrowser": {
+      "title": "Visualizations",
+      "description": "A collection data explorers.",
+      "public": true,
+      "resources": [
+          {
+              "title": "HOP",
+              "category": "Notebooks",
+              "description": "Learn more about HOP’s research and how to learn from the contributions of more than 30,000 Oregonian participants.",
+              "link": "hop",
+              "imageUrl": "/src/img/healthy-oregon.png"
+          }
+      ]
+  },
+
+  "graphql": {
+    "boardCounts": [
+      {
+        "graphql": "_research_subject_count",
+        "name": "research_subject",
+        "plural": "research_subjects"
+      },
+      {
+        "graphql": "_specimen_count",
+        "name": "specimen",
+        "plural": "specimens"
+      },
+      {
+        "graphql": "_observation_count",
+        "name": "observation",
+        "plural": "observations"
+      }
+    ],
+    "chartCounts": [
+      {
+        "graphql": "_research_subject_count",
+        "name": "research_subjects"
+      }
+    ],
+    "projectDetails": "boardCounts"
+  }
+
+}
+
