@@ -29,7 +29,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
+serviceAccount: 
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
@@ -71,13 +71,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
-  limits:
-    cpu: 1.0
-    memory: 1Gi
-  requests:
-    cpu: 0.2
-    memory: 256Mi
+resources: 
+   limits:
+     cpu: 1.0
+     memory: 1Gi
+   requests:
+     cpu: 0.2
+     memory: 256Mi
 
 autoscaling:
   enabled: false

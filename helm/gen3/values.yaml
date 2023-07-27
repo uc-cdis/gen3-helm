@@ -4,7 +4,7 @@
 
 # Global configuration
 global:
-
+  
   # -- (map) AWS configuration
   dbRestoreBucket: aced-development
   dbRestorePath: meta_graph_load.py
