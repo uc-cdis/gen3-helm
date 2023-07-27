@@ -4,8 +4,11 @@
 
 # Global configuration
 global:
-
+  
   # -- (map) AWS configuration
+  dbRestoreBucket: aced-development
+  dbRestorePath: meta_graph_load.py
+
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false

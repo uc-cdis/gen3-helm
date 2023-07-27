@@ -56,6 +56,9 @@ spec:
         - name: revproxy-subconf
           configMap:
             name: revproxy-nginx-subconf
+        - name: revproxy-ssl
+          configMap:
+            name: revproxy-nginx-ssl
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -144,6 +147,14 @@ spec:
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"
+          - name: "revproxy-ssl"
+            readOnly: true
+            mountPath: "/etc/nginx/ssl/service.crt"
+            subPath: service.crt
+          - name: "revproxy-ssl"
+            readOnly: true
+            mountPath: "/etc/nginx/ssl/service.key"
+            subPath: service.key
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"

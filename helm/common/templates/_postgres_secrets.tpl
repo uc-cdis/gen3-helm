@@ -3,7 +3,6 @@
   Usage:
     {{ include "gen3.service-postgres" (dict "key" "password" "service" "fence" "context" $) }}
 
-
   Params:
   - key - String - Required - Name of the key in the secret.
   - service - String - Which service are you looking up secret for? 
