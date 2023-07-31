@@ -104,22 +104,7 @@ A Helm chart for gen3 sower
 | sowerConfig[0].container.env[1].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
 | sowerConfig[0].container.env[2].name | string | `"ROOT_NODE"` |  |
 | sowerConfig[0].container.env[2].value | string | `"subject"` |  |
-| sowerConfig[0].container.env[3].name | string | `"DB_HOST"` |  |
-| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[0].container.env[4].name | string | `"DB_DATABASE"` |  |
-| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[0].container.env[5].name | string | `"DB_USER"` |  |
-| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[0].container.env[6].name | string | `"DB_PASS"` |  |
-| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[0].container.env[7].name | string | `"SHEEPDOG"` |  |
-| sowerConfig[0].container.env[7].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
-| sowerConfig[0].container.env[7].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[0].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[0].container.name | string | `"job-task"` |  |
 | sowerConfig[0].container.pull_policy | string | `"Always"` |  |
@@ -127,10 +112,16 @@ A Helm chart for gen3 sower
 | sowerConfig[0].container.volumeMounts[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[0].container.volumeMounts[0].readOnly | bool | `true` |  |
 | sowerConfig[0].container.volumeMounts[0].subPath | string | `"config.json"` |  |
+| sowerConfig[0].container.volumeMounts[1].mountPath | string | `"/peregrine-creds.json"` |  |
+| sowerConfig[0].container.volumeMounts[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[0].container.volumeMounts[1].readOnly | bool | `true` |  |
+| sowerConfig[0].container.volumeMounts[1].subPath | string | `"creds.json"` |  |
 | sowerConfig[0].name | string | `"pelican-export"` |  |
 | sowerConfig[0].restart_policy | string | `"Never"` |  |
 | sowerConfig[0].volumes[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[0].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerConfig[0].volumes[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[0].volumes[1].secret.secretName | string | `"peregrine-creds"` |  |
 | sowerConfig[1].action | string | `"export-files"` |  |
 | sowerConfig[1].container.cpu-limit | string | `"1"` |  |
 | sowerConfig[1].container.env[0].name | string | `"DICTIONARY_URL"` |  |
@@ -143,22 +134,7 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.env[2].value | string | `"file"` |  |
 | sowerConfig[1].container.env[3].name | string | `"EXTRA_NODES"` |  |
 | sowerConfig[1].container.env[3].value | string | `""` |  |
-| sowerConfig[1].container.env[4].name | string | `"DB_HOST"` |  |
-| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[1].container.env[5].name | string | `"DB_DATABASE"` |  |
-| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[1].container.env[6].name | string | `"DB_USER"` |  |
-| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[1].container.env[7].name | string | `"DB_PASS"` |  |
-| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
-| sowerConfig[1].container.env[8].name | string | `"SHEEPDOG"` |  |
-| sowerConfig[1].container.env[8].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
-| sowerConfig[1].container.env[8].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[1].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[1].container.name | string | `"job-task"` |  |
 | sowerConfig[1].container.pull_policy | string | `"Always"` |  |
@@ -174,6 +150,8 @@ A Helm chart for gen3 sower
 | sowerConfig[1].restart_policy | string | `"Never"` |  |
 | sowerConfig[1].volumes[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[1].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerConfig[1].volumes[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[1].volumes[1].secret.secretName | string | `"peregrine-creds"` |  |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
