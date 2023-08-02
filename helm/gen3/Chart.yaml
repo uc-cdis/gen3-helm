@@ -79,6 +79,10 @@ dependencies:
   version: "0.1.6"
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
+- name: sower
+  version: "0.1.6"
+  condition: sower.enabled
+  repository: "file://../sower"
 - name: wts
   version: "0.1.10"
   repository: "file://../wts"
@@ -107,7 +111,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.18
+version: 0.1.19
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
