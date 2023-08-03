@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.10 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.7 |
 | file://../common | common | 0.1.8 |
-| file://../elasticsearch | elasticsearch | 0.1.5 |
+| file://../elasticsearch | elasticsearch | 0.1.6 |
 | file://../fence | fence | 0.1.14 |
 | file://../guppy | guppy | 0.1.9 |
 | file://../hatchery | hatchery | 0.1.7 |
@@ -37,6 +37,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../requestor | requestor | 0.1.9 |
 | file://../revproxy | revproxy | 0.1.11 |
 | file://../sheepdog | sheepdog | 0.1.11 |
+| file://../sower | sower | 0.1.6 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.7 |
 | file://../wts | wts | 0.1.11 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
