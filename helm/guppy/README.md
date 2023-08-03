@@ -8,7 +8,7 @@ A Helm chart for gen3 Guppy Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.7 |
+| file://../common | common | 0.1.8 |
 
 ## Values
 
