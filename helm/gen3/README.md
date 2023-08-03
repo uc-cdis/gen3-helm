@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -24,9 +24,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.9 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.6 |
 | file://../common | common | 0.1.7 |
-| file://../elasticsearch | elasticsearch | 0.1.5 |
+| file://../etl | etl | 0.1.0 |
 | file://../fence | fence | 0.1.13 |
-| file://../guppy | guppy | 0.1.8 |
+| file://../guppy | guppy | 0.1.9 |
 | file://../hatchery | hatchery | 0.1.6 |
 | file://../indexd | indexd | 0.1.10 |
 | file://../manifestservice | manifestservice | 0.1.10 |
@@ -41,6 +41,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ssjdispatcher | ssjdispatcher | 0.1.6 |
 | file://../wts | wts | 0.1.10 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
@@ -66,6 +67,12 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config"` |  |
+| elasticsearch.maxUnavailable | int | `0` |  |
+| elasticsearch.replicas | int | `1` |  |
+| elasticsearch.singleNode | bool | `true` |  |
+| etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.FENCE_CONFIG | map | `nil` | Configuration settings for Fence app |
 | fence.USER_YAML | string | `nil` | USER YAML. Passed in as a multiline string. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
@@ -108,7 +115,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| global.tierAccessLimit | int | `1000` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | guppy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | guppy.image.repository | string | `nil` | The Docker image repository for the guppy service. |
