@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -66,17 +66,6 @@ A Helm chart for gen3 sower
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
-| pelican.bucket | string | `""` | The bucket for pelican exports |
-| pelican.image.pullPolicy | string | `"Always"` | Docker pull policy. |
-| pelican.image.repository | string | `"quay.io/cdis/pelican-export"` | Docker repository. |
-| pelican.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
-| pelican.resources | map | `{"limits":{"cpu":1,"memory":"12Gi"},"requests":{"cpu":"100m","memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
-| pelican.resources.limits | map | `{"cpu":1,"memory":"12Gi"}` | The maximum amount of resources that the container is allowed to use |
-| pelican.resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
-| pelican.resources.limits.memory | string | `"12Gi"` | The maximum amount of memory the container can use |
-| pelican.resources.requests | map | `{"cpu":"100m","memory":"20Mi"}` | The amount of resources that the container requests |
-| pelican.resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
-| pelican.resources.requests.memory | string | `"20Mi"` | The amount of memory requested |
 | podSecurityContext | map | `{"fsGroup":1000,"runAsUser":1000}` | Security context to apply to the pod |
 | podSecurityContext.fsGroup | int | `1000` | Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod. |
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
@@ -97,6 +86,64 @@ A Helm chart for gen3 sower
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"sower-service-account"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| sowerConfig[0].action | string | `"export"` |  |
+| sowerConfig[0].container.cpu-limit | string | `"1"` |  |
+| sowerConfig[0].container.env[0].name | string | `"DICTIONARY_URL"` |  |
+| sowerConfig[0].container.env[0].valueFrom.configMapKeyRef.key | string | `"dictionary_url"` |  |
+| sowerConfig[0].container.env[0].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
+| sowerConfig[0].container.env[1].name | string | `"GEN3_HOSTNAME"` |  |
+| sowerConfig[0].container.env[1].valueFrom.configMapKeyRef.key | string | `"hostname"` |  |
+| sowerConfig[0].container.env[1].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
+| sowerConfig[0].container.env[2].name | string | `"ROOT_NODE"` |  |
+| sowerConfig[0].container.env[2].value | string | `"subject"` |  |
+| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
+| sowerConfig[0].container.memory-limit | string | `"12Gi"` |  |
+| sowerConfig[0].container.name | string | `"job-task"` |  |
+| sowerConfig[0].container.pull_policy | string | `"Always"` |  |
+| sowerConfig[0].container.volumeMounts[0].mountPath | string | `"/pelican-creds.json"` |  |
+| sowerConfig[0].container.volumeMounts[0].name | string | `"pelican-creds-volume"` |  |
+| sowerConfig[0].container.volumeMounts[0].readOnly | bool | `true` |  |
+| sowerConfig[0].container.volumeMounts[0].subPath | string | `"config.json"` |  |
+| sowerConfig[0].container.volumeMounts[1].mountPath | string | `"/peregrine-creds.json"` |  |
+| sowerConfig[0].container.volumeMounts[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[0].container.volumeMounts[1].readOnly | bool | `true` |  |
+| sowerConfig[0].container.volumeMounts[1].subPath | string | `"creds.json"` |  |
+| sowerConfig[0].name | string | `"pelican-export"` |  |
+| sowerConfig[0].restart_policy | string | `"Never"` |  |
+| sowerConfig[0].volumes[0].name | string | `"pelican-creds-volume"` |  |
+| sowerConfig[0].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerConfig[0].volumes[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[0].volumes[1].secret.secretName | string | `"peregrine-creds"` |  |
+| sowerConfig[1].action | string | `"export-files"` |  |
+| sowerConfig[1].container.cpu-limit | string | `"1"` |  |
+| sowerConfig[1].container.env[0].name | string | `"DICTIONARY_URL"` |  |
+| sowerConfig[1].container.env[0].valueFrom.configMapKeyRef.key | string | `"dictionary_url"` |  |
+| sowerConfig[1].container.env[0].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
+| sowerConfig[1].container.env[1].name | string | `"GEN3_HOSTNAME"` |  |
+| sowerConfig[1].container.env[1].valueFrom.configMapKeyRef.key | string | `"hostname"` |  |
+| sowerConfig[1].container.env[1].valueFrom.configMapKeyRef.name | string | `"manifest-global"` |  |
+| sowerConfig[1].container.env[2].name | string | `"ROOT_NODE"` |  |
+| sowerConfig[1].container.env[2].value | string | `"file"` |  |
+| sowerConfig[1].container.env[3].name | string | `"EXTRA_NODES"` |  |
+| sowerConfig[1].container.env[3].value | string | `""` |  |
+| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
+| sowerConfig[1].container.memory-limit | string | `"12Gi"` |  |
+| sowerConfig[1].container.name | string | `"job-task"` |  |
+| sowerConfig[1].container.pull_policy | string | `"Always"` |  |
+| sowerConfig[1].container.volumeMounts[0].mountPath | string | `"/pelican-creds.json"` |  |
+| sowerConfig[1].container.volumeMounts[0].name | string | `"pelican-creds-volume"` |  |
+| sowerConfig[1].container.volumeMounts[0].readOnly | bool | `true` |  |
+| sowerConfig[1].container.volumeMounts[0].subPath | string | `"config.json"` |  |
+| sowerConfig[1].container.volumeMounts[1].mountPath | string | `"/peregrine-creds.json"` |  |
+| sowerConfig[1].container.volumeMounts[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[1].container.volumeMounts[1].readOnly | bool | `true` |  |
+| sowerConfig[1].container.volumeMounts[1].subPath | string | `"creds.json"` |  |
+| sowerConfig[1].name | string | `"pelican-export-files"` |  |
+| sowerConfig[1].restart_policy | string | `"Never"` |  |
+| sowerConfig[1].volumes[0].name | string | `"pelican-creds-volume"` |  |
+| sowerConfig[1].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerConfig[1].volumes[1].name | string | `"peregrine-creds-volume"` |  |
+| sowerConfig[1].volumes[1].secret.secretName | string | `"peregrine-creds"` |  |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
