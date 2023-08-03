@@ -56,6 +56,17 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any wts secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a External Secret Store if deploying this sevice seperately.
+    separate: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  wtsSmDbcreds:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -185,8 +196,12 @@ affinity: {}
 # -- (string) Name of the role to be used for the role binding.
 roleName: workspace-token-service
 
-# -- (map) Values for wts secret.
+# -- (map) Values for wts secret and keys for External Secrets.
 secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
   external_oidc:
     # - base_url:
     #   oidc_client_id:

@@ -17,7 +17,7 @@ spec:
       volumes:
         - name: cred-volume
           secret:
-            secretName: aws-config
+            secretName: {{.Chart.Name}}-aws-config
       containers:
         - name: restore-dbs
           image: quay.io/cdis/awshelper:master

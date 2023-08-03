@@ -12,4 +12,3 @@ stringData:
         "aws_secret_access_key": "{{ .Values.manifestserviceG3auto.awssecretkey }}",
         "prefix": "{{ .Values.manifestserviceG3auto.prefix }}"
       }
-

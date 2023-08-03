@@ -5,13 +5,12 @@
 global:
   # -- (map) AWS configuration
   aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
-    # # -- (map) Credentials for AWS
-    # account:
-    #   # Prep move of these keys here.
-    #   aws_access_key_id:
-    #   aws_secret_access_key:
-
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -50,6 +49,10 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
 
 
 # Dependancy Charts
@@ -99,12 +102,6 @@ aws-es-proxy:
   enabled: false
   # -- (str) Elasticsearch endpoint in AWS
   esEndpoint: test.us-east-1.es.amazonaws.com
-  # -- (map) Secret information
-  secrets:
-    # -- (str) AWS access key ID for aws-es-proxy
-    awsAccessKeyId: ""
-    # -- (str) AWS secret access key for aws-es-proxy
-    awsSecretAccessKey: ""
 
 fence:
   # -- (bool) Whether to deploy the fence subchart.
@@ -123,12 +120,6 @@ fence:
   usersync:
     # -- (bool) Whether to run Fence usersync or not.
     usersync: false
-    # -- (map) Secret information
-    secrets:
-      # -- (str) AWS access key ID for usersync S3 bucket
-      awsAccessKeyId: ""
-      # -- (str) AWS secret access key for usersync S3 bucket
-      awsSecretAccessKey: ""
     # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
     schedule: "*/30 * * * *"
     # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
@@ -372,16 +363,16 @@ wts:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
-# -- (map) AWS credentials to access the db restore job S3 bucket
-secrets:
-  # -- (string) AWS access key.
-  awsAccessKeyId: test
-  # -- (string) AWS secret access key.
-  awsSecretAccessKey: test
-
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+
+# -- (map) Secret information.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:

@@ -101,3 +101,25 @@ Define dictionaryUrl
 {{- .Values.dictionaryUrl }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Cluster Secret Store for External Secrets
+*/}}
+{{- define "cluster-secret-store" -}}
+{{- if .Values.global.externalSecrets.separate }}
+  {{- .Chart.Name }}-secret-store
+{{- else }}
+  {{- default "gen3-secret-store"}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+  Service DB Creds Secrets Manager Name
+*/}}
+{{- define "sheepdog-sm-dbcreds" -}}
+{{- if .Values.externalSecrets.sheepdogSmDbcreds }}
+  {{- default .Values.externalSecrets.sheepdogSmDbcreds }}
+{{- else }}
+  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
+{{- end -}}
+{{- end -}}

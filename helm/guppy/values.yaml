@@ -70,11 +70,13 @@ autoscaling:
   # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
-# -- (map) AWS credentials to access the db restore job S3 bucket
+# -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
+dbRestore: false
+# -- (map) Secret information to access the db restore job S3 bucket.
 secrets:
-  # -- (string) AWS access key.
+  # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
-  # -- (string) AWS secret access key.
+  # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 
 # -- (int) Number of replicas for the deployment.
@@ -194,9 +196,6 @@ authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 # -- (string) A comma-separated list of fields to encrypt
 encryptWhitelist: test1
-
-# -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
-dbRestore: true
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

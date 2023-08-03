@@ -1,0 +1,3 @@
+{{- if or (.Values.dbRestore) (.Values.global.externalSecrets.deploy) }}
+{{ include "common.awsconfig" . }}
+{{- end -}}

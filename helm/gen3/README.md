@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -62,23 +62,17 @@ Helm chart to deploy Gen3 Data Commons
 | audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
-| aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
-| aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
-| aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | fence.FENCE_CONFIG | map | `nil` | Configuration settings for Fence app |
 | fence.USER_YAML | string | `nil` | USER YAML. Passed in as a multiline string. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
 | fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| fence.usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""},"slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
+| fence.usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | fence.usersync.custom_image | string | `nil` | To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image. |
 | fence.usersync.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | fence.usersync.schedule | string | `"*/30 * * * *"` | The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default. |
-| fence.usersync.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
-| fence.usersync.secrets.awsAccessKeyId | str | `""` | AWS access key ID for usersync S3 bucket |
-| fence.usersync.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for usersync S3 bucket |
 | fence.usersync.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
 | fence.usersync.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
@@ -90,12 +84,17 @@ Helm chart to deploy Gen3 Data Commons
 | gitops.json | string | `nil` | multiline string - gitops.json |
 | gitops.logo | string | `nil` | - logo in base64 |
 | gitops.sponsors | string | `nil` |  |
-| global.aws | map | `{"enabled":false}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
+| global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
+| global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
+| global.externalSecrets | map | `{"deploy":false}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -190,9 +189,9 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
 | revproxy.ingress.hosts | list | `[{"host":"chart-example.local"}]` | Where to route the traffic. |
 | revproxy.ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
-| secrets | map | `{"awsAccessKeyId":"test","awsSecretAccessKey":"test"}` | AWS credentials to access the db restore job S3 bucket |
-| secrets.awsAccessKeyId | string | `"test"` | AWS access key. |
-| secrets.awsSecretAccessKey | string | `"test"` | AWS secret access key. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information. |
+| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
+| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sheepdog.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | sheepdog.image.repository | string | `nil` | The Docker image repository for the sheepdog service. |

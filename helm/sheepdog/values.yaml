@@ -56,6 +56,17 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sheepdog secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a External Secret Store if deploying this sevice seperately.
+    separate: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  sheepdogSmDbcreds:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -227,6 +238,10 @@ secrets:
   indexd:
     # -- (string) Password to indexd's db.
     password: postgres
+  # -- (str) AWS access key ID to access the db restore job S3 bucket. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID to access the db restore job S3 bucket. Overrides global key.
+  awsSecretAccessKey:
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

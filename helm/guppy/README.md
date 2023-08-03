@@ -1,6 +1,6 @@
 # guppy
 
-![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Guppy Service
 
@@ -36,7 +36,7 @@ A Helm chart for gen3 Guppy Service
 | datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
-| dbRestore | bool | `true` | Whether or not to restore elasticsearch indices from a snapshot in s3 |
+| dbRestore | bool | `false` | Whether or not to restore elasticsearch indices from a snapshot in s3 |
 | enableEncryptWhitelist | bool | `true` | Whether or not to enable encryption for specified fields |
 | encryptWhitelist | string | `"test1"` | A comma-separated list of fields to encrypt |
 | esEndpoint | string | `""` | Elasticsearch endpoint. |
@@ -84,9 +84,9 @@ A Helm chart for gen3 Guppy Service
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"500Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | AWS credentials to access the db restore job S3 bucket |
-| secrets.awsAccessKeyId | string | `nil` | AWS access key. |
-| secrets.awsSecretAccessKey | string | `nil` | AWS secret access key. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
+| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
+| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |

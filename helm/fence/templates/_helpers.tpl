@@ -96,3 +96,53 @@ Create the name of the service account to use
 {{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Cluster Secret Store for External Secrets
+*/}}
+{{- define "cluster-secret-store" -}}
+{{- if .Values.global.externalSecrets.separate }}
+  {{- .Chart.Name }}-secret-store
+{{- else }}
+{{- default "gen3-secret-store"}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+  Fence JWT Keys Secrets Manager Name
+*/}}
+{{- define "fence-jwt-keys" -}}
+{{- default "fence-jwt-keys" .Values.externalSecrets.fenceJwtKeys }}
+{{- end }}
+
+{{/*
+  Fence Google App Creds Secrets Manager Name
+*/}}
+{{- define "fence-google-app-creds-secret" -}}
+{{- default "fence-google-app-creds-secret" .Values.externalSecrets.fenceGoogleAppCredsSecret }}
+{{- end }}
+
+{{/*
+  Fence Google Storage Creds Secrets Manager Name
+*/}}
+{{- define "fence-google-storage-creds-secret" -}}
+{{- default "fence-google-storage-creds-secret" .Values.externalSecrets.fenceGoogleStorageCredsSecret }}
+{{- end }}
+
+{{/*
+  Fence Config Secrets Manager Name
+*/}}
+{{- define "fence-config" -}}
+{{- default "fence-config" .Values.externalSecrets.fenceConfig }}
+{{- end }}
+
+{{/*
+  Service DB Creds Secrets Manager Name
+*/}}
+{{- define "fence-sm-dbcreds" -}}
+{{- if .Values.externalSecrets.fenceSmDbcreds }}
+  {{- default .Values.externalSecrets.fenceSmDbcreds }}
+{{- else }}
+  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
+{{- end -}}
+{{- end -}}

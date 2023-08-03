@@ -102,3 +102,25 @@ Create the name of the service account to use
 {{- define "indexd-gateway-creds" -}}
 {{- default (randAlphaNum 32) .Values.secrets.userdb.gateway }}
 {{- end }}
+
+{{/*
+  Cluster Secret Store for External Secrets
+*/}}
+{{- define "cluster-secret-store" -}}
+{{- if .Values.global.externalSecrets.separate }}
+  {{- .Chart.Name }}-secret-store
+{{- else }}
+  {{- default "gen3-secret-store"}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+  Service DB Creds Secrets Manager Name
+*/}}
+{{- define "indexd-sm-dbcreds" -}}
+{{- if .Values.externalSecrets.indexdSmDbcreds }}
+  {{- default .Values.externalSecrets.indexdSmDbcreds }}
+{{- else }}
+  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
+{{- end -}}
+{{- end -}}
