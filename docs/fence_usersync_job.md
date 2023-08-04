@@ -15,7 +15,10 @@ User lists can be synced from three sources:
 # S3 user.yaml Setup {#s3-setup}
 Please see [this](https://github.com/uc-cdis/fence/blob/master/docs/user.yaml_guide.md) documentation that details user.yaml formatting.
 
-You can pull this file from an S3 bucket that is set in the `.Values.usersync.userYamlS3Path` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in `.Values.global.aws.awsAccessKeyId`/`.Values.global.aws.awsSecretAccessKey` or `.Values.secrets.awsAccessKeyId`/`.Values.secrets.awsSecretAccessKey` fields. 
+You can pull this file from an S3 bucket that is set in the `.Values.usersync.userYamlS3Path` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in the `.Values.secrets.awsAccessKeyId` and `.Values.secrets.awsSecretAccessKey` fields. 
+
+***Notice:
+The Gen3 Helm chart has various jobs and uses for an Iam user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same Iam user for Fence Usersync, External Secrets, etc.- you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user.***
 
 As previously mentioned, if the `.Values.usersync.userYamlS3Path` string is set to "none", the user.yaml file from Fence values.yaml will be used. 
  
@@ -59,7 +62,7 @@ For an example of a dbGap auth file (csv), please see [this](https://github.com/
  
 
 
-# Other Customizations
+## Other Customizations
   The `.Values.usersync.schedule` option can be set to customize the cron schedule expression. The default setting is to have the job run once every 30 minutes. 
 
   The `.Values.usersync.custom_image` can be set to override the default "awshelper" image for the init container of the userync cronjob.
