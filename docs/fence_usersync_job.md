@@ -15,7 +15,7 @@ User lists can be synced from three sources:
 # S3 user.yaml Setup {#s3-setup}
 Please see [this](https://github.com/uc-cdis/fence/blob/master/docs/user.yaml_guide.md) documentation that details user.yaml formatting.
 
-You can pull this file from an S3 bucket that is set in the `.Values.usersync.userYamlS3Path` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in the `.Values.usersync.secrets.awsAccessKeyId` and `.Values.usersync.secrets.awsSecretAccessKey` fields. 
+You can pull this file from an S3 bucket that is set in the `.Values.usersync.userYamlS3Path` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in `.Values.global.aws.awsAccessKeyId`/`.Values.global.aws.awsSecretAccessKey` or `.Values.secrets.awsAccessKeyId`/`.Values.secrets.awsSecretAccessKey` fields. 
 
 As previously mentioned, if the `.Values.usersync.userYamlS3Path` string is set to "none", the user.yaml file from Fence values.yaml will be used. 
  
