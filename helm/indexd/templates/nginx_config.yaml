@@ -6,7 +6,7 @@ data:
   default.conf: |
       server {
           listen 80;
-          server_name localhost;  # Replace with your domain or IP address
+          server_name localhost;
 
           location / {
               proxy_pass http://127.0.0.1:8000;  # Gunicorn binds to this address
