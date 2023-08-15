@@ -28,9 +28,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes: 
-      - name: creds-volume
-        secret:
-          secretName: "tube-creds"
       - name: etl-mapping
         configMap:
           name: etl-mapping
@@ -59,14 +56,6 @@ spec:
             containerPort: 80
             protocol: TCP
           volumeMounts: 
-          - name: creds-volume
-            readOnly: true
-            mountPath: "/gen3/tube/creds.json"
-            subPath: dbcreds.json
-          - name: creds-volume
-            readOnly: true
-            mountPath: "/tube/creds.json"
-            subPath: dbcreds.json
           - name: etl-mapping
             readOnly: true
             mountPath: "/tube/tube/settings.py"
@@ -107,6 +96,38 @@ spec:
             value: 4g
           - name: SPARK_DRIVER_MEMORY
             value: 6g
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: host
+                optional: false
+          - name: PGPORT
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: port
+                optional: false  
+          - name: PGUSER
+            value: postgres
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gen3-postgresql
+                key: postgres-password
+                optional: false
+          - name: PGDB
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: database
+                optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: sheepdog-dbcreds
+                key: dbcreated
+                optional: false
           # livenessProbe:
           #   httpGet:
           #     path: /

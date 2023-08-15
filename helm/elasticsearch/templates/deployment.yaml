@@ -28,6 +28,15 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        - name: permissions-fix
+          image: busybox
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /var/lib/elasticsearch
+          command: ['sh', '-c', 'mkdir -p /var/lib/elasticsearch && chown 101:101 /var/lib/elasticsearch' ]
+          securityContext:
+            privileged: true
+            runAsUser: 0
         - name: sysctl
           image: busybox
           securityContext:
@@ -62,6 +71,13 @@ spec:
             initialDelaySeconds: 5  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: elasticsearch-data
+            mountPath: /var/lib/elasticsearch
+      volumes:
+      - name: elasticsearch-data
+        persistentVolumeClaim:
+          claimName: elasticsearch-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -48,14 +48,19 @@ spec:
             httpGet:
               path: /_status
               port: http
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
           args:
             - "-c"
             - |
-              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_386 -O /usr/bin/yq
+              chmod +x /usr/bin/yq
+              yq ea '. as $item ireduce ({}; . * $item)' fence-config-default.yaml fence-config-override.yaml > fence-config.yaml
+
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
@@ -84,8 +89,6 @@ spec:
           args:
             - "-c"
             - |
-              # echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
               if fence-create migrate --help > /dev/null 2>&1; then
                 if ! grep -E 'ENABLE_DB_MIGRATION"?: *false' /var/www/fence/fence-config.yaml; then
                   echo "Running db migration: fence-create migrate"

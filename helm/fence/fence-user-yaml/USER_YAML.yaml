@@ -11,6 +11,8 @@ authz:
     users:
     - hunter@krum.io
     - stephen@krum.io
+    - Vithal.madhira@palilasoftware.com
+    - Meredith.Adams@wakehealth.edu
   # policies automatically given to anyone, even if they haven't authenticated
   anonymous_policies: ['open_data_reader']
   # policies automatically given to authenticated users (in addition to their other policies)
@@ -18,6 +20,12 @@ authz:
   user_project_to_resource:
     sim: /programs/sim
     GEN: /programs/sim/projects/GEN
+    krumUNO: /programs/krum/projects/UNO
+    krumDOS: /programs/krum/projects/DOS
+    krumTRES: /programs/krum/projects/TRES
+    wakeONE: /programs/wake/projects/ONE
+    wakeTWO: /programs/wake/projects/TWO
+    wakeTHREE: /programs/wake/projects/THREE
   policies:
     # General Access
     - id: 'workspace'
@@ -111,6 +119,26 @@ authz:
       resource_paths:
         - '/programs/sim'
         - '/gen3/programs/sim'
+    - id: 'programs.krum-admin'
+      description: ''
+      role_ids:
+        - 'creator'
+        - 'reader'
+        - 'updater'
+        - 'deleter'
+        - 'storage_reader'
+      resource_paths:
+        - '/programs/krum'
+    - id: 'programs.wake-admin'
+      description: ''
+      role_ids:
+        - 'creator'
+        - 'reader'
+        - 'updater'
+        - 'deleter'
+        - 'storage_reader'
+      resource_paths:
+        - '/programs/wake'
     - id: 'gen3-admin'
       description: ''
       role_ids:
@@ -189,6 +217,20 @@ authz:
             - name: 'projects'
               subresources:
                 - name: 'GEN'
+        - name: 'wake'
+          subresources:
+            - name: 'projects'
+              subresources:
+                - name: 'ONE'
+                - name: 'TWO'
+                - name: 'THREE'
+        - name: 'krum'
+          subresources:
+            - name: 'projects'
+              subresources:
+                - name: 'UNO'
+                - name: 'DOS'
+                - name: 'TRES'
     # NEW Data WITH PREFIX
     - name: 'gen3'
       subresources:
@@ -473,8 +515,7 @@ clients:
 users:
   ### BEGIN INTERNS SECTION ###
   ### END INTERNS SECTION ###
-  stephen@krum.io:
-    admin: true
+  0009-0002-5427-6128: # stephen
     policies:
     - data_upload
     - workspace
@@ -482,8 +523,54 @@ users:
     - mds_admin
     - prometheus
     - sower
-    - services.sheepdog-admin
-    - services.peregrine-admin
+    - programs.sim-admin
+    - programs.krum-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: GEN
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: sim
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumUNO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumDOS
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumTRES
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  stephen@krum.io:
+    policies:
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.krum-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: GEN
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: sim
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumUNO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumDOS
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumTRES
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  0009-0001-0547-0015: # hunter
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
     - indexd_admin
     - ttyadmin
     projects:
@@ -504,10 +591,162 @@ users:
     - services.sheepdog-admin
     - services.peregrine-admin
     - programs.sim-admin
+    - programs.krum-admin
+    - programs.wake-admin
     - indexd_admin
     - ttyadmin
     projects:
     - auth_id: GEN
       privilege: [create, read, update, delete, upload, read-storage. write-storage]
     - auth_id: sim
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumUNO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumDOS
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: krumTRES
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  0009-0003-4127-2213: # mlperkin
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  mlperkin@wakehealth.edu:
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  mattperkinsee@gmail.com:
+    policies:
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  clhudson@wakehealth.edu:
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  0000-0001-5359-1703: # vithal
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  Vithal.madhira@palilasoftware.com:
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+  Meredith.Adams@wakehealth.edu:
+    policies:
+    - open_data_admin
+    - data_upload
+    - workspace
+    - dashboard
+    - mds_admin
+    - prometheus
+    - sower
+    - programs.sim-admin
+    - programs.wake-admin
+    - indexd_admin
+    - ttyadmin
+    projects:
+    - auth_id: wakeONE
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTWO
+      privilege: [create, read, update, delete, upload, read-storage. write-storage]
+    - auth_id: wakeTHREE
       privilege: [create, read, update, delete, upload, read-storage. write-storage]

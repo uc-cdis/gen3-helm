@@ -282,6 +282,9 @@ volumes:
   - name: config-volume
     secret:
       secretName: "fence-config"
+  - name: config-volume-override
+    secret:
+      secretName: "gen3-platform-secrets"
   - name: fence-google-app-creds-secret-volume
     secret:
       secretName: "fence-google-app-creds-secret"
@@ -331,8 +334,12 @@ volumeMounts:
     subPath: "privacy_policy.md"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
+    mountPath: "/var/www/fence/fence-config-default.yaml"
     subPath: fence-config.yaml
+  - name: "config-volume-override"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-override.yaml"
+    subPath: fence-config-override.yaml
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
@@ -353,7 +360,7 @@ volumeMounts:
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
+    mountPath: "/var/www/fence/fence-config-default.yaml"
     subPath: fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
@@ -1478,6 +1485,18 @@ FENCE_CONFIG:
       shibboleth_discovery_url: 'https://login.bionimbus.org/Shibboleth.sso/DiscoFeed'
 
     orcid:
+      # discovery_url: 'https://orcid.org/.well-known/openid-configuration'
+      # client_id: 'APP-LNX0FSB3SH0JI0GP'
+      # client_secret: '3f3c16de-3973-4425-8e03-e9b563d87999'
+      # # make sure you put the FULL url for this deployment in the allowed redirects in
+      # # ORCID.org. DO NOT include {{BASE_URL}} at ORCID.org, you need to actually put the
+      # # full url
+      # redirect_url: '{{BASE_URL}}/login/orcid/login/'
+      # scope: 'openid'
+      # # if mock is true, will fake a successful login response for login
+      # # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
+      # mock: false
+      # mock_default_user: '0009-0001-0547-0015'
       discovery_url: 'https://orcid.org/.well-known/openid-configuration'
       client_id: ''
       client_secret: ''

@@ -3,10 +3,10 @@ global:
   publicDataSets: false
   # -- (string) Access level for tiers.
   tierAccessLevel: private
-  dictionaryUrl: https://heal.krum.app/dictionary_schema
+  dictionaryUrl: https://impowrgen3.wakehealth.edu/dictionary_schema
   aws:
     enabled: false
-  hostname: heal.krum.app
+  hostname: impowrgen3.wakehealth.edu
   dev: true
   postgres: 
     dev: true
@@ -29,7 +29,7 @@ metadata:
   GEN3_DEBUG: "True"
   esEndpoint: http://elasticsearch:9200
   useAggMds: "False"
-  aggMdsNamespace: gen3-development
+  aggMdsNamespace: gen3
 
 guppy:
   dbRestore: false
@@ -51,17 +51,17 @@ guppy:
     type: patient
   configIndex: gen3-dev-config
 
-sheepdog:
-  authNamespace: gen3
-  dictionaryUrl: https://heal.krum.app/dictionary_schema
-  indexdUrl: http://indexd-service
-  fenceUrl: http://fence-service
-  arboristUrl: http://arborist-service
-  INDEXD_USER: honey
+sheepdog: 
+  authNamespace: gen3 
+  dictionaryUrl: https://impowrgen3.wakehealth.edu/dictionary_schema  
+  indexdUrl: http://indexd-service  
+  fenceUrl: http://fence-service  
+  arboristUrl: http://arborist-service  
+  INDEXD_USER: honey  
   INDEXD_PASS: mustard
 
 portal:
-  dataUploadBucket: krum-gen3-private-bucket
+  dataUploadBucket: wf-gen3-private-bucket
   image:
     repository: quay.io/cdis/data-portal
     tag: "2023.04"
@@ -74,13 +74,13 @@ revproxy:
       cert-manager.io/issue-temporary-certificate: 'true'
     tls:
     - hosts:
-        - heal.krum.app
-      secretName: heal-krum-app-tls
+        - impowrgen3.wakehealth.edu
+      secretName: impowrgen3-wakehealth-edu-tls
 
 peregrine:
   arboristUrl: http://arborist-service
 #   env:
-#     CONF_HOSTNAME: heal.krum.app
+#     CONF_HOSTNAME: impowrgen3.wakehealth.edu
 
 indexd:
   db-secret: indexd-dbcreds
@@ -91,11 +91,11 @@ indexd:
 
 gcp-pubsub-indexing:
   enabled: true
-  GCP_PROJECT_ID: "dnac-gke-krum"
+  GCP_PROJECT_ID: "wf-gen3"
   GCP_SUBSCRIPTION_ID: "file_uploaded-sub"
   INDEXD_USERNAME: "honey"
   INDEXD_PASSWORD: "mustard"
-  HOSTNAME: "https://heal.krum.app"
+  HOSTNAME: "https://impowrgen3.wakehealth.edu"
 
 tube:
   enabled: true
@@ -117,7 +117,7 @@ fence:
       # eks.amazonaws.com/role-arn:
   enabled: true
   db-secret: fence-dbcreds
-    
+
 
 
 requestor:
@@ -146,4 +146,3 @@ ambassador:
     app: ambassador
   selectorLabels:
     app: ambassador
-    

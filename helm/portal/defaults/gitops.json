@@ -132,15 +132,33 @@
     "discoveryUseAggMDS": false,
     "studyRegistration": false
   },
+
   "dataExplorerConfig": {
     "charts": {
-      "_study_id": {
+      "project_id": {
         "chartType": "count",
-        "title": "Studies"
+        "title": "Projects"
+      },
+      "impdsex": {
+        "chartType": "pie",
+        "title": "Gender"
+      },
+      "impd_race": {
+        "chartType": "bar",
+        "title": "Race"
       }
     },
     "filters": {
-      "tabs": []
+      "tabs": [
+        {
+          "title": "Patients",
+          "fields":[
+            "project_id",
+            "impdsex",
+            "impd_race"
+          ]
+        }
+      ]
     },
     "table": {
       "enabled": false
@@ -148,12 +166,20 @@
     "dropdowns": {},
     "buttons": [],
     "guppyConfig": {
-      "dataType": "study",
-      "nodeCountTitle": "Studies",
+      "dataType": "pb_impowr_demographics",
+      "nodeCountTitle": "Patients",
       "fieldMapping": [
-        { "field": "experiment_type", "name": "Experiment Type" },
-        { "field": "study_objective", "name": "Purpose of study"}
-      ]
+        { "field": "disease_type", "name": "Disease type" },
+        { "field": "primary_site", "name": "Site where samples were collected"}
+      ],
+      "manifestMapping": {
+        "resourceIndexType": "file",
+        "resourceIdField": "object_id",
+        "referenceIdFieldInResourceIndex": "submitter_id",
+        "referenceIdFieldInDataIndex": "node_id"
+      },
+      "accessibleFieldCheckList": ["submitter_id"],
+      "accessibleValidationField": "submitter_id"
     }
   },
   "fileExplorerConfig": {

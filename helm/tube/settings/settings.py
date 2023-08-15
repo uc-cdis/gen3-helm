@@ -15,13 +15,15 @@ LIST_TABLES_FILES = "tables.txt"
 # ex: export XDG_DATA_HOME="$HOME/.local/share"
 #    and setup $XDG_DATA_HOME/.local/share/gen3/tube/creds.json
 #
-conf_data = load_json("creds.json", "tube")
-DB_HOST = conf_data.get("db_host", "localhost")
-DB_PORT = conf_data.get("db_port", "5432")
-DB_DATABASE = conf_data.get("db_database", "gdcdb")
-DB_USERNAME = conf_data.get("db_username", "peregrine")
-DB_PASSWORD = conf_data.get("db_password", "unknown")
-DB_USE_SSL = conf_data.get("db_use_ssl", False)  # optional property to db_use_ssl
+
+
+DB_HOST = os.getenv("PGHOST", "localhost")
+DB_PORT = os.getenv("PGPORT", "5432")
+DB_DATABASE = os.getenv("PGDB", "gdcdb")
+DB_USERNAME = os.getenv("PGUSER", "peregrine")
+DB_PASSWORD = os.getenv("PGPASSWORD", "unknown")
+DB_USE_SSL = False  # optional property to db_use_ssl
+
 JDBC = (
     "jdbc:postgresql://{}:{}/{}".format(DB_HOST, DB_PORT, DB_DATABASE)
     if DB_USE_SSL is False

@@ -17,11 +17,3 @@ data:
   {{ ($a := split "/" $path)._1 }}: |
   {{- $bytes | toString | nindent 4 }}  
 {{- end}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata: 
-  name: revproxy-static-dictionary-content
-data:
-  schema.json: |-
-{{ .Files.Get "dictionary/schema.json" | indent 4 }}
