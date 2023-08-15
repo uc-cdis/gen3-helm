@@ -113,7 +113,7 @@ spec:
           - name: PGPASSWORD
             valueFrom:
               secretKeyRef:
-                name: gen3-postgresql
+                name: {{ .Release.Name }}-postgresql
                 key: postgres-password
                 optional: false
           - name: PGDB
