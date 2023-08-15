@@ -222,12 +222,6 @@ env:
     value: /var/www/fence
   - name: GEN3_DEBUG
     value: "True"
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
   - name: PGHOST
     valueFrom:
       secretKeyRef:
@@ -285,12 +279,6 @@ volumes:
   - name: config-volume-override
     secret:
       secretName: "gen3-platform-secrets"
-  - name: fence-google-app-creds-secret-volume
-    secret:
-      secretName: "fence-google-app-creds-secret"
-  - name: fence-google-storage-creds-secret-volume
-    secret:
-      secretName: "fence-google-storage-creds-secret"
   - name: fence-jwt-keys
     secret:
       secretName: "fence-jwt-keys"
@@ -344,14 +332,14 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
     subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
+  - name: "config-volume-override"
     readOnly: true
     mountPath: "/var/www/fence/fence_google_app_creds_secret"
-    subPath: credentials.json
-  - name: "fence-google-storage-creds-secret-volume"
+    subPath: google-app-credentials.json
+  - name: "config-volume-override"
     readOnly: true
     mountPath: "/var/www/fence/fence_google_storage_creds_secret"
-    subPath: credentials.json
+    subPath: google-storage-credentials.json
   - name: "fence-jwt-keys"
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
@@ -366,14 +354,14 @@ initVolumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
     subPath: yaml_merge.py
-  - name: "fence-google-app-creds-secret-volume"
+  - name: "config-volume-override"
     readOnly: true
     mountPath: "/var/www/fence/fence_google_app_creds_secret"
-    subPath: credentials.json
-  - name: "fence-google-storage-creds-secret-volume"
+    subPath: google-app-credentials.json
+  - name: "config-volume-override"
     readOnly: true
     mountPath: "/var/www/fence/fence_google_storage_creds_secret"
-    subPath: credentials.json
+    subPath: google-storage-credentials.json
 
 initEnv:
   - name: PGHOST
@@ -410,12 +398,6 @@ initEnv:
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
 
 selectorLabels:
   app: fence
