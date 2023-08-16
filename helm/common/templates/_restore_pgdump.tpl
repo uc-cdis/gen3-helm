@@ -27,7 +27,7 @@ spec:
               {{- if $.Values.global.dev }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql
+                  name: {{ .Values.postgresql.auth.existingSecret | default (printf "%s-postgresql" .Release.Name) }}
                   key: postgres-password
                   optional: false
               {{- else }}
