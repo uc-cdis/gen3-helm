@@ -146,7 +146,7 @@ metadata:
   name: {{ $.Chart.Name }}-dbcreds
 stringData:
   context: |
-    {{ $.Values | toYaml | nindent 4 }}
+    {{ $ | toYaml | nindent 4 }}
 data:
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
