@@ -20,7 +20,7 @@
   {{- $chartName := default "" .context.Chart.Name }}
   {{- $valuesPostgres := get .context.Values.postgres .key }}
   {{- $localSecretPass := "" }}
-  {{- $secretData := (lookup "v1" "Secret" $.context.Release.Namespace (printf "%s-%s" $chartName "dbcreds")).data }}
+  {{- $secretData := (lookup "v1" "Secret" .context.Release.Namespace (printf "%s-%s" $chartName "dbcreds")).data }}
   {{- if $secretData }}
     {{- if hasKey $secretData .key }}
       {{- $localSecretPass = index $secretData .key | b64dec }}
