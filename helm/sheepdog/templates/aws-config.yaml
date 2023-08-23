@@ -1,3 +1,3 @@
-{{- if or (.Values.dbRestore) (.Values.global.externalSecrets.deploy) }}
+{{- if or (.Values.secrets.awsSecretAccessKey) (.Values.global.aws.awsSecretAccessKey ) }}
 {{ include "common.awsconfig" . }}
 {{- end -}}
