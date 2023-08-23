@@ -201,6 +201,9 @@ Helm chart to deploy Gen3 Data Commons
 | ssjdispatcher.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | ssjdispatcher.image.repository | string | `nil` | The Docker image repository for the ssjdispatcher service. |
 | ssjdispatcher.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
+| useLocalSecret.enabled | bool | `false` |  |
+| useLocalSecret.localSecretName | string | `nil` |  |
+| useLocalSecret.localSecretNamespace | string | `nil` |  |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
 | wts.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | wts.image.repository | string | `nil` | The Docker image repository for the wts service. |

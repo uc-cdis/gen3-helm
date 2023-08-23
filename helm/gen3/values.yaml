@@ -54,6 +54,11 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
 
+useLocalSecret:
+  enabled: false
+  localSecretName:
+  localSecretNamespace:
+  # localSecretKey:
 
 # Dependancy Charts
 
