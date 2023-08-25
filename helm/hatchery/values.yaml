@@ -139,8 +139,8 @@ hatchery:
 
   containers:
     - target-port: 8888
-      cpu-limit: '1.0'
-      memory-limit: 2Gi
+      cpu-limit: '300m'
+      memory-limit: 800Mi
       name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
       image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
       env:
