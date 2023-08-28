@@ -85,7 +85,7 @@ Helm chart to deploy Gen3 Data Commons
 | gitops.json | string | `nil` | multiline string - gitops.json |
 | gitops.logo | string | `nil` | - logo in base64 |
 | gitops.sponsors | string | `nil` |  |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null,"localSecretNamespace":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
@@ -201,9 +201,6 @@ Helm chart to deploy Gen3 Data Commons
 | ssjdispatcher.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | ssjdispatcher.image.repository | string | `nil` | The Docker image repository for the ssjdispatcher service. |
 | ssjdispatcher.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| useLocalSecret.enabled | bool | `false` |  |
-| useLocalSecret.localSecretName | string | `nil` |  |
-| useLocalSecret.localSecretNamespace | string | `nil` |  |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
 | wts.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | wts.image.repository | string | `nil` | The Docker image repository for the wts service. |

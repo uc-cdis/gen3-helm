@@ -18,6 +18,11 @@ spec:
         - name: cred-volume
           secret:
             secretName: {{.Chart.Name}}-aws-config
+            {{- if .Values.global.aws.useLocalSecret.enabled -}}
+              secretName: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+            {{ else }}
+              secretName: {{.Chart.Name}}-aws-config
+            {{ end }}
       containers:
         - name: restore-dbs
           image: quay.io/cdis/awshelper:master

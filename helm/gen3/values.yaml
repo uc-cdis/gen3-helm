@@ -11,6 +11,10 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    useLocalSecret:
+      enabled: false
+      localSecretName:
+      localSecretNamespace:
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -53,12 +57,6 @@ global:
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
-
-useLocalSecret:
-  enabled: false
-  localSecretName:
-  localSecretNamespace:
-  # localSecretKey:
 
 # Dependancy Charts
 
