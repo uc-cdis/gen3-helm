@@ -102,6 +102,8 @@ kubectl get secret "your secret name" -o jsonpath="{.data.secret-access-key}" | 
 
 You can paste the Iam access key and secret access key in the `.Values.secrets.awsAccessKeyId`/`.Values.secrets.awsSecretAccessKey` fields in the values.yaml file for the chart(s) you would like to use external secrets for. 
 
+If you are deploying external secrets with the Gen3 umbrella chart, you can utilize a local secret to avoid pasting credentials in the values.yaml file. Just set `.global.aws.useLocalSecret.enabled` to true and supply your secret name.
+
 Please note that only some Helm charts are compatible with External Secrets currently. We hope to expand this functionality in the future. If a chart is able to use External Secrets, you can see a `.Values.externalSecrets` section in the values.yaml file.
 
 ## How External Secrets Works. 
@@ -128,9 +130,11 @@ External Secrets relies on three main resources to function properly. (The below
         # What Kubernetes secret to create from the secret pulled from Secrets Manager.
         name: audit-g3auto
         creationPolicy: Owner
-      dataFrom:
-      - extract:
-          # The name of the secret pull from Secrets Manager
+      data:
+      # the key inside the new Kubernetes secret
+      - secretKey: audit-service-config.yaml
+          remoteRef:
+          #name of secret in secrets manager
           key: {{include "audit-g3auto" .}}
     ```
 

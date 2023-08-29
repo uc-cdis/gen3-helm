@@ -17,6 +17,8 @@ Please see [this](https://github.com/uc-cdis/fence/blob/master/docs/user.yaml_gu
 
 You can pull this file from an S3 bucket that is set in the `.Values.usersync.userYamlS3Path` field. Then input the iam credentials for a user that has read access to the specified S3 bucket in the `.Values.secrets.awsAccessKeyId` and `.Values.secrets.awsSecretAccessKey` fields. 
 
+You can utilize a local secret to avoid pasting credentials in the values.yaml file. Just set `.global.aws.useLocalSecret.enabled` to true and supply your secret name.
+
 ***Notice:
 The Gen3 Helm chart has various jobs and uses for an Iam user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same Iam user for Fence Usersync, External Secrets, etc.- you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user.***
 

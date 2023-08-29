@@ -89,6 +89,10 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null,"localSecretNamespace":null}` | Local secret setting if using a pre-exising secret. |
+| global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
+| global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
+| global.aws.useLocalSecret.localSecretNamespace | string | `nil` | Namespace of the local secret. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |

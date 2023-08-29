@@ -11,9 +11,13 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    # -- (map) Local secret setting if using a pre-exising secret.
     useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
       enabled: false
+      # -- (string) Name of the local secret.
       localSecretName:
+      # -- (string) Namespace of the local secret.
       localSecretNamespace:
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
