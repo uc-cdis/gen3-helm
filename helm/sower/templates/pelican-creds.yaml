@@ -5,11 +5,11 @@ metadata:
 type: Opaque
 {{- if .Values.global.aws.enabled }}
 stringData:
-  config.json: |
-  {
-    "manifest_bucket_name": "{{ .Values.pelican.bucket }}",
-    "hostname": "{{ .Values.global.hostname }}",
-    "aws_access_key_id": "{{ .Values.global.aws.pelican_user.access_key }}",
-    "aws_secret_access_key": "{{ .Values.global.aws.pelican_user.access_secret }}"
-  }
+  config.json: |-
+    {
+      "manifest_bucket_name": "aced-development-pelican-bucket",
+      "hostname": "{{ .Values.global.hostname }}",
+      "aws_access_key_id": "{{ .Values.global.aws.pelican_user.access_key }}",
+      "aws_secret_access_key": "{{ .Values.global.aws.pelican_user.access_secret }}"
+    }
 {{- end }}
