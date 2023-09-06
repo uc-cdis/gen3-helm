@@ -16,7 +16,7 @@
     "projectDetails": "boardCounts"
   },
   "components": {
-    "appName": "IMPOWR Data Commons Portal",
+    "appName": "IMPOWR & MIRHIQL Data Commons Portal",
     "index": {
       "introduction": {
         "heading": "Data Commons",
@@ -55,7 +55,7 @@
       ]
     },
     "navigation": {
-      "title": "IMPOWR Data Commons",
+      "title": "IMPOWR & MIRHIQL Data Commons",
       "items": [
         {
           "icon": "dictionary",
@@ -103,9 +103,9 @@
       ]
     },
     "login": {
-      "title": "IMPOWR Data Commons",
-      "subTitle": "Explore, Analyze, and Share Data",
-      "text": "This website supports the management, analysis and sharing of human disease data for the research community and aims to advance basic understanding of the genetic basis of complex traits and accelerate discovery and development of therapies, diagnostic tests, and other technologies for diseases like cancer.",
+      "title": "IMPOWR & MIRHIQL Data Commons",
+      "subTitle": "Explore, Analyze and Share Chronic Pain and Opioid Use Data",
+      "text": "This platform is designed to effectively manage, analyze, and facilitate the sharing of clinical and administrative data acquired through the IMPOWR AND MIHRIQL Networks. Its primary focus is to untangle the intricate factors contributing to chronic pain and opioid use trajectories. Its objective is to accelerate the advancement of therapies, diagnostic assessments, and technologies within these domains, ultimately leading to medical understanding and more comprehensive solutions.",
       "contact": "If you have any questions about access or the registration process, please contact ",
       "email": "support@datacommons.io"
     },
