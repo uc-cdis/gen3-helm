@@ -35,7 +35,6 @@ A Helm chart for Kubernetes
 | env | list | `[{"name":"REQUESTS_CA_BUNDLE","value":"/etc/ssl/certs/ca-certificates.crt"},{"name":"MANIFEST_SERVICE_CONFIG_PATH","value":"/var/gen3/config/config.json"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"manifestserviceG3auto":null}` | External Secrets settings. |
 | externalSecrets.manifestserviceG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "manifestservice-g3auto" |
-| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"environment":"default","externalSecrets":{"deploy":false,"separate":false},"minAvialable":1,"pdb":false}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

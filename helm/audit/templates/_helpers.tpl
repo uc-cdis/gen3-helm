@@ -97,13 +97,3 @@ Create the name of the service account to use
 {{- default "audit-g3auto" .Values.externalSecrets.auditG3auto }}
 {{- end }}
 
-{{/*
-  Service DB Creds Secrets Manager Name
-*/}}
-{{- define "audit-sm-dbcreds" -}}
-{{- if .Values.externalSecrets.auditSmDbcreds }}
-  {{- default .Values.externalSecrets.auditSmDbcreds }}
-{{- else }}
-  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
-{{- end -}}
-{{- end -}}

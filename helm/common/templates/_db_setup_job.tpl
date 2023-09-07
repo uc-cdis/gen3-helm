@@ -58,16 +58,44 @@ spec:
                 name: {{ .Release.Name }}-postgresql
                 key: postgres-password
                 optional: false
+            {{- else if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: password
+                optional: false
             {{- else }}
             value:  {{ .Values.global.postgres.master.password | quote}}
             {{- end }}
           - name: PGUSER
+          {{- if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: username
+                optional: false
+          {{- else }}
             value: {{ .Values.global.postgres.master.username | quote }}
+          {{- end }}
           - name: PGPORT
+          {{- if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: port
+                optional: false
+          {{- else }}
             value: {{ .Values.global.postgres.master.port | quote }}
+          {{- end }}
           - name: PGHOST
             {{- if $.Values.global.dev }}
             value: "{{ .Release.Name }}-postgresql"
+            {{- else if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: host
+                optional: false
             {{- else }}
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
@@ -140,6 +168,7 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
+{{- if not .Values.global.externalSecrets.deploy }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -154,4 +183,5 @@ data:
   {{- else }}
   host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
   {{- end }}
+{{- end }}
 {{- end }}

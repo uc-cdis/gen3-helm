@@ -113,14 +113,3 @@ Create the name of the service account to use
   {{- default "gen3-secret-store"}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-  Service DB Creds Secrets Manager Name
-*/}}
-{{- define "indexd-sm-dbcreds" -}}
-{{- if .Values.externalSecrets.indexdSmDbcreds }}
-  {{- default .Values.externalSecrets.indexdSmDbcreds }}
-{{- else }}
-  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
-{{- end -}}
-{{- end -}}

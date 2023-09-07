@@ -77,25 +77,3 @@ Create the name of the service account to use
 {{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
-
-{{/*
-  Cluster Secret Store for External Secrets
-*/}}
-{{- define "cluster-secret-store" -}}
-{{- if .Values.global.externalSecrets.separate }}
-  {{- .Chart.Name }}-secret-store
-{{- else }}
-  {{- default "gen3-secret-store"}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-  Service DB Creds Secrets Manager Name
-*/}}
-{{- define "metadata-sm-dbcreds" -}}
-{{- if .Values.externalSecrets.metadataSmDbcreds }}
-  {{- default .Values.externalSecrets.metadataSmDbcreds }}
-{{- else }}
-  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
-{{- end -}}
-{{- end -}}

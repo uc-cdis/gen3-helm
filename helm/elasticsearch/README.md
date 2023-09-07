@@ -25,7 +25,6 @@ A Helm chart for Kubernetes
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | fullnameOverride | string | `""` |  |
-| global | map | `{"ddEnabled":false,"environment":"default"}` | Global configuration options. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
