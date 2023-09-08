@@ -31,6 +31,7 @@ roleRef:
 
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
+{{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -160,6 +161,7 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
+{{- end}}
 {{- end }}
 
 
