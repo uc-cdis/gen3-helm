@@ -22,6 +22,11 @@ global:
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
 
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  awsCreds: "aws-es-proxy-aws-credentials"
+
 # -- (map) Annotations to add to the pod
 podAnnotations:
 
