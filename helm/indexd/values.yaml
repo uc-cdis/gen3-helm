@@ -72,6 +72,7 @@ global:
 externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  serviceCreds: "indexd-service-creds"
 
 # -- (map) Values for indexd secret.
 secrets:
