@@ -102,14 +102,3 @@ Create the name of the service account to use
 {{- define "indexd-gateway-creds" -}}
 {{- default (randAlphaNum 32) .Values.secrets.userdb.gateway }}
 {{- end }}
-
-{{/*
-Port for Gunicorn to bind to depending on if nginx sidecar is deployed.
-*/}}
-{{- define "indexd.gunicornPort" -}}
-{{- if .Values.sidecar.enabled}}
-{{- default 8000 }}
-{{- else }}
-{{- default 80}}
-{{- end }}
-{{- end }}

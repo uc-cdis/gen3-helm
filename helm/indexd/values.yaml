@@ -100,8 +100,6 @@ image:
 
 # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
 sidecar:
-  # -- (bool) Whether to enable the nginx sidecar image.
-  enabled: true
   # -- (string) The Docker image repository for nginx
   image: quay.io/cdis/nginx
   # -- (string) When to pull the image.

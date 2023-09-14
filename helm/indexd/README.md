@@ -95,8 +95,7 @@ A Helm chart for gen3 indexd
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx","pullPolicy":"Always","tag":"master"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.enabled | bool | `true` | Whether to enable the nginx sidecar image. |
+| sidecar | map | `{"image":"quay.io/cdis/nginx","pullPolicy":"Always","tag":"master"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
 | sidecar.image | string | `"quay.io/cdis/nginx"` | The Docker image repository for nginx |
 | sidecar.pullPolicy | string | `"Always"` | When to pull the image. |
 | sidecar.tag | string | `"master"` | Image tag. |
