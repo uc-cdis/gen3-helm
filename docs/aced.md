@@ -194,6 +194,21 @@ echo e.g. Connecting $PGUSER:$PGPASSWORD@$PGHOST:$PGPORT//$PGDB if $DBREADY
 
 1. Add IP address from ingress to `/etc/hosts`
 
+* NOTE: Appending the IP address from ingress and not removing any of the other IP addresses like
+ 127.0.0.1 aced-training.compbio.ohsu.edu is an important detail to mention. Also, after this IP has been added,
+ in order to see changes you should redo the certs:
+ 
+  ```
+  kubectl delete secrets gen3-certs
+  kubectl create secret tls gen3-certs --key=Secrets/TLS/service.key --cert=Secrets/TLS/service.crt
+  ```
+  before testing curl http://aced-training.compbio.ohsu.edu from inside and outside the cluster.
+
+  Another handy command for debugging this is 
+  ```
+  kubectl logs -n kube-system deployment/traefik
+  ```
+
 `kubectl get ingress`
 ```
 NAME           CLASS     HOSTS                      ADDRESS         PORTS     AGE
