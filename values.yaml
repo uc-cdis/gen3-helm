@@ -3,6 +3,35 @@ global:
   hostname: localhost
   portalApp: pcdc
   dictionaryUrl: https://pcdc-dev-dictionaries.s3.amazonaws.com/pcdc-schema-dev-20230912.json
+
+arborist:
+  image: 
+    repository: quay.io/pcdc/arborist
+    tag: 2023.08
+
+ambassador:
+  # -- (bool) Whether to deploy the ambassador subchart.
+  enabled: false
+
+argo-wrapper:
+  # -- (bool) Whether to deploy the argo-wrapper subchart.
+  enabled: false
+
+
+audit:
+  # -- (bool) Whether to deploy the audit subchart.
+  enabled: false
+
+aws-es-proxy:
+  enabled: true
+  image:
+    repository: abutaha/aws-es-proxy
+    tag: 0.8
+
+#modify gen3 chart so that elasticsearch automaticcally starts
+elasticsearch:
+  enabled: false
+
 fence: 
   FENCE_CONFIG:
     MOCK_GOOGLE_AUTH: true
@@ -13,34 +42,26 @@ fence:
     repository: quay.io/pcdc/fence
     tag: 1.12.2
 
-arborist:
-  image: 
-    repository: quay.io/pcdc/arborist
+hatchery:
+  enabled: false
+
+manifestservice:
+  image:
+    repository: quay.io/cdis/manifestservice
     tag: 2023.08
+
+metadata:
+  # -- (bool) Whether to deploy the metadata subchart.
+  enabled: false
+
+pidgin:
+  # -- (bool) Whether to deploy the pidgin subchart.
+  enabled: false
 
 peregrine:
   image:
     repository: quay.io/pcdc/peregrine
     tag: "helm-test"
-
-sheepdog:
-  image:
-    repository: quay.io/pcdc/sheepdog
-    tag: "helm-test"
-
-
-aws-es-proxy:
-#currently turn off in base image
-  enabled: true
-  image:
-    repository: abutaha/aws-es-proxy
-    tag: 0.8
-
-# guppy:
-#   enabled: true
-#   image:
-#     repository: quay.io/pcdc/guppy
-#     tag: 1.5.0
 
 portal:
   image: 
@@ -54,26 +75,76 @@ portal:
   gitops: 
     json: ""
 
-audit:
-  # -- (bool) Whether to deploy the audit subchart.
-  enabled: false
+sheepdog:
+  image:
+    repository: quay.io/pcdc/sheepdog
+    tag: "helm-test"
 
-argo-wrapper:
-  # -- (bool) Whether to deploy the argo-wrapper subchart.
-  enabled: false
+sower:
+  image:
+    repository: quay.io/cdis/sower
+    tag: 2023.08
 
-metadata:
-  # -- (bool) Whether to deploy the metadata subchart.
-  enabled: false
-
-pidgin:
-  # -- (bool) Whether to deploy the pidgin subchart.
-  enabled: false
-
+wts:
+  image:
+    repository: quay.io/cdis/workspace-token-service
+    tag: 2023.08
 
 
+
+guppy:
+  enabled: true 
+  image:
+    repository: quay.io/pcdc/guppy
+    tag: 1.5.0
+   # -- (int) Only relevant if tireAccessLevel is set to "regular". 
+  # The minimum amount of files unauthorized users can filter down to
+  tierAccessLimit: 1000
+
+  secrets:
+    # -- (string) AWS access key.
+    awsAccessKeyId: "test_key"
+    # -- (string) AWS secret access key.
+    awsSecretAccessKey: "test_secrect_key"
+
+
+
+  # -- (list) Elasticsearch index configurations
+  indices:
+    - index: dev_case
+      type: case
+    - index: dev_file
+      type: file
+
+  # -- (string) The Elasticsearch configuration index
+  configIndex: dev_case-array-config
+  # -- (string) The field used for access control and authorization filters
+  authFilterField: auth_resource_path
+  # -- (bool) Whether or not to enable encryption for specified fields
+  enableEncryptWhitelist: true
+  # -- (string) A comma-separated list of fields to encrypt
+  encryptWhitelist: test1
+
+
+
+
+# pcdcanalysistools:
+#   image:
+#     repository: quay.io/pcdc/pcdcanalysistools
+#     tag: 1.8.4
 
 # fluentd:
 #   image:
 #     repository: fluent/fluentd-kubernetes-daemonset
 #     tag: v1.15.3-debian-cloudwatch-1.0
+
+# amanuensis:
+#     image:
+#       repository: quay.io/pcdc/amanuensis
+#       tag: pcdc_dev_2023-09-06T16_36_49-05_00
+
+
+# revproxy:
+#   image:
+#     repository: quay.io/cdis/nginx
+#     tag: 1.17.6-ctds-1.0.1

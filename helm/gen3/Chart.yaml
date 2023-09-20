@@ -88,11 +88,10 @@ dependencies:
   repository: "file://../wts"
   condition: wts.enabled
 
-
 - name: elasticsearch
   version: "0.1.5"
   repository: "file://../elasticsearch"
-  condition: global.dev
+  condition: elasticsearch.enabled
 - name: postgresql
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"

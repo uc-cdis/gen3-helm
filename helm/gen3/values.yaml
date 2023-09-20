@@ -106,6 +106,9 @@ aws-es-proxy:
     # -- (str) AWS secret access key for aws-es-proxy
     awsSecretAccessKey: ""
 
+elasticsearch:
+  enabled: false
+
 fence:
   # -- (bool) Whether to deploy the fence subchart.
   enabled: true
