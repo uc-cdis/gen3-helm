@@ -364,6 +364,8 @@ ssjdispatcher:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag:
 
+pcdcanalysistools:
+  enabled: true
 
 wts:
   # -- (bool) Whether to deploy the wts subchart.

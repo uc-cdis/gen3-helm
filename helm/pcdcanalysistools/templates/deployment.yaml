@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcdcanalysistools-deployment
+  labels:
+    {{- include "pcdcanalysistools.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pcdcanalysistools.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pcdcanalysistools.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
+    spec:
+      volumes:
+      - name: config-volume
+        secret:
+          secretName: "pcdcanalysistools-secret"
+      - name: pcdcanalysistools-jwt-keys
+        secret:
+          secretName: "pcdcanalysistools-jwt-keys"
+      # - name: config-helper
+      #   secret:
+      #     secretName: "pcdcanalysistools-secret"
+      # - name: creds-volume
+      #   secret:
+      #       secretName: "sheepdog-creds"
+
+      
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pcdcanalysistools.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CONF_HOSTNAME
+              value: {{ .Values.global.hostname }}
+            - name: FENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false
+            - name: FENCE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: FENCE_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false
+            - name: FENCE_DB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: DICTIONARY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: dictionary_url
+            - name: SIGNPOST_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: indexd_url
+                  optional: true
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: database
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: host
+                  optional: false  
+            - name: INDEX_CLIENT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: indexd_url
+                  optional: true
+            - name: FENCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: fence_url
+                  optional: true
+            - name: ARBORIST_URL
+              value: http://arborist-service
+            - name: AUTH_NAMESPACE
+              value: default
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/ca-certificates.crt
+            - name: GEN3_DEBUG
+              value: "False"
+          volumeMounts:
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/PcdcAnalysisTools/wsgi.py"
+              subPath: "settings.py"
+            - name: "pcdcanalysistools-jwt-keys"
+              readOnly: true
+              mountPath: "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
+              subPath: "jwt_private_key.pem"
+            # - name: "creds-volume"
+            #   readOnly: true
+            #   mountPath: "/var/www/PcdcAnalysisTools/creds.json"
+            #   subPath: creds.json
+            # - name: "config-helper"
+            #   readOnly: true
+            #   mountPath: "/var/www/PcdcAnalysisTools/config_helper.py"
+            #   subPath: confighelper.py
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status?timeout=2
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pcdcanalysistools-jwt-keys
+type: Opaque
+data:
+    jwt_private_key.pem: {{ include "getOrCreatePrivateKey" . }}
