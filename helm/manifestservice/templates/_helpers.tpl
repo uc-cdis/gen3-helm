@@ -67,17 +67,6 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-  Cluster Secret Store for External Secrets
-*/}}
-{{- define "cluster-secret-store" -}}
-{{- if .Values.global.externalSecrets.separate }}
-  {{- .Chart.Name }}-secret-store
-{{- else }}
-{{- default "gen3-secret-store"}}
-{{- end -}}
-{{- end -}}
-
-{{/*
   Audit g3 Auto Secrets Manager Name
 */}}
 {{- define "manifestservice-g3auto" -}}
