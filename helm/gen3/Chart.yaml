@@ -91,6 +91,10 @@ dependencies:
   version: "0.1.0"
   repository: "file://../pcdcanalysistools"
   condition: pcdcanalysistools.enabled
+- name: amanuensis
+  version: "0.1.0"
+  repository: "file://../amanuensis"
+  condition: amanuensis.enabled
 
 - name: elasticsearch
   version: "0.1.5"

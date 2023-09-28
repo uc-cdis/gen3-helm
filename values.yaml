@@ -3,6 +3,12 @@ global:
   hostname: localhost
   portalApp: pcdc
   dictionaryUrl: https://pcdc-dev-dictionaries.s3.amazonaws.com/pcdc-schema-dev-20230912.json
+  # postgres:
+  #   master:
+  #     host: pcdc-postgresql
+  #     username: postgres
+  #     password: pcdc
+  #     port: "5432"
 
 arborist:
   image: 
@@ -90,6 +96,10 @@ wts:
     repository: quay.io/cdis/workspace-token-service
     tag: 2023.08
 
+# amanuensis:
+#     image:
+#       repository: quay.io/pcdc/amanuensis
+#       tag: "test"
 
 
 guppy:
@@ -127,21 +137,17 @@ guppy:
 
 
 
-
-# pcdcanalysistools:
-#   image:
-#     repository: quay.io/pcdc/pcdcanalysistools
-#     tag: 1.8.4
+pcdcanalysistools:
+  image:
+    repository: quay.io/pcdc/pcdcanalysistools
+    tag: 1.8.4
 
 # fluentd:
 #   image:
 #     repository: fluent/fluentd-kubernetes-daemonset
 #     tag: v1.15.3-debian-cloudwatch-1.0
 
-# amanuensis:
-#     image:
-#       repository: quay.io/pcdc/amanuensis
-#       tag: pcdc_dev_2023-09-06T16_36_49-05_00
+
 
 
 # revproxy:

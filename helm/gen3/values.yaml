@@ -367,6 +367,11 @@ ssjdispatcher:
 pcdcanalysistools:
   enabled: true
 
+
+amanuensis:
+  enabled: true
+
+
 wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
