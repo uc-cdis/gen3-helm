@@ -107,7 +107,7 @@ aws-es-proxy:
     awsSecretAccessKey: ""
 
 elasticsearch:
-  enabled: false
+  enabled: true
 
 fence:
   # -- (bool) Whether to deploy the fence subchart.
