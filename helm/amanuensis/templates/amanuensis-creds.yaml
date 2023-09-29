@@ -12,7 +12,7 @@ stringData:
         "db_database": "{{ include "gen3.service-postgres" (dict "key" "database" "service" $.Chart.Name "context" $)}}",
         "hostname": "{{ .Values.global.hostname }}",
         "indexd_password": "",
-        "google_client_secret": "YOUR.GOOGLE.SECRET",
-        "google_client_id": "YOUR.GOOGLE.CLIENT",
-        "hmac_key": ""
+        "data_delivery_bucket": {{ .Values.AMANUENSIS_CONFIG.DATA_DOWNLOAD_BUCKET }},
+        "data_delivery_bucket_aws_key_id": {{ .Values.AMANUENSIS_CONFIG.AWS_CREDENTIALS.aws_access_key_id }},
+        "data_delivery_bucket_aws_access_key": {{ .Values.AMANUENSIS_CONFIG.AWS_CREDENTIALS.aws_secret_access_key }}
       }

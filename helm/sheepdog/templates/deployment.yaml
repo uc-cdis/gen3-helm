@@ -205,7 +205,7 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              value: {{ include "sheepdog.dictionaryUrl" .}}
+              value: {{ .Values.global.dictionaryUrl }}
             {{- with .Values.indexdUrl }}
             - name: INDEX_CLIENT_HOST
               value: {{ . }}

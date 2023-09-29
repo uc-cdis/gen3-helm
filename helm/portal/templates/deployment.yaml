@@ -74,13 +74,15 @@ spec:
             {{- include "common.datadogEnvVar" . | nindent 12 }}
             {{- end }}
             - name: HOSTNAME
-              value: portal-dev.pedscommons.org
+              value: revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
             # see https://github.com/npm/cli/issues/3163
             - name: NPM_CONFIG_UPDATE_NOTIFIER
               value: "false"
             - name: NODE_ENV
               value: "dev"
+            - name: DICTIONARY_URL
+              value: {{ .Values.global.dictionaryUrl }}
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
@@ -172,7 +174,7 @@ spec:
             # - name: BASENAME
           volumeMounts:
             - name: "config-volume"
-              mountPath: "/data-portal/data/config/pcdc.json"
+              mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"

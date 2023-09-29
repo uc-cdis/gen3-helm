@@ -1,11 +1,11 @@
 from PcdcAnalysisTools.api import app, app_init
 from os import environ
-#import confighelper
+#import config_helper
 from pcdcutils.environment import is_env_enabled
 
 APP_NAME='PcdcAnalysisTools'
 # def load_json(file_name):
-#     return confighelper.load_json(file_name, APP_NAME)
+#     return config_helper.load_json(file_name, APP_NAME)
 
 
 # conf_data = load_json("creds.json")
@@ -23,17 +23,17 @@ config["INTERNAL_AUTH"] = None
 config["ARBORIST"] = "http://arborist-service/"
 
 # Signpost: deprecated, replaced by index client.
-# config["SIGNPOST"] = {
-#     "host": environ.get('INDEX_CLIENT_HOST') or "http://indexd-service",
-#     "version": "v0",
-#     "auth": ("gdcapi", environ.get( "PGHOST")),
-# }
-config["INDEX_CLIENT"] = {
-    "host": environ.get('INDEX_CLIENT_HOST') or "http://indexd-service",
+config["SIGNPOST"] = {
+    "host": environ.get("SIGNPOST_HOST") or "http://indexd-service",
     "version": "v0",
-    "auth": ("gdcapi", environ.get( "PGHOST")),
+    "auth": ("gdcapi", environ.get( "INDEXD_PASS") ),
 }
-#config["FAKE_AUTH"] = False
+config["INDEX_CLIENT"] = {
+    "host": environ.get("INDEX_CLIENT_HOST") or "http://indexd-service",
+    "version": "v0",
+    "auth": ("gdcapi", environ.get( "INDEXD_PASS") ),
+}
+config["FAKE_AUTH"] = False
 config["PSQLGRAPH"] = {
     'host': environ.get( "PGHOST"),
     'user': environ.get( "PGUSER"),
@@ -41,6 +41,8 @@ config["PSQLGRAPH"] = {
     'database': environ.get( "PGDB"),
 }
 
+# config["HMAC_ENCRYPTION_KEY"] = conf_data.get("hmac_key", "{{hmac_key}}")
+# config["FLASK_SECRET_KEY"] = conf_data.get("gdcapi_secret_key", "{{gdcapi_secret_key}}")
 config["HMAC_ENCRYPTION_KEY"] = environ.get( "HMAC_ENCRYPTION_KEY")
 config["FLASK_SECRET_KEY"] = environ.get( "FLASK_SECRET_KEY")
 fence_username = environ.get( "FENCE_DB_USER")
@@ -49,11 +51,11 @@ fence_host = environ.get( "FENCE_DB_HOST")
 fence_database = environ.get( "FENCE_DB_DBNAME")
 config['PSQL_USER_DB_CONNECTION'] = 'postgresql://%s:%s@%s:5432/%s' % (fence_username, fence_password, fence_host, fence_database)
 
-hostname = environ.get("CONF_HOSTNAME")
+hostname = environ.get("CONF_HOSTNAME", "localhost")
 config['OIDC_ISSUER'] = 'https://%s/user' % hostname
 
 config["OAUTH2"] = {
-    "client_id": 'conf_data.get("oauth2_client_id", "{{oauth2_client_id}}")',
+   "client_id": 'conf_data.get("oauth2_client_id", "{{oauth2_client_id}}")',
     "client_secret": 'conf_data.get("oauth2_client_secret", "{{oauth2_client_secret}}")',
     "api_base_url": "https://%s/user/" % hostname,
     "authorize_url": "https://%s/user/oauth2/authorize" % hostname,
@@ -72,19 +74,20 @@ config["OAUTH2"] = {
 # trailing slash intentionally omitted
 config['GUPPY_API'] = 'http://guppy-service'
 
-# config['USER_API'] = 'http://fence-service/'
 config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
-# use the USER_API URL instead of the public issuer URL to accquire JWT keys
-config["FORCE_ISSUER"] = True
+# config['USER_API'] = 'http://fence-service/'
+# option to force authutils to prioritize USER_API setting over the issuer from
+# token when redirecting, used during local docker compose setup when the
+# services are on different containers but the hostname is still localhost
+config['FORCE_ISSUER'] = True
 
 if environ.get('DICTIONARY_URL'):
     config['DICTIONARY_URL'] = environ.get('DICTIONARY_URL')
 else:
     config['PATH_TO_SCHEMA_DIR'] = environ.get('PATH_TO_SCHEMA_DIR')
 
-
 config['SURVIVAL'] = {
-    'consortium': ["INSTRuCT", "INRG"],
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL"],
     'excluded_variables': [
         {
             'label': 'Data Contributor',
@@ -99,6 +102,7 @@ config['SURVIVAL'] = {
             'field': 'studies.treatment_arm',
         }
     ],
+
     'result': {
         'risktable': True,
         'survival': True
@@ -121,7 +125,6 @@ config['EXTERNAL'] = {
         "gmkf": "GMKF"
     }
 }
-
 
 app_init(app)
 application = app

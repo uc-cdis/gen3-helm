@@ -96,7 +96,6 @@ replicaCount: 1
 image:
   repository: quay.io/pcdc/amanuensis
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
   tag: "pcdc_dev_2023-09-06T16_36_49-05_00"
 
 imagePullSecrets: []
