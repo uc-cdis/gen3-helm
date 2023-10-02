@@ -116,6 +116,11 @@ portal:
   gitops: 
     json: ""
 
+revproxy:
+  image:
+    repository: quay.io/cdis/nginx
+    tag: 2023.09
+
 sheepdog:
   image:
     repository: quay.io/pcdc/sheepdog
