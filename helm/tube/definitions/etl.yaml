@@ -15,22 +15,8 @@ mappings:
     parent_props:
       - path: pb_demographics.patient_baselines.patients[patient_id:submitter_id]
 
-  - name: patient_ptsd
-    doc_type: pb_primarycare_ptsd_screening
-    type: aggregator
-    root: pb_primarycare_ptsd_screening
-    props:
-      - name: submitter_id
-      - name: project_id
-      - name: pcptsd5score
-      - name: pcptsddetachyn
-      - name: pcptsdguiltyn
-      - name: pcptsdtraumayn
-    parent_props:
-      - path: pb_ptsds.patient_baselines.patients[patient_id:submitter_id]
 
-
-  - name: patient_od5
+  - name: pb_impowr_overdose_screenings
     doc_type: pb_impowr_overdose_screening
     type: aggregator
     root: pb_impowr_overdose_screening
@@ -71,3 +57,1715 @@ mappings:
           - name: promisdep4atotalscore
           - name: promisdprssdfeelpst7dyscl
           - name: promiswrthlsfeelpst7dyscl
+
+  # - name: projects
+  #   doc_type: project
+  #   type: collector
+  #   root: project
+  #   props:
+  #     - name: name
+  #     - name: code
+  #     - name: investigator_affiliation
+  #   injecting_props:
+  #     program:
+  #       props:
+  #         - name: program
+  #           src: name
+
+  # - name: protocols
+  #   doc_type: protocol
+  #   type: collector
+  #   root: protocol
+  #   props:
+  #     - name: submitter_id
+
+  
+  - name: studies
+    doc_type: study
+    type: collector
+    root: study
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: imp_bstrong_econ
+      - name: imp_bstrong_followup
+      - name: imp_bstrong_if
+      - name: imp_bstrong_inter
+      - name: imp_bstrong_moud
+      - name: imp_bstrong_pop
+      - name: imp_bstrong_sample
+      - name: imp_bstrong_sd
+      - name: imp_bstrong_setting
+      - name: imp_bup_econ
+      - name: imp_bup_followup
+      - name: imp_bup_if
+      - name: imp_bup_inter
+      - name: imp_bup_moud
+      - name: imp_bup_pop
+      - name: imp_bup_sample
+      - name: imp_bup_sd
+      - name: imp_bup_setting
+      - name: imp_champ_econ
+      - name: imp_champ_followup
+      - name: imp_champ_if
+      - name: imp_champ_inter
+      - name: imp_champ_moud
+      - name: imp_champ_pop
+      - name: imp_champ_sample
+      - name: imp_champ_sd
+      - name: imp_champ_setting
+      - name: imp_eng_econ
+      - name: imp_eng_followup
+      - name: imp_eng_if
+      - name: imp_eng_inter
+      - name: imp_eng_moud
+      - name: imp_eng_pop
+      - name: imp_eng_sample
+      - name: imp_eng_sd
+      - name: imp_eng_setting
+      - name: imp_hope_econ
+      - name: imp_hope_followup
+      - name: imp_hope_if
+      - name: imp_hope_inter
+      - name: imp_hope_moud
+      - name: imp_hope_pop
+      - name: imp_hope_sample
+      - name: imp_hope_sd
+      - name: imp_hope_setting
+      - name: imp_jh_econ
+      - name: imp_jh_followup
+      - name: imp_jh_if
+      - name: imp_jh_inter
+      - name: imp_jh_moud
+      - name: imp_jh_pop
+      - name: imp_jh_sample
+      - name: imp_jh_sd
+      - name: imp_jh_setting
+      - name: imp_jh_studysite
+      - name: imp_me_studyname
+      - name: imp_nm_studyname
+      - name: imp_ret_econ
+      - name: imp_ret_followup
+      - name: imp_ret_if
+      - name: imp_ret_inter
+      - name: imp_ret_moud
+      - name: imp_ret_pop
+      - name: imp_ret_sample
+      - name: imp_ret_sd
+      - name: imp_ret_setting
+      - name: imp_rutgers_econ
+      - name: imp_rutgers_followup
+      - name: imp_rutgers_if
+      - name: imp_rutgers_inter
+      - name: imp_rutgers_moud
+      - name: imp_rutgers_pop
+      - name: imp_rutgers_sample
+      - name: imp_rutgers_sd
+      - name: imp_rutgers_setting
+      - name: imp_rutgers_studysite
+      - name: imp_scpowr_econ
+      - name: imp_scpowr_follow
+      - name: imp_scpowr_if
+      - name: imp_scpowr_inter
+      - name: imp_scpowr_moud
+      - name: imp_scpowr_pop
+      - name: imp_scpowr_sample
+      - name: imp_scpowr_sd
+      - name: imp_scpowr_setting
+      - name: imp_tree_studyname
+      - name: imp_you_studyname
+      - name: impowr_ime2_econ
+      - name: impowr_ime2_followup
+      - name: impowr_ime2_if
+      - name: impowr_ime2_inter
+      - name: impowr_ime2_moud
+      - name: impowr_ime2_pop
+      - name: impowr_ime2_sample
+      - name: impowr_ime2_sd
+      - name: impowr_ime2_setting
+      - name: impowr_optic_econ
+      - name: impowr_optic_followup
+      - name: impowr_optic_if
+      - name: impowr_optic_inter
+      - name: impowr_optic_moud
+      - name: impowr_optic_pop
+      - name: impowr_optic_sample
+      - name: impowr_optic_sd
+      - name: impowr_optic_setting
+    injecting_props:
+      project:
+        props:
+          - name: project
+            src: code
+
+
+
+
+
+  - name: participants
+    doc_type: participant
+    type: aggregator
+    root: participant
+    props:
+      - name: submitter_id
+      - name: project_id
+    parent_props:
+      - path: protocols_impowr.studies.projects[project:code]
+      - path: protocols_impowr.studies[study:submitter_id]
+    aggregated_props:
+      - name: provider_count # gets the count of this node name
+        path: providers      # path to this node from the root
+        fn: count
+      - name: patient_count # gets the count of this node name
+        path: patients      # path to this node from the root
+        fn: count
+
+
+  # PROVIDERS (provider)
+  - name: providers
+    doc_type: provider
+    type: aggregator
+    root: provider
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: surveys
+        path: provider_baselines.staff_surveys
+        props:        
+          - name: imp_staff_addx_exp 
+          - name: imp_staff_cert_addx 
+          - name: imp_staff_cert_pain 
+          - name: imp_staff_clientload 
+          - name: imp_staff_emplength 
+          - name: imp_staff_enroll_date 
+          - name: imp_staff_job 
+          - name: imp_staff_othertxt 
+          - name: imp_staff_pain_exp 
+          - name: imp_staff_panel_addx 
+          - name: imp_staff_panel_pain 
+          - name: imp_staff_physspec 
+          - name: imp_staff_physspec_other 
+          - name: impd_staff_ethnic 
+          - name: impd_staff_race 
+          - name: impdgenid_staff 
+          - name: impdgenid_staff_agender 
+          - name: impdgenid_staff_female 
+          - name: impdgenid_staff_genfluid 
+          - name: impdgenid_staff_genqueer 
+          - name: impdgenid_staff_male 
+          - name: impdgenid_staff_nonbinary 
+          - name: impdgenid_staff_not_rep 
+          - name: impdgenid_staff_other 
+          - name: impdgenid_staff_othertxt 
+          - name: impdgenid_staff_transman 
+          - name: impdgenid_staff_transwoman 
+          - name: impdrace_staff_ai_an 
+          - name: impdrace_staff_asian 
+          - name: impdrace_staff_bl_aa 
+          - name: impdrace_staff_nh_pi 
+          - name: impdrace_staff_not_rep 
+          - name: impdrace_staff_other 
+          - name: impdrace_staff_othertxt 
+          - name: impdrace_staff_unkn 
+          - name: impdrace_staff_white
+      - name: satisfaction_surveys
+        path: provider_baselines.pb_implementation_sciences.pb_patient_satisfaction_surveys
+        props:
+          - name: bpscliniccomfort
+          - name: bpscliniclocation
+          - name: bpsclinicqualcare
+          - name: bpshlpmeds
+          - name: bpshlpmondrguse
+          - name: bpshlprefna
+          - name: bpshlptalkmd
+          - name: bpshlptalksocial
+          - name: bpshlptreatpatient
+          - name: bpslikeleasttxt
+          - name: bpslikemosttxt
+          - name: bpspatientinteraction
+          - name: bpsrecommend
+          - name: bpssatisftreatment
+          - name: bpsstaffconcern
+          - name: bpsstaffinteresthelp
+          - name: bpsstaffknowledge
+          - name: bpsstaffresponsive
+          - name: bpsstaffunderstand
+          - name: bpssvchelped
+          - name: overall_patient_satsifaction_score
+      - name: rocs
+        path: provider_baselines.pb_implementation_sciences.pb_readiness_for_organizational_changes
+        props:
+          - name: roc_appropriateness
+          - name: roc_changeefficacy
+          - name: roc_confident
+          - name: roc_dmsupport
+          - name: roc_easier
+          - name: roc_efficiency
+          - name: roc_future
+          - name: roc_handle
+          - name: roc_leaderencourage
+          - name: roc_learn
+          - name: roc_legitimate
+          - name: roc_managementsuppt
+          - name: roc_mgrdonotwant
+          - name: roc_noproblem
+          - name: roc_notgain
+          - name: roc_notsense
+          - name: roc_orgbenefit
+          - name: roc_orgpriorities
+          - name: roc_overall
+          - name: roc_personal
+          - name: roc_personalbenefit
+          - name: roc_rational
+          - name: roc_signal
+          - name: roc_skills
+          - name: roc_srcommitted
+          - name: roc_srmgrsupport
+          - name: roc_status
+          - name: roc_tasks
+          - name: roc_timeelse
+          - name: roc_worthwhile
+      - name: aim_iam_fims
+        path: provider_baselines.pb_implementation_sciences.pb_aim_iam_fims
+        props:
+          - name: aimappealing
+          - name: aimapproval
+          - name: aimlike
+          - name: aimscore
+          - name: aimwelcome
+          - name: fimdoable
+          - name: fimeasy
+          - name: fimimplementable
+          - name: fimplausible
+          - name: fimscore
+          - name: iamapplicable
+          - name: iamfitting
+          - name: iammatch
+          - name: iamscore
+          - name: iamsuitable
+          - name: sdminclude
+          - name: sdmlisten
+          - name: sdmscore
+          - name: sdmunderstand
+        nested_props:
+          - name: collaborate_shared_decision_making_surveys
+            path: collaborate_shared_decision_making_surveys
+            props:
+              - name: sdminclude
+              - name: sdmlisten 
+              - name: sdmscore 
+              - name: sdmunderstand
+    parent_props:
+      - path: provider_baselines[provider_baseline_id:submitter_id]
+      - path: provider_baselines.providers[provider_id:submitter_id]
+
+
+  - name: staff_surveys
+    doc_type: staff_survey
+    type: aggregator
+    root: staff_survey
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: imp_staff_addx_exp 
+      - name: imp_staff_cert_addx 
+      - name: imp_staff_cert_pain 
+      - name: imp_staff_clientload 
+      - name: imp_staff_emplength 
+      - name: imp_staff_enroll_date 
+      - name: imp_staff_job 
+      - name: imp_staff_othertxt 
+      - name: imp_staff_pain_exp 
+      - name: imp_staff_panel_addx 
+      - name: imp_staff_panel_pain 
+      - name: imp_staff_physspec 
+      - name: imp_staff_physspec_other 
+      - name: impd_staff_ethnic 
+      - name: impd_staff_race 
+      - name: impdgenid_staff 
+      - name: impdgenid_staff_agender 
+      - name: impdgenid_staff_female 
+      - name: impdgenid_staff_genfluid 
+      - name: impdgenid_staff_genqueer 
+      - name: impdgenid_staff_male 
+      - name: impdgenid_staff_nonbinary 
+      - name: impdgenid_staff_not_rep 
+      - name: impdgenid_staff_other 
+      - name: impdgenid_staff_othertxt 
+      - name: impdgenid_staff_transman 
+      - name: impdgenid_staff_transwoman 
+      - name: impdrace_staff_ai_an 
+      - name: impdrace_staff_asian 
+      - name: impdrace_staff_bl_aa 
+      - name: impdrace_staff_nh_pi 
+      - name: impdrace_staff_not_rep 
+      - name: impdrace_staff_other 
+      - name: impdrace_staff_othertxt 
+      - name: impdrace_staff_unkn 
+      - name: impdrace_staff_white
+    parent_props:
+      - path: provider_baselines[provider_baseline_id:submitter_id]
+      - path: provider_baselines.providers[provider_id:submitter_id]
+
+
+  - name: pb_patient_satisfaction_surveys
+    doc_type: pb_patient_satisfaction_survey
+    type: aggregator
+    root: pb_patient_satisfaction_survey
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: bpscliniccomfort
+      - name: bpscliniclocation
+      - name: bpsclinicqualcare
+      - name: bpshlpmeds
+      - name: bpshlpmondrguse
+      - name: bpshlprefna
+      - name: bpshlptalkmd
+      - name: bpshlptalksocial
+      - name: bpshlptreatpatient
+      - name: bpslikeleasttxt
+      - name: bpslikemosttxt
+      - name: bpspatientinteraction
+      - name: bpsrecommend
+      - name: bpssatisftreatment
+      - name: bpsstaffconcern
+      - name: bpsstaffinteresthelp
+      - name: bpsstaffknowledge
+      - name: bpsstaffresponsive
+      - name: bpsstaffunderstand
+      - name: bpssvchelped
+      - name: overall_patient_satsifaction_score
+    parent_props:
+      - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+
+
+  - name: pb_readiness_for_organizational_changes
+    doc_type: pb_readiness_for_organizational_change
+    type: aggregator
+    root: pb_readiness_for_organizational_change
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: roc_appropriateness
+      - name: roc_changeefficacy
+      - name: roc_confident
+      - name: roc_dmsupport
+      - name: roc_easier
+      - name: roc_efficiency
+      - name: roc_future
+      - name: roc_handle
+      - name: roc_leaderencourage
+      - name: roc_learn
+      - name: roc_legitimate
+      - name: roc_managementsuppt
+      - name: roc_mgrdonotwant
+      - name: roc_noproblem
+      - name: roc_notgain
+      - name: roc_notsense
+      - name: roc_orgbenefit
+      - name: roc_orgpriorities
+      - name: roc_overall
+      - name: roc_personal
+      - name: roc_personalbenefit
+      - name: roc_rational
+      - name: roc_signal
+      - name: roc_skills
+      - name: roc_srcommitted
+      - name: roc_srmgrsupport
+      - name: roc_status
+      - name: roc_tasks
+      - name: roc_timeelse
+      - name: roc_worthwhile
+    parent_props:
+      - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+
+
+  - name: pb_aim_iam_fims
+    doc_type: pb_aim_iam_fim
+    type: aggregator
+    root: pb_aim_iam_fim
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: aimappealing
+      - name: aimapproval
+      - name: aimlike
+      - name: aimscore
+      - name: aimwelcome
+      - name: fimdoable
+      - name: fimeasy
+      - name: fimimplementable
+      - name: fimplausible
+      - name: fimscore
+      - name: iamapplicable
+      - name: iamfitting
+      - name: iammatch
+      - name: iamscore
+      - name: iamsuitable
+      - name: sdminclude
+      - name: sdmlisten
+      - name: sdmscore
+      - name: sdmunderstand
+    nested_props:
+      - name: collaborate_shared_decision_making_surveys
+        path: collaborate_shared_decision_making_surveys
+        props:
+          - name: sdminclude
+          - name: sdmlisten 
+          - name: sdmscore 
+          - name: sdmunderstand 
+    parent_props:
+      - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+      - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+
+
+  - name: collaborate_shared_decision_making_surveys
+    doc_type: collaborate_shared_decision_making_survey
+    type: aggregator
+    root: collaborate_shared_decision_making_survey
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: sdminclude
+      - name: sdmlisten
+      - name: sdmscore
+      - name: sdmunderstand 
+    parent_props:
+      - path: pb_aim_iam_fims[pb_aim_iam_fim_id:submitter_id]
+      - path: pb_aim_iam_fims.pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+      - path: pb_aim_iam_fims.pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+      - path: pb_aim_iam_fims.pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+
+
+  # DEPRESSION (pb_depression)
+  - name: pb_depressions
+    doc_type: pb_depression
+    type: aggregator
+    root: pb_depression
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_phq_threes
+        path: pb_phq_threes
+        props:
+          - name: phqbttrddthghtscore
+          - name: phqdeprssnscore
+          - name: phqlitintrstscore
+      - name: pb_promis_depressions
+        path: pb_promis_depressions
+        props:
+          - name: promisdep4atotalscore
+          - name: promisdprssdfeelpst7dyscl
+          - name: promishelplsfeelpst7dyscl
+          - name: promishoplssfeelpst7dyscl
+          - name: promiswrthlsfeelpst7dyscl
+      - name: pb_phq_nines
+        path: pb_phq_nines
+        props:
+          - name: phqabnrmldietscore
+          - name: phqconcntrtnimprmntscore  
+          - name: phqflngfailrscore
+          - name: phqmovmntspchimprmntscore
+          - name: phqsleepimpairscore
+          - name: phqtirdlittleenrgyscore
+          - name: phqtotalscore
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_phq_threes
+    doc_type: pb_phq_three
+    type: aggregator
+    root: pb_phq_three
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: phqbttrddthghtscore
+      - name: phqdeprssnscore
+      - name: phqlitintrstscore
+    parent_props:
+      - path: pb_depressions[pb_depression_id:submitter_id]
+      - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_promis_depressions
+    doc_type: pb_promis_depression
+    type: aggregator
+    root: pb_promis_depression
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisdep4atotalscore
+      - name: promisdprssdfeelpst7dyscl
+      - name: promishelplsfeelpst7dyscl
+      - name: promishoplssfeelpst7dyscl
+      - name: promiswrthlsfeelpst7dyscl
+    parent_props:
+      - path: pb_depressions[pb_depression_id:submitter_id]
+      - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_phq_nines
+    doc_type: pb_phq_nine
+    type: aggregator
+    root: pb_phq_nine
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: phqabnrmldietscore
+      - name: phqconcntrtnimprmntscore  
+      - name: phqflngfailrscore
+      - name: phqmovmntspchimprmntscore
+      - name: phqsleepimpairscore
+      - name: phqtirdlittleenrgyscore
+      - name: phqtotalscore
+    parent_props:
+      - path: pb_depressions[pb_depression_id:submitter_id]
+      - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+
+
+  # HEALTH ECONOMICS (pb_health_economics)
+  - name: pb_health_economics
+    doc_type: pb_health_economics
+    type: aggregator
+    root: pb_health_economics
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_social_risk_assessments
+        path: pb_social_risk_assessments
+        props:
+          - name: bpsclinicconvenient
+          - name: bpscliniccourteous  
+          - name: bpsclinicprompt
+          - name: sdhfinancestrainscl
+          - name: sdhfoodinsecurity1scl
+          - name: sdhfoodinsecurity2scl
+          - name: sdhhousinginstability1txt
+          - name: sdhhousinginstability2yn
+          - name: sdhhousinginstability3yn
+          - name: sdhtransportationneed1yn
+          - name: sdhtransportationneed2yn
+      - name: pb_health_literacies
+        path: pb_health_literacies
+        props:
+          - name: hlthlitforms 
+      - name: pb_health_service_utilizations
+        path: pb_health_service_utilizations
+        props:
+          - name: mh_meds
+          - name: utilcaregiverhrs
+          - name: utilcommsup
+          - name: utildayselecmonitor
+          - name: utildayshousearrest
+          - name: utildaysjail
+          - name: utildaysprison
+          - name: utildomestic
+          - name: utileducsuppt
+          - name: utilfood
+          - name: utilincomeunlawful
+          - name: utilincomeunlawfulamt
+          - name: utiljobreadiness
+          - name: utilmedantipsych
+          - name: utilmedantipsychdose
+          - name: utilmedbenzo
+          - name: utilmedbenzodose
+          - name: utilmedmh
+          - name: utilmedmood
+          - name: utilmedmooddose
+          - name: utilmedother
+          - name: utilmedotherdose
+          - name: utilmedotherspecify
+          - name: utilmedsnri
+          - name: utilmedsnridose
+          - name: utilmedssri
+          - name: utilmedssridose
+          - name: utilmiles
+          - name: utilmoneysubstanceuse
+          - name: utilmutual
+          - name: utilnonemplincomeamt
+          - name: utilnonemplincomeyn
+          - name: utilopmhsudays
+          - name: utilopmhsugroup
+          - name: utilopmhsuindiv
+          - name: utilopmhsuiop
+          - name: utilopmhsumed
+          - name: utilparolemet
+          - name: utilparoletrouble
+          - name: utilpcptelehlth
+          - name: utilpcpvisit
+          - name: utilphysspecmassage
+          - name: utilphysspecother
+          - name: utilphysspecpain
+          - name: utilphysspecpt
+          - name: utilphysspectelehlth
+          - name: utilphysspecvisit
+          - name: utilpublicassistamt
+          - name: utilpublicassistyn
+          - name: utilquitline
+          - name: utilshelter
+          - name: utiltransport
+          - name: utiltransportother
+      - name: pb_healthcare_utilizations
+        path: pb_healthcare_utilizations
+        props:
+          - name: hsheaggrav_timesx
+          - name: hshearson_timesx
+          - name: hsheassault_timesx
+          - name: hsheburglary_timesx
+          - name: hshecarryingweapontimes
+          - name: hshecurfewtimes
+          - name: hshedaysmissed
+          - name: hshedaysuninsured
+          - name: hshedeal_timesx
+          - name: hshedisorderlytimes
+          - name: hshedisturpeacetimes
+          - name: hshedomesticviolencetimes
+          - name: hshedwi_timesx
+          - name: hshefraud_timesx
+          - name: hshegamblingtimes
+          - name: hsheganginvolvetimes
+          - name: hshehcexpenditures
+          - name: hshehourshc
+          - name: hsheincidentdescribe
+          - name: hsheincidenttimes
+          - name: hsheincome
+          - name: hshemurdertimes_2
+          - name: hshemvtheft_timesx
+          - name: hshenonhospdetox
+          - name: hshenumdentist
+          - name: hshenumdetox
+          - name: hshenumer
+          - name: hshenummntlhlth
+          - name: hshenumothphys
+          - name: hshenumpcp
+          - name: hshenumphyshlth
+          - name: hsheothercriminalactyn
+          - name: hsheothrmhsuclinician
+          - name: hsheoutpthmsu
+          - name: hsheovernight
+          - name: hsheparaphanaliatimes
+          - name: hsheparoledays
+          - name: hsheprobationdays
+          - name: hsherape_timesx
+          - name: hsheresnsgrhb
+          - name: hsheresprogram
+          - name: hsherobbery_timesx
+          - name: hsherunawaytimes
+          - name: hshesex_timesx
+          - name: hshestolengoods_timesx
+          - name: hshetheft_timesx
+          - name: hshetrespasstimes
+          - name: hshetruancytimes
+          - name: hsheunlawful_daysx
+          - name: hshevandalism_timesx
+      - name: pb_promis_proprs
+        path: pb_promis_proprs
+        props:
+          - name: promis29totalscore
+          - name: proprscore
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_social_risk_assessments
+    doc_type: pb_social_risk_assessment
+    type: aggregator
+    root: pb_social_risk_assessment
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: bpsclinicconvenient
+      - name: bpscliniccourteous  
+      - name: bpsclinicprompt
+      - name: sdhfinancestrainscl
+      - name: sdhfoodinsecurity1scl
+      - name: sdhfoodinsecurity2scl
+      - name: sdhhousinginstability1txt
+      - name: sdhhousinginstability2yn
+      - name: sdhhousinginstability3yn
+      - name: sdhtransportationneed1yn
+      - name: sdhtransportationneed2yn
+    parent_props:
+      - path: pb_health_economics[pb_health_economics_id:submitter_id]
+      - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_health_literacies
+    doc_type: pb_health_literacy
+    type: aggregator
+    root: pb_health_literacy
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: hlthlitforms 
+    parent_props:
+      - path: pb_health_economics[pb_health_economics_id:submitter_id]
+      - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_health_service_utilizations
+    doc_type: pb_health_service_utilization
+    type: aggregator
+    root: pb_health_service_utilization
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: mh_meds
+      - name: utilcaregiverhrs
+      - name: utilcommsup
+      - name: utildayselecmonitor
+      - name: utildayshousearrest
+      - name: utildaysjail
+      - name: utildaysprison
+      - name: utildomestic
+      - name: utileducsuppt
+      - name: utilfood
+      - name: utilincomeunlawful
+      - name: utilincomeunlawfulamt
+      - name: utiljobreadiness
+      - name: utilmedantipsych
+      - name: utilmedantipsychdose
+      - name: utilmedbenzo
+      - name: utilmedbenzodose
+      - name: utilmedmh
+      - name: utilmedmood
+      - name: utilmedmooddose
+      - name: utilmedother
+      - name: utilmedotherdose
+      - name: utilmedotherspecify
+      - name: utilmedsnri
+      - name: utilmedsnridose
+      - name: utilmedssri
+      - name: utilmedssridose
+      - name: utilmiles
+      - name: utilmoneysubstanceuse
+      - name: utilmutual
+      - name: utilnonemplincomeamt
+      - name: utilnonemplincomeyn
+      - name: utilopmhsudays
+      - name: utilopmhsugroup
+      - name: utilopmhsuindiv
+      - name: utilopmhsuiop
+      - name: utilopmhsumed
+      - name: utilparolemet
+      - name: utilparoletrouble
+      - name: utilpcptelehlth
+      - name: utilpcpvisit
+      - name: utilphysspecmassage
+      - name: utilphysspecother
+      - name: utilphysspecpain
+      - name: utilphysspecpt
+      - name: utilphysspectelehlth
+      - name: utilphysspecvisit
+      - name: utilpublicassistamt
+      - name: utilpublicassistyn
+      - name: utilquitline
+      - name: utilshelter
+      - name: utiltransport
+      - name: utiltransportother
+    parent_props:
+      - path: pb_health_economics[pb_health_economics_id:submitter_id]
+      - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_healthcare_utilizations
+    doc_type: pb_healthcare_utilization
+    type: aggregator
+    root: pb_healthcare_utilization
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: hsheaggrav_timesx
+      - name: hshearson_timesx
+      - name: hsheassault_timesx
+      - name: hsheburglary_timesx
+      - name: hshecarryingweapontimes
+      - name: hshecurfewtimes
+      - name: hshedaysmissed
+      - name: hshedaysuninsured
+      - name: hshedeal_timesx
+      - name: hshedisorderlytimes
+      - name: hshedisturpeacetimes
+      - name: hshedomesticviolencetimes
+      - name: hshedwi_timesx
+      - name: hshefraud_timesx
+      - name: hshegamblingtimes
+      - name: hsheganginvolvetimes
+      - name: hshehcexpenditures
+      - name: hshehourshc
+      - name: hsheincidentdescribe
+      - name: hsheincidenttimes
+      - name: hsheincome
+      - name: hshemurdertimes_2
+      - name: hshemvtheft_timesx
+      - name: hshenonhospdetox
+      - name: hshenumdentist
+      - name: hshenumdetox
+      - name: hshenumer
+      - name: hshenummntlhlth
+      - name: hshenumothphys
+      - name: hshenumpcp
+      - name: hshenumphyshlth
+      - name: hsheothercriminalactyn
+      - name: hsheothrmhsuclinician
+      - name: hsheoutpthmsu
+      - name: hsheovernight
+      - name: hsheparaphanaliatimes
+      - name: hsheparoledays
+      - name: hsheprobationdays
+      - name: hsherape_timesx
+      - name: hsheresnsgrhb
+      - name: hsheresprogram
+      - name: hsherobbery_timesx
+      - name: hsherunawaytimes
+      - name: hshesex_timesx
+      - name: hshestolengoods_timesx
+      - name: hshetheft_timesx
+      - name: hshetrespasstimes
+      - name: hshetruancytimes
+      - name: hsheunlawful_daysx
+      - name: hshevandalism_timesx
+    parent_props:
+      - path: pb_health_economics[pb_health_economics_id:submitter_id]
+      - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_promis_proprs
+    doc_type: pb_promis_propr
+    type: aggregator
+    root: pb_promis_propr
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promis29totalscore
+      - name: proprscore
+    parent_props:
+      - path: pb_health_economics[pb_health_economics_id:submitter_id]
+      - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  # OVERALL FUNCTIONS (pb_overall_function)
+  - name: pb_overall_functions
+    doc_type: pb_overall_function
+    type: aggregator
+    root: pb_overall_function
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_recovery_capitals
+        path: pb_recovery_capitals
+        props:
+          - name: barc10_1
+          - name: barc10_10
+          - name: barc10_2
+          - name: barc10_3
+          - name: barc10_4
+          - name: barc10_5
+          - name: barc10_6
+          - name: barc10_7
+          - name: barc10_8
+          - name: barc10_9
+          - name: barc10_total
+          - name: bssalive
+          - name: bssparticipate
+          - name: bsspray
+          - name: bssrelated
+          - name: bsssacred
+          - name: bssstrength
+          - name: bssthanks
+          - name: bsstouched
+          - name: bssunderstanding
+          - name: bssvalue
+      - name: pb_promis_cognitive_functions
+        path: pb_promis_cognitive_functions
+        props:
+          - name: promiscogfxnconcscl
+          - name: promiscogfxnrememberscl
+          - name: promiscognfxntotalscore
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+  - name: pb_recovery_capitals
+    doc_type: pb_recovery_capital
+    type: aggregator
+    root: pb_recovery_capital
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: barc10_1
+      - name: barc10_10
+      - name: barc10_2
+      - name: barc10_3
+      - name: barc10_4
+      - name: barc10_5
+      - name: barc10_6
+      - name: barc10_7
+      - name: barc10_8
+      - name: barc10_9
+      - name: barc10_total
+      - name: bssalive
+      - name: bssparticipate
+      - name: bsspray
+      - name: bssrelated
+      - name: bsssacred
+      - name: bssstrength
+      - name: bssthanks
+      - name: bsstouched
+      - name: bssunderstanding
+      - name: bssvalue
+    parent_props:
+      - path: pb_overall_functions[pb_overall_function_id:submitter_id]
+      - path: pb_overall_functions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_overall_functions.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_promis_cognitive_functions
+    doc_type: pb_promis_cognitive_function
+    type: aggregator
+    root: pb_promis_cognitive_function
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promiscogfxnconcscl
+      - name: promiscogfxnrememberscl
+      - name: promiscognfxntotalscore
+    parent_props:
+      - path: pb_overall_functions[pb_overall_function_id:submitter_id]
+      - path: pb_overall_functions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_overall_functions.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+
+
+
+
+
+  # PAIN (pb_pain)
+  - name: pb_pains
+    doc_type: pb_pain
+    type: aggregator
+    root: pb_pain
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_pain_intensities
+        path: pb_pain_intensities
+        props:
+          - name: promisavgpainrtngpst7dscl
+      - name: pb_pain_interferences
+        path: pb_pain_interferences
+        props:
+          - name: promispainintf4atotalscore
+          - name: promispainintwkhmpst7dscl
+          - name: promispnintdlyactpst7dscl
+          - name: promispninthschrpst7dscl
+          - name: promispnintprscacpst7dscl
+      - name: pb_pegs
+        path: pb_pegs
+        props:
+          - name: pegavgpainpastweekscl
+          - name: pegoverallscore
+          - name: pegpainpastwkenjoylifescl
+          - name: pegpainpastwkgenrlactscl
+      - name: pb_pgics
+        path: pb_pgics
+        props:
+          - name: pcqpainawfulovrwhlmscl
+          - name: pgicsymptomchangestatval
+      - name: pb_impowr_pain_diagnoses
+        path: pb_impowr_pain_diagnoses
+        props:
+          - name: copcs_clbp_diagnosis
+          - name: copcs_endo_diagnosis
+          - name: copcs_fm_diagnosis
+          - name: copcs_ibs_diagnosis
+          - name: copcs_mecfs_diagnosis
+          - name: copcs_mitth_migraineflag
+          - name: copcs_mitth_tensionheadach
+          - name: copcs_tmd_diagnosis
+          - name: copcs_ucpps_diagnosis
+          - name: copcs_vvd_currentdiagnosis
+          - name: imp_paindx
+          - name: oa_joint
+          - name: paindx_cancer
+          - name: paindx_cell
+          - name: paindx_chrpainsynd
+          - name: paindx_dental
+          - name: paindx_dmneuropathy
+          - name: paindx_hepatitis
+          - name: paindx_hiv
+          - name: paindx_limb
+          - name: paindx_lupus
+          - name: paindx_myofascial
+          - name: paindx_neck
+          - name: paindx_osteo_ankle
+          - name: paindx_osteo_elbow
+          - name: paindx_osteo_hip
+          - name: paindx_osteo_knee
+          - name: paindx_osteo_shoulder
+          - name: paindx_osteo_wrist
+          - name: paindx_osteoarthritis
+          - name: paindx_otherarth
+          - name: paindx_otherneurop
+          - name: paindx_pelvic
+          - name: paindx_postsurgical
+          - name: paindx_pregnancy
+          - name: paindx_ra
+          - name: paindx_regional
+          - name: paindx_shingles
+          - name: paindx_trigeminal
+          - name: paindx_widespread
+      - name: pb_bpis
+        path: pb_bpis
+        props:
+          - name: bpiavgpainrtngscl
+          - name: bpicurrentpainrtngscl
+          - name: bpileastpnlst24hrtngscl
+          - name: bpipainenjoymntintrfrscl
+          - name: bpipainintfrgnrlactvtyscl
+          - name: bpipainintfrmoodscl
+          - name: bpipainintfrwlkablscl
+          - name: bpipainnrmlwrkintrfrscl
+          - name: bpipainothrevrdykdindcode
+          - name: bpipainrelationsintrfrscl
+          - name: bpipainsleepintrfrscl
+          - name: bpipaintreatmntrecvtxt
+          - name: bpipaintreatmntrelfscl
+          - name: bpiwrstpnlast24hrtngscl
+      - name: pb_chronic_pain_screenings
+        path: pb_chronic_pain_screenings
+        props:
+          - name: cp_screen_1
+          - name: cp_screen_2
+          - name: paindur
+          - name: painmonths
+          - name: painyears
+      - name: pb_michigan_body_maps
+        path: pb_michigan_body_maps
+        props:
+          - name: copcs_fm_regiona
+          - name: copcs_fm_regionb
+          - name: copcs_fm_regionc
+          - name: copcs_fm_regiond
+          - name: copcs_fm_regione
+          - name: copcs_paintender_7d_number
+          - name: copcs_paintender_7d_wpisco
+          - name: mabdomen
+          - name: mbm_total
+          - name: mbodycp
+          - name: mface
+          - name: mhead
+          - name: mlbttck
+          - name: mlchest
+          - name: mlelbw
+          - name: mlfoot
+          - name: mlgroin
+          - name: mlhand
+          - name: mlhip
+          - name: mljaw
+          - name: mlknee
+          - name: mllowarm
+          - name: mllowleg
+          - name: mlowback
+          - name: mlshldr
+          - name: mluparm
+          - name: mlupleg
+          - name: mneck
+          - name: mnone
+          - name: mpelvis
+          - name: mrbttck
+          - name: mrchest
+          - name: mrelbw
+          - name: mrfoot
+          - name: mrgroin
+          - name: mrhand
+          - name: mrhip
+          - name: mrjaw
+          - name: mrknee
+          - name: mrlowarm
+          - name: mrlowleg
+          - name: mrshldr
+          - name: mruparm
+          - name: mrupleg
+          - name: mupback
+      - name: pb_pain_catastrophizings
+        path: pb_pain_catastrophizings
+        props:
+          - name: pcqafraidpainworsescl
+          - name: pcqfeelcantwithstandscl
+          - name: pcqhurtscl
+          - name: pcqpainstopscl
+          - name: pcqseriousscl
+          - name: pcqtotalscoreval
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  - name: pb_pain_intensities
+    doc_type: pb_pain_intensity
+    type: aggregator
+    root: pb_pain_intensity
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisavgpainrtngpst7dscl
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_pain_interferences
+    doc_type: pb_pain_interference
+    type: aggregator
+    root: pb_pain_interference
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promispainintf4atotalscore
+      - name: promispainintwkhmpst7dscl
+      - name: promispnintdlyactpst7dscl
+      - name: promispninthschrpst7dscl
+      - name: promispnintprscacpst7dscl
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_pegs
+    doc_type: pb_peg
+    type: aggregator
+    root: pb_peg
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pegavgpainpastweekscl
+      - name: pegoverallscore
+      - name: pegpainpastwkenjoylifescl
+      - name: pegpainpastwkgenrlactscl
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_pgics
+    doc_type: pb_pgic
+    type: aggregator
+    root: pb_pgic
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pcqpainawfulovrwhlmscl
+      - name: pgicsymptomchangestatval
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: suppain_conditions_cms
+    doc_type: suppain_conditions_cms
+    type: aggregator
+    root: suppain_conditions_cms
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: copcs_clbp_diagnosis
+      - name: copcs_endo_diagnosis
+      - name: copcs_fm_diagnosis
+      - name: copcs_ibs_diagnosis
+      - name: copcs_mecfs_diagnosis
+      - name: copcs_mitth_migraineflag
+      - name: copcs_mitth_tensionheadach
+      - name: copcs_tmd_diagnosis
+      - name: copcs_ucpps_diagnosis
+      - name: copcs_vvd_currentdiagnosis
+      - name: imp_paindx
+      - name: oa_joint
+      - name: paindx_cancer
+      - name: paindx_cell
+      - name: paindx_chrpainsynd
+      - name: paindx_dental
+      - name: paindx_dmneuropathy
+      - name: paindx_hepatitis
+      - name: paindx_hiv
+      - name: paindx_limb
+      - name: paindx_lupus
+      - name: paindx_myofascial
+      - name: paindx_neck
+      - name: paindx_osteo_ankle
+      - name: paindx_osteo_elbow
+      - name: paindx_osteo_hip
+      - name: paindx_osteo_knee
+      - name: paindx_osteo_shoulder
+      - name: paindx_osteo_wrist
+      - name: paindx_osteoarthritis
+      - name: paindx_otherarth
+      - name: paindx_otherneurop
+      - name: paindx_pelvic
+      - name: paindx_postsurgical
+      - name: paindx_pregnancy
+      - name: paindx_ra
+      - name: paindx_regional
+      - name: paindx_shingles
+      - name: paindx_trigeminal
+      - name: paindx_widespread
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_bpis
+    doc_type: pb_bpi
+    type: aggregator
+    root: pb_bpi
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: bpiavgpainrtngscl
+      - name: bpicurrentpainrtngscl
+      - name: bpileastpnlst24hrtngscl
+      - name: bpipainenjoymntintrfrscl
+      - name: bpipainintfrgnrlactvtyscl
+      - name: bpipainintfrmoodscl
+      - name: bpipainintfrwlkablscl
+      - name: bpipainnrmlwrkintrfrscl
+      - name: bpipainothrevrdykdindcode
+      - name: bpipainrelationsintrfrscl
+      - name: bpipainsleepintrfrscl
+      - name: bpipaintreatmntrecvtxt
+      - name: bpipaintreatmntrelfscl
+      - name: bpiwrstpnlast24hrtngscl
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_chronic_pain_screenings
+    doc_type: pb_chronic_pain_screening
+    type: aggregator
+    root: pb_chronic_pain_screening
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: cp_screen_1
+      - name: cp_screen_2
+      - name: paindur
+      - name: painmonths
+      - name: painyears
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_michigan_body_maps
+    doc_type: pb_michigan_body_map
+    type: aggregator
+    root: pb_michigan_body_map
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: copcs_fm_regiona
+      - name: copcs_fm_regionb
+      - name: copcs_fm_regionc
+      - name: copcs_fm_regiond
+      - name: copcs_fm_regione
+      - name: copcs_paintender_7d_number
+      - name: copcs_paintender_7d_wpisco
+      - name: mabdomen
+      - name: mbm_total
+      - name: mbodycp
+      - name: mface
+      - name: mhead
+      - name: mlbttck
+      - name: mlchest
+      - name: mlelbw
+      - name: mlfoot
+      - name: mlgroin
+      - name: mlhand
+      - name: mlhip
+      - name: mljaw
+      - name: mlknee
+      - name: mllowarm
+      - name: mllowleg
+      - name: mlowback
+      - name: mlshldr
+      - name: mluparm
+      - name: mlupleg
+      - name: mneck
+      - name: mnone
+      - name: mpelvis
+      - name: mrbttck
+      - name: mrchest
+      - name: mrelbw
+      - name: mrfoot
+      - name: mrgroin
+      - name: mrhand
+      - name: mrhip
+      - name: mrjaw
+      - name: mrknee
+      - name: mrlowarm
+      - name: mrlowleg
+      - name: mrshldr
+      - name: mruparm
+      - name: mrupleg
+      - name: mupback
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_pain_catastrophizings
+    doc_type: pb_pain_catastrophizing
+    type: aggregator
+    root: pb_pain_catastrophizing
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pcqafraidpainworsescl
+      - name: pcqfeelcantwithstandscl
+      - name: pcqhurtscl
+      - name: pcqpainstopscl
+      - name: pcqseriousscl
+      - name: pcqtotalscoreval
+    parent_props:
+      - path: pb_pains[pb_pain_id:submitter_id]
+      - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+  # PHYSICAL FUNCTION (pb_physical_function)
+  - name: pb_physical_functions
+    doc_type: pb_physical_function
+    type: aggregator
+    root: pb_physical_function
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_promis_physical_functions
+        path: pb_promis_physical_functions
+        props:
+          - name: promisphfncstrsnrmpcabscl
+          - name: promisphyfncerndshpablscl
+          - name: promisphysfunc15mnwlkscl
+          - name: promisphysfunc2hrlbrscl
+          - name: promisphysfuncchrsablscl
+          - name: promisphysfunchswrkscl
+          - name: promisphysfx6totalscore
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_promis_physical_functions
+    doc_type: pb_promis_physical_function
+    type: aggregator
+    root: pb_promis_physical_function
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisphfncstrsnrmpcabscl
+      - name: promisphyfncerndshpablscl
+      - name: promisphysfunc15mnwlkscl
+      - name: promisphysfunc2hrlbrscl
+      - name: promisphysfuncchrsablscl
+      - name: promisphysfunchswrkscl
+      - name: promisphysfx6totalscore
+    parent_props:
+      - path: pb_physical_functions[pb_physical_function_id:submitter_id]
+      - path: pb_physical_functions.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_physical_functions.patient_baselines.patients[patient_id:submitter_id]
+
+
+  # PTSD (pb_ptsd)
+  - name: pb_ptsds
+    doc_type: pb_ptsd
+    type: aggregator
+    root: pb_ptsd
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_ptsd_supplemental_pcl_fives
+        path: pb_ptsd_supplemental_pcl_fives
+        props:
+          - name: pcl5avoidexternalrmndscl
+          - name: pcl5avoidmemoryscl
+          - name: pcl5blamingscl
+          - name: pcl5clusterbscore
+          - name: pcl5clustercscoresymptom_cluster_c_score
+          - name: pcl5clusterdscore
+          - name: pcl5clusterescore
+          - name: pcl5diffconcenscl
+          - name: pcl5feeldistantscl
+          - name: pcl5feelingjumpyscl
+          - name: pcl5irritbehavscl
+          - name: pcl5lossintrstactivscl
+          - name: pcl5rptdisturbdreamsscl
+          - name: pcl5rptdisturbmemoryscl
+          - name: pcl5sleepdifcltyscl
+          - name: pcl5strngnegbeliefscl
+          - name: pcl5strngphysreactscl
+          - name: pcl5strongnegfeelscl
+          - name: pcl5suddenhappenagainscl
+          - name: pcl5superalertscl
+          - name: pcl5takingriskscl
+          - name: pcl5totalscore
+          - name: pcl5trblexperposscl
+          - name: pcl5trblremembimptscl
+          - name: pcl5upsetremindscl
+      - name: pb_primarycare_ptsd_screenings
+        path: pb_primarycare_ptsd_screenings
+        props:
+          - name: pcptavoidanceyn
+          - name: pcptsd5score
+          - name: pcptsddetachyn
+          - name: pcptsdguiltyn
+          - name: pcptsdhypervigyn
+          - name: pcptsdthoughtyn
+          - name: pcptsdtraumayn
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_ptsd_supplemental_pcl_fives
+    doc_type: pb_ptsd_supplemental_pcl_five
+    type: aggregator
+    root: pb_ptsd_supplemental_pcl_five
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pcl5avoidexternalrmndscl
+      - name: pcl5avoidmemoryscl
+      - name: pcl5blamingscl
+      - name: pcl5clusterbscore
+      - name: pcl5clustercscoresymptom_cluster_c_score
+      - name: pcl5clusterdscore
+      - name: pcl5clusterescore
+      - name: pcl5diffconcenscl
+      - name: pcl5feeldistantscl
+      - name: pcl5feelingjumpyscl
+      - name: pcl5irritbehavscl
+      - name: pcl5lossintrstactivscl
+      - name: pcl5rptdisturbdreamsscl
+      - name: pcl5rptdisturbmemoryscl
+      - name: pcl5sleepdifcltyscl
+      - name: pcl5strngnegbeliefscl
+      - name: pcl5strngphysreactscl
+      - name: pcl5strongnegfeelscl
+      - name: pcl5suddenhappenagainscl
+      - name: pcl5superalertscl
+      - name: pcl5takingriskscl
+      - name: pcl5totalscore
+      - name: pcl5trblexperposscl
+      - name: pcl5trblremembimptscl
+      - name: pcl5upsetremindscl
+    parent_props:
+      - path: pb_ptsds[pb_ptsd_id:submitter_id]
+      - path: pb_ptsds.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_ptsds.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_primarycare_ptsd_screenings
+    doc_type: pb_primarycare_ptsd_screening
+    type: aggregator
+    root: pb_primarycare_ptsd_screening
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pcptavoidanceyn
+      - name: pcptsd5score
+      - name: pcptsddetachyn
+      - name: pcptsdguiltyn
+      - name: pcptsdhypervigyn
+      - name: pcptsdthoughtyn
+      - name: pcptsdtraumayn
+    parent_props:
+      - path: pb_ptsds[pb_ptsd_id:submitter_id]
+      - path: pb_ptsds.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_ptsds.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+
+  # SLEEP/FATIGUE (pb_sleep_fatigue)
+  - name: pb_sleep_fatigues
+    doc_type: pb_sleep_fatigue
+    type: aggregator
+    root: pb_sleep_fatigue
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_promis_sleeps
+        path: pb_promis_sleeps
+        props:
+          - name: submitter_id
+          - name: promisdifficltfallaslpscl
+          - name: promisproblemwithslpscl
+          - name: promissleepqualityscl
+          - name: promissleepwasrefreshscl
+          - name: promisslpdist6totalscore
+          - name: promisslpwasrestlessscl
+          - name: promistryhardgettoslpscl
+      - name: pb_sleep_durations
+        path: pb_sleep_durations
+        props:
+          - name: submitter_id
+          - name: sleep_duration_hours
+          - name: sleep_duration_minutes
+          - name: sleepnighthourmindur
+      - name: pb_promis_fatigues
+        path: pb_promis_fatigues
+        props:
+          - name: submitter_id
+          - name: promisfat4atotalscore
+          - name: promisfatgfeelpst7dyscl
+          - name: promisfatgpst7dyavgscl
+          - name: promisrndwnflpst7dyavgscl
+          - name: promistrsttskftgpst7dyscl
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+      - path: patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_promis_sleeps
+    doc_type: pb_promis_sleep
+    type: aggregator
+    root: pb_promis_sleep
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisdifficltfallaslpscl
+      - name: promisproblemwithslpscl
+      - name: promissleepqualityscl
+      - name: promissleepwasrefreshscl
+      - name: promisslpdist6totalscore
+      - name: promisslpwasrestlessscl
+      - name: promistryhardgettoslpscl
+    parent_props:
+      - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_sleep_durations
+    doc_type: pb_sleep_duration
+    type: aggregator
+    root: pb_sleep_duration
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: sleep_duration_hours
+      - name: sleep_duration_minutes
+      - name: sleepnighthourmindur
+    parent_props:
+      - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+
+
+  - name: pb_promis_fatigues
+    doc_type: pb_promis_fatigue
+    type: aggregator
+    root: pb_promis_fatigue
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisfat4atotalscore
+      - name: promisfatgfeelpst7dyscl
+      - name: promisfatgpst7dyavgscl
+      - name: promisrndwnflpst7dyavgscl
+      - name: promistrsttskftgpst7dyscl
+    parent_props:
+      - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+
+
+
+
+  # SOCIAL (pb_social)
+  - name: pb_mmspss_supplementals
+    doc_type: pb_mmspss_supplemental
+    type: aggregator
+    root: pb_mmspss_supplemental
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: mspssfamdecisionscl
+      - name: mspssfamemotsuptscl
+      - name: mspssfamilyhelpsscl
+      - name: mspssfamilysubscl
+      - name: mspssfamtalkprobscl
+      - name: mspssfriendcountscl
+      - name: mspssfriendhelpscl
+      - name: mspssfriendjoysorscl
+      - name: mspssfriendssubscl
+      - name: mspssfriendtalkprobscl
+      - name: mspsssigothsubscl
+      - name: mspssspeccarefeelscl
+      - name: mspssspeccomfortscl
+      - name: mspssspecjoysorrowscl
+      - name: mspssspecpersonscl
+      - name: mspsstotalscore
+    parent_props:
+      - path: pb_socials[pb_social_id:submitter_id]
+      - path: pb_socials.patient_baselines[patient_baseline_id:submitter_id]
+      - path: pb_socials.patient_baselines.patients[patient_id:submitter_id]
+
+
+  # STIGMA / DISCRIMINATION (pb_stigma_discrimination)
+
+  # SUBSTANCE USE (pb_substance_use)
+
+  # RUCA (ruca)
+
+  # SUPPLEMENTAL SPIRITUALITY (sup_spirituality)
+
+  # ANXIETY (pb_anxiety)
+
+  # COVID (pb_covid)
+
+  # DEMOGRAPHICS (pb_demographics)
