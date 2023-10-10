@@ -28,7 +28,7 @@ dependencies:
   version: 0.1.9
   repository: file://../common
 - name: frontend-framework
-  version: "0.0.9"
+  version: "0.10.0"
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
@@ -72,7 +72,7 @@ dependencies:
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.11"
+  version: "0.1.12"
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
