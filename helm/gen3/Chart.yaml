@@ -27,10 +27,6 @@ dependencies:
 - name: common
   version: "0.1.7"
   repository: file://../common
-- name: frontend-framework
-  version: "0.0.9"
-  repository: "file://../frontend-framework"
-  condition: frontend-framework.enabled
 - name: fence
   version: "0.1.13"
   repository: "file://../fence"
@@ -64,7 +60,7 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.8"
+  version: "0.1.7"
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
@@ -91,6 +87,8 @@ dependencies:
   version: "0.1.10"
   repository: "file://../wts"
   condition: wts.enabled
+
+
 - name: elasticsearch
   version: "0.1.5"
   repository: "file://../elasticsearch"

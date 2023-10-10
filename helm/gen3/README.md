@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -26,7 +26,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.7 |
 | file://../elasticsearch | elasticsearch | 0.1.5 |
 | file://../fence | fence | 0.1.13 |
-| file://../frontend-framework | frontend-framework | 0.0.9 |
 | file://../guppy | guppy | 0.1.8 |
 | file://../hatchery | hatchery | 0.1.6 |
 | file://../indexd | indexd | 0.1.10 |
@@ -34,7 +33,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../metadata | metadata | 0.1.8 |
 | file://../peregrine | peregrine | 0.1.9 |
 | file://../pidgin | pidgin | 0.1.7 |
-| file://../portal | portal | 0.1.8 |
+| file://../portal | portal | 0.1.7 |
 | file://../requestor | requestor | 0.1.8 |
 | file://../revproxy | revproxy | 0.1.11 |
 | file://../sheepdog | sheepdog | 0.1.10 |
