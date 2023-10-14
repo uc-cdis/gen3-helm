@@ -26,6 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.7 |
 | file://../elasticsearch | elasticsearch | 0.1.5 |
 | file://../fence | fence | 0.1.13 |
+| file://../frontend-framework | frontend-framework | 0.10.0 |
 | file://../guppy | guppy | 0.1.8 |
 | file://../hatchery | hatchery | 0.1.6 |
 | file://../indexd | indexd | 0.1.10 |
@@ -33,9 +34,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../metadata | metadata | 0.1.8 |
 | file://../peregrine | peregrine | 0.1.9 |
 | file://../pidgin | pidgin | 0.1.7 |
-| file://../portal | portal | 0.1.7 |
+| file://../portal | portal | 0.1.8 |
 | file://../requestor | requestor | 0.1.8 |
-| file://../revproxy | revproxy | 0.1.11 |
+| file://../revproxy | revproxy | 0.1.12 |
 | file://../sheepdog | sheepdog | 0.1.10 |
 | file://../sower | sower | 0.1.6 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.6 |
@@ -91,6 +92,7 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
+| frontend-framework | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for frontend-framework chart. |
 | frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
 | frontend-framework.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | frontend-framework.image.repository | string | `nil` | The Docker image repository for the guppy service. |
