@@ -1,16 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
-metadata: 
+metadata:
   name: revproxy-nginx-subconf
 data:
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}  
+  {{- $bytes | toString | nindent 4 }}
 {{- end}}
 {{- if eq "portal" .Values.global.frontendRoot }}
   {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/portal-as-root/*.conf" }}
   {{ ($a := split "/" $path)._2 }}: |
   {{- $bytes | toString | nindent 4 }}
+  {{ $path }}
   {{- end}}
 {{- end}}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
@@ -22,10 +23,10 @@ data:
 ---
 apiVersion: v1
 kind: ConfigMap
-metadata: 
+metadata:
   name: revproxy-nginx-conf
 data:
 {{- range $path, $bytes := .Files.Glob "nginx/*" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}  
+  {{- $bytes | toString | nindent 4 }}
 {{- end}}

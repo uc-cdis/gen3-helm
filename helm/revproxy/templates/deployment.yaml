@@ -125,7 +125,7 @@ spec:
               secretKeyRef:
                 name: gateway-g3auto
                 key: base64Authz.txt
-                optional: true  
+                optional: true
           - name: MDS_AUTHZ
             valueFrom:
               secretKeyRef:
@@ -144,6 +144,12 @@ spec:
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"
+          - name: "revproxy-subconf"
+            readOnly: true
+            mountPath: "/etc/nginx/gen3.conf/portal-as-root"
+          - name: "revproxy-subconf"
+            readOnly: true
+            mountPath: "/etc/nginx/gen3.conf/gen3ff-as-root"
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"
