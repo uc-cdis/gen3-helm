@@ -19,11 +19,6 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      initContainers:
-        - name: wait-for-indexd
-          image: curlimages/curl:latest
-          command: ["/bin/sh","-c"]
-          args: ["while [ $(curl -sw '%{http_code}' http://indexd-service/index -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for indexd...'; done"]
       containers:
         - name: indexd
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -82,6 +77,7 @@ spec:
             # Script always succeeds if it runs (echo exits with 0)
             # indexd image does not include jq, so use python 
             - |
+              while [ $(curl -sw '%{http_code}' http://indexd-service/index -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for indexd...'; done
               echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
               python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
               echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
