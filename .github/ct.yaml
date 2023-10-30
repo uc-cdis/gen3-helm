@@ -8,3 +8,4 @@ helm-extra-args: --timeout 600s
 check-version-increment: true
 debug: false
 validate-maintainers: false
+helm-dependency-extra-args: "--skip-refresh"
