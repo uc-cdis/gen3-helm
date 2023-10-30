@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "sheepdog.fullname" . }}:{{ .Values.service.port }}']
+      args: ['sheepdog-service:{{ .Values.service.port }}/_status?timeout=2']
   restartPolicy: Never
