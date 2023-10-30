@@ -36,7 +36,7 @@ jobs:
         run: ct lint --config .github/ct.yaml
       
   deploy-and-test-chart:
-    name: ${{ matrix.environments }} - gen3 data portal build
+    name: Deploy and Test Chart
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
