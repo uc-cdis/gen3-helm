@@ -31,3 +31,7 @@ dependencies:
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
   condition: postgres.separate
+- name: elasticsearch
+  version: "7.17.1"
+  repository: "https://helm.elastic.co"
+  condition: elasticsearch.separate
