@@ -28,7 +28,7 @@ dependencies:
   version: "0.1.7"
   repository: file://../common
 - name: fence
-  version: "0.1.13"
+  version: "0.1.14"
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
@@ -40,7 +40,7 @@ dependencies:
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.10"
+  version: "0.1.11"
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
