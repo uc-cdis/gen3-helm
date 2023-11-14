@@ -31,19 +31,28 @@ spec:
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
+        {{- if .Values.sidecar.enabled }}
+        - name: sidecar-nginx
+          image: {{ .Values.sidecar.image }}
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: default.conf
+        {{- end }}
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
+            - name: app
+              containerPort: 8000
+            # - name: https
+            #   containerPort: 443
+            #   protocol: TCP
             - name: container
               containerPort: 6567
-              protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status

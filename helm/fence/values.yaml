@@ -118,6 +118,16 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx
+  # -- (string) When to pull the image.
+  pullPolicy: Always
+  # -- (string) Image tag.
+  tag: "master"
+
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
 
@@ -333,6 +343,12 @@ volumes:
     configMap:
       name: "fence-yaml-merge"
       optional: true
+  - name: wsgi-config
+    configMap:
+      name: fence-wsgi
+  - name: nginx-config
+    configMap:
+      name: fence-nginx-configmap
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
