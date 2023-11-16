@@ -15,7 +15,7 @@ This documentation will provide instructions on how to set up a static Gen3 Port
 
 Setup the configuration locally on your machine.
 
-The dockerfile expects your portal configuration under the configurations folder. See exapmle for `dev.planx-pla.net` 
+The dockerfile expects your portal configuration under the configurations folder. See example for `dev.planx-pla.net` 
 
 ```
 configurations
@@ -36,7 +36,10 @@ https://<hostname>/api/v0/submission/_dictionary/_all
 **Hint:** both of these are served via sheepdog service
 
 
-Use the provided Dockerfile as a template for building your container.
+Use the provided Dockerfile as a template for building your container. Update:
+```
+ARG PORTAL_HOSTNAME=<hostname>
+```
 
 Build your container using the following command inside the same folder as the Dockerfile: 
 
@@ -44,6 +47,10 @@ Build your container using the following command inside the same folder as the D
 docker build -t <image_name>:<image_tag> .
 ```
 
+If you are using localhost, you will need to add the `--network="host"` option in the above command, e.g:
+```
+docker build -t <image_name>:<image_tag> . --network="host"
+```
 Push the container to your repository using the command: 
 
 ```
@@ -54,6 +61,26 @@ Update the image and tag in the Gen3 Portal configuration to use the new contain
 
 Note: Make sure to replace the <image_name> with the actual name you want to give to your image.
 
+Update or create the `values.yaml`, for example:
+```
+global:
+  dev: true
+  hostname: localhost
+
+portal:
+  image: 
+    repository: <image_name> 
+    tag: <image_tag>
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 500Mi
+```
+
+Update helm charts
+```
+helm upgrade --install dev gen3/gen3  -f values.yaml
+```
 # Conclusion:
 Using a static Gen3 Data Portal can significantly improve the performance of the Gen3 Portal by pre-running the WebPack build and creating static files, which are then served using nginx.
 
