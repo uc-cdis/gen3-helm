@@ -40,7 +40,7 @@ A Helm chart for gen3 Metadata Service
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | debug | bool | `false` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
-| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.separate | bool | `false` |  |
