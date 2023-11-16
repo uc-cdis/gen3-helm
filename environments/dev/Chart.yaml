@@ -1,0 +1,121 @@
+apiVersion: v2
+name: gen3
+description: Helm chart to deploy Gen3 Data Commons
+
+# Dependancies
+dependencies:
+- name: ambassador
+  version: "0.1.8"
+  repository: "file://../../helm/ambassador"
+  condition: ambassador.enabled
+- name: arborist
+  version: "0.1.8"
+  repository: "file://../../helm/arborist"
+  condition: arborist.enabled
+- name: argo-wrapper
+  version: "0.1.4"
+  repository: "file://../../helm/argo-wrapper"
+  condition: argo-wrapper.enabled
+- name: audit
+  version: "0.1.9"
+  repository: "file://../../helm/audit"
+  condition: audit.enabled
+- name: aws-es-proxy
+  version: "0.1.6"
+  repository: "file://../../helm/aws-es-proxy"
+  condition: aws-es-proxy.enabled
+- name: common
+  version: "0.1.7"
+  repository: file://../../helm/common
+- name: fence
+  version: "0.1.13"
+  repository: "file://../../helm/fence"
+  condition: fence.enabled
+- name: guppy
+  version: "0.1.8"
+  repository: "file://../../helm/guppy"
+  condition: guppy.enabled
+- name: hatchery
+  version: "0.1.6"
+  repository: "file://../../helm/hatchery"
+  condition: hatchery.enabled
+- name: indexd
+  version: "0.1.10"
+  repository: "file://../../helm/indexd"
+  condition: indexd.enabled
+- name: manifestservice
+  version: "0.1.10"
+  repository: "file://../../helm/manifestservice"
+  condition: manifestservice.enabled
+- name: metadata
+  version: "0.1.8"
+  repository: "file://../../helm/metadata"
+  condition: metadata.enabled
+- name: peregrine
+  version: "0.1.9"
+  repository: "file://../../helm/peregrine"
+  condition: peregrine.enabled
+- name: pidgin
+  version: "0.1.7"
+  repository: "file://../../helm/pidgin"
+  condition: pidgin.enabled
+- name: portal
+  version: "0.1.7"
+  repository: "file://../../helm/portal"
+  condition: portal.enabled
+- name: requestor
+  version: "0.1.8"
+  repository: "file://../../helm/requestor"
+  condition: requestor.enabled
+- name: revproxy
+  version: "0.1.11"
+  repository: "file://../../helm/revproxy"
+  condition: revproxy.enabled
+- name: sheepdog
+  version: "0.1.10"
+  repository: "file://../../helm/sheepdog"
+  condition: sheepdog.enabled
+- name: ssjdispatcher
+  version: "0.1.6"
+  repository: "file://../../helm/ssjdispatcher"
+  condition: ssjdispatcher.enabled
+- name: sower
+  version: "0.1.6"
+  condition: sower.enabled
+  repository: "file://../../helm/sower"
+- name: wts
+  version: "0.1.10"
+  repository: "file://../../helm/wts"
+  condition: wts.enabled
+
+
+- name: elasticsearch
+  version: "0.1.5"
+  repository: "file://../../helm/elasticsearch"
+  condition: global.dev
+- name: postgresql
+  version: 11.9.13
+  repository: "https://charts.bitnami.com/bitnami"
+  condition: global.dev
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.1.20
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: "master"
+
