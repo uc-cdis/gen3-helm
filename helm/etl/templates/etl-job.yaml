@@ -56,7 +56,7 @@ spec:
               - containerPort: 8031
               - containerPort: 8032
               - containerPort: 7077
-              livenessProbe:
+              readinessProbe:
                 tcpSocket:
                   port: 9000
                 initialDelaySeconds: 10
@@ -80,9 +80,9 @@ spec:
                 requests:
                   cpu: {{  .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
-                limits:
-                  cpu: {{ .Values.resources.spark.limits.cpu }}
-                  memory: {{ .Values.resources.spark.limits.memory }}
+                # limits:
+                #   cpu: {{ .Values.resources.spark.limits.cpu }}
+                #   memory: {{ .Values.resources.spark.limits.memory }}
               command: ["/bin/bash" ]
               args: 
                 - "-c"
@@ -186,9 +186,9 @@ spec:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
-                limits:
-                  cpu: {{ .Values.resources.tube.limits.cpu }}
-                  memory: {{ .Values.resources.tube.limits.memory }}
+                # limits:
+                #   cpu: {{ .Values.resources.tube.limits.cpu }}
+                #   memory: {{ .Values.resources.tube.limits.memory }}
               command: ["/bin/bash"]
               args:
                 - "-c"
@@ -202,23 +202,11 @@ spec:
                   echo "Port 9000 is now open. Continuing with the script..."
 
                   echo "python run_config.py && python run_etl.py"
-                  python run_config.py && python run_etl.py
-                  # echo 'options use-vc' >> /etc/resolv.conf
-                  # if [[ $ETL_FORCED != "false" ]]; then
-                  #   python run_config.py && python run_etl.py --force
-                  # else
-                  #   python run_config.py && python run_etl.py
-                  # fi
-                  # exitcode=$?
-                  # if [[ "${slackWebHook}" != 'None' ]]; then
-                  #   if [[ $exitcode == 1 ]]; then
-                  #     curl -X POST --data-urlencode "payload={\"text\": \"JOBFAIL: ETL job on ${gen3Env}\"}" "${slackWebHook}"
-                  #   else
-                  #     curl -X POST --data-urlencode "payload={\"text\": \"SUCCESS: ETL job on ${gen3Env}\"}" "${slackWebHook}"
-                  #   fi
-                  # fi
-                  # echo "Exit code: $exitcode"
-                  # exit "$exitcode"
+                  python run_config.py && python run_etl.py --force
+                  exitcode=$?
+                  
                   # Kill sidecar and all processes
-                  pkill -u root
+                  echo "Exit code: $exitcode"
+                  pkill -u root && exit $exitcode
+                  exit "$exitcode" &
           restartPolicy: Never
