@@ -6,5 +6,5 @@ type: Opaque
 stringData:
   credentials: |
         [default]
-        aws_access_key_id={{.Values.secrets.awsAccessKeyId}}
-        aws_secret_access_key={{ .Values.secrets.awsSecretAccessKey}}
+        # aws_access_key_id={{.Values.secrets.awsAccessKeyId}}
+        # aws_secret_access_key={{ .Values.secrets.awsSecretAccessKey}}
