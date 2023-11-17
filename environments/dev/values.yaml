@@ -6,7 +6,9 @@ global:
 
   aws:
     enabled: false
-
+gen3:
+  enabled: false
+  
 portal:
   enabled: true
   image: 
