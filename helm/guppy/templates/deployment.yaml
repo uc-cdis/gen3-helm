@@ -73,7 +73,7 @@ spec:
             - name: TIER_ACCESS_LEVEL
               value: {{ .Values.global.tierAccessLevel }}
             - name: TIER_ACCESS_LIMIT
-              value: {{ .Values.global.tierAccessLimit }}
+              value: {{ .Values.global.tierAccessLimit | quote }}
 
 
           {{- with .Values.volumeMounts }}
