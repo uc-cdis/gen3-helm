@@ -1,12 +1,23 @@
-# KIND
+# Gen3 in KIND
+## Kind (Kubernetes IN Docker)
 
-## LINK TO ORBSTACK ON M1
+### Overview
+KIND runs Kubernetes inside a Docker container, making it an excellent choice for local development and testing. It is also used by the Kubernetes team to test Kubernetes itself.
 
-## 
+### Pros:
+
+Fast cluster creation (around 20 seconds).
+Robust and reliable, thanks to containerd usage.
+Suitable for CI environments (e.g., TravisCI, CircleCI).
+
+### Cons:
+
+Ingress controllers needs to be deployed manually
 
 
 
-# Create cluster
+
+# Step 1. Create cluster
 
 ```bash
 cat <<EOF | kind create cluster --config=-
@@ -32,7 +43,7 @@ EOF
 
 https://kind.sigs.k8s.io/docs/user/ingress/ 
 
-# deploy ingress
+# Step 2: deploy ingress
 
 https://kind.sigs.k8s.io/docs/user/ingress/
 
