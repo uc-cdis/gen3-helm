@@ -8,11 +8,11 @@ global:
     enabled: false
 gen3:
   enabled: false
-  
+
 portal:
   enabled: true
   image: 
-    repository: 690491147947.dkr.ecr.ap-southeast-2.amazonaws.com/gen3/portal:latest
+    repository: 690491147947.dkr.ecr.ap-southeast-2.amazonaws.com/gen3/portal
     tag: latest
   resources:
     requests:
