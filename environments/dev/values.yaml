@@ -4,8 +4,10 @@ global:
   hostname: localhost
   namespace: dev
 
+  tierAccessLimit: 1000
+
   aws:
-    enabled: false
+    enabled: true
 gen3:
   enabled: false
 
