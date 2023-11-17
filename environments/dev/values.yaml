@@ -7,7 +7,7 @@ global:
   tierAccessLimit: 1000
 
   aws:
-    enabled: true
+    enabled: false
 gen3:
   enabled: false
 
