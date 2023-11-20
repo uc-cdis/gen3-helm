@@ -27,3 +27,9 @@ revproxy:
     type: "LoadBalancer"
 
 revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-414a-98f7-ac40abab5429
+
+
+## disabled services
+wts:
+  enabled: false
+
