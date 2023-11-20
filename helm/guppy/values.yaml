@@ -141,6 +141,9 @@ readinessProbe:
   httpGet:
     path: /_status
     port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
 
 containerPort:
   - containerPort: 8000

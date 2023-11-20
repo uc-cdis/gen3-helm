@@ -51,6 +51,9 @@ spec:
             service ssh start
             /usr/sbin/sshd -D
             update-ca-certificates
+            cp /gen3spark/yarn-site.xml /hadoop/etc/hadoop/yarn-site.xml
+            cp /gen3spark/hdfs-site.xml /hadoop/etc/hadoop/hdfs-site.xml
+            cp /gen3spark/mapred-site.xml /hadoop/etc/hadoop/mapred-site.xml
             python run_config.py
             hdfs namenode -format
             hdfs --daemon start namenode
@@ -99,11 +102,15 @@ spec:
             subPath: sshd_config
             readOnly: false
           - name: sshd-config
-            mountPath: /hadoop/etc/hadoop/yarn-site.xml
+            mountPath: /gen3spark/yarn-site.xml
             subPath: yarn-site.xml
             readOnly: false
           - name: sshd-config
-            mountPath: /hadoop/etc/hadoop/mapred-site.xml
+            mountPath: /gen3spark/hdfs-site.xml
+            subPath: hdfs-site.xml
+            readOnly: false
+          - name: sshd-config
+            mountPath: /gen3spark/mapred-site.xml
             subPath: mapred-site.xml
             readOnly: false
           - name: ssh-pubkey

@@ -1,62 +1,13 @@
 mappings:
-  - name: patient_demographics
-    doc_type: pb_impowr_demographics
-    type: aggregator
-    root: pb_impowr_demographics
-    props:
-      - name: submitter_id
-      - name: project_id
-      - name: impdgenid
-      - name: impdsex
-      - name: impd_race
-      - name: impd_ethnic
-      - name: imp_relat
-      - name: imp_age
-    parent_props:
-      - path: pb_demographics.patient_baselines.patients[patient_id:submitter_id]
+  # - name: programs
+  #   doc_type: program
+  #   type: aggregator
+  #   root: program
+  #   props:
+  #     - name: name
 
 
-  - name: pb_impowr_overdose_screenings
-    doc_type: pb_impowr_overdose_screening
-    type: aggregator
-    root: pb_impowr_overdose_screening
-    props:
-      - name: submitter_id
-      - name: project_id
-      - name: opioidodnumtimes
-      - name: opioidodnarcan
-    parent_props:
-      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
 
-
-  - name: patients_nested
-    doc_type: patient
-    type: aggregator
-    root: patient
-    props:
-      - name: submitter_id
-      - name: project_id
-    nested_props:
-      - name: demographics
-        path: patient_baselines.pb_demographics.pb_impowr_demographics
-        props:
-          - name: impdgenid
-          - name: impdsex
-          - name: impd_race
-          - name: impd_ethnic
-          - name: imp_relat
-          - name: imp_age
-      - name: substance_use
-        path: patient_baselines.pb_substance_uses.pb_impowr_overdose_screenings
-        props:
-          - name: opioidodnumtimes
-          - name: opioidodnarcan
-      - name: depression
-        path: patient_baselines.pb_depressions.pb_promis_depressions
-        props:
-          - name: promisdep4atotalscore
-          - name: promisdprssdfeelpst7dyscl
-          - name: promiswrthlsfeelpst7dyscl
 
   # - name: projects
   #   doc_type: project
@@ -211,7 +162,9 @@ mappings:
       - name: project_id
     parent_props:
       - path: protocols_impowr.studies.projects[project:code]
+        relation: "1-1"
       - path: protocols_impowr.studies[study:submitter_id]
+        relation: "1-1"
     aggregated_props:
       - name: provider_count # gets the count of this node name
         path: providers      # path to this node from the root
@@ -230,7 +183,7 @@ mappings:
       - name: submitter_id
       - name: project_id
     nested_props:
-      - name: surveys
+      - name: staff_surveys
         path: provider_baselines.staff_surveys
         props:        
           - name: imp_staff_addx_exp 
@@ -358,7 +311,9 @@ mappings:
               - name: sdmunderstand
     parent_props:
       - path: provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
 
 
   - name: staff_surveys
@@ -406,7 +361,9 @@ mappings:
       - name: impdrace_staff_white
     parent_props:
       - path: provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_patient_satisfaction_surveys
@@ -439,8 +396,11 @@ mappings:
       - name: overall_patient_satsifaction_score
     parent_props:
       - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_readiness_for_organizational_changes
@@ -482,8 +442,11 @@ mappings:
       - name: roc_worthwhile
     parent_props:
       - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_aim_iam_fims
@@ -522,8 +485,11 @@ mappings:
           - name: sdmunderstand 
     parent_props:
       - path: pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
 
 
   - name: collaborate_shared_decision_making_surveys
@@ -539,9 +505,60 @@ mappings:
       - name: sdmunderstand 
     parent_props:
       - path: pb_aim_iam_fims[pb_aim_iam_fim_id:submitter_id]
+        relation: "1-1"
       - path: pb_aim_iam_fims.pb_implementation_sciences[pb_implementation_science_id:submitter_id]
+        relation: "1-1"
       - path: pb_aim_iam_fims.pb_implementation_sciences.provider_baselines[provider_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_aim_iam_fims.pb_implementation_sciences.provider_baselines.providers[provider_id:submitter_id]
+        relation: "1-1"
+
+
+  # PATIENT (patient & patient_baseline)
+  - name: patients
+    doc_type: patient
+    type: aggregator
+    root: patient
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: demographics
+        path: patient_baselines.pb_demographics.pb_impowr_demographics
+        props:
+          - name: impdgenid
+          - name: impdsex
+          - name: impd_race
+          - name: impd_ethnic
+          - name: imp_relat
+          - name: imp_age
+      - name: substance_use
+        path: patient_baselines.pb_substance_uses.pb_impowr_overdose_screenings
+        props:
+          - name: opioidodnumtimes
+          - name: opioidodnarcan
+      - name: depression
+        path: patient_baselines.pb_depressions.pb_promis_depressions
+        props:
+          - name: promisdep4atotalscore
+          - name: promisdprssdfeelpst7dyscl
+          - name: promiswrthlsfeelpst7dyscl
+
+
+
+  - name: impowr_followup_dates
+    doc_type: impowr_followup_dates
+    type: aggregator
+    root: impowr_followup_dates
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: imp_followup_age
+      - name: imp_followup_date
+      - name: imp_followup_relativedate 
+    parent_props:
+      - path: patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   # DEPRESSION (pb_depression)
@@ -579,7 +596,9 @@ mappings:
           - name: phqtotalscore
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_phq_threes
@@ -594,8 +613,11 @@ mappings:
       - name: phqlitintrstscore
     parent_props:
       - path: pb_depressions[pb_depression_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_promis_depressions
@@ -612,8 +634,11 @@ mappings:
       - name: promiswrthlsfeelpst7dyscl
     parent_props:
       - path: pb_depressions[pb_depression_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -633,8 +658,11 @@ mappings:
       - name: phqtotalscore
     parent_props:
       - path: pb_depressions[pb_depression_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_depressions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   # HEALTH ECONOMICS (pb_health_economics)
@@ -780,7 +808,9 @@ mappings:
           - name: proprscore
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_social_risk_assessments
@@ -803,8 +833,11 @@ mappings:
       - name: sdhtransportationneed2yn
     parent_props:
       - path: pb_health_economics[pb_health_economics_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -818,8 +851,11 @@ mappings:
       - name: hlthlitforms 
     parent_props:
       - path: pb_health_economics[pb_health_economics_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -885,8 +921,11 @@ mappings:
       - name: utiltransportother
     parent_props:
       - path: pb_health_economics[pb_health_economics_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -949,8 +988,11 @@ mappings:
       - name: hshevandalism_timesx
     parent_props:
       - path: pb_health_economics[pb_health_economics_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -965,8 +1007,11 @@ mappings:
       - name: proprscore
     parent_props:
       - path: pb_health_economics[pb_health_economics_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_health_economics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -1011,7 +1056,9 @@ mappings:
           - name: promiscognfxntotalscore
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
   - name: pb_recovery_capitals
     doc_type: pb_recovery_capital
@@ -1043,8 +1090,11 @@ mappings:
       - name: bssvalue
     parent_props:
       - path: pb_overall_functions[pb_overall_function_id:submitter_id]
+        relation: "1-1"
       - path: pb_overall_functions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_overall_functions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_promis_cognitive_functions
@@ -1059,8 +1109,11 @@ mappings:
       - name: promiscognfxntotalscore
     parent_props:
       - path: pb_overall_functions[pb_overall_function_id:submitter_id]
+        relation: "1-1"
       - path: pb_overall_functions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_overall_functions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -1229,7 +1282,9 @@ mappings:
           - name: pcqtotalscoreval
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -1243,8 +1298,11 @@ mappings:
       - name: promisavgpainrtngpst7dscl
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_pain_interferences
@@ -1261,8 +1319,11 @@ mappings:
       - name: promispnintprscacpst7dscl
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_pegs
@@ -1278,8 +1339,11 @@ mappings:
       - name: pegpainpastwkgenrlactscl
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_pgics
@@ -1293,8 +1357,11 @@ mappings:
       - name: pgicsymptomchangestatval
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: suppain_conditions_cms
@@ -1346,8 +1413,11 @@ mappings:
       - name: paindx_widespread
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_bpis
@@ -1373,8 +1443,11 @@ mappings:
       - name: bpiwrstpnlast24hrtngscl
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_chronic_pain_screenings
@@ -1391,8 +1464,11 @@ mappings:
       - name: painyears
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_michigan_body_maps
@@ -1449,8 +1525,11 @@ mappings:
       - name: mupback
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_pain_catastrophizings
@@ -1468,8 +1547,11 @@ mappings:
       - name: pcqtotalscoreval
     parent_props:
       - path: pb_pains[pb_pain_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_pains.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -1494,7 +1576,9 @@ mappings:
           - name: promisphysfx6totalscore
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_promis_physical_functions
@@ -1513,8 +1597,11 @@ mappings:
       - name: promisphysfx6totalscore
     parent_props:
       - path: pb_physical_functions[pb_physical_function_id:submitter_id]
+        relation: "1-1"
       - path: pb_physical_functions.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_physical_functions.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   # PTSD (pb_ptsd)
@@ -1566,7 +1653,9 @@ mappings:
           - name: pcptsdtraumayn
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_ptsd_supplemental_pcl_fives
@@ -1603,8 +1692,11 @@ mappings:
       - name: pcl5upsetremindscl
     parent_props:
       - path: pb_ptsds[pb_ptsd_id:submitter_id]
+        relation: "1-1"
       - path: pb_ptsds.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_ptsds.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_primarycare_ptsd_screenings
@@ -1623,8 +1715,11 @@ mappings:
       - name: pcptsdtraumayn
     parent_props:
       - path: pb_ptsds[pb_ptsd_id:submitter_id]
+        relation: "1-1"
       - path: pb_ptsds.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_ptsds.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
@@ -1667,7 +1762,9 @@ mappings:
           - name: promistrsttskftgpst7dyscl
     parent_props:
       - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_promis_sleeps
@@ -1686,8 +1783,11 @@ mappings:
       - name: promistryhardgettoslpscl
     parent_props:
       - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_sleep_durations
@@ -1702,8 +1802,11 @@ mappings:
       - name: sleepnighthourmindur
     parent_props:
       - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   - name: pb_promis_fatigues
@@ -1720,13 +1823,70 @@ mappings:
       - name: promistrsttskftgpst7dyscl
     parent_props:
       - path: pb_sleep_fatigues[pb_sleep_fatigue_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_sleep_fatigues.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
 
 
   # SOCIAL (pb_social)
+  - name: pb_socials
+    doc_type: pb_social
+    type: aggregator
+    root: pb_social
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_mmspss_supplementals
+        path: pb_mmspss_supplementals
+        props:
+          - name: submitter_id
+          - name: mspssfamdecisionscl
+          - name: mspssfamemotsuptscl
+          - name: mspssfamilyhelpsscl
+          - name: mspssfamilysubscl
+          - name: mspssfamtalkprobscl
+          - name: mspssfriendcountscl
+          - name: mspssfriendhelpscl
+          - name: mspssfriendjoysorscl
+          - name: mspssfriendssubscl
+          - name: mspssfriendtalkprobscl
+          - name: mspsssigothsubscl
+          - name: mspssspeccarefeelscl
+          - name: mspssspeccomfortscl
+          - name: mspssspecjoysorrowscl
+          - name: mspssspecpersonscl
+          - name: mspsstotalscore
+      - name: pb_promis_social_functionings
+        path: pb_promis_social_functionings
+        props:
+          - name: submitter_id
+          - name: promispsra4atotalscore
+          - name: promistrblfmlyactscl
+          - name: promistrblfriendactvscl
+          - name: promistrblleisactothscl
+          - name: promistrblusualwrkscl
+      - name: pb_mmspss
+        path: pb_mmspss
+        props:
+          - name: submitter_id
+          - name: mspssfamdecision
+          - name: mspssfamemosup
+          - name: mspssfriendjoysor
+          - name: mspssfriendtalkprob
+          - name: mspssscoreshort
+          - name: mspssspeccomfort
+          - name: mspssspecpersonneed
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
   - name: pb_mmspss_supplementals
     doc_type: pb_mmspss_supplemental
     type: aggregator
@@ -1752,20 +1912,1319 @@ mappings:
       - name: mspsstotalscore
     parent_props:
       - path: pb_socials[pb_social_id:submitter_id]
+        relation: "1-1"
       - path: pb_socials.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
       - path: pb_socials.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_promis_social_functionings
+    doc_type: pb_promis_social_functioning
+    type: aggregator
+    root: pb_promis_social_functioning
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promispsra4atotalscore
+      - name: promistrblfmlyactscl
+      - name: promistrblfriendactvscl
+      - name: promistrblleisactothscl
+      - name: promistrblusualwrkscl
+    parent_props:
+      - path: pb_socials[pb_social_id:submitter_id]
+        relation: "1-1"
+      - path: pb_socials.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_socials.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_mmspss
+    doc_type: pb_mmspss
+    type: aggregator
+    root: pb_mmspss
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: mspssfamdecision
+      - name: mspssfamemosup
+      - name: mspssfriendjoysor
+      - name: mspssfriendtalkprob
+      - name: mspssscoreshort
+      - name: mspssspeccomfort
+      - name: mspssspecpersonneed
+    parent_props:
+      - path: pb_socials[pb_social_id:submitter_id]
+        relation: "1-1"
+      - path: pb_socials.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_socials.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
 
   # STIGMA / DISCRIMINATION (pb_stigma_discrimination)
+  - name: pb_stigma_discriminations
+    doc_type: pb_stigma_discrimination
+    type: aggregator
+    root: pb_stigma_discrimination
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_supplemental_impowr_stigma_discriminations
+        path: pb_supplemental_impowr_stigma_discriminations
+        props:
+          - name: submitter_id
+          - name: stigdeserve
+          - name: stigfeelashamed
+          - name: stiginferior
+          - name: stigoutofplace
+          - name: stigpoorcharacter
+          - name: stigscreweduplife
+          - name: stigshouldashamed
+          - name: stiguntrustworthy
+          - name: suptxefficient
+          - name: suptxmedoud
+          - name: suptxorganized
+          - name: suptxoverall
+          - name: suptxperscounsel
+          - name: suptxrecdyn
+          - name: suptxsatisfied
+      - name: pb_susms
+        path: pb_susms
+        props:
+          - name: submitter_id
+          - name: susms01paindiscrim
+          - name: susms02alcoholdiscrim
+          - name: susms_antfamtrust
+          - name: susms_anticipated
+          - name: susms_antlookdown
+          - name: susms_antnotlisten
+          - name: susms_antpillshop
+          - name: susms_antpoorcare
+          - name: susms_anttreatdifferent
+          - name: susms_ashamed
+          - name: susms_badperson
+          - name: susms_duealcohol
+          - name: susms_duepain
+          - name: susms_enacted
+          - name: susms_enfamtrust
+          - name: susms_enlookdown
+          - name: susms_ennotlisten
+          - name: susms_enpillshop
+          - name: susms_enpoorcare
+          - name: susms_entreatdifferent
+          - name: susms_internalized
+          - name: susms_notasgood
+          - name: susms_thinkless
+          - name: susms_total
+      - name: sup_treatment_satisfactions
+        path: sup_treatment_satisfactions
+        props:
+          - name: submitter_id
+          - name: suptxefficient
+          - name: suptxmedoud
+          - name: suptxorganized
+          - name: suptxoverall
+          - name: suptxperscounsel
+          - name: suptxrecdyn
+          - name: suptxsatisfied
+      - name: pb_impowr_perceived_discriminations
+        path: pb_impowr_perceived_discriminations
+        props:
+          - name: submitter_id
+          - name: pds1
+          - name: pds2
+          - name: pds3
+          - name: pds4
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_supplemental_impowr_stigma_discriminations
+    doc_type: pb_supplemental_impowr_stigma_discrimination
+    type: aggregator
+    root: pb_supplemental_impowr_stigma_discrimination
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: stigdeserve
+      - name: stigfeelashamed
+      - name: stiginferior
+      - name: stigoutofplace
+      - name: stigpoorcharacter
+      - name: stigscreweduplife
+      - name: stigshouldashamed
+      - name: stiguntrustworthy
+      - name: suptxefficient
+      - name: suptxmedoud
+      - name: suptxorganized
+      - name: suptxoverall
+      - name: suptxperscounsel
+      - name: suptxrecdyn
+      - name: suptxsatisfied
+    parent_props:
+      - path: pb_stigma_discriminations[pb_stigma_discrimination_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_susms
+    doc_type: pb_susms
+    type: aggregator
+    root: pb_susms
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: susms01paindiscrim
+      - name: susms02alcoholdiscrim
+      - name: susms_antfamtrust
+      - name: susms_anticipated
+      - name: susms_antlookdown
+      - name: susms_antnotlisten
+      - name: susms_antpillshop
+      - name: susms_antpoorcare
+      - name: susms_anttreatdifferent
+      - name: susms_ashamed
+      - name: susms_badperson
+      - name: susms_duealcohol
+      - name: susms_duepain
+      - name: susms_enacted
+      - name: susms_enfamtrust
+      - name: susms_enlookdown
+      - name: susms_ennotlisten
+      - name: susms_enpillshop
+      - name: susms_enpoorcare
+      - name: susms_entreatdifferent
+      - name: susms_internalized
+      - name: susms_notasgood
+      - name: susms_thinkless
+      - name: susms_total
+    parent_props:
+      - path: pb_stigma_discriminations[pb_stigma_discrimination_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: sup_treatment_satisfactions
+    doc_type: sup_treatment_satisfaction
+    type: aggregator
+    root: sup_treatment_satisfaction
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: suptxefficient
+      - name: suptxmedoud
+      - name: suptxorganized
+      - name: suptxoverall
+      - name: suptxperscounsel
+      - name: suptxrecdyn
+      - name: suptxsatisfied
+    parent_props:
+      - path: pb_stigma_discriminations[pb_stigma_discrimination_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_impowr_perceived_discriminations
+    doc_type: pb_impowr_perceived_discrimination
+    type: aggregator
+    root: pb_impowr_perceived_discrimination
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: pds1
+      - name: pds2
+      - name: pds3
+      - name: pds4
+    parent_props:
+      - path: pb_stigma_discriminations[pb_stigma_discrimination_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_stigma_discriminations.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
   # SUBSTANCE USE (pb_substance_use)
+  - name: pb_substance_uses
+    doc_type: pb_substance_use
+    type: aggregator
+    root: pb_substance_use
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_promis_acohols
+        path: pb_promis_acohols
+        props:
+          - name: submitter_id
+          - name: psfalc7aanydrinking
+          - name: psfalc7adifficulttocontrol
+          - name: psfalc7adifficulttostop
+          - name: psfalc7adrankheavily
+          - name: psfalc7adrankmorethnplan
+          - name: psfalc7adranktoomuch
+          - name: psfalc7atoomuchtime
+          - name: psfalc7atotalscore
+          - name: psfalc7atroublecontrol
+      - name: pb_promis_severity_of_substance_uses
+        path: pb_promis_severity_of_substance_uses
+        props:
+          - name: submitter_id
+          - name: ssu7acauseproblem
+          - name: ssu7acrave
+          - name: ssu7adrugproblem
+          - name: ssu7adrugthought
+          - name: ssu7aoutofcontrol
+          - name: ssu7aoverpowering
+          - name: ssu7atimeusing
+          - name: ssu7atotalscore
+          - name: ssu7auseddrugs
+      - name: pb_social_drug_uses
+        path: pb_social_drug_uses
+        props:
+          - name: submitter_id
+          - name: socialdetd11a
+          - name: socialdetd11b
+      - name: pb_supplemental_cannabis
+        path: pb_supplemental_cannabis
+        props:
+          - name: submitter_id
+          - name: canna_percent_concentrates
+          - name: canna_percent_edible
+          - name: canna_percent_other_specify
+          - name: canna_percent_others
+          - name: canna_percent_plant
+          - name: canna_treat_othertxspecif
+          - name: canna_validation
+          - name: medical_marijuana
+          - name: su_canna
+          - name: su_canna_adhd
+          - name: su_canna_anxiety
+          - name: su_canna_bipolar
+          - name: su_canna_depression
+          - name: su_canna_inflammation
+          - name: su_canna_lack_appetite
+          - name: su_canna_muscle_spasm
+          - name: su_canna_nausea
+          - name: su_canna_oud
+          - name: su_canna_pain
+          - name: su_canna_ptsd
+          - name: su_canna_schizo
+          - name: su_canna_sleep
+          - name: su_canna_sud
+          - name: su_canna_treat_othertx
+      - name: pb_supplemental_narcans
+        path: pb_supplemental_narcans
+        props:
+          - name: submitter_id
+          - name: narcanadm_1
+          - name: narcanadm_10
+          - name: narcanadm_2
+          - name: narcanadm_3
+          - name: narcanadm_4
+          - name: narcanadm_5
+          - name: narcanadm_6
+          - name: narcanadm_7
+          - name: narcanadm_8
+          - name: narcanadm_9
+          - name: narcanadm_99
+          - name: narcanadm_other
+          - name: narcandrug_1
+          - name: narcandrug_2
+          - name: narcandrug_3
+          - name: narcandrug_4
+          - name: narcandrug_5
+          - name: narcandrug_6
+          - name: narcandrug_7
+          - name: narcandrug_8
+          - name: narcandrug_99
+          - name: narcandrug_other
+          - name: narcankit
+          - name: narcannumed
+          - name: narcannumems
+          - name: narcannumhosp
+          - name: narcannumref
+          - name: narcanrefill
+          - name: narcanusedother
+      - name: pb_supplemental_smokings
+        path: pb_supplemental_smokings
+        props:
+          - name: submitter_id
+          - name: su_blunt
+          - name: su_cigar
+          - name: su_cigflavor
+          - name: su_electronic
+          - name: su_smoke100
+          - name: su_vapefriday
+          - name: su_vapemonday
+          - name: su_vapesaturday
+          - name: su_vapesunday
+          - name: su_vapethursday
+          - name: su_vapetuesday
+          - name: su_vapewednesday
+      - name: pb_us_audits
+        path: pb_us_audits
+        props:
+          - name: submitter_id
+          - name: usaudit_alcexcess
+          - name: usaudit_alcfreq
+          - name: usaudit_alcquant
+          - name: usaudit_concerncutdown
+          - name: usaudit_faildoexpected
+          - name: usaudit_guilt
+          - name: usaudit_injure
+          - name: usaudit_needamdrink
+          - name: usaudit_noremember
+          - name: usaudit_notstopdrnk
+          - name: usaudit_total
+      - name: pb_audit_c
+        path: pb_audit_c
+        props:
+          - name: submitter_id
+          - name: audit_usc1
+          - name: audit_usc2
+          - name: audit_usc3
+          - name: audit_usc_total
+      - name: pb_cigarette_and_e_cigarette_uses
+        path: pb_cigarette_and_e_cigarette_uses
+        props:
+          - name: submitter_id
+          - name: cigperdayscl
+          - name: ecigusedays
+      - name: pb_impowr_moud
+        path: pb_impowr_moud
+        props:
+          - name: submitter_id
+          - name: moud_type
+          - name: moudbup
+          - name: moudbup_6modays
+          - name: moudbup_6modose
+          - name: moudbup_lifemo
+          - name: moudbupinj_6modays
+          - name: moudbupinj_6modose
+          - name: moudbupinj_lifemo
+          - name: moudeveryn
+          - name: moudmethdn
+          - name: moudmethdn_6modays
+          - name: moudmethdn_6modose
+          - name: moudmethdn_lifemo
+          - name: moudnaltrex
+          - name: moudnaltrex_6modays
+          - name: moudnaltrex_6modose
+          - name: moudnaltrex_lifemo
+          - name: moudnaltrexinj_6modays
+          - name: moudnaltrexinj_6modose
+          - name: moudnaltrexinj_lifemo
+      - name: pb_impowr_overdose_screenings
+        path: pb_impowr_overdose_screenings
+        props:
+          - name: submitter_id
+          - name: opioidodnarcan
+          - name: opioidodnumtimes
+      - name: pb_modified_addiction_severity_indices
+        path: pb_modified_addiction_severity_indices
+        props:
+          - name: submitter_id
+          - name: masiamphetdays
+          - name: masiamphetroute
+          - name: masiamphetrx
+          - name: masibenzodays
+          - name: masibenzoroute
+          - name: masibenzorx
+          - name: masibupedays
+          - name: masibuperoute
+          - name: masibuperx
+          - name: masicannabisdays
+          - name: masicannabisroute_1
+          - name: masicannabisroute_2
+          - name: masicannabisroute_3
+          - name: masicannabisroute_4
+          - name: masicannabisroute_5
+          - name: masicannabisrouteothr
+          - name: masicocainedays
+          - name: masicocaineroute
+          - name: masifentanyldays
+          - name: masifentanylroute
+          - name: masifentanylrx
+          - name: masiheroindays
+          - name: masiheroinroute
+          - name: masimethdndays
+          - name: masimethdnroute
+          - name: masimethdnrx
+          - name: masiopiatedays
+          - name: masiopiateroute
+          - name: masiopiaterx
+          - name: masiotherdays
+          - name: masiotherdrugname
+          - name: masiotherroute
+          - name: masiotherrx
+          - name: masistreetamphdays
+          - name: masistreetamphroute
+      - name: pb_modified_taps_one
+        path: pb_modified_taps_one
+        props:
+          - name: submitter_id
+          - name: cigperdayscl
+          - name: ecigusedays
+          - name: tapsprescriptionmedusescl
+          - name: tapstobaccoproductscl
+      - name: pb_opioid_misuse_screenings
+        path: pb_opioid_misuse_screenings
+        props:
+          - name: submitter_id
+          - name: omsneedmore
+          - name: omsobtainedothr
+          - name: omsranout
+          - name: omstakemoreopioid
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
+
+  - name: pb_promis_acohols
+    doc_type: pb_promis_acohol
+    type: aggregator
+    root: pb_promis_acohol
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: psfalc7aanydrinking
+      - name: psfalc7adifficulttocontrol
+      - name: psfalc7adifficulttostop
+      - name: psfalc7adrankheavily
+      - name: psfalc7adrankmorethnplan
+      - name: psfalc7adranktoomuch
+      - name: psfalc7atoomuchtime
+      - name: psfalc7atotalscore
+      - name: psfalc7atroublecontrol
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_promis_severity_of_substance_uses
+    doc_type: pb_promis_severity_of_substance_use
+    type: aggregator
+    root: pb_promis_severity_of_substance_use
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: ssu7acauseproblem
+      - name: ssu7acrave
+      - name: ssu7adrugproblem
+      - name: ssu7adrugthought
+      - name: ssu7aoutofcontrol
+      - name: ssu7aoverpowering
+      - name: ssu7atimeusing
+      - name: ssu7atotalscore
+      - name: ssu7auseddrugs
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_social_drug_uses
+    doc_type: pb_social_drug_use
+    type: aggregator
+    root: pb_social_drug_use
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: socialdetd11a
+      - name: socialdetd11b
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_supplemental_cannabis
+    doc_type: pb_supplemental_cannabis
+    type: aggregator
+    root: pb_supplemental_cannabis
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: canna_percent_concentrates
+      - name: canna_percent_edible
+      - name: canna_percent_other_specify
+      - name: canna_percent_others
+      - name: canna_percent_plant
+      - name: canna_treat_othertxspecif
+      - name: canna_validation
+      - name: medical_marijuana
+      - name: su_canna
+      - name: su_canna_adhd
+      - name: su_canna_anxiety
+      - name: su_canna_bipolar
+      - name: su_canna_depression
+      - name: su_canna_inflammation
+      - name: su_canna_lack_appetite
+      - name: su_canna_muscle_spasm
+      - name: su_canna_nausea
+      - name: su_canna_oud
+      - name: su_canna_pain
+      - name: su_canna_ptsd
+      - name: su_canna_schizo
+      - name: su_canna_sleep
+      - name: su_canna_sud
+      - name: su_canna_treat_othertx
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_supplemental_narcans
+    doc_type: pb_supplemental_narcan
+    type: aggregator
+    root: pb_supplemental_narcan
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: narcanadm_1
+      - name: narcanadm_10
+      - name: narcanadm_2
+      - name: narcanadm_3
+      - name: narcanadm_4
+      - name: narcanadm_5
+      - name: narcanadm_6
+      - name: narcanadm_7
+      - name: narcanadm_8
+      - name: narcanadm_9
+      - name: narcanadm_99
+      - name: narcanadm_other
+      - name: narcandrug_1
+      - name: narcandrug_2
+      - name: narcandrug_3
+      - name: narcandrug_4
+      - name: narcandrug_5
+      - name: narcandrug_6
+      - name: narcandrug_7
+      - name: narcandrug_8
+      - name: narcandrug_99
+      - name: narcandrug_other
+      - name: narcankit
+      - name: narcannumed
+      - name: narcannumems
+      - name: narcannumhosp
+      - name: narcannumref
+      - name: narcanrefill
+      - name: narcanusedother
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_supplemental_smokings
+    doc_type: pb_supplemental_smoking
+    type: aggregator
+    root: pb_supplemental_smoking
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: su_blunt
+      - name: su_cigar
+      - name: su_cigflavor
+      - name: su_electronic
+      - name: su_smoke100
+      - name: su_vapefriday
+      - name: su_vapemonday
+      - name: su_vapesaturday
+      - name: su_vapesunday
+      - name: su_vapethursday
+      - name: su_vapetuesday
+      - name: su_vapewednesday
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_us_audits
+    doc_type: pb_us_audit
+    type: aggregator
+    root: pb_us_audit
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: usaudit_alcexcess
+      - name: usaudit_alcfreq
+      - name: usaudit_alcquant
+      - name: usaudit_concerncutdown
+      - name: usaudit_faildoexpected
+      - name: usaudit_guilt
+      - name: usaudit_injure
+      - name: usaudit_needamdrink
+      - name: usaudit_noremember
+      - name: usaudit_notstopdrnk
+      - name: usaudit_total
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_audit_cs
+    doc_type: pb_audit_c
+    type: aggregator
+    root: pb_audit_c
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: audit_usc1
+      - name: audit_usc2
+      - name: audit_usc3
+      - name: audit_usc_total
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_cigarette_and_e_cigarette_uses
+    doc_type: pb_cigarette_and_e_cigarette_use
+    type: aggregator
+    root: pb_cigarette_and_e_cigarette_use
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: cigperdayscl
+      - name: ecigusedays
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_impowr_mouds
+    doc_type: pb_impowr_moud
+    type: aggregator
+    root: pb_impowr_moud
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: moud_type
+      - name: moudbup
+      - name: moudbup_6modays
+      - name: moudbup_6modose
+      - name: moudbup_lifemo
+      - name: moudbupinj_6modays
+      - name: moudbupinj_6modose
+      - name: moudbupinj_lifemo
+      - name: moudeveryn
+      - name: moudmethdn
+      - name: moudmethdn_6modays
+      - name: moudmethdn_6modose
+      - name: moudmethdn_lifemo
+      - name: moudnaltrex
+      - name: moudnaltrex_6modays
+      - name: moudnaltrex_6modose
+      - name: moudnaltrex_lifemo
+      - name: moudnaltrexinj_6modays
+      - name: moudnaltrexinj_6modose
+      - name: moudnaltrexinj_lifemo
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_impowr_overdose_screenings
+    doc_type: pb_impowr_overdose_screening
+    type: aggregator
+    root: pb_impowr_overdose_screening
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: opioidodnarcan
+      - name: opioidodnumtimes
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_modified_addiction_severity_indices
+    doc_type: pb_modified_addiction_severity_index
+    type: aggregator
+    root: pb_modified_addiction_severity_index
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: masiamphetdays
+      - name: masiamphetroute
+      - name: masiamphetrx
+      - name: masibenzodays
+      - name: masibenzoroute
+      - name: masibenzorx
+      - name: masibupedays
+      - name: masibuperoute
+      - name: masibuperx
+      - name: masicannabisdays
+      - name: masicannabisroute_1
+      - name: masicannabisroute_2
+      - name: masicannabisroute_3
+      - name: masicannabisroute_4
+      - name: masicannabisroute_5
+      - name: masicannabisrouteothr
+      - name: masicocainedays
+      - name: masicocaineroute
+      - name: masifentanyldays
+      - name: masifentanylroute
+      - name: masifentanylrx
+      - name: masiheroindays
+      - name: masiheroinroute
+      - name: masimethdndays
+      - name: masimethdnroute
+      - name: masimethdnrx
+      - name: masiopiatedays
+      - name: masiopiateroute
+      - name: masiopiaterx
+      - name: masiotherdays
+      - name: masiotherdrugname
+      - name: masiotherroute
+      - name: masiotherrx
+      - name: masistreetamphdays
+      - name: masistreetamphroute
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_modified_taps_ones
+    doc_type: pb_modified_taps_one
+    type: aggregator
+    root: pb_modified_taps_one
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: cigperdayscl
+      - name: ecigusedays
+      - name: tapsprescriptionmedusescl
+      - name: tapstobaccoproductscl
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+
+  - name: pb_opioid_misuse_screenings
+    doc_type: pb_opioid_misuse_screening
+    type: aggregator
+    root: pb_opioid_misuse_screening
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: omsneedmore
+      - name: omsobtainedothr
+      - name: omsranout
+      - name: omstakemoreopioid
+    parent_props:
+      - path: pb_substance_uses[pb_substance_use_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_substance_uses.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  
   # RUCA (ruca)
+  - name: rucas
+    doc_type: ruca
+    type: aggregator
+    root: ruca
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: demruca1
+      - name: demruca2
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
 
   # SUPPLEMENTAL SPIRITUALITY (sup_spirituality)
+  - name: sup_spiritualities
+    doc_type: sup_spirituality
+    type: aggregator
+    root: sup_spirituality
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: bssalive
+      - name: bssparticipate
+      - name: bsspray
+      - name: bssrelated
+      - name: bsssacred
+      - name: bssstrength
+      - name: bssthanks
+      - name: bsstouched
+      - name: bssunderstanding
+      - name: bssvalue
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
 
   # ANXIETY (pb_anxiety)
+  - name: pb_anxieties
+    doc_type: pb_anxiety
+    type: aggregator
+    root: pb_anxiety
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_promis_anxieties
+        path: pb_promis_anxieties
+        props:
+          - name: submitter_id
+          - name: promisanx4atotalscore
+          - name: promisdifffcsanxpst7dyscl
+          - name: promisfeelfearflpst7dyscl
+          - name: promisovrwhlmwrypst7dyscl
+          - name: promisuneasyfeelpst7dyscl
+      - name: pb_gad_sevens
+        path: pb_gad_sevens
+        props:
+          - name: submitter_id
+          - name: gad7easyannoyedscl
+          - name: gad7feelafrdscl
+          - name: gad7rstlessscl
+          - name: gad7totscore
+          - name: gad7troubrelxscl
+          - name: gad7wrytoomchscl
+      - name: pb_gad_twos
+        path: pb_gad_twos
+        props:
+          - name: submitter_id
+          - name: gad2feelnervscale
+          - name: gad2notstopwryscale
+          - name: gad2totalscore
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_promis_anxieties
+    doc_type: pb_promis_anxiety
+    type: aggregator
+    root: pb_promis_anxiety
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: promisanx4atotalscore
+      - name: promisdifffcsanxpst7dyscl
+      - name: promisfeelfearflpst7dyscl
+      - name: promisovrwhlmwrypst7dyscl
+      - name: promisuneasyfeelpst7dyscl
+    parent_props:
+      - path: pb_anxieties[pb_anxiety_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_gad_sevens
+    doc_type: pb_gad_seven
+    type: aggregator
+    root: pb_gad_seven
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: gad7easyannoyedscl
+      - name: gad7feelafrdscl
+      - name: gad7rstlessscl
+      - name: gad7totscore
+      - name: gad7troubrelxscl
+      - name: gad7wrytoomchscl
+    parent_props:
+      - path: pb_anxieties[pb_anxiety_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_gad_twos
+    doc_type: pb_gad_two
+    type: aggregator
+    root: pb_gad_two
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: gad2feelnervscale
+      - name: gad2notstopwryscale
+      - name: gad2totalscore
+    parent_props:
+      - path: pb_anxieties[pb_anxiety_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_anxieties.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
   # COVID (pb_covid)
+  - name: pb_covids
+    doc_type: pb_covid
+    type: aggregator
+    root: pb_covid
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_impowr_covid_impacts
+        path: pb_impowr_covid_impacts
+        props:
+          - name: submitter_id
+          - name: covcpaccess
+          - name: covhad
+          - name: covidcp
+          - name: covoud
+          - name: covoudaccess
+          - name: covsx
+      - name: pb_supplemental_covids
+        path: pb_supplemental_covids
+        props:
+          - name: submitter_id
+          - name: covid19financescl
+          - name: covid19hlthaccessscl
+          - name: covid19meetbasicneedscl
+          - name: covid19mentalhlthscl
+          - name: covid19socsupptscl
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_impowr_covid_impacts
+    doc_type: pb_impowr_covid_impact
+    type: aggregator
+    root: pb_impowr_covid_impact
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: covcpaccess
+      - name: covhad
+      - name: covidcp
+      - name: covoud
+      - name: covoudaccess
+      - name: covsx
+    parent_props:
+      - path: pb_covids[pb_covid_id:submitter_id]
+        relation: "1-1"
+      - path: pb_covids.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_covids.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_supplemental_covids
+    doc_type: pb_supplemental_covid
+    type: aggregator
+    root: pb_supplemental_covid
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: covid19financescl
+      - name: covid19hlthaccessscl
+      - name: covid19meetbasicneedscl
+      - name: covid19mentalhlthscl
+      - name: covid19socsupptscl
+    parent_props:
+      - path: pb_covids[pb_covid_id:submitter_id]
+        relation: "1-1"
+      - path: pb_covids.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_covids.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
 
   # DEMOGRAPHICS (pb_demographics)
+  - name: pb_demographics
+    doc_type: pb_demographics
+    type: aggregator
+    root: pb_demographics
+    props:
+      - name: submitter_id
+      - name: project_id
+    nested_props:
+      - name: pb_impowr_demographics
+        path: pb_impowr_demographics
+        props:
+          - name: submitter_id
+          - name: disabinsind
+          - name: imp_age
+          - name: imp_relat
+          - name: imp_sexual
+          - name: impd_address
+          - name: impd_asexual
+          - name: impd_bisexual
+          - name: impd_brthdtc
+          - name: impd_divorced
+          - name: impd_domestic
+          - name: impd_edulevel
+          - name: impd_empstat
+          - name: impd_ethnic
+          - name: impd_incmlvl
+          - name: impd_lesbiangay
+          - name: impd_married
+          - name: impd_nevermarried
+          - name: impd_orientation_not_rep
+          - name: impd_orientationother
+          - name: impd_orientationothertxt
+          - name: impd_pansexual
+          - name: impd_pregnant
+          - name: impd_queer
+          - name: impd_questioning
+          - name: impd_race
+          - name: impd_relat_not_rep
+          - name: impd_school
+          - name: impd_schoolft
+          - name: impd_separated
+          - name: impd_straight
+          - name: impd_widow
+          - name: impdgenid
+          - name: impdgenid01_male
+          - name: impdgenid02_female
+          - name: impdgenid03_transman
+          - name: impdgenid04_transwoman
+          - name: impdgenid05_genderqueer
+          - name: impdgenid06_nonbinary
+          - name: impdgenid07_agender
+          - name: impdgenid08_genfluid
+          - name: impdgenid09_other
+          - name: impdgenid09_othertxt
+          - name: impdgenid10_not_rep
+          - name: impdrace_ai_an
+          - name: impdrace_asian
+          - name: impdrace_bl_aa
+          - name: impdrace_nh_pi
+          - name: impdrace_not_rep
+          - name: impdrace_other
+          - name: impdrace_othertxt
+          - name: impdrace_unkn
+          - name: impdrace_white
+          - name: impdsex
+          - name: impdsextxt
+      - name: pb_supplemental_demographics
+        path: pb_supplemental_demographics
+        props:
+          - name: submitter_id
+          - name: dem_benefits
+          - name: impowroptdem401k
+          - name: impowroptdemdaysperwk
+          - name: impowroptdemdayswork
+          - name: impowroptdemhlthinsur
+          - name: impowroptdemhlthinsurance
+          - name: impowroptdemhrlywage
+          - name: impowroptdeminstype_1
+          - name: impowroptdeminstype_10
+          - name: impowroptdeminstype_11
+          - name: impowroptdeminstype_12
+          - name: impowroptdeminstype_2
+          - name: impowroptdeminstype_3
+          - name: impowroptdeminstype_4
+          - name: impowroptdeminstype_5
+          - name: impowroptdeminstype_6
+          - name: impowroptdeminstype_7
+          - name: impowroptdeminstype_8
+          - name: impowroptdeminstype_9
+          - name: impowroptdemnone
+          - name: impowroptdemoccup
+          - name: impowroptdempdtimeoff
+          - name: impowroptdempension
+          - name: impowroptdemusualhrperwk
+          - name: insurance_type
+    parent_props:
+      - path: patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+  - name: pb_impowr_demographics
+    doc_type: pb_impowr_demographics
+    type: aggregator
+    root: pb_impowr_demographics
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: disabinsind
+      - name: imp_age
+      - name: imp_relat
+      - name: imp_sexual
+      - name: impd_address
+      - name: impd_asexual
+      - name: impd_bisexual
+      - name: impd_brthdtc
+      - name: impd_divorced
+      - name: impd_domestic
+      - name: impd_edulevel
+      - name: impd_empstat
+      - name: impd_ethnic
+      - name: impd_incmlvl
+      - name: impd_lesbiangay
+      - name: impd_married
+      - name: impd_nevermarried
+      - name: impd_orientation_not_rep
+      - name: impd_orientationother
+      - name: impd_orientationothertxt
+      - name: impd_pansexual
+      - name: impd_pregnant
+      - name: impd_queer
+      - name: impd_questioning
+      - name: impd_race
+      - name: impd_relat_not_rep
+      - name: impd_school
+      - name: impd_schoolft
+      - name: impd_separated
+      - name: impd_straight
+      - name: impd_widow
+      - name: impdgenid
+      - name: impdgenid01_male
+      - name: impdgenid02_female
+      - name: impdgenid03_transman
+      - name: impdgenid04_transwoman
+      - name: impdgenid05_genderqueer
+      - name: impdgenid06_nonbinary
+      - name: impdgenid07_agender
+      - name: impdgenid08_genfluid
+      - name: impdgenid09_other
+      - name: impdgenid09_othertxt
+      - name: impdgenid10_not_rep
+      - name: impdrace_ai_an
+      - name: impdrace_asian
+      - name: impdrace_bl_aa
+      - name: impdrace_nh_pi
+      - name: impdrace_not_rep
+      - name: impdrace_other
+      - name: impdrace_othertxt
+      - name: impdrace_unkn
+      - name: impdrace_white
+      - name: impdsex
+      - name: impdsextxt
+    parent_props:
+      - path: pb_demographics[pb_demographics_id:submitter_id]
+        relation: "1-1"
+      - path: pb_demographics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_demographics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"
+
+
+  - name: pb_supplemental_demographics
+    doc_type: pb_supplemental_demographics
+    type: aggregator
+    root: pb_supplemental_demographics
+    props:
+      - name: submitter_id
+      - name: project_id
+      - name: dem_benefits
+      - name: impowroptdem401k
+      - name: impowroptdemdaysperwk
+      - name: impowroptdemdayswork
+      - name: impowroptdemhlthinsur
+      - name: impowroptdemhlthinsurance
+      - name: impowroptdemhrlywage
+      - name: impowroptdeminstype_1
+      - name: impowroptdeminstype_10
+      - name: impowroptdeminstype_11
+      - name: impowroptdeminstype_12
+      - name: impowroptdeminstype_2
+      - name: impowroptdeminstype_3
+      - name: impowroptdeminstype_4
+      - name: impowroptdeminstype_5
+      - name: impowroptdeminstype_6
+      - name: impowroptdeminstype_7
+      - name: impowroptdeminstype_8
+      - name: impowroptdeminstype_9
+      - name: impowroptdemnone
+      - name: impowroptdemoccup
+      - name: impowroptdempdtimeoff
+      - name: impowroptdempension
+      - name: impowroptdemusualhrperwk
+      - name: insurance_type
+    parent_props:
+      - path: pb_demographics[pb_demographics_id:submitter_id]
+        relation: "1-1"
+      - path: pb_demographics.patient_baselines[patient_baseline_id:submitter_id]
+        relation: "1-1"
+      - path: pb_demographics.patient_baselines.patients[patient_id:submitter_id]
+        relation: "1-1"

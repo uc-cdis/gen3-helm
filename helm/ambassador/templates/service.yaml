@@ -23,6 +23,5 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    name: proxy
   selector:
-    service: ambassador
+    app: ambassador

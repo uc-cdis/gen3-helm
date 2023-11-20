@@ -39,16 +39,162 @@ guppy:
   indices:
   - index: dev_file_0
     type: file
-  - index: dev_etl_0
-    type: study
-  - index: patient_demographics_0
-    type: pb_impowr_demographics
-  - index: patient_ptsd_0
-    type: pb_primarycare_ptsd_screening
-  - index: patient_od5_0
-    type: pb_impowr_overdose_screening
-  - index: patients_nested_0
+  - index: patients_0
     type: patient
+  - index: studies_0
+    type: study
+  - index: participants_0
+    type: participant
+  # - index: providers_0
+  #   type: provider
+  - index: staff_surveys_0
+    type: staff_survey
+  # - index: pb_patient_satisfaction_surveys_0
+  #   type: pb_patient_satisfaction_survey
+  # - index: pb_readiness_for_organizational_changes_0
+  #   type: pb_readiness_for_organizational_change
+  # - index: pb_aim_iam_fims_0
+  #   type: pb_aim_iam_fim
+  # - index: collaborate_shared_decision_making_surveys_0
+  #   type: collaborate_shared_decision_making_survey
+  - index: impowr_followup_dates_0
+    type: impowr_followup_dates
+  - index: pb_depressions_0
+    type: pb_depression
+  - index: pb_phq_threes_0
+    type: pb_phq_three
+  - index: pb_promis_depressions_0
+    type: pb_promis_depression
+  - index: pb_phq_nines_0
+    type: pb_phq_nine
+  - index: pb_health_economics_0
+    type: pb_health_economics
+  - index: pb_social_risk_assessments_0
+    type: pb_social_risk_assessment
+  - index: pb_health_literacies_0
+    type: pb_health_literacy
+  - index: pb_health_service_utilizations_0
+    type: pb_health_service_utilization
+  - index: pb_healthcare_utilizations_0
+    type: pb_healthcare_utilization
+  - index: pb_promis_proprs_0
+    type: pb_promis_propr
+  - index: pb_overall_functions_0
+    type: pb_overall_function
+  - index: pb_recovery_capitals_0
+    type: pb_recovery_capital
+  - index: pb_promis_cognitive_functions_0
+    type: pb_promis_cognitive_function
+  - index: pb_pains_0
+    type: pb_pain
+  - index: pb_pain_intensities_0
+    type: pb_pain_intensity
+  - index: pb_pain_interferences_0
+    type: pb_pain_interference
+  - index: pb_pegs_0
+    type: pb_peg
+  - index: pb_pgics_0
+    type: pb_pgic
+  - index: suppain_conditions_cms_0
+    type: suppain_conditions_cms
+  - index: pb_bpis_0
+    type: pb_bpi
+  - index: pb_chronic_pain_screenings_0
+    type: pb_chronic_pain_screening
+  - index: pb_michigan_body_maps_0
+    type: pb_michigan_body_map
+  - index: pb_pain_catastrophizings_0
+    type: pb_pain_catastrophizing
+  - index: pb_physical_functions_0
+    type: pb_physical_function
+  - index: pb_promis_physical_functions_0
+    type: pb_promis_physical_function
+  - index: pb_ptsds_0
+    type: pb_ptsd
+  - index: pb_ptsd_supplemental_pcl_fives_0
+    type: pb_ptsd_supplemental_pcl_five
+  - index: pb_primarycare_ptsd_screenings_0
+    type: pb_primarycare_ptsd_screening
+  - index: pb_sleep_fatigues_0
+    type: pb_sleep_fatigue
+  - index: pb_promis_sleeps_0
+    type: pb_promis_sleep
+  - index: pb_sleep_durations_0
+    type: pb_sleep_duration
+  - index: pb_promis_fatigues_0
+    type: pb_promis_fatigue
+  - index: pb_socials_0
+    type: pb_social
+  - index: pb_mmspss_supplementals_0
+    type: pb_mmspss_supplemental
+  - index: pb_promis_social_functionings_0
+    type: pb_promis_social_functioning
+  - index: pb_mmspss_0
+    type: pb_mmspss
+  - index: pb_stigma_discriminations_0
+    type: pb_stigma_discrimination
+  - index: pb_supplemental_impowr_stigma_discriminations_0
+    type: pb_supplemental_impowr_stigma_discrimination
+  - index: pb_susms_0
+    type: pb_susms
+  - index: sup_treatment_satisfactions_0
+    type: sup_treatment_satisfaction
+  - index: pb_impowr_perceived_discriminations_0
+    type: pb_impowr_perceived_discrimination
+  - index: pb_substance_uses_0
+    type: pb_substance_use
+  - index: pb_promis_acohols_0
+    type: pb_promis_acohol
+  - index: pb_promis_severity_of_substance_uses_0
+    type: pb_promis_severity_of_substance_use
+  - index: pb_social_drug_uses_0
+    type: pb_social_drug_use
+  - index: pb_supplemental_cannabis_0
+    type: pb_supplemental_cannabis
+  - index: pb_supplemental_narcans_0
+    type: pb_supplemental_narcan
+  - index: pb_supplemental_smokings_0
+    type: pb_supplemental_smoking
+  - index: pb_us_audits_0
+    type: pb_us_audit
+  - index: pb_audit_cs_0
+    type: pb_audit_c
+  - index: pb_cigarette_and_e_cigarette_uses_0
+    type: pb_cigarette_and_e_cigarette_use
+  - index: pb_impowr_mouds_0
+    type: pb_impowr_moud
+  - index: pb_impowr_overdose_screenings_0
+    type: pb_impowr_overdose_screening
+  - index: pb_modified_addiction_severity_indices_0
+    type: pb_modified_addiction_severity_index
+  - index: pb_modified_taps_ones_0
+    type: pb_modified_taps_one
+  - index: pb_opioid_misuse_screenings_0
+    type: pb_opioid_misuse_screening
+  - index: rucas_0
+    type: ruca
+  - index: sup_spiritualities_0
+    type: sup_spirituality
+  - index: pb_anxieties_0
+    type: pb_anxiety
+  - index: pb_promis_anxieties_0
+    type: pb_promis_anxiety
+  - index: pb_gad_sevens_0
+    type: pb_gad_seven
+  - index: pb_gad_twos_0
+    type: pb_gad_two
+  - index: pb_covids_0
+    type: pb_covid
+  - index: pb_impowr_covid_impacts_0
+    type: pb_impowr_covid_impact
+  - index: pb_supplemental_covids_0
+    type: pb_supplemental_covid
+  - index: pb_demographics_0
+    type: pb_demographics
+  - index: pb_impowr_demographics_0
+    type: pb_impowr_demographics
+  - index: pb_supplemental_demographics_0
+    type: pb_supplemental_demographics
   configIndex: gen3-dev-config
 
 sheepdog:

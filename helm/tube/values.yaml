@@ -8,7 +8,7 @@ image:
   repository: quay.io/cdis/tube
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2023.01"
+  tag: "2023.10"
 
 imagePullSecrets: []
 nameOverride: ""
