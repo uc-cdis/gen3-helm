@@ -10,7 +10,7 @@ global:
   # -- (map) AWS configuration
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
-    enabled: false
+    enabled: true
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
