@@ -36,5 +36,3 @@ wts:
 sower:
   enabled: false
 
-sheepdog:
-  enabled: false
