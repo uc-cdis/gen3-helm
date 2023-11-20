@@ -114,7 +114,7 @@ image:
   # -- (string) The Docker image repository for the fence service
   repository: quay.io/cdis/fence
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
@@ -393,7 +393,7 @@ volumeMounts:
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
   - name: "fence-jwt-keys"
-    readOnly: true
+    readOnly: false
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
 

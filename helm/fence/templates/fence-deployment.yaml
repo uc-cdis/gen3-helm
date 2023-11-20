@@ -28,26 +28,21 @@ spec:
     spec:
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
+      # TODO: Fix nginx image so it runs as non-root
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+      #   fsGroup: 1000
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
-        {{- if .Values.sidecar.enabled }}
-        - name: sidecar-nginx
-          image: {{ .Values.sidecar.image }}
-          ports:
-            - name: http
-              containerPort: 80
-          volumeMounts:
-            - name: "nginx-config"
-              mountPath: "/etc/nginx/conf.d/default.conf"
-              subPath: default.conf
-        {{- end }}
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: app
               containerPort: 8000
+              protocol: TCP
             # - name: https
             #   containerPort: 443
             #   protocol: TCP
@@ -63,40 +58,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          command: ["/bin/bash"]
-          args:
-            - "-c"
-            - |
-              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
-              if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
-                openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
-              fi
-              bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
-          env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
-            {{- toYaml .Values.env | nindent 12 }}
-          volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-      initContainers:
-        - name: fence-init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
-            - name: container
-              containerPort: 6567
-              protocol: TCP
+              port: app
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -105,6 +67,42 @@ spec:
             - |
               # echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
               # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
+          env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
+            {{- toYaml .Values.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+        {{- if .Values.sidecar.enabled }}
+        - name: sidecar-nginx
+          image: {{ .Values.sidecar.image }}
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          volumeMounts:
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: default.conf
+        {{- end }}
+      initContainers:
+        - name: fence-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              # echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
+              # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              # sleep infinity
               if fence-create migrate --help > /dev/null 2>&1; then
                 if ! grep -E 'ENABLE_DB_MIGRATION"?: *false' /var/www/fence/fence-config.yaml; then
                   echo "Running db migration: fence-create migrate"
