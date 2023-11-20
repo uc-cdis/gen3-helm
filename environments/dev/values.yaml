@@ -5,7 +5,7 @@ global:
   namespace: dev
 
   aws:
-    enabled: true
+    enabled: false
 gen3:
   enabled: false
 
