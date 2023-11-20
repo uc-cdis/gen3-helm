@@ -8,6 +8,7 @@ A Helm chart for gen3 etl
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| esEndpoint | string | `"gen3-elasticsearch-master"` |  |
 | etlMapping.mappings[0].aggregated_props[0].fn | string | `"count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].name | string | `"_samples_count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].path | string | `"samples"` |  |

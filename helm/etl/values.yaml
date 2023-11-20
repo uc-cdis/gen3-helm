@@ -54,6 +54,8 @@ resources:
       memory: 2Gi
 
 
+esEndpoint: gen3-elasticsearch-master
+
 etlMapping:
   mappings:
     - name: dev_case

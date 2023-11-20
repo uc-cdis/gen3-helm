@@ -45,7 +45,7 @@ spec:
           image: alpine/curl
           env:
             - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint | default "http://elasticsearch:9200" }}
+              value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
           args:
@@ -61,7 +61,7 @@ spec:
           image: alpine/curl
           env:
             - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint | default "http://elasticsearch:9200" }}
+              value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
           args:
@@ -94,7 +94,7 @@ spec:
             - name: GEN3_DEBUG
               value: "False"
             - name: GEN3_ES_ENDPOINT
-              value: {{ .Values.esEndpoint | default "http://elasticsearch:9200" }}
+              value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
             - name: USE_AGG_MDS
               value: {{ (.Values.useAggMds | quote | default "True") }}
             - name: AGG_MDS_NAMESPACE

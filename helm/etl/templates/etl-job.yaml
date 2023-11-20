@@ -105,7 +105,8 @@ spec:
                   while true; do sleep 5; done
             - name: tube
               imagePullPolicy: Always
-              image: quay.io/cdis/tube:feat_helm_test
+              # image: quay.io/cdis/tube:feat_helm_test
+              image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
               env:
@@ -144,7 +145,7 @@ spec:
                 - name: HADOOP_URL
                   value: hdfs://localhost:9000
                 - name: ES_URL
-                  value: gen3-elasticsearch-master
+                  value: {{ .Values.esEndpoint  }}
                 - name: HADOOP_HOST
                   value: localhost
                 - name: HADOOP_CLIENT_OPTS
@@ -193,6 +194,7 @@ spec:
               args:
                 - "-c"
                 - |
+                  sleep infinity
                   while ! bash -c "echo >/dev/tcp/localhost/9000"; do
                     echo "Spark is not ready on port 9000... waiting for 10 seconds."
                     sleep 10
@@ -202,7 +204,7 @@ spec:
                   echo "Port 9000 is now open. Continuing with the script..."
 
                   echo "python run_config.py && python run_etl.py"
-                  python run_config.py && python run_etl.py --force
+                  python run_config.py && python run_etl.py --force -s transform
                   exitcode=$?
                   
                   # Kill sidecar and all processes
