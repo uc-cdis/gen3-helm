@@ -33,3 +33,5 @@ revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-4
 wts:
   enabled: false
 
+sower:
+  enabled: false
