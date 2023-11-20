@@ -1,7 +1,7 @@
 
 global:
   dev: true
-  hostname: localhost
+  hostname: dev.gen3.internal
   namespace: dev
 
   aws:
