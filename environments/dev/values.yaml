@@ -1,6 +1,6 @@
 
 global:
-  dev: true
+  dev: false
   hostname: localhost
   namespace: dev
 
