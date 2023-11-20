@@ -11,5 +11,6 @@ data:
         {{- end }}
         "auth_filter_field": {{ .Values.authFilterField | quote }},
         "enable_encrypt_whitelist": {{ .Values.enableEncryptWhitelist | quote }},
-        "encrypt_whitelist":  {{ .Values.encryptWhitelist | quote }}
+        "encrypt_whitelist":  {{ .Values.encryptWhitelist | quote }},
+        "log_level": "DEBUG"
       }

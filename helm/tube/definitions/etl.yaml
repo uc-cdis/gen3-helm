@@ -161,9 +161,9 @@ mappings:
       - name: submitter_id
       - name: project_id
     parent_props:
-      - path: protocols_impowr.studies.projects[project:code]
+      - path: protocols.studies.projects[project:code]
         relation: "1-1"
-      - path: protocols_impowr.studies[study:submitter_id]
+      - path: protocols.studies[study:submitter_id]
         relation: "1-1"
     aggregated_props:
       - name: provider_count # gets the count of this node name
