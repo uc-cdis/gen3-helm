@@ -1,7 +1,7 @@
 ARG CODE_VERSION=master
-FROM node:16 as builder
+FROM --platform=linux/amd64 node:16 as builder
 
-ARG PORTAL_HOSTNAME
+ARG PORTAL_HOSTNAME=dev.gen3.internal
 
 ENV APP gitops
 ENV BASENAME /
