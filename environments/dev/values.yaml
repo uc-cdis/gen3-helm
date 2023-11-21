@@ -22,6 +22,12 @@ portal:
       cpu: 0.2
       memory: 500Mi
 
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: true
+      
 revproxy: 
   service:
     type: "LoadBalancer"
