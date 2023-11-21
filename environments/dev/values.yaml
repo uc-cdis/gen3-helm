@@ -12,6 +12,9 @@ gen3:
 pelican:
   bucket: sandbox-s3-buckets-pelicancredss3bucketsandboxs3bu-veftfoxeyecg
 
+peregrine:
+  dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
+  
 portal:
   enabled: true
   # image: 
