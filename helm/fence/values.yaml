@@ -122,11 +122,11 @@ image:
 sidecar:
   enabled: true
   # -- (string) The Docker image repository for nginx
-  image: quay.io/cdis/nginx
+  image: quay.io/cdis/nginx-sidecar
   # -- (string) When to pull the image.
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # -- (string) Image tag.
-  tag: "master"
+  tag: "nginx-sidecar-feat_nginx-sidecar"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

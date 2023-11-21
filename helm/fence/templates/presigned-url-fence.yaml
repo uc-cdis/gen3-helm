@@ -21,11 +21,10 @@ spec:
         app: presigned-url-fence 
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
-      # TODO: Fix nginx image so it runs as non-root
-      # securityContext:
-      #   runAsUser: 1000
-      #   runAsGroup: 1000
-      #   fsGroup: 1000
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
@@ -71,7 +70,8 @@ spec:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
         {{- if .Values.sidecar.enabled }}
         - name: sidecar-nginx
-          image: {{ .Values.sidecar.image }}
+          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
+          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
           ports:
             - name: http
               containerPort: 80
