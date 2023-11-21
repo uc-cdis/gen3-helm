@@ -22,9 +22,9 @@ portal:
       cpu: 0.2
       memory: 500Mi
 
-revproxy: 
-  service:
-    type: "LoadBalancer"
+# revproxy: 
+#   service:
+#     type: "LoadBalancer"
 
 revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-414a-98f7-ac40abab5429
 
