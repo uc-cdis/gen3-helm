@@ -15,19 +15,19 @@ fence:
   postgres:
     username: fence
     password: testingConfiguration!
-    port: 5432
+    port: "5432"
 
 peregrine:
   postgres:
     username: peregrine
     password: testingConfiguration!
-    port: 5432
+    port: "5432"
 
 sheepdog:
   postgres:  
     username: sheepdog
     password: testingConfiguration!
-    port: 5432
+    port: "5432"
 
   aws:
     enabled: true
