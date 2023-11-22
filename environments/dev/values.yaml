@@ -14,12 +14,12 @@ pelican:
 
 peregrine:
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
-  
+
 portal:
   enabled: true
-  # image: 
-  #   repository: 690491147947.dkr.ecr.ap-southeast-2.amazonaws.com/gen3/portal
-  #   tag: latest
+  image: 
+    repository: 690491147947.dkr.ecr.ap-southeast-2.amazonaws.com/gen3/portal
+    tag: latest
   resources:
     requests:
       cpu: 0.2
