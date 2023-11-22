@@ -13,6 +13,7 @@ pelican:
   bucket: sandbox-s3-buckets-pelicancredss3bucketsandboxs3bu-veftfoxeyecg
 
 peregrine:
+  image: quay.io/cdis/peregrine:2023.12
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
 
 portal:
