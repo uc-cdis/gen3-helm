@@ -22,6 +22,9 @@ peregrine:
     username: peregrine
     password: testingConfiguration!
     port: "5432"
+  image: 
+    repository: quay.io/cdis/peregrine
+    tag: 2023.01
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
 
 sheepdog:
