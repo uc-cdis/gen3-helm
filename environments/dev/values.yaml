@@ -4,6 +4,31 @@ global:
   hostname: dev.gen3.internal
   namespace: dev
 
+  postgres:
+    dbCreate: true
+    master:
+      username: postgres
+      password: testingConfiguration!
+      port: "5432"
+
+fence:
+  postgres:
+    username: fence
+    password: testingConfiguration!
+    port: 5432
+
+peregrine:
+  postgres:
+    username: peregrine
+    password: testingConfiguration!
+    port: 5432
+
+sheepdog:
+  postgres:  
+    username: sheepdog
+    password: testingConfiguration!
+    port: 5432
+
   aws:
     enabled: true
 gen3:
