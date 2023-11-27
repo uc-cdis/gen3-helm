@@ -156,6 +156,16 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "helm-test"
 
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx-sidecar
+  # -- (string) When to pull the image.
+  pullPolicy: IfNotPresent
+  # -- (string) Image tag.
+  tag: "nginx-sidecar-feat_nginx-sidecar"
+
 # Environment Variables
 # -- (string) URL of the data dictionary.
 dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
@@ -171,8 +181,11 @@ authNamespace: default
 volumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/sheepdog/wsgi.py"
+    mountPath: "/sheepdog/deployment/wsgi/wsgi.py"
     subPath: "wsgi.py"
+  - name: "wsgi-config"
+    mountPath: "/sheepdog/deployment/wsgi/gunicorn.conf.py"
+    subPath: gunicorn.conf.py
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

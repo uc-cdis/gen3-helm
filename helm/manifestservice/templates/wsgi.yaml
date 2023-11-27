@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: indexd-wsgi
+  name: manifestservice-wsgi
 data:
   gunicorn.conf.py: |
     wsgi_app = "deployment.wsgi.wsgi:application"

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: indexd-nginx-configmap
+  name: metadata-nginx-configmap
 data:
   default.conf: |
       server {

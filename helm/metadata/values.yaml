@@ -144,6 +144,16 @@ image:
 
 debug: false
 
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx-sidecar
+  # -- (string) When to pull the image.
+  pullPolicy: IfNotPresent
+  # -- (string) Image tag.
+  tag: "nginx-sidecar-feat_nginx-sidecar"
+
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
 esEndpoint: elasticsearch:9200
@@ -154,6 +164,9 @@ aggMdsNamespace:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
+  - name: "wsgi-config"
+    mountPath: "/metadata-service/deployment/wsgi/gunicorn.conf.py"
+    subPath: gunicorn.conf.py
   - name: config-volume-g3auto
     readOnly: true
     mountPath: /src/.env
@@ -205,7 +218,7 @@ command: ["/bin/sh"]
 args:
   - "-c"
   - |
-    /env/bin/alembic upgrade head
+    alembic upgrade head
 
 # Service and Pod
 serviceAnnotations:
@@ -226,7 +239,7 @@ service:
   port:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8000
       name: http
 
 # Values to determine the labels that are used for the deployment, pod, etc.

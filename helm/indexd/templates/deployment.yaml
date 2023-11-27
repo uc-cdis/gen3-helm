@@ -26,6 +26,10 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -90,27 +94,31 @@ spec:
               subPath: "local_settings.py"
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: 8000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.sidecar.enabled }}
         - name: sidecar-nginx
-          image: {{ .Values.sidecar.image }}
+          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
+          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
-              protocol: TCP
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
           volumeMounts:
             - name: "nginx-config"
               mountPath: "/etc/nginx/conf.d/default.conf"
