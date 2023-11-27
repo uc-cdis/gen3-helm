@@ -10,7 +10,7 @@ image:
     tag: "master"
   spark:
     # -- (string) The Docker image repository for the spark service
-    repository: quay.io/cdis/fence
+    repository: quay.io/cdis/gen3-spark
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
     # -- (string) Overrides the image tag whose default is the chart appVersion.

@@ -82,7 +82,7 @@ A Helm chart for gen3 etl
 | etlMapping.mappings[1].target_nodes[0].path | string | `"slides.samples.cases"` |  |
 | etlMapping.mappings[1].type | string | `"collector"` |  |
 | image.spark.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
-| image.spark.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the spark service |
+| image.spark.repository | string | `"quay.io/cdis/gen3-spark"` | The Docker image repository for the spark service |
 | image.spark.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | image.tube.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.tube.repository | string | `"quay.io/cdis/tube"` | The Docker image repository for the fence service |
