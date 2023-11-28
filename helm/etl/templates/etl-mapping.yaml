@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: etl-mapping
+data:
+  etlMapping.yaml: |
+    {{- with .Values.etlMapping }}
+    {{- toYaml . | nindent 4 }}
+    {{ end }}
+---

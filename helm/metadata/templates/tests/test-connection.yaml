@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "metadata.fullname" . }}:{{ .Values.service.port }}']
+      args: ['metadata-service:80/_status']
   restartPolicy: Never

@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "audit.fullname" . }}:{{ .Values.service.port }}']
+      args: ['audit-service:{{ .Values.service.port }}/_status']
   restartPolicy: Never
