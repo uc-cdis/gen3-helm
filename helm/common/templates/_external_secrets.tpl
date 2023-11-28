@@ -1,0 +1,83 @@
+{{/*
+  Service DB Creds Secrets Manager Name
+*/}}
+{{- define "common.externalSecret.dbcreds.name" -}}
+{{- if .Values.externalSecrets.dbcreds }}
+  {{- default .Values.externalSecrets.dbcreds }}
+{{- else }}
+  {{- .Values.global.environment }}- {{- .Chart.Name }}-creds
+{{- end -}}
+{{- end -}}
+
+
+
+
+{{/*
+    ExternalSecrets Object
+*/}}
+{{- define "common.externalSecret.db" -}}
+{{ if .Values.global.externalSecrets.deploy }}
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    name: {{include "common.clusterSecretStore" .}}
+    kind: ClusterSecretStore
+  target:
+    name: {{ $.Chart.Name }}-dbcreds
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: {{include "common.externalSecret.dbcreds.name" .}}
+      conversionStrategy: Default
+      decodingStrategy: None
+{{- end }}
+{{- end -}}
+
+
+{{/*
+    External Secrets Secret Store will allow all charts to allow for authentication to AWS Secrets Manager
+*/}}
+{{ define "common.secretstore" -}}
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: {{.Chart.Name}}-secret-store
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-east-1
+      auth:
+        secretRef:
+          accessKeyIDSecretRef:
+            name: {{.Chart.Name}}-aws-config
+            key: access-key
+            namespace: default
+          secretAccessKeySecretRef:
+            name: {{.Chart.Name}}-aws-config
+            key: secret-access-key
+            namespace: default
+{{- end }}
+
+
+
+{{/*
+  #  Name of the clusterSecretStore
+  #  We want to allow override here, in case a chart is being deployed without the umbrella chart, 
+  #  or any other needs to deploy a separate secret store per service.
+*/}}
+
+{{/*
+  Cluster Secret Store for External Secrets
+*/}}
+{{- define "common.clusterSecretStore" -}}
+{{- if .Values.global.externalSecrets.separate }}
+  {{- .Chart.Name }}-secret-store
+{{- else }}
+{{- default "gen3-secret-store"}}
+{{- end -}}
+{{- end -}}

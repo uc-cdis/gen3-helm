@@ -2,7 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -20,6 +21,16 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a External Secret Store if deploying this sevice seperately.
+    separate: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  awsCreds: "aws-es-proxy-aws-credentials"
 
 # -- (map) Annotations to add to the pod
 podAnnotations:
