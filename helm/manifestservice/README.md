@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.7 |
+| file://../common | common | 0.1.8 |
 
 ## Values
 
@@ -38,10 +38,10 @@ A Helm chart for Kubernetes
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/manifestservice","tag":"2022.09"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/manifestservice","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/manifestservice"` | Docker repository. |
-| image.tag | string | `"2022.09"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | manifestserviceG3auto | map | `{"awsaccesskey":"","awssecretkey":"","bucketName":"testbucket","hostname":"testinstall","prefix":"test"}` | Values for manifestservice secret. |
 | manifestserviceG3auto.awsaccesskey | string | `""` | AWS access key. |
 | manifestserviceG3auto.awssecretkey | string | `""` | AWS secret access key. |

@@ -43,7 +43,7 @@ global:
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
@@ -105,6 +105,10 @@ aws-es-proxy:
     awsAccessKeyId: ""
     # -- (str) AWS secret access key for aws-es-proxy
     awsSecretAccessKey: ""
+
+etl:
+  # -- (bool) Whether to deploy the etl subchart.
+  enabled: true
 
 fence:
   # -- (bool) Whether to deploy the fence subchart.
@@ -385,3 +389,13 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+
+elasticsearch:
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config
