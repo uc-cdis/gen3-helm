@@ -159,16 +159,25 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx-sidecar
+  # -- (string) When to pull the image.
+  pullPolicy: IfNotPresent
+  # -- (string) Image tag.
+  tag: "nginx-sidecar-feat_nginx-sidecar"
+
 # Environment Variables
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  # - name: "config-volume"
-  #   readOnly: true
-  #   mountPath: "/src/requestor-config.yaml"
-  #   subPath: "requestor-config.yaml"
+  - name: "wsgi-config"
+    mountPath: "/requestor/deployment/wsgi/gunicorn.conf.py"
+    subPath: gunicorn.conf.py
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
