@@ -266,4 +266,14 @@ postgresql:
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
-      enabled: true
+      enabled: false
+
+elasticsearch:
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config
