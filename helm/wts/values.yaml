@@ -162,10 +162,6 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/wts/appcreds.json"
     subPath: appcreds.json
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/wts/deployment/wsgi/wsgi.py"
-    subPath: "wsgi.py"
   - name: "wsgi-config"
     mountPath: "/wts/deployment/wsgi/gunicorn.conf.py"
     subPath: gunicorn.conf.py
