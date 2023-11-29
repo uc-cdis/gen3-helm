@@ -449,22 +449,22 @@ function main() {
         return
     fi
 
-    # accept a -y to skip the confirmation prompt
-    if [ "$1" == "-y" ]; then
-        echo "Skipping confirmation prompt"
-    else
-        # prompt user to continue
-        echo "This script will install (if not already installed) kubectl, helm, docker, kind, k9s, ingress-nginx, and gen3. "
-        echo ""
-        echo "It will also update your hosts file to route your commons hostname to your computer (localhost)"
-        echo ""
-        read -p "Continue? (y/n) " -n 1 -r
-        if [[ ! $REPLY =~ ^[Yy]$ ]]
-        then
-            echo "Exiting"
-            return
-        fi
-    fi
+    # # accept a -y to skip the confirmation prompt
+    # if [ "$1" == "-y" ]; then
+    #     echo "Skipping confirmation prompt"
+    # else
+    #     # prompt user to continue
+    #     echo "This script will install (if not already installed) kubectl, helm, docker, kind, k9s, ingress-nginx, and gen3. "
+    #     echo ""
+    #     echo "It will also update your hosts file to route your commons hostname to your computer (localhost)"
+    #     echo ""
+    #     read -p "Continue? (y/n) " -n 1 -r
+    #     if [[ ! $REPLY =~ ^[Yy]$ ]]
+    #     then
+    #         echo "Exiting"
+    #         return
+    #     fi
+    # fi
 
     install_kubectl
     apply_k8_alias
