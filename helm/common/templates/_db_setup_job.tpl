@@ -36,6 +36,7 @@ kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
 spec:
+  ttlSecondsAfterFinished: 10
   template:
     metadata:
       labels:

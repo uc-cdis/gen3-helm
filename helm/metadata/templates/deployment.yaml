@@ -31,6 +31,10 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -48,6 +52,12 @@ spec:
           configMap:
             name: manifest-metadata
             optional: true
+        - name: wsgi-config
+          configMap:
+            name: metadata-wsgi
+        - name: nginx-config
+          configMap:
+            name: metadata-nginx-configmap
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -101,16 +111,16 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: 8000
           ports:
-            - containerPort: 80
+            - containerPort: 8000
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
@@ -119,6 +129,22 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- if .Values.sidecar.enabled }}
+        - name: sidecar-nginx
+          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
+          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          volumeMounts:
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: default.conf
+        {{- end }}  
       initContainers:
         - name: {{ .Values.initContainerName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

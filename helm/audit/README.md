@@ -106,6 +106,10 @@ A Helm chart for Kubernetes
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Whether to create a service account |
 | serviceAccount.name | string | `"audit-service-sa"` | The name of the service account |
+| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[]` | Volumes to mount to the container. |
 | volumes | list | `[]` | Volumes to attach to the container. |

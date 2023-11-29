@@ -26,6 +26,10 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000    
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -147,19 +151,16 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/peregrine/wsgi.py"
-              subPath: "settings.py"
+            {{- toYaml . | nindent 10 }}
+          {{- end }}    
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+            - containerPort: 8000
           livenessProbe:
             httpGet:
               path: /_status?timeout=20
-              port: http
+              port: 8000
             # peregrine can take forever to initialize
             initialDelaySeconds: 60
             periodSeconds: 60
@@ -167,9 +168,25 @@ spec:
           readinessProbe:
             httpGet:
               path: /_status?timeout=2
-              port: http
+              port: 8000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.sidecar.enabled }}
+        - name: sidecar-nginx
+          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
+          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          volumeMounts:
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: default.conf
+        {{- end }}        
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -94,6 +94,16 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+sidecar:
+  enabled: true
+  # -- (string) The Docker image repository for nginx
+  image: quay.io/cdis/nginx-sidecar
+  # -- (string) When to pull the image.
+  pullPolicy: IfNotPresent
+  # -- (string) Image tag.
+  tag: "nginx-sidecar-feat_nginx-sidecar"
+
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
 
@@ -182,9 +192,22 @@ volumes:
 - name: config-volume
   secret:
     secretName: "peregrine-secret"
+- name: wsgi-config
+  configMap:
+    name: peregrine-wsgi
+- name: nginx-config
+  configMap:
+    name: peregrine-nginx-configmap    
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/peregrine/deployment/wsgi/wsgi.py"
+    subPath: "settings.py"
+  - name: "wsgi-config"
+    mountPath: "/peregrine/deployment/wsgi/gunicorn.conf.py"
+    subPath: gunicorn.conf.py
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

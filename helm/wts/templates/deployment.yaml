@@ -38,6 +38,10 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000    
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -55,6 +59,12 @@ spec:
         - name: wts-secret
           secret:
             secretName: "wts-g3auto"
+        - name: wsgi-config
+          configMap:
+            name: wts-wsgi
+        - name: nginx-config
+          configMap:
+            name: wts-nginx-configmap            
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -64,25 +74,24 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-          - name: "wts-secret"
-            readOnly: true
-            mountPath: "/var/www/wts/appcreds.json"
-            subPath: appcreds.json
+            {{- toYaml . | nindent 10 }}
+          {{- end }}          
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: 8000
             failureThreshold: 10
             initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: 8000
           env:
           {{- if .Values.global.ddEnabled }}
           {{- include "common.datadogEnvVar" . | nindent 11 }}
@@ -137,15 +146,30 @@ spec:
             value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.sidecar.enabled }}
+        - name: sidecar-nginx
+          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
+          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          volumeMounts:
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: default.conf
+        {{- end }}              
       initContainers:
       - name: wts-db-migrate
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.volumeMounts }}
         volumeMounts:
-        - name: "wts-secret"
-          readOnly: true
-          mountPath: "/var/www/wts/appcreds.json"
-          subPath: appcreds.json
+          {{- toYaml . | nindent 10 }}
+        {{- end }}    
         env:
         - name: PGHOST
           valueFrom:
