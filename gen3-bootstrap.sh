@@ -73,10 +73,6 @@ function checkout_gen3_helm() {
         echo "cloning gen3-helm repository"
         mkdir -p ~/.gen3
         git clone https://github.com/uc-cdis/gen3-helm.git ~/.gen3/gen3-helm
-
-        # checkout branch called feat/GPE-979 without cd
-        git -C ~/.gen3/gen3-helm checkout feat/GPE-979
-        git -C ~/.gen3/gen3-helm pull
     else 
         git -C ~/.gen3/gen3-helm checkout master
         git -C ~/.gen3/gen3-helm pull
@@ -95,10 +91,21 @@ function install_docker() {
     if ! command -v docker &> /dev/null
     then
         echo "docker could not be found"
-        echo "installing docker"
-        # install docker
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sh get-docker.sh
+        echo ""
+
+        echo "Please install a  docker runtime before re-running this script"
+        echo ""
+        echo "For more information on how to install docker, please visit:"
+        echo "https://docs.docker.com/get-docker/"
+        echo ""
+        echo "Or use orbstack for M1 Macs"
+        echo "https://orbstack.dev"
+        echo ""
+        echo ""
+        echo "Or use Rancher Desktop"
+        echo "https://rancherdesktop.io"
+        echo ""
+        exit 1
     fi
 
     # cleanup 
@@ -110,24 +117,25 @@ function install_kind() {
     # check if kind is installed 
     if ! command -v kind &> /dev/null
     then
-        echo "kind could not be found"
         echo "installing kind"
         # check if mac 
         if [[ "$OSTYPE" == "darwin"* ]]; then
             # For Intel Macs
-            [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-darwin-amd64
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-darwin-amd64
             # For M1 / ARM Macs
-            [ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-darwin-arm64
+            [ $(uname -m) = arm64 ] && curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-darwin-arm64
             chmod +x ./kind
-            sudo mv ./kind /usr/local/bin/kind
+            mv ./kind /usr/local/bin/kind
+            kind version
         else
-            # install kind
+            # for linux
             # For AMD64 / x86_64
-            [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
             # For ARM64
-            [ $(uname -m) = aarch64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-arm64
+            [ $(uname -m) = aarch64 ] && curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-arm64
             chmod +x ./kind
             sudo mv ./kind /usr/local/bin/kind
+            kind version
         fi
     fi
 }
@@ -319,36 +327,32 @@ function install_k9s() {
     # check if k9s is installed 
     if ! command -v k9s &> /dev/null
     then
-        # install k9s
-        # check if brew is installed and use it to install k9s
-        if command -v brew &> /dev/null
-        then
-            echo "k9s could not be found"
             echo "installing k9s"
-            brew install k9s
+        # check if mac 
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # For Intel Macs
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Darwin_amd64.tar.gz
+            # For M1 / ARM Macs
+            [ $(uname -m) = arm64 ] && curl -sSLo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Darwin_arm64.tar.gz 
+            tar -xvf k9s.tar.gz k9s
+            chmod 700 ./k9s > /dev/null 2>&1
+            mv ./k9s /usr/local/bin/k9s
+            rm -rf k9s.tar.gz
+            k9s version
+        else
+            # install k9s
+            # For AMD64 / x86_64
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_amd64.tar.gz
+            # # For ARM64
+            [ $(uname -m) = aarch64 ] && curl -Lo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_arm64.tar.gz
+            tar -xvf k9s.tar.gz k9s
+            chmod 700 ./k9s > /dev/null 2>&1
+            mv ./k9s /usr/local/bin/k9s
+            rm -rf k9s.tar.gz
+            k9s version
         fi
-        else 
-            echo "k9s could not be found"
-            echo "installing k9s"
-            # check if mac 
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                # For Intel Macs
-                [ $(uname -m) = x86_64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Darwin_amd64.tar.gz
-                # For M1 / ARM Macs
-                [ $(uname -m) = arm64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Darwin_arm64.tar.gz 
-                tar -xvf k9s
-                chmod +x ./k9s
-                sudo mv ./k9s /usr/local/bin/k9s
-            else
-                # install k9s
-                # For AMD64 / x86_64
-                [ $(uname -m) = x86_64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_amd64.tar.gz
-                # For ARM64
-                [ $(uname -m) = aarch64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_arm64.tar.gz
-                tar -xvf k9s
-                chmod +x ./k9s
-                sudo mv ./k9s /usr/local/bin/k9s
-            fi
+    else 
+        k9s version
     fi
 }
 
@@ -415,12 +419,11 @@ EOF
 }
 
 function update_hosts_file() {
-    # get hostname from ~/.gen3/values.yaml
-    hostname=$(cat ~/.gen3/values.yaml | grep hostname | awk '{print $2}')
-    echo $hostname
-
+    # get hostname from ~/.gen3/values.yaml file by grepping and taking first line only and awk to get second column
+    hostname=$(cat ~/.gen3/values.yaml | grep 'hostname' | head -n 1 | awk '{print $2}')
     # check if hosts file already has the hostname added
     if grep -q "$hostname" /etc/hosts; then
+        echo "hostname $hostname already exists in /etc/hosts"
         return
     fi
 
@@ -435,13 +438,21 @@ function main() {
         echo "Usage: ./dev-bootstrap.sh [-n] [-h]"
         echo "Options:"
         echo "  -h: help"
-        echo "  -n: nuke everything"
-        echo "  --hosts: Just update /etc/hosts file for your commons hostname"
+        echo "  --hosts: update your hosts file"
+        echo "  --k9s: install k9s"
+        echo "  --kubectl: install kubectl"
+        echo "  --helm: install helm"
+        echo "  --docker: install docker"
+        echo "  --kind: install kind"
+        echo "  --ingress: install ingress-nginx"
+        echo "  --gen3: install gen3"
+        echo "  --alias: apply k8 alias"
+        echo "  --nuke | -n: nuke your local environment"
         return
     fi
     
     # nuke if -n flag is passed
-    if [ "$1" == "-n" ]; then
+    if [ "$1" == "-n" ] || [ "$1" == "--nuke" ]; then
         nuke
         return
     fi
@@ -452,22 +463,55 @@ function main() {
         return
     fi
 
-    # # accept a -y to skip the confirmation prompt
-    # if [ "$1" == "-y" ]; then
-    #     echo "Skipping confirmation prompt"
-    # else
-    #     # prompt user to continue
-    #     echo "This script will install (if not already installed) kubectl, helm, docker, kind, k9s, ingress-nginx, and gen3. "
-    #     echo ""
-    #     echo "It will also update your hosts file to route your commons hostname to your computer (localhost)"
-    #     echo ""
-    #     read -p "Continue? (y/n) " -n 1 -r
-    #     if [[ ! $REPLY =~ ^[Yy]$ ]]
-    #     then
-    #         echo "Exiting"
-    #         return
-    #     fi
-    # fi
+    # run only k9s
+    if [ "$1" == "--k9s" ]; then
+        install_k9s
+        return
+    fi
+
+    # run only kubectl
+    if [ "$1" == "--kubectl" ]; then
+        install_kubectl
+        return
+    fi
+
+    # run only helm
+    if [ "$1" == "--helm" ]; then
+        install_helm
+        return
+    fi
+
+    # run only docker
+    if [ "$1" == "--docker" ]; then
+        install_docker
+        return
+    fi
+
+    # run only kind
+    if [ "$1" == "--kind" ]; then
+        install_kind
+        return
+    fi
+
+    # run only ingress
+    if [ "$1" == "--ingress" ]; then
+        install_ingress
+        return
+    fi
+
+    # run only gen3
+    if [ "$1" == "--gen3" ]; then
+        install_gen3
+        return
+    fi
+
+    # run only alias
+    if [ "$1" == "--alias" ]; then
+        apply_k8_alias
+        return
+    fi
+
+
 
     install_kubectl
     apply_k8_alias
@@ -480,8 +524,8 @@ function main() {
     install_ingress
     install_gen3
     update_hosts_file
+    k9s
 }
 
 # run main function
 main $@
-
