@@ -338,7 +338,7 @@ function install_k9s() {
                 [ $(uname -m) = arm64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Darwin_arm64.tar.gz 
                 tar -xvf k9s
                 chmod +x ./k9s
-                mv ./k9s /usr/local/bin/k9s
+                sudo mv ./k9s /usr/local/bin/k9s
             else
                 # install k9s
                 # For AMD64 / x86_64
@@ -347,7 +347,7 @@ function install_k9s() {
                 [ $(uname -m) = aarch64 ] && curl -Lo ./k9s https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_arm64.tar.gz
                 tar -xvf k9s
                 chmod +x ./k9s
-                mv ./k9s /usr/local/bin/k9s
+                sudo mv ./k9s /usr/local/bin/k9s
             fi
     fi
 }
