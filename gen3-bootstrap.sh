@@ -47,6 +47,11 @@ function install_kubectl() {
     fi
 }
 
+# Function to compare versions
+function version_lt() {
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
 
 # install helm cli
 function install_helm() {
@@ -59,10 +64,29 @@ function install_helm() {
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh --version v3.12.3
+        # cleanup 
+        rm -rf get_helm.sh
     fi
 
-    # cleanup 
-    rm -rf get_helm.sh
+    # Get the current Helm version
+    current_helm_version=$(helm version --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+    
+    major=$(echo $current_helm_version | cut -d'.' -f1)
+    minor=$(echo $current_helm_version | cut -d'.' -f2)
+    
+    # if minor is greater than 12 then install 3.12 for user 
+    if [ $minor -gt 12 ]; then
+        echo "helm version is greater than 3.12, which includes a breaking change for gen3"
+        echo "installing helm 3.12"
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh --version v3.12 --no-sudo
+        # cleanup 
+        rm -rf get_helm.sh
+    fi
+
+    helm version
+
 }
 
 # checkout gen3-helm repository
@@ -393,28 +417,13 @@ function nuke() {
 function install_gen3() {
     # check if values file exists in ~/.gen3/values.yaml
     if [ ! -f ~/.gen3/values.yaml ]; then
-        echo "values.yaml file not found"
-        echo "creating dummy values.yaml file"
-        echo "You should still edit this file in ~/.gen3/values.yaml to make your own changes!"
-        # create values.yaml file
-        cat <<EOF > ~/.gen3/values.yaml
-# values.yaml
-global:
-  hostname: changeme.dev.planx-pla.net
-  dev: true
-
-fence:
-  image:
-    tag: master
-  FENCE_CONFIG:
-    MOCK_AUTH: "true"
-EOF
+        echo "values.yaml file not found under ~/.gen3/values.yaml"
+        echo "please create a values.yaml file under ~/.gen3/values.yaml"
+        exit 1
     fi
 
-    # helm dependency update 
-    echo "helm dependency update"
     helm dependency update ~/.gen3/gen3-helm/helm/gen3 > /dev/null 2>&1
-    kubectl delete jobs --all
+    kubectl delete jobs --all > /dev/null 2>&1
     helm upgrade --install gen3 ~/.gen3/gen3-helm/helm/gen3 -f ~/.gen3/values.yaml
 }
 
@@ -423,7 +432,6 @@ function update_hosts_file() {
     hostname=$(cat ~/.gen3/values.yaml | grep 'hostname' | head -n 1 | awk '{print $2}')
     # check if hosts file already has the hostname added
     if grep -q "$hostname" /etc/hosts; then
-        echo "hostname $hostname already exists in /etc/hosts"
         return
     fi
 
@@ -511,7 +519,14 @@ function main() {
         return
     fi
 
-
+    # check if values file exists in ~/.gen3/values.yaml
+    if [ ! -f ~/.gen3/values.yaml ]; then
+        echo "values.yaml file not found under ~/.gen3/values.yaml"
+        echo "Please create a values.yaml file under ~/.gen3/values.yaml and re-run this script"
+        echo ""
+        echo "(to CTDS: There is a dev values.yaml in keeper that you can use as a template)"
+        exit 1
+    fi
 
     install_kubectl
     apply_k8_alias
