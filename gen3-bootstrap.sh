@@ -119,7 +119,7 @@ function install_kind() {
             # For M1 / ARM Macs
             [ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-darwin-arm64
             chmod +x ./kind
-            sudo mv ./kind /usr/local/kind
+            sudo mv ./kind /usr/local/bin/kind
         else
             # install kind
             # For AMD64 / x86_64
