@@ -415,7 +415,8 @@ EOF
 }
 
 function update_hosts_file() {
-    hostname=$(cat ~/.gen3/values.yaml | yq -r .global.hostname)
+    # get hostname from ~/.gen3/values.yaml
+    hostname=$(cat ~/.gen3/values.yaml | grep hostname | awk '{print $2}')
     echo $hostname
 
     # check if hosts file already has the hostname added
