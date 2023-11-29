@@ -27,29 +27,24 @@ function install_kubectl() {
         if [ $(uname) = Darwin ]
         then
             # For AMD64 / x86_64
-            [ $(uname -m) = x86_64 ] && curl -Lo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/darwin/amd64/kubectl
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/darwin/amd64/kubectl
             # For ARM64
-            [ $(uname -m) = aarch64 ] && curl -Lo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/darwin/arm64/kubectl
+            [ $(uname -m) = aarch64 ] && curl -sSLo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/darwin/arm64/kubectl
             chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
+            mv ./kubectl /usr/local/bin/kubectl
         fi
 
         # Check if uname == Linux
         if [ $(uname) = Linux ]
         then
             # For AMD64 / x86_64
-            [ $(uname -m) = x86_64 ] && curl -Lo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+            [ $(uname -m) = x86_64 ] && curl -sSLo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
             # For ARM64
-            [ $(uname -m) = aarch64 ] && curl -Lo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/arm64/kubectl
+            [ $(uname -m) = aarch64 ] && curl -sSLo ./kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/arm64/kubectl
             chmod +x ./kubectl
             sudo mv ./kubectl /usr/local/bin/kubectl
         fi
     fi
-}
-
-# Function to compare versions
-function version_lt() {
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
 
 
@@ -76,8 +71,8 @@ function install_helm() {
     
     # if minor is greater than 12 then install 3.12 for user 
     if [ $minor -gt 12 ]; then
-        echo "helm version is greater than 3.12, which includes a breaking change for gen3"
-        echo "installing helm 3.12"
+        echo "helm version installed is greater than 3.12, which includes a breaking change for gen3"
+        echo "installing helm 3.12 instead"
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh --version v3.12 --no-sudo
@@ -368,10 +363,10 @@ function install_k9s() {
             # For AMD64 / x86_64
             [ $(uname -m) = x86_64 ] && curl -sSLo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_amd64.tar.gz
             # # For ARM64
-            [ $(uname -m) = aarch64 ] && curl -Lo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_arm64.tar.gz
+            [ $(uname -m) = aarch64 ] && curl -sSLo ./k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.28.2/k9s_Linux_arm64.tar.gz
             tar -xvf k9s.tar.gz k9s
             chmod 700 ./k9s > /dev/null 2>&1
-            mv ./k9s /usr/local/bin/k9s
+            sudo mv ./k9s /usr/local/bin/k9s
             rm -rf k9s.tar.gz
             k9s version
         fi
@@ -544,3 +539,4 @@ function main() {
 
 # run main function
 main $@
+
