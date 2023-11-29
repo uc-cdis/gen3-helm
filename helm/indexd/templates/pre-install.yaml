@@ -9,6 +9,7 @@ metadata:
   name: indexd-userdb
 spec:
   backoffLimit: 0
+  ttlSecondsAfterFinished: 100
   template:
     metadata:
       labels:

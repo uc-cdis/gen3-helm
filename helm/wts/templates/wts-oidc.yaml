@@ -8,6 +8,7 @@ spec:
       labels:
         app: gen3job
     spec:
+      ttlSecondsAfterFinished: 100
       restartPolicy: OnFailure
       serviceAccountName: wts-secrets
       volumes:
