@@ -13,7 +13,7 @@
 # -------------------------------------
 
 # exit if any command fails
-set -e
+# set -e
 
 # install kubectl
 function install_kubectl() {
