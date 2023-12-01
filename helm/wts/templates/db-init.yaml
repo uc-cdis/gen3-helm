@@ -1,9 +1,6 @@
 {{ include "common.db_setup_job" . }}
 ---
-{{- if .Values.cloudsecrets.enabled | default false }}
-{{- else }}
 {{ include "common.db-secret" . }}
-{{- end }}
 ---
 {{ include "common.db_setup_sa" . }}
 ---
