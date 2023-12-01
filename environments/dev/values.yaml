@@ -1,8 +1,8 @@
 
 global:
-  dev: true
-  hostname: dev.gen3.internal
-  namespace: dev
+  dev: false
+  hostname: beta.biocommons.org.au
+  namespace: argocd
   aws:
     enabled: true
 
@@ -64,11 +64,11 @@ portal:
       cpu: 0.2
       memory: 500Mi
 
-postgresql:
-  primary:
-    persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: true
+# postgresql:
+#   primary:
+#     persistence:
+#       # -- (bool) Option to persist the dbs data.
+#       enabled: true
       
 revproxy: 
   service:
