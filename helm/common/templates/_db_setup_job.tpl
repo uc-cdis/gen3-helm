@@ -169,15 +169,6 @@ kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
-{{- if $.Values.global.postgres.cloudsecrets.enabled }}
-  {{ $secret := ( lookup "v1" "Secret" "argocd"  "postgresql-secret"  ) }}
-  {{ $name := (printf "%s_%s" $.Chart.Name $.Release.Name) }}
-  database: {{  ( index $secret.data.database | default $name ) | b64enc | quote }}
-  username: {{  ( index $secret.data.username | default (printf "%s_%s" $.Chart.Name $.Release.Name) ) | b64enc | quote }}
-  port: {{  index $secret.data "port" | b64enc | quote }}
-  password: {{  index $secret.data "password" | b64enc | quote }}
-  host: {{  index $secret.data "host" | b64enc | quote }}
-{{- else }}
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
@@ -187,5 +178,4 @@ data:
   {{- else }}
   host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
   {{- end }}
-{{- end }}
 {{- end}}
