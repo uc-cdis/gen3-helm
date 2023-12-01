@@ -43,6 +43,9 @@ sheepdog:
   #   password: testingConfiguration!
   #   port: "5432"
 
+indexd:
+  cloudsecrets:
+    enabled: true 
 
 gen3:
   enabled: false
