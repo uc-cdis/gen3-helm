@@ -171,7 +171,8 @@ metadata:
 data:
 {{- if $.Values.global.postgres.cloudsecrets.enabled }}
   {{ $secret := ( lookup "v1" "Secret" .Release.Namespace  "postgresql-secret"  ) }}
-  database: {{  ( index $secret.data.database | default (printf "%s_%s" $.Chart.Name $.Release.Name) ) | b64enc | quote }}
+  {{ $name := (printf "%s_%s" $.Chart.Name $.Release.Name) }}
+  database: {{  ( index $secret.data.database | default $name ) | b64enc | quote }}
   username: {{  ( index $secret.data.username | default (printf "%s_%s" $.Chart.Name $.Release.Name) ) | b64enc | quote }}
   port: {{  index $secret.data "port" | b64enc | quote }}
   password: {{  index $secret.data "password" | b64enc | quote }}
