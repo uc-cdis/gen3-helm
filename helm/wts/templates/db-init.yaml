@@ -1,7 +1,6 @@
 {{ include "common.db_setup_job" . }}
 ---
-# TO DO: check if cloudsecret is enabled
-#{{ include "common.db-secret" . }}
----
+# TO DO: check if cloudsecret is enabled 
+
 {{ include "common.db_setup_sa" . }}
 ---
