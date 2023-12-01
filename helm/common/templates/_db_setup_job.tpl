@@ -63,16 +63,16 @@ spec:
            # value:  {{ .Values.global.postgres.master.password | quote}}
             valueFrom:
               secretKeyRef:
-                name: postgresql-secret
-                key: postgres-password
+                name: {{ .Chart.Name }}-dbcreds
+                key: password
                 optional: false            
             {{- end }}
           - name: PGUSER
             #value: {{ .Values.global.postgres.master.username | quote }}
             valueFrom:
               secretKeyRef:
-                name: postgresql-secret
-                key: postgres-username
+                name: {{ .Chart.Name }}-dbcreds
+                key: username
                 optional: false            
           - name: PGPORT
             {{- if $.Values.global.dev }}
@@ -80,8 +80,8 @@ spec:
             {{- else }}
             valueFrom:
               secretKeyRef:
-                name: postgresql-secret
-                key: postgres-port
+                name: {{ .Chart.Name }}-dbcreds
+                key: port
                 optional: false            
             {{- end }}
           - name: PGHOST
@@ -91,8 +91,8 @@ spec:
             #value: {{ .Values.global.postgres.master.host | quote }}
             valueFrom:
               secretKeyRef:
-                name: postgresql-secret
-                key: postgres-host
+                name: {{ .Chart.Name }}-dbcreds
+                key: host
                 optional: false            
             {{- end }}
           - name: SERVICE_PGUSER
