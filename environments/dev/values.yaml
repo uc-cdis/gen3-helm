@@ -3,38 +3,47 @@ global:
   dev: true
   hostname: dev.gen3.internal
   namespace: dev
+  aws:
+    enabled: true
 
   postgres:
+    cloudsecrets:
+      enabled: true 
     dbCreate: true
-    master:
-      username: postgres
-      password: testingConfiguration!
-      port: "5432"
+    # master:
+    #   username: postgres
+    #   password: testingConfiguration!
+    #   port: "5432"
 
 fence:
-  postgres:
-    username: fence
-    password: testingConfiguration!
-    port: "5432"
+  cloudsecrets:
+    enabled: true  
+  # postgres:
+  #   username: fence
+  #   password: testingConfiguration!
+  #   port: "5432"
 
 peregrine:
-  postgres:
-    username: peregrine
-    password: testingConfiguration!
-    port: "5432"
+  cloudsecrets:
+    enabled: true 
+  # postgres:
+  #   username: peregrine
+  #   password: testingConfiguration!
+  #   port: "5432"
   image: 
     repository: quay.io/cdis/peregrine
     tag: 2023.01
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
 
 sheepdog:
-  postgres:  
-    username: sheepdog
-    password: testingConfiguration!
-    port: "5432"
+  cloudsecrets:
+    enabled: true 
+  # postgres:  
+  #   username: sheepdog
+  #   password: testingConfiguration!
+  #   port: "5432"
 
-  aws:
-    enabled: true
+
 gen3:
   enabled: false
 
