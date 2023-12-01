@@ -5,7 +5,7 @@ metadata:
 type: Opaque
 stringData:
   creds.json: |-
-  {{- if $.Values.cloudsecrets.enabled }}
+  {{- if $.Values.cloudsecrets.enabled | default false }}
     {{ $secret := ( lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" $.Chart.Name "dbcreds")  ) }}
       {
         "db_host": {{  index $secret.data "host" | quote}},
