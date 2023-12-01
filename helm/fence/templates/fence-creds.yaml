@@ -30,5 +30,5 @@ stringData:
         "google_client_id": "YOUR.GOOGLE.CLIENT",
         "hmac_key": ""
       }
-  {{-end }}
+  {{- end }}
 
