@@ -1,5 +1,4 @@
-## {{ include "common.db-secret" . }}
----
+
 {{ include "common.db_setup_sa" . }}
 ---
 {{- if .Values.dbRestore }}

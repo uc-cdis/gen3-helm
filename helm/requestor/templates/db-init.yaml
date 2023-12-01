@@ -1,7 +1,4 @@
 {{ include "common.db_setup_job" . }}
----
-
-## {{ include "common.db-secret" . }}
 
 ---
 {{ include "common.db_setup_sa" . }}
