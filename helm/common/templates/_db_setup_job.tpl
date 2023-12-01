@@ -170,7 +170,7 @@ metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
 {{- if $.Values.global.postgres.cloudsecrets.enabled }}
-  {{ $secret := ( lookup "v1" "Secret" .Release.Namespace  "postgresql-secret"  ) }}
+  {{ $secret := ( lookup "v1" "Secret" "argocd"  "postgresql-secret"  ) }}
   {{ $name := (printf "%s_%s" $.Chart.Name $.Release.Name) }}
   database: {{  ( index $secret.data.database | default $name ) | b64enc | quote }}
   username: {{  ( index $secret.data.username | default (printf "%s_%s" $.Chart.Name $.Release.Name) ) | b64enc | quote }}
