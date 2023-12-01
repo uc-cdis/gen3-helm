@@ -5,20 +5,6 @@ metadata:
 type: Opaque
 stringData:
   creds.json: |-
-  {{- if $.Values.cloudsecrets.enabled | default false }}
-    {{ $secret := ( lookup "v1" "Secret" .Release.Namespace (printf "%s-%s" $.Chart.Name "dbcreds")  ) }}
-      {
-        "db_host": {{  index $secret.data "host" | quote}},
-        "db_username": {{  index $secret.data "username" | quote}},
-        "db_password": {{  index $secret.data "password" | quote}},
-        "db_database": {{  index $secret.data "database" | quote}},
-        "hostname": "{{ .Values.global.hostname }}",
-        "indexd_password": "",
-        "google_client_secret": "YOUR.GOOGLE.SECRET",
-        "google_client_id": "YOUR.GOOGLE.CLIENT",
-        "hmac_key": ""
-      }
-  {{- else }}
       {
         "db_host": "{{ include "gen3.service-postgres" (dict "key" "host" "service" $.Chart.Name "context" $) }}",
         "db_username": "{{include "gen3.service-postgres" (dict "key" "username" "service" $.Chart.Name "context" $) }}",
@@ -30,5 +16,4 @@ stringData:
         "google_client_id": "YOUR.GOOGLE.CLIENT",
         "hmac_key": ""
       }
-  {{- end }}
 
