@@ -57,7 +57,6 @@ spec:
                 name: {{ .Chart.Name }}-dbcreds
                 key: password
                 optional: false            
-            {{- end }}
           - name: PGUSER
             valueFrom:
               secretKeyRef:
@@ -70,14 +69,12 @@ spec:
                 name: {{ .Chart.Name }}-dbcreds
                 key: port
                 optional: false            
-            {{- end }}
           - name: PGHOST
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: host
                 optional: false            
-            {{- end }}
           - name: SERVICE_PGUSER
             valueFrom:
               secretKeyRef:
