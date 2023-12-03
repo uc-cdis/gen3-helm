@@ -14,13 +14,13 @@ global:
     #   password: testingConfiguration!
     #   port: "5432"
 
-fence:
+# fence:
   # postgres:
   #   username: fence
   #   password: testingConfiguration!
   #   port: "5432"
 
-peregrine:
+# peregrine:
   # postgres:
   #   username: peregrine
   #   password: testingConfiguration!
@@ -30,7 +30,7 @@ peregrine:
     tag: 2023.01
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
 
-sheepdog:
+# sheepdog:
   # postgres:  
   #   username: sheepdog
   #   password: testingConfiguration!
