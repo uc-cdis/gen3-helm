@@ -1,8 +1,12 @@
-{{ include "common.db_setup_job" . }}
+{{- if .Values.global.cloudsecrets.enabled | default false }}
+  {{ include "common.cloud_db_setup_job" . }}
 ---
-{{- if not .Values.cloudsecrets.enabled }}
-{{ include "common.db-secret" . }}
+  {{ include "common.cloud_db_setup_sa" . }}
+---
+{{- else }}
+  {{ include "common.db_setup_job" . }}
+---
+  {{ include "common.db-secret" . }}
+---
+  {{ include "common.db_setup_sa" . }}
 {{- end }}
----
-{{ include "common.db_setup_sa" . }}
----

@@ -1,6 +1,6 @@
 # DB Setup ServiceAccount
 # Needs to update/ create secrets to signal that db is ready for use.
-{{- define "common.db_setup_sa" -}}
+{{- define "common.cloud_db_setup_sa" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -30,7 +30,7 @@ roleRef:
 {{- end }}
 
 # DB Setup Job
-{{- define "common.db_setup_job" -}}
+{{- define "common.cloud_db_setup_job" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -52,30 +52,37 @@ spec:
         command: ["/bin/bash", "-c"]
         env:
           - name: PGPASSWORD
-            {{- if $.Values.global.dev }}
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-postgresql
-                key: postgres-password
-                optional: false
-            {{- else }}
-            value:  {{ .Values.global.postgres.master.password | quote}}
+                name: {{ .Chart.Name }}-dbcreds
+                key: password
+                optional: false            
             {{- end }}
           - name: PGUSER
-            value: {{ .Values.global.postgres.master.username | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: username
+                optional: false            
           - name: PGPORT
-            value: {{ .Values.global.postgres.master.port | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: port
+                optional: false            
+            {{- end }}
           - name: PGHOST
-            {{- if $.Values.global.dev }}
-            value: "{{ .Release.Name }}-postgresql"
-            {{- else }}
-            value: {{ .Values.global.postgres.master.host | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: host
+                optional: false            
             {{- end }}
           - name: SERVICE_PGUSER
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: username
+                key: svc_username
                 optional: false
           - name: SERVICE_PGDB
             valueFrom:
@@ -87,7 +94,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: password
+                key: svc_password
                 optional: false
           - name: GEN3_HOME
             value: /home/ubuntu/cloud-automation
@@ -132,26 +139,4 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-{{- end }}
-
-
-{{/* 
-Create k8s secrets for connecting to postgres 
-*/}}
-# DB Secrets
-{{- define "common.db-secret" -}}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ $.Chart.Name }}-dbcreds
-data:
-  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
-  {{- else }}
-  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
-  {{- end }}
 {{- end }}

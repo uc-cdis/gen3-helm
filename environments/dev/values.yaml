@@ -5,10 +5,9 @@ global:
   namespace: argocd
   aws:
     enabled: true
-
+  cloudsecrets:
+    enabled: true
   postgres:
-    cloudsecrets:
-      enabled: true 
     dbCreate: true
     # master:
     #   username: postgres
@@ -16,16 +15,12 @@ global:
     #   port: "5432"
 
 fence:
-  cloudsecrets:
-    enabled: true  
   # postgres:
   #   username: fence
   #   password: testingConfiguration!
   #   port: "5432"
 
 peregrine:
-  cloudsecrets:
-    enabled: true 
   # postgres:
   #   username: peregrine
   #   password: testingConfiguration!
@@ -36,16 +31,11 @@ peregrine:
   dictionaryUrl: https://biocommons-gen3-schema.s3.ap-southeast-2.amazonaws.com/cad/dev/cad.json
 
 sheepdog:
-  cloudsecrets:
-    enabled: true 
   # postgres:  
   #   username: sheepdog
   #   password: testingConfiguration!
   #   port: "5432"
 
-indexd:
-  cloudsecrets:
-    enabled: true 
 
 gen3:
   enabled: false
@@ -78,9 +68,9 @@ revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-4
 
 
 ## disabled services
-wts:
-  enabled: true
+# wts:
+#   enabled: true
 
-sower:
-  enabled: false
+# sower:
+#   enabled: false
 

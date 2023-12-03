@@ -1,3 +1,4 @@
+{{- if not .Values.global.cloudsecrets.enabled | default true }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -16,4 +17,4 @@ stringData:
         "google_client_id": "YOUR.GOOGLE.CLIENT",
         "hmac_key": ""
       }
-
+{{- end }}
