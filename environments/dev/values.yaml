@@ -71,6 +71,7 @@ revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-4
 # wts:
 #   enabled: true
 
-# sower:
-#   enabled: false
+sower:
+  pelican:
+    bucket: sandbox-s3-buckets-pelicancredss3bucketsandboxs3bu-veftfoxeyecg
 
