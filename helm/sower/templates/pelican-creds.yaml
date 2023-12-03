@@ -6,9 +6,6 @@ type: Opaque
 {{- if .Values.global.aws.enabled }}
 stringData:
   config.json: |-
-{
   "manifest_bucket_name": "{{ .Values.pelican.bucket }}",
   "hostname": "{{ .Values.global.hostname }}",
-
-}
 {{- end }}
