@@ -45,7 +45,7 @@ pelican:
 
 
 portal:
-  enabled: true
+  enabled: false
   # image: 
   #   repository: 690491147947.dkr.ecr.ap-southeast-2.amazonaws.com/gen3/portal
   #   tag: latest
@@ -74,4 +74,8 @@ revproxyArn: arn:aws:acm:ap-southeast-2:690491147947:certificate/f7b5d099-96b9-4
 sower:
   pelican:
     bucket: sandbox-s3-buckets-pelicancredss3bucketsandboxs3bu-veftfoxeyecg
+
+guppy:
+  enabled: false
+
 
