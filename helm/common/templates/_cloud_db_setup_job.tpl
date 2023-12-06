@@ -79,7 +79,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: svc_username
+                key: serviceusername
                 optional: false
           - name: SERVICE_PGDB
             valueFrom:
@@ -91,7 +91,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: svc_password
+                key: servicepassword
                 optional: false
           - name: GEN3_HOME
             value: /home/ubuntu/cloud-automation
