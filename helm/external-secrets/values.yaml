@@ -30,22 +30,40 @@ postgresql:
     secretStoreRefName: gen3
     secretStoreRefKind: ClusterSecretStore
     targetName: postgresql-secret
-    data:
+    commonClusterCreds: &commonCreds
+    # Credentails for service databases hosted in the same cluster
+      - secretKey: username
+        remoteRef: 
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          property: host
+    data: 
       - secretKey: postgres-username
         remoteRef: 
-          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
           property: username
       - secretKey: postgres-password
         remoteRef: 
-          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
           property: password
       - secretKey: postgres-port
         remoteRef: 
-          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
           property: port
       - secretKey: postgres-host
         remoteRef: 
-          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
           property: host
   fencecreds:
     name: gen3-postgres-fence
@@ -56,35 +74,35 @@ postgresql:
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: AuroraServerlessClusterdevf-UlravMUjgrhO
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: AuroraServerlessClusterdevf-UlravMUjgrhO
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: AuroraServerlessClusterdevf-UlravMUjgrhO
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: AuroraServerlessClusterdevf-UlravMUjgrhO
           property: host
       - secretKey: database
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: dev-cad-fence
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: dev-cad-fence
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: dev-cad-fence
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          key: dev-cad-fence
           property: dbcreated
   indexdcreds:
     name: gen3-postgres-indexd
@@ -95,35 +113,35 @@ postgresql:
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
           property: host
       - secretKey: database
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: dev-cad-indexd
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: dev-cad-indexd
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: dev-cad-indexd
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: AuroraServerlessClustersand-M2akH2oVAcge
+          key: dev-cad-indexd
           property: dbcreated
   peregrinecreds:
     name: gen3-postgres-peregrine
@@ -134,35 +152,35 @@ postgresql:
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: AuroraServerlessClusterdevp-39s4edfR4V3g
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: AuroraServerlessClusterdevp-39s4edfR4V3g
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: AuroraServerlessClusterdevp-39s4edfR4V3g
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: AuroraServerlessClusterdevp-39s4edfR4V3g
           property: host
       - secretKey: database
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: dev-cad-peregrine
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: dev-cad-peregrine
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: dev-cad-peregrine
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          key: dev-cad-peregrine
           property: dbcreated
   sheepdogcreds:
     name: gen3-postgres-sheepdog
@@ -173,35 +191,35 @@ postgresql:
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: AuroraServerlessClusterdevs-14IQBQ549zKC
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: AuroraServerlessClusterdevs-14IQBQ549zKC
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: AuroraServerlessClusterdevs-14IQBQ549zKC
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: AuroraServerlessClusterdevs-14IQBQ549zKC
           property: host
       - secretKey: database
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: dev-cad-sheepdog
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: dev-cad-sheepdog
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: dev-cad-sheepdog
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: AuroraServerlessClustersand-EqTNMerrts4W
+          key: dev-cad-sheepdog
           property: dbcreated
   wtscreds:
     name: gen3-postgres-wts
@@ -209,38 +227,23 @@ postgresql:
     secretStoreRefName: gen3
     secretStoreRefKind: ClusterSecretStore
     targetName: wts-dbcreds
-    data:
-      - secretKey: username
-        remoteRef: 
-          key: gen3-wts-service
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: gen3-wts-service
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: gen3-wts-service
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: gen3-wts-service
-          property: host
+    data: 
+      - *commonCreds
       - secretKey: database
         remoteRef: 
-          key: gen3-wts-service
+          key: dev-cad-wts
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: gen3-wts-service
+          key: dev-cad-wts
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: gen3-wts-service
+          key: dev-cad-wts
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: gen3-wts-service
+          key: dev-cad-wts
           property: dbcreated
   arboristcreds:
     name: gen3-postgres-arborist
@@ -249,37 +252,22 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: arborist-dbcreds
     data:
-      - secretKey: username
-        remoteRef: 
-          key: gen3-arborist
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: gen3-arborist
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: gen3-arborist
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: gen3-arborist
-          property: host
+      - *commonCreds
       - secretKey: database
         remoteRef: 
-          key: gen3-arborist
+          key: dev-cad-arborist
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: gen3-arborist
+          key: dev-cad-arborist
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: gen3-arborist
+          key: dev-cad-arborist
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: gen3-arborist
+          key: dev-cad-arborist
           property: dbcreated
   auditcreds:
     name: gen3-postgres-audit
@@ -288,37 +276,22 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: audit-dbcreds
     data:
-      - secretKey: username
-        remoteRef: 
-          key: gen3-audit
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: gen3-audit
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: gen3-audit
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: gen3-audit
-          property: host
+      - *commonCreds
       - secretKey: database
         remoteRef: 
-          key: gen3-audit
+          key: dev-cad-audit
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: gen3-audit
+          key: dev-cad-audit
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: gen3-audit
+          key: dev-cad-audit
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: gen3-audit
+          key: dev-cad-audit
           property: dbcreated
   metadatacreds:
     name: gen3-postgres-metadata
@@ -327,37 +300,22 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: metadata-dbcreds
     data:
-      - secretKey: username
-        remoteRef: 
-          key: gen3-metadata
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: gen3-metadata
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: gen3-metadata
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: gen3-metadata
-          property: host
+      - *commonCreds
       - secretKey: database
         remoteRef: 
-          key: gen3-metadata
+          key: dev-cad-metadata
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: gen3-metadata
+          key: dev-cad-metadata
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: gen3-metadata
+          key: dev-cad-metadata
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: gen3-metadata
+          key: dev-cad-metadata
           property: dbcreated
   requestorcreds:
     name: gen3-postgres-requestor
@@ -366,35 +324,20 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: requestor-dbcreds
     data:
-      - secretKey: username
-        remoteRef: 
-          key: gen3-requestor
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: gen3-requestor
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: gen3-requestor
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: gen3-requestor
-          property: host
+      - *commonCreds
       - secretKey: database
         remoteRef: 
-          key: gen3-requestor
+          key: dev-cad-requestor
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: gen3-requestor
+          key: dev-cad-requestor
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: gen3-requestor
+          key: dev-cad-requestor
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: gen3-requestor
+          key: dev-cad-requestor
           property: dbcreated
