@@ -79,3 +79,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+kibana:
+  elasticsearchHosts: "http://elasticsearch:9200"
