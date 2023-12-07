@@ -1,0 +1,400 @@
+global:
+  aws:
+    enabled: true
+clusterSecretStore:
+  name: "gen3"
+  provider:
+    aws:
+      service: "SecretsManager"
+      region: "ap-southeast-2"
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: "external-secrets-sa"
+            namespace: "external-secrets"
+fence:
+  fencecreds:
+    name: gen3-fence-creds
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: fence-creds
+    data:
+      - secretKey: creds.json
+        remoteRef: 
+          key: gen3-fence-creds
+postgresql:
+  mastercreds:
+    name: gen3-postgres-master
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: postgresql-secret
+    data:
+      - secretKey: postgres-username
+        remoteRef: 
+          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          property: username
+      - secretKey: postgres-password
+        remoteRef: 
+          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          property: password
+      - secretKey: postgres-port
+        remoteRef: 
+          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          property: port
+      - secretKey: postgres-host
+        remoteRef: 
+          key: AuroraServerlessClustersand-CkcQYbq6Uu8P
+          property: host
+  fencecreds:
+    name: gen3-postgres-fence
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: fence-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: AuroraServerlessClustersand-bVcQp2QiQjf7
+          property: dbcreated
+  indexdcreds:
+    name: gen3-postgres-indexd
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: indexd-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: AuroraServerlessClustersand-M2akH2oVAcge
+          property: dbcreated
+  peregrinecreds:
+    name: gen3-postgres-peregrine
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: peregrine-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: AuroraServerlessClustersand-XHb0zhuAkyFm
+          property: dbcreated
+  sheepdogcreds:
+    name: gen3-postgres-sheepdog
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: sheepdog-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: AuroraServerlessClustersand-EqTNMerrts4W
+          property: dbcreated
+  wtscreds:
+    name: gen3-postgres-wts
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: wts-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: gen3-wts-service
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: gen3-wts-service
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: gen3-wts-service
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: gen3-wts-service
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: gen3-wts-service
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: gen3-wts-service
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: gen3-wts-service
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: gen3-wts-service
+          property: dbcreated
+  arboristcreds:
+    name: gen3-postgres-arborist
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: arborist-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: gen3-arborist
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: gen3-arborist
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: gen3-arborist
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: gen3-arborist
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: gen3-arborist
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: gen3-arborist
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: gen3-arborist
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: gen3-arborist
+          property: dbcreated
+  auditcreds:
+    name: gen3-postgres-audit
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: audit-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: gen3-audit
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: gen3-audit
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: gen3-audit
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: gen3-audit
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: gen3-audit
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: gen3-audit
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: gen3-audit
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: gen3-audit
+          property: dbcreated
+  metadatacreds:
+    name: gen3-postgres-metadata
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: metadata-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: gen3-metadata
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: gen3-metadata
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: gen3-metadata
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: gen3-metadata
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: gen3-metadata
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: gen3-metadata
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: gen3-metadata
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: gen3-metadata
+          property: dbcreated
+  requestorcreds:
+    name: gen3-postgres-requestor
+    namespace: argocd
+    secretStoreRefName: gen3
+    secretStoreRefKind: ClusterSecretStore
+    targetName: requestor-dbcreds
+    data:
+      - secretKey: username
+        remoteRef: 
+          key: gen3-requestor
+          property: username
+      - secretKey: password
+        remoteRef: 
+          key: gen3-requestor
+          property: password
+      - secretKey: port
+        remoteRef: 
+          key: gen3-requestor
+          property: port
+      - secretKey: host
+        remoteRef: 
+          key: gen3-requestor
+          property: host
+      - secretKey: database
+        remoteRef: 
+          key: gen3-requestor
+          property: database
+      - secretKey: serviceusername
+        remoteRef: 
+          key: gen3-requestor
+          property: serviceusername
+      - secretKey: servicepassword
+        remoteRef: 
+          key: gen3-requestor
+          property: servicepassword
+      - secretKey: dbcreated
+        remoteRef: 
+          key: gen3-requestor
+          property: dbcreated
