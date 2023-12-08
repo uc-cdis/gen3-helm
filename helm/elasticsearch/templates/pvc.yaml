@@ -3,6 +3,7 @@ apiVersion: v1
 metadata:
   name: elasticsearch-pvc
 spec:
+  storageClassName: premium-rwo
   accessModes:
     - ReadWriteOnce
   resources:
