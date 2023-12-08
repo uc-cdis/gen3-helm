@@ -27,7 +27,7 @@ dependencies:
 - name: common
   version: "0.1.7"
   repository: file://../../helm/common
-- name: external-secrets
+- name: gen3-external-secrets
   version: "0.1.0"
   repository: file://../../helm/gen3-external-secrets
   condition: external-secrets.enabled
