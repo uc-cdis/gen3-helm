@@ -27,7 +27,7 @@ postgresql:
     secretStoreRefName: gen3
     secretStoreRefKind: ClusterSecretStore
     targetName: postgresql-secret
-    commonClusterCreds: &commonCreds
+    commonClusterCreds:
     # Credentails for service databases hosted in the same cluster
       postgresuser: &postgresuser
         - secretKey:
