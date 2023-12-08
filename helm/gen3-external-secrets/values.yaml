@@ -1,6 +1,3 @@
-global:
-  aws:
-    enabled: true
 clusterSecretStore:
   name: "gen3"
   provider:
@@ -32,22 +29,26 @@ postgresql:
     targetName: postgresql-secret
     commonClusterCreds: &commonCreds
     # Credentails for service databases hosted in the same cluster
-      - secretKey: username
-        remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
-          property: username
-      - secretKey: password
-        remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
-          property: password
-      - secretKey: port
-        remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
-          property: port
-      - secretKey: host
-        remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
-          property: host
+      postgresuser: &postgresuser
+        - secretKey:
+          remoteRef: 
+            key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+            property: username
+      postrespassword: &postgrespassword
+        - secretKey: password
+          remoteRef: 
+            key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+            property: password
+      postgresport: &postgresport
+        - secretKey: port
+          remoteRef: 
+            key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+            property: port
+      postgreshost: &postgreshost
+        - secretKey: host
+          remoteRef: 
+            key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+            property: host
     data: 
       - secretKey: postgres-username
         remoteRef: 
@@ -228,7 +229,10 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: wts-dbcreds
     data: 
-      - *commonCreds
+      - << : *postgresuser
+      - << : *postgrespassword
+      - << : *postgresport
+      - << : *postgreshost
       - secretKey: database
         remoteRef: 
           key: dev-cad-wts
@@ -252,7 +256,10 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: arborist-dbcreds
     data:
-      - *commonCreds
+      - << : *postgresuser
+      - << : *postgrespassword
+      - << : *postgresport
+      - << : *postgreshost
       - secretKey: database
         remoteRef: 
           key: dev-cad-arborist
@@ -276,7 +283,10 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: audit-dbcreds
     data:
-      - *commonCreds
+      - << : *postgresuser
+      - << : *postgrespassword
+      - << : *postgresport
+      - << : *postgreshost
       - secretKey: database
         remoteRef: 
           key: dev-cad-audit
@@ -300,7 +310,10 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: metadata-dbcreds
     data:
-      - *commonCreds
+      - << : *postgresuser
+      - << : *postgrespassword
+      - << : *postgresport
+      - << : *postgreshost
       - secretKey: database
         remoteRef: 
           key: dev-cad-metadata
@@ -324,7 +337,10 @@ postgresql:
     secretStoreRefKind: ClusterSecretStore
     targetName: requestor-dbcreds
     data:
-      - *commonCreds
+      - << : *postgresuser
+      - << : *postgrespassword
+      - << : *postgresport
+      - << : *postgreshost
       - secretKey: database
         remoteRef: 
           key: dev-cad-requestor
