@@ -16,11 +16,11 @@ peregrine:
 gen3:
   enabled: false
 
-requestor: 
-  enabled: false
+# requestor: 
+#   enabled: false
 
-audit:
-  enabled: false
+# audit:
+#   enabled: false
 pelican:
   bucket: sandbox-s3-buckets-pelicancredss3bucketsandboxs3bu-veftfoxeyecg
 
