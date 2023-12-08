@@ -29,7 +29,7 @@ dependencies:
   repository: file://../../helm/common
 - name: external-secrets
   version: "0.1.0"
-  repository: file://../../helm/external-secrets
+  repository: file://../../helm/gen3-external-secrets
   condition: external-secrets.enabled
 - name: fence
   version: "0.1.13"
