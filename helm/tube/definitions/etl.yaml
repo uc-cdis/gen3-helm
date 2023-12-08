@@ -29,6 +29,7 @@ mappings:
   #   root: protocol
   #   props:
   #     - name: submitter_id
+  #     - name: created_datetime
 
   
   - name: studies
@@ -37,6 +38,7 @@ mappings:
     root: study
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: imp_bstrong_econ
       - name: imp_bstrong_followup
@@ -159,6 +161,7 @@ mappings:
     root: participant
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     parent_props:
       - path: protocols.studies.projects[project:code]
@@ -181,6 +184,7 @@ mappings:
     root: provider
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: staff_surveys
@@ -322,6 +326,7 @@ mappings:
     root: staff_survey
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: imp_staff_addx_exp 
       - name: imp_staff_cert_addx 
@@ -372,6 +377,7 @@ mappings:
     root: pb_patient_satisfaction_survey
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: bpscliniccomfort
       - name: bpscliniclocation
@@ -409,6 +415,7 @@ mappings:
     root: pb_readiness_for_organizational_change
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: roc_appropriateness
       - name: roc_changeefficacy
@@ -455,6 +462,7 @@ mappings:
     root: pb_aim_iam_fim
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: aimappealing
       - name: aimapproval
@@ -498,6 +506,7 @@ mappings:
     root: collaborate_shared_decision_making_survey
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: sdminclude
       - name: sdmlisten
@@ -521,6 +530,7 @@ mappings:
     root: patient
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: demographics
@@ -552,6 +562,7 @@ mappings:
     root: impowr_followup_dates
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: imp_followup_age
       - name: imp_followup_date
@@ -568,6 +579,7 @@ mappings:
     root: pb_depression
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_phq_threes
@@ -607,6 +619,7 @@ mappings:
     root: pb_phq_three
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: phqbttrddthghtscore
       - name: phqdeprssnscore
@@ -626,6 +639,7 @@ mappings:
     root: pb_promis_depression
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisdep4atotalscore
       - name: promisdprssdfeelpst7dyscl
@@ -648,6 +662,7 @@ mappings:
     root: pb_phq_nine
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: phqabnrmldietscore
       - name: phqconcntrtnimprmntscore  
@@ -672,6 +687,7 @@ mappings:
     root: pb_health_economics
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_social_risk_assessments
@@ -819,6 +835,7 @@ mappings:
     root: pb_social_risk_assessment
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: bpsclinicconvenient
       - name: bpscliniccourteous  
@@ -847,6 +864,7 @@ mappings:
     root: pb_health_literacy
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: hlthlitforms 
     parent_props:
@@ -865,6 +883,7 @@ mappings:
     root: pb_health_service_utilization
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: mh_meds
       - name: utilcaregiverhrs
@@ -935,6 +954,7 @@ mappings:
     root: pb_healthcare_utilization
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: hsheaggrav_timesx
       - name: hshearson_timesx
@@ -1002,6 +1022,7 @@ mappings:
     root: pb_promis_propr
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promis29totalscore
       - name: proprscore
@@ -1022,6 +1043,7 @@ mappings:
     root: pb_overall_function
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_recovery_capitals
@@ -1066,6 +1088,7 @@ mappings:
     root: pb_recovery_capital
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: barc10_1
       - name: barc10_10
@@ -1103,6 +1126,7 @@ mappings:
     root: pb_promis_cognitive_function
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promiscogfxnconcscl
       - name: promiscogfxnrememberscl
@@ -1129,6 +1153,7 @@ mappings:
     root: pb_pain
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_pain_intensities
@@ -1294,6 +1319,7 @@ mappings:
     root: pb_pain_intensity
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisavgpainrtngpst7dscl
     parent_props:
@@ -1311,6 +1337,7 @@ mappings:
     root: pb_pain_interference
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promispainintf4atotalscore
       - name: promispainintwkhmpst7dscl
@@ -1332,6 +1359,7 @@ mappings:
     root: pb_peg
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pegavgpainpastweekscl
       - name: pegoverallscore
@@ -1352,6 +1380,7 @@ mappings:
     root: pb_pgic
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pcqpainawfulovrwhlmscl
       - name: pgicsymptomchangestatval
@@ -1370,6 +1399,7 @@ mappings:
     root: suppain_conditions_cms
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: copcs_clbp_diagnosis
       - name: copcs_endo_diagnosis
@@ -1426,6 +1456,7 @@ mappings:
     root: pb_bpi
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: bpiavgpainrtngscl
       - name: bpicurrentpainrtngscl
@@ -1456,6 +1487,7 @@ mappings:
     root: pb_chronic_pain_screening
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: cp_screen_1
       - name: cp_screen_2
@@ -1477,6 +1509,7 @@ mappings:
     root: pb_michigan_body_map
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: copcs_fm_regiona
       - name: copcs_fm_regionb
@@ -1538,6 +1571,7 @@ mappings:
     root: pb_pain_catastrophizing
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pcqafraidpainworsescl
       - name: pcqfeelcantwithstandscl
@@ -1562,6 +1596,7 @@ mappings:
     root: pb_physical_function
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_promis_physical_functions
@@ -1587,6 +1622,7 @@ mappings:
     root: pb_promis_physical_function
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisphfncstrsnrmpcabscl
       - name: promisphyfncerndshpablscl
@@ -1611,6 +1647,7 @@ mappings:
     root: pb_ptsd
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_ptsd_supplemental_pcl_fives
@@ -1664,6 +1701,7 @@ mappings:
     root: pb_ptsd_supplemental_pcl_five
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pcl5avoidexternalrmndscl
       - name: pcl5avoidmemoryscl
@@ -1705,6 +1743,7 @@ mappings:
     root: pb_primarycare_ptsd_screening
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pcptavoidanceyn
       - name: pcptsd5score
@@ -1731,12 +1770,14 @@ mappings:
     root: pb_sleep_fatigue
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_promis_sleeps
         path: pb_promis_sleeps
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: promisdifficltfallaslpscl
           - name: promisproblemwithslpscl
           - name: promissleepqualityscl
@@ -1748,6 +1789,7 @@ mappings:
         path: pb_sleep_durations
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: sleep_duration_hours
           - name: sleep_duration_minutes
           - name: sleepnighthourmindur
@@ -1755,6 +1797,7 @@ mappings:
         path: pb_promis_fatigues
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: promisfat4atotalscore
           - name: promisfatgfeelpst7dyscl
           - name: promisfatgpst7dyavgscl
@@ -1773,6 +1816,7 @@ mappings:
     root: pb_promis_sleep
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisdifficltfallaslpscl
       - name: promisproblemwithslpscl
@@ -1796,6 +1840,7 @@ mappings:
     root: pb_sleep_duration
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: sleep_duration_hours
       - name: sleep_duration_minutes
@@ -1815,6 +1860,7 @@ mappings:
     root: pb_promis_fatigue
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisfat4atotalscore
       - name: promisfatgfeelpst7dyscl
@@ -1839,12 +1885,14 @@ mappings:
     root: pb_social
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_mmspss_supplementals
         path: pb_mmspss_supplementals
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: mspssfamdecisionscl
           - name: mspssfamemotsuptscl
           - name: mspssfamilyhelpsscl
@@ -1865,6 +1913,7 @@ mappings:
         path: pb_promis_social_functionings
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: promispsra4atotalscore
           - name: promistrblfmlyactscl
           - name: promistrblfriendactvscl
@@ -1874,6 +1923,7 @@ mappings:
         path: pb_mmspss
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: mspssfamdecision
           - name: mspssfamemosup
           - name: mspssfriendjoysor
@@ -1893,6 +1943,7 @@ mappings:
     root: pb_mmspss_supplemental
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: mspssfamdecisionscl
       - name: mspssfamemotsuptscl
@@ -1924,6 +1975,7 @@ mappings:
     root: pb_promis_social_functioning
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promispsra4atotalscore
       - name: promistrblfmlyactscl
@@ -1944,6 +1996,7 @@ mappings:
     root: pb_mmspss
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: mspssfamdecision
       - name: mspssfamemosup
@@ -1968,12 +2021,14 @@ mappings:
     root: pb_stigma_discrimination
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_supplemental_impowr_stigma_discriminations
         path: pb_supplemental_impowr_stigma_discriminations
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: stigdeserve
           - name: stigfeelashamed
           - name: stiginferior
@@ -1993,6 +2048,7 @@ mappings:
         path: pb_susms
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: susms01paindiscrim
           - name: susms02alcoholdiscrim
           - name: susms_antfamtrust
@@ -2021,6 +2077,7 @@ mappings:
         path: sup_treatment_satisfactions
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: suptxefficient
           - name: suptxmedoud
           - name: suptxorganized
@@ -2032,6 +2089,7 @@ mappings:
         path: pb_impowr_perceived_discriminations
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: pds1
           - name: pds2
           - name: pds3
@@ -2048,6 +2106,7 @@ mappings:
     root: pb_supplemental_impowr_stigma_discrimination
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: stigdeserve
       - name: stigfeelashamed
@@ -2078,6 +2137,7 @@ mappings:
     root: pb_susms
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: susms01paindiscrim
       - name: susms02alcoholdiscrim
@@ -2117,6 +2177,7 @@ mappings:
     root: sup_treatment_satisfaction
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: suptxefficient
       - name: suptxmedoud
@@ -2139,6 +2200,7 @@ mappings:
     root: pb_impowr_perceived_discrimination
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: pds1
       - name: pds2
@@ -2159,12 +2221,14 @@ mappings:
     root: pb_substance_use
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_promis_acohols
         path: pb_promis_acohols
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: psfalc7aanydrinking
           - name: psfalc7adifficulttocontrol
           - name: psfalc7adifficulttostop
@@ -2178,6 +2242,7 @@ mappings:
         path: pb_promis_severity_of_substance_uses
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: ssu7acauseproblem
           - name: ssu7acrave
           - name: ssu7adrugproblem
@@ -2191,12 +2256,14 @@ mappings:
         path: pb_social_drug_uses
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: socialdetd11a
           - name: socialdetd11b
       - name: pb_supplemental_cannabis
         path: pb_supplemental_cannabis
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: canna_percent_concentrates
           - name: canna_percent_edible
           - name: canna_percent_other_specify
@@ -2225,6 +2292,7 @@ mappings:
         path: pb_supplemental_narcans
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: narcanadm_1
           - name: narcanadm_10
           - name: narcanadm_2
@@ -2258,6 +2326,7 @@ mappings:
         path: pb_supplemental_smokings
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: su_blunt
           - name: su_cigar
           - name: su_cigflavor
@@ -2274,6 +2343,7 @@ mappings:
         path: pb_us_audits
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: usaudit_alcexcess
           - name: usaudit_alcfreq
           - name: usaudit_alcquant
@@ -2289,6 +2359,7 @@ mappings:
         path: pb_audit_c
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: audit_usc1
           - name: audit_usc2
           - name: audit_usc3
@@ -2297,12 +2368,14 @@ mappings:
         path: pb_cigarette_and_e_cigarette_uses
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: cigperdayscl
           - name: ecigusedays
       - name: pb_impowr_moud
         path: pb_impowr_moud
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: moud_type
           - name: moudbup
           - name: moudbup_6modays
@@ -2327,12 +2400,14 @@ mappings:
         path: pb_impowr_overdose_screenings
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: opioidodnarcan
           - name: opioidodnumtimes
       - name: pb_modified_addiction_severity_indices
         path: pb_modified_addiction_severity_indices
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: masiamphetdays
           - name: masiamphetroute
           - name: masiamphetrx
@@ -2372,6 +2447,7 @@ mappings:
         path: pb_modified_taps_one
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: cigperdayscl
           - name: ecigusedays
           - name: tapsprescriptionmedusescl
@@ -2380,6 +2456,7 @@ mappings:
         path: pb_opioid_misuse_screenings
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: omsneedmore
           - name: omsobtainedothr
           - name: omsranout
@@ -2397,6 +2474,7 @@ mappings:
     root: pb_promis_acohol
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: psfalc7aanydrinking
       - name: psfalc7adifficulttocontrol
@@ -2422,6 +2500,7 @@ mappings:
     root: pb_promis_severity_of_substance_use
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: ssu7acauseproblem
       - name: ssu7acrave
@@ -2448,6 +2527,7 @@ mappings:
     root: pb_social_drug_use
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: socialdetd11a
       - name: socialdetd11b
@@ -2467,6 +2547,7 @@ mappings:
     root: pb_supplemental_cannabis
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: canna_percent_concentrates
       - name: canna_percent_edible
@@ -2508,6 +2589,7 @@ mappings:
     root: pb_supplemental_narcan
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: narcanadm_1
       - name: narcanadm_10
@@ -2554,6 +2636,7 @@ mappings:
     root: pb_supplemental_smoking
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: su_blunt
       - name: su_cigar
@@ -2583,6 +2666,7 @@ mappings:
     root: pb_us_audit
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: usaudit_alcexcess
       - name: usaudit_alcfreq
@@ -2611,6 +2695,7 @@ mappings:
     root: pb_audit_c
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: audit_usc1
       - name: audit_usc2
@@ -2632,6 +2717,7 @@ mappings:
     root: pb_cigarette_and_e_cigarette_use
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: cigperdayscl
       - name: ecigusedays
@@ -2651,6 +2737,7 @@ mappings:
     root: pb_impowr_moud
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: moud_type
       - name: moudbup
@@ -2688,6 +2775,7 @@ mappings:
     root: pb_impowr_overdose_screening
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: opioidodnarcan
       - name: opioidodnumtimes
@@ -2707,6 +2795,7 @@ mappings:
     root: pb_modified_addiction_severity_index
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: masiamphetdays
       - name: masiamphetroute
@@ -2759,6 +2848,7 @@ mappings:
     root: pb_modified_taps_one
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: cigperdayscl
       - name: ecigusedays
@@ -2780,6 +2870,7 @@ mappings:
     root: pb_opioid_misuse_screening
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: omsneedmore
       - name: omsobtainedothr
@@ -2802,6 +2893,7 @@ mappings:
     root: ruca
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: demruca1
       - name: demruca2
@@ -2819,6 +2911,7 @@ mappings:
     root: sup_spirituality
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: bssalive
       - name: bssparticipate
@@ -2844,12 +2937,14 @@ mappings:
     root: pb_anxiety
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_promis_anxieties
         path: pb_promis_anxieties
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: promisanx4atotalscore
           - name: promisdifffcsanxpst7dyscl
           - name: promisfeelfearflpst7dyscl
@@ -2859,6 +2954,7 @@ mappings:
         path: pb_gad_sevens
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: gad7easyannoyedscl
           - name: gad7feelafrdscl
           - name: gad7rstlessscl
@@ -2869,6 +2965,7 @@ mappings:
         path: pb_gad_twos
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: gad2feelnervscale
           - name: gad2notstopwryscale
           - name: gad2totalscore
@@ -2885,6 +2982,7 @@ mappings:
     root: pb_promis_anxiety
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: promisanx4atotalscore
       - name: promisdifffcsanxpst7dyscl
@@ -2906,6 +3004,7 @@ mappings:
     root: pb_gad_seven
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: gad7easyannoyedscl
       - name: gad7feelafrdscl
@@ -2928,6 +3027,7 @@ mappings:
     root: pb_gad_two
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: gad2feelnervscale
       - name: gad2notstopwryscale
@@ -2947,12 +3047,14 @@ mappings:
     root: pb_covid
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_impowr_covid_impacts
         path: pb_impowr_covid_impacts
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: covcpaccess
           - name: covhad
           - name: covidcp
@@ -2963,6 +3065,7 @@ mappings:
         path: pb_supplemental_covids
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: covid19financescl
           - name: covid19hlthaccessscl
           - name: covid19meetbasicneedscl
@@ -2981,6 +3084,7 @@ mappings:
     root: pb_impowr_covid_impact
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: covcpaccess
       - name: covhad
@@ -3003,6 +3107,7 @@ mappings:
     root: pb_supplemental_covid
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: covid19financescl
       - name: covid19hlthaccessscl
@@ -3024,12 +3129,14 @@ mappings:
     root: pb_demographics
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
     nested_props:
       - name: pb_impowr_demographics
         path: pb_impowr_demographics
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: disabinsind
           - name: imp_age
           - name: imp_relat
@@ -3088,6 +3195,7 @@ mappings:
         path: pb_supplemental_demographics
         props:
           - name: submitter_id
+          - name: created_datetime
           - name: dem_benefits
           - name: impowroptdem401k
           - name: impowroptdemdaysperwk
@@ -3125,6 +3233,7 @@ mappings:
     root: pb_impowr_demographics
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: disabinsind
       - name: imp_age
@@ -3195,6 +3304,7 @@ mappings:
     root: pb_supplemental_demographics
     props:
       - name: submitter_id
+      - name: created_datetime
       - name: project_id
       - name: dem_benefits
       - name: impowroptdem401k
