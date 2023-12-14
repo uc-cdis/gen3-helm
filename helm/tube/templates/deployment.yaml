@@ -105,7 +105,7 @@ spec:
           - name: DICTIONARY_URL
             value: http://revproxy-service/dictionary_schema
           - name: ES_URL
-            value: elastic:changeme@development-es
+            value: elastic:changeme@development-es.gen3-development.svc.cluster.local
           - name: ES_INDEX_NAME
             value: dev_etl
           - name: HADOOP_URL
