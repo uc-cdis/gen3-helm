@@ -325,8 +325,8 @@ volumes:
     configMap:
       name: "logo-config"
   - name: config-volume
-    secret:
-      secretName: "fence-config"
+    configMap:
+      name: "fence-config"
   - name: fence-google-app-creds-secret-volume
     secret:
       secretName: "fence-google-app-creds-secret"
