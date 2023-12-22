@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fence-config
-stringData:
+data:
   fence-config.yaml: |
     BASE_URL: https://{{ .Values.global.hostname }}/user
     {{- with .Values.FENCE_CONFIG }}
