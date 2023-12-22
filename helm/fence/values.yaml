@@ -373,7 +373,7 @@ volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: /var/www/fence/fence-config.yaml
-    subPath: fence-config.yaml
+    subPath: "fence-config.yaml"
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
