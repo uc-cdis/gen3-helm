@@ -1,0 +1,14 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {{ .Values.fence.openidcreds.name }}
+  namespace: {{.Values.fence.openidcreds.namespace }}
+spec:
+  refreshInterval: {{ .Values.fence.openidcreds.refreshInterval | default "2m" }}
+  secretStoreRef:
+    name: {{ .Values.fence.openidcreds.secretStoreRefName }}
+    kind: {{ .Values.fence.openidcreds.secretStoreRefKind }}
+  target:
+    name: {{ .Values.fence.openidcreds.targetName }}
+  data:
+    {{- toYaml .Values.fence.openidcreds.data | nindent 6 }}
