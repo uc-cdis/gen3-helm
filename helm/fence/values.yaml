@@ -360,10 +360,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/fence/static/privacy_policy.md"
     subPath: "privacy_policy.md"
-  # - name: "config-volume"
-  #   readOnly: true
-  #   mountPath: "/var/www/fence/fence-config.yaml"
-  #   subPath: fence-config.yaml
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config.yaml"
+    subPath: fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
