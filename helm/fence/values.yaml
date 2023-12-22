@@ -308,8 +308,8 @@ volumes:
     secret:
       secretName: "fence-creds"
   - name: config-helper
-    configMap:
-      name: config-helper
+    secret:
+      secretName: fence-secret
       optional: true
   - name: logo-volume
     configMap:
@@ -338,8 +338,8 @@ volumes:
 volumeMounts:
   - name: "old-config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/local_settings.py"
-    subPath: local_settings.py
+    mountPath: "/var/www/fence/fence_settings.py"
+    subPath: fence_settings.py
   - name: "json-secret-volume"
     readOnly: true
     mountPath: "/var/www/fence/fence_credentials.json"
