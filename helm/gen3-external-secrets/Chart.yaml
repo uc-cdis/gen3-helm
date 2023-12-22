@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gen3-external-secrets
-description: A Helm chart for installing ClusterSecretStore
+description: A Helm chart for installing ClusterSecretStore and external secrets
 
 # A chart can be either an 'application' or a 'library' chart.
 #
