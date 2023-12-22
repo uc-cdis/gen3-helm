@@ -63,7 +63,6 @@ spec:
             - |
               echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
               python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
-              python /var/www/fence/config_helper.py -c /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
