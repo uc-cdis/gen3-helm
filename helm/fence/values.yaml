@@ -343,6 +343,9 @@ volumes:
     configMap:
       name: "fence-yaml-merge"
       optional: true
+  - name: openid-creds
+    secret:
+      secretName: "openid-creds"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -390,6 +393,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
+  - name: "openid-creds"
+    readOnly: true
+    mountPath: "/var/www/fence/openid-creds"
+ 
   
 
 # -- (list) Volumes to mount to the init container.
