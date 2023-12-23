@@ -61,8 +61,8 @@ spec:
           args:
             - "-c"
             - |
-              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              #echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
+              #python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
@@ -95,11 +95,10 @@ spec:
             - "-c"
             - |
               set -x
-              # echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
-              sed -i -e "s/REPLACEME-OPENID-CID/$client_id/g" /var/www/tmp/fence-config.yaml
-              sed -i -e "s/REPLACEME-OPENID-SECRET/$client_secret/g" /var/www/tmp/fence-config.yaml
-              cp /var/www/tmp/fence-config.yaml /var/www/fence/fence-config.yaml
+              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
+              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/tmp/fence-config.yaml > /var/www/fence/fence-config.yaml
+              sed -i -e "s/REPLACEME-OPENID-CID/$CLIENT_ID/g" /var/www/fence/fence-config.yaml
+              sed -i -e "s/REPLACEME-OPENID-SECRET/$CLIENT_SECRET/g" /var/www/fence/fence-config.yaml
               if fence-create migrate --help > /dev/null 2>&1; then
                 if ! grep -E 'ENABLE_DB_MIGRATION"?: *false' /var/www/fence/fence-config.yaml; then
                   echo "Running db migration: fence-create migrate"
