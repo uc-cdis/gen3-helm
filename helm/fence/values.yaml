@@ -370,10 +370,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/fence/static/privacy_policy.md"
     subPath: "privacy_policy.md"
-  # - name: "config-volume"
-  #   readOnly: true
-  #   mountPath: /var/www/fence/fence-config.yaml
-  #   subPath: "fence-config.yaml"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/tmp/fence-config.yaml"
+    subPath: "fence-config.yaml"
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
@@ -443,16 +443,6 @@ initEnv:
         name: fence-dbcreds
         key: dbcreated
         optional: false
-  - name: CLIENT_ID
-    valueFrom:
-      secretKeyRef:
-        name: openid-creds
-        key: client_id
-  - name: CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: openid-creds
-        key: client_secret
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: FENCE_DB
