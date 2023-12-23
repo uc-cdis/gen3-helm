@@ -5,6 +5,8 @@ metadata:
 data:
   fence-config.yaml: |
     BASE_URL: https://{{ .Values.global.hostname }}/user
+    CILOGON_CLIENT_ID: 'REPLACEME-OPENID-CID'
+    CILOGON_CLIENT_SECRET: 'REPLACEME-OPENID-SECRET'
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}

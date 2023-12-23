@@ -443,6 +443,16 @@ initEnv:
         name: fence-dbcreds
         key: dbcreated
         optional: false
+  - name: CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: openid-creds
+        key: client_id
+  - name: CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: openid-creds
+        key: client_secret
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: FENCE_DB
@@ -1606,8 +1616,8 @@ FENCE_CONFIG:
     # Free tier users may request OIDC clients at https://cilogon.org/oauth2/register
     cilogon:
       discovery_url: 'https://cilogon.org/.well-known/openid-configuration'
-      client_id: ''
-      client_secret: ''
+      client_id: '{{CILOGON_CLIENT_ID}}'
+      client_secret: '{{CILOGON_CLIENT_SECRET}}'
       # When registering the Callback URLs for your CILogon OIDC client be
       # sure to include the FULL url for this deployment, including the https:// scheme
       # and server FQDN.
