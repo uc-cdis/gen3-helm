@@ -370,10 +370,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/fence/static/privacy_policy.md"
     subPath: "privacy_policy.md"
-  - name: "config-volume"
-    readOnly: true
-    mountPath: /var/www/fence/fence-config.yaml
-    subPath: "fence-config.yaml"
+  # - name: "config-volume"
+  #   readOnly: true
+  #   mountPath: /var/www/fence/fence-config.yaml
+  #   subPath: "fence-config.yaml"
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
@@ -396,19 +396,19 @@ volumeMounts:
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
+    mountPath: "/var/www/tmp/fence-config.yaml"
     subPath: fence-config.yaml
   - name: "yaml-merge"
     readOnly: true
-    mountPath: "/var/www/fence/yaml_merge.py"
+    mountPath: "/var/www/tmp/yaml_merge.py"
     subPath: yaml_merge.py
   - name: "fence-google-app-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+    mountPath: "/var/www/tmp/fence_google_app_creds_secret.json"
     subPath: fence_google_app_creds_secret.json
   - name: "fence-google-storage-creds-secret-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+    mountPath: "/var/www/tmp/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
 
 # -- (list) Volumes to attach to the init container.
