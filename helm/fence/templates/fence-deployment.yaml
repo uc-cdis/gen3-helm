@@ -64,6 +64,8 @@ spec:
               #echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
               #python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-init-config.yaml > /var/www/fence/fence-config.yaml
               cp /var/tmp/fence-config.yaml /var/www/fence/fence-config.yaml
+              CLIENT_ID=(`cat /var/www/fence/openid-creds/client_id`)
+              CLIENT_SECRET=(`cat /var/www/fence/openid-creds/client_secret`)
               sed -i -e "s@REPLACEME-OPENID-CID@$CLIENT_ID@g" /var/www/fence/fence-config.yaml
               sed -i -e "s@REPLACEME-OPENID-SECRET@$CLIENT_SECRET@g" /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then

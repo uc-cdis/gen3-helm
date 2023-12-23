@@ -289,16 +289,16 @@ env:
       secretKeyRef:
         name: indexd-service-creds
         key: fence
-  - name: CLIENT_ID
-    valueFrom:
-      secretKeyRef:
-        name: openid-creds
-        key: client_id
-  - name: CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: openid-creds
-        key: client_secret
+  # - name: CLIENT_ID
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: openid-creds
+  #       key: client_id
+  # - name: CLIENT_SECRET
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: openid-creds
+  #       key: client_secret
   - name: gen3Env
     valueFrom:
       configMapKeyRef:
