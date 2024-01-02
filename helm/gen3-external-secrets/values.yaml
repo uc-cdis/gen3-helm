@@ -1,399 +1,469 @@
 clusterSecretStore:
+  # -- (bool) Whether the ClusterSecretStore should be created.
+  enabled: true
+  # -- (string) Name of the cluster store
   name: "gen3"
   provider:
+    # -- (map) provider properties (defaulted to aws)
     aws:
+      # -- (string) Cloud provider's service
       service: "SecretsManager"
+      # -- (string) Cloud provider's region
       region: "ap-southeast-2"
       auth:
+        # -- (map) Authentication method
         jwt:
+          # -- (map) Existing Iam role for the service account in the cluster
           serviceAccountRef:
             name: "external-secrets-sa"
             namespace: "external-secrets"
 fence:
+  # -- (map) Fence credentials configuration
   fencecreds:
+    # -- (string) External Secrets name
     name: gen3-fence-creds
+    # -- (string) Namespace
     namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
-    secretStoreRefKind: ClusterSecretStore
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
+    secretStoreRefKind: ClusterSecretStore 
+    # -- (string) the target describes the secret that shall be created
     targetName: fence-creds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: creds.json
         remoteRef: 
           key: gen3-fence-creds
+# -- (map) Postgres External Secrets
 postgresql:
+  # -- (string) Namespace to create the External Secrets
+  namespace: argocd
+  # -- (map) Credentials for shared services Postgres Instance
   mastercreds:
+    # -- (string) External Secrets name
     name: gen3-postgres-master
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: postgresql-secret
-    commonPostgressCreds: AuroraServerlessClusterdevm-eAb5qgt3cDXp
-    commonClusterCreds:
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data: 
       - secretKey: postgres-username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: postgres-password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: postgres-port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: postgres-host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
+  # -- (map) Credentials for fence Postgres instance
   fencecreds:
+    # -- (string) External Secrets name for Fence Creds
     name: gen3-postgres-fence
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: fence-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
+      # -- (string) Postgres admin username (e.g. postgres)
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevf-UlravMUjgrhO
+          key: fence-dev-rds
           property: username
+      # -- (string) Postgres admin password password
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevf-UlravMUjgrhO
+          key: fence-dev-rds
           property: password
+      # -- (string) Postgres port (e.g 5432)
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevf-UlravMUjgrhO
+          key: fence-dev-rds
           property: port
+      # -- (string) Postgres host (e.g. mydb.example.com)
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevf-UlravMUjgrhO
+          key: fence-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-fence
+          key: dev-service-fence
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-fence
+          key: dev-service-fence
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-fence
+          key: dev-service-fence
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-fence
+          key: dev-service-fence
           property: dbcreated
+  # -- (map) Credentials for Indexd Postgres instance
   indexdcreds:
+    # -- (string) External Secrets name for Indexd Creds
     name: gen3-postgres-indexd
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: indexd-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
+          key: indexd-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
+          key: indexd-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
+          key: indexd-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevi-9OSjwLpIXcIC
+          key: indexd-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-indexd
+          key: dev-service-indexd
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-indexd
+          key: dev-service-indexd
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-indexd
+          key: dev-service-indexd
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-indexd
+          key: dev-service-indexd
           property: dbcreated
+  # -- (map) Credentials for Peregrine Postgres instance
   peregrinecreds:
+    # -- (string) External Secrets name for Peregrine Creds
     name: gen3-postgres-peregrine
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: peregrine-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevp-39s4edfR4V3g
+          key: peregrine-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevp-39s4edfR4V3g
+          key: peregrine-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevp-39s4edfR4V3g
+          key: peregrine-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevp-39s4edfR4V3g
+          key: peregrine-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-peregrine
+          key: dev-service-peregrine
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-peregrine
+          key: dev-service-peregrine
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-peregrine
+          key: dev-service-peregrine
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-peregrine
+          key: dev-service-peregrine
           property: dbcreated
+  # -- (map) Credentials for Sheepdog Postgres instance
   sheepdogcreds:
+    # -- (string) External Secrets name for Sheepdog db Creds
     name: gen3-postgres-sheepdog
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: sheepdog-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevs-14IQBQ549zKC
+          key: sheepdod-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevs-14IQBQ549zKC
+          key: sheepdod-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevs-14IQBQ549zKC
+          key: sheepdod-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevs-14IQBQ549zKC
+          key: sheepdod-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-sheepdog
+          key: dev-service-sheepdog
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-sheepdog
+          key: dev-service-sheepdog
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-sheepdog
+          key: dev-service-sheepdog
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-sheepdog
+          key: dev-service-sheepdog
           property: dbcreated
+  # -- (map) Postgres credentials for wts service
   wtscreds:
+    # -- (string) External Secrets name for WTS db Creds
     name: gen3-postgres-wts
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: wts-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data: 
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-wts
+          key: dev-service-wts
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-wts
+          key: dev-service-wts
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-wts
+          key: dev-service-wts
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-wts
+          key: dev-service-wts
           property: dbcreated
+  # -- (map) Postgres credentials for Arborist service
   arboristcreds:
+    # -- (string) External Secrets name for Arborist db Creds
     name: gen3-postgres-arborist
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: arborist-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-arborist
+          key: dev-service-arborist
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-arborist
+          key: dev-service-arborist
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-arborist
+          key: dev-service-arborist
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-arborist
+          key: dev-service-arborist
           property: dbcreated
+  # -- (map) Postgres credentials for Audit service
   auditcreds:
+    # -- (string) External Secrets name for Audit db Creds
     name: gen3-postgres-audit
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: audit-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-audit
+          key: dev-service-audit
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-audit
+          key: dev-service-audit
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-audit
+          key: dev-service-audit
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-audit
+          key: dev-service-audit
           property: dbcreated
+  # -- (map) Postgres credentials for metadata service
   metadatacreds:
+    # -- (string) External Secrets name for metadata db Creds
     name: gen3-postgres-metadata
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: metadata-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-metadata
+          key: dev-service-metadata
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-metadata
+          key: dev-service-metadata
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-metadata
+          key: dev-service-metadata
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-metadata
+          key: dev-service-metadata
           property: dbcreated
+  # -- (map) Postgres credentials for requestor service
   requestorcreds:
+    # -- (string) External Secrets name for requestor db Creds
     name: gen3-postgres-requestor
-    namespace: argocd
+    # -- (string) Cluster Secret Store name
     secretStoreRefName: gen3
+    # -- (string) Cluster Secret Store type (SecretStore or ClusterSecretStore)
     secretStoreRefKind: ClusterSecretStore
+    # -- (string) the target describes the secret that shall be created
     targetName: requestor-dbcreds
+    # -- (list) Data defines the connection between the Kubernetes Secret keys and the Provider data
     data:
       - secretKey: username
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: username
       - secretKey: password
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: password
       - secretKey: port
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: port
       - secretKey: host
         remoteRef: 
-          key: AuroraServerlessClusterdevm-eAb5qgt3cDXp
+          key: master-dev-rds
           property: host
       - secretKey: database
         remoteRef: 
-          key: dev-cad-requestor
+          key: dev-service-requestor
           property: database
       - secretKey: serviceusername
         remoteRef: 
-          key: dev-cad-requestor
+          key: dev-service-requestor
           property: serviceusername
       - secretKey: servicepassword
         remoteRef: 
-          key: dev-cad-requestor
+          key: dev-service-requestor
           property: servicepassword
       - secretKey: dbcreated
         remoteRef: 
-          key: dev-cad-requestor
+          key: dev-service-requestor
           property: dbcreated
