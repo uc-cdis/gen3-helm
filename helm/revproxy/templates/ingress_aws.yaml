@@ -16,11 +16,267 @@ spec:
     - host: {{ default .Values.global.hostname .Values.hostname }}
       http:
         paths:
+          {{- if .Values.global.nginxSidecar.enabled }}
+          - path: /lw-workspace/proxy/
+            pathType: Prefix
+            backend:
+              service:
+                name:  ambassador-service
+                port:
+                  number: 80
+          - path: /gen3authz
+            pathType: Prefix
+            backend:
+              service:
+                name:  arborist-service
+                port:
+                  number: 80
+          - path: /authz
+            pathType: Prefix
+            backend:
+              service:
+                name:  arborist-service
+                port:
+                  number: 80
+          - path: /gen3-authz-test
+            pathType: Prefix
+            backend:
+              service:
+                name:  arborist-service
+                port:
+                  number: 80
+          - path: /ga4gh/wes/v2/
+            pathType: Prefix
+            backend:
+              service:
+                name:  argo-wrapper-service
+                port:
+                  number: 80
+          - path: /audit/
+            pathType: Prefix
+            backend:
+              service:
+                name:  audit-service
+                port:
+                  number: 80
+          - path: /dicom-server/
+            pathType: Prefix
+            backend:
+              service:
+                name:  dicom-server-service
+                port:
+                  number: 80
+          - path: /dicom-viewer/
+            pathType: Prefix
+            backend:
+              service:
+                name:  dicom-viewer-service
+                port:
+                  number: 80
+          - path: \ga4gh\drs\v1\
+            pathType: Prefix
+            backend:
+              service:
+                name:  fence-service
+                port:
+                  number: 80
+          - path: /authn-proxy
+            pathType: Prefix
+            backend:
+              service:
+                name:  fence-service
+                port:
+                  number: 80
+          - path: /user/
+            pathType: Prefix
+            backend:
+              service:
+                name:  fence-service
+                port:
+                  number: 80
+          - path: /.well-known/
+            pathType: Prefix
+            backend:
+              service:
+                name:  fence-service
+                port:
+                  number: 80
+          - path: /guppy/
+            pathType: Prefix
+            backend:
+              service:
+                name:  guppy-service
+                port:
+                  number: 80
+          - path: /lw-workspace/
+            pathType: Prefix
+            backend:
+              service:
+                name:  hatchery-service
+                port:
+                  number: 80
+          - path: /ga4gh/
+            pathType: Prefix
+            backend:
+              service:
+                name:  indexd-service
+                port:
+                  number: 80
+          - path: /index/
+            pathType: Prefix
+            backend:
+              service:
+                name:  indexd-service
+                port:
+                  number: 80
+          - path: /index-admin/
+            pathType: Prefix
+            backend:
+              service:
+                name:  indexd-service
+                port:
+                  number: 80
+          - path: /manifests/
+            pathType: Prefix
+            backend:
+              service:
+                name:  manifestservice-service
+                port:
+                  number: 80
+          - path: /mds/
+            pathType: Prefix
+            backend:
+              service:
+                name:  metadata-service
+                port:
+                  number: 80 
+          - path: /mds-admin/
+            pathType: Prefix
+            backend:
+              service:
+                name:  metadata-service
+                port:
+                  number: 80
+          - path: /peregrine/
+            pathType: Prefix
+            backend:
+              service:
+                name:  peregrine-service
+                port:
+                  number: 80
+          - path: /api/search
+            pathType: Prefix
+            backend:
+              service:
+                name:  peregrine-service
+                port:
+                  number: 80
+          - path: /api/v0/submission/
+            pathType: Prefix
+            backend:
+              service:
+                name:  peregrine-service
+                port:
+                  number: 80
+          - path: /coremetadata/
+            pathType: Prefix
+            backend:
+              service:
+                name:  pidgin-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  portal-service
+                port:
+                  number: 80
+          - path: /requestor/
+            pathType: Prefix
+            backend:
+              service:
+                name:  requestor-service
+                port:
+                  number: 80
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name:  sheepdog-service
+                port:
+                  number: 80
+          - path: /job/
+            pathType: Prefix
+            backend:
+              service:
+                name:  sower-service
+                port:
+                  number: 80
+          - path: /wts/
+            pathType: Prefix
+            backend:
+              service:
+                name:  workspace-token-service
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argoworkflow-alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment={{ .Values.global.environment }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.global.revproxyArn }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.global.environment }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ default .Values.global.hostname .Values.hostname }}
+      http:
+        paths:
+          - path: /argo
+            pathType: Prefix
+            backend:
+              service:
+                name:  argo-argo-workflows-server
+                port:
+                  number: 80        
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment={{ .Values.global.environment }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.global.revproxyArn }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.global.environment }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ default .Values.global.hostname .Values.hostname }}
+      http:
+        paths:        
+          - path: /argocd
+            pathType: Prefix
+            backend:
+              service:
+                name:  argocd-server
+                port:
+                  number: 80
+          {{- else }}
           - path: /
             pathType: Prefix
             backend:
               service:
                 name:  revproxy-service
                 port:
-                  number: 80
+                  number: 80          
+          {{- end}}
 {{- end }}
