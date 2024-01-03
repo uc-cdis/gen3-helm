@@ -463,3 +463,7 @@ PGHOST=foo-aurora.rds.amazonaws.com
 ```
 psql -U postgres -W
 ```
+
+## Templating Errors from files that haven't been touched
+If you ever get templating errors on files that are the same as remote that are preventing a ```make [context]``` from successfully running
+consider checking each directory in gen3_helm/helm/ for a .helmignore file.
