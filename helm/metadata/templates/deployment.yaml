@@ -91,7 +91,7 @@ spec:
                   optional: false
             {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ . }}
+              value: {{ . | quote }}
             {{- end }}
             {{- with .Values.aggMdsNamespace}}
             - name: AGG_MDS_NAMESPACE

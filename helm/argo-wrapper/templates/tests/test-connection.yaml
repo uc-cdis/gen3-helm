@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "argo-wrapper.fullname" . }}:{{ .Values.service.port }}']
+      args: ['argo-wrapper-service:{{ .Values.service.port }}/test']
   restartPolicy: Never
