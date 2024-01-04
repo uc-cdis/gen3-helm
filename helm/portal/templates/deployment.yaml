@@ -81,6 +81,8 @@ spec:
               value: "false"
             - name: NODE_ENV
               value: "dev"
+            - name: DICTIONARY_URL
+              value: {{ .Values.global.dictionaryUrl }}
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
