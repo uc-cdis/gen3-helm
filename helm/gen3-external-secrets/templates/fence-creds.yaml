@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.fence.fencecreds.name }}
   namespace: {{.Values.fence.fencecreds.namespace }}
 spec:
-  refreshInterval: {{ .Values.fence.fencecreds.refreshInterval | default "10m" }}
+  refreshInterval: {{ .Values.fence.fencecreds.refreshInterval | default "2m" }}
   secretStoreRef:
     name: {{ .Values.fence.fencecreds.secretStoreRefName }}
     kind: {{ .Values.fence.fencecreds.secretStoreRefKind }}
