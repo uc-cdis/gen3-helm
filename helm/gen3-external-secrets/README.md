@@ -5,6 +5,7 @@
 A Helm chart for installing ClusterSecretStore and external secrets
 
 ## Requirements
+Make sure the "ClusterSecretStore" CRD is installed on the destination cluster.
 
 | Repository | Name | Version |
 |------------|------|---------|
