@@ -8,7 +8,7 @@ A Helm chart for deploying ambassador for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.8 |
+| file://../common | common | 0.1.9 |
 
 ## Values
 
