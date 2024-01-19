@@ -436,8 +436,8 @@ volumeMounts:
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config.yaml"
-    subPath: fence-config.yaml
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    subPath: fence-config-secret.yaml
   - name: "fence-scripts"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
