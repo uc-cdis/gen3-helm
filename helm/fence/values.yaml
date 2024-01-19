@@ -362,6 +362,9 @@ volumes:
   - name: config-volume
     secret:
       secretName: "fence-config"
+  - name: public-config-volume
+    configMap:
+      name: "fence-public-config"
   - name: fence-google-app-creds-secret-volume
     secret:
       secretName: "fence-google-app-creds-secret"
@@ -374,10 +377,9 @@ volumes:
   - name: privacy-policy
     configMap:
       name: "privacy-policy"
-  - name: yaml-merge
+  - name: fence-scripts
     configMap:
-      name: "fence-yaml-merge"
-      optional: true
+      name: "fence-scripts"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -409,7 +411,11 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence-config.yaml"
     subPath: fence-config.yaml
-  - name: "yaml-merge"
+  - name: "public-config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-public-config.yaml"
+    subPath: fence-public-config.yaml
+  - name: "fence-scripts"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
     subPath: yaml_merge.py
@@ -483,12 +489,6 @@ initEnv:
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
