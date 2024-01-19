@@ -409,7 +409,7 @@ volumeMounts:
     subPath: "privacy_policy.md"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    mountPath: "/var/tmp/fence/fence-config-secret.yaml"
     subPath: fence-config-secret.yaml
   - name: "public-config-volume"
     readOnly: true
@@ -436,7 +436,7 @@ volumeMounts:
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    mountPath: "/var/tmp/fence-config-secret.yaml"
     subPath: fence-config-secret.yaml
   - name: "fence-scripts"
     readOnly: true
