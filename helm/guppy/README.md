@@ -37,7 +37,6 @@ A Helm chart for gen3 Guppy Service
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | dbRestore | bool | `false` | Whether or not to restore elasticsearch indices from a snapshot in s3 |
-| dbRestore | bool | `false` | Whether or not to restore elasticsearch indices from a snapshot in s3 |
 | enableEncryptWhitelist | bool | `true` | Whether or not to enable encryption for specified fields |
 | encryptWhitelist | string | `"test1"` | A comma-separated list of fields to encrypt |
 | esEndpoint | string | `"gen3-elasticsearch-master:9200"` | Elasticsearch endpoint. |
