@@ -4,7 +4,7 @@ kind: Secret
 metadata:
   name: fence-config
 stringData:
-  fence-config.yaml: |
+  fence-config-secret.yaml: |
     BASE_URL: https://{{ .Values.global.hostname }}/user
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
