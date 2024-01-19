@@ -117,6 +117,9 @@ NOTE: Gen3 helm charts are currently not used in production by CTDS, but we are 
 
 For local development you must be connected to a kubernetes cluster. As referenced above in the section `Kubernetes cluster` we recommend using [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your local machine, especially on M1 Mac's. You also get ingress and other benefits out of the box.
 
+> **Warning**
+> If you are using Rancher Desktop you need to increase the vm.max_map_count as outlined [here](https://docs.rancherdesktop.io/how-to-guides/increasing-open-file-limit/)
+
 1. Clone the repository
 2. Navigate to the `gen3-helm/helm/gen3` directory and run `helm dependency update`
 3. Navigate to the back to the `gen3-helm` directory and create your values.yaml file. See the `TL;DR` section for a minimal example.

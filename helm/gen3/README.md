@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.10 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.7 |
 | file://../common | common | 0.1.8 |
-| file://../elasticsearch | elasticsearch | 0.1.6 |
+| file://../etl | etl | 0.1.0 |
 | file://../fence | fence | 0.1.14 |
 | file://../guppy | guppy | 0.1.9 |
 | file://../hatchery | hatchery | 0.1.7 |
@@ -35,12 +35,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../pidgin | pidgin | 0.1.8 |
 | file://../portal | portal | 0.1.8 |
 | file://../requestor | requestor | 0.1.9 |
-| file://../revproxy | revproxy | 0.1.11 |
+| file://../revproxy | revproxy | 0.1.12 |
 | file://../sheepdog | sheepdog | 0.1.11 |
 | file://../sower | sower | 0.1.7 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.7 |
 | file://../wts | wts | 0.1.11 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
@@ -63,6 +64,16 @@ Helm chart to deploy Gen3 Data Commons
 | audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
+| aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
+| aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
+| aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
+| elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
+| elasticsearch.maxUnavailable | int | `0` |  |
+| elasticsearch.replicas | int | `1` |  |
+| elasticsearch.singleNode | bool | `true` |  |
+| etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.FENCE_CONFIG | map | `nil` | Configuration settings for Fence app |
 | fence.USER_YAML | string | `nil` | USER YAML. Passed in as a multiline string. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
@@ -194,9 +205,6 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
 | revproxy.ingress.hosts | list | `[{"host":"chart-example.local"}]` | Where to route the traffic. |
 | revproxy.ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information. |
-| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
-| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sheepdog.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | sheepdog.image.repository | string | `nil` | The Docker image repository for the sheepdog service. |

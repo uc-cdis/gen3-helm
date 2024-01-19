@@ -110,6 +110,16 @@ aws-es-proxy:
   enabled: false
   # -- (str) Elasticsearch endpoint in AWS
   esEndpoint: test.us-east-1.es.amazonaws.com
+  # -- (map) Secret information
+  secrets:
+    # -- (str) AWS access key ID for aws-es-proxy
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for aws-es-proxy
+    awsSecretAccessKey: ""
+
+etl:
+  # -- (bool) Whether to deploy the etl subchart.
+  enabled: true
 
 fence:
   # -- (bool) Whether to deploy the fence subchart.
@@ -378,9 +388,12 @@ postgresql:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
-# -- (map) Secret information.
-secrets:
-  # -- (str) AWS access key ID. Overrides global key.
-  awsAccessKeyId:
-  # -- (str) AWS secret access key ID. Overrides global key.
-  awsSecretAccessKey:
+elasticsearch:
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config

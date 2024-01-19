@@ -146,7 +146,7 @@ image:
 
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: ""
+esEndpoint: "gen3-elasticsearch-master:9200"
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
 
@@ -199,6 +199,9 @@ authFilterField: auth_resource_path
 enableEncryptWhitelist: true
 # -- (string) A comma-separated list of fields to encrypt
 encryptWhitelist: test1
+
+# -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
+dbRestore: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

@@ -363,7 +363,7 @@ gitops:
             "chartType": "count",
             "title": "Projects"
           },
-          "case_id": {
+          "_case_id": {
             "chartType": "count",
             "title": "Cases"
           },
@@ -404,11 +404,11 @@ gitops:
           "manifestMapping": {
             "resourceIndexType": "file",
             "resourceIdField": "object_id",
-            "referenceIdFieldInResourceIndex": "case_id",
+            "referenceIdFieldInResourceIndex": "_case_id",
             "referenceIdFieldInDataIndex": "node_id"
           },
-          "accessibleFieldCheckList": ["case_id"],
-          "accessibleValidationField": "case_id"
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id"
         }
       },
       "fileExplorerConfig": {
@@ -452,12 +452,12 @@ gitops:
           "nodeCountTitle": "Files",
           "manifestMapping": {
             "resourceIndexType": "case",
-            "resourceIdField": "case_id",
+            "resourceIdField": "_case_id",
             "referenceIdFieldInResourceIndex": "object_id",
             "referenceIdFieldInDataIndex": "object_id"
           },
-          "accessibleFieldCheckList": ["case_id"],
-          "accessibleValidationField": "case_id",
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id",
           "downloadAccessor": "object_id"
         }
       }

@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -10,6 +10,7 @@ A Helm chart for gen3 Metadata Service
 |------------|------|---------|
 | file://../common | common | 0.1.8 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| https://helm.elastic.co | elasticsearch | 7.17.1 |
 
 ## Values
 
@@ -22,7 +23,8 @@ A Helm chart for gen3 Metadata Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["metadata"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
-| aggMdsNamespace | string | `nil` | Namespae to use if AggMds is enabled. |
+| aggMdsConfig | string | `"{\n  \"configuration\": {\n    \"schema\": {\n      \"_subjects_count\": {\n        \"type\": \"integer\"\n      },\n      \"__manifest\": {\n        \"description\": \"an array of filename (usually DRS ids and its size\",\n        \"type\": \"array\",\n        \"properties\": {\n          \"file_name\": {\n            \"type\": \"string\"\n          },\n          \"file_size\": {\n            \"type\": \"integer\"\n          }\n        }\n      },\n      \"tags\": {\n        \"type\": \"array\"\n      },\n      \"_unique_id\": {},\n      \"study_description\": {},\n      \"study_id\": {},\n      \"study_url\": {},\n      \"project_id\": {},\n      \"short_name\": {\n        \"default\": \"not_set\"\n      },\n      \"year\": {\n        \"default\": \"not_set\"\n      },\n      \"full_name\": {},\n      \"commons_url\": {},\n      \"commons\": {}\n    },\n    \"settings\": {\n      \"cache_drs\": true\n    }\n  },\n  \"adapter_commons\": {\n    \"Gen3\": {\n      \"mds_url\": \"https://gen3.datacommons.io/\",\n      \"commons_url\": \"gen3.datacommons.io/\",\n      \"adapter\": \"gen3\",\n      \"config\": {\n        \"guid_type\": \"discovery_metadata\",\n        \"study_field\": \"gen3_discovery\"\n      },\n      \"keep_original_fields\": false,\n      \"field_mappings\": {\n        \"tags\": \"path:tags\",\n        \"_unique_id\": \"path:_unique_id\",\n        \"study_description\": \"path:summary\",\n        \"full_name\": \"path:study_title\",\n        \"short_name\": \"path:short_name\",\n        \"year\": \"path:year\",\n        \"accession_number\": \"path:accession_number\",\n        \"commons\": \"Gen3 Data Commons\",\n        \"study_url\": {\n          \"path\": \"link\",\n          \"default\": \"unknown\"\n        }\n      }\n    }\n  }\n}\n"` |  |
+| aggMdsNamespace | string | `"default"` | Namespae to use if AggMds is enabled. |
 | args | list | `["-c","/env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
@@ -37,7 +39,13 @@ A Helm chart for gen3 Metadata Service
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | debug | bool | `false` |  |
-| esEndpoint | string | `"elasticsearch:9200"` | Elasticsearch endpoint. |
+| elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
+| elasticsearch.maxUnavailable | int | `0` |  |
+| elasticsearch.replicas | int | `1` |  |
+| elasticsearch.separate | bool | `false` |  |
+| elasticsearch.singleNode | bool | `true` |  |
+| esEndpoint | string | `"http://gen3-elasticsearch-master:9200"` | Elasticsearch endpoint. |
 | externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
@@ -69,10 +77,10 @@ A Helm chart for gen3 Metadata Service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/metadata-service","tag":"master"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/metadata-service","tag":"feat_es-7"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/metadata-service"` | Docker repository. |
-| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"feat_es-7"` | Overrides the image tag whose default is the chart appVersion. |
 | initContainerName | string | `"metadata-db-migrate"` | Name of the init container. |
 | initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
 | initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
@@ -111,7 +119,7 @@ A Helm chart for gen3 Metadata Service
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
-| useAggMds | bool | `nil` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
+| useAggMds | bool | `"True"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"},{"mountPath":"/metadata.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 
 ----------------------------------------------
