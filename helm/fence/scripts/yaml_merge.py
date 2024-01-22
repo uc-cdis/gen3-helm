@@ -24,7 +24,7 @@ def merge_yaml_files(file_paths):
     return merged_data
 
 def merge_dicts(dict1, dict2):
-    if dict2 is not None:
+    if dict2 is not None: #Fix AttributeError
         for key, value in dict2.items():
             if key in dict1 and isinstance(dict1[key], dict) and isinstance(value, dict):
                 dict1[key] = merge_dicts(dict1[key], value)
