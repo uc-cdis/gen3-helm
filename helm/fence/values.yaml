@@ -246,12 +246,12 @@ env:
     value: /var/www/fence
   - name: GEN3_DEBUG
     value: "False"
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
+  # - name: FENCE_PUBLIC_CONFIG
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: manifest-fence
+  #       key: fence-config-public.yaml
+  #       optional: true
   - name: PGHOST
     valueFrom:
       secretKeyRef:
@@ -368,7 +368,7 @@ volumeMounts:
     subPath: fence-config-secret.yaml
   - name: "public-config-volume"
     readOnly: true
-    mountPath: "/var/tmp/fence/fence-public-config.yaml"
+    mountPath: "/var/tmp/fence-public-config.yaml"
     subPath: fence-public-config.yaml
   - name: "fence-scripts"
     readOnly: true
