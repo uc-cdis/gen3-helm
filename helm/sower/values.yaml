@@ -1,0 +1,286 @@
+# Default values for sower.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- (map) Global configuration options.
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  # -- (map) Postgres database configuration.
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (string) S3 bucket name for Kubernetes manifest files.
+  kubeBucket: kube-gen3
+  # -- (string) S3 bucket name for log files.
+  logsBucket: logs-gen3
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+  tierAccessLevel: libre
+  # -- (bool) Whether network policies are enabled.
+  netPolicy: true
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: 10
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
+
+# -- (int) Number of replicas for the deployment.
+replicaCount: 1
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/sower
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# -- (list) Docker image pull secrets.
+imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
+nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
+fullnameOverride: ""
+
+# -- (map) Security context for the containers in the pod
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# -- (map) Kubernetes service information.
+service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
+  type: ClusterIP
+  # -- (int) The port number that the service exposes.
+  port: 80
+
+# -- (map) Configuration for autoscaling the number of replicas
+autoscaling:
+  # -- (bool) Whether autoscaling is enabled
+  enabled: false
+  # -- (int) The minimum number of replicas to scale down to
+  minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
+  maxReplicas: 100
+  # -- (int) Target CPU utilization percentage
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# -- (map) Node Selector for the pods
+nodeSelector: {}
+
+# -- (list) Tolerations for the pods
+tolerations: []
+
+# -- (map) Security context to apply to the pod
+podSecurityContext:
+  # -- (int) User that all the processes will run under in the container.
+  runAsUser: 1000
+  # -- (int) Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod.
+  fsGroup: 1000
+
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          # -- (list) Label key for match expression.
+          - key: app
+            # -- (string) Operation type for the match expression.
+            operator: In
+            # -- (list) Value for the match expression key.
+            values:
+            - sower
+        # -- (string) Value for topology key label.
+        topologyKey: "kubernetes.io/hostname"
+
+# -- (list) Volumes to attach to the container.
+volumes:
+  - name: sower-config
+    configMap:
+      name: manifest-sower
+      items:
+        - key: json
+          path: sower_config.json
+# -- (list) Volumes to mount to the container.
+volumeMounts:
+  - name: sower-config
+    readOnly: true
+    mountPath: /sower_config.json
+    subPath: sower_config.json
+
+# -- (string) AWS region to be used.
+awsRegion: us-east-1
+# -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
+awsStsRegionalEndpoints: regional
+# -- (string) Namespace to deploy the job.
+gen3Namespace: default
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
+  requests:
+    # -- (string) The amount of CPU requested
+    cpu: 100m
+    # -- (string) The amount of memory requested
+    memory: 20Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of memory the container can use
+    memory: 400Mi
+
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0
+
+# -- (bool) Automount the default service account token
+automountServiceAccountToken: true
+
+sowerConfig:
+  - name: pelican-export
+    action: export
+    container:
+      name: job-task
+      image: quay.io/cdis/pelican-export:master
+      pull_policy: Always
+      env:
+      - name: DICTIONARY_URL
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: dictionary_url
+      - name: GEN3_HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+      - name: ROOT_NODE
+        value: subject
+      volumeMounts:
+      - name: pelican-creds-volume
+        readOnly: true
+        mountPath: "/pelican-creds.json"
+        subPath: config.json
+      - name: peregrine-creds-volume
+        readOnly: true
+        mountPath: "/peregrine-creds.json"
+        subPath: creds.json
+      cpu-limit: '1'
+      memory-limit: 12Gi
+    volumes:
+    - name: pelican-creds-volume
+      secret:
+        secretName: pelicanservice-g3auto
+    - name: peregrine-creds-volume
+      secret:
+        secretName: peregrine-creds
+    restart_policy: Never
+  - name: pelican-export-files
+    action: export-files
+    container:
+      name: job-task
+      image: quay.io/cdis/pelican-export:master
+      pull_policy: Always
+      env:
+      - name: DICTIONARY_URL
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: dictionary_url
+      - name: GEN3_HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+      - name: ROOT_NODE
+        value: file
+      - name: EXTRA_NODES
+        value: ''
+      volumeMounts:
+      - name: pelican-creds-volume
+        readOnly: true
+        mountPath: "/pelican-creds.json"
+        subPath: config.json
+      - name: peregrine-creds-volume
+        readOnly: true
+        mountPath: "/peregrine-creds.json"
+        subPath: creds.json
+      cpu-limit: '1'
+      memory-limit: 12Gi
+    volumes:
+    - name: pelican-creds-volume
+      secret:
+        secretName: pelicanservice-g3auto
+    - name: peregrine-creds-volume
+      secret:
+        secretName: peregrine-creds
+    restart_policy: Never
+
+
+# -- (map) Service account to use or create.
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+  # -- (string) The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "sower-service-account"
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Core-Service"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:

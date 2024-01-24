@@ -34,21 +34,26 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "argo-wrapper.labels" -}}
-helm.sh/chart: {{ include "argo-wrapper.chart" . }}
-{{ include "argo-wrapper.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "argo-wrapper.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "argo-wrapper.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "argo-wrapper.name" . }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -70,16 +75,5 @@ Define environment
 {{- .Values.global.environment }}
 {{- else}}
 {{- .Values.environment }}
-{{- end }}
-{{- end }}
-
-{{/*
-Define ddEnabled
-*/}}
-{{- define "argo-wrapper.ddEnabled" -}}
-{{- if .Values.global }}
-{{- .Values.global.ddEnabled }}
-{{- else}}
-{{- .Values.dataDog.enabled }}
 {{- end }}
 {{- end }}

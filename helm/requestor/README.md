@@ -1,6 +1,6 @@
 # requestor
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
@@ -8,30 +8,36 @@ A Helm chart for gen3 Requestor Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.3 |
+| file://../common | common | 0.1.8 |
+| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"requestor"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
-| arboristUrl | string | `"http://arborist-service"` |  |
-| args[0] | string | `"-c"` |  |
-| args[1] | string | `"/env/bin/alembic upgrade head\n"` |  |
-| automountServiceAccountToken | bool | `false` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| command[0] | string | `"/bin/sh"` |  |
-| containerPort[0].containerPort | int | `80` |  |
-| dataDog.enabled | bool | `false` |  |
-| dataDog.env | string | `"dev"` |  |
-| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["requestor"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["requestor"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["requestor"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["requestor"]}` | Label key for match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["requestor"]` | Value for the match expression key. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
+| arboristUrl | string | `"http://arborist-service"` | Arborist service URL. |
+| args | list | `["-c","/env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
+| automountServiceAccountToken | bool | `false` | Automount the default service account token |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
+| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| command | list | `["/bin/sh"]` | Command to run for the init container. |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
+| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
+| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
+| global | map | `{"addDbgap":false,"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","minAvialable":1,"netPolicy":true,"onlyDbgap":false,"pdb":false,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Global configuration options. |
+| global.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -44,7 +50,10 @@ A Helm chart for gen3 Requestor Service
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
+| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
+| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -55,45 +64,51 @@ A Helm chart for gen3 Requestor Service
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
+| global.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
-| global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/requestor"` |  |
-| image.tag | string | `"master"` |  |
-| initContainerName | string | `"requestor-db-migrate"` |  |
-| initResources.limits.cpu | float | `0.8` |  |
-| initResources.limits.memory | string | `"512Mi"` |  |
-| livenessProbe.httpGet.path | string | `"/_status"` |  |
-| livenessProbe.httpGet.port | int | `80` |  |
-| livenessProbe.initialDelaySeconds | int | `30` |  |
-| livenessProbe.periodSeconds | int | `60` |  |
-| livenessProbe.timeoutSeconds | int | `30` |  |
-| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+| global.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
+| global.usersync | bool | `false` | Whether to run Fence usersync or not. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/requestor","tag":"master"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/requestor"` | Docker repository. |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| initContainerName | string | `"requestor-db-migrate"` | Name of the init container. |
+| initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
+| initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
+| initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
 | postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
 | postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
 | postgres.port | string | `"5432"` | Port for Postgres. |
+| postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| readinessProbe.httpGet.path | string | `"/_status"` |  |
-| readinessProbe.httpGet.port | int | `80` |  |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | releaseLabel | string | `"production"` |  |
-| replicaCount | int | `1` |  |
-| resources.limits.cpu | float | `1` |  |
-| resources.limits.memory | string | `"512Mi"` |  |
-| resources.requests.cpu | float | `0.1` |  |
-| resources.requests.memory | string | `"12Mi"` |  |
-| revisionHistoryLimit | int | `2` |  |
-| service.port[0].name | string | `"http"` |  |
-| service.port[0].port | int | `80` |  |
-| service.port[0].protocol | string | `"TCP"` |  |
-| service.port[0].targetPort | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| strategy.rollingUpdate.maxSurge | int | `1` |  |
-| strategy.rollingUpdate.maxUnavailable | int | `0` |  |
-| strategy.type | string | `"RollingUpdate"` |  |
-| volumeMounts | string | `nil` |  |
+| replicaCount | int | `1` | Number of replicas for the deployment. |
+| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
+| revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
+| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
+| strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
+| strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| volumeMounts | list | `nil` | Volumes to mount to the container. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

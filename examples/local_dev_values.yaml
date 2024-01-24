@@ -1,0 +1,36 @@
+global:
+  dev: true
+  hostname: localhost
+
+# configuration for fence helm chart. You can add it for all our services.
+fence:
+  # Fence config overrides 
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: ""
+        client_secret: ""
+
+    AWS_CREDENTIALS:
+      'fence-bot':
+        aws_access_key_id: ''
+        aws_secret_access_key: ''
+
+    S3_BUCKETS:
+      # Name of the actual s3 bucket
+      jq-helm-testing:
+        cred: 'fence-bot'
+        region: us-east-1
+    
+    # This is important for data upload.
+    DATA_UPLOAD_BUCKET: 'jq-helm-testing'
+
+
+portal:
+  image: 
+    repository: quay.io/cdis/data-portal-prebuilt 
+    tag: brh.data-commons.org-feat-pr_comment
+  resources:
+    requests:
+      cpu: 0.2
+      memory: 500Mi

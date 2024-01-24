@@ -2,66 +2,102 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- (map) Global configuration options.
+global:
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+
 # Deployment
+
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (list) Volumes to attach to the pod.
 volumes:
   - name: config-volume-g3auto
     secret:
       secretName: orthanc-g3auto
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/cdis/gen3-orthanc
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-readinessProbe:
-  httpGet:
-    path: /system
-    port: 8042
-  initialDelaySeconds: 5
-  periodSeconds: 20
-  timeoutSeconds: 30
-
-livenessProbe:
-  httpGet:
-    path: /system
-    port: 8042
-  initialDelaySeconds: 5
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-ports:
-  - containerPort: 8042
-
+# -- (list) Volumes to mount to the pod.
 volumeMounts:
   - name: config-volume-g3auto
     readOnly: true
     mountPath: /etc/orthanc/orthanc_config_overwrites.json
     subPath: orthanc_config_overwrites.json
 
-
 # Service and Pod
+# -- (map) Kubernetes service information.
 service:
+  # -- (int) The port number that the service exposes.
   port: 80
+  # -- (int) The port on the host machine that traffic is directed to.
   targetport: 8042
 
-# Secret
+# -- (map) Secret information
 secrets:
+  # -- (bool) Whether or not the password protection is enabled.
   authenticationEnabled: false
+  # -- (bool) Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end.
   enableIndex: true
+  # -- (bool) Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area.
   enableStorage: true
+  # -- (string) Port for Postgres.
   port: "5432"
+  # -- (string) Hostname for postgres server.
   host: postgres-postgresql.postgres.svc.cluster.local
+  # -- (string) Database name for postgres.
   dataBase: postgres
+  # -- (string) Username for postgres.
   userName: postgres
+  # -- (string) Password for Postgres.
   password: postgres
+  # -- (int) The number of connections from the index plugin to the PostgreSQL database.
   indexConnectionsCount: 5
+  # -- (bool) Whether to lock the database.
   lock: false
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Imaging"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

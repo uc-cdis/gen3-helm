@@ -5,10 +5,7 @@
 
 Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
 
-# Deployment instructions
-For a full set of configuration options see the [README.md for gen3](./helm/gen3/README.md)
-
-To see documentation around setting up gen3 developer environments see [gen3_developer_environments.md](./docs/gen3_developer_environments.md)
+# Deploying gen3 with helm
 
 ## TL;DR 
 ```
@@ -16,6 +13,34 @@ helm repo add gen3 https://helm.gen3.org
 helm repo update
 helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
 ```
+
+Assuming you already have the [prerequisites](./docs/PREREQUISITES.md) installed and configured, you can deploy Gen3 with the helm command.
+
+
+> **Warning**
+> The default Helm chart configuration is not intended for production. The default chart creates a proof of concept (PoC) implementation where all Gen3 services are deployed in the cluster, including postgres and elasticsearch. For production deployments, you must follow the [Production/Cloud Native/Hybrid architecture](./docs/PRODUCTION.md)
+
+
+For a production deployment, you should have strong working knowledge of Kubernetes. This method of deployment has different management, observability, and concepts than traditional deployments.
+
+In a production deployment:
+
+- The stateful components, like PostgreSQL or Elasticsearch, must run outside the cluster on PaaS or compute instances. This configuration is required to scale and reliably service the variety of workloads found in production Gen3 environments.
+
+- You should use Cloud PaaS for PostgreSQL, Elasticsearch, and object storage.
+
+
+## Configuration
+
+For a full set of configuration options see the [CONFIGURATION.md](./docs/CONFIGURATION.md) for a more in depth instructions on how to configure each service. 
+
+There's also an auto-generated table of basic configuration options here: 
+
+[README.md for gen3 chart](./helm/gen3/README.md) (auto-generated documentation) or 
+
+
+To see documentation around setting up gen3 developer environments see [gen3_developer_environments.md](./docs/gen3_developer_environments.md)
+
 
 Use the following as a template for your `values.yaml` file for a minimum deployment of gen3 using these helm charts.
 
@@ -27,30 +52,18 @@ global:
 
 fence: 
   FENCE_CONFIG:
-    OPENID_CONNECT:
-      google:
-        client_id: "insert.google.client_id.here"
-        client_secret: "insert.google.client_secret.here"
+    # Any fence-config overrides here. 
 ```
 
-This is to have a gen3 deployment with google login. You may also use MOCK_AUTH using the following config. NB! This will bypass any login and is only recommended for testing environments
-
-
-```yaml
-global:
-  hostname: example-commons.com
-
-fence: 
-  FENCE_CONFIG:
-    # if true, will automatically login a user with username "test"
-    # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
-    MOCK_AUTH: true
-```
 
 
 ## Selective deployments 
-All service helm charts are sub-charts of the gen3 chart (which acts as an umbrella chart)
-To enable or disable a service you can add this pattern to your `values.yaml`
+All gen3 services are sub-charts of the gen3 chart (which acts as an umbrella chart). 
+
+For your specific installation of gen3, you may not require all our services.
+
+
+To enable or disable a service you can use this pattern in your `values.yaml`
 
 ```yaml
 fence:
@@ -60,50 +73,12 @@ wts:
   enabled: false
 ```
 
-
-## Prerequisites
-
-### Kubernetes cluster
-Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE and Rancher Desktop. 
-
-It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's. You also get ingress and other benefits out of the box. 
-
-### Postgres 
-We need a postgres database. For development/CI clusters an instance of postgres is deployed and automatically configured for you.
-
-For production environments please fill out these values and provide a master password for postgres
-
-```
-global:
-  postgres:
-    db_create: true
-    master:
-      host: insert.postgres.hostname.here
-      username: postgres
-      password: <Insert.Password.Here>
-      port: "5432"
-```
-
-
-### Login Options
+## Gen3 Login Options
 Gen3 does not have any IDP, but can integrate with many. We will cover Google login here, but refer to the fence documentation for additional options. 
 
 TL/DR: At minimum to have google logins working you need to set these settings in your `values.yaml` file
 
 ```
-global:
-  aws:
-    # If you're deploying to an EKS set this to true. This will annotate ingress/service accounts appropriately. 
-    # In the future we will be adding support for GKE/AKS using same method.
-    enabled: true
-      aws_access_key_id: 
-      aws_secret_access_key:
-  postgres:
-    master:
-      host: "rds.host.com"
-      username: "postgres"
-      password: "test"
-      port: "5432"
 fence: 
   FENCE_CONFIG:
     OPENID_CONNECT:
@@ -134,13 +109,16 @@ For `"Authorized redirect URIs"` add  `https://<hostname>/user/login/google/logi
 After configuration is complete, take note of the client ID that was created. You will need the client ID and client secret to complete the next steps. 
 
 # Production deployments
-For production deployments you have to use an external postgres server and elasticsearch server.
+Please read [this](./docs/PRODUCTION.md) for more details on production deployments. 
 
 NOTE: Gen3 helm charts are currently not used in production by CTDS, but we are aiming to do that soon and will have additional documentation on that.
 
 # Local Development
 
 For local development you must be connected to a kubernetes cluster. As referenced above in the section `Kubernetes cluster` we recommend using [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your local machine, especially on M1 Mac's. You also get ingress and other benefits out of the box.
+
+> **Warning**
+> If you are using Rancher Desktop you need to increase the vm.max_map_count as outlined [here](https://docs.rancherdesktop.io/how-to-guides/increasing-open-file-limit/)
 
 1. Clone the repository
 2. Navigate to the `gen3-helm/helm/gen3` directory and run `helm dependency update`

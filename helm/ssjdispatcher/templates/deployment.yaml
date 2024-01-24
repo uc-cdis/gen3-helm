@@ -2,24 +2,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ssjdispatcher
+  labels:
+    {{- include "ssjdispatcher.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
-      {{- with .Values.selectorLabels }}
       matchLabels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
   revisionHistoryLimit: 2
   strategy:
     {{- toYaml .Values.strategy | nindent 8 }}  
   template:
     metadata:
-      {{- with .Values.labels }}
       labels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.selectorLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
+        netnolimit: "yes"
+        public: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -33,11 +36,14 @@ spec:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: ssjdispatcher
-          image: "quay.io/cdis/ssjdispatcher:2022.08"
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             {{- with .Values.awsRegion  }}
             - name: AWS_REGION
               value: {{ . }}

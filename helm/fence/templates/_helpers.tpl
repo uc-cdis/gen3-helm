@@ -5,6 +5,24 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+
+
+{{/*
+a function to generate or get the jwt keys
+*/}}
+
+{{- define "getOrCreatePrivateKey" -}}
+{{- $secretName := "fence-jwt-keys" }}
+{{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
+{{- if $existingSecret }}
+{{- index $existingSecret.data "jwt_private_key.pem" }}
+{{- else }}
+{{- genPrivateKey "rsa" | b64enc }}
+{{- end }}
+{{- end -}}
+
+
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -34,20 +52,26 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "fence.labels" -}}
-helm.sh/chart: {{ include "fence.chart" . }}
-{{ include "fence.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "fence.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fence.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*

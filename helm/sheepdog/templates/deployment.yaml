@@ -8,6 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "sheepdog.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -23,17 +26,14 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
         s3: 'yes'
-      {{- if eq (include "sheepdog.ddEnabled" . ) "true" }}
-        tags.datadoghq.com/service: "sheepdog"
-        # TODO: move this to helpers so we can have this populated from a configmap
-        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
-      {{- end }}
-        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -51,6 +51,9 @@ spec:
         - name: sheepdog-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
           - name: DICTIONARY_URL
             value: {{ .Values.dictionaryUrl }}
           - name: PGHOST
@@ -103,18 +106,21 @@ spec:
         - name: sheepdog
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.ports}}
           ports:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-           {{- with .Values.livenessProbe }}
+            - containerPort: 80
+            - containerPort: 443
           livenessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12}}
-          {{- end }}
+            initialDelaySeconds: 30
+            httpGet:
+              path: /_status?timeout=2
+              port: 80
           # command: ["/bin/bash" ]
           # args: 
           #   - "-c"
@@ -197,7 +203,7 @@ spec:
               # valueFrom:
               #   secretKeyRef:
               #     name: indexd-service-creds
-              #     key: gdcapi
+              #     key: sheepdog
               #     optional: false
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
@@ -228,38 +234,6 @@ spec:
             #   value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "True"
-            {{- with .Values.ddTraceEnabled }}
-            - name: DD_TRACE_ENABLED
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddEnv }}
-            - name: DD_ENV
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddService }}
-            - name: DD_SERVICE
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddVersion }}
-            - name: DD_VERSION
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddLogsInjection }}
-            - name: DD_LOGS_INJECTION
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddProfilingEnabled }}
-            - name: DD_PROFILING_ENABLED
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddTraceSampleRate }}
-            - name: DD_TRACE_SAMPLE_RATE
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.ddTraceAgentHostname }}
-            - name: DD_TRACE_AGENT_HOSTNAME
-              value: {{ . }}
-            {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

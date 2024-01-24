@@ -4,6 +4,9 @@ metadata:
   name: peregrine-deployment
   labels:
     {{- include "peregrine.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,6 +22,9 @@ spec:
       {{- end }}
       labels:
         {{- include "peregrine.selectorLabels" . | nindent 8 }}
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -38,6 +44,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -142,7 +151,7 @@ spec:
           volumeMounts:
             - name: "config-volume"
               readOnly: true
-              mountPath: "/var/www/peregrine/settings.py"
+              mountPath: "/var/www/peregrine/wsgi.py"
               subPath: "settings.py"
           ports:
             - name: http

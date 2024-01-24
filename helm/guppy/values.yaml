@@ -42,60 +42,82 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers.
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
+  dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
-
-# Deployment
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
+# -- (map) AWS credentials to access the db restore job S3 bucket
 secrets:
+  # -- (string) AWS access key.
   awsAccessKeyId:
+  # -- (string) AWS secret access key.
   awsSecretAccessKey:
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
 
+# -- (bool) Whether Datadog is enabled.
 dataDog:
   enabled: false
   env: dev
 
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - guppy
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
+# -- (list) Volumes to attach to the pod.
 volumes:
   - name: guppy-config
     configMap:
@@ -104,68 +126,53 @@ volumes:
         - key: guppy_config.json
           path: guppy_config.json
 
+# -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/cdis/guppy
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 
 # Environment Variables
-esEndpoint: ""
+# -- (string) Elasticsearch endpoint.
+esEndpoint: "gen3-elasticsearch-master:9200"
+# -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
-tierAccessLevel: regular
-# acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
-tierAccessLimit: 1000
-# Placeholders for datadog
-ddTraceEnabled:
-ddEnv:
-ddService:
-ddVersion:
-ddLogsInjection:
-ddProfilingEnabled:
-ddTraceSampleRate:
-ddTraceAgentHostname:
 
-
-livenessProbe:
-  httpGet:
-    path: /_status
-    port: 8000
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-readinessProbe:
-  httpGet:
-    path: /_status
-    port: 8000
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-containerPort:
-  - containerPort: 8000
-
+# -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: guppy-config
     readOnly: true
     mountPath: /guppy/guppy_config.json
     subPath: guppy_config.json
 
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
     cpu: 0.1
+    # -- (string) The amount of memory requested
     memory: 500Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
+    # -- (string) The maximum amount of CPU the container can use
     cpu: 1
+    # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
 
-# Service and Pod
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port:
     - protocol: TCP
       port: 80
@@ -189,4 +196,24 @@ enableEncryptWhitelist: true
 encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
-dbRestore: true
+dbRestore: false
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Explorer-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

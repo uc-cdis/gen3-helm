@@ -1,0 +1,22 @@
+{{- if and (eq .Values.global.dev true) (eq .Values.global.aws.enabled false) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: revproxy-dev
+spec:
+{{- if .Values.global.dev }}
+  tls:
+  - secretName: gen3-certs
+  {{- end  }}
+  rules:
+    - host: {{ default .Values.global.hostname .Values.hostname }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  revproxy-service
+                port:
+                  number: 80
+  {{- end  }}

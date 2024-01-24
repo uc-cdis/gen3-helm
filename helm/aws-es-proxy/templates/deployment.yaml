@@ -8,6 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "aws-es-proxy.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -25,6 +28,9 @@ spec:
       labels:
         {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
         netvpc: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       {{- with .Values.volumes }}
@@ -40,6 +46,9 @@ spec:
             {{- toYaml . | nindent 12}}
           {{- end }}
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             - name: ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
           {{- with .Values.volumeMounts }}

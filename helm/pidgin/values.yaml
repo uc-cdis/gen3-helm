@@ -42,13 +42,9 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
@@ -56,6 +52,10 @@ global:
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -75,82 +75,80 @@ postgres:
   password:
 
 # Deployment
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
+# -- (int) Number of desired replicas
 replicaCount: 1
 
+# -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
 
+# -- (bool) Whether Datadog is enabled.
 dataDog:
   enabled: false
   env: dev
 
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - pidgin
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
+# -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
 image:
+  # -- (string) The Docker image repository for the fence service
   repository: quay.io/cdis/pidgin
+  # -- (string) When to pull the image.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-# Environment Variables
-# Placeholders for datadog
-ddTraceEnabled:
-ddEnv:
-ddService:
-ddVersion:
-ddLogsInjection:
-ddProfilingEnabled:
-ddTraceSampleRate:
-ddTraceAgentHostname:
-
-livenessProbe:
-  httpGet:
-    path: /_status
-    port: 80
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-readinessProbe:
-  httpGet:
-    path: /_status
-    port: 80
-
-containerPort:
-  - containerPort: 80
-  - containerPort: 443
-
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
   # limits:
   #   cpu: 1
   #   memory: 512Mi
 
 # Service and Pod
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (list) The port numbers that the service exposes.
   port:
     - protocol: TCP
       port: 80
@@ -160,3 +158,23 @@ service:
       port: 443
       targetPort: 443
       name: https
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Peregrine"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

@@ -17,7 +17,7 @@ pgport = environ.get("PGPORT", 5432)
 
 # TODO: FIX THIS TO READ FROM ENV VARS
 index_config = {
-    "DEFAULT_PREFIX": environ.get("DEFAULT_PREFIX", "testprefix"),
+    "DEFAULT_PREFIX": environ.get("DEFAULT_PREFIX", "testprefix/"),
     "PREPEND_PREFIX": environ.get("PREPEND_PREFIX", True),
 }
 

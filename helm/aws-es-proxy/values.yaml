@@ -1,17 +1,33 @@
+# Default values for aws-es-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- (map) Global configuration options.
+global:
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+
 # -- (map) Annotations to add to the pod
 podAnnotations:
 
-# -- (bool) Enable autoscaling
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled or not
   enabled: false
-  # -- (int) Minimum number of replicas
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
-  # -- (int) Maximum number of replicas
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
-# -- (int) Number of replicas
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
 # -- (int) Number of old revisions to retain
@@ -21,23 +37,27 @@ revisionHistoryLimit: 2
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
-# -- (list) List of volumes
+# -- (list) Volumes to attach to the pod
 volumes:
   - name: credentials
     secret:
       secretName: aws-es-proxy
 
-# -- (map) Image information
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/cdis/aws-es-proxy
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # -- (str) Image tag
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 # -- (list) List of container ports
@@ -47,23 +67,30 @@ ports:
 # -- (str) Elasticsearch endpoint in AWS
 esEndpoint: test.us-east-1.es.amazonaws.com
 
-# -- (list) List of volume mounts
+# -- (list) Volumes to mount to the pod.
 volumeMounts:
   - name: credentials
     readOnly: true
     mountPath: /root/.aws
 
-# -- (map) Resource limits
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
     cpu: 0.1
+    # -- (string) The amount of memory requested
     memory: 250Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
+    # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
-# -- (map) Service information
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 9200
 
 # -- (map) Secret information
@@ -72,3 +99,23 @@ secrets:
   awsAccessKeyId: ""
   # -- (str) AWS secret access key
   awsSecretAccessKey: ""
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Explorer-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

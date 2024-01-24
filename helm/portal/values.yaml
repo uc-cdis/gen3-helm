@@ -41,48 +41,62 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
-  # -- (string) Access level for tiers.
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`.
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Docker image information.
 image:
-  repository: quay.io/cdis/data-portal-prebuilt
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/data-portal
+  # -- (string) Docker pull policy.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "brh.data-commons.org-feat-develop"
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
 
-
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
 nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created.
   create: true
-  # Annotations to add to the service account
+  # -- (map) Annotations to add to the service account.
   annotations: {}
-  # The name of the service account to use.
+  # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# -- (map) Annotations to add to the pod
 podAnnotations: {}
 
+# -- (map) Security context to apply to the pod
 podSecurityContext: {}
   # fsGroup: 2000
 
+# -- (map) Security context to apply to the container
 securityContext: {}
   # capabilities:
   #   drop:
@@ -91,67 +105,360 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 80
 
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- (map) Node selector to apply to the pod
 nodeSelector: {}
 
+# -- (list) Tolerations to apply to the pod
 tolerations: []
 
-selectorLabels:
-  app: portal
-
+# -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 2
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 25%
 
-labels:
-  app: portal
-  public: "yes"
-
-
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - portal
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
+# -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The amount of resources that the container requests
   requests:
-    cpu: 0.8
-    memory: 4096Mi
-  limits:
+    # -- (string) The amount of CPU requested
     cpu: 2.0
+    # -- (string) The amount of memory requested
+    memory: 4096Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of memory the container can use
     memory: 4096Mi
 
-portalApp: "gitops"
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Front-End"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1
 
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string) multiline string - gitops.json
-  # json: |
-  # 
+  json: |
+    {
+      "graphql": {
+        "boardCounts": [
+          {
+            "graphql": "_case_count",
+            "name": "Case",
+            "plural": "Cases"
+          },
+          {
+            "graphql": "_experiment_count",
+            "name": "Experiment",
+            "plural": "Experiments"
+          },
+          {
+            "graphql": "_aliquot_count",
+            "name": "Aliquot",
+            "plural": "Aliquots"
+          }
+        ],
+        "chartCounts": [
+          {
+            "graphql": "_case_count",
+            "name": "Case"
+          },
+          {
+            "graphql": "_experiment_count",
+            "name": "Experiment"
+          },
+          {
+            "graphql": "_aliquot_count",
+            "name": "Aliquot"
+          }
+        ],
+        "projectDetails": "boardCounts"
+      },
+      "components": {
+        "appName": "Generic Data Commons Portal",
+        "index": {
+          "introduction": {
+            "heading": "Data Commons",
+            "text": "The Generic Data Commons supports the management, analysis and sharing of data for the research community.",
+            "link": "/submission"
+          },
+          "buttons": [
+            {
+              "name": "Define Data Field",
+              "icon": "data-field-define",
+              "body": "The Generic Data Commons define the data in a general way. Please study the dictionary before you start browsing.",
+              "link": "/DD",
+              "label": "Learn more"
+            },
+            {
+              "name": "Explore Data",
+              "icon": "data-explore",
+              "body": "The Exploration Page gives you insights and a clear overview under selected factors.",
+              "link": "/explorer",
+              "label": "Explore data"
+            },
+            {
+              "name": "Access Data",
+              "icon": "data-access",
+              "body": "Use our selected tool to filter out the data you need.",
+              "link": "/query",
+              "label": "Query data"
+            },
+            {
+              "name": "Submit Data",
+              "icon": "data-submit",
+              "body": "Submit Data based on the dictionary.",
+              "link": "/submission",
+              "label": "Submit data"
+            }
+          ]
+        },
+        "navigation": {
+          "title": "Generic Data Commons",
+          "items": [
+            {
+              "icon": "dictionary",
+              "link": "/DD",
+              "color": "#a2a2a2",
+              "name": "Dictionary"
+            },
+            {
+              "icon": "exploration",
+              "link": "/explorer",
+              "color": "#a2a2a2",
+              "name": "Exploration"
+            },
+            {
+              "icon": "query",
+              "link": "/query",
+              "color": "#a2a2a2",
+              "name": "Query"
+            },
+            {
+              "icon": "workspace",
+              "link": "/workspace",
+              "color": "#a2a2a2",
+              "name": "Workspace"
+            },
+            {
+              "icon": "profile",
+              "link": "/identity",
+              "color": "#a2a2a2",
+              "name": "Profile"
+            }
+          ]
+        },
+        "topBar": {
+          "items": [
+            {
+              "icon": "upload",
+              "link": "/submission",
+              "name": "Submit Data"
+            },
+            {
+              "link": "https://gen3.org/resources/user",
+              "name": "Documentation"
+            }
+          ]
+        },
+        "login": {
+          "title": "Generic Data Commons",
+          "subTitle": "Explore, Analyze, and Share Data",
+          "text": "This website supports the management, analysis and sharing of human disease data for the research community and aims to advance basic understanding of the genetic basis of complex traits and accelerate discovery and development of therapies, diagnostic tests, and other technologies for diseases like cancer.",
+          "contact": "If you have any questions about access or the registration process, please contact ",
+          "email": "support@datacommons.io"
+        },
+        "certs": {},
+        "footerLogos": [
+          {
+            "src": "/src/img/gen3.png",
+            "href": "https://ctds.uchicago.edu/gen3",
+            "alt": "Gen3 Data Commons"
+          },
+          {
+            "src": "/src/img/createdby.png",
+            "href": "https://ctds.uchicago.edu/",
+            "alt": "Center for Translational Data Science at the University of Chicago"
+          }
+        ]
+      },
+      "requiredCerts": [],
+      "featureFlags": {
+        "explorer": true,
+        "noIndex": true,
+        "analysis": false,
+        "discovery": false,
+        "discoveryUseAggMDS": false,
+        "studyRegistration": false
+      },
+      "dataExplorerConfig": {
+        "charts": {
+          "project_id": {
+            "chartType": "count",
+            "title": "Projects"
+          },
+          "_case_id": {
+            "chartType": "count",
+            "title": "Cases"
+          },
+          "gender": {
+            "chartType": "pie",
+            "title": "Gender"
+          },
+          "race": {
+            "chartType": "bar",
+            "title": "Race"
+          }
+        },
+        "filters": {
+          "tabs": [
+            {
+              "title": "Case",
+              "fields":[
+                "project_id",
+                "gender",
+                "race",
+                "ethnicity"
+              ]
+            }
+          ]
+        },
+        "table": {
+          "enabled": false
+        },
+        "dropdowns": {},
+        "buttons": [],
+        "guppyConfig": {
+          "dataType": "case",
+          "nodeCountTitle": "Cases",
+          "fieldMapping": [
+            { "field": "disease_type", "name": "Disease type" },
+            { "field": "primary_site", "name": "Site where samples were collected"}
+          ],
+          "manifestMapping": {
+            "resourceIndexType": "file",
+            "resourceIdField": "object_id",
+            "referenceIdFieldInResourceIndex": "_case_id",
+            "referenceIdFieldInDataIndex": "node_id"
+          },
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id"
+        }
+      },
+      "fileExplorerConfig": {
+        "charts": {
+          "data_type": {
+            "chartType": "stackedBar",
+            "title": "File Type"
+          },
+          "data_format": {
+            "chartType": "stackedBar",
+            "title": "File Format"
+          }
+        },
+        "filters": {
+          "tabs": [
+            {
+              "title": "File",
+              "fields": [
+                "project_id",
+                "data_type",
+                "data_format"
+              ]
+            }
+          ]
+        },
+        "table": {
+          "enabled": true,
+          "fields": [
+            "project_id",
+            "file_name",
+            "file_size",
+            "object_id"
+          ]
+        },
+        "dropdowns": {},
+        "guppyConfig": {
+          "dataType": "file",
+          "fieldMapping": [
+            { "field": "object_id", "name": "GUID" }
+          ],
+          "nodeCountTitle": "Files",
+          "manifestMapping": {
+            "resourceIndexType": "case",
+            "resourceIdField": "_case_id",
+            "referenceIdFieldInResourceIndex": "object_id",
+            "referenceIdFieldInDataIndex": "object_id"
+          },
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id",
+          "downloadAccessor": "object_id"
+        }
+      }
+    }
   # -- (string) - favicon in base64
   favicon:
     "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nP84fZz/OH2c/zh9nP84fZz/OH6d/y9Zbf8gISX/Iykw/zVxjP83e5n/KUNR/yAeIv8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyL/ISMo/y5Vaf84fZz/OH2c/zh+nf8xYXj/LE5f/zh8m/84fZz/OH2c4SAfI+8gHyP/IB8k/yEkKf8gHyP/IB8j/yAfI/8pQU//NnaT/zh+nf84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fp3/MWN7/yIoL/8gHiH/Iykw/zVxjP84fp7/NnOQ/yY4Q/8gHiH/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB4i/yEkKv8uV2v/OH2b/zh9nf84fZz/N3eV/zh8m/84fZz/OH2c8CAfI/ggHyP/IB8j/yAfI/8gHiL/ICAk/ypFVP82d5T/OH6d/zh9nP84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fZz/OH2c/zh+nv8zaIH/Iy01/yAeIv8gHiL/Iysz/zRtiP84fp7/OH6d/zRviv8lMjz/IB4h/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAeIv8hJCn/LVNm/zd7mf84fp3/OH2c/zh9nP84fZz/OH2c+SAeIv0gHyP/IB8j/yAeIv8hJCn/LE9h/zd5l/84fp3/OH2c/zh9nP84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fZz/OH6e/zNpgv8kLzj/IB4i/yAeIv8iJSv/LVBj/ypIWf82dZL/OH6d/zh+nf80bIb/JTE7/yAeIf8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHiL/ISIm/ypIWf82d5T/OH6d/zh9nP84fZz/OH2c/iAfI/8gHyP/IB8j/yQuNv8wXnT/OHyb/zh9nf84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fZz/OH2c/zh9nP84fp3/MmeA/yQuN/8gHiL/IB4i/yEiJ/8uVWn/NXGN/yMqMv8pQ1H/N3iW/zh+nf84fp3/NG2H/yU0Pv8gHiL/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8gHyP/IB8j/yAfI/8nO0f/NGyG/zh9nP84fZz/OH2c/yAf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"

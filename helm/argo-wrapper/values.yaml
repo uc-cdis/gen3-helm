@@ -2,42 +2,70 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- (map) Global configuration options.
+global:
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+
 # Deployment
+# -- (map) Annotations to add to the pod.
 podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
 
+# -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
+  # -- (bool) Whether autoscaling is enabled
   enabled: false
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
+  # -- (int) The target memory utilization percentage for autoscaling
+  # targetMemoryUtilizationPercentage: 80
 
+# -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (int) Number of old revisions to retain
 revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
 strategy:
   type: RollingUpdate
   rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
     maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
     maxUnavailable: 0
 
-dataDog:
-  enabled: false
-  env: dev
-
+# -- (map) Affinity to use for the deployment.
 affinity:
   podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
+    # -- (int) Weight value for preferred scheduling.
     - weight: 100
       podAffinityTerm:
         labelSelector:
           matchExpressions:
+          # -- (list) Label key for match expression.
           - key: app
+            # -- (string) Operation type for the match expression.
             operator: In
+            # -- (list) Value for the match expression key.
             values:
             - argo-wrapper
+        # -- (string) Value for topology key label.
         topologyKey: "kubernetes.io/hostname"
 
+# -- (list) Volumes to attach to the pod.
 volumes:
   - name: argo-config
     configMap:
@@ -46,48 +74,71 @@ volumes:
         - key: argo.json
           path: argo.json
 
+# -- (map) Docker image information.
 image:
+  # -- (string) Docker repository.
   repository: quay.io/cdis/argo-wrapper
+  # -- (string) Docker pull policy.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-livenessProbe:
-  httpGet:
-    path: /test
-    port: 8000
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 30
-
-ports:
-  - containerPort: 8000
-    protocol: TCP
-
+# -- (list) Volumes to mount to the pod.
 volumeMounts:
   - name: argo-config
     readOnly: true
     mountPath: /argo.json
     subPath: argo.json
 
+# -- (map) Resource requests and limits for the containers in the pod
 resources:
+  # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
+    # -- (string) The maximum amount of CPU the container can use
     cpu: 100m
+    # -- (string) The maximum amount of memory the container can use
     memory: 128Mi
 
-
-# Service and Pod
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 8000
 
 # Configmap
+# -- (list) The workflow scaling groups to be used by Argo.
 scalingGroups:
 - user1: "workflow1"
 - user2: "workflow2"
 - user3: "workflow3"
+# -- (string) S3 bucket name for Argo artifacts (allows pre-signed URLs).
 s3Bucket: "argo-artifact-downloadable"
+# -- (string) Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs).
 internalS3Bucket: "argo-internal-bucket"
+# -- (string) Admin user for Indexd.
 indexdAdminUser: "fence"
+# -- (string) Environment name.
 environment: "default"
+# -- (string) PVC for Argo.
 pvc: "test-pvc"
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Apps-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# Values to configure datadog if ddEnabled is set to "true".
+# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
+datadogLogsInjection: true
+# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
+datadogProfilingEnabled: true
+# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
+datadogTraceSampleRate: 1

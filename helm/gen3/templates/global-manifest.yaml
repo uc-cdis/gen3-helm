@@ -8,12 +8,9 @@ data:
   "revproxy_arn": {{ .Values.global.revproxyArn | quote }}
   "dictionary_url": {{ .Values.global.dictionaryUrl | quote }}
   "portal_app": {{ .Values.global.portalApp | quote }}
-  "kube_bucket": {{ .Values.global.kubeBucket | quote }}
-  "logs_bucket": {{ .Values.global.logsBucket | quote }}
-  "sync_from_dbgap": {{ .Values.global.syncFromDbgap | quote }}
-  "useryaml_s3path": {{ .Values.global.userYamlS3Path | quote }}
   "public_datasets": {{ .Values.global.publicDataSets | quote }}
   "tier_access_level": {{ .Values.global.tierAccessLevel | quote }}
+  "tier_access_limit": {{ .Values.global.tierAccessLimit | quote }}
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}

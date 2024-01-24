@@ -30,26 +30,29 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
 Common labels
 */}}
 {{- define "metadata.labels" -}}
-helm.sh/chart: {{ include "metadata.chart" . }}
-{{ include "metadata.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "metadata.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "metadata.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "metadata.name" . }}
-release: {{ .Values.releaseLabel }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -72,16 +75,5 @@ Create the name of the service account to use
 {{- default (index $localpass.data "postgres-password" | b64dec) }}
 {{- else }}
 {{- default .Values.postgres.password }}
-{{- end }}
-{{- end }}
-
-{{/*
-Define ddEnabled
-*/}}
-{{- define "metadata.ddEnabled" -}}
-{{- if .Values.global }}
-{{- .Values.global.ddEnabled }}
-{{- else}}
-{{- .Values.dataDog.enabled }}
 {{- end }}
 {{- end }}

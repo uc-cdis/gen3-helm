@@ -1,0 +1,8 @@
+{{- with .Values.usersync.projects }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: projects
+data:
+  projects.yaml: {{ . }}
+{{- end }}

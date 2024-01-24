@@ -2,24 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: manifestservice-deployment
+  labels:
+    {{- include "manifestservice.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
-      {{- with .Values.selectorLabels }}
-      matchLabels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    matchLabels:
+      {{- include "manifestservice.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
     {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.labels }}
       labels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.selectorLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "manifestservice.selectorLabels" . | nindent 8 }}
+        s3: "yes"
+        public: "yes"
+        userhelper: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -31,9 +38,12 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
       containers:
         - name: manifestservice
-          image: "quay.io/cdis/manifestservice:2022.09"
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
