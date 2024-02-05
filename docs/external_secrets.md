@@ -1,6 +1,6 @@
 # External Secrets Operator
 
- "External Secrets Operator" is a tool that was created by the Kubernetes community to manage external secrets in a Kubernetes cluster. It allows you to fetch and sync external secret values from various external secret management systems into Kubernetes secrets. One of the external secret management systems it can connect to is AWS Secrets Manager. Secrets Manager allows for the secure storing of your secrets as well as the ability to periodically and automatically rotate your secrets.
+ "External Secrets Operator" is a tool that was created by the Kubernetes community to manage external secrets in a Kubernetes cluster. It allows you to fetch and sync external secret values from various external secret management systems into Kubernetes secrets. One of the external secret management systems it can connect to is AWS Secrets Manager. AWS Secrets Manager allows for the secure storing of your secrets as well as the ability to periodically and automatically rotate your secrets.
 
 This document will guide you through setting up the essential resources to access your secrets in AWS Secrets Manager and download the External Secrets Operator Helm chart. This way, you can effectively utilize your stored secrets with Helm.
 
@@ -8,7 +8,7 @@ This document will guide you through setting up the essential resources to acces
 You can use the following Bash script to apply the External Secrets Operator to your cluster and create the necessary AWS resources. Fill in the variables below to get started:
 
 ***Notice:
-The Gen3 Helm chart has various jobs and uses for an Iam user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same Iam user for External Secrets and jobs like ["Fence Usersync"](fence_usersync_job.md) or our "AWS ES Proxy Service", you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user. In case you opt for a global IAM user, please comment out the "create_iam_policy" and "create_iam_user" functions at the end of the script.***
+The Gen3 Helm chart has various jobs and uses for an IAM user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same IAM user for External Secrets and jobs like ["Fence Usersync"](fence_usersync_job.md) or our "AWS ES Proxy Service", you can follow [THIS](global_IAM_helm_user.md) guide that details how to setup a Helm global user. In case you opt for a global IAM user, please comment out the "create_iam_policy" and "create_iam_user" functions at the end of the script.***
 
 ```
 #!/bin/bash
@@ -31,7 +31,7 @@ helm_install()
 
 create_iam_policy()
 {
-    echo "# ------------------ create iam policy for secrets manager --------------------------#"
+    echo "# ------------------ create iam policy for aws secrets manager --------------------------#"
     POLICY_ARN=$(aws iam create-policy --policy-name $iam_policy --policy-document '{
         "Version": "2012-10-17",
         "Statement": [
@@ -76,17 +76,17 @@ create_iam_policy
 create_iam_user
 ```
 
-***Please note that Terraform for the creation and population of Gen3 Secrets in Secrets Manager is in development currently. This Terraform will also create the Iam user and policies necessary to access these secrets.***
+***Please note that Terraform for the creation and population of Gen3 Secrets in AWS Secrets Manager is in development currently. This Terraform will also create the Iam user and policies necessary to access these secrets.***
 
 ## Enabling External Secrets in Helm charts
 To enable External Secrets to be used in a helm chart, you can set the `.Values.global.externalSecrets.deploy` field to "true" for an individual chart or globally by enabling this value in the Gen3 umbrella Helm chart.
 
-If you would like to only use External Secrets for specific charts, please ensure you set `.Values.global.externalSecrets.separate` to "true" in the appropriate charts to ensure a Secret Store can be created to authenticate with Secrets Manager.
+If you would like to only use External Secrets for specific charts, please ensure you set `.Values.global.externalSecrets.separate` to "true" in the appropriate charts to ensure a Secret Store can be created to authenticate with AWS Secrets Manager.
 
-## Helm Iam User
-If you are using a separate Iam user for Secrets Manager please follow the below instructions: 
+## Helm IAM User
+If you are using a separate IAM user for AWS Secrets Manager please follow the below instructions: 
 
-This script Bash script at the beginning of this document should have created a secret titled "NameofIAMuser-user-secret" in your cluster. You will need to retrieve these values to input into your Helm chart for the Cluster Secret Store to authenticate with Secrets Manager.
+This script Bash script at the beginning of this document should have created a secret titled "NameofIAMuser-user-secret" in your cluster. You will need to retrieve these values to input into your Helm chart for the Cluster Secret Store to authenticate with AWS Secrets Manager.
 
 
 Access Key:
@@ -100,7 +100,7 @@ Secret Access Key
 kubectl get secret "your secret name" -o jsonpath="{.data.secret-access-key}" | base64 --decode
 ```
 
-You can paste the Iam access key and secret access key in the `.Values.secrets.awsAccessKeyId`/`.Values.secrets.awsSecretAccessKey` fields in the values.yaml file for the chart(s) you would like to use external secrets for. 
+You can paste the IAM access key and secret access key in the `.Values.secrets.awsAccessKeyId`/`.Values.secrets.awsSecretAccessKey` fields in the values.yaml file for the chart(s) you would like to use external secrets for. 
 
 If you are deploying external secrets with the Gen3 umbrella chart, you can utilize a local secret to avoid pasting credentials in the values.yaml file. Just set `.global.aws.useLocalSecret.enabled` to true and supply your secret name.
 
@@ -120,28 +120,28 @@ External Secrets relies on three main resources to function properly. (The below
       # Name of the External Secret resource
       name: audit-g3auto
     spec:
-      #How often to Sync with Secrets Manager
+      #How often to Sync with AWS Secrets Manager
       refreshInterval: 5m
       secretStoreRef:
         # The name of the Cluster Secret Store to use.
         name: {{include "cluster-secret-store" .}}
         kind: ClusterSecretStore
       target:
-        # What Kubernetes secret to create from the secret pulled from Secrets Manager.
+        # What Kubernetes secret to create from the secret pulled from AWS Secrets Manager.
         name: audit-g3auto
         creationPolicy: Owner
       data:
       # the key inside the new Kubernetes secret
       - secretKey: audit-service-config.yaml
           remoteRef:
-          #name of secret in secrets manager
+          #name of secret in AWS Secrets Manager
           key: {{include "audit-g3auto" .}}
     ```
 
-The External Secrets resource will usually fail with "SecretSyncedError" when it cannot find the secret name that is supplied in Secrets Manager. If this happens, the secret may still exist in Kubernetes, but it will not be overwritten by the secret value in Secrets Manager. This is helpful to know if you want to enabled the use of Secrets Manager for some, but not all the secrets in a specific Helm chart. 
+The External Secrets resource will usually fail with "SecretSyncedError" when it cannot find the secret name that is supplied in AWS Secrets Manager. If this happens, the secret may still exist in Kubernetes, but it will not be overwritten by the secret value in AWS Secrets Manager. This is helpful to know if you want to enabled the use of AWS Secrets Manager for some, but not all the secrets in a specific Helm chart. 
 
 ## Customizing the AWS Secrets Manager Secrets Name.
-When pulling a secret from secrets manager, you want to ensure that the External Secret resource is referencing the proper name of the secret in Secrets Manager.
+When pulling a secret from AWS Secrets Manager, you want to ensure that the External Secret resource is referencing the proper name of the secret in AWS Secrets Manager.
 You can customize the name of the secret to pull from in the `.Values.externalSecrets` section of a Chart. You can see the name for the confiugrable secrets in a chart by looking in this section as well. 
 
-Any string you put in this section will override the name of the secret that is pulled from Secrets Manager NOT the name of the Kubernetes secret that is created from the External Secret resource.
+Any string you put in this section will override the name of the secret that is pulled from AWS Secrets Manager NOT the name of the Kubernetes secret that is created from the External Secret resource.
