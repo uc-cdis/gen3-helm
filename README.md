@@ -117,8 +117,11 @@ NOTE: Gen3 helm charts are currently not used in production by CTDS, but we are 
 
 For local development you must be connected to a kubernetes cluster. As referenced above in the section `Kubernetes cluster` we recommend using [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your local machine, especially on M1 Mac's. You also get ingress and other benefits out of the box.
 
+For MacOS users, [Minikube](https://minikube.sigs.k8s.io/docs/start/) equipped with the ingress addon serves as a viable alternative to Rancher Desktop. On Linux, we've observed that using [Kind](https://kind.sigs.k8s.io/) with an NGINX ingress installed often provides a more seamless experience compared to both Rancher Desktop and Minikube. Essentially, Helm requires access to a Kubernetes cluster with ingress capabilities, facilitating the loading of the portal in your browser for an optimal development workflow.
+
 > **Warning**
 > If you are using Rancher Desktop you need to increase the vm.max_map_count as outlined [here](https://docs.rancherdesktop.io/how-to-guides/increasing-open-file-limit/)
+> If you are using Minikube you will need to enabled the ingress addon as outlined [here](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/)
 
 1. Clone the repository
 2. Navigate to the `gen3-helm/helm/gen3` directory and run `helm dependency update`
