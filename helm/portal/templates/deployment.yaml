@@ -41,7 +41,10 @@ spec:
           secretName: "portal-sponsor-config"
       - name: privacy-policy
         configMap:
-          name: "privacy-policy"     
+          name: "privacy-policy"
+      - name: custom-img-volume
+        hostPath:
+          path: {{ .Values.customImagePath | quote }}
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -192,4 +195,5 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
-              
+            - name: "custom-img-volume"
+              mountPath: "/data-portal/custom/images"
