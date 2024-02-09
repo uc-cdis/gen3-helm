@@ -158,6 +158,8 @@ spec:
                     key: hostname
             - name: userYamlS3Path
               value: {{ .Values.usersync.userYamlS3Path | quote }}
+            - name: s3Endpoint
+              value: {{ .Values.usersync.s3Endpoint | quote }}
             - name: slackWebHook
               value: {{ .Values.usersync.slack_webhook | quote }}
             volumeMounts:
@@ -185,7 +187,7 @@ spec:
                   n=0
                   until [ $n -ge 5 ]; do
                     echo "Download attempt $n"
-                    aws s3 cp "${userYamlS3Path}" /mnt/shared/user.yaml && break
+                    aws s3 cp "${userYamlS3Path}" /mnt/shared/user.yaml --endpoint-url $s3Endpoint && break
                     n=$[$n+1]
                     sleep 2
                     echo "test 1"

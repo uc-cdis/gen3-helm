@@ -102,6 +102,8 @@ usersync:
   onlyDbgap: false
   # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (string) The endpoint url of your s3 service
+  s3Endpoint: https://s3.amazonaws.com
   # -- (string) Slack webhook endpoint used with certain jobs.
   slack_webhook: None
   # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
