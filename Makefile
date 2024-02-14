@@ -4,22 +4,22 @@ update: ## Update from the local helm chart repository
 	@helm dependency update ./helm/gen3
 	
 local: DEPLOY=local
-local: local-context deploy ## Deploy the Local commons
+local: deploy ## Deploy the Local commons
 local-context: change-context # Change to the Local context
 local local-context: CONTEXT=rancher-desktop
 
 development: DEPLOY=development
-development: development-context deploy zip ## Deploy the Development commons
+development: deploy zip ## Deploy the Development commons
 development-context: change-context # Change to the Development contextt
 development development-context: CONTEXT=arn:aws:eks:us-west-2:119548034047:cluster/aced-commons-development
 
 staging: DEPLOY=staging
-staging: check-context deploy zip ## Deploy the Staging commons
+staging: deploy zip ## Deploy the Staging commons
 staging-context: change-context # Change to the Staging context
 staging staging-context: CONTEXT=arn:aws:eks:us-west-2:119548034047:cluster/aced-commons-staging
 
 production: DEPLOY=production
-production: check-context deploy zip ## Deploy the Production commons
+production: deploy zip ## Deploy the Production commons
 production-context: change-context  # Change to the Production context
 production production-context: CONTEXT=arn:aws:eks:us-west-2:119548034047:cluster/aced-commons-production
 
@@ -30,51 +30,46 @@ change-context:
 	@kubectl config use-context $(CONTEXT)
 
 check-secrets:
+	@printf "Checking Secrets..."
 	@$(eval ACTUAL=$(shell [ -z $(shell readlink Secrets) ] && echo "<empty>" || echo $(shell readlink Secrets)))
 	@[ "$(ACTUAL)" == "Secrets-$(DEPLOY)" ] || \
-	(printf "\033[1mUnexpected Secrets link\033[0m\n"; \
-	 printf "\033[92mExpected Secrets:\033[0m Secrets-$(DEPLOY)\n"; \
-	 printf "\033[93mActual Secrets:\033[0m   $(ACTUAL)\n"; \
-	 read -p "Change Secrets link to $(DEPLOY)? [y/N]: " sure && \
-	 	case "$$sure" in \
-	 		[yY]) true;; \
-	 		*) exit 1;; \
-	 	esac; \
-	 rm -f Secrets; \
-	 echo "Changing Secrets link to Secrets-$(DEPLOY)"; \
-	 ln -s Secrets-$(DEPLOY) Secrets)
+		(echo "Unexpected Secrets link"; \
+		echo "Expected Secrets: Secrets-$(DEPLOY)"; \
+		echo "Actual Secrets: $(ACTUAL)"; \
+		exit 1)
+	@echo "OK"
 
 check-context:
+	@printf "Checking Context..."
 	@$(eval ACTUAL=$(shell kubectl config current-context))
-	@[ $(ACTUAL) == $(CONTEXT) ] || \
-		(printf "\033[1mUnexpected context\033[0m\n"; \
-		 printf "\033[92mExpected context:\033[0m $(CONTEXT)\n"; \
-		 printf "\033[93mActual context:\033[0m   $(ACTUAL)\n"; \
+	@[ "$(ACTUAL)" == "$(CONTEXT)" ] || \
+		(echo "Unexpected Context"; \
+		 echo "Expected Context: $(CONTEXT)"; \
+		 echo "Actual Context: $(ACTUAL)"; \
 		 exit 1)
+	@echo "OK"
 
 clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@$(eval ACTUAL=$(shell kubectl config current-context))
 	@$(eval DEPLOY=$(shell case $(ACTUAL) in \
 		(rancher-desktop) echo "local";; \
-		(*development) 		echo "development";; \
-		(*staging) 				echo "staging";; \
-		(*production) 		echo "production";; \
-	esac))
-
-	@read -p "Uninstall $(DEPLOY) deployment? [y/N]: " sure && \
-		case "$$sure" in \
+		(*development) 	  echo "development";; \
+		(*staging)        echo "staging";; \
+		(*production)     echo "production";; \
+		esac)) \
+	@read -p "Uninstall $(DEPLOY) deployment? [y/N]: " confirm && \
+		case "$$confirm" in \
 			[yY]) true;; \
 			*) false;; \
-		esac
-	@echo "Uninstalling $(DEPLOY)"
-
-	@-helm uninstall $(DEPLOY)
-	@kubectl delete secrets --all
-	@kubectl delete configmaps --all
-	@kubectl delete jobs --all
+		esac \
+	@echo "Uninstalling $(DEPLOY)" \
+	@-helm uninstall $(DEPLOY) \
+	@kubectl delete secrets --all \
+	@kubectl delete configmaps --all \
+	@kubectl delete jobs --all \
 
 deploy: check-context check-secrets
-	@echo "Deploying $(DEPLOY)"
+	@echo "Deploying $(DEPLOY)..."
 	@if [ "$(DEPLOY)" = "local" ]; then \
 		helm upgrade --install $(DEPLOY) ./helm/gen3 \
 			-f Secrets/values.yaml \
