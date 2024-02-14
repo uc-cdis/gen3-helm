@@ -90,7 +90,6 @@ deploy: check-context check-secrets
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
 zip: 
 	@$(eval TIMESTAMP="$(DEPLOY)-$(shell date +"%Y-%m-%dT%H-%M-%S%z")")
-	echo $(TIMESTAMP)
 	@zip Secrets-$(TIMESTAMP).zip Secrets
 	@cp Secrets-$(TIMESTAMP).zip $(HOME)/OneDrive/ACED-deployments
 
