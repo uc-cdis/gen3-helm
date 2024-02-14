@@ -69,7 +69,7 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete jobs --all \
 
 deploy: check-context check-secrets
-	@echo "Deploying $(DEPLOY)..."
+	@echo "Deploying $(DEPLOY)"
 	@if [ "$(DEPLOY)" = "local" ]; then \
 		helm upgrade --install $(DEPLOY) ./helm/gen3 \
 			-f Secrets/values.yaml \
