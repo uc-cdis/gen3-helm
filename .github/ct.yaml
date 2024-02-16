@@ -7,6 +7,6 @@ chart-repos:
   - elastic=https://helm.elastic.co
 helm-extra-args: --timeout 600s
 check-version-increment: true
-debug: false
+debug: true
 validate-maintainers: false
 helm-dependency-extra-args: "--skip-refresh"
