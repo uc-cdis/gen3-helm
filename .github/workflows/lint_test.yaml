@@ -1,6 +1,7 @@
 name: Lint and Test Charts
 
-on: pull_request
+on:
+  - push
 
 jobs:
   lint-test:
@@ -53,10 +54,8 @@ jobs:
   #     - name: Set up chart-testing
   #       uses: helm/chart-testing-action@v2.6.1
 
-
   #     - name: Create kind cluster
   #       uses: helm/kind-action@v1.8.0
       
-
   #     - name: Run chart install + testing
   #       run: ct install --charts ./helm/gen3 --config .github/ct.yaml
