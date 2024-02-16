@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 global:
-  
+
   # -- (map) AWS configuration
   dbRestoreBucket: aced-development
   dbRestorePath: meta_graph_load.py
