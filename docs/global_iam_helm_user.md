@@ -1,4 +1,4 @@
-# AWS Iam Global User
+# AWS IAM Global User
 
 For Helm code resusability, we have added the functionality to use one iam user for various jobs/services.
 
