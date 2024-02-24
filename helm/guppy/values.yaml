@@ -47,11 +47,11 @@ global:
   # -- (string) Access level for tiers.
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
+  dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -141,7 +141,7 @@ image:
 
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: ""
+esEndpoint: "gen3-elasticsearch-master:9200"
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
 
@@ -196,7 +196,7 @@ enableEncryptWhitelist: true
 encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
-dbRestore: true
+dbRestore: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

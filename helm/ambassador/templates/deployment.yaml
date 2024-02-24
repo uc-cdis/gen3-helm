@@ -53,11 +53,7 @@ spec:
             {{- include "common.datadogEnvVar" . | nindent 10 }}
             {{- end }}
           - name: AMBASSADOR_NAMESPACE
-            value: {{ if eq .Release.Namespace "default" -}}
-                  {{- printf "%s" .Values.userNamespace | quote -}}
-                {{- else -}}
-                  {{- printf "%s-%s" .Values.userNamespace .Release.Name | quote -}}
-                {{- end }}
+            value: {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
           - name: AMBASSADOR_SINGLE_NAMESPACE
             value: "true"
           ports:

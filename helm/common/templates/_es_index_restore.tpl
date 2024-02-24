@@ -29,7 +29,7 @@ spec:
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation
             - name: ESHOST
-              value: elasticsearch:9200
+              value: {{ default "gen3-elasticsearch-master:9200"  $.Values.esEndpoint }}
             - name: GUPPY_INDICES
               value: {{ range $.Values.indices }} {{ .index }} {{ end }}
             - name: GUPPY_CONFIGINDEX
