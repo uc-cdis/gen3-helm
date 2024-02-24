@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "revproxy.fullname" . }}-test-connection"
+  name: "revproxy-test-connection"
   labels:
     {{- include "revproxy.labels" . | nindent 4 }}
   annotations:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "revproxy.fullname" . }}:{{ .Values.service.port }}']
+      args: ['revproxy-service:{{ .Values.service.port }}/_status']
   restartPolicy: Never
