@@ -1,0 +1,97 @@
+# Default values for ai-search.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+global:
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  dev: true
+
+  enabled: true
+
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+  # -- (bool) Whether the deployment is for development purposes.
+
+image:
+  repository: gen3discoveryai
+  # use Never for local images
+  pullPolicy: Never
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "openai"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+topics: "default"
+verboseLLMLogs: "False"
+debug: "False"
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+# -- (map) Kubernetes service information.
+service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
+  type: ClusterIP
+  # -- (int) The port number that the service exposes.
+  port:
+    - port: 80
+      targetPort: 8089
+      protocol: TCP
+      name: http
+
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+automountServiceAccountToken: false
