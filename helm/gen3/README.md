@@ -18,7 +18,7 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | ai-search | 0.1.2 |
+| file://../ai-search | ai-search | 0.1.2 |
 | file://../ambassador | ambassador | 0.1.9 |
 | file://../arborist | arborist | 0.1.9 |
 | file://../argo-wrapper | argo-wrapper | 0.1.5 |
