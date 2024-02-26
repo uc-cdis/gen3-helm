@@ -6,7 +6,7 @@ description: Helm chart to deploy Gen3 Data Commons
 dependencies:
 - name: ai-search
   version: 0.1.2
-  repositor1: "file://../ai-search"
+  repository: "file://../ai-search"
   condition: ai-search.enabled
 - name: ambassador
   version: 0.1.9
