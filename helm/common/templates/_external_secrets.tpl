@@ -24,8 +24,8 @@ metadata:
 spec:
   refreshInterval: 5m
   secretStoreRef:
-    name: {{include "common.clusterSecretStore" .}}
-    kind: ClusterSecretStore
+    name: {{include "common.SecretStore" .}}
+    kind: SecretStore
   target:
     name: {{ $.Chart.Name }}-dbcreds
     creationPolicy: Owner
@@ -43,7 +43,7 @@ spec:
 */}}
 {{ define "common.secretstore" -}}
 apiVersion: external-secrets.io/v1beta1
-kind: ClusterSecretStore
+kind: SecretStore
 metadata:
   name: {{.Chart.Name}}-secret-store
 spec:
@@ -56,17 +56,15 @@ spec:
           accessKeyIDSecretRef:
             name: {{.Chart.Name}}-aws-config
             key: access-key
-            namespace: default
           secretAccessKeySecretRef:
             name: {{.Chart.Name}}-aws-config
             key: secret-access-key
-            namespace: default
 {{- end }}
 
 
 
 {{/*
-  #  Name of the clusterSecretStore
+  #  Name of the SecretStore
   #  We want to allow override here, in case a chart is being deployed without the umbrella chart, 
   #  or any other needs to deploy a separate secret store per service.
 */}}
@@ -74,7 +72,7 @@ spec:
 {{/*
   Cluster Secret Store for External Secrets
 */}}
-{{- define "common.clusterSecretStore" -}}
+{{- define "common.SecretStore" -}}
 {{- if .Values.global.externalSecrets.separate }}
   {{- .Chart.Name }}-secret-store
 {{- else }}

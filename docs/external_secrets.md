@@ -86,7 +86,7 @@ If you would like to only use External Secrets for specific charts, please ensur
 ## Helm IAM User
 If you are using a separate IAM user for AWS Secrets Manager please follow the below instructions: 
 
-This script Bash script at the beginning of this document should have created a secret titled "NameofIAMuser-user-secret" in your cluster. You will need to retrieve these values to input into your Helm chart for the Cluster Secret Store to authenticate with AWS Secrets Manager.
+This script Bash script at the beginning of this document should have created a secret titled "NameofIAMuser-user-secret" in your cluster. You will need to retrieve these values to input into your Helm chart for the Secret Store to authenticate with AWS Secrets Manager.
 
 
 Access Key:
@@ -125,7 +125,7 @@ External Secrets relies on three main resources to function properly. (The below
       secretStoreRef:
         # The name of the Cluster Secret Store to use.
         name: {{include "cluster-secret-store" .}}
-        kind: ClusterSecretStore
+        kind: SecretStore
       target:
         # What Kubernetes secret to create from the secret pulled from AWS Secrets Manager.
         name: audit-g3auto

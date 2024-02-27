@@ -18,8 +18,6 @@ global:
       enabled: false
       # -- (string) Name of the local secret.
       localSecretName:
-      # -- (string) Namespace of the local secret.
-      localSecretNamespace:
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
