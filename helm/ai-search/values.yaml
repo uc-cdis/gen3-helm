@@ -10,9 +10,10 @@ global:
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+
   dev: true
 
-  enabled: true
+
 
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
@@ -30,19 +31,17 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "openai"
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
 
-topics: "default"
-verboseLLMLogs: "False"
-debug: "False"
+revisionHistoryLimit: 2
 
-podAnnotations: {}
-podLabels: {}
-
-podSecurityContext: {}
-securityContext: {}
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0
 
 # -- (map) Kubernetes service information.
 service:
@@ -55,19 +54,20 @@ service:
       protocol: TCP
       name: http
 
-
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
+  requests:
+    # -- (string) The amount of CPU requested
+    cpu: 0.1
+    # -- (string) The amount of memory requested
+    memory: 500Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of CPU the container can use
+    cpu: 1
+    # -- (string) The maximum amount of memory the container can use
+    memory: 2Gi
 
 autoscaling:
   enabled: false
@@ -95,3 +95,19 @@ tolerations: []
 affinity: {}
 
 automountServiceAccountToken: false
+
+# -- (bool) Whether Datadog is enabled.
+dataDog:
+  enabled: false
+  env: dev
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
