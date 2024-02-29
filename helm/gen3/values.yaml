@@ -41,7 +41,7 @@ global:
   # -- (string) ARN of the reverse proxy certificate.
   revproxyArn: arn:aws:acm:us-east-1:123456:certificate
   # -- (string) URL of the data dictionary.
-  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  dictionaryUrl: http://s3.amazonaws.com/dictionary-artifacts/midrc_dictionary/1.2.7/schema.json
   # -- (string) Portal application name.
   portalApp: gitops
   # -- (bool) Whether public datasets are enabled.
