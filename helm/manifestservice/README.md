@@ -41,9 +41,9 @@ A Helm chart for Kubernetes
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
-| global.externalSecrets | map | `{"deploy":false,"separate":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed. |
-| global.externalSecrets.separate | string | `false` | Will deploy a External Secret Store if deploying this sevice seperately. |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/manifestservice","tag":""}` | Docker image information. |

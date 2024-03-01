@@ -63,8 +63,8 @@ global:
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed.
     deploy: false
-    # -- (string) Will deploy a External Secret Store if deploying this sevice seperately.
-    separate: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
