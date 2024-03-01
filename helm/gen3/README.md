@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -48,20 +48,9 @@ Helm chart to deploy Gen3 Data Commons
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart. |
-| ambassador.image.repository | string | `nil` | The Docker image repository for the ambassador service. |
-| ambassador.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
-| arborist.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| arborist.image.repository | string | `nil` | The Docker image repository for the arborist service. |
-| arborist.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | argo-wrapper.enabled | bool | `true` | Whether to deploy the argo-wrapper subchart. |
-| argo-wrapper.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| argo-wrapper.image.repository | string | `nil` | The Docker image repository for the argo-wrapper service. |
-| argo-wrapper.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
-| audit.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| audit.image.repository | string | `nil` | The Docker image repository for the audit service. |
-| audit.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
@@ -74,15 +63,9 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
-| fence.FENCE_CONFIG | map | `nil` | Configuration settings for Fence app |
-| fence.USER_YAML | string | `nil` | USER YAML. Passed in as a multiline string. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
-| fence.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| fence.image.repository | string | `nil` | The Docker image repository for the fence service. |
-| fence.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
-| fence.usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""},"slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
+| fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","secrets":{"awsAccessKeyId":"","awsSecretAccessKey":""},"slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
-| fence.usersync.custom_image | string | `nil` | To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image. |
 | fence.usersync.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | fence.usersync.schedule | string | `"*/30 * * * *"` | The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default. |
 | fence.usersync.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
@@ -93,12 +76,6 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| gitops.createdby | string | `nil` | - createdby.png - base64 |
-| gitops.css | string | `nil` | - multiline string - gitops.css |
-| gitops.favicon | string | `nil` | - favicon in base64 |
-| gitops.json | string | `nil` | multiline string - gitops.json |
-| gitops.logo | string | `nil` | - logo in base64 |
-| gitops.sponsors | string | `nil` |  |
 | global.aws | map | `{"enabled":false}` | AWS configuration |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
@@ -118,9 +95,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
-| guppy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| guppy.image.repository | string | `nil` | The Docker image repository for the guppy service. |
-| guppy.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
 | hatchery.hatchery.containers[0].args[0] | string | `"--NotebookApp.base_url=/lw-workspace/proxy/"` |  |
 | hatchery.hatchery.containers[0].args[1] | string | `"--NotebookApp.default_url=/lab"` |  |
@@ -157,43 +131,19 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.sidecarContainer.lifecycle-pre-stop[4] | string | `"/bin/sh"` |  |
 | hatchery.hatchery.sidecarContainer.lifecycle-pre-stop[5] | string | `"root"` |  |
 | hatchery.hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
-| hatchery.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| hatchery.image.repository | string | `nil` | The Docker image repository for the hatchery service. |
-| hatchery.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
-| indexd.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| indexd.image.repository | string | `nil` | The Docker image repository for the indexd service. |
-| indexd.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
-| manifestservice.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| manifestservice.image.repository | string | `nil` | The Docker image repository for the manifest service service. |
-| manifestservice.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
-| metadata.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| metadata.image.repository | string | `nil` | The Docker image repository for the metadata service. |
-| metadata.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
-| peregrine.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| peregrine.image.repository | string | `nil` | The Docker image repository for the peregrine service. |
-| peregrine.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
-| pidgin.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| pidgin.image.repository | string | `nil` | The Docker image repository for the pidgin service. |
-| pidgin.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| portal.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| portal.image.repository | string | `nil` | The Docker image repository for the portal service. |
-| portal.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | requestor.image | map | `{"repository":null,"tag":null}` | Docker image information. |
 | requestor.image.repository | string | `nil` | The Docker image repository for the requestor service. |
 | requestor.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
-| revproxy.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| revproxy.image.repository | string | `nil` | The Docker image repository for the revproxy service. |
-| revproxy.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | revproxy.ingress.annotations | map | `{}` | Annotations to add to the ingress. |
 | revproxy.ingress.className | string | `""` | The ingress class name. |
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
@@ -203,17 +153,8 @@ Helm chart to deploy Gen3 Data Commons
 | secrets.awsAccessKeyId | string | `"test"` | AWS access key. |
 | secrets.awsSecretAccessKey | string | `"test"` | AWS secret access key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
-| sheepdog.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| sheepdog.image.repository | string | `nil` | The Docker image repository for the sheepdog service. |
-| sheepdog.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| ssjdispatcher.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| ssjdispatcher.image.repository | string | `nil` | The Docker image repository for the ssjdispatcher service. |
-| ssjdispatcher.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
-| wts.image | map | `{"repository":null,"tag":null}` | Docker image information. |
-| wts.image.repository | string | `nil` | The Docker image repository for the wts service. |
-| wts.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

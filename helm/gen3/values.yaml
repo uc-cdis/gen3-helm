@@ -57,41 +57,41 @@ global:
 ambassador:
   # -- (bool) Whether to deploy the ambassador subchart.
   enabled: true
-  image:
-    # -- (string) The Docker image repository for the ambassador service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the ambassador service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 arborist:
   # -- (bool) Whether to deploy the arborist subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the arborist service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the arborist service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 argo-wrapper:
   # -- (bool) Whether to deploy the argo-wrapper subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the argo-wrapper service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the argo-wrapper service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 audit:
   # -- (bool) Whether to deploy the audit subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the audit service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the audit service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 
 aws-es-proxy:
@@ -114,15 +114,15 @@ fence:
   # -- (bool) Whether to deploy the fence subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the fence service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the fence service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
   # -- (map) Configuration settings for Fence app
-  FENCE_CONFIG:
+  # FENCE_CONFIG:
   # -- (string) USER YAML. Passed in as a multiline string.
-  USER_YAML:
+  # USER_YAML:
   # -- (map) Configuration options for usersync cronjob.
   usersync:
     # -- (bool) Whether to run Fence usersync or not.
@@ -136,7 +136,7 @@ fence:
     # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
     schedule: "*/30 * * * *"
     # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
-    custom_image:
+    # custom_image:
     # -- (bool) Whether to sync data from dbGaP.
     syncFromDbgap: false
     # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
@@ -154,21 +154,21 @@ guppy:
   # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the guppy service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the guppy service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 hatchery:
   # -- (bool) Whether to deploy the hatchery subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the hatchery service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the hatchery service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
   hatchery:
     sidecarContainer:
@@ -237,11 +237,11 @@ indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the indexd service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the indexd service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
   # -- (string) the default prefix for indexd records
   defaultPrefix: "PREFIX/"
 
@@ -250,64 +250,51 @@ manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the manifest service service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the manifest service service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the metadata service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the metadata service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the peregrine service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the peregrine service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the pidgin service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # image:
+  #   # -- (string) The Docker image repository for the pidgin service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 portal:
   # -- (bool) Whether to deploy the portal subchart.
   enabled: true
   # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the portal service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
-  # -- (map) GitOps configuration for portal
-gitops:
-  # -- (string) multiline string - gitops.json
-  json:
-  # -- (string) - favicon in base64
-  favicon:
-  # -- (string) - multiline string - gitops.css
-  css:
-  # -- (string) - logo in base64
-  logo:
-  # -- (string) - createdby.png - base64
-  createdby:
-  sponsors:
+  # image:
+  #   # -- (string) The Docker image repository for the portal service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 
 requestor:
@@ -323,12 +310,12 @@ requestor:
 revproxy:
   # -- (bool) Whether to deploy the revproxy subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the revproxy service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # # -- (map) Docker image information.
+  # image:
+  #   # -- (string) The Docker image repository for the revproxy service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
   ingress:
     # -- (bool) Whether to create the custom revproxy ingress
@@ -348,33 +335,33 @@ revproxy:
 sheepdog:
   # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the sheepdog service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # # -- (map) Docker image information.
+  # image:
+  #   # -- (string) The Docker image repository for the sheepdog service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 ssjdispatcher:
   # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the ssjdispatcher service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # # -- (map) Docker image information.
+  # image:
+  #   # -- (string) The Docker image repository for the ssjdispatcher service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 
 wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the wts service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  # # -- (map) Docker image information.
+  # image:
+  #   # -- (string) The Docker image repository for the wts service.
+  #   repository:
+  #   # -- (string) Overrides the image tag whose default is the chart appVersion.
+  #   tag:
 
 # -- (map) AWS credentials to access the db restore job S3 bucket
 secrets:
