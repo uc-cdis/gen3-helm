@@ -79,9 +79,19 @@ create_iam_user
 ***Please note that Terraform for the creation and population of Gen3 Secrets in AWS Secrets Manager is in development currently. This Terraform will also create the Iam user and policies necessary to access these secrets.***
 
 ## Enabling External Secrets in Helm charts
-To enable External Secrets to be used in a helm chart, you can set the `.Values.global.externalSecrets.deploy` field to "true" for an individual chart or globally by enabling this value in the Gen3 umbrella Helm chart.
+Our Helm architecture includes a comprehensive [umbrella](https://github.com/uc-cdis/gen3-helm/tree/master/helm/gen) chart designed to streamline the deployment of external secrets across both the umbrella chart itself and its associated subcharts. By configuring the .Values.global.externalSecrets.deploy setting within this umbrella chart, users can effortlessly initiate the deployment of all related external secret resources. This includes the external secret resources within the subcharts and the secret store required for their management.
 
-If you would like to only use External Secrets for specific charts, please ensure you set `.Values.global.externalSecrets.separate` to "true" in the appropriate charts to ensure a Secret Store can be created to authenticate with AWS Secrets Manager.
+#### Global Deployment of External Secrets
+Upon deployment of the umbrella chart, the .Values.global.externalSecrets.deploy setting automatically provisions external secret resources for every subchart. This occurs regardless of the individual external secrets deployment settings within subcharts, even if they are explicitly set to false. This feature ensures a unified approach to secret management across all components of the architecture.
+
+#### Selective Secret Management
+For users requiring a more selective application of external secrets — targeting specific secrets while excluding others — the system is designed to accommodate such scenarios with ease. External secret resources will only attempt to replace Kubernetes secrets when a corresponding secret is successfully located within the Secrets Manager. In instances where a specific secret is not found, the External Secrets resource will indicate a SecretSyncedError, signaling the absence of the targeted resource within the Secrets Manager. This is helpful for users want to enabled the use of AWS Secrets Manager for some, but not all the secrets in a specific Helm chart.
+
+#### Independent Subchart Deployment
+In scenarios where subcharts are deployed independently, outside the scope of the umbrella chart, it is crucial to set the .Values.global.externalSecrets.deploy directive within the values.yaml file for each specific service. Additionally, to facilitate the creation of a Secret Store capable of authenticating with AWS Secrets Manager, the .Values.global.externalSecrets.separateSecretStore should be set to true in the relevant charts. This configuration is essential for establishing proper authentication mechanisms for secret retrieval.
+
+#### Configuring Separate Secret Stores
+The .Values.global.externalSecrets.separateSecretStore setting can also be applied within the context of the umbrella chart deployment. Utilizing this setting allows for the creation of distinct Secret Stores dedicated to individual services. This approach is particularly beneficial for environments where it is preferable to limit access to Secrets Manager, ensuring that services only have access to the secrets explicitly required for their operation.
 
 ## Helm IAM User
 If you are using a separate IAM user for AWS Secrets Manager please follow the below instructions: 
@@ -137,8 +147,6 @@ External Secrets relies on three main resources to function properly. (The below
           #name of secret in AWS Secrets Manager
           key: {{include "audit-g3auto" .}}
     ```
-
-The External Secrets resource will usually fail with "SecretSyncedError" when it cannot find the secret name that is supplied in AWS Secrets Manager. If this happens, the secret may still exist in Kubernetes, but it will not be overwritten by the secret value in AWS Secrets Manager. This is helpful to know if you want to enabled the use of AWS Secrets Manager for some, but not all the secrets in a specific Helm chart. 
 
 ## Customizing the AWS Secrets Manager Secrets Name.
 When pulling a secret from AWS Secrets Manager, you want to ensure that the External Secret resource is referencing the proper name of the secret in AWS Secrets Manager.
