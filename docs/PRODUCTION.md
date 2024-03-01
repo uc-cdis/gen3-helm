@@ -15,7 +15,7 @@ The postgres and helm charts are included as conditionals in the Gen3 [umbrella 
   ```
 
 ### Kubernetes Configmap and Secret Configuration
-For the seamless operation of our services, we utilize Kubernetes secrets. To streamline the integration and management of these secrets, we highly recommend deploying External Secret Manager alongside any existing secret management systems you may already have in place. For a comprehensive guide and best practices on implementing External Secrets within our ecosystem, please consult our dedicated External Secrets Documentation available [here](https://github.com/uc-cdis/gen3-helm/blob/feat/GPE-1032/docs/external_secrets.md).
+For the seamless operation of our services, we utilize Kubernetes secrets. To streamline the integration and management of these secrets, we highly recommend deploying External Secret Manager alongside any existing secret management systems you may already have in place. For a comprehensive guide and best practices on implementing External Secrets within our ecosystem, please consult our dedicated External Secrets Documentation available [here](https://github.com/uc-cdis/gen3-helm/blob/master/docs/external_secrets.md).
 
 Our services also utilize non-secret configuration variables provided via Kubernetes ConfigMaps. For streamlined management, we advise keeping your values.yaml and configuration files files in source control and utilizing ArgoCD for automatic updates and efficient management of your Gen3 Helm chart.
 
