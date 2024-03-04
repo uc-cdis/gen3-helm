@@ -20,7 +20,7 @@ You can pull this file from an S3 bucket that is set in the `.Values.usersync.us
 You can utilize a local secret to avoid pasting credentials in the values.yaml file. Just set `.global.aws.useLocalSecret.enabled` to true and supply your secret name.
 
 ***Notice:
-The Gen3 Helm chart has various jobs and uses for an Iam user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same Iam user for Fence Usersync, External Secrets, etc.- you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user.***
+The Gen3 Helm chart has various jobs and uses for an IAM user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same IAM user for Fence Usersync, External Secrets, etc.- you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user.***
 
 As previously mentioned, if the `.Values.usersync.userYamlS3Path` string is set to "none", the user.yaml file from Fence values.yaml will be used. 
  
