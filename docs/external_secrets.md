@@ -107,7 +107,7 @@ kubectl get secret "your secret name" -o jsonpath="{.data.access-key}" | base64 
 ```
 
 
-Secret Access Key
+Secret Access Key:
 ```
 kubectl get secret "your secret name" -o jsonpath="{.data.secret-access-key}" | base64 --decode
 ```
