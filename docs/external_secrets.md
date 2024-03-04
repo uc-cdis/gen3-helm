@@ -14,9 +14,9 @@ The Gen3 Helm chart has various jobs and uses for an IAM user. To enhance code r
 #!/bin/bash
 
 AWS_ACCOUNT="<Your AWS Account ID>" 
-region="<Desired AWS Region>"
-iam_policy="<Name of the Policy to Create>"
-iam_user="<Name of the User to Create>"
+region="us-east-1"
+iam_policy="external_secrets_policy"
+iam_user="external_secrets_user"
 
 helm_install() 
 {
