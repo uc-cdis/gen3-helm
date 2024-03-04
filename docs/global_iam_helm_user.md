@@ -1,6 +1,6 @@
 # AWS IAM Global User
 
-For Helm code resusability, we have added the functionality to use one iam user for various jobs/services.
+For Helm code reusability, we have added the functionality to use one IAM user for various jobs/services.
 
 We are currently in the process of integrating this user into our Terraform code. In the meantime, you can manually create a global user by referring to this guide.
 
