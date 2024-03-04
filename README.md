@@ -119,6 +119,14 @@ For local development you must be connected to a kubernetes cluster. As referenc
 
 For MacOS users, [Minikube](https://minikube.sigs.k8s.io/docs/start/) equipped with the ingress addon serves as a viable alternative to Rancher Desktop. On Linux, we've observed that using [Kind](https://kind.sigs.k8s.io/) with an NGINX ingress installed often provides a more seamless experience compared to both Rancher Desktop and Minikube. Essentially, Helm requires access to a Kubernetes cluster with ingress capabilities, facilitating the loading of the portal in your browser for an optimal development workflow.
 
+To install the NGINX ingress: 
+```
+  helm repo add nginx-stable https://helm.nginx.com/stable
+  helm repo update
+  kubectl create ns nginx-ingress
+  helm install nginx-ingress nginx-stable/nginx-ingress --namespace nginx-ingress 
+```
+
 > **Warning**
 > If you are using Rancher Desktop you need to increase the vm.max_map_count as outlined [here](https://docs.rancherdesktop.io/how-to-guides/increasing-open-file-limit/)
 > If you are using Minikube you will need to enabled the ingress addon as outlined [here](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/)
