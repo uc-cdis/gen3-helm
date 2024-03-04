@@ -122,9 +122,9 @@ Please note that only some Helm charts are compatible with External Secrets curr
 
 ## How External Secrets Works. 
 External Secrets relies on three main resources to function properly. (The below have links to examples of each resource)
-1. Aws-config- Contains Access and Secret Access keys used by the Cluster Secret Store to authenticate with AWS Secrets Manager
-2. Cluster Secret Store- Resource to Authenticate with AWS Secrets Manager
-3. External Secret- References the Secret Store and is used as a "map" to tell External Secrets Operator what secret to grab from External Secrets and the name of the Kubernetes Secret to create locally.
+1. [Aws-config](https://github.com/uc-cdis/gen3-helm/blob/master/helm/common/templates/_aws_config.tpl)- Contains Access and Secret Access keys used by the Cluster Secret Store to authenticate with AWS Secrets Manager
+2. [Secret Store](https://github.com/uc-cdis/gen3-helm/blob/master/helm/common/templates/_external_secrets.tpl#L41-L62)- Resource to Authenticate with AWS Secrets Manager
+3. [External Secret](https://github.com/uc-cdis/gen3-helm/blob/master/helm/common/templates/_external_secrets.tpl#L15-L38)- References the Secret Store and is used as a "map" to tell External Secrets Operator what secret to grab from External Secrets and the name of the Kubernetes Secret to create locally.
 
     Anatomy of an ExternalSecret:
     ```
@@ -137,7 +137,7 @@ External Secrets relies on three main resources to function properly. (The below
       #How often to Sync with AWS Secrets Manager
       refreshInterval: 5m
       secretStoreRef:
-        # The name of the Cluster Secret Store to use.
+        # The name of the Secret Store to use.
         name: {{include "cluster-secret-store" .}}
         kind: SecretStore
       target:
