@@ -95,7 +95,7 @@ In scenarios where subcharts are deployed independently, outside the scope of th
 Additionally, to facilitate the creation of a Secret Store capable of authenticating with AWS Secrets Manager, the `.Values.global.externalSecrets.separateSecretStore` should be set to true in the relevant charts. This configuration is essential for establishing proper authentication mechanisms for secret retrieval.
 
 #### Configuring Separate Secret Stores
-The .Values.global.externalSecrets.separateSecretStore setting can also be applied within the context of the umbrella chart deployment. Utilizing this setting allows for the creation of distinct Secret Stores dedicated to individual services. This approach is particularly beneficial for environments where it is preferable to limit access to Secrets Manager, ensuring that services only have access to the secrets explicitly required for their operation.
+The `.Values.global.externalSecrets.separateSecretStore` setting can also be applied within the context of the umbrella chart deployment. Utilizing this setting allows for the creation of distinct Secret Stores dedicated to individual services. This approach is particularly beneficial for environments where it is preferable to limit access to Secrets Manager, ensuring that services only have access to the secrets explicitly required for their operation.
 
 ## Helm IAM User
 If you are using a separate IAM user for AWS Secrets Manager please follow the below instructions: 
