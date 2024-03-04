@@ -21,3 +21,5 @@ Our services also utilize non-secret configuration variables provided via Kubern
 
 Each service is designed to seamlessly integrate and manage the combination of Kubernetes secrets and ConfigMaps, ensuring the encapsulated information is effectively injected into the underlying application.
 
+Please see the diagram provided [here](https://lucid.app/lucidchart/f0e9baf8-9179-4be0-ae65-182ed891df22/edit?invitationId=inv_83c83c6a-0f1d-4236-a13e-3131c1fc851f&page=TDBgA8eMNr7J#) that details how External Secrets operates. We also mention the use of Argo CD as our choice option for Helm deployments.
+
