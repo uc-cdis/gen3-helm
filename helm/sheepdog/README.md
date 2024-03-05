@@ -69,10 +69,10 @@ A Helm chart for gen3 Sheepdog Service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/sheepdog","tag":"helm-test"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/sheepdog","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/sheepdog"` | Docker repository. |
-| image.tag | string | `"helm-test"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indexdUrl | string | `"http://indexd-service"` | URL for the indexd service |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{"gen3.io/network-ingress":"sheepdog"}` | Annotations to add to the pod |
