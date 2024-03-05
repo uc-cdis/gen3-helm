@@ -201,6 +201,12 @@ datadogProfilingEnabled: true
 # -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
 datadogTraceSampleRate: 1
 
+
+# -- (map) Extra images to be mounted in the deployment.
+extraImages:
+  # - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
+
+
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string) multiline string - gitops.json
