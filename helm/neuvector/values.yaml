@@ -16,6 +16,7 @@ policies:
 
 # hostname/service name for our DB
 DB_HOST: development-gen3-postgresql
+# hostname/service name for our ElasitcSearch instance
 ES_HOST: gen3-elasticsearch-master
 
 # Prefix for relevant services deployed through Argo

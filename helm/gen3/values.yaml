@@ -423,3 +423,5 @@ neuvector:
     class: nginx
   # Required to allow egress to in-cluster database or external, managed database
   DB_HOST: development-gen3-postgresql
+  # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
+  ES_HOST: gen3-elasticsearch-master
