@@ -53,6 +53,9 @@ Helm chart to deploy Gen3 Data Commons
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
+| aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
+| aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
+| aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
@@ -120,6 +123,7 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].use-tls | string | `"false"` |  |
 | hatchery.hatchery.containers[0].user-uid | int | `1000` |  |
 | hatchery.hatchery.containers[0].user-volume-location | string | `"/home/jovyan/pd"` |  |
+| hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
 | hatchery.hatchery.sidecarContainer.env | map | `{"HOSTNAME":"{{ .Values.global.hostname }}","NAMESPACE":"{{ .Release.Namespace }}"}` | Environment variables to pass to the sidecar container |
@@ -141,6 +145,7 @@ Helm chart to deploy Gen3 Data Commons
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
+| revproxy.ingress.annotations | map | `{}` | Annotations to add to the ingress. |
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
 | revproxy.ingress.hosts | list | `[{"host":"chart-example.local"}]` | Where to route the traffic. |
 | revproxy.ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |

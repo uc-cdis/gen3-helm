@@ -85,6 +85,12 @@ aws-es-proxy:
   enabled: false
   # -- (str) Elasticsearch endpoint in AWS
   esEndpoint: test.us-east-1.es.amazonaws.com
+  # -- (map) Secret information
+  secrets:
+    # -- (str) AWS access key ID for aws-es-proxy
+    awsAccessKeyId: ""
+    # -- (str) AWS secret access key for aws-es-proxy
+    awsSecretAccessKey: ""
 
 etl:
   # -- (bool) Whether to deploy the etl subchart.
@@ -132,6 +138,8 @@ hatchery:
       env:
         NAMESPACE: "{{ .Release.Namespace }}"
         HOSTNAME: "{{ .Values.global.hostname }}"
+      # -- (list) Arguments to pass to the sidecare container.
+      args: []
       # -- (list) Commands to run for the sidecar container.
       command:
       - "/bin/bash"
@@ -220,6 +228,10 @@ revproxy:
   ingress:
     # -- (bool) Whether to create the custom revproxy ingress
     enabled: false
+    # -- (map) Annotations to add to the ingress.
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
     # -- (list) Where to route the traffic.
     hosts:
       - host: chart-example.local
