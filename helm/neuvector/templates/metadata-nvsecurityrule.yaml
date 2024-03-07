@@ -1,0 +1,87 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.metadata-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-22
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.metadata-deployment.{{ .Release.Namespace }}-ingress-56
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: alembic
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: grep
+    path: /bin/grep
+  - action: allow
+    allow_update: false
+    name: gunicorn
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: runc
+    path: /usr/bin/runc
+  - action: allow
+    allow_update: false
+    name: sed
+    path: /bin/sed
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /bin/dash
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: metadata-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.metadata-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

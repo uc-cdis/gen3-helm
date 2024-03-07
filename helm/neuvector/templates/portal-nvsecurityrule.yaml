@@ -1,0 +1,182 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.portal-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - any
+    name: nv.revproxy-deployment.{{ .Release.Namespace }}-egress-28
+    ports: tcp/80
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: nv.revproxy-deployment.{{ .Release.Namespace }}-egress-29
+    ports: tcp/80
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: nv.revproxy-deployment.{{ .Release.Namespace }}-egress-30
+    ports: tcp/80
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.sheepdog-deployment.{{ .Release.Namespace }}-egress-31
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: sheepdog-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.sheepdog-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.portal-deployment.{{ .Release.Namespace }}-ingress-64
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.portal-deployment.{{ .Release.Namespace }}-ingress-65
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.portal-deployment.{{ .Release.Namespace }}-ingress-66
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /usr/bin/bash
+  - action: allow
+    allow_update: false
+    name: nginx
+    path: /usr/sbin/nginx
+  - action: allow
+    allow_update: false
+    name: node
+    path: /usr/bin/node
+  - action: allow
+    allow_update: false
+    name: npm
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: npm
+    path: /usr/bin/node
+  - action: allow
+    allow_update: false
+    name: npx
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: relay-compiler
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /usr/bin/dash
+  - action: allow
+    allow_update: false
+    name: webpack
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: webpack
+    path: /usr/bin/node
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: portal-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.portal-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

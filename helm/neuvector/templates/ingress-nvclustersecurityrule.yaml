@@ -1,0 +1,130 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvClusterSecurityRule
+metadata:
+  name: {{ .Release.Namespace }}
+  namespace: ""
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress: []
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-0
+    ports: tcp/8089
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-1
+    ports: tcp/8089
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-2
+    ports: tcp/8089
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-3
+    ports: tcp/8089
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-4
+    ports: tcp/8089
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: deny
+    applications:
+    - any
+    name: {{ .Release.Namespace }}-ingress-5
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  process: []
+  target:
+    policymode: N/A
+    selector:
+      comment: gen3 development group
+      criteria:
+      - key: namespace
+        op: =
+        value: {{ .Release.Namespace }}
+      name: {{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

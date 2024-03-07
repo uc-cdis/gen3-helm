@@ -1,0 +1,87 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.gen3-elasticsearch-master.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress: []
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - any
+    name: nv.gen3-elasticsearch-master.{{ .Release.Namespace }}-ingress-39
+    ports: tcp/9200
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: nv.gen3-elasticsearch-master.{{ .Release.Namespace }}-ingress-40
+    ports: tcp/9200
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: guppy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.guppy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: nv.gen3-elasticsearch-master.{{ .Release.Namespace }}-ingress-41
+    ports: tcp/9200
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: guppy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.guppy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: sh
+    path: '*'
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: gen3-elasticsearch-master.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.gen3-elasticsearch-master.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

@@ -1,0 +1,140 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.hatchery-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-16
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}-egress-17
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      - key: domain
+        op: =
+        value: {{ .Values.ingress.class }}
+      name: nv.{{ .Values.ingress.controller }}.{{ .Values.ingress.namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: external-egress-18
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.revproxy-deployment.{{ .Release.Namespace }}-egress-19
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.hatchery-deployment.{{ .Release.Namespace }}-ingress-46
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.hatchery-deployment.{{ .Release.Namespace }}-ingress-47
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.hatchery-deployment.{{ .Release.Namespace }}-ingress-48
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: hatchery
+    path: /hatchery
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: hatchery-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.hatchery-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

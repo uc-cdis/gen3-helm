@@ -1,0 +1,199 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.wts-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-2
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.fence-deployment.{{ .Release.Namespace }}-egress-3
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: fence-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.fence-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - PostgreSQL
+    name: nv.{{ .Values.DB_HOST }}.{{ .Release.Namespace }}-egress-4
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.DB_HOST }}.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.{{ .Values.DB_HOST }}.{{ .Release.Namespace }}
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - any
+    name: nv.wts-deployment.{{ .Release.Namespace }}-ingress-11
+    ports: tcp/80
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.wts-deployment.{{ .Release.Namespace }}-ingress-12
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.wts-deployment.{{ .Release.Namespace }}-ingress-13
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.wts-deployment.{{ .Release.Namespace }}-ingress-14
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: alembic
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: basename
+    path: /usr/bin/basename
+  - action: allow
+    allow_update: false
+    name: chmod
+    path: /bin/chmod
+  - action: allow
+    allow_update: false
+    name: dockerrun.sh
+    path: /bin/dash
+  - action: allow
+    allow_update: false
+    name: find
+    path: /usr/bin/find
+  - action: allow
+    allow_update: false
+    name: mkdir
+    path: /bin/mkdir
+  - action: allow
+    allow_update: false
+    name: mv
+    path: /bin/mv
+  - action: allow
+    allow_update: false
+    name: nginx
+    path: /usr/sbin/nginx
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: readlink
+    path: /bin/readlink
+  - action: allow
+    allow_update: false
+    name: rm
+    path: /bin/rm
+  - action: allow
+    allow_update: false
+    name: run-parts
+    path: /bin/run-parts
+  - action: allow
+    allow_update: false
+    name: sed
+    path: /bin/sed
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /bin/dash
+  - action: allow
+    allow_update: false
+    name: sort
+    path: /usr/bin/sort
+  - action: allow
+    allow_update: false
+    name: uwsgi
+    path: /usr/local/bin/uwsgi
+  - action: allow
+    allow_update: false
+    name: wc
+    path: /usr/bin/wc
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: wts-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.wts-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

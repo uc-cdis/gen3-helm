@@ -92,7 +92,6 @@ dependencies:
   repository: "file://../wts"
   condition: wts.enabled
 
-
 - name: elasticsearch
   version: 7.10.2
   repository: "https://helm.elastic.co"
@@ -101,6 +100,16 @@ dependencies:
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
   condition: global.dev
+
+# (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
+#   NeuVector must be installed separately.
+#   Reference: https://open-docs.neuvector.com/basics/overview
+#   Reference: https://github.com/neuvector/neuvector-helm
+# For more information, please use the Gen3 community Slack.
+- name: neuvector
+  version: "0.1.0"
+  repository: "file://../neuvector"
+  condition: neuvector.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -1,0 +1,212 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.ambassador-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-0
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: external-egress-1
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.ambassador-deployment.{{ .Release.Namespace }}-ingress-6
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.ambassador-deployment.{{ .Release.Namespace }}-ingress-7
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: hatchery-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.hatchery-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.ambassador-deployment.{{ .Release.Namespace }}-ingress-8
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.ambassador-deployment.{{ .Release.Namespace }}-ingress-9
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - any
+    name: nv.ambassador-deployment.{{ .Release.Namespace }}-ingress-10
+    ports: tcp/8080
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: ambex
+    path: /opt/ambassador/bin/ambassador
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /bin/bash
+  - action: allow
+    allow_update: false
+    name: busybox
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: curl
+    path: /usr/bin/curl
+  - action: allow
+    allow_update: false
+    name: date
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: diagd
+    path: /usr/bin/python3.7
+  - action: allow
+    allow_update: false
+    name: env
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: envoy
+    path: /usr/local/bin/envoy
+  - action: allow
+    allow_update: false
+    name: find
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: grep
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: mkdir
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: python
+    path: /usr/bin/python3.7
+  - action: allow
+    allow_update: false
+    name: python3
+    path: /usr/bin/python3.7
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: sleep
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: sort
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: uname
+    path: /bin/busybox
+  - action: allow
+    allow_update: false
+    name: watt
+    path: /opt/ambassador/bin/ambassador
+  - action: allow
+    allow_update: false
+    name: wc
+    path: /bin/busybox
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: ambassador-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.ambassador-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

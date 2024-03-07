@@ -91,7 +91,7 @@ spec:
               mountPath: "/var/www/fence/fence-config.yaml"
               subPath: fence-config.yaml
         - name: kubectl
-          #TODO: Make this configurable?  
+          #TODO: Make this configurable?
           image: bitnami/kubectl:latest
           volumeMounts:
             - name: "shared-volume"
