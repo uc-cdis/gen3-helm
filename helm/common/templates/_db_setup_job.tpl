@@ -169,6 +169,7 @@ spec:
 Create k8s secrets for connecting to postgres 
 */}}
 # DB Secrets
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
 {{- define "common.db-secret" -}}
 apiVersion: v1
 kind: Secret
@@ -184,4 +185,5 @@ data:
   {{- else }}
   host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
   {{- end }}
+{{- end }}
 {{- end }}
