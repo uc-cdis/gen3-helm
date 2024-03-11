@@ -1181,6 +1181,24 @@ entries:
   fence:
   - apiVersion: v2
     appVersion: master
+    created: "2024-03-11T20:14:27.602684806Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Fence
+    digest: a853552dd06a5305b77986a974b67a3f92b67cb95f1e0def760b611adf3617be
+    name: fence
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/fence-0.1.16/fence-0.1.16.tgz
+    version: 0.1.16
+  - apiVersion: v2
+    appVersion: master
     created: "2024-03-11T19:29:48.634946732Z"
     dependencies:
     - name: common
@@ -1476,6 +1494,123 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/fence-0.0.1/fence-0.0.1.tgz
     version: 0.0.1
   gen3:
+  - apiVersion: v2
+    appVersion: master
+    created: "2024-03-11T20:14:27.839206118Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.10
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.10
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.6
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.11
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.8
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.0
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.16
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.10
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.8
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.13
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.12
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.10
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.11
+    - condition: pidgin.enabled
+      name: pidgin
+      repository: file://../pidgin
+      version: 0.1.9
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.9
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.10
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.13
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.12
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.8
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.8
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.12
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 49be1285249a4e985ef7ca544ca2362df9921ffa59e39e8d40cbca2a58c62442
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.23/gen3-0.1.23.tgz
+    version: 0.1.23
   - apiVersion: v2
     appVersion: master
     created: "2024-03-11T19:29:48.892358875Z"
@@ -4405,6 +4540,24 @@ entries:
   indexd:
   - apiVersion: v2
     appVersion: master
+    created: "2024-03-11T20:14:28.018883465Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 indexd
+    digest: e02aa274f609bc5f47947cbe3458649d1fbb31fb38c112aff6001f761e96cf23
+    name: indexd
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/indexd-0.1.13/indexd-0.1.13.tgz
+    version: 0.1.13
+  - apiVersion: v2
+    appVersion: master
     created: "2024-03-11T19:29:49.475790712Z"
     dependencies:
     - name: common
@@ -6595,4 +6748,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-11T19:29:51.632082279Z"
+generated: "2024-03-11T20:14:28.019650463Z"
