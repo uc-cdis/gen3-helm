@@ -80,8 +80,12 @@ global:
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "fence-config", "fence-google-app-creds-secret", "fence-google-storage-creds-secret", and "fence-jwt-keys" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sFenceSecrets: false
+  # -- (string) Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sFenceConfigSecret: false
+  # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sJwtKeysSecret: false
+  # -- (string) Will create the Helm "fence-google-app-creds-secret" and "fence-google-storage-creds-secret" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sGoogleAppSecrets: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys"
   fenceJwtKeys:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-google-app-creds-secret"
