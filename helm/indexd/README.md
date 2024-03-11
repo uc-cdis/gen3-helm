@@ -27,7 +27,8 @@ A Helm chart for gen3 indexd
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | defaultPrefix | string | `"PREFIX/"` | default prefix for indexd |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"dbcreds":null,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
+| externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |

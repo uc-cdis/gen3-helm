@@ -36,8 +36,9 @@ A Helm chart for Kubernetes
 | datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
 | datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | env | list | `[{"name":"DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"auditG3auto":null,"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"auditG3auto":null,"createK8sAuditSecret":false,"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.auditG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "audit-g3auto" |
+| externalSecrets.createK8sAuditSecret | string | `false` | Will create the Helm "audit-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
