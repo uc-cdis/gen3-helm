@@ -33,10 +33,10 @@ spec:
         {{- end }}
     spec:
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: credentials
+          secret:
+            secretName: {{.Chart.Name}}-aws-config
       containers:
         - name: "esproxy"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
