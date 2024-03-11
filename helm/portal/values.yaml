@@ -1,7 +1,8 @@
 # Default values for portal.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-# -- (map) Global configuration options.
+
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -13,10 +14,12 @@ global:
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -46,11 +49,11 @@ global:
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`.
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
+  dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -360,7 +363,7 @@ gitops:
             "chartType": "count",
             "title": "Projects"
           },
-          "case_id": {
+          "_case_id": {
             "chartType": "count",
             "title": "Cases"
           },
@@ -401,11 +404,11 @@ gitops:
           "manifestMapping": {
             "resourceIndexType": "file",
             "resourceIdField": "object_id",
-            "referenceIdFieldInResourceIndex": "case_id",
+            "referenceIdFieldInResourceIndex": "_case_id",
             "referenceIdFieldInDataIndex": "node_id"
           },
-          "accessibleFieldCheckList": ["case_id"],
-          "accessibleValidationField": "case_id"
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id"
         }
       },
       "fileExplorerConfig": {
@@ -449,12 +452,12 @@ gitops:
           "nodeCountTitle": "Files",
           "manifestMapping": {
             "resourceIndexType": "case",
-            "resourceIdField": "case_id",
+            "resourceIdField": "_case_id",
             "referenceIdFieldInResourceIndex": "object_id",
             "referenceIdFieldInDataIndex": "object_id"
           },
-          "accessibleFieldCheckList": ["case_id"],
-          "accessibleValidationField": "case_id",
+          "accessibleFieldCheckList": ["_case_id"],
+          "accessibleValidationField": "_case_id",
           "downloadAccessor": "object_id"
         }
       }

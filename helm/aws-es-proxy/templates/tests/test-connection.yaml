@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "aws-es-proxy.fullname" . }}:{{ .Values.service.port }}']
+      args: ['elasticsearch:{{ .Values.service.port }}/']
   restartPolicy: Never

@@ -5,97 +5,101 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependancies
 dependencies:
 - name: ambassador
-  version: "0.1.8"
+  version: 0.1.10
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
-  version: "0.1.8"
+  version: 0.1.10
   repository: "file://../arborist"
   condition: arborist.enabled
 - name: argo-wrapper
-  version: "0.1.4"
+  version: 0.1.6
   repository: "file://../argo-wrapper"
   condition: argo-wrapper.enabled
 - name: audit
-  version: "0.1.9"
+  version: 0.1.11
   repository: "file://../audit"
   condition: audit.enabled
 - name: aws-es-proxy
-  version: "0.1.6"
+  version: 0.1.8
   repository: "file://../aws-es-proxy"
   condition: aws-es-proxy.enabled
 - name: common
-  version: "0.1.7"
+  version: 0.1.9
   repository: file://../common
+- name: etl
+  version: 0.1.0
+  repository: file://../etl
+  condition: etl.enabled
 - name: frontend-framework
   version: "0.10.0"
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
-  version: "0.1.13"
+  version: 0.1.16
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
-  version: "0.1.8"
+  version: 0.1.10
   repository: "file://../guppy"
   condition: guppy.enabled
 - name: hatchery
-  version: "0.1.6"
+  version: 0.1.8
   repository: "file://../hatchery"
   condition: hatchery.enabled
 - name: indexd
-  version: "0.1.10"
+  version: 0.1.13
   repository: "file://../indexd"
   condition: indexd.enabled
 - name: manifestservice
-  version: "0.1.10"
+  version: 0.1.12
   repository: "file://../manifestservice"
   condition: manifestservice.enabled
 - name: metadata
-  version: "0.1.8"
+  version: 0.1.10
   repository: "file://../metadata"
   condition: metadata.enabled
 - name: peregrine
-  version: "0.1.9"
+  version: 0.1.11
   repository: "file://../peregrine"
   condition: peregrine.enabled
 - name: pidgin
-  version: "0.1.7"
+  version: 0.1.9
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: "0.1.8"
+  version: 0.1.9
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
-  version: "0.1.8"
+  version: 0.1.10
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: "0.1.12"
+  version: 0.1.13
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
-  version: "0.1.10"
+  version: 0.1.12
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
-  version: "0.1.6"
+  version: 0.1.8
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: sower
-  version: "0.1.6"
+  version: 0.1.8
   condition: sower.enabled
   repository: "file://../sower"
 - name: wts
-  version: "0.1.10"
+  version: 0.1.12
   repository: "file://../wts"
   condition: wts.enabled
 
 
 - name: elasticsearch
-  version: "0.1.5"
-  repository: "file://../elasticsearch"
+  version: 7.10.2
+  repository: "https://helm.elastic.co"
   condition: global.dev
 - name: postgresql
   version: 11.9.13
@@ -115,7 +119,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.21
+version: 0.1.23
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

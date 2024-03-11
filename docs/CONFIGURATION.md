@@ -205,7 +205,7 @@ global:
 guppy:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". 
   # The minimum amount of files unauthorized users can filter down to
-  tierAccessLimit: 1000
+  tierAccessLimit: "1000"
 
   # -- (list) Elasticsearch index configurations
   indices:
@@ -512,26 +512,97 @@ To configure sheepdog we require an entry in the versions block. It also require
 ``` -->
 
 ## Extra Information
-<!-- 
 ---
 # Sower
 
 ## What Does it Do
 
-Sower is a job dispatching service. Jobs are configured within the manifest and sower handles dispatching the jobs.
+Sower is a job dispatching service. Jobs are configured with .Values.sowerConfig and sower handles dispatching the jobs.
 
 ## How to Configure it
 
-<!-- To configure sower we require an entry in the versions block.
-
-```json
-{
-  "versions": {
-    "sower": "version"
-  }
-}
-``` -->
-
-<!-- From there you will also need to setup jobs for sower to dispatch within the sower block of a manifest. There are many jobs that can be configured but an example of some jobs configured can be found [here](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/manifest.json#L48) -->
+```yaml
+sower:
+  enabled: true
+  sowerConfig:
+    - name: pelican-export
+      action: export
+      container:
+        name: job-task
+        image: quay.io/cdis/pelican-export:master
+        pull_policy: Always
+        env:
+        - name: DICTIONARY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: dictionary_url
+        - name: GEN3_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: hostname
+        - name: ROOT_NODE
+          value: subject
+        volumeMounts:
+        - name: pelican-creds-volume
+          readOnly: true
+          mountPath: "/pelican-creds.json"
+          subPath: config.json
+        - name: peregrine-creds-volume
+          readOnly: true
+          mountPath: "/peregrine-creds.json"
+          subPath: creds.json
+        cpu-limit: '1'
+        memory-limit: 12Gi
+      volumes:
+      - name: pelican-creds-volume
+        secret:
+          secretName: pelicanservice-g3auto
+      - name: peregrine-creds-volume
+        secret:
+          secretName: peregrine-creds
+      restart_policy: Never
+    - name: pelican-export-files
+      action: export-files
+      container:
+        name: job-task
+        image: quay.io/cdis/pelican-export:master
+        pull_policy: Always
+        env:
+        - name: DICTIONARY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: dictionary_url
+        - name: GEN3_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: hostname
+        - name: ROOT_NODE
+          value: file
+        - name: EXTRA_NODES
+          value: ''
+        volumeMounts:
+        - name: pelican-creds-volume
+          readOnly: true
+          mountPath: "/pelican-creds.json"
+          subPath: config.json
+        - name: peregrine-creds-volume
+          readOnly: true
+          mountPath: "/peregrine-creds.json"
+          subPath: creds.json
+        cpu-limit: '1'
+        memory-limit: 12Gi
+      volumes:
+      - name: pelican-creds-volume
+        secret:
+          secretName: pelicanservice-g3auto
+      - name: peregrine-creds-volume
+        secret:
+          secretName: peregrine-creds
+      restart_policy: Never
+```
 
 ## Extra Information -->

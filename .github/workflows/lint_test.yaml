@@ -22,7 +22,7 @@ jobs:
           check-latest: true
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.3.1
+        uses: helm/chart-testing-action@v2.6.1
 
       - name: Run chart-testing (list-changed)
         id: list-changed
@@ -34,17 +34,29 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
-
-  # deploy-charts-to-kind:
-  #   name: ${{ matrix.environments }} - gen3 data portal build
+      
+  # TODO: add back in when we have tests
+  # deploy-and-test-chart:
+  #   name: Deploy and Test Chart
   #   timeout-minutes: 20
   #   runs-on: ubuntu-latest
-  #   needs: [get-changes-for-envs]
-  #   if: ${{ needs.get-changes-for-envs.outputs.matrix != '[]' && needs.get-changes-for-envs.outputs.matrix != '' }}
   #   steps:
-  #     - name: Create kind cluster
-  #       uses: helm/kind-action@v1.4.0
-  #       if: steps.list-changed.outputs.changed == 'true'
 
-  #     - name: Run chart-testing (install)
-  #       run: ct install
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Set up Helm
+  #       uses: azure/setup-helm@v3
+
+  #     - name: Set up chart-testing
+  #       uses: helm/chart-testing-action@v2.6.1
+
+
+  #     - name: Create kind cluster
+  #       uses: helm/kind-action@v1.8.0
+      
+
+  #     - name: Run chart install + testing
+  #       run: ct install --charts ./helm/gen3 --config .github/ct.yaml
