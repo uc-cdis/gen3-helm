@@ -46,8 +46,10 @@ A Helm chart for gen3 Metadata Service
 | elasticsearch.separate | bool | `false` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | esEndpoint | string | `"http://gen3-elasticsearch-master:9200"` | Elasticsearch endpoint. |
-| externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sMetadataSecret":false,"dbcreds":null,"metadataG3auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

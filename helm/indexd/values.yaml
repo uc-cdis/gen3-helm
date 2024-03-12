@@ -70,6 +70,8 @@ global:
 
 # -- (map) External Secrets settings.
 externalSecrets:
+  # -- (string) Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sServiceCredsSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
   serviceCreds: "indexd-service-creds"

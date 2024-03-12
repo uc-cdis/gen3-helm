@@ -30,6 +30,8 @@ global:
 
 # -- (map) External Secrets settings.
 externalSecrets:
+  # -- (string) Will create the Helm "manifestservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sManifestServiceSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "manifestservice-g3auto"
   manifestserviceG3auto:
 # -- (map) Secret information for External Secrets.

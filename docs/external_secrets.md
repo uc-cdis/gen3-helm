@@ -89,6 +89,26 @@ For users requiring a more selective application of external secrets — targeti
 
 External secret resources will only attempt to replace Kubernetes secrets when a corresponding secret is successfully located within the Secrets Manager. In instances where a specific secret is not found, the External Secrets resource will indicate a `SecretSyncedError`, signaling the absence of the targeted resource within the Secrets Manager. This error is acceptable and helpful for users who want to enable the use of AWS Secrets Manager for some, but not all the secrets in a specific Helm chart.
 
+However, if you wish to utilize External Secrets for managing non-database secrets while still automating the creation of your database secrets, you can configure this behavior explicitly. Set `.Values.global.externalSecrets.dbCreate` to true alongside `.Values.global.postgres.dbCreate` or `.Values.postgres.dbCreate` to initiate the database creation job. This configuration will result in the creation of the necessary databases with their credentials stored securely within Kubernetes Secrets. Subsequently, you also choose to create Secrets in Secrets manager with the values that were generated from the dbCreate job if you wish to store these credentials long term.
+
+By default, the following services will not create the Helm internal secrets when Secrets Manager is enabled: 
+- Audit
+- Fence
+- Indexd
+- Manifestservice
+- Metadata
+
+This is because CD tools like Argocd will have trouble syncing resources if the K8s secret was generated via Helm and External Secrets continues to override it. You can configure Helm to still create these secrets with External Secrets enabled by setting the appropriate variable to true. 
+
+For example, to ensure the "audit-g3auto" secret is still created by Helm, you would need to set the following in your values.yaml file: 
+```
+audit: 
+    # -- (map) External Secrets settings.
+    externalSecrets:
+    # -- (string) Will create the Helm "audit-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+    createK8sAuditSecret: true
+```
+
 #### Independent Subchart Deployment
 In scenarios where subcharts are deployed independently, outside the scope of the umbrella chart, it is crucial to set the `.Values.global.externalSecrets.deploy` directive within the `values.yaml` file for each specific service.
 
