@@ -4,22 +4,17 @@ metadata:
   name: revproxy-nginx-subconf
 data:
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
-  {{ ($a := split "/" $path)._1 }}: |
+  {{ ($a := split "/" $path)._1 }}: |-
   {{- $bytes | toString | nindent 4 }}
 {{- end}}
 {{- if eq "portal" .Values.global.frontendRoot }}
-  {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/portal-as-root/*.conf" }}
-  {{ ($a := split "/" $path)._2 }}: |
-  {{- $bytes | toString | nindent 4 }}
-  {{ $path }}
-  {{- end}}
-{{- end}}
+   frontend-framework-service.conf: {{ .Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf"}}
+   portal-service.conf: {{ .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" }}
+{{- end }}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
-  {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/gen3ff-as-root/*.conf" }}
-  {{ ($a := split "/" $path)._2 }}: |
-  {{- $bytes | toString | nindent 4 }}
-  {{- end}}
-{{- end}}
+   frontend-framework-service.conf: {{ .Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf" }}
+   portal-service.conf: {{ .Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf" }}
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
