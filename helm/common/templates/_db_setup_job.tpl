@@ -59,6 +59,12 @@ spec:
                 name: {{ .Release.Name }}-postgresql
                 key: postgres-password
                 optional: false
+            {{- else if .Values.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.externalSecret }}
+                key: password
+                optional: false
             {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
@@ -69,7 +75,13 @@ spec:
             value:  {{ .Values.global.postgres.master.password | quote}}
             {{- end }}
           - name: PGUSER
-          {{- if $.Values.global.postgres.externalSecret }}
+          {{- if .Values.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.externalSecret }}
+                key: username
+                optional: false
+          {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
                 name: {{ $.Values.global.postgres.externalSecret }}
@@ -79,7 +91,13 @@ spec:
             value: {{ .Values.global.postgres.master.username | quote }}
           {{- end }}
           - name: PGPORT
-          {{- if $.Values.global.postgres.externalSecret }}
+          {{- if .Values.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.externalSecret }}
+                key: port
+                optional: false
+          {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
                 name: {{ $.Values.global.postgres.externalSecret }}
@@ -91,6 +109,12 @@ spec:
           - name: PGHOST
             {{- if $.Values.global.dev }}
             value: "{{ .Release.Name }}-postgresql"
+            {{- else if .Values.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.externalSecret }}
+                key: host
+                optional: false
             {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
