@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.25](https://img.shields.io/badge/Version-0.1.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,29 +18,29 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.11 |
-| file://../arborist | arborist | 0.1.11 |
-| file://../argo-wrapper | argo-wrapper | 0.1.7 |
-| file://../audit | audit | 0.1.12 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
-| file://../common | common | 0.1.10 |
-| file://../etl | etl | 0.1.1 |
-| file://../fence | fence | 0.1.17 |
-| file://../frontend-framework | frontend-framework | 0.10.0 |
-| file://../guppy | guppy | 0.1.11 |
-| file://../hatchery | hatchery | 0.1.9 |
-| file://../indexd | indexd | 0.1.14 |
-| file://../manifestservice | manifestservice | 0.1.13 |
-| file://../metadata | metadata | 0.1.11 |
-| file://../peregrine | peregrine | 0.1.12 |
-| file://../pidgin | pidgin | 0.1.10 |
+| file://../ambassador | ambassador | 0.1.10 |
+| file://../arborist | arborist | 0.1.10 |
+| file://../argo-wrapper | argo-wrapper | 0.1.6 |
+| file://../audit | audit | 0.1.11 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.8 |
+| file://../common | common | 0.1.9 |
+| file://../etl | etl | 0.1.0 |
+| file://../fence | fence | 0.1.16 |
+| file://../frontend-framework | frontend-framework | 0.1.1 |
+| file://../guppy | guppy | 0.1.10 |
+| file://../hatchery | hatchery | 0.1.8 |
+| file://../indexd | indexd | 0.1.13 |
+| file://../manifestservice | manifestservice | 0.1.12 |
+| file://../metadata | metadata | 0.1.10 |
+| file://../peregrine | peregrine | 0.1.11 |
+| file://../pidgin | pidgin | 0.1.9 |
 | file://../portal | portal | 0.1.10 |
-| file://../requestor | requestor | 0.1.11 |
-| file://../revproxy | revproxy | 0.1.19 |
-| file://../sheepdog | sheepdog | 0.1.13 |
-| file://../sower | sower | 0.1.9 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.9 |
-| file://../wts | wts | 0.1.13 |
+| file://../requestor | requestor | 0.1.10 |
+| file://../revproxy | revproxy | 0.1.13 |
+| file://../sheepdog | sheepdog | 0.1.12 |
+| file://../sower | sower | 0.1.8 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.8 |
+| file://../wts | wts | 0.1.12 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
