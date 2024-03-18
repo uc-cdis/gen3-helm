@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.26](https://img.shields.io/badge/Version-0.1.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -25,7 +25,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.8 |
 | file://../common | common | 0.1.9 |
 | file://../etl | etl | 0.1.0 |
-| file://../fence | fence | 0.1.16 |
+| file://../fence | fence | 0.1.17 |
 | file://../frontend-framework | frontend-framework | 0.1.1 |
 | file://../guppy | guppy | 0.1.10 |
 | file://../hatchery | hatchery | 0.1.8 |
@@ -94,6 +94,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
