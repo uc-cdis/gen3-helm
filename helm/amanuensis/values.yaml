@@ -282,16 +282,17 @@ AMANUENSIS_CONFIG:
   # Where amanuensis microservice is deployed 
   # a standardized name unique to each app for service-to-service interaction
   # so the service receiving the request knows it came from another Gen3 service
+  SERVICE_NAME: 'amanuensis'
   # postgres db to connect to
   # connection url format:
   #     postgresql://[user[:password]@][netloc][:port][/dbname]
-
   # A URL-safe base64-encoded 32-byte key for encrypting keys in db
   # in python you can use the following script to generate one:
   #     import base64
   #     import os
   #     key = base64.urlsafe_b64encode(os.urandom(32))
   #     print(key)
+
   ENCRYPTION_KEY: ''
 
   # Cross-service keys
@@ -304,23 +305,22 @@ AMANUENSIS_CONFIG:
   # //////////////////////////////////////////////////////////////////////////////////////
   # flask's debug setting
   # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
-  DEBUG: true
+  DEBUG: false
   # if true, will automatically login a user with username "test"
   # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
-  MOCK_AUTH: true
+  MOCK_AUTH: false
   # if true, will fake a successful login response from Google in /login/google
   #     NOTE: this will also modify the behavior of /link/google endpoints
   # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
   # will login as the username set in cookie DEV_LOGIN_COOKIE_NAME
-  MOCK_GOOGLE_AUTH: true
-
+  MOCK_GOOGLE_AUTH: false
   # if true, will ignore anything configured in STORAGE_CREDENTIALS
   MOCK_STORAGE: true
   # allow OIDC traffic on http for development. By default it requires https.
   #
   # WARNING: ONLY set to true when amanuensis will be deployed in such a way that it will
   #          ONLY receive traffic from internal clients and can safely use HTTP.
-  AUTHLIB_INSECURE_TRANSPORT: true
+  AUTHLIB_INSECURE_TRANSPORT: false
 
   # set if you want browsers to only send cookies with requests over HTTPS
   SESSION_COOKIE_SECURE: true
@@ -442,15 +442,15 @@ AMANUENSIS_CONFIG:
   # url where indexd microservice is running (for signed urls primarily)
   # NOTE: Leaving as null will force fence to default to {{BASE_URL}}/index
   # example value: 'https://example.com/index'
-  INDEXD: null
+  INDEXD: http://indexd-service
 
   # this is the username which fence uses to make authenticated requests to indexd
-  INDEXD_USERNAME: 'amanuensis'
+  INDEXD_USERNAME: 'indexd_client'
   # this is the password which fence uses to make authenticated requests to indexd
   INDEXD_PASSWORD: ''
 
   # url where authz microservice is running
-  ARBORIST: null
+  ARBORIST: 'http://arborist-service'
   FENCE: 'http://fence-service'
 
   # //////////////////////////////////////////////////////////////////////////////////////
