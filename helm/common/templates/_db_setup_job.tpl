@@ -166,8 +166,6 @@ spec:
 
             # Update secret to signal that db has been created, and services can start
             kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
-
-            fi
 {{- end}}
 {{- end }}
 
