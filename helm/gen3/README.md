@@ -26,6 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.9 |
 | file://../etl | etl | 0.1.0 |
 | file://../fence | fence | 0.1.17 |
+| file://../frontend-framework | frontend-framework | 0.1.1 |
 | file://../guppy | guppy | 0.1.10 |
 | file://../hatchery | hatchery | 0.1.8 |
 | file://../indexd | indexd | 0.1.13 |
@@ -33,9 +34,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../metadata | metadata | 0.1.10 |
 | file://../peregrine | peregrine | 0.1.11 |
 | file://../pidgin | pidgin | 0.1.9 |
-| file://../portal | portal | 0.1.10 |
+| file://../portal | portal | 0.1.11 |
 | file://../requestor | requestor | 0.1.10 |
-| file://../revproxy | revproxy | 0.1.13 |
+| file://../revproxy | revproxy | 0.1.14 |
 | file://../sheepdog | sheepdog | 0.1.12 |
 | file://../sower | sower | 0.1.8 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.8 |
@@ -72,6 +73,11 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
+| frontend-framework | map | `{"enabled":true,"image":{"repository":null,"tag":null}}` | Configurations for frontend-framework chart. |
+| frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
+| frontend-framework.image | map | `{"repository":null,"tag":null}` | Docker image information. |
+| frontend-framework.image.repository | string | `nil` | The Docker image repository for the guppy service. |
+| frontend-framework.image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -100,6 +106,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
 | hatchery.hatchery.containers[0].args[0] | string | `"--NotebookApp.base_url=/lw-workspace/proxy/"` |  |
@@ -144,6 +151,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
