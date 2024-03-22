@@ -9,7 +9,7 @@ description: A Helm chart for the gen3 frontend framework
 #
 # Library charts provide useful utilities or functions for the chart developer. They're included as
 # a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+# pipeline. Library charts do not define any templates and, therefore, cannot be deployed.
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -27,4 +27,3 @@ dependencies:
 - name: common
   version: 0.1.9
   repository: file://../common
-
