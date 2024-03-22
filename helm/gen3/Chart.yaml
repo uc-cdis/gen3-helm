@@ -68,7 +68,7 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: 0.1.10
+  version: 0.1.11
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
@@ -76,7 +76,7 @@ dependencies:
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
-  version: 0.1.13
+  version: 0.1.14
   repository: "file://../revproxy"
   condition: revproxy.enabled
 - name: sheepdog
