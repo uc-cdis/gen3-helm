@@ -1514,6 +1514,123 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2024-04-02T21:22:00.924358878Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.10
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.10
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.6
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.11
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.8
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.0
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.17
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.10
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.8
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.13
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.12
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.10
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.12
+    - condition: pidgin.enabled
+      name: pidgin
+      repository: file://../pidgin
+      version: 0.1.9
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.10
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.10
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.13
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.13
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.8
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.8
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.12
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: a8529ff2413689c606aad861b8093d3cfc9312558ed2bea33434b414c764d8a4
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.26/gen3-0.1.26.tgz
+    version: 0.1.26
+  - apiVersion: v2
+    appVersion: master
     created: "2024-03-15T19:09:41.017614642Z"
     dependencies:
     - condition: ambassador.enabled
@@ -5414,6 +5531,24 @@ entries:
     version: 0.0.1
   peregrine:
   - apiVersion: v2
+    appVersion: master
+    created: "2024-04-02T21:22:01.107908853Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Peregrine service
+    digest: 1ed56abde7e0859bfcfdbf878d055033b2543d8f657c8a4536e10621c92c61c3
+    name: peregrine
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/peregrine-0.1.12/peregrine-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
     appVersion: "2023.01"
     created: "2024-03-11T19:29:50.072799588Z"
     dependencies:
@@ -6320,6 +6455,24 @@ entries:
   sheepdog:
   - apiVersion: v2
     appVersion: master
+    created: "2024-04-02T21:22:01.297234118Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Sheepdog Service
+    digest: cc097b4f36a2237bdc05ba106dc5ff08a28035f5ab609dfda8ce55300a7195d4
+    name: sheepdog
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/sheepdog-0.1.13/sheepdog-0.1.13.tgz
+    version: 0.1.13
+  - apiVersion: v2
+    appVersion: master
     created: "2024-03-11T19:29:51.063762852Z"
     dependencies:
     - name: common
@@ -7014,4 +7167,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-15T19:09:41.018180606Z"
+generated: "2024-04-02T21:22:01.29786263Z"
