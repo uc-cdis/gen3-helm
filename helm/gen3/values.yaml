@@ -77,7 +77,7 @@ arborist:
 
 argo-wrapper:
   # -- (bool) Whether to deploy the argo-wrapper subchart.
-  enabled: true
+  enabled: false
 
 audit:
   # -- (bool) Whether to deploy the audit subchart.

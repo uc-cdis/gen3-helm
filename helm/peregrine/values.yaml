@@ -113,7 +113,7 @@ image:
   # -- (string) When to pull the image.
   pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "feat_jq-audience"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

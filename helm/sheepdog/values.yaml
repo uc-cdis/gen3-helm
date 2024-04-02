@@ -168,7 +168,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "bug_auth-audience"
 
 # Environment Variables
 # -- (string) URL of the data dictionary.
@@ -214,33 +214,6 @@ service:
 # Secrets
 # -- (map) Values for sheepdog secret.
 secrets:
-  # -- (map) Values for sheepdog's access to the fence database.
-  fence:
-    # -- (string) Host for fence's db.
-    host: postgres-postgresql.postgres.svc.cluster.local
-    # -- (string) User for fence's db.
-    user: postgres
-    # -- (string) Password to fence's db.
-    password: postgres
-    # -- (string) Database name for fence's db.
-    database: fence
-  # -- (map) Values for sheepdog's database.
-  sheepdog:
-    # -- (string) Host for sheepdog's db.
-    host: postgres-postgresql.postgres.svc.cluster.local
-    # -- (string) Password to sheepdog's db.
-    password: postgres
-    # -- (string) User for sheepdog's db.
-    user: postgres
-    # -- (string) Database name for sheepdog's db.
-    database: sheepdog
-  gdcapi:
-    # -- (string) GDCAPI token.
-    secretKey:
-  # -- (map) Values for sheepdog's access to indexd database.
-  indexd:
-    # -- (string) Password to indexd's db.
-    password: postgres
   # -- (str) AWS access key ID to access the db restore job S3 bucket. Overrides global key.
   awsAccessKeyId:
   # -- (str) AWS secret access key ID to access the db restore job S3 bucket. Overrides global key.
