@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.25](https://img.shields.io/badge/Version-0.1.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -32,13 +32,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../indexd | indexd | 0.1.13 |
 | file://../manifestservice | manifestservice | 0.1.12 |
 | file://../metadata | metadata | 0.1.10 |
-| file://../peregrine | peregrine | 0.1.11 |
+| file://../peregrine | peregrine | 0.1.12 |
 | file://../pidgin | pidgin | 0.1.9 |
 | file://../portal | portal | 0.1.11 |
 | file://../requestor | requestor | 0.1.10 |
-| file://../revproxy | revproxy | 0.1.14 |
-| file://../sheepdog | sheepdog | 0.1.12 |
-| file://../sower | sower | 0.1.8 |
+| file://../revproxy | revproxy | 0.1.13 |
+| file://../sheepdog | sheepdog | 0.1.13 |
+| file://../sower | sower | 0.1.9 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.8 |
 | file://../wts | wts | 0.1.12 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
@@ -50,7 +50,7 @@ Helm chart to deploy Gen3 Data Commons
 |-----|------|---------|-------------|
 | ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart. |
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
-| argo-wrapper.enabled | bool | `true` | Whether to deploy the argo-wrapper subchart. |
+| argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
