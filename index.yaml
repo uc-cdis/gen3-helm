@@ -1514,6 +1514,123 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2024-04-11T21:17:14.843438426Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.10
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.10
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.6
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.11
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.8
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.0
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.17
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.10
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.8
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.13
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.13
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.11
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.12
+    - condition: pidgin.enabled
+      name: pidgin
+      repository: file://../pidgin
+      version: 0.1.9
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.10
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.10
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.13
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.13
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.8
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.9
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.12
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 28b196f049a241d24fc5218223a289fe8859384befaef764eb18c40287dd7535
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.29/gen3-0.1.29.tgz
+    version: 0.1.29
+  - apiVersion: v2
+    appVersion: master
     created: "2024-04-11T16:06:05.732030228Z"
     dependencies:
     - condition: ambassador.enabled
@@ -5569,6 +5686,28 @@ entries:
   metadata:
   - apiVersion: v2
     appVersion: master
+    created: "2024-04-11T21:17:15.026698483Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.9
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: elasticsearch.separate
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.17.1
+    description: A Helm chart for gen3 Metadata Service
+    digest: 562a1c45d4c78f2ff3850f3519f70c32601c57dfafc186e58c9431f14dd84bd2
+    name: metadata
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/metadata-0.1.11/metadata-0.1.11.tgz
+    version: 0.1.11
+  - apiVersion: v2
+    appVersion: master
     created: "2024-03-11T19:29:49.84584969Z"
     dependencies:
     - name: common
@@ -7429,4 +7568,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-11T16:06:05.90252786Z"
+generated: "2024-04-11T21:17:15.027247379Z"
