@@ -144,12 +144,6 @@ spec:
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"
-{{/*          - name: "revproxy-subconf"*/}}
-{{/*            readOnly: true*/}}
-{{/*            mountPath: "/etc/nginx/gen3.conf/portal-as-root"*/}}
-{{/*          - name: "revproxy-subconf"*/}}
-{{/*            readOnly: true*/}}
-{{/*            mountPath: "/etc/nginx/gen3.conf/gen3ff-as-root"*/}}
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"
@@ -183,29 +177,23 @@ spec:
           #   readOnly: true
           #   mountPath: "/usr/local/share/ca-certificates/cdis/cdis-ca.crt"
           #   subPath: "ca.pem"
-          # name:
-          #  {{ .Values.global.frontend_root }}
-          command: ["/usr/bin/tail"]
+          command: ["/bin/sh" ]
           args:
-             - "-f"
-             - "/dev/null"
-{{/*          command: ["/bin/sh" ]*/}}
-{{/*          args:*/}}
-{{/*            - "-c"*/}}
-{{/*            # Script always succeeds if it runs (echo exits with 0)*/}}
-{{/*            # Launch script handles different nginx versions, etc*/}}
-{{/*            - |*/}}
-{{/*              for name in ngx_http_perl_module.so ngx_http_js_module.so ngx_http_headers_more_filter_module.so ngx_http_modsecurity_module.so; do*/}}
-{{/*                if [ -f /etc/nginx/modules/$name ]; then*/}}
-{{/*                  echo "load_module modules/$name;" >> /etc/nginx/gen3_modules.conf*/}}
-{{/*                fi*/}}
-{{/*              done*/}}
-{{/*              if [ -f /etc/nginx/modules/ngx_http_modsecurity_module.so -a -f /etc/nginx/modsec/main.conf ]; then*/}}
-{{/*                echo "modsecurity on;" >> /etc/nginx/gen3_server_modsec.conf*/}}
-{{/*                echo "modsecurity_rules_file /etc/nginx/modsec/main.conf;" >> /etc/nginx/gen3_server_modsec.conf*/}}
-{{/*              fi*/}}
-{{/*    */}}
-{{/*              exec nginx -g 'daemon off;'*/}}
+            - "-c"
+            # Script always succeeds if it runs (echo exits with 0)
+            # Launch script handles different nginx versions, etc
+            - |
+              for name in ngx_http_perl_module.so ngx_http_js_module.so ngx_http_headers_more_filter_module.so ngx_http_modsecurity_module.so; do
+                if [ -f /etc/nginx/modules/$name ]; then
+                  echo "load_module modules/$name;" >> /etc/nginx/gen3_modules.conf
+                fi
+              done
+              if [ -f /etc/nginx/modules/ngx_http_modsecurity_module.so -a -f /etc/nginx/modsec/main.conf ]; then
+                echo "modsecurity on;" >> /etc/nginx/gen3_server_modsec.conf
+                echo "modsecurity_rules_file /etc/nginx/modsec/main.conf;" >> /etc/nginx/gen3_server_modsec.conf
+              fi
+
+              exec nginx -g 'daemon off;'
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
