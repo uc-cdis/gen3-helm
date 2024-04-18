@@ -75,7 +75,7 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS access key ID. Overrides global key.
   awsSecretAccessKey:
-  
+
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
