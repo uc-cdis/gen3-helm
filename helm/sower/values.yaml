@@ -55,7 +55,27 @@ global:
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
 
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "manifestservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sPelicanServiceSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto"
+  pelicanserviceG3auto:
+
+# -- (map) Secret information for Usersync and External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsSecretAccessKey:
+  
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
@@ -190,7 +210,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: quay.io/cdis/pelican-export:GPE-1252
       pull_policy: Always
       env:
       - name: DICTIONARY_URL
@@ -205,30 +225,48 @@ sowerConfig:
             key: hostname
       - name: ROOT_NODE
         value: subject
+      - name: DB_HOST
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: host
+      - name: DB_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: database
+      - name: DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: username
+      - name: DB_PASS
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: password
+      - name: SHEEPDOG
+        valueFrom:
+          secretKeyRef:
+            name: indexd-service-creds
+            key: sheepdog
       volumeMounts:
       - name: pelican-creds-volume
         readOnly: true
         mountPath: "/pelican-creds.json"
         subPath: config.json
-      - name: peregrine-creds-volume
-        readOnly: true
-        mountPath: "/peregrine-creds.json"
-        subPath: creds.json
       cpu-limit: '1'
       memory-limit: 12Gi
     volumes:
     - name: pelican-creds-volume
       secret:
         secretName: pelicanservice-g3auto
-    - name: peregrine-creds-volume
-      secret:
-        secretName: peregrine-creds
     restart_policy: Never
   - name: pelican-export-files
     action: export-files
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: quay.io/cdis/pelican-export:GPE-1252
       pull_policy: Always
       env:
       - name: DICTIONARY_URL
@@ -245,6 +283,31 @@ sowerConfig:
         value: file
       - name: EXTRA_NODES
         value: ''
+      - name: DB_HOST
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: host
+      - name: DB_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: database
+      - name: DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: username
+      - name: DB_PASS
+        valueFrom:
+          secretKeyRef:
+            name: peregrine-dbcreds
+            key: password
+      - name: SHEEPDOG
+        valueFrom:
+          secretKeyRef:
+            name: indexd-service-creds
+            key: sheepdog
       volumeMounts:
       - name: pelican-creds-volume
         readOnly: true
@@ -260,9 +323,6 @@ sowerConfig:
     - name: pelican-creds-volume
       secret:
         secretName: pelicanservice-g3auto
-    - name: peregrine-creds-volume
-      secret:
-        secretName: peregrine-creds
     restart_policy: Never
 
 
