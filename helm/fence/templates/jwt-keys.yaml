@@ -1,3 +1,4 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sJwtKeysSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -5,3 +6,4 @@ metadata:
 type: Opaque
 data:
     jwt_private_key.pem: {{ include "getOrCreatePrivateKey" . }}
+{{- end }}

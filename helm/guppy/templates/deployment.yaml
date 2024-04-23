@@ -71,7 +71,7 @@ spec:
               value: {{ . }}
             {{- end }}
             - name: TIER_ACCESS_LEVEL
-              value: {{ .Values.global.tierAccessLevel }}
+              value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
 

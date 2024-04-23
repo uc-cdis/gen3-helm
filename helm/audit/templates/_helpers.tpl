@@ -67,16 +67,6 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "audit.secretName" -}}
-{{- default "audit-g3auto" }}
-{{- end }}
-
-
 {{/*
  Postgres Password lookup
 */}}
@@ -88,3 +78,12 @@ Create the name of the service account to use
 {{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+  Audit g3 Auto Secrets Manager Name
+*/}}
+{{- define "audit-g3auto" -}}
+{{- default "audit-g3auto" .Values.externalSecrets.auditG3auto }}
+{{- end }}
+

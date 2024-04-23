@@ -2,14 +2,33 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+
+# Global configuration
 global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    # -- (map) Local secret setting if using a pre-exising secret.
+    useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+      enabled: false
+      # -- (string) Name of the local secret.
+      localSecretName:
+      # -- (string) Namespace of the local secret.
+      localSecretNamespace:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -41,17 +60,70 @@ global:
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
+  dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sFenceConfigSecret: false
+  # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sJwtKeysSecret: false
+  # -- (string) Will create the Helm "fence-google-app-creds-secret" and "fence-google-storage-creds-secret" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sGoogleAppSecrets: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys"
+  fenceJwtKeys:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-google-app-creds-secret"
+  fenceGoogleAppCredsSecret:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-google-storage-creds-secret"
+  fenceGoogleStorageCredsSecret:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config"
+  fenceConfig:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
+
+# -- (map) Configuration options for usersync cronjob.
+usersync:
+  # -- (bool) Whether to run Fence usersync or not.
+  usersync: true
+  # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
+  schedule: "*/30 * * * *"
+  # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
+  custom_image:
+  # -- (bool) Whether to sync data from dbGaP.
+  syncFromDbgap: false
+  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
+  addDbgap: false
+  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
+  onlyDbgap: false
+  # -- (string) Path to the user.yaml file in S3.
+  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
+  slack_send_dbgap: false
+
+# -- (map) Secret information for Usersync and External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsSecretAccessKey:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -79,33 +151,6 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
-
-# -- (map) Configuration options for usersync cronjob.
-usersync:
-  # -- (bool) Whether to run Fence usersync or not.
-  usersync: false
-  # -- (map) Secret information
-  secrets:
-    # -- (str) AWS access key ID for usersync S3 bucket
-    awsAccessKeyId: ""
-    # -- (str) AWS secret access key for usersync S3 bucket
-    awsSecretAccessKey: ""
-  # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
-  schedule: "*/30 * * * *"
-  # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
-  custom_image:
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
-  addDbgap: false
-  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
-  onlyDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
-  # -- (string) Slack webhook endpoint used with certain jobs.
-  slack_webhook: None
-  # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
-  slack_send_dbgap: false
 
 # -- (int) Number of desired replicas
 replicaCount: 1
