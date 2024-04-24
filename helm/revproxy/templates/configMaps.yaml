@@ -17,13 +17,3 @@ data:
   {{ ($a := split "/" $path)._1 }}: |
   {{- $bytes | toString | nindent 4 }}  
 {{- end}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata: 
-  name: revproxy-nginx-ssl
-data:
-{{- range $path, $bytes := .Files.Glob "ssl/*" }}
-  {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}  
-{{- end}}

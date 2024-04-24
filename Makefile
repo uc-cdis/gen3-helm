@@ -56,19 +56,19 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 		(*development) 	  echo "development";; \
 		(*staging)        echo "staging";; \
 		(*production)     echo "production";; \
-		esac)) \
+		esac))
 	@read -p "Uninstall $(DEPLOY) deployment? [y/N]: " confirm && \
 		case "$$confirm" in \
 			[yY]) true;; \
 			*) false;; \
-		esac \
-	@echo "Uninstalling $(DEPLOY)" \
-	@-helm uninstall $(DEPLOY) \
-	@kubectl delete secrets --all \
-	@kubectl delete configmaps --all \
-	@kubectl delete jobs --all \
+		esac
+	@echo "Uninstalling $(DEPLOY)"
+	@-helm uninstall $(DEPLOY)
+	@kubectl delete secrets --all
+	@kubectl delete configmaps --all
+	@kubectl delete jobs --all
 
-deploy: check-context check-secrets
+deploy: check-context
 	@echo "Deploying $(DEPLOY)"
 	@if [ "$(DEPLOY)" = "local" ]; then \
 		helm upgrade --install $(DEPLOY) ./helm/gen3 \
