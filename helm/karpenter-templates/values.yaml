@@ -1,0 +1,30 @@
+cluster:
+  name: "my-cluster"
+
+ami: 
+ id: ami-0d3eabf74e1e2258b
+ familiy: AL2
+
+userdata: |
+  MIME-Version: 1.0
+  Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+  --BOUNDARY
+  Content-Type: text/x-shellscript; charset="us-ascii"
+
+  #!/bin/bash -x
+  instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+  curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+  echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+  sysctl -w fs.inotify.max_user_watches=12000
+
+  sudo yum update -y
+
+  --BOUNDARY--
+
+ebs:
+  deviceName: /dev/xvda
+  volumeSize: 50Gi
+  volumeType: gp3
+  encrypted: true
+  deleteOnTermination: true
