@@ -3,7 +3,7 @@ cluster:
 
 ami: 
  id: ami-0d3eabf74e1e2258b
- familiy: AL2
+ family: AL2
 
 userdata: |
   MIME-Version: 1.0
