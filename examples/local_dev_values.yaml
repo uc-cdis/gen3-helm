@@ -1,6 +1,6 @@
 global:
-  dev: true
-  hostname: localhost
+  dev: false
+  hostname: example.openstackhelm.org
 
 # configuration for fence helm chart. You can add it for all our services.
 fence:

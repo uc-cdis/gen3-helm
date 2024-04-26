@@ -84,7 +84,7 @@ dependencies:
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: sower
-  version: 0.1.10
+  version: 0.1.9
   condition: sower.enabled
   repository: "file://../sower"
 - name: wts
@@ -94,9 +94,9 @@ dependencies:
 
 
 - name: elasticsearch
-  version: 7.10.2
-  repository: "https://helm.elastic.co"
-  condition: global.dev
+  version: "0.1.5"
+  repository: "file://../elasticsearch"
+  condition: elasticsearch.enabled
 - name: postgresql
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
@@ -115,7 +115,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.30
+version: 0.1.29
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

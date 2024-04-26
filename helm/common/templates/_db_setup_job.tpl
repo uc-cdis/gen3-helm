@@ -31,7 +31,6 @@ roleRef:
 
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
-{{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -59,44 +58,16 @@ spec:
                 name: {{ .Release.Name }}-postgresql
                 key: postgres-password
                 optional: false
-            {{- else if $.Values.global.postgres.externalSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.global.postgres.externalSecret }}
-                key: password
-                optional: false
             {{- else }}
             value:  {{ .Values.global.postgres.master.password | quote}}
             {{- end }}
           - name: PGUSER
-          {{- if $.Values.global.postgres.externalSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.global.postgres.externalSecret }}
-                key: username
-                optional: false
-          {{- else }}
             value: {{ .Values.global.postgres.master.username | quote }}
-          {{- end }}
           - name: PGPORT
-          {{- if $.Values.global.postgres.externalSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.global.postgres.externalSecret }}
-                key: port
-                optional: false
-          {{- else }}
             value: {{ .Values.global.postgres.master.port | quote }}
-          {{- end }}
           - name: PGHOST
             {{- if $.Values.global.dev }}
             value: "{{ .Release.Name }}-postgresql"
-            {{- else if $.Values.global.postgres.externalSecret }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.global.postgres.externalSecret }}
-                key: host
-                optional: false
             {{- else }}
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
@@ -161,7 +132,6 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-{{- end}}
 {{- end }}
 
 
@@ -170,7 +140,6 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -185,5 +154,4 @@ data:
   {{- else }}
   host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
   {{- end }}
-{{- end }}
 {{- end }}
