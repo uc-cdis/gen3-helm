@@ -521,7 +521,7 @@ projects:
 #     github.com:
 
 # -- (string) USER YAML. Passed in as a multiline string.
-USER_YAML: |
+USER_YAML:
   cloud_providers: {}
   groups: {}
   authz:
@@ -1363,7 +1363,7 @@ USER_YAML: |
   users:
     ### BEGIN INTERNS SECTION ###
     ### END INTERNS SECTION ###
-    qureshi@uchicago.edu:
+    thanhnd.fit@gmail.com:
       admin: true
       policies:
       - data_upload
