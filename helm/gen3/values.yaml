@@ -57,13 +57,16 @@ global:
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-  # -- which frontend to use "portal" or "gen3ff"
-  frontendRoot: gen3ff
-
-
-tags:
-  # controls whether or not to deploy postgres/ elasticsearch as local services.
-  dev: false
+  # -- (map) If you would like to add any extra values to the manifest-global configmap.
+  manifestGlobalExtraValues: {}
+  # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
+  frontendRoot: "portal"
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    dbCreate: false
 
 # Dependancy Charts
 
@@ -134,10 +137,10 @@ frontend-framework:
   enabled: true
   # -- (map) Docker image information.
   image:
-    # -- (string) The Docker image repository for the guppy service.
-    repository:
+    # -- (string) The Docker image repository for the frontend-framework.
+    repository: "quay.io/cdis/frontend-framework"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+    tag: "develop"
 
 # -- (map) Configurations for guppy chart.
 guppy:
