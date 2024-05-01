@@ -4,7 +4,7 @@ global:
     enabled: true
   environment: devplanetv2
   # Deploys elasticsearch and postgres in k8s
-  dev: true
+  dev: false
   # Replace with your dev environment url. 
   hostname: qureshi.planx-pla.net
   # this is arn to a certificate in AWS that needs to match the hostname.

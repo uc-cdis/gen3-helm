@@ -65,15 +65,13 @@ spec:
             - name: GUPPY_CONFIG_FILEPATH
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
-              value: {{ default "gen3-elasticsearch-master:9200"  .Values.esEndpoint }}
-            {{- with .Values.arboristUrl }}
+              value: "elasticsearch:9200"
             - name: GEN3_ARBORIST_ENDPOINT
-              value: {{ . }}
-            {{- end }}
+              value: http://arborist-service
             - name: TIER_ACCESS_LEVEL
-              value: {{ .Values.global.tierAccessLevel | quote }}
+              value: libre
             - name: TIER_ACCESS_LIMIT
-              value: {{ .Values.global.tierAccessLimit | quote }}
+              value: "1000"
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
