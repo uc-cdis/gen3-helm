@@ -82,7 +82,11 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
               path: /
+              {{- else }}
+              path: /portal
+              {{- end }}
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 60
@@ -192,6 +196,10 @@ spec:
             {{- with .Values.dataUploadBucket  }}
             - name: DATA_UPLOAD_BUCKET
               value: {{ . }}
+            {{- end }}
+            {{- if eq "portal" .Values.global.frontendRoot }}
+            - name: BASENAME
+              value: /portal
             {{- end }}
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|

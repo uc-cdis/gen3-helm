@@ -1,6 +1,6 @@
 apiVersion: v2
-name: peregrine
-description: A Helm chart for gen3 Peregrine service
+name: frontend-framework
+description: A Helm chart for the gen3 frontend framework
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -9,26 +9,21 @@ description: A Helm chart for gen3 Peregrine service
 #
 # Library charts provide useful utilities or functions for the chart developer. They're included as
 # a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+# pipeline. Library charts do not define any templates and, therefore, cannot be deployed.
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.13
+version: 0.1.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "master"
-
+appVersion: "develop"
 
 dependencies:
 - name: common
   version: 0.1.10
   repository: file://../common
-- name: postgresql
-  version: 11.9.13
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: postgres.separate

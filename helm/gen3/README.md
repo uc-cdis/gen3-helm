@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,28 +18,29 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.10 |
-| file://../arborist | arborist | 0.1.10 |
-| file://../argo-wrapper | argo-wrapper | 0.1.6 |
-| file://../audit | audit | 0.1.11 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.8 |
-| file://../common | common | 0.1.9 |
-| file://../etl | etl | 0.1.0 |
-| file://../fence | fence | 0.1.17 |
-| file://../guppy | guppy | 0.1.10 |
-| file://../hatchery | hatchery | 0.1.8 |
-| file://../indexd | indexd | 0.1.13 |
-| file://../manifestservice | manifestservice | 0.1.13 |
-| file://../metadata | metadata | 0.1.11 |
-| file://../peregrine | peregrine | 0.1.12 |
-| file://../pidgin | pidgin | 0.1.9 |
-| file://../portal | portal | 0.1.10 |
-| file://../requestor | requestor | 0.1.10 |
-| file://../revproxy | revproxy | 0.1.13 |
-| file://../sheepdog | sheepdog | 0.1.13 |
-| file://../sower | sower | 0.1.10 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.8 |
-| file://../wts | wts | 0.1.12 |
+| file://../ambassador | ambassador | 0.1.11 |
+| file://../arborist | arborist | 0.1.11 |
+| file://../argo-wrapper | argo-wrapper | 0.1.7 |
+| file://../audit | audit | 0.1.12 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
+| file://../common | common | 0.1.10 |
+| file://../etl | etl | 0.1.1 |
+| file://../fence | fence | 0.1.18 |
+| file://../frontend-framework | frontend-framework | 0.1.1 |
+| file://../guppy | guppy | 0.1.11 |
+| file://../hatchery | hatchery | 0.1.9 |
+| file://../indexd | indexd | 0.1.14 |
+| file://../manifestservice | manifestservice | 0.1.14 |
+| file://../metadata | metadata | 0.1.12 |
+| file://../peregrine | peregrine | 0.1.13 |
+| file://../pidgin | pidgin | 0.1.10 |
+| file://../portal | portal | 0.1.11 |
+| file://../requestor | requestor | 0.1.11 |
+| file://../revproxy | revproxy | 0.1.14 |
+| file://../sheepdog | sheepdog | 0.1.14 |
+| file://../sower | sower | 0.1.11 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.9 |
+| file://../wts | wts | 0.1.13 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -72,6 +73,11 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
+| frontend-framework | map | `{"enabled":true,"image":{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}}` | Configurations for frontend-framework chart. |
+| frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
+| frontend-framework.image | map | `{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
+| frontend-framework.image.repository | string | `"quay.io/cdis/frontend-framework"` | The Docker image repository for the frontend-framework. |
+| frontend-framework.image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -87,6 +93,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets | map | `{"dbCreate":false,"deploy":false}` | External Secrets settings. |
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
+| global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |
@@ -100,6 +107,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
 | hatchery.hatchery.containers[0].args[0] | string | `"--NotebookApp.base_url=/lw-workspace/proxy/"` |  |
@@ -144,6 +152,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
@@ -155,5 +164,3 @@ Helm chart to deploy Gen3 Data Commons
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
 
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

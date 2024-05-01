@@ -58,6 +58,8 @@ global:
   ddEnabled: false
   # -- (map) If you would like to add any extra values to the manifest-global configmap.
   manifestGlobalExtraValues: {}
+  # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
+  frontendRoot: "portal"
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
@@ -122,6 +124,18 @@ fence:
     # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
     slack_send_dbgap: false
 
+# -- (map) Configurations for frontend-framework chart.
+frontend-framework:
+  # -- (bool) Whether to deploy the frontend-framework subchart.
+  enabled: true
+  # -- (map) Docker image information.
+  image:
+    # -- (string) The Docker image repository for the frontend-framework.
+    repository: "quay.io/cdis/frontend-framework"
+    # -- (string) Overrides the image tag whose default is the chart appVersion.
+    tag: "develop"
+
+# -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
@@ -254,6 +268,7 @@ wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
 
+# -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
