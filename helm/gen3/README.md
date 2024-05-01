@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -34,7 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../metadata | metadata | 0.1.12 |
 | file://../peregrine | peregrine | 0.1.13 |
 | file://../pidgin | pidgin | 0.1.10 |
-| file://../portal | portal | 0.1.11 |
+| file://../portal | portal | 0.1.12 |
 | file://../requestor | requestor | 0.1.11 |
 | file://../revproxy | revproxy | 0.1.14 |
 | file://../sheepdog | sheepdog | 0.1.14 |
@@ -73,8 +73,8 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| frontend-framework | map | `{"enabled":true,"image":{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}}` | Configurations for frontend-framework chart. |
-| frontend-framework.enabled | bool | `true` | Whether to deploy the frontend-framework subchart. |
+| frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}}` | Configurations for frontend-framework chart. |
+| frontend-framework.enabled | bool | `false` | Whether to deploy the frontend-framework subchart. |
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/frontend-framework"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
