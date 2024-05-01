@@ -82,10 +82,10 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
-              {{- if eq "portal" .Values.global.frontendRoot }}
-              path: /
-              {{- else }}
+              {{- if eq "gen3ff" .Values.global.frontendRoot }}
               path: /portal
+              {{- else }}
+              path: /
               {{- end }}
               port: 80
             initialDelaySeconds: 30
@@ -197,7 +197,7 @@ spec:
             - name: DATA_UPLOAD_BUCKET
               value: {{ . }}
             {{- end }}
-            {{- if eq "portal" .Values.global.frontendRoot }}
+            {{- if eq "gen3ff" .Values.global.frontendRoot }}
             - name: BASENAME
               value: /portal
             {{- end }}
