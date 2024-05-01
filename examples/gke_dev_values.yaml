@@ -1,6 +1,6 @@
 global:
   # to disable local es/postgre
-  dev: true
+  dev: false
   hostname: qureshi.planx-pla.net
   tls:
     cert:

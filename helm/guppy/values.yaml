@@ -144,7 +144,7 @@ image:
 
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: "gen3-elasticsearch-master:9200"
+esEndpoint: "elasticsearch:9200"
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
 
