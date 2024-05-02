@@ -50,7 +50,7 @@ spec:
   provider:
     aws:
       service: SecretsManager
-      region: us-east-1
+      region: {{ .Values.global.aws.region }}
       auth:
         secretRef:
           accessKeyIDSecretRef:
