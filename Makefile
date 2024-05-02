@@ -1,8 +1,10 @@
+
+
 all: help
 
 update: ## Update from the local helm chart repository
 	@helm dependency update ./helm/gen3
-	
+
 local: DEPLOY=local
 local: local-context deploy ## Deploy the Local commons
 local-context: change-context # Change to the Local context
@@ -73,6 +75,7 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete configmaps --all
 	@kubectl delete jobs --all
 
+# Make sure to build the venv. Don't have to be in it but it must exist in the dir
 deploy: check-context check-secrets
 	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
 		case "$$sure" in \
@@ -87,11 +90,29 @@ deploy: check-context check-secrets
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml
 
+	@read -p "Enter your SS username: " username; \
+	read -p "Enter your SS password: " -s pass; \
+	read -p "Enter your SS otp: " otp; \
+	$(VENV)/bin/python $(SCRIPT) post $(DEPLOY) -u $username -p $pass -o $otp; \
+
+ENV :=
+VENV := venv
+SCRIPT := SSClient.py
+
+# Runs like make fetch-secret ENV=local where local is whatever env you want
+fetch-secret:
+	@echo "Fetching $(ENV)"
+	@read -p "Enter your SS username: " username; \
+	read -p "Enter your SS password: " -s pass; \
+	read -p "Enter your SS otp: " otp; \
+	$(VENV)/bin/python $(SCRIPT) get $(ENV) -u $username -p $pass -o $otp;
+
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
-zip: 
+zip:
 	@$(eval TIMESTAMP="$(DEPLOY)-$(shell date +"%Y-%m-%dT%H-%M-%S%z")")
 	@zip Secrets-$(TIMESTAMP).zip Secrets
 	@cp Secrets-$(TIMESTAMP).zip $(HOME)/OneDrive/ACED-deployments
+
 
 # https://gist.github.com/prwhite/8168133
 help:	## Show this help message
