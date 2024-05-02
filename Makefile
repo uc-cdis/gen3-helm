@@ -81,7 +81,7 @@ deploy: check-context check-secrets
 		esac
 
 	@echo "Deploying $(DEPLOY)"
-	@~/.local/bin/helm upgrade --install $(DEPLOY) ./helm/gen3 \
+	@helm upgrade --install $(DEPLOY) ./helm/gen3 \
 		-f Secrets/values.yaml \
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml \
