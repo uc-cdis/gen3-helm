@@ -74,12 +74,6 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete jobs --all
 
 deploy: check-context check-secrets
-	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
-		case "$$sure" in \
-			[yY]) true;; \
-			*) false;; \
-		esac
-
 	@echo "Deploying $(DEPLOY)"
 	@helm upgrade --install $(DEPLOY) ./helm/gen3 \
 		-f Secrets/values.yaml \
