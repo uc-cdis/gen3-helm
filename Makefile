@@ -90,10 +90,8 @@ deploy: check-context check-secrets
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml
 
-	@read -p "Enter your SS username: " username; \
-	read -p "Enter your SS password: " -s pass; \
-	read -p "Enter your SS otp: " otp; \
-	$(VENV)/bin/python $(SCRIPT) post $(DEPLOY) -u $username -p $pass -o $otp; \
+
+	$(VENV)/bin/python $(SCRIPT) post $(DEPLOY);
 
 ENV :=
 VENV := venv
@@ -102,10 +100,10 @@ SCRIPT := SSClient.py
 # Runs like make fetch-secret ENV=local where local is whatever env you want
 fetch-secret:
 	@echo "Fetching $(ENV)"
-	@read -p "Enter your SS username: " username; \
-	read -p "Enter your SS password: " -s pass; \
-	read -p "Enter your SS otp: " otp; \
-	$(VENV)/bin/python $(SCRIPT) get $(ENV) -u $username -p $pass -o $otp;
+	$(VENV)/bin/python $(SCRIPT) get $(ENV);
+
+list-secret:
+	$(VENV)/bin/python $(SCRIPT) list;
 
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
 zip:

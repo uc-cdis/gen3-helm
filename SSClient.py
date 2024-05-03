@@ -146,10 +146,9 @@ def _get_secrets_list(username: str, password: str, otp: int):
 
         json_response = response.json()
         if "records" in json_response and len(json_response["records"]) > 0:
-            print(f"  id{"":7}name{"":40}secretTemplateName{"":6}folderId")
+            print(f"id{'':13}name{'':36}secretTemplateName{'':2}folderId")
             for elem in json_response["records"]:
-                print(f"{elem['id']:7}    {elem['name']:40}\
-{elem['secretTemplateName']:20}    {elem['folderId']}")
+                print(f"{str(elem['id']):15}{elem['name']:40}{elem['secretTemplateName']:20}{elem['folderId']}")
         else:
             print("JSON response contains no records: \n", json_response)
         response.raise_for_status()
