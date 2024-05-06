@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: peregrine-creds
+type: Opaque
+stringData:
+  creds.json: |-
+      {
+        "db_host": "{{ include "gen3.service-postgres" (dict "key" "host" "service" "sheepdog" "context" $) }}",
+        "db_username": "{{include "gen3.service-postgres" (dict "key" "username" "service" "sheepdog" "context" $) }}",
+        "db_password": "{{include "gen3.service-postgres" (dict "key" "password" "service" "sheepdog" "context" $) }}",
+        "db_database": "{{ include "gen3.service-postgres" (dict "key" "database" "service" "sheepdog" "context" $)}}",
+        "hostname": "{{ .Values.global.hostname }}",
+        "indexd_password": "",
+        "fence_username": "{{include "gen3.service-postgres" (dict "key" "username" "service" "fence" "context" $) }}",
+        "fence_password": "{{include "gen3.service-postgres" (dict "key" "password" "service" "fence" "context" $) }}",
+        "fence_host": "{{ include "gen3.service-postgres" (dict "key" "host" "service" "fence" "context" $) }}",
+        "fence_database": "{{ include "gen3.service-postgres" (dict "key" "database" "service" "fence" "context" $)}}"
+      }

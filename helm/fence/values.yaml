@@ -284,11 +284,6 @@ env:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-  - name: INDEXD_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: indexd-service-creds
-        key: fence
   - name: gen3Env
     valueFrom:
       configMapKeyRef:
