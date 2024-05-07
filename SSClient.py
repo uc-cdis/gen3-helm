@@ -56,13 +56,12 @@ def get_legacy_session():
 
 def conv_shorthand(env: str) -> str:
     "Converts shorthand names to actual env names"
-    match env:
-        case "dev":
-            return "development"
-        case "prod":
-            return "production"
-        case "cbds-dev":
-            return "cbds_dev"
+    if env == "dev":
+        return "development"
+    if env == "prod":
+        return "production"
+    if env == "cbds-dev":
+        return "cbds_dev"
     return env
 
 
@@ -75,19 +74,18 @@ def match_env_with_id(env: str, id: int):
     if id is not None:
         return id, f"{prefix}{conv_env}"
 
-    match conv_env:
-        case "local":
-            return SECRETS_LOCAL, f"{prefix}local"
-        case "development":
-            return SECRETS_DEV, f"{prefix}development"
-        case "staging":
-            return SECRETS_STAGING, f"{prefix}staging"
-        case ["production", "prod"]:
-            return SECRETS_PROD, f"{prefix}production"
-        case ["cbds", "CBDS"]:
-            return SECRETS_CBDS, f"{prefix}cbds"
-        case ["cbds-dev", "CBDS-DEV"]:
-            return SECRETS_CBDS_DEV, f"{prefix}cbds_dev"
+    if conv_env == "local":
+        return SECRETS_LOCAL, f"{prefix}local"
+    if conv_env == "development":
+        return SECRETS_DEV, f"{prefix}development"
+    if conv_env == "staging":
+        return SECRETS_STAGING, f"{prefix}staging"
+    if conv_env in ["production", "prod"]:
+        return SECRETS_PROD, f"{prefix}production"
+    if conv_env in ["cbds", "CBDS"]:
+        return SECRETS_CBDS, f"{prefix}cbds"
+    if conv_env in ["cbds-dev", "CBDS-DEV"]:
+        return SECRETS_CBDS_DEV, f"{prefix}cbds_dev"
 
 
 def _fetch_cached_token() -> str:
@@ -303,8 +301,14 @@ def _get_token(username: str, password: str, otp: int) -> str:
     except requests.exceptions.RequestException as e:
         response_body = e.response.json() if e.response else None
         error_message = response_body.get("error") if response_body else str(e)
-        print(f"ERROR: {error_message}")
-        exit(1)
+        if "Failed to resolve 'secretserver.ohsu.edu'" in str(e):
+            print("You must be connected to the secure network in order to access secretserver.ohsu.edu")
+            exit(1)
+        elif "400 Client Error: Bad Request for url: https://secretserver.ohsu.edu/secretserver/oauth2/token" in str(e):
+            print("Invalid login credentials.")
+        else:
+            print(f"ERROR: {error_message}")
+            exit(1)
 
 
 if __name__ == '__main__':

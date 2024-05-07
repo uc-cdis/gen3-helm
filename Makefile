@@ -46,13 +46,23 @@ check-secrets:
 	 echo "Changing Secrets link to Secrets-$(DEPLOY)"; \
 	 ln -s Secrets-$(DEPLOY) Secrets)
 
-check-context:
-	@$(eval ACTUAL=$(shell kubectl config current-context))
-	@[ $(ACTUAL) == $(CONTEXT) ] || \
-		(printf "\033[1mUnexpected context\033[0m\n"; \
-		 printf "\033[92mExpected context:\033[0m $(CONTEXT)\n"; \
-		 printf "\033[93mActual context:\033[0m   $(ACTUAL)\n"; \
-		 exit 1)
+check-venv:
+	@if [ ! -d "venv" ]; then \
+		$(MAKE) create-venv; \
+	elif [ -z "$$(source venv/bin/activate && python -c 'import pkgutil; exit(not all(pkgutil.find_loader(pkg) for pkg in ["click", "requests", "urllib3"]))')" ]; then \
+		echo "Existing venv found with required packages installed."; \
+		echo "$(pwd)/venv"; \
+	else \
+		$(MAKE) create-venv; \
+	fi
+
+create-venv:
+	@python3 -m venv venv; \
+	source venv/bin/activate; \
+	pip install click requests urllib3; \
+	echo "New venv created with required packages installed."; \
+	echo "$(pwd)/venv";
+
 
 clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@$(eval ACTUAL=$(shell kubectl config current-context))
@@ -76,7 +86,7 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete jobs --all
 
 # Make sure to build the venv. Don't have to be in it but it must exist in the dir
-deploy: check-context check-secrets
+deploy: check-context check-secrets check-venv
 	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
 		case "$$sure" in \
 			[yY]) true;; \
@@ -98,11 +108,11 @@ VENV := venv
 SCRIPT := SSClient.py
 
 # Runs like make fetch-secret ENV=local where local is whatever env you want
-fetch-secret:
+fetch-secret: check-venv
 	@echo "Fetching $(ENV)"
 	$(VENV)/bin/python $(SCRIPT) get $(ENV);
 
-list-secret:
+list-secret: check-venv
 	$(VENV)/bin/python $(SCRIPT) list;
 
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
