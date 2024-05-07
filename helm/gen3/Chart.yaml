@@ -36,11 +36,11 @@ dependencies:
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
-  version: 0.1.18
+  version: 0.1.19
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
-  version: 0.1.11
+  version: 0.1.12
   repository: "file://../guppy"
   condition: guppy.enabled
 - name: hatchery

@@ -291,12 +291,12 @@ env:
     value: /var/www/fence
   - name: GEN3_DEBUG
     value: "False"
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
+  # - name: FENCE_PUBLIC_CONFIG
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: manifest-fence
+  #       key: fence-config-public.yaml
+  #       optional: true
   - name: PGHOST
     valueFrom:
       secretKeyRef:
@@ -409,11 +409,11 @@ volumeMounts:
     subPath: "privacy_policy.md"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/tmp/fence/fence-config-secret.yaml"
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
     subPath: fence-config-secret.yaml
   - name: "public-config-volume"
     readOnly: true
-    mountPath: "/var/www/fence/fence-public-config.yaml"
+    mountPath: "/var/tmp/fence-public-config.yaml"
     subPath: fence-public-config.yaml
   - name: "fence-scripts"
     readOnly: true
@@ -436,7 +436,7 @@ volumeMounts:
 initVolumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/tmp/fence-config-secret.yaml"
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
     subPath: fence-config-secret.yaml
   - name: "fence-scripts"
     readOnly: true
@@ -1393,7 +1393,6 @@ USER_YAML: |
       - auth_id: jnkns
         privilege: [create, read, update, delete, upload, read-storage]
 
-
 # -- (map) Configuration settings for Fence app
 FENCE_CONFIG:
   # -- (string) Name of the Fence app
@@ -2284,3 +2283,6 @@ FENCE_CONFIG:
     visa_types:
       ras: ["https://ras.nih.gov/visas/v1", "https://ras.nih.gov/visas/v1.1"]
   RAS_USERINFO_ENDPOINT: '/openid/connect/v1.1/userinfo'
+# -- (map) Public Configuration settings for Fence app
+# NOTE: Remove the {} and supply additional configuration if needed.
+FENCE_PUBLIC_CONFIG: {}

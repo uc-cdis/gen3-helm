@@ -2,10 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fence-public-config
-stringData:
+data:
   fence-public-config.yaml: |
-{{- if hasKey .Values "FENCE_PUBLIC_CONFIG" }}
     {{- with .Values.FENCE_PUBLIC_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
-{{- end }}
+
