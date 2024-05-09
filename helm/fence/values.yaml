@@ -362,9 +362,6 @@ volumes:
   - name: config-volume
     secret:
       secretName: "fence-config"
-  - name: public-config-volume
-    configMap:
-      name: "fence-public-config"
   - name: fence-google-app-creds-secret-volume
     secret:
       secretName: "fence-google-app-creds-secret"
