@@ -55,7 +55,7 @@ spec:
         {{- if .Values.global.aws.secretStoreServiceAccount.enabled }}
         jwt:
           serviceAccountRef:
-            name: {{ .Values.global.aws.secretStoreServiceAccount.enabled }}
+            name: {{ .Values.global.aws.secretStoreServiceAccount.name }}
         {{- else }}
         secretRef:
           accessKeyIDSecretRef:
