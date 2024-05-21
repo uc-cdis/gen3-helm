@@ -8,7 +8,7 @@ A Helm chart for gen3 Hatchery
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.11 |
 
 ## Values
 
