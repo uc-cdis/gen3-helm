@@ -33,7 +33,7 @@ jobs:
           fi
   
       - name: Helm Repo Update
-        run: helm repo update
+        run: helm repo update ./helm/lgtm-distributed
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
