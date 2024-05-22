@@ -46,6 +46,14 @@ check-secrets:
 	 echo "Changing Secrets link to Secrets-$(DEPLOY)"; \
 	 ln -s Secrets-$(DEPLOY) Secrets)
 
+check-context:
+	@$(eval ACTUAL=$(shell kubectl config current-context))
+	@[ $(ACTUAL) == $(CONTEXT) ] || \
+		(printf "\033[1mUnexpected context\033[0m\n"; \
+		 printf "\033[92mExpected context:\033[0m $(CONTEXT)\n"; \
+		 printf "\033[93mActual context:\033[0m   $(ACTUAL)\n"; \
+		 exit 1)
+
 check-venv:
 	@if [ ! -d "venv" ]; then \
 		$(MAKE) create-venv; \
