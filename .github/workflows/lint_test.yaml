@@ -31,6 +31,9 @@ jobs:
           if [[ -n "$changed" ]]; then
             echo "changed=true >> $GITHUB_OUTPUT"
           fi
+  
+      - name: Helm Repo Update
+        run: helm repo update
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
