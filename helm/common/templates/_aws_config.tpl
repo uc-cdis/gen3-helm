@@ -1,5 +1,5 @@
 {{/*
-    Credentials for all AWS stuff.
+    Credentials for all AWS stuff. TEST
 */}}
 {{ define "common.awsconfig" -}}
 apiVersion: v1

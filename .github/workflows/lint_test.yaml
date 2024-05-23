@@ -34,6 +34,9 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
+
+      - name: Helm dependency update Umbrella chart
+        run: helm dependency update ./helm/gen3-helm
       
   # TODO: add back in when we have tests
   # deploy-and-test-chart:
