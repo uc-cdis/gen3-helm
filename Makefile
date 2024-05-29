@@ -31,9 +31,9 @@ change-context:
 
 check-secrets:
 	@$(eval ACTUAL=$(shell [ -z $(shell readlink Secrets) ] && echo "<empty>" || echo $(shell readlink Secrets)))
-	@[ "$(ACTUAL)" == "Secrets.$(DEPLOY)" ] || \
+	@[ "$(ACTUAL)" == "Secrets-$(DEPLOY)" ] || \
 	(printf "\033[1mUnexpected Secrets link\033[0m\n"; \
-	 printf "\033[92mExpected Secrets:\033[0m Secrets.$(DEPLOY)\n"; \
+	 printf "\033[92mExpected Secrets:\033[0m Secrets-$(DEPLOY)\n"; \
 	 printf "\033[93mActual Secrets:\033[0m   $(ACTUAL)\n"; \
 	 read -p "Change Secrets link to $(DEPLOY)? [y/N]: " sure && \
 	 	case "$$sure" in \
@@ -41,8 +41,8 @@ check-secrets:
 	 		*) exit 1;; \
 	 	esac; \
 	 rm -f Secrets; \
-	 echo "Changing Secrets link to Secrets.$(DEPLOY)"; \
-	 ln -s Secrets.$(DEPLOY) Secrets)
+	 echo "Changing Secrets link to Secrets-$(DEPLOY)"; \
+	 ln -s Secrets-$(DEPLOY) Secrets)
 
 check-context:
 	@$(eval ACTUAL=$(shell kubectl config current-context))
@@ -78,8 +78,7 @@ deploy: check-context check-secrets
 	@helm upgrade --install $(DEPLOY) ./helm/gen3 \
 		-f Secrets/values.yaml \
 		-f Secrets/user.yaml \
-		-f Secrets/fence-config.yaml \
-		-f Secrets/TLS/gen3-certs.yaml
+		-f Secrets/fence-config.yaml
 
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
 zip: 
