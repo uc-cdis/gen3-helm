@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -26,6 +25,18 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+
+# -- (map) Service account to use or create.
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations:
+    # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
+    eks.amazonaws.com/role-arn:
+  # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account
+  name: "es-proxy"
 
 # -- (map) External Secrets settings.
 externalSecrets:

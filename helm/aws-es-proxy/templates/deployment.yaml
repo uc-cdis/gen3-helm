@@ -12,6 +12,7 @@ metadata:
     {{- include "common.datadogLabels" . | nindent 4 }}
     {{- end }}
 spec:
+  serviceAccountName: {{ include "aws-es-proxy.serviceAccountName" . }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
