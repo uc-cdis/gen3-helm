@@ -1,8 +1,9 @@
+
 all: help
 
 update: ## Update from the local helm chart repository
 	@helm dependency update ./helm/gen3
-	
+
 local: DEPLOY=local
 local: local-context deploy ## Deploy the Local commons
 local-context: change-context # Change to the Local context
@@ -31,9 +32,9 @@ change-context:
 
 check-secrets:
 	@$(eval ACTUAL=$(shell [ -z $(shell readlink Secrets) ] && echo "<empty>" || echo $(shell readlink Secrets)))
-	@[ "$(ACTUAL)" == "Secrets.$(DEPLOY)" ] || \
+	@[ "$(ACTUAL)" == "Secrets-$(DEPLOY)" ] || \
 	(printf "\033[1mUnexpected Secrets link\033[0m\n"; \
-	 printf "\033[92mExpected Secrets:\033[0m Secrets.$(DEPLOY)\n"; \
+	 printf "\033[92mExpected Secrets:\033[0m Secrets-$(DEPLOY)\n"; \
 	 printf "\033[93mActual Secrets:\033[0m   $(ACTUAL)\n"; \
 	 read -p "Change Secrets link to $(DEPLOY)? [y/N]: " sure && \
 	 	case "$$sure" in \
@@ -41,8 +42,8 @@ check-secrets:
 	 		*) exit 1;; \
 	 	esac; \
 	 rm -f Secrets; \
-	 echo "Changing Secrets link to Secrets.$(DEPLOY)"; \
-	 ln -s Secrets.$(DEPLOY) Secrets)
+	 echo "Changing Secrets link to Secrets-$(DEPLOY)"; \
+	 ln -s Secrets-$(DEPLOY) Secrets)
 
 check-context:
 	@$(eval ACTUAL=$(shell kubectl config current-context))
@@ -51,6 +52,24 @@ check-context:
 		 printf "\033[92mExpected context:\033[0m $(CONTEXT)\n"; \
 		 printf "\033[93mActual context:\033[0m   $(ACTUAL)\n"; \
 		 exit 1)
+
+check-venv:
+	@if [ ! -d "venv" ]; then \
+		$(MAKE) create-venv; \
+	elif [ -z "$$(source venv/bin/activate && python -c 'import pkgutil; exit(not all(pkgutil.find_loader(pkg) for pkg in ["click", "requests", "urllib3"]))')" ]; then \
+		echo "Existing venv found with required packages installed."; \
+		echo "$(pwd)/venv"; \
+	else \
+		$(MAKE) create-venv; \
+	fi
+
+create-venv:
+	@python3 -m venv venv; \
+	source venv/bin/activate; \
+	pip install click requests urllib3; \
+	echo "New venv created with required packages installed."; \
+	echo "$(pwd)/venv";
+
 
 clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@$(eval ACTUAL=$(shell kubectl config current-context))
@@ -73,7 +92,8 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete configmaps --all
 	@kubectl delete jobs --all
 
-deploy: check-context check-secrets
+# Make sure to build the venv. Don't have to be in it but it must exist in the dir
+deploy: check-context check-secrets check-venv
 	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
 		case "$$sure" in \
 			[yY]) true;; \
@@ -87,12 +107,27 @@ deploy: check-context check-secrets
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml
 
+
+	$(VENV)/bin/python $(SCRIPT) post $(DEPLOY);
+
+ENV :=
+VENV := venv
+SCRIPT := SSClient.py
+
+# Runs like make fetch-secret ENV=local where local is whatever env you want
+fetch-secret: check-venv
+	@echo "Fetching $(ENV)"
+	$(VENV)/bin/python $(SCRIPT) get $(ENV);
+
+list-secret: check-venv
+	$(VENV)/bin/python $(SCRIPT) list;
+
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
-zip: 
+zip:
 	@$(eval TIMESTAMP="$(DEPLOY)-$(shell date +"%Y-%m-%dT%H-%M-%S%z")")
-	echo $(TIMESTAMP)
 	@zip Secrets-$(TIMESTAMP).zip Secrets
 	@cp Secrets-$(TIMESTAMP).zip $(HOME)/OneDrive/ACED-deployments
+
 
 # https://gist.github.com/prwhite/8168133
 help:	## Show this help message
