@@ -63,7 +63,7 @@ spec:
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
-  name: defaultOnDemand
+  name: default-on-demand
 spec:
   template:
     metadata:
