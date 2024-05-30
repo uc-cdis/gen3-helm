@@ -13,3 +13,8 @@ _sample-*/
 credentials-templates/
 fence-config.yaml
 user.yaml
+
+# ohsu
+venv/
+.SSToken.*
+Secrets-local/

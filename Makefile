@@ -97,7 +97,7 @@ deploy: check-context check-secrets check-venv
 	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
 		case "$$sure" in \
 			[yY]) true;; \
-			*) false;; \
+			*) echo "exiting..." && false;; \
 		esac
 
 	@echo "Deploying $(DEPLOY)"
@@ -106,9 +106,12 @@ deploy: check-context check-secrets check-venv
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml
-
-
-	$(VENV)/bin/python $(SCRIPT) post $(DEPLOY);
+	
+	@read -p "Update Secret Server secrets for $(DEPLOY)? [y/N]: " sure && \
+		case "$$sure" in \
+			[yY]) $(VENV)/bin/python $(SCRIPT) post $(DEPLOY);; \
+			*) echo "secrets were not updated in SS";; \
+		esac
 
 ENV :=
 VENV := venv
