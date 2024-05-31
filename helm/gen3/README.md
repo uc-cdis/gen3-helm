@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -32,9 +32,10 @@ Helm chart to deploy Gen3 Data Commons
 | file://../indexd | indexd | 0.1.14 |
 | file://../manifestservice | manifestservice | 0.1.14 |
 | file://../metadata | metadata | 0.1.12 |
+| file://../neuvector | neuvector | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.13 |
 | file://../pidgin | pidgin | 0.1.10 |
-| file://../portal | portal | 0.1.13 |
+| file://../portal | portal | 0.1.14 |
 | file://../requestor | requestor | 0.1.11 |
 | file://../revproxy | revproxy | 0.1.14 |
 | file://../sheepdog | sheepdog | 0.1.14 |
@@ -59,6 +60,7 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.singleNode | bool | `true` |  |
@@ -149,6 +151,14 @@ Helm chart to deploy Gen3 Data Commons
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
+| neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
+| neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |
+| neuvector.enabled | bool | `false` |  |
+| neuvector.ingress.class | string | `"nginx"` |  |
+| neuvector.ingress.controller | string | `"nginx-ingress-controller"` |  |
+| neuvector.ingress.namespace | string | `"nginx"` |  |
+| neuvector.policies.include | bool | `false` |  |
+| neuvector.policies.policyMode | string | `"Monitor"` |  |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
