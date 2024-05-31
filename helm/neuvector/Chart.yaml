@@ -1,7 +1,11 @@
 apiVersion: v2
-name: portal
-description: A Helm chart for gen3 data-portal
+name: neuvector
+description: NeuVector Kubernetes Security Policy templates to protect Gen3
 
+# NeuVector must be installed separately.
+#   Reference: https://open-docs.neuvector.com/basics/overview
+#   Reference: https://github.com/neuvector/neuvector-helm
+# For more information, please use the Gen3 community Slack.
 # A chart can be either an 'application' or a 'library' chart.
 #
 # Application charts are a collection of templates that can be packaged into versioned archives
@@ -15,15 +19,16 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.15
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "master"
+appVersion: "1.16.0"
 
-dependencies:
-- name: common
-  version: 0.1.10
-  repository: file://../common
+# Todo: Evaluate inclusion of NeuVector installation
+# dependencies:
+# - name: neuvector
+#   version: "5.2.2-s1"
+#   repository: "https://neuvector.github.io/neuvector-helm/core"
