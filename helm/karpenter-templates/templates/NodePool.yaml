@@ -77,7 +77,7 @@ spec:
       requirements:
         - key: karpenter.sh/capacity-type
           operator: In
-          values: ["spot"]
+          values: ["on-demand"]
         - key: capacity-spread
           operator: In
           values:
