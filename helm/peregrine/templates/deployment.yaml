@@ -150,8 +150,12 @@ spec:
           volumeMounts:
             - name: "config-volume"
               readOnly: true
-              mountPath: "/var/www/peregrine/wsgi.py"
+              mountPath: "/var/www/peregrine/settings.py"
               subPath: "settings.py"
+            - name: "peregrine-volume"
+              readOnly: true
+              mountPath: "/var/www/peregrine/creds.json"
+              subPath: "creds.json"
           ports:
             - name: http
               containerPort: 80

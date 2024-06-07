@@ -182,6 +182,9 @@ volumes:
 - name: config-volume
   secret:
     secretName: "peregrine-secret"
+- name: peregrine-volume
+  secret:
+    secretName: "peregrine-creds"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+# Define script names
+CONNECT_SCRIPT="connect_to_db.sh"
+ROLL_SCRIPT="roll.sh"
+JOB_SCRIPT="job.sh"
+POD_SCRIPT="connect_to_pod.sh"
+CLEAR_ELASTICSEARCH="clear_elasticsearch.sh"
+RESTART_POD="restart_pod.sh"
+LOGS="logs.sh"
+LOAD_DATA="load_data.sh"
+
+
+# Check if command is provided as an argument
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <command> [<args>...]"
+    exit 1
+fi
+
+# Give execute permission to specific .sh scripts in the specified directory
+chmod +x "$(dirname "$0")"/*.sh
+
+# Extract the command
+command="$1"
+shift  # Remove the first argument (command)
+
+# Check if the command is valid
+case "$command" in
+    "psql")
+        # Run the connect_to_db.sh script with the remaining arguments
+        "$CONNECT_SCRIPT" "$@"
+        ;;
+    "roll")
+        # Run the roll.sh script with the remaining arguments
+        "$ROLL_SCRIPT" "$@"
+        ;;
+    "job")
+        # Run the job.sh script with the remaining arguments
+        "$JOB_SCRIPT" "$@"
+        ;;
+    "pod")
+        # Run the connect_to_pod.sh script with the remaining arguments
+        "$POD_SCRIPT" "$@"
+        ;;
+    "clear_elasticsearch")
+        # Run the connect_to_pod.sh script with the remaining arguments
+        "$CLEAR_ELASTICSEARCH" "$@"
+        ;;
+    "restart")
+        # Run the connect_to_pod.sh script with the remaining arguments
+        "$RESTART_POD" "$@"
+        ;;
+    "logs")
+        # Run the connect_to_pod.sh script with the remaining arguments
+        "$LOGS" "$@"
+        ;;
+    "load_data")
+        # Run the connect_to_pod.sh script with the remaining arguments
+        "$LOAD_DATA" "$@"
+        ;;
+    *)  
+        echo "Invalid command: $command"
+        exit 1
+        ;;
+esac

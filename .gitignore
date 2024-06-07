@@ -4,3 +4,9 @@ notes/
 Chart.lock
 .DS_Store
 _sample-*/
+secret-values.yaml
+.env
+credentials.json
+CA/
+temp.yaml
+values.yaml

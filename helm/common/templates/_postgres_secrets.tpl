@@ -17,7 +17,7 @@
  
 */}}
 {{- define "gen3.service-postgres" -}}
-  {{- $chartName := default "" .context.Chart.Name }}
+  {{- $chartName := default .context.Chart.Name $.service }}
   {{- $valuesPostgres := get .context.Values.postgres .key }}
   {{- $localSecretPass := "" }}
   {{- $secretData := (lookup "v1" "Secret" $.context.Release.Namespace (printf "%s-%s" $chartName "dbcreds")).data }}
