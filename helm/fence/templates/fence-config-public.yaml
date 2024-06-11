@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: manifest-fence
 data:
-  fence-public-config.yaml: |
-    {{- with .Values.FENCE_CONFIG }}
+  fence-config-public.yaml: |
+    {{- with .Values.FENCE_PUBLIC_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
 
