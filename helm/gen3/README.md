@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.36](https://img.shields.io/badge/Version-0.1.36-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -23,7 +23,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.7 |
 | file://../audit | audit | 0.1.12 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.11 |
 | file://../etl | etl | 0.1.1 |
 | file://../fence | fence | 0.1.19 |
 | file://../frontend-framework | frontend-framework | 0.1.1 |
@@ -32,9 +32,10 @@ Helm chart to deploy Gen3 Data Commons
 | file://../indexd | indexd | 0.1.14 |
 | file://../manifestservice | manifestservice | 0.1.14 |
 | file://../metadata | metadata | 0.1.12 |
+| file://../neuvector | neuvector | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.13 |
 | file://../pidgin | pidgin | 0.1.10 |
-| file://../portal | portal | 0.1.12 |
+| file://../portal | portal | 0.1.15 |
 | file://../requestor | requestor | 0.1.11 |
 | file://../revproxy | revproxy | 0.1.14 |
 | file://../sheepdog | sheepdog | 0.1.14 |
@@ -59,6 +60,7 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.singleNode | bool | `true` |  |
@@ -78,10 +80,15 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/frontend-framework"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
+| global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
+| global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
+| global.aws.secretStoreServiceAccount.name | string | `"secret-store-sa"` | Name of the service account to create |
+| global.aws.secretStoreServiceAccount.roleArn | string | `nil` | AWS Role ARN for Secret Store to use |
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
@@ -149,6 +156,14 @@ Helm chart to deploy Gen3 Data Commons
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
+| neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
+| neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |
+| neuvector.enabled | bool | `false` |  |
+| neuvector.ingress.class | string | `"nginx"` |  |
+| neuvector.ingress.controller | string | `"nginx-ingress-controller"` |  |
+| neuvector.ingress.namespace | string | `"nginx"` |  |
+| neuvector.policies.include | bool | `false` |  |
+| neuvector.policies.policyMode | string | `"Monitor"` |  |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |

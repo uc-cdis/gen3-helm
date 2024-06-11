@@ -6,12 +6,22 @@
 global:
   # -- (map) AWS configuration
   aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
+    secretStoreServiceAccount:
+      # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
+      enabled: false
+      # -- (string) Name of the service account to create
+      name: secret-store-sa
+      # -- (string) AWS Role ARN for Secret Store to use
+      roleArn:
     # -- (map) Local secret setting if using a pre-exising secret.
     useLocalSecret:
       # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
@@ -282,3 +292,32 @@ elasticsearch:
   singleNode: true
   replicas: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config
+
+# (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
+#   NeuVector must be installed separately.
+#   Reference: https://open-docs.neuvector.com/basics/overview
+#   Reference: https://github.com/neuvector/neuvector-helm
+# For more information, please use the Gen3 community Slack.
+neuvector:
+  # install Neuvector
+  enabled: false
+  policies:
+    # deploy predefined Neuvector policies for Gen3
+    include: false
+    # Discover, Monitor, or Protect
+    policyMode: Monitor
+  # Configure your ingress controller information for enabling ingress to containers
+  ingress:
+    # service name of your ingress controller
+    controller: nginx-ingress-controller
+    # installation namespace of your ingress controller
+    namespace: nginx
+    # classname of your ingress
+    class: nginx
+  # Required to allow egress to in-cluster database or external, managed database
+  DB_HOST: development-gen3-postgresql
+  # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
+  ES_HOST: gen3-elasticsearch-master

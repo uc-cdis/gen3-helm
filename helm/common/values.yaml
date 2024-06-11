@@ -5,6 +5,10 @@
 
 # Global configuration
 global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
