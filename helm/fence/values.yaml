@@ -1393,9 +1393,10 @@ USER_YAML: |
       - auth_id: jnkns
         privilege: [create, read, update, delete, upload, read-storage]
 
+# -- (map) Public configuration settings for Fence app
 FENCE_CONFIG_PUBLIC:
 
-# -- (map) Configuration settings for Fence app
+# -- (map) Private configuration settings for Fence app
 FENCE_CONFIG:
   # -- (string) Name of the Fence app
   APP_NAME: 'Gen3 Data Commons'
