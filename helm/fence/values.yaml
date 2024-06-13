@@ -373,11 +373,9 @@ volumes:
       name: "fence-yaml-merge"
       optional: false
   - name: config-volume-public
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
+    configMap:
+      name: "manifest-fence"
+      optional: true
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -429,6 +427,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence-config-public.yaml"
     subPath: fence-config-public.yaml
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-secret.yaml"
+    subPath: fence-config.yaml
 
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts:
