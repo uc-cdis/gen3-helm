@@ -291,12 +291,6 @@ env:
     value: /var/www/fence
   - name: GEN3_DEBUG
     value: "False"
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
   - name: PGHOST
     valueFrom:
       secretKeyRef:
@@ -378,6 +372,12 @@ volumes:
     configMap:
       name: "fence-yaml-merge"
       optional: false
+  - name: config-volume-public
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-fence
+        key: fence-config-public.yaml
+        optional: true
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -425,6 +425,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
+  - name: "config-volume-public"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-public.yaml"
+    subPath: fence-config-public.yaml
 
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts:
@@ -432,6 +436,10 @@ initVolumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence-config-secret.yaml"
     subPath: fence-config.yaml
+  - name: "config-volume-public"
+    readOnly: true
+    mountPath: "/var/www/fence/fence-config-public.yaml"
+    subPath: fence-config-public.yaml
   - name: "yaml-merge"
     readOnly: true
     mountPath: "/var/www/fence/yaml_merge.py"
@@ -483,12 +491,6 @@ initEnv:
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
   - name: PYTHONPATH
     value: /var/www/fence
-  - name: FENCE_PUBLIC_CONFIG
-    valueFrom:
-      configMapKeyRef:
-        name: manifest-fence
-        key: fence-config-public.yaml
-        optional: true
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
