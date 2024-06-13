@@ -25,7 +25,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
 | file://../common | common | 0.1.11 |
 | file://../etl | etl | 0.1.1 |
-| file://../fence | fence | 0.1.20 |
+| file://../fence | fence | 0.1.19 |
 | file://../frontend-framework | frontend-framework | 0.1.1 |
 | file://../guppy | guppy | 0.1.12 |
 | file://../hatchery | hatchery | 0.1.9 |
