@@ -1,0 +1,3 @@
+{{- if and .Values.global.aws.awsSecretAccessKey (not .Values.global.aws.useLocalSecret.enabled) }}
+{{ include "common.awsconfig" . }}
+{{- end -}}

@@ -8,6 +8,9 @@ metadata:
     {{- include "common.datadogLabels" . | nindent 4 }}
     {{- end }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "portal.selectorLabels" . | nindent 6 }}
@@ -41,7 +44,33 @@ spec:
           secretName: "portal-sponsor-config"
       - name: privacy-policy
         configMap:
-          name: "privacy-policy"     
+          name: "privacy-policy"
+          optional: true
+      {{- if .Values.extraImages }}
+      - name: extra-images-config
+        configMap:
+          name: portal-extra-images
+      - name: extra-images
+        emptyDir: {}
+      initContainers:
+        - name: init
+          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/prometheus/busybox:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: extra-images-config
+            mountPath: /data-portal/custom/config.txt
+            subPath: config.txt
+          - name: extra-images
+            mountPath: /data-portal/custom/images
+          command:
+          - sh
+          - -c
+          - | 
+            cd /data-portal/custom/images/;
+            cat /data-portal/custom/config.txt;
+            xargs -a /data-portal/custom/config.txt -I {} wget {}
+      {{- end }}
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -56,7 +85,11 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
+              {{- if eq "gen3ff" .Values.global.frontendRoot }}
+              path: /portal
+              {{- else }}
               path: /
+              {{- end }}
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 60
@@ -169,10 +202,18 @@ spec:
             - name: DATA_UPLOAD_BUCKET
               value: {{ . }}
             {{- end }}
+            {{- if eq "gen3ff" .Values.global.frontendRoot }}
+            - name: BASENAME
+              value: /portal
+            {{- end }}
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
           volumeMounts:
+            {{- if .Values.extraImages  }}
+            - name: extra-images
+              mountPath: /data-portal/custom/images
+            {{- end }}
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"

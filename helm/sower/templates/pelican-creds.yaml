@@ -1,3 +1,4 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sPelicanServiceSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -5,11 +6,12 @@ metadata:
 type: Opaque
 {{- if .Values.global.aws.enabled }}
 stringData:
-  config.json: |-
-{
-  "manifest_bucket_name": "{{ .Values.pelican.bucket }}",
-  "hostname": "{{ .Values.global.hostname }}",
-  "aws_access_key_id": "{{ .Values.global.aws.pelican_user.access_key }}",
-  "aws_secret_access_key": "{{ .Values.global.aws.pelican_user.access_secret }}"
-}
+  config.json: |
+    {
+      "manifest_bucket_name": "{{ .Values.pelican.bucket }}",
+      "hostname": "{{ .Values.global.hostname }}",
+      "aws_access_key_id": "{{ .Values.secrets.awsAccessKeyId | default .Values.global.aws.awsAccessKeyId }}",
+      "aws_secret_access_key": "{{ .Values.secrets.awsSecretAccessKey | default .Values.global.aws.awsSecretAccessKey }}"
+    }
+{{- end }}
 {{- end }}
