@@ -75,7 +75,7 @@ spec:
               path: /_status
               port: 80
             initialDelaySeconds: 5
-            periodSeconds: 30
+            periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
@@ -125,7 +125,7 @@ spec:
               secretKeyRef:
                 name: gateway-g3auto
                 key: base64Authz.txt
-                optional: true  
+                optional: true
           - name: MDS_AUTHZ
             valueFrom:
               secretKeyRef:
@@ -192,7 +192,7 @@ spec:
                 echo "modsecurity on;" >> /etc/nginx/gen3_server_modsec.conf
                 echo "modsecurity_rules_file /etc/nginx/modsec/main.conf;" >> /etc/nginx/gen3_server_modsec.conf
               fi
-    
+
               exec nginx -g 'daemon off;'
       {{- with .Values.nodeSelector }}
       nodeSelector:

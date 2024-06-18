@@ -77,3 +77,10 @@ Create the name of the service account to use
 {{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Metadata g3 Auto Secrets Manager Name
+*/}}
+{{- define "metadata-g3auto" -}}
+{{- default "metadata-g3auto" .Values.externalSecrets.metadataG3auto }}
+{{- end }}

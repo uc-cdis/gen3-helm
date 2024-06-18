@@ -10,3 +10,4 @@ credentials.json
 CA/
 temp.yaml
 values.yaml
+gen3_scripts/

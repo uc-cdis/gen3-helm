@@ -66,3 +66,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Pelicanservice g3 Auto Secrets Manager Name
+*/}}
+{{- define "pelicanservice-g3auto" -}}
+{{- default "pelicanservice-g3auto" .Values.externalSecrets.pelicanserviceG3auto }}
+{{- end }}

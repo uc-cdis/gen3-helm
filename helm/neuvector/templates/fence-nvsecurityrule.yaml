@@ -1,0 +1,294 @@
+{{- if .Values.policies.include }}
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.fence-deployment.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - any
+    name: nodes-egress-12
+    ports: tcp/8126
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: nodes
+      original_name: ""
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-13
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: external-egress-14
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-31
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-32
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-33
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-34
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: peregrine-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.peregrine-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-35
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: hatchery-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.hatchery-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-36
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: sheepdog-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.sheepdog-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-37
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: cert-manager.cert-manager
+      - key: domain
+        op: =
+        value: cert-manager
+      name: nv.cert-manager.cert-manager
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.fence-deployment.{{ .Release.Namespace }}-ingress-38
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: manifestservice-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.manifestservice-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: basename
+    path: /usr/bin/basename
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /bin/bash
+  - action: allow
+    allow_update: false
+    name: cat
+    path: /bin/cat
+  - action: allow
+    allow_update: false
+    name: chmod
+    path: /bin/chmod
+  - action: allow
+    allow_update: false
+    name: chown
+    path: /bin/chown
+  - action: allow
+    allow_update: false
+    name: ddtrace-run
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: fence-create
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: find
+    path: /usr/bin/find
+  - action: allow
+    allow_update: false
+    name: ldconfig
+    path: /sbin/ldconfig
+  - action: allow
+    allow_update: false
+    name: ls
+    path: /bin/ls
+  - action: allow
+    allow_update: false
+    name: mkdir
+    path: /bin/mkdir
+  - action: allow
+    allow_update: false
+    name: mv
+    path: /bin/mv
+  - action: allow
+    allow_update: false
+    name: nginx
+    path: /usr/sbin/nginx
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: pip
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: python
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: readlink
+    path: /bin/readlink
+  - action: allow
+    allow_update: false
+    name: rm
+    path: /bin/rm
+  - action: allow
+    allow_update: false
+    name: run-parts
+    path: /bin/run-parts
+  - action: allow
+    allow_update: false
+    name: sed
+    path: /bin/sed
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /bin/dash
+  - action: allow
+    allow_update: false
+    name: sort
+    path: /usr/bin/sort
+  - action: allow
+    allow_update: false
+    name: uname
+    path: /bin/uname
+  - action: allow
+    allow_update: false
+    name: uwsgi
+    path: /usr/local/bin/uwsgi
+  - action: allow
+    allow_update: false
+    name: wc
+    path: /usr/bin/wc
+  process_profile:
+    baseline: zero-drift
+  target:
+    policymode: {{ .Values.policies.policyMode }}
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: fence-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.fence-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
+{{- end }}

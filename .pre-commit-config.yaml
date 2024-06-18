@@ -18,7 +18,7 @@ repos:
   - repo: local 
     hooks: 
     - id: helm-docs
-      args: []
+      args: ["-c", "helm"]
       description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
       entry: git-hook/helm-docs.sh
       language: script

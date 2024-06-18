@@ -65,3 +65,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Audit g3 Auto Secrets Manager Name
+*/}}
+{{- define "manifestservice-g3auto" -}}
+{{- default "manifestservice-g3auto" .Values.externalSecrets.manifestserviceG3auto }}
+{{- end }}

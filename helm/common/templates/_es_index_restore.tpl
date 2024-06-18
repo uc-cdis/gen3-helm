@@ -21,7 +21,7 @@ spec:
       volumes:
         - name: cred-volume
           secret:
-            secretName: aws-config-{{ .Chart.Name }}
+            secretName: {{.Chart.Name}}-aws-config
       containers:
         - name: create-indices
           image: quay.io/cdis/awshelper:master

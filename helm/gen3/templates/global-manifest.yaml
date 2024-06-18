@@ -15,6 +15,12 @@ data:
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
   "authz_entity_name": {{.Values.global.authz_entity_name}}
+  "frontend_root": {{ .Values.global.frontendRoot | quote }}
   {{- with .Values.global.origins_allow_credentials }}
   "origins_allow_credentials": {{ . | toJson | quote }}
   {{- end -}}
+  {{- with .Values.global.manifestGlobalExtraValues }}
+  {{- range $key, $value := . }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}

@@ -96,3 +96,32 @@ Create the name of the service account to use
 {{- default .Values.postgres.password }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+  Fence JWT Keys Secrets Manager Name
+*/}}
+{{- define "fence-jwt-keys" -}}
+{{- default "fence-jwt-keys" .Values.externalSecrets.fenceJwtKeys }}
+{{- end }}
+
+{{/*
+  Fence Google App Creds Secrets Manager Name
+*/}}
+{{- define "fence-google-app-creds-secret" -}}
+{{- default "fence-google-app-creds-secret" .Values.externalSecrets.fenceGoogleAppCredsSecret }}
+{{- end }}
+
+{{/*
+  Fence Google Storage Creds Secrets Manager Name
+*/}}
+{{- define "fence-google-storage-creds-secret" -}}
+{{- default "fence-google-storage-creds-secret" .Values.externalSecrets.fenceGoogleStorageCredsSecret }}
+{{- end }}
+
+{{/*
+  Fence Config Secrets Manager Name
+*/}}
+{{- define "fence-config" -}}
+{{- default "fence-config" .Values.externalSecrets.fenceConfig }}
+{{- end }}
