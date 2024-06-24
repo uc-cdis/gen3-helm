@@ -1394,7 +1394,7 @@ USER_YAML: |
         privilege: [create, read, update, delete, upload, read-storage]
 
 # -- (map) Public configuration settings for Fence app
-FENCE_CONFIG_PUBLIC:
+FENCE_CONFIG_PUBLIC: {}
 
 # -- (map) Private configuration settings for Fence app
 FENCE_CONFIG:
