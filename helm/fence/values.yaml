@@ -427,10 +427,6 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence-config-public.yaml"
     subPath: fence-config-public.yaml
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence-config-secret.yaml"
-    subPath: fence-config.yaml
 
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts:
