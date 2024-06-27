@@ -16,6 +16,12 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    # -- (map) WAF configuration
+    wafv2:
+      # -- (bool) Set to true if using AWS WAFv2
+      enabled: false
+      # -- (string) ARN for the WAFv2 ACL.
+      wafAclArn:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
