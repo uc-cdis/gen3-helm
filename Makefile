@@ -92,8 +92,7 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete configmaps --all
 	@kubectl delete jobs --all
 
-# Make sure to build the venv. Don't have to be in it but it must exist in the dir
-deploy: check-context check-secrets check-venv
+deploy: check-context check-secrets
 	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
 		case "$$sure" in \
 			[yY]) true;; \
@@ -106,24 +105,7 @@ deploy: check-context check-secrets check-venv
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml
-	
-	@read -p "Update Secret Server secrets for $(DEPLOY)? [y/N]: " sure && \
-		case "$$sure" in \
-			[yY]) $(VENV)/bin/python $(SCRIPT) post $(DEPLOY);; \
-			*) echo "secrets were not updated in SS";; \
-		esac
 
-ENV :=
-VENV := venv
-SCRIPT := SSClient.py
-
-# Runs like make fetch-secret ENV=local where local is whatever env you want
-fetch-secret: check-venv
-	@echo "Fetching $(ENV)"
-	$(VENV)/bin/python $(SCRIPT) get $(ENV);
-
-list-secret: check-venv
-	$(VENV)/bin/python $(SCRIPT) list;
 
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
 zip:
@@ -138,3 +120,30 @@ help:	## Show this help message
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m\033[1m%-20s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: debug deploy clean check-clean zip help change-context
+
+
+#################
+# SECRET SERVER #
+#################
+# venv will be created if it doesn't exist
+VENV := venv
+SCRIPT := SSClient.py
+
+# eg: fetch-secrets ENV=local or development, etc
+fetch-secrets: check-venv
+	@echo "Fetching $(ENV)"
+	$(VENV)/bin/python $(SCRIPT) get $(ENV);
+
+
+# eg: push-secrets ENV=local or local_test or development, etc
+push-secrets: check-venv
+	@read -p "Update Secret Server secrets for $(ENV)? [y/N]: " sure && \
+		case "$$sure" in \
+			[yY]) true;; \
+			*) echo "secrets were not updated in SS" && false;; \
+		esac
+	$(VENV)/bin/python $(SCRIPT) post "$(ENV)"
+
+		
+list-secrets: check-venv
+	$(VENV)/bin/python $(SCRIPT) list;

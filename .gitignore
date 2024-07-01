@@ -17,4 +17,4 @@ user.yaml
 # ohsu
 venv/
 .SSToken.*
-Secrets-local/
+Secrets-*/

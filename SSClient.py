@@ -1,3 +1,4 @@
+from typing import Optional
 import click
 import requests
 import os
@@ -17,7 +18,9 @@ OHSU_SECRET_SERVER_ENDPOINT = "https://secretserver.ohsu.edu/secretserver"
 
 # See 'Domain' on https://secretserver.ohsu.edu/SecretServer/login.aspx
 DOMAIN = "OHSUM01"
+
 SECRETS_LOCAL = 17583
+SECRETS_LOCAL_TEST = 17717
 SECRETS_DEV = 17220
 SECRETS_CBDS = 17599
 SECRETS_STAGING = 17600
@@ -66,9 +69,8 @@ def conv_shorthand(env: str) -> str:
     return env
 
 
-def match_env_with_id(env: str, id: int):
-    """Secret Server expects an 'id' in order to get data from a secret.
-       To do this you need to"""
+def match_env_with_id(env: str, id: Optional[int]):
+    "Associates environment secret with its SS ID"
 
     conv_env = conv_shorthand(env)
     prefix = "Secrets-"
@@ -77,6 +79,8 @@ def match_env_with_id(env: str, id: int):
 
     if conv_env == "local":
         return SECRETS_LOCAL, f"{prefix}local"
+    if conv_env == "local_test":
+        return SECRETS_LOCAL_TEST, f"{prefix}local_test"
     if conv_env == "development":
         return SECRETS_DEV, f"{prefix}development"
     if conv_env == "staging":
@@ -238,12 +242,12 @@ def _update_secret(env: str, username: str, password: str, id: int, otp: int):
         else:
             raise FileNotFoundError(f"Secrets directory: {env_dir}.zip does\
 not exist")
-
+        
+        # upload secrets
         files = {'file': (os.path.basename(f"{env_dir}.zip"), data)}
         response = session.put(f"{OHSU_SECRET_SERVER_ENDPOINT}/api/v1/secrets/{id}/fields/file",
                                data={'fileName': f"{env_dir}.zip"},
                                headers=headers, files=files)
-
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         response_body = e.response.json() if e.response else None
