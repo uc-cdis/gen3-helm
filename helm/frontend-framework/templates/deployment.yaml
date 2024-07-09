@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-framework-deployment
+  labels:
+    {{- include "frontend-framework.labels" . | nindent 4 }}
+    {{- if .Values.global.ddEnabled }}
+    {{- include "common.datadogLabels" . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "frontend-framework.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "frontend-framework.selectorLabels" . | nindent 8 }}
+        public: "yes"
+        {{- if .Values.global.ddEnabled }}
+        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      containers:
+        - name: frontend-framework
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /ff
+          #     port: 80
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 30
+          #   timeoutSeconds: 30
+          #   failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
+              path: /ff
+              {{- else }}
+              path: /
+              {{- end }}
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          env:
+            {{- if .Values.global.ddEnabled }}
+            {{- include "common.datadogEnvVar" . | nindent 12 }}
+            {{- end }}
+            - name: HOSTNAME
+              value: revproxy-service
+            {{- if eq "portal" .Values.global.frontendRoot }}
+            - name: BASE_PATH
+              value: /ff
+            {{- else}}
+            - name: NEXT_PUBLIC_PORTAL_BASENAME
+              value: /portal
+            {{- end }}
+            # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
+            # see https://github.com/npm/cli/issues/3163
+            - name: NPM_CONFIG_UPDATE_NOTIFIER
+              value: "false"
+#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
+#adding a var in helpers.tpl for later- Elise
+             {{- with .Values.datadogApplicationId  }}      
+            - name: DATADOG_APPLICATION_ID
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.datadogClientToken  }}      
+            - name: DATADOG_CLIENT_TOKEN
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.dataUploadBucket  }}
+            - name: DATA_UPLOAD_BUCKET
+              value: {{ . }}
+            {{- end }}
+              # S3 bucket name for data upload, for setting up CSP
+              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
+            # - name: BASENAME
+              

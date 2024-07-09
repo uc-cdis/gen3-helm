@@ -154,7 +154,7 @@ spec:
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
-          {{- end }}    
+          {{- end }}
           ports:
             - containerPort: 8000
           livenessProbe:

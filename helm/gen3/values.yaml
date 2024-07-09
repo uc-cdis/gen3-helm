@@ -2,16 +2,32 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
-    # # -- (map) Credentials for AWS
-    # account:
-    #   # Prep move of these keys here.
-    #   aws_access_key_id:
-    #   aws_secret_access_key:
-
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
+    secretStoreServiceAccount:
+      # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
+      enabled: false
+      # -- (string) Name of the service account to create
+      name: secret-store-sa
+      # -- (string) AWS Role ARN for Secret Store to use
+      roleArn:
+    # -- (map) Local secret setting if using a pre-exising secret.
+    useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+      enabled: false
+      # -- (string) Name of the local secret.
+      localSecretName:
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -47,51 +63,37 @@ global:
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
+  dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-
+  # -- (map) If you would like to add any extra values to the manifest-global configmap.
+  manifestGlobalExtraValues: {}
+  # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
+  frontendRoot: "portal"
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    dbCreate: false
 
 # Dependancy Charts
 
 ambassador:
   # -- (bool) Whether to deploy the ambassador subchart.
   enabled: true
-  image:
-    # -- (string) The Docker image repository for the ambassador service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 arborist:
   # -- (bool) Whether to deploy the arborist subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the arborist service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 argo-wrapper:
   # -- (bool) Whether to deploy the argo-wrapper subchart.
-  enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the argo-wrapper service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+  enabled: false
 
 audit:
   # -- (bool) Whether to deploy the audit subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the audit service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 
 aws-es-proxy:
@@ -113,30 +115,12 @@ etl:
 fence:
   # -- (bool) Whether to deploy the fence subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the fence service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
-  # -- (map) Configuration settings for Fence app
-  FENCE_CONFIG:
-  # -- (string) USER YAML. Passed in as a multiline string.
-  USER_YAML:
   # -- (map) Configuration options for usersync cronjob.
   usersync:
     # -- (bool) Whether to run Fence usersync or not.
     usersync: false
-    # -- (map) Secret information
-    secrets:
-      # -- (str) AWS access key ID for usersync S3 bucket
-      awsAccessKeyId: ""
-      # -- (str) AWS secret access key for usersync S3 bucket
-      awsSecretAccessKey: ""
     # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
     schedule: "*/30 * * * *"
-    # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
-    custom_image:
     # -- (bool) Whether to sync data from dbGaP.
     syncFromDbgap: false
     # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
@@ -150,25 +134,25 @@ fence:
     # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
     slack_send_dbgap: false
 
-guppy:
-  # -- (bool) Whether to deploy the guppy subchart.
+# -- (map) Configurations for frontend-framework chart.
+frontend-framework:
+  # -- (bool) Whether to deploy the frontend-framework subchart.
   enabled: false
   # -- (map) Docker image information.
   image:
-    # -- (string) The Docker image repository for the guppy service.
-    repository:
+    # -- (string) The Docker image repository for the frontend-framework.
+    repository: "quay.io/cdis/frontend-framework"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
+    tag: "develop"
+
+# -- (map) Configurations for guppy chart.
+guppy:
+  # -- (bool) Whether to deploy the guppy subchart.
+  enabled: false
 
 hatchery:
   # -- (bool) Whether to deploy the hatchery subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the hatchery service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
   hatchery:
     sidecarContainer:
@@ -236,12 +220,6 @@ hatchery:
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the indexd service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
   # -- (string) the default prefix for indexd records
   defaultPrefix: "PREFIX/"
 
@@ -249,92 +227,35 @@ indexd:
 manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the manifest service service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the metadata service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the peregrine service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the pidgin service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 portal:
   # -- (bool) Whether to deploy the portal subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the portal service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
-  # -- (map) GitOps configuration for portal
-gitops:
-  # -- (string) multiline string - gitops.json
-  json:
-  # -- (string) - favicon in base64
-  favicon:
-  # -- (string) - multiline string - gitops.css
-  css:
-  # -- (string) - logo in base64
-  logo:
-  # -- (string) - createdby.png - base64
-  createdby:
-  sponsors:
 
 
 requestor:
   # -- (bool) Whether to deploy the requestor subchart.
   enabled: false
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the requestor service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 revproxy:
   # -- (bool) Whether to deploy the revproxy subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the revproxy service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
   ingress:
     # -- (bool) Whether to create the custom revproxy ingress
     enabled: false
-    # -- (string) The ingress class name.
-    className: ""
     # -- (map) Annotations to add to the ingress.
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -348,41 +269,16 @@ revproxy:
 sheepdog:
   # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the sheepdog service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
 ssjdispatcher:
   # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the ssjdispatcher service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
-
 
 wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the wts service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
 
-# -- (map) AWS credentials to access the db restore job S3 bucket
-secrets:
-  # -- (string) AWS access key.
-  awsAccessKeyId: test
-  # -- (string) AWS secret access key.
-  awsSecretAccessKey: test
-
+# -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
@@ -399,3 +295,29 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+
+# (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
+#   NeuVector must be installed separately.
+#   Reference: https://open-docs.neuvector.com/basics/overview
+#   Reference: https://github.com/neuvector/neuvector-helm
+# For more information, please use the Gen3 community Slack.
+neuvector:
+  # install Neuvector
+  enabled: false
+  policies:
+    # deploy predefined Neuvector policies for Gen3
+    include: false
+    # Discover, Monitor, or Protect
+    policyMode: Monitor
+  # Configure your ingress controller information for enabling ingress to containers
+  ingress:
+    # service name of your ingress controller
+    controller: nginx-ingress-controller
+    # installation namespace of your ingress controller
+    namespace: nginx
+    # classname of your ingress
+    class: nginx
+  # Required to allow egress to in-cluster database or external, managed database
+  DB_HOST: development-gen3-postgresql
+  # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
+  ES_HOST: gen3-elasticsearch-master

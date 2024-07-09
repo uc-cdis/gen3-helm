@@ -52,12 +52,75 @@ spec:
               emptyDir: {}
             - name: cred-volume
               secret:
-                secretName: aws-config-fence
+              {{- if .Values.global.aws.useLocalSecret.enabled }}
+                secretName: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+              {{- else }}
+                secretName: {{.Chart.Name}}-aws-config
+              {{- end }}
           initContainers:
             - name: wait-for-fence
               image: curlimages/curl:latest
               command: ["/bin/sh","-c"]
               args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
+            - name: awshelper
+              image: {{ .Values.usersync.custom_image | default "quay.io/cdis/awshelper:master" }}
+              imagePullPolicy: Always
+              env:
+              - name: gen3Env
+                valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname
+              - name: userYamlS3Path
+                value: {{ .Values.usersync.userYamlS3Path | quote }}
+              - name: slackWebHook
+                value: {{ .Values.usersync.slack_webhook | quote }}
+              volumeMounts:
+                - name: user-yaml
+                  mountPath: /var/www/fence
+                - name: shared-data
+                  mountPath: /mnt/shared
+                - name: cred-volume
+                  mountPath: "/home/ubuntu/.aws/credentials"
+                  subPath: credentials
+              command: ["/bin/bash" ]
+              args:
+                - "-c"
+                - |
+                  GEN3_HOME=/home/ubuntu/cloud-automation
+                  source "${GEN3_HOME}/gen3/lib/utils.sh"
+                  gen3_load "gen3/gen3setup"
+
+                  if [ "${userYamlS3Path}" = 'none' ]; then
+                    echo "using local user.yaml"
+                    cp /var/www/fence/user.yaml /mnt/shared/user.yaml
+                  else
+                    # -----------------
+                    echo "awshelper downloading ${userYamlS3Path} to /mnt/shared/user.yaml"
+                    n=0
+                    until [ $n -ge 5 ]; do
+                      echo "Download attempt $n"
+                      aws s3 cp "${userYamlS3Path}" /mnt/shared/user.yaml && break
+                      n=$[$n+1]
+                      sleep 2
+                    done
+                  fi
+                  if [[ ! -f /mnt/shared/user.yaml ]]; then
+                    echo "awshelper failed to retrieve /mnt/shared/user.yaml"
+                    exit 1
+                  fi
+                  #-----------
+                  echo "awshelper updating etl configmap"
+                  if ! gen3 gitops etl-convert < /mnt/shared/user.yaml > /tmp/user.yaml; then
+                    echo "ERROR: failed to generate ETL config"
+                    exit 1
+                  fi
+                  # kubectl delete configmap fence > /dev/null 2>&1
+                  # kubectl create configmap fence --from-file=/tmp/user.yaml
+                  if [ "${slackWebHook}" != 'None' ]; then
+                    curl -X POST --data-urlencode "payload={\"text\": \"AWSHelper: Syncing users on ${gen3Env}\"}" "${slackWebHook}"
+                  fi
+                  echo "Helper exit ok"
           containers:
           - name: usersync
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -102,7 +165,7 @@ spec:
               # Script always succeeds if it runs (echo exits with 0)
               - |
                 echo 'options use-vc' >> /etc/resolv.conf
-                pip3 install SQLAlchemy==1.3.6
+                # pip3 install SQLAlchemy==1.3.6
                 # can be removed once this is merged: https://github.com/uc-cdis/fence/pull/1096
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
@@ -147,65 +210,5 @@ spec:
                 fi
                 echo "Exit code: $exitcode"
                 exit "$exitcode"
-          - name: awshelper
-            image: {{ .Values.usersync.custom_image | default "quay.io/cdis/awshelper:master" }}
-            imagePullPolicy: Always
-            env:
-            - name: gen3Env
-              valueFrom:
-                  configMapKeyRef:
-                    name: manifest-global
-                    key: hostname
-            - name: userYamlS3Path
-              value: {{ .Values.usersync.userYamlS3Path | quote }}
-            - name: slackWebHook
-              value: {{ .Values.usersync.slack_webhook | quote }}
-            volumeMounts:
-              - name: user-yaml
-                mountPath: /var/www/fence
-              - name: shared-data
-                mountPath: /mnt/shared
-              - name: cred-volume
-                mountPath: "/home/ubuntu/.aws/credentials"
-                subPath: credentials
-            command: ["/bin/bash" ]
-            args:
-              - "-c"
-              - |
-                GEN3_HOME=/home/ubuntu/cloud-automation
-                source "${GEN3_HOME}/gen3/lib/utils.sh"
-                gen3_load "gen3/gen3setup"
-
-                if [ "${userYamlS3Path}" = 'none' ]; then
-                  echo "using local user.yaml"
-                  cp /var/www/fence/user.yaml /mnt/shared/user.yaml
-                else
-                  # -----------------
-                  echo "awshelper downloading ${userYamlS3Path} to /mnt/shared/user.yaml"
-                  n=0
-                  until [ $n -ge 5 ]; do
-                    echo "Download attempt $n"
-                    aws s3 cp "${userYamlS3Path}" /mnt/shared/user.yaml && break
-                    n=$[$n+1]
-                    sleep 2
-                    echo "test 1"
-                  done
-                fi
-                if [[ ! -f /mnt/shared/user.yaml ]]; then
-                  echo "awshelper failed to retrieve /mnt/shared/user.yaml"
-                  exit 1
-                fi
-                #-----------
-                echo "awshelper updating etl configmap"
-                if ! gen3 gitops etl-convert < /mnt/shared/user.yaml > /tmp/user.yaml; then
-                  echo "ERROR: failed to generate ETL config"
-                  exit 1
-                fi
-                # kubectl delete configmap fence > /dev/null 2>&1
-                # kubectl create configmap fence --from-file=/tmp/user.yaml
-                if [ "${slackWebHook}" != 'None' ]; then
-                  curl -X POST --data-urlencode "payload={\"text\": \"AWSHelper: Syncing users on ${gen3Env}\"}" "${slackWebHook}"
-                fi
-                echo "Helper exit ok"
           restartPolicy: "Never"
 {{- end }}
