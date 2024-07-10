@@ -191,10 +191,17 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
+          {{- if .Values.slimImage.enabled }}
           args:
             - "-c"
             - |
               alembic upgrade head
+          {{- else }}
+          args:
+            - "-c"
+            - |
+              /env/bin/alembic upgrade head
+          {{- end }}
           volumeMounts:
             - name: "config-volume"
               readOnly: true
