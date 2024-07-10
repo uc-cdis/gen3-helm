@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -107,6 +107,7 @@ A Helm chart for gen3 indexd
 | sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
 | sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | tolerations | list | `[]` | Tolerations for the pods |
+| uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
 | volumeMounts | list | `[{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"indexd-wsgi"},"name":"wsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}},{"configMap":{"name":"indexd-nginx-configmap"},"name":"nginx-config"}]` | Volumes to attach to the pod |
 

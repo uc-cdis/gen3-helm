@@ -26,43 +26,63 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.slimImage.enabled }}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      {{- end }}
       serviceAccountName: {{ include "audit.serviceAccountName" . }}
       volumes:
         - name: config-volume
           secret:
             secretName: "audit-g3auto"
+        {{- if .Values.slimImage.enabled }}
         - name: wsgi-config
           configMap:
             name: audit-wsgi
         - name: nginx-config
           configMap:
             name: audit-nginx-configmap
+        {{- end }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: audit
+          {{- if .Values.slimImage.enabled }}
+          image: "quay.io/cdis/audit-service:feat_GPE-1113"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
+          {{- if .Values.slimImage.enabled }}
           - containerPort: 8000
+          {{- else }}
+          - containerPort: 80
+          {{- end }}
             name: http
             protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.slimImage.enabled }}
               port: 8000
+              {{- else }}
+              port: 80
+              {{- end }}
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.slimImage.enabled }}
               port: 8000
+              {{- else }}
+              port: 80
+              {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -105,16 +125,18 @@ spec:
                 readOnly: true
                 mountPath: "/src/audit-service-config.yaml"
                 subPath: "audit-service-config.yaml"
+              {{- if .Values.slimImage.enabled }}
               - name: "wsgi-config"
                 mountPath: "/audit-service/deployment/wsgi/gunicorn.conf.py"
                 subPath: gunicorn.conf.py
+              {{- end }}
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-        {{- if .Values.sidecar.enabled }}
+        {{- if .Values.slimImage.sidecar.enabled }}
         - name: sidecar-nginx
-          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
-          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
+          image: {{ .Values.slimImage.sidecar.image }}:{{ .Values.slimImage.sidecar.tag }}
+          imagePullPolicy: {{ .Values.slimImage.sidecar.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
@@ -129,7 +151,11 @@ spec:
         {{- end }}  
       initContainers:
         - name: audit-init
+          {{- if .Values.slimImage.enabled }}
+          image: "quay.io/cdis/audit-service:feat_GPE-1113"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DB_HOST

@@ -117,15 +117,20 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
-sidecar:
-  enabled: true
-  # -- (string) The Docker image repository for nginx
-  image: quay.io/cdis/nginx-sidecar
-  # -- (string) When to pull the image.
-  pullPolicy: IfNotPresent
-  # -- (string) Image tag.
-  tag: "nginx-sidecar-feat_nginx-sidecar"
+# -- (map) Configuration settings for the slim AL2 based image.
+slimImage:
+  # -- (bool) Enable the use of the slim AL2 based image.
+  enabled: false
+  # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+  sidecar:
+    # -- (bool) Enable the Nginx sidecar container.
+    enabled: false
+    # -- (string) The Docker image repository for nginx
+    image: quay.io/cdis/nginx-sidecar
+    # -- (string) When to pull the image.
+    pullPolicy: IfNotPresent
+    # -- (string) Image tag.
+    tag: "nginx-sidecar-feat_nginx-sidecar"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

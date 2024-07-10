@@ -1,6 +1,6 @@
 # audit
 
-![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.11 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -119,10 +119,13 @@ A Helm chart for Kubernetes
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Whether to create a service account |
 | serviceAccount.name | string | `"audit-service-sa"` | The name of the service account |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
+| slimImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the slim AL2 based image. |
+| slimImage.enabled | bool | `false` | Enable the use of the slim AL2 based image. |
+| slimImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| slimImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| slimImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| slimImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| slimImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[]` | Volumes to mount to the container. |
 | volumes | list | `[]` | Volumes to attach to the container. |
