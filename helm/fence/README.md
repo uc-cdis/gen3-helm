@@ -132,6 +132,10 @@ A Helm chart for gen3 Fence
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.secureImage | map | `{"enabled":false,"sidecar":{"enabled":false}}` | Configuration settings for the secure AL2 based image. |
+| global.secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| global.secureImage.sidecar | map | `{"enabled":false}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| global.secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
@@ -176,20 +180,23 @@ A Helm chart for gen3 Fence
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for Usersync and External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS access key ID. Overrides global key. |
+| secureImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the secure AL2 based image. |
+| secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| secureImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| secureImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| secureImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| secureImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `80` | The port number that the service exposes. |
+| service | map | `{"port":[],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | list | `[]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"fence-sa"}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{"eks.amazonaws.com/role-arn":null}` | Annotations to add to the service account. |
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":true}` | Configuration options for usersync cronjob. |
 | usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |

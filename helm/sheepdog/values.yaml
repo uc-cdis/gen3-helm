@@ -65,6 +65,14 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  # -- (map) Configuration settings for the secure AL2 based image.
+  secureImage:
+    # -- (bool) Enable the use of the secure AL2 based image.
+    enabled: false
+    # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+    sidecar:
+      # -- (bool) Enable the Nginx sidecar container.
+      enabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -170,15 +178,20 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "bug_auth-audience"
 
-# -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
-sidecar:
-  enabled: true
-  # -- (string) The Docker image repository for nginx
-  image: quay.io/cdis/nginx-sidecar
-  # -- (string) When to pull the image.
-  pullPolicy: IfNotPresent
-  # -- (string) Image tag.
-  tag: "nginx-sidecar-feat_nginx-sidecar"
+# -- (map) Configuration settings for the secure AL2 based image.
+secureImage:
+  # -- (bool) Enable the use of the secure AL2 based image.
+  enabled: false
+  # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+  sidecar:
+    # -- (bool) Enable the Nginx sidecar container.
+    enabled: false
+    # -- (string) The Docker image repository for nginx
+    image: quay.io/cdis/nginx-sidecar
+    # -- (string) When to pull the image.
+    pullPolicy: IfNotPresent
+    # -- (string) Image tag.
+    tag: "nginx-sidecar-feat_nginx-sidecar"
 
 # Environment Variables
 # -- (string) URL of the data dictionary.
@@ -192,14 +205,7 @@ arboristUrl: http://arborist-service
 authNamespace: default
 
 # -- (list) Volumes to mount to the container.
-volumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/sheepdog/deployment/wsgi/wsgi.py"
-    subPath: "wsgi.py"
-  - name: "wsgi-config"
-    mountPath: "/sheepdog/deployment/wsgi/gunicorn.conf.py"
-    subPath: gunicorn.conf.py
+volumeMounts: []
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -221,8 +227,8 @@ resources:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # -- (int) The port number that the service exposes.
-  port: 80
+  # -- (list) The port number that the service exposes.
+  port: []
 
 # Secrets
 # -- (map) Values for sheepdog secret.

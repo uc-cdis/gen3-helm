@@ -47,6 +47,10 @@ A Helm chart for Kubernetes
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
+| global.secureImage | map | `{"enabled":false,"sidecar":{"enabled":false}}` | Configuration settings for the secure AL2 based image. |
+| global.secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| global.secureImage.sidecar | map | `{"enabled":false}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| global.secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/manifestservice","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/manifestservice"` | Docker repository. |
@@ -70,22 +74,25 @@ A Helm chart for Kubernetes
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
+| secureImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the secure AL2 based image. |
+| secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| secureImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| secureImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| secureImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| secureImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `80` | The port number that the service exposes. |
+| service | map | `{"port":[],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | list | `[]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | terminationGracePeriodSeconds | int | `50` | Grace period that applies to the total time it takes for both the PreStop hook to execute and for the Container to stop normally. |
-| volumeMounts | list | `[{"mountPath":"/manifestservice/deployment/wsgi/gunicorn.conf.py","name":"wsgi-config","subPath":"gunicorn.conf.py"},{"mountPath":"/var/gen3/config/","name":"config-volume","readOnly":true}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/var/gen3/config/","name":"config-volume","readOnly":true}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifestservice-wsgi"},"name":"wsgi-config"},{"name":"config-volume","secret":{"secretName":"manifestservice-g3auto"}},{"configMap":{"name":"manifestservice-nginx-configmap"},"name":"nginx-config"}]` | Volumes to attach to the container. |
 

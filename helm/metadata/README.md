@@ -25,7 +25,6 @@ A Helm chart for gen3 Metadata Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | aggMdsConfig | string | `"{\n  \"configuration\": {\n    \"schema\": {\n      \"_subjects_count\": {\n        \"type\": \"integer\"\n      },\n      \"__manifest\": {\n        \"description\": \"an array of filename (usually DRS ids and its size\",\n        \"type\": \"array\",\n        \"properties\": {\n          \"file_name\": {\n            \"type\": \"string\"\n          },\n          \"file_size\": {\n            \"type\": \"integer\"\n          }\n        }\n      },\n      \"tags\": {\n        \"type\": \"array\"\n      },\n      \"_unique_id\": {},\n      \"study_description\": {},\n      \"study_id\": {},\n      \"study_url\": {},\n      \"project_id\": {},\n      \"short_name\": {\n        \"default\": \"not_set\"\n      },\n      \"year\": {\n        \"default\": \"not_set\"\n      },\n      \"full_name\": {},\n      \"commons_url\": {},\n      \"commons\": {}\n    },\n    \"settings\": {\n      \"cache_drs\": true\n    }\n  },\n  \"adapter_commons\": {\n    \"Gen3\": {\n      \"mds_url\": \"https://gen3.datacommons.io/\",\n      \"commons_url\": \"gen3.datacommons.io/\",\n      \"adapter\": \"gen3\",\n      \"config\": {\n        \"guid_type\": \"discovery_metadata\",\n        \"study_field\": \"gen3_discovery\"\n      },\n      \"keep_original_fields\": false,\n      \"field_mappings\": {\n        \"tags\": \"path:tags\",\n        \"_unique_id\": \"path:_unique_id\",\n        \"study_description\": \"path:summary\",\n        \"full_name\": \"path:study_title\",\n        \"short_name\": \"path:short_name\",\n        \"year\": \"path:year\",\n        \"accession_number\": \"path:accession_number\",\n        \"commons\": \"Gen3 Data Commons\",\n        \"study_url\": {\n          \"path\": \"link\",\n          \"default\": \"unknown\"\n        }\n      }\n    }\n  }\n}\n"` |  |
 | aggMdsNamespace | string | `"default"` | Namespae to use if AggMds is enabled. |
-| args | list | `["-c","alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
@@ -78,6 +77,10 @@ A Helm chart for gen3 Metadata Service
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.secureImage | map | `{"enabled":false,"sidecar":{"enabled":false}}` | Configuration settings for the secure AL2 based image. |
+| global.secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| global.secureImage.sidecar | map | `{"enabled":false}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| global.secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/metadata-service","tag":"feat_es-7"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
@@ -113,18 +116,21 @@ A Helm chart for gen3 Metadata Service
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
+| secureImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the secure AL2 based image. |
+| secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| secureImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| secureImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| secureImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| secureImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |
+| service | map | `{"port":[],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | list | `[]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAnnotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nambassador_id: \"gen3\"\nkind:  Mapping\nname:  metadata_mapping\nprefix: /index/\nservice: http://metadata-service:80\n"` |  |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | useAggMds | bool | `"True"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
-| volumeMounts | list | `[{"mountPath":"/metadata-service/deployment/wsgi/gunicorn.conf.py","name":"wsgi-config","subPath":"gunicorn.conf.py"},{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"},{"mountPath":"/metadata.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"},{"mountPath":"/metadata.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 

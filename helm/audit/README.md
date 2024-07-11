@@ -69,7 +69,12 @@ A Helm chart for Kubernetes
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.secureImage | map | `{"enabled":false,"sidecar":{"enabled":false}}` | Configuration settings for the secure AL2 based image. |
+| global.secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| global.secureImage.sidecar | map | `{"enabled":false}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| global.secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+| global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/audit-service","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/audit-service"` | The Docker image repository for the audit service |
@@ -104,6 +109,13 @@ A Helm chart for Kubernetes
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
+| secureImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the secure AL2 based image. |
+| secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| secureImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| secureImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| secureImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| secureImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | server.AWS_CREDENTIALS | map | `{}` | AWS credentials to access SQS queue. |
@@ -112,20 +124,13 @@ A Helm chart for Kubernetes
 | server.sqs | map | `{"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
-| service.port | int | `80` | Port on which the service is exposed |
+| service | map | `{"port":[],"type":"ClusterIP"}` | Configuration for the service |
+| service.port | list | `[]` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"audit-service-sa"}` | Service account to use or create. |
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Whether to create a service account |
 | serviceAccount.name | string | `"audit-service-sa"` | The name of the service account |
-| slimImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the slim AL2 based image. |
-| slimImage.enabled | bool | `false` | Enable the use of the slim AL2 based image. |
-| slimImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| slimImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
-| slimImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| slimImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| slimImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[]` | Volumes to mount to the container. |
 | volumes | list | `[]` | Volumes to attach to the container. |

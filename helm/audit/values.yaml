@@ -48,6 +48,8 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
@@ -64,6 +66,14 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  # -- (map) Configuration settings for the secure AL2 based image.
+  secureImage:
+    # -- (bool) Enable the use of the secure AL2 based image.
+    enabled: false
+    # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+    sidecar:
+      # -- (bool) Enable the Nginx sidecar container.
+      enabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -117,9 +127,9 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-# -- (map) Configuration settings for the slim AL2 based image.
-slimImage:
-  # -- (bool) Enable the use of the slim AL2 based image.
+# -- (map) Configuration settings for the secure AL2 based image.
+secureImage:
+  # -- (bool) Enable the use of the secure AL2 based image.
   enabled: false
   # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
   sidecar:
@@ -175,8 +185,8 @@ securityContext: {}
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # -- (int) Port on which the service is exposed
-  port: 80
+  # -- (list) Port on which the service is exposed
+  port: []
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

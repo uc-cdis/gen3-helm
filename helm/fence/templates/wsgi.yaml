@@ -1,3 +1,4 @@
+{{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,3 +10,4 @@ data:
     workers = 1
     user = 'gen3'
     group = 'gen3'
+{{- end }}

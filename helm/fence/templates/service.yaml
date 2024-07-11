@@ -6,11 +6,19 @@ metadata:
     {{- include "fence.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- with .Values.service.port }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+  - name: app
+    containerPort: 8080
+    protocol: TCP
+  {{- else }}
+  - name: http
+    containerPort: 80
+    protocol: TCP
+  {{- end }}
   selector:
     {{- include "fence.selectorLabels" . | nindent 4 }}
 ---
@@ -20,11 +28,19 @@ metadata:
   name: presigned-url-fence-service
 spec:
   type: {{ .Values.service.type }}
+  {{- with .Values.service.port }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+  - name: app
+    containerPort: 8080
+    protocol: TCP
+  {{- else }}
+  - name: http
+    containerPort: 80
+    protocol: TCP
+  {{- end }}
   selector:
     app: presigned-url-fence
 

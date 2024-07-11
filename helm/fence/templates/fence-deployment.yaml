@@ -28,36 +28,53 @@ spec:
     spec:
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
+      {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: fence
+          {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+          image: "quay.io/cdis/fence:feat_gunicorn"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
+            {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
             - name: app
               containerPort: 8000
               protocol: TCP
-            # - name: https
-            #   containerPort: 443
-            #   protocol: TCP
+            {{- else }}
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            {{- end }}
             - name: container
               containerPort: 6567
           livenessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+              port: app
+              {{- else }}
               port: http
+              {{- end }}
             initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
               port: app
+              {{- else }}
+              port:http
+              {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -75,18 +92,23 @@ spec:
             {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
+            {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+            - name: wsgi-config
+              configMap:
+                name: fence-wsgi
+            {{- end }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
-        {{- if .Values.sidecar.enabled }}
+        {{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
         - name: sidecar-nginx
-          image: {{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}
-          imagePullPolicy: {{ .Values.sidecar.pullPolicy }}
+          image: "{{ .Values.secureImage.sidecar.image }}:{{ .Values.secureImage.sidecar.tag }}"
+          imagePullPolicy: {{ .Values.secureImage.sidecar.pullPolicy }}
           ports:
-            - name: http
+            - name: app
               containerPort: 8080
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: app
           volumeMounts:
             - name: "nginx-config"
               mountPath: "/etc/nginx/conf.d/default.conf"
@@ -94,8 +116,24 @@ spec:
         {{- end }}
       initContainers:
         - name: fence-init
+          {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+          image: "quay.io/cdis/fence:feat_gunicorn"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+            - name: app
+              containerPort: 8000
+              protocol: TCP
+            {{- else }}
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            {{- end }}
+            - name: container
+              containerPort: 6567
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]

@@ -1,3 +1,4 @@
+{{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,3 +12,4 @@ data:
               proxy_pass http://127.0.0.1:8000;  # Gunicorn binds to this address
           }
       }
+{{- end }}

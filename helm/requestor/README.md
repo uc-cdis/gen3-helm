@@ -23,7 +23,6 @@ A Helm chart for gen3 Requestor Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["requestor"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | arboristUrl | string | `"http://arborist-service"` | Arborist service URL. |
-| args | list | `["-c","/env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
@@ -68,6 +67,10 @@ A Helm chart for gen3 Requestor Service
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.secureImage | map | `{"enabled":false,"sidecar":{"enabled":false}}` | Configuration settings for the secure AL2 based image. |
+| global.secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| global.secureImage.sidecar | map | `{"enabled":false}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| global.secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
 | global.slack_send_dbgap | bool | `false` | Will echo what files we are seeing on dbgap ftp to Slack. |
 | global.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
@@ -108,16 +111,19 @@ A Helm chart for gen3 Requestor Service
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
+| secureImage | map | `{"enabled":false,"sidecar":{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}}` | Configuration settings for the secure AL2 based image. |
+| secureImage.enabled | bool | `false` | Enable the use of the secure AL2 based image. |
+| secureImage.sidecar | map | `{"enabled":false,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
+| secureImage.sidecar.enabled | bool | `false` | Enable the Nginx sidecar container. |
+| secureImage.sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
+| secureImage.sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| secureImage.sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
+| service | map | `{"port":[],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | list | `[]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
-| sidecar | map | `{"enabled":true,"image":"quay.io/cdis/nginx-sidecar","pullPolicy":"IfNotPresent","tag":"nginx-sidecar-feat_nginx-sidecar"}` | Configuration for Nginx sidecar container to be deployed with gunicorn. |
-| sidecar.image | string | `"quay.io/cdis/nginx-sidecar"` | The Docker image repository for nginx |
-| sidecar.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
-| sidecar.tag | string | `"nginx-sidecar-feat_nginx-sidecar"` | Image tag. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
-| volumeMounts | list | `[{"mountPath":"/requestor/deployment/wsgi/gunicorn.conf.py","name":"wsgi-config","subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[]` | Volumes to mount to the container. |
 

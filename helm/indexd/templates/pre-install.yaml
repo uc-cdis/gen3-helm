@@ -82,10 +82,18 @@ spec:
             - "-c"
             # Script always succeeds if it runs (echo exits with 0)
             # indexd image does not include jq, so use python 
+            {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
             - |
               source .venv/bin/activate
               echo 'python3 /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
               python3 /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
               echo 'python3 /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
               python3 /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+            {{- else }}
+            - |
+              echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
+              python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
+              echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
+              python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+            {{- end }}
       restartPolicy: Never
