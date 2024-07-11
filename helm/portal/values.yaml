@@ -208,7 +208,6 @@ datadogTraceSampleRate: 1
 extraImages:
   # - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
 
-
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string) multiline string - gitops.json

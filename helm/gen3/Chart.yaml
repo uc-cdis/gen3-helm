@@ -103,11 +103,20 @@ dependencies:
   version: "0.1.0"
   repository: "file://../amanuensis"
   condition: amanuensis.enabled
+- name: gearbox
+  version: "0.1.0"
+  repository: "file://../gearbox"
+  condition: gearbox.enabled
+- name: gearbox-middleware
+  version: "0.1.0"
+  repository: "file://../gearbox-middleware"
+  condition: gearbox-middleware.enabled
+
 
 - name: elasticsearch
   version: 7.10.2
   repository: "https://helm.elastic.co"
-  condition: global.dev
+  condition: elasticsearch.enabled
 - name: postgresql
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"

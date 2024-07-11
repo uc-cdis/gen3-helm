@@ -6,10 +6,8 @@ CONNECT_SCRIPT="connect_to_db.sh"
 ROLL_SCRIPT="roll.sh"
 JOB_SCRIPT="job.sh"
 POD_SCRIPT="connect_to_pod.sh"
-CLEAR_ELASTICSEARCH="clear_elasticsearch.sh"
 RESTART_POD="restart_pod.sh"
 LOGS="logs.sh"
-LOAD_DATA="load_data.sh"
 
 
 # Check if command is provided as an argument
@@ -33,7 +31,7 @@ case "$command" in
         ;;
     "roll")
         # Run the roll.sh script with the remaining arguments
-        "$ROLL_SCRIPT" "pcdc" "$@"
+        "$ROLL_SCRIPT" "gearbox" "$@"
         ;;
     "job")
         # Run the job.sh script with the remaining arguments
@@ -43,10 +41,6 @@ case "$command" in
         # Run the connect_to_pod.sh script with the remaining arguments
         "$POD_SCRIPT" "$@"
         ;;
-    "clear_elasticsearch")
-        # Run the connect_to_pod.sh script with the remaining arguments
-        "$CLEAR_ELASTICSEARCH" "$@"
-        ;;
     "restart")
         # Run the connect_to_pod.sh script with the remaining arguments
         "$RESTART_POD" "$@"
@@ -54,10 +48,6 @@ case "$command" in
     "logs")
         # Run the connect_to_pod.sh script with the remaining arguments
         "$LOGS" "$@"
-        ;;
-    "load_data")
-        # Run the connect_to_pod.sh script with the remaining arguments
-        "$LOAD_DATA" "$@"
         ;;
     *)  
         echo "Invalid command: $command"

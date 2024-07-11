@@ -14,7 +14,7 @@ data:
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
-  "authz_entity_name": {{.Values.global.authz_entity_name}}
+  "authz_entity_name": {{.Values.global.authz_entity_name | quote }}
   "frontend_root": {{ .Values.global.frontendRoot | quote }}
   {{- with .Values.global.origins_allow_credentials }}
   "origins_allow_credentials": {{ . | toJson | quote }}

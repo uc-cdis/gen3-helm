@@ -5,11 +5,13 @@ cd "$(dirname "$0")/../helm/gen3" || exit 1 || exit 1
 
 rm ../../values.yaml
 
+project="$1"
+shift
 # Check if ../../secret-values.yaml exists
 if [ -f ../../secret-values.yaml ]; then
-  yq '. *= load("../../secret-values.yaml")' ../../default-values.yaml > ../../values.yaml
+  yq '. *= load("../../secret-values.yaml")' ../../$project-default-values.yaml > ../../values.yaml
 else 
-  cp ../../default-values.yaml ../../values.yaml
+  cp ../../$project-default-values.yaml ../../values.yaml
 fi
 # Directory to store CA certificate
 ca_dir=../../CA
@@ -40,6 +42,10 @@ if [ $# -gt 0 ]; then
   do
     # Delete the deployment corresponding to the service name
     kubectl delete deployment ${service_name}-deployment
+    if [ "$service_name" = "gearbox" ]; then
+      kubectl delete job gearbox-g3auto-patch
+    fi
+
   done
 fi
 
@@ -47,4 +53,4 @@ fi
 helm dependency update
 
 # Run helm upgrade --install command
-helm upgrade --install pcdc . -f ../../values.yaml
+helm upgrade --install $project . -f ../../values.yaml

@@ -76,7 +76,7 @@ EOF
 yq eval '. * load("./temp.yaml")' secret-values.yaml > updated-secret-values.yaml && mv updated-secret-values.yaml secret-values.yaml
 
 
-pcdc roll revproxy guppy
+pcdc roll revproxy guppy pcdcanalysistools
 
 
 rm ./temp.yaml
