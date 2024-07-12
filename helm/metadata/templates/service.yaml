@@ -11,10 +11,10 @@ metadata:
 spec:
   selector:
     {{- include "metadata.selectorLabels" . | nindent 4 }}
-  {{- with .Values.service.port }}
   ports:
+    {{- with .Values.service.port }}
     {{- toYaml . | nindent 8 }}
-  {{- end }}
+    {{- end }}
   {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
   - name: app
     containerPort: 8080

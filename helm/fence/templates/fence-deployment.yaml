@@ -56,6 +56,7 @@ spec:
             {{- end }}
             - name: container
               containerPort: 6567
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
@@ -73,7 +74,7 @@ spec:
               {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
               port: app
               {{- else }}
-              port:http
+              port: http
               {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

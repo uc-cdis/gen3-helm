@@ -158,7 +158,7 @@ spec:
           {{- end }}
         {{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
         - name: sidecar-nginx
-          image: {{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
+          image: "{{ .Values.secureImage.sidecar.image }}:{{ .Values.secureImage.sidecar.tag }}"
           imagePullPolicy: {{ .Values.secureImage.sidecar.pullPolicy }}
           ports:
             - name: app
@@ -212,7 +212,6 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
-          {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
