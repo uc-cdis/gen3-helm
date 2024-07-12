@@ -1,4 +1,3 @@
-
 all: help
 
 update: ## Update from the local helm chart repository
@@ -33,9 +32,9 @@ change-context:
 check-secrets:
 	@$(eval ACTUAL=$(shell [ -z $(shell readlink Secrets) ] && echo "<empty>" || echo $(shell readlink Secrets)))
 	@[ "$(ACTUAL)" == "Secrets-$(DEPLOY)" ] || \
-	(printf "\033[1mUnexpected Secrets link\033[0m\n"; \
-	 printf "\033[92mExpected Secrets:\033[0m Secrets-$(DEPLOY)\n"; \
-	 printf "\033[93mActual Secrets:\033[0m   $(ACTUAL)\n"; \
+	(printf "Unexpected Secrets link\n"; \
+	 printf "Expected Secrets: Secrets-$(DEPLOY)\n"; \
+	 printf "Actual Secrets:   $(ACTUAL)\n"; \
 	 read -p "Change Secrets link to $(DEPLOY)? [y/N]: " sure && \
 	 	case "$$sure" in \
 	 		[yY]) true;; \
@@ -48,9 +47,9 @@ check-secrets:
 check-context:
 	@$(eval ACTUAL=$(shell kubectl config current-context))
 	@[ $(ACTUAL) == $(CONTEXT) ] || \
-		(printf "\033[1mUnexpected context\033[0m\n"; \
-		 printf "\033[92mExpected context:\033[0m $(CONTEXT)\n"; \
-		 printf "\033[93mActual context:\033[0m   $(ACTUAL)\n"; \
+		(printf "Unexpected context\n"; \
+		 printf "Expected context: $(CONTEXT)\n"; \
+		 printf "Actual context:   $(ACTUAL)\n"; \
 		 exit 1)
 
 check-venv:
@@ -69,7 +68,6 @@ create-venv:
 	pip install click requests urllib3; \
 	echo "New venv created with required packages installed."; \
 	echo "$(pwd)/venv";
-
 
 clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@$(eval ACTUAL=$(shell kubectl config current-context))
@@ -100,12 +98,18 @@ deploy: check-context check-secrets
 		esac
 
 	@echo "Deploying $(DEPLOY)"
-	@helm upgrade --install $(DEPLOY) ./helm/gen3 \
+	@if [ "$(DEPLOY)" = "local" ]; then \
+		helm upgrade --install $(DEPLOY) ./helm/gen3 \
 		-f Secrets/values.yaml \
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml \
-		-f Secrets/TLS/gen3-certs.yaml
-
+		-f Secrets/TLS/gen3-certs.yaml; \
+	else \
+		helm upgrade --install $(DEPLOY) ./helm/gen3 \
+		-f Secrets/values.yaml \
+		-f Secrets/user.yaml \
+		-f Secrets/fence-config.yaml; \
+	fi
 
 # Create a timestamped Secrets archive and copy to $HOME/OneDrive/ACED-deployments
 zip:
@@ -113,14 +117,12 @@ zip:
 	@zip Secrets-$(TIMESTAMP).zip Secrets
 	@cp Secrets-$(TIMESTAMP).zip $(HOME)/OneDrive/ACED-deployments
 
-
 # https://gist.github.com/prwhite/8168133
 help:	## Show this help message
 	@grep -hE '^[A-Za-z0-9_ \-]*?:.*##.*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m\033[1m%-20s\033[0m %s\n", $$1, $$2}'
+		awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
 
 .PHONY: debug deploy clean check-clean zip help change-context
-
 
 #################
 # SECRET SERVER #
@@ -134,7 +136,6 @@ fetch-secrets: check-venv
 	@echo "Fetching $(ENV)"
 	$(VENV)/bin/python $(SCRIPT) get $(ENV);
 
-
 # eg: push-secrets ENV=local or local_test or development, etc
 push-secrets: check-venv
 	@read -p "Update Secret Server secrets for $(ENV)? [y/N]: " sure && \
@@ -144,6 +145,5 @@ push-secrets: check-venv
 		esac
 	$(VENV)/bin/python $(SCRIPT) post "$(ENV)"
 
-		
 list-secrets: check-venv
 	$(VENV)/bin/python $(SCRIPT) list;
