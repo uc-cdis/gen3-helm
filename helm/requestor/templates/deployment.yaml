@@ -102,6 +102,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
               port: app
               {{- else }}
               port: http
@@ -112,6 +113,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /_status
+              {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
               port: app
               {{- else }}
               port: http
@@ -126,8 +128,8 @@ spec:
               containerPort: 80
               protocol: TCP
             {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
@@ -140,7 +142,6 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
-        - name: sidecar-nginx
         - name: sidecar-nginx
           image: "{{ .Values.secureImage.sidecar.image }}:{{ .Values.secureImage.sidecar.tag }}"
           imagePullPolicy: {{ .Values.secureImage.sidecar.pullPolicy }}

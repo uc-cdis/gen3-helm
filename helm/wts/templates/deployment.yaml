@@ -38,10 +38,12 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
-        fsGroup: 1000    
+        fsGroup: 1000
+      {{- end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -83,9 +85,9 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
-            - name: "wsgi-config"
-              mountPath: "/wts/deployment/wsgi/gunicorn.conf.py"
-              subPath: gunicorn.conf.py
+          - name: "wsgi-config"
+            mountPath: "/wts/deployment/wsgi/gunicorn.conf.py"
+            subPath: gunicorn.conf.py
           {{- end }}
           ports:
             {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
@@ -187,11 +189,11 @@ spec:
         {{- end }}              
       initContainers:
       - name: wts-db-migrate
-          {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
-          image: "quay.io/cdis/workspace-token-service:feat_gunicorn"
-          {{- else }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- end }}
+        {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+        image: "quay.io/cdis/workspace-token-service:feat_gunicorn"
+        {{- else }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.volumeMounts }}
         volumeMounts:
@@ -257,4 +259,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-

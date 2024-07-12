@@ -26,11 +26,13 @@ spec:
         {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
       securityContext:
+      {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      {{- else }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- end }}
       {{- with .Values.volumes }}
       volumes:
@@ -41,8 +43,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "peregrine.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -157,14 +157,23 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
           - name: "wsgi-config"
             mountPath: "/peregrine/deployment/wsgi/gunicorn.conf.py"
             subPath: gunicorn.conf.py
+          - name: "config-volume"
+            readOnly: true
+            mountPath: "/peregrine/deployment/wsgi/wsgi.py"
+            subPath: "settings.py"
+          {{- else }}
+          - name: "config-volume"
+            readOnly: true
+            mountPath: "/var/www/peregrine/settings.py"
+            subPath: "settings.py"
           {{- end }}
           ports:
             {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}

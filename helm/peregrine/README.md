@@ -110,6 +110,6 @@ A Helm chart for gen3 Peregrine service
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| volumeMounts | list | `[{"mountPath":"/peregrine/deployment/wsgi/wsgi.py","name":"config-volume","readOnly":true,"subPath":"settings.py"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[]` | Volumes to mount to the container. |
 | volumes | list | `[{"emptyDir":{},"name":"shared-data"},{"name":"config-volume","secret":{"secretName":"peregrine-secret"}},{"configMap":{"name":"peregrine-wsgi"},"name":"wsgi-config"},{"configMap":{"name":"peregrine-nginx-configmap"},"name":"nginx-config"}]` | Volumes to attach to the container. |
 

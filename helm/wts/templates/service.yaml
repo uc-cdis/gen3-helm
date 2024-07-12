@@ -12,12 +12,10 @@ spec:
     {{- with .Values.service.port }}
     {{- toYaml . | nindent 8 }}
     {{- end }}
-  {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
-  - name: app
-    containerPort: 8080
-    protocol: TCP
-  {{- else }}
   - name: http
-    containerPort: 80
-    protocol: TCP
-  {{- end }}
+    port: 80
+    {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+    targetPort: 8080
+    {{- else }}
+    targetPort: 80
+    {{- end }}

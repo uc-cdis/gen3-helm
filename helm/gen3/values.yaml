@@ -76,6 +76,14 @@ global:
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
     dbCreate: false
+  # -- (map) Configuration settings for the secure AL2 based image.
+  secureImage:
+    # -- (bool) Enable the use of the secure AL2 based image.
+    enabled: false
+    # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+    sidecar:
+      # -- (bool) Enable the Nginx sidecar container.
+      enabled: false
 
 # Dependancy Charts
 

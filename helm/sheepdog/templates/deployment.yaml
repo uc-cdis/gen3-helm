@@ -267,8 +267,8 @@ spec:
             #   value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "True"
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}

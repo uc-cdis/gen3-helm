@@ -231,14 +231,10 @@ volumes:
     name: peregrine-wsgi
 - name: nginx-config
   configMap:
-    name: peregrine-nginx-configmap    
+    name: peregrine-nginx-configmap
 
 # -- (list) Volumes to mount to the container.
-volumeMounts:
-  - name: "config-volume"
-    readOnly: true
-    mountPath: "/peregrine/deployment/wsgi/wsgi.py"
-    subPath: "settings.py"
+volumeMounts: []
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
