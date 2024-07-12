@@ -225,6 +225,9 @@ volumes:
   - name: amanuensis-jwt-keys
     secret:
       secretName: "amanuensis-jwt-keys"
+      items:
+        - key: jwt_private_key.pem
+          path: jwt_private_key.pem
   #need to add potentially
   - name: yaml-merge
     configMap:

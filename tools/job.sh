@@ -7,7 +7,8 @@ if [ $# -eq 0 ]; then
 fi
 
 # Extract the job name
-job_name="$1"
+project="$1"
+job_name="$2"
 
 # Delete the specified Job
 kubectl delete job "$job_name"
@@ -19,4 +20,4 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run roll.sh script
-roll.sh
+$project roll 

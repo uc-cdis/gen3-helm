@@ -67,8 +67,10 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
       initContainers:
         - name: wait-for-gearbox
-          image: busybox:1.31.0
-          command: ["/bin/sh", "-c", "until [ $(wget -q --spider http://gearbox-service/_status && echo '200' || echo '500') -eq 200 ]; do echo 'Waiting for gearbox to be ready...'; sleep 2; done"]      {{- with .Values.nodeSelector }}
+          image: curlimages/curl:latest
+          command: ["/bin/sh","-c"]
+          args: ["while [ $(curl -sw '%{http_code}' http://gearbox-service/_status -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for gearbox...'; done"]      
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

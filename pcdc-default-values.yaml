@@ -64,7 +64,99 @@ amanuensis:
     repository: quay.io/pcdc/amanuensis
     tag: "2.16.1"
 
-fence: 
+fence:
+  volumes:
+    - name: old-config-volume
+      secret:
+        secretName: "fence-secret"
+    - name: json-secret-volume
+      secret:
+        secretName: "fence-json-secret"
+        optional: true
+    - name: creds-volume
+      secret:
+        secretName: "fence-creds"
+    - name: config-helper
+      configMap:
+        name: config-helper
+        optional: true
+    - name: logo-volume
+      configMap:
+        name: "logo-config"
+    - name: config-volume
+      secret:
+        secretName: "fence-config"
+    - name: fence-google-app-creds-secret-volume
+      secret:
+        secretName: "fence-google-app-creds-secret"
+    - name: fence-google-storage-creds-secret-volume
+      secret:
+        secretName: "fence-google-storage-creds-secret"
+    - name: fence-jwt-keys
+      secret:
+        secretName: "fence-jwt-keys"
+    - name: privacy-policy
+      configMap:
+        name: "privacy-policy"
+    - name: yaml-merge
+      configMap:
+        name: "fence-yaml-merge"
+        optional: true
+    - name: amanuensis-jwt-keys
+      secret:
+        secretName: "amanuensis-jwt-keys"
+        items:
+          - key: jwt_public_key.pem
+            path: jwt_public_key.pem 
+  volumeMounts:
+    - name: "old-config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/local_settings.py"
+      subPath: local_settings.py
+    - name: "json-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_credentials.json"
+      subPath: fence_credentials.json
+    - name: "creds-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/creds.json"
+      subPath: creds.json
+    - name: "config-helper"
+      readOnly: true
+      mountPath: "/var/www/fence/config_helper.py"
+      subPath: config_helper.py
+    - name: "logo-volume"
+      readOnly: true
+      mountPath: "/fence/fence/static/img/logo.svg"
+      subPath: "logo.svg"
+    - name: "privacy-policy"
+      readOnly: true
+      mountPath: "/fence/fence/static/privacy_policy.md"
+      subPath: "privacy_policy.md"
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config.yaml"
+      subPath: fence-config.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_private_key.pem"
+      subPath: "jwt_private_key.pem"
+    - name: "amanuensis-jwt-keys"
+      readOnly: true
+      mountPath: "/amanuensis/jwt_public_key.pem"
+      subPath: "jwt_public_key.pem"
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
@@ -1036,7 +1128,7 @@ fence:
             privilege: [create, read, update, delete, upload, read-storage]
           - auth_id: jnkns
             privilege: [create, read, update, delete, upload, read-storage]
-      graglia01@gmail.com:
+      test@example.com:
         admin: true
         policies:
           - data_upload

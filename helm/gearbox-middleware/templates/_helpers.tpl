@@ -66,14 +66,3 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
-
-{{- define "getOrCreateRSAPrivateKey" -}}
-{{- $secretName := "gearbox-middleware-jwt-keys-g3auto" }}
-{{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
-{{- if $existingSecret }}
-{{- index $existingSecret.data "jwt_private_key.pem" }}
-{{- else }}
-{{- genPrivateKey "rsa" | b64enc }}
-{{- end }}
-{{- end -}}

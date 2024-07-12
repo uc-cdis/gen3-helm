@@ -74,6 +74,8 @@ spec:
               value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
+            - name: PUBLIC_KEY_PATH
+              value: /guppy/jwt_public_key.pem
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

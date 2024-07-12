@@ -40,7 +40,7 @@ spec:
       serviceAccountName: {{ .Chart.Name }}-secret-patch-sa
       containers:
         - name: gearbox-g3auto-patch
-          image: quay.io/cdis/awshelper:master
+          image: bitnami/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |

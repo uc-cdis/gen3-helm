@@ -181,7 +181,7 @@ env:
 volumes:
   - name: gearbox-middleware-jwt-keys
     secret:
-      secretName: "gearbox-middleware-jwt-keys-g3auto"
+      secretName: "gearbox-middleware-jwt-keys"
       items:
         - key: jwt_public_key.pem
           path: jwt_public_key.pem

@@ -37,7 +37,7 @@ case "$command" in
         ;;
     "job")
         # Run the job.sh script with the remaining arguments
-        "$JOB_SCRIPT" "$@"
+        "$JOB_SCRIPT" "pcdc" "$@"
         ;;
     "pod")
         # Run the connect_to_pod.sh script with the remaining arguments
