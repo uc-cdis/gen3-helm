@@ -88,8 +88,8 @@ spec:
           volumeMounts:
             {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
             - name: wsgi-config
-              configMap:
-                name: fence-wsgi
+              mountPath: "/fence/deployment/wsgi/gunicorn.conf.py"
+              subPath: gunicorn.conf.py
             {{- end }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
         {{- if .Values.secureImage.sidecar.enabled | default .Values.global.secureImage.sidecar.enabled }}
