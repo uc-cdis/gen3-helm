@@ -200,7 +200,7 @@ def _replace_local_secrets(username: str, password: str,
 
         with BytesIO(response.content) as zip_buffer:
             with ZipFile(zip_buffer, 'r') as zip_ref:
-                zip_ref.extractall(env_dir)
+                zip_ref.extractall()
 
         os.symlink(env_dir, "Secrets", target_is_directory=True)
         return
