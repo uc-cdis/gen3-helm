@@ -23,6 +23,11 @@ production: check-context deploy ## Deploy the Production commons
 production-context: change-context  # Change to the Production context
 production production-context: CONTEXT=arn:aws:eks:us-west-2:119548034047:cluster/aced-commons-production
 
+cbds: DEPLOY=cbds
+cbds: check-context deploy ## Deploy the cbds commons
+cbds-context: change-context  # Change to the cbds context
+cbds cbds-context: CONTEXT=cbds
+
 context: ## Output the current Kubernetes context
 	@echo "Current context: $(shell kubectl config current-context)"
 
@@ -96,7 +101,6 @@ deploy: check-context check-secrets
 			[yY]) true;; \
 			*) echo "exiting..." && false;; \
 		esac
-
 	@echo "Deploying $(DEPLOY)"
 	@if [ "$(DEPLOY)" = "local" ]; then \
 		helm upgrade --install $(DEPLOY) ./helm/gen3 \
