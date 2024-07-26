@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tube-deployment
+  labels:
+    helm.sh/chart: tube-0.1.0
+    app.kubernetes.io/name: tube
+    app.kubernetes.io/instance: tube
+    app.kubernetes.io/version: "2021.12"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tube
+      app.kubernetes.io/instance: tube
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tube
+        app.kubernetes.io/instance: tube
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: creds-volume
+          secret:
+            secretName: "peregrine-creds"
+        - name: etl-mapping
+          configMap:
+            name: etl-mapping
+        - name: fence-yaml
+          configMap:
+            name: fence
+      containers:
+        - name: tube
+          imagePullPolicy: Always
+          GEN3_TUBE_IMAGE
+          ports:
+          - containerPort: 80
+          env:
+          - name: DICTIONARY_URL
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: dictionary_url
+          - name: HADOOP_URL
+            value: hdfs://spark-service:9000
+          - name: ES_URL
+            value: esproxy-service
+          - name: HADOOP_HOST
+            value: spark-service
+          - name: HADOOP_CLIENT_OPTS
+            value: -Xmx1g
+          - name: SPARK_EXECUTOR_MEMORY
+            value: 4g
+          - name: SPARK_DRIVER_MEMORY
+            value: 6g
+          volumeMounts:
+            - name: "creds-volume"
+              readOnly: true
+              mountPath: "/gen3/tube/creds.json"
+              subPath: creds.json
+            - name: "etl-mapping"
+              readOnly: true
+              mountPath: "/gen3/tube/etlMapping.yaml"
+              subPath: "etlMapping.yaml"
+            - name: "fence-yaml"
+              mountPath: "/gen3/tube/user.yaml"
+              subPath: user.yaml
+          resources:
+            limits:
+              cpu: 1
+              memory: 12Gi
+          command: ["/bin/bash" ]
+          args:
+            - "-c"
+            - |
+              python run_config.py
+              while true; do sleep 5; done
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - tube
+              topologyKey: "kubernetes.io/hostname"
