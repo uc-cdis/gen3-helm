@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: useryaml
+data:
+  user.yaml: |
+    {{- with .Values.USER_YAML }}
+    {{- toYaml . | nindent 2 }}
+    {{ end }}
+---
