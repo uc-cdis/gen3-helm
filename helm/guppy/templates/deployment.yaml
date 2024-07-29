@@ -56,7 +56,7 @@ spec:
               port: 8000
           ports:
             - containerPort: 8000
-          env: 
+          env:
             {{- if .Values.global.ddEnabled }}
             {{- include "common.datadogEnvVar" . | nindent 12 }}
             {{- end }}

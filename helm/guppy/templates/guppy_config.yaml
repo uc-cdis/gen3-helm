@@ -5,6 +5,7 @@ metadata:
 data:
   guppy_config.json: |
       {
+        "allowRefresh": {{ .Values.allowRefresh }},
         "indices": {{ .Values.indices  | toJson }},
         {{- with .Values.configIndex }}
         "config_index": {{ . | quote }},
