@@ -1,3 +1,4 @@
+{{ if not .Values.usersync.usersync }}
 kind: ConfigMap 
 apiVersion: v1 
 metadata:
@@ -47,3 +48,4 @@ spec:
             # can be removed once this is merged: https://github.com/uc-cdis/fence/pull/1096
             fence-create sync --arborist http://arborist-service --yaml /var/www/fence/user.yaml
       restartPolicy: OnFailure
+{{ end }}
