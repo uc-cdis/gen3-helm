@@ -1,0 +1,13 @@
+{{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fence-wsgi
+data:
+  gunicorn.conf.py: |
+    wsgi_app = "deployment.wsgi.wsgi:application"
+    bind = "0.0.0.0:8000"
+    workers = 1
+    user = 'gen3'
+    group = 'gen3'
+{{- end }}

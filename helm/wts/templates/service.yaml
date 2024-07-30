@@ -9,11 +9,13 @@ spec:
     app: wts
   type: {{ .Values.service.type }}
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.httpPort }}
-      targetPort: {{ .Values.service.httpPort }}
-      name: http
-    - protocol: TCP
-      port: {{ .Values.service.httpsPort }}
-      targetPort: {{ .Values.service.httpsPort }}
-      name: https
+    {{- with .Values.service.port }}
+    {{- toYaml . | nindent 8 }}
+    {{- end }}
+  - name: http
+    port: 80
+    {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+    targetPort: 8080
+    {{- else }}
+    targetPort: 80
+    {{- end }}

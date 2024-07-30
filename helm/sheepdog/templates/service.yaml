@@ -7,9 +7,15 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
-      protocol: TCP
-      name: http
+    {{- with .Values.service.port }}
+    {{- toYaml . | nindent 8 }}
+    {{- end }}
+  - name: http
+    port: 80
+    {{- if .Values.secureImage.enabled | default .Values.global.secureImage.enabled }}
+    targetPort: 8080
+    {{- else }}
+    targetPort: 80
+    {{- end }}
   selector:
     {{- include "sheepdog.selectorLabels" . | nindent 4 }}

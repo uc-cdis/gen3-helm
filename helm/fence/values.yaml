@@ -77,6 +77,14 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  # -- (map) Configuration settings for the secure AL2 based image.
+  secureImage:
+    # -- (bool) Enable the use of the secure AL2 based image.
+    enabled: false
+    # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+    sidecar:
+      # -- (bool) Enable the Nginx sidecar container.
+      enabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -159,9 +167,24 @@ image:
   # -- (string) The Docker image repository for the fence service
   repository: quay.io/cdis/fence
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
+
+# -- (map) Configuration settings for the secure AL2 based image.
+secureImage:
+  # -- (bool) Enable the use of the secure AL2 based image.
+  enabled: false
+  # -- (map) Configuration for Nginx sidecar container to be deployed with gunicorn.
+  sidecar:
+    # -- (bool) Enable the Nginx sidecar container.
+    enabled: false
+    # -- (string) The Docker image repository for nginx
+    image: quay.io/cdis/nginx-sidecar
+    # -- (string) When to pull the image.
+    pullPolicy: IfNotPresent
+    # -- (string) Image tag.
+    tag: "nginx-sidecar-feat_nginx-sidecar"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -204,8 +227,8 @@ securityContext: {}
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # -- (int) The port number that the service exposes.
-  port: 80
+  # -- (list) The port number that the service exposes.
+  port: []
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -376,6 +399,12 @@ volumes:
     configMap:
       name: "manifest-fence"
       optional: true
+  - name: wsgi-config
+    configMap:
+      name: fence-wsgi
+  - name: nginx-config
+    configMap:
+      name: fence-nginx-configmap
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -420,7 +449,7 @@ volumeMounts:
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
   - name: "fence-jwt-keys"
-    readOnly: true
+    readOnly: false
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
   - name: "config-volume-public"

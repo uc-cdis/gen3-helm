@@ -3,6 +3,7 @@ kind: Job
 metadata:
   name: wts-oidc-job
 spec:
+  ttlSecondsAfterFinished: 100
   template:
     metadata:
       labels:
