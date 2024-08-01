@@ -25,7 +25,7 @@ dependencies:
   repository: "file://../aws-es-proxy"
   condition: aws-es-proxy.enabled
 - name: common
-  version: 0.1.12
+  version: 0.1.13
   repository: file://../common
 - name: etl
   version: 0.1.1
