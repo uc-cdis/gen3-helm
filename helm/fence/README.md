@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.11 |
+| file://../common | common | 0.1.12 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -187,7 +187,7 @@ A Helm chart for gen3 Fence
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":true}` | Configuration options for usersync cronjob. |
+| usersync | map | `{"addDbgap":false,"custom_image":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
 | usersync.custom_image | string | `nil` | To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image. |
 | usersync.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
@@ -196,7 +196,7 @@ A Helm chart for gen3 Fence
 | usersync.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
-| usersync.usersync | bool | `true` | Whether to run Fence usersync or not. |
+| usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
 | volumeMounts | list | `[{"mountPath":"/var/www/fence/local_settings.py","name":"old-config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/var/www/fence/fence_credentials.json","name":"json-secret-volume","readOnly":true,"subPath":"fence_credentials.json"},{"mountPath":"/var/www/fence/creds.json","name":"creds-volume","readOnly":true,"subPath":"creds.json"},{"mountPath":"/var/www/fence/config_helper.py","name":"config-helper","readOnly":true,"subPath":"config_helper.py"},{"mountPath":"/fence/fence/static/img/logo.svg","name":"logo-volume","readOnly":true,"subPath":"logo.svg"},{"mountPath":"/fence/fence/static/privacy_policy.md","name":"privacy-policy","readOnly":true,"subPath":"privacy_policy.md"},{"mountPath":"/var/www/fence/fence-config-secret.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"},{"mountPath":"/fence/keys/key/jwt_private_key.pem","name":"fence-jwt-keys","readOnly":true,"subPath":"jwt_private_key.pem"},{"mountPath":"/var/www/fence/fence-config-public.yaml","name":"config-volume-public","readOnly":true,"subPath":"fence-config-public.yaml"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"name":"old-config-volume","secret":{"secretName":"fence-secret"}},{"name":"json-secret-volume","secret":{"optional":true,"secretName":"fence-json-secret"}},{"name":"creds-volume","secret":{"secretName":"fence-creds"}},{"configMap":{"name":"config-helper","optional":true},"name":"config-helper"},{"configMap":{"name":"logo-config"},"name":"logo-volume"},{"name":"config-volume","secret":{"secretName":"fence-config"}},{"name":"fence-google-app-creds-secret-volume","secret":{"secretName":"fence-google-app-creds-secret"}},{"name":"fence-google-storage-creds-secret-volume","secret":{"secretName":"fence-google-storage-creds-secret"}},{"name":"fence-jwt-keys","secret":{"secretName":"fence-jwt-keys"}},{"configMap":{"name":"privacy-policy"},"name":"privacy-policy"},{"configMap":{"name":"fence-yaml-merge","optional":false},"name":"yaml-merge"},{"configMap":{"name":"manifest-fence","optional":true},"name":"config-volume-public"}]` | Volumes to attach to the container. |
 
