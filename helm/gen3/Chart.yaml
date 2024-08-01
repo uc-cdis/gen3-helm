@@ -25,18 +25,18 @@ dependencies:
   repository: "file://../aws-es-proxy"
   condition: aws-es-proxy.enabled
 - name: common
-  version: 0.1.12
+  version: 0.1.13
   repository: file://../common
 - name: etl
   version: 0.1.1
   repository: file://../etl
   condition: etl.enabled
 - name: frontend-framework
-  version: 0.1.1
+  version: 0.1.2
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
-  version: 0.1.20
+  version: 0.1.21
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
@@ -128,7 +128,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.39
+version: 0.1.40
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
