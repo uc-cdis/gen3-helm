@@ -24,9 +24,7 @@ Before deploying the Gen3 application using Helm, ensure that the following prer
 ## Prerequisites
 
 ### Kubernetes cluster
-Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE and Rancher Desktop. 
-
-It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's. You also get ingress and other benefits out of the box. 
+Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE.
 
 
 ### Postgres 
