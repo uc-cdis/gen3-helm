@@ -39,6 +39,10 @@ dependencies:
   version: 0.1.18
   repository: "file://../fence"
   condition: fence.enabled
+- name: fhir-server
+  version: 0.1.0
+  repository: "file://../fhir-server"
+  condition: fhir-server.enabled
 - name: grip
   version: "0.1.0"
   repository: "file://../grip"
