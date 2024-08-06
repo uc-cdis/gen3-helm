@@ -55,7 +55,7 @@ spec:
             - "/bin/sh"
             - "-c"
             - >
-              while true; do sleep 30; done;
+              uvicorn bundle_service.main:app --port 8000 --reload
 
       {{- with .Values.nodeSelector }}
       nodeSelector:

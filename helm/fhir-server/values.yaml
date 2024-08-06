@@ -8,7 +8,7 @@ image:
   repository: quay.io/ohsu-comp-bio/fhir_server
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "new"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
