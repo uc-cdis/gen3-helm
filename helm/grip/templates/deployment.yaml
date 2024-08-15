@@ -1,4 +1,4 @@
-  apiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "grip.fullname" . }}
@@ -38,19 +38,24 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
-            exec:
-              command:
-                - ls
-                - /home
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            httpGet:
+              path: /graphql/_status
+              port: 8201
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /graphql/_status
+              port: 8201
+            initialDelaySeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
             - "/bin/sh"
             - "-c"
             - >
-              while true; do sleep 30; done;
+              grip server -c mongo.yml -w graphql=gen3_writer.so -w reader=grip-graphql-endpoint.so -l reader:config=./config/gen3.js -l reader:graph=CALIPER
 
       {{- with .Values.nodeSelector }}
       nodeSelector:

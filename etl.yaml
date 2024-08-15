@@ -1,5 +1,5 @@
-kind: Pod 
-apiVersion: v1 
+kind: Pod
+apiVersion: v1
 metadata:
   name: etl
 
@@ -29,7 +29,8 @@ spec:
 
   containers:
     - name: container-configmap
-      image: quay.io/ohsu-comp-bio/aced-etl:latest
+      image: quay.io/ohsu-comp-bio/aced-etl:feature_grip
+      imagePullPolicy: Always
       volumeMounts:
         # Gen3 credentials file
         - name: gen3-credentials
@@ -56,7 +57,7 @@ spec:
       command: ["/bin/bash" ]
       args:
         - "-c"
-        - | 
+        - |
           # Until we fix in helm env, setup well known postgres env variables
           # TODO - set GLOBAL_HOSTNAME to value from values.yaml
           cat  << EOF >> ~/.bashrc
@@ -71,18 +72,18 @@ spec:
           # link back to mounted volumes
           ln -s /studies /data_model/studies
           ln -s /output /data_model/output
-          
+
           echo "Done setting up data_model"
 
           # link back to mounted volumes
           ln -s /studies /data_model/studies
           ln -s /output /data_model/output
-          
+
           echo "Done setting up data_model"
 
           # For development purposes, extends the lifespan of the pod to let us exec into it.
           while true; do sleep 30; done;
 
   # TODO - read nodegroup from values.yaml
-  nodeSelector:
-        eks.amazonaws.com/nodegroup: aced-commons-development-etl-node-group-large
+  #nodeSelector:
+  #      eks.amazonaws.com/nodegroup: aced-commons-development-etl-node-group-large

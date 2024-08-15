@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/ohsu-comp-bio/grip_peregrine
+  repository: quay.io/ohsu-comp-bio/grip-caliper
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.22.5"
+  tag: "1.22.6"
 
 imagePullSecrets: []
 nameOverride: ""
