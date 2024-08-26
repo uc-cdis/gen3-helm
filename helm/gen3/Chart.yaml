@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
 - name: ambassador
-  version: 0.1.11
+  version: 0.1.12
   repository: "file://../ambassador"
   condition: ambassador.enabled
 - name: arborist
