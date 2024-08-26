@@ -25,7 +25,7 @@ appVersion: "1.16.0"
 
 dependencies:
 - name: common
-  version: 0.1.7
+  version: 0.1.11
   repository: file://../common
 - name: gearbox
   version: 0.1.0
