@@ -23,7 +23,7 @@ version: 0.1.18
 appVersion: "master"
 
 dependencies:
-- name: common
+- name: common 
   version: 0.1.10
   repository: file://../common
 - name: postgresql
