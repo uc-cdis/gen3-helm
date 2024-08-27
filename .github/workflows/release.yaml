@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - GEAR-427
+      - master
 
 jobs:
   release:
