@@ -4,9 +4,6 @@ metadata:
   name: revproxy-deployment
   labels:
     {{- include "revproxy.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
   annotations:
     gen3.io/network-ingress: "portal,sowerjob"
 spec:
@@ -23,15 +20,15 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.global.grafanaEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "revproxy.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
-        {{- end }}
         {{- if .Values.userhelperEnabled }}
         userhelper: "yes"
         {{- end}}
@@ -83,9 +80,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:

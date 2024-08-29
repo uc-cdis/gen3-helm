@@ -4,9 +4,6 @@ metadata:
   name: manifestservice-deployment
   labels:
     {{- include "manifestservice.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -24,8 +21,9 @@ spec:
         s3: "yes"
         public: "yes"
         userhelper: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.global.grafanaEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -41,9 +39,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}

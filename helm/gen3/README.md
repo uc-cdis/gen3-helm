@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -23,7 +23,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.7 |
 | file://../audit | audit | 0.1.12 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
-| file://../common | common | 0.1.13 |
+| file://../common | common | 0.1.14 |
 | file://../etl | etl | 0.1.1 |
 | file://../fence | fence | 0.1.21 |
 | file://../frontend-framework | frontend-framework | 0.1.2 |
@@ -92,7 +92,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -101,6 +100,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
+| global.grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
 | global.netPolicy | bool | `true` | Whether network policies are enabled. |

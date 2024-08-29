@@ -4,9 +4,6 @@ metadata:
   name: guppy-deployment
   labels:
     {{- include "guppy.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -26,8 +23,9 @@ spec:
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.global.grafanaEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -57,9 +55,6 @@ spec:
           ports:
             - containerPort: 8000
           env: 
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: GUPPY_PORT
               value: "8000"
             - name: GUPPY_CONFIG_FILEPATH

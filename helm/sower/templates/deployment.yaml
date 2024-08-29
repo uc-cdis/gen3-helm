@@ -19,6 +19,10 @@ spec:
         {{- include "sower.selectorLabels" . | nindent 8 }}
         public: "yes"        
         netnolimit: "yes"
+      annotations:
+        {{- if .Values.global.grafanaEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:

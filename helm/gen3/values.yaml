@@ -64,8 +64,8 @@ global:
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  # -- (bool) Whether Grafana is enabled.
+  grafanaEnabled: false
   # -- (map) If you would like to add any extra values to the manifest-global configmap.
   manifestGlobalExtraValues: {}
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.

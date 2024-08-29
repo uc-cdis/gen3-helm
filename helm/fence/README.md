@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.13 |
+| file://../common | common | 0.1.14 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -86,9 +86,6 @@ A Helm chart for gen3 Fence
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` | Target Memory utilization percentage |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
-| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
-| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"INDEXD_PASSWORD","valueFrom":{"secretKeyRef":{"key":"fence","name":"indexd-service-creds"}}},{"name":"gen3Env","valueFrom":{"configMapKeyRef":{"key":"hostname","name":"manifest-global"}}}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null}` | External Secrets settings. |
 | externalSecrets.createK8sFenceConfigSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -108,7 +105,6 @@ A Helm chart for gen3 Fence
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
 | global.aws.useLocalSecret.localSecretNamespace | string | `nil` | Namespace of the local secret. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -116,6 +112,7 @@ A Helm chart for gen3 Fence
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
