@@ -19,16 +19,6 @@ It will be an important tool for you as you get more comfortable working with Ku
 
 Once you have kubectl installed, you can verify by running `kubectl`. The output should be a help guide. 
 
-### Installing `helm`
-Helm is a package manager for Kubernetes that makes it easy to install, upgrade, and manage applications on a Kubernetes cluster. It simplifies the process of installing and configuring complex applications by providing a set of pre-configured templates and options. In this guide, we will show you how to install the Helm command-line interface (CLI) on your machine.
-
-The installation steps for Helm are rather straightforward. If you're a Homebrew user on Mac, you can use the command `brew install helm` to get it on your machine. If not, head over to the Helm website [here](https://helm.sh/docs/intro/install/) and follow the instructions for your setup. You'll know you've set it up correctly if the output of running the command `helm list` looks like this:
-
-![image](images/succesfulHelmOutput.png)
-
-This means that Helm was able to connect to your Rancher k8s cluster, and will be able to install Gen3 in the next step.
-
-
 ### Kubernetes on your laptop
 There are several ways to run Kubernetes on your laptop, depending on your needs and the resources available on your machine. Some of the most popular options include:
 
@@ -69,6 +59,15 @@ Once you've settled on a CPU and RAM allocation, click on the "Kubernetes" tab. 
 
 Now that you have these steps out of the way, in our next step, we'll install Helm onto our laptop. Helm is a tool for packaging Kubernetes services, much like a Linux package manager or Homebrew for Mac. This will allow us to more easily install Gen3 onto our laptops. 
 
+
+### Installing `helm`
+Helm is a package manager for Kubernetes that makes it easy to install, upgrade, and manage applications on a Kubernetes cluster. It simplifies the process of installing and configuring complex applications by providing a set of pre-configured templates and options. In this guide, we will show you how to install the Helm command-line interface (CLI) on your machine.
+
+The installation steps for Helm are rather straightforward. If you're a Homebrew user on Mac, you can use the command `brew install helm` to get it on your machine. If not, head over to the Helm website [here](https://helm.sh/docs/intro/install/) and follow the instructions for your setup. You'll know you've set it up correctly if the output of running the command `helm list` looks like this:
+
+![image](images/succesfulHelmOutput.png)
+
+This means that Helm was able to connect to your Rancher k8s cluster, and will be able to install Gen3 in the next step.
 
 
 ### Installing Gen3
