@@ -178,4 +178,3 @@ partOf: "Workspace-tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
