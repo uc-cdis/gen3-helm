@@ -29,6 +29,7 @@ spec:
         {{- end }}
       labels:
         {{- include "revproxy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         {{- if .Values.userhelperEnabled }}
         userhelper: "yes"
         {{- end}}

@@ -28,12 +28,20 @@ release: "dev"
 {{- define "common.selectorLabels" -}}
 app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-hostname: {{ .Values.global.hostname }}
 app: {{ .Chart.Name }}
 {{- if eq .Values.release "production"}}
 release: "production"
 {{- else }}
 release: "dev"
+{{- end }}
+{{- end }}
+
+{{- define "common.extraLabels" -}}
+hostname: {{ .Values.global.hostname }}
+{{- if .Values.extraLabels }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . }}
+    {{- end }}
 {{- end }}
 {{- end }}
 

@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
     annotations:
       {{- if .Values.global.grafanaEnabled }}

@@ -20,6 +20,7 @@ spec:
     metadata:
       labels:
         {{- include "dicom-viewer.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
       annotations:
         {{- if .Values.global.grafanaEnabled }}

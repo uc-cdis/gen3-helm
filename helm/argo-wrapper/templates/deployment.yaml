@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
