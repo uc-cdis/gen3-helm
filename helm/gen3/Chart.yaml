@@ -64,7 +64,7 @@ dependencies:
   repository: "file://../peregrine"
   condition: peregrine.enabled
 - name: pidgin
-  version: 0.1.10
+  version: 0.1.11
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
