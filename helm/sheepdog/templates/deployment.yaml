@@ -30,7 +30,7 @@ spec:
         public: 'yes'
         s3: 'yes'
       annotations:
-        {{- if .Values.global.grafanaEnabled }}
+        {{- if .Values.grafanaEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
