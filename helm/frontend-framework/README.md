@@ -57,12 +57,12 @@ A Helm chart for the gen3 frontend framework
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/frontend-framework"` | Docker repository. |
 | image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

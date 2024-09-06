@@ -66,7 +66,6 @@ A Helm chart for Kubernetes
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/audit-service","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/audit-service"` | The Docker image repository for the audit service |
@@ -74,6 +73,7 @@ A Helm chart for Kubernetes
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | initEnv | list | `{}` | Volumes to attach to the init container. |
 | initVolumeMounts | list | `[]` | Volumes to mount to the init container. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. This can be used to provide a unique name for a chart |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Logging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

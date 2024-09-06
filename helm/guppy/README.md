@@ -63,12 +63,12 @@ A Helm chart for gen3 Guppy Service
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/guppy","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/guppy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indices | list | `[{"index":"dev_case","type":"case"},{"index":"dev_file","type":"file"}]` | Elasticsearch index configurations |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Explorer-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

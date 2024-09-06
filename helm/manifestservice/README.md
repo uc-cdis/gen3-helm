@@ -43,7 +43,6 @@ A Helm chart for Kubernetes
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/manifestservice","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/manifestservice"` | Docker repository. |
@@ -53,6 +52,7 @@ A Helm chart for Kubernetes
 | manifestserviceG3auto.awssecretkey | string | `""` | AWS secret access key. |
 | manifestserviceG3auto.bucketName | string | `"testbucket"` | Bucket for the manifestservice to read and write to. |
 | manifestserviceG3auto.prefix | string | `"test"` | Directory name to use within the s3 bucket. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Workspace-tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

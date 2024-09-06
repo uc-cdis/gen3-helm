@@ -70,7 +70,6 @@ A Helm chart for gen3 Requestor Service
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | global.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/requestor","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/requestor"` | Docker repository. |
@@ -80,6 +79,7 @@ A Helm chart for gen3 Requestor Service
 | initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
 | initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |

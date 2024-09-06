@@ -69,8 +69,8 @@ global:
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
 
-# -- (bool) Whether Grafana is enabled.
-grafanaEnabled: false
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:

@@ -32,13 +32,13 @@ A Helm chart for gen3 Argo Wrapper Service
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/argo-wrapper","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/argo-wrapper"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indexdAdminUser | string | `"fence"` | Admin user for Indexd. |
 | internalS3Bucket | string | `"argo-internal-bucket"` | Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs). |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Apps-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{"gen3.io/network-ingress":"argo-wrapper"}` | Annotations to add to the pod. |
 | pvc | string | `"test-pvc"` | PVC for Argo. |

@@ -22,7 +22,7 @@ spec:
         public: "yes"        
         netnolimit: "yes"
       annotations:
-        {{- if .Values.grafanaEnabled }}
+        {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:

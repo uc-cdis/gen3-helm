@@ -56,12 +56,12 @@ A Helm chart for gen3 arborist
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/arborist","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/arborist"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

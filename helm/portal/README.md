@@ -64,12 +64,12 @@ A Helm chart for gen3 data-portal
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`. |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/data-portal"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

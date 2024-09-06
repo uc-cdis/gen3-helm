@@ -26,12 +26,12 @@ A Helm chart for deploying ambassador for gen3
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/datawire/ambassador","tag":"1.4.2"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/datawire/ambassador"` | Docker repository. |
 | image.tag | string | `"1.4.2"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

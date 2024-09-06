@@ -64,8 +64,8 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
 
-# -- (bool) Whether Grafana is enabled.
-grafanaEnabled: false
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:

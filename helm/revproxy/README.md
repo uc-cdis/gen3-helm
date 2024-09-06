@@ -54,7 +54,6 @@ A Helm chart for gen3 revproxy
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | global.tls.cert | string | `nil` |  |
 | global.tls.key | string | `nil` |  |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"nginx","tag":"stable-perl"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"nginx"` | Docker repository. |
@@ -66,6 +65,7 @@ A Helm chart for gen3 revproxy
 | ingress.enabled | bool | `false` | Whether to create the ingress |
 | ingress.hosts | list | `[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}]` | Where to route the traffic. |
 | ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

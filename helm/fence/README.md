@@ -131,7 +131,6 @@ A Helm chart for gen3 Fence
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
@@ -144,6 +143,7 @@ A Helm chart for gen3 Fence
 | labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
 | labels.userhelper | string | `"yes"` | Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes |
 | logo | string | `nil` |  |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

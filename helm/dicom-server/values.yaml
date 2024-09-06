@@ -12,8 +12,8 @@ global:
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
 
-# -- (bool) Whether Grafana is enabled.
-grafanaEnabled: false
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # Deployment
 

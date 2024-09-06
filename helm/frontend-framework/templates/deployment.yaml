@@ -15,7 +15,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
-        {{- if .Values.grafanaEnabled }}
+        {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       {{- with .Values.podAnnotations }}

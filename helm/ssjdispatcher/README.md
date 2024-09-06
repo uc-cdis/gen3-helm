@@ -59,13 +59,13 @@ A Helm chart for gen3 ssjdispatcher
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ssjdispatcher","tag":"2022.08"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

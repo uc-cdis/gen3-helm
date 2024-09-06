@@ -13,8 +13,8 @@ global:
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
-# -- (bool) Whether Grafana is enabled.
-grafanaEnabled: false
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) Docker image information.
 image:

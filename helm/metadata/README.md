@@ -75,7 +75,6 @@ A Helm chart for gen3 Metadata Service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| grafanaEnabled | bool | `false` | Whether Grafana is enabled. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/metadata-service","tag":"feat_es-7"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/metadata-service"` | Docker repository. |
@@ -86,6 +85,7 @@ A Helm chart for gen3 Metadata Service
 | initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
 | initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
 | initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |

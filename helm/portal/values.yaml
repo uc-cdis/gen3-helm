@@ -61,8 +61,8 @@ global:
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
   frontendRoot: "portal"
 
-# -- (bool) Whether Grafana is enabled.
-grafanaEnabled: false
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
