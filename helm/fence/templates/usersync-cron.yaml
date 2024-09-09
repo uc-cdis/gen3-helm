@@ -19,10 +19,10 @@ spec:
   schedule: {{ .Values.usersync.schedule | quote }}
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       backoffLimit: 4
-      concurrencyPolicy: Forbid
       template:
         metadata:
           labels:
