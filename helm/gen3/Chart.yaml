@@ -84,11 +84,11 @@ dependencies:
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
-  version: 0.1.10
+  version: 0.1.11
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: sower
-  version: 0.1.12
+  version: 0.1.13
   condition: sower.enabled
   repository: "file://../sower"
 - name: wts
