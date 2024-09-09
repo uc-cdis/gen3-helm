@@ -22,6 +22,7 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 4
+      concurrencyPolicy: Forbid
       template:
         metadata:
           labels:
