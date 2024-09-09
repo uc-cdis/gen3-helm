@@ -8,9 +8,6 @@ metadata:
   {{- end }}
   labels:
     {{- include "sheepdog.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -27,12 +24,14 @@ spec:
     metadata:
       labels:
         {{- include "sheepdog.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
         s3: 'yes'
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -51,9 +50,6 @@ spec:
         - name: sheepdog-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
           - name: DICTIONARY_URL
             value: {{ .Values.dictionaryUrl }}
           - name: PGHOST

@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,30 +18,30 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.11 |
-| file://../arborist | arborist | 0.1.11 |
-| file://../argo-wrapper | argo-wrapper | 0.1.7 |
-| file://../audit | audit | 0.1.12 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.9 |
-| file://../common | common | 0.1.13 |
+| file://../ambassador | ambassador | 0.1.12 |
+| file://../arborist | arborist | 0.1.12 |
+| file://../argo-wrapper | argo-wrapper | 0.1.8 |
+| file://../audit | audit | 0.1.13 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.10 |
+| file://../common | common | 0.1.14 |
 | file://../etl | etl | 0.1.1 |
-| file://../fence | fence | 0.1.21 |
-| file://../frontend-framework | frontend-framework | 0.1.2 |
-| file://../guppy | guppy | 0.1.12 |
-| file://../hatchery | hatchery | 0.1.9 |
-| file://../indexd | indexd | 0.1.14 |
-| file://../manifestservice | manifestservice | 0.1.14 |
-| file://../metadata | metadata | 0.1.12 |
+| file://../fence | fence | 0.1.22 |
+| file://../frontend-framework | frontend-framework | 0.1.3 |
+| file://../guppy | guppy | 0.1.13 |
+| file://../hatchery | hatchery | 0.1.10 |
+| file://../indexd | indexd | 0.1.15 |
+| file://../manifestservice | manifestservice | 0.1.15 |
+| file://../metadata | metadata | 0.1.13 |
 | file://../neuvector | neuvector | 0.1.0 |
-| file://../peregrine | peregrine | 0.1.13 |
-| file://../pidgin | pidgin | 0.1.10 |
-| file://../portal | portal | 0.1.15 |
-| file://../requestor | requestor | 0.1.11 |
-| file://../revproxy | revproxy | 0.1.16 |
-| file://../sheepdog | sheepdog | 0.1.14 |
-| file://../sower | sower | 0.1.11 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.9 |
-| file://../wts | wts | 0.1.13 |
+| file://../peregrine | peregrine | 0.1.14 |
+| file://../pidgin | pidgin | 0.1.11 |
+| file://../portal | portal | 0.1.16 |
+| file://../requestor | requestor | 0.1.12 |
+| file://../revproxy | revproxy | 0.1.17 |
+| file://../sheepdog | sheepdog | 0.1.15 |
+| file://../sower | sower | 0.1.12 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.10 |
+| file://../wts | wts | 0.1.14 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -92,7 +92,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
