@@ -118,7 +118,7 @@ fence:
     # -- (bool) Whether to run Fence usersync or not.
     usersync: false
     # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
-    schedule: "*/1 * * * *"
+    schedule: "*/30 * * * *"
     # -- (bool) Whether to sync data from dbGaP.
     syncFromDbgap: false
     # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
