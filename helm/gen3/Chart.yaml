@@ -36,7 +36,7 @@ dependencies:
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
-  version: 0.1.22
+  version: 0.1.23
   repository: "file://../fence"
   condition: fence.enabled
 - name: guppy
@@ -68,7 +68,7 @@ dependencies:
   repository: "file://../pidgin"
   condition: pidgin.enabled
 - name: portal
-  version: 0.1.16
+  version: 0.1.17
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
@@ -84,11 +84,11 @@ dependencies:
   repository: "file://../sheepdog"
   condition: sheepdog.enabled
 - name: ssjdispatcher
-  version: 0.1.10
+  version: 0.1.11
   repository: "file://../ssjdispatcher"
   condition: ssjdispatcher.enabled
 - name: sower
-  version: 0.1.12
+  version: 0.1.13
   condition: sower.enabled
   repository: "file://../sower"
 - name: wts
@@ -128,7 +128,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.41
+version: 0.1.42
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

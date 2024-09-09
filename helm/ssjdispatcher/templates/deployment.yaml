@@ -8,7 +8,6 @@ spec:
   selector:
       matchLabels:
         {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
-        {{- include "common.extraLabels" . | nindent 8 }}
   revisionHistoryLimit: 2
   strategy:
     {{- toYaml .Values.strategy | nindent 8 }}  
