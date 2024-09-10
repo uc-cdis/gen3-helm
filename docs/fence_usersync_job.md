@@ -1,6 +1,6 @@
 # Fence Usersync CronJob
 
-If `.Values.usersync.usersync` is set to true, the Fence usersync-cron.yaml will be deployed to the cluster.
+If `.Values.usersync.usersync` is set to true, the Fence usersync-cron.yaml will be deployed to the cluster, otherwise useryaml job will be deployed instead of usersync.
 
 User lists can be synced from three sources:
 

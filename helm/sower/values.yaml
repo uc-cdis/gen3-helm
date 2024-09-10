@@ -53,14 +53,15 @@ global:
   netPolicy: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:

@@ -23,6 +23,7 @@ spec:
     metadata:
       labels:
         {{- include "pidgin.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'

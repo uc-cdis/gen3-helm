@@ -4,29 +4,27 @@ metadata:
   name: frontend-framework-deployment
   labels:
     {{- include "frontend-framework.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   selector:
     matchLabels:
       {{- include "frontend-framework.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-
   strategy:
     {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "frontend-framework.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
-        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -62,10 +60,11 @@ spec:
             - containerPort: 80
               name: http
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "frontend-framework.fullname" . }}-configmap
+                optional: true
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: HOSTNAME
               value: revproxy-service
             {{- if eq "portal" .Values.global.frontendRoot }}
