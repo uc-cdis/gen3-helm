@@ -96,11 +96,6 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@kubectl delete jobs --all
 
 deploy: check-context check-secrets
-	@read -p "Deploy $(DEPLOY)? [y/N]: " sure && \
-		case "$$sure" in \
-			[yY]) true;; \
-			*) echo "exiting..." && false;; \
-		esac
 	@echo "Deploying $(DEPLOY)"
 	@if [ "$(DEPLOY)" = "local" ]; then \
 		helm upgrade --install $(DEPLOY) ./helm/gen3 \
