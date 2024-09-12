@@ -39,6 +39,14 @@ dependencies:
   version: 0.1.18
   repository: "file://../fence"
   condition: fence.enabled
+- name: fhir-server
+  version: 0.1.0
+  repository: "file://../fhir-server"
+  condition: fhir-server.enabled
+- name: grip
+  version: "0.1.0"
+  repository: "file://../grip"
+  condition: grip.enabled
 - name: guppy
   version: 0.1.11
   repository: "file://../guppy"
@@ -59,14 +67,10 @@ dependencies:
   version: 0.1.12
   repository: "file://../metadata"
   condition: metadata.enabled
-- name: peregrine
-  version: 0.1.13
-  repository: "file://../peregrine"
-  condition: peregrine.enabled
-- name: pidgin
-  version: 0.1.10
-  repository: "file://../pidgin"
-  condition: pidgin.enabled
+- name: mongodb
+  version: "13.16.3"
+  repository: "file://../mongodb"
+  condition: mongodb.enabled
 - name: portal
   version: 0.1.13
   repository: "file://../portal"
@@ -79,10 +83,6 @@ dependencies:
   version: 0.1.14
   repository: "file://../revproxy"
   condition: revproxy.enabled
-- name: sheepdog
-  version: 0.1.14
-  repository: "file://../sheepdog"
-  condition: sheepdog.enabled
 - name: ssjdispatcher
   version: 0.1.9
   repository: "file://../ssjdispatcher"
