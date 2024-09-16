@@ -30,7 +30,7 @@ global:
 nameOverride: ""
 ## @param fullnameOverride String to fully override mongodb.fullname template
 ##
-fullnameOverride: "mongodb-deployment"
+fullnameOverride: "local-mongodb"
 ## @param namespaceOverride String to fully override common.names.namespace
 ##
 namespaceOverride: ""

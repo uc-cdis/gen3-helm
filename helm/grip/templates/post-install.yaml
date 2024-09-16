@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: grip-mongo-initdb
+  name: grip-initdb
 spec:
   backoffLimit: 10
   template:
@@ -19,6 +19,5 @@ spec:
         args:
           - "-c"
           - |
-            apk add --no-cache curl && \
-            curl -X POST http://local-grip:8201/v1/graph/CALIPER
+            apk add --no-cache curl && sleep 10 && curl -X POST 'http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER'
       restartPolicy: OnFailure
