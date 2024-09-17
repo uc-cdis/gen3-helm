@@ -30,7 +30,7 @@ global:
 nameOverride: ""
 ## @param fullnameOverride String to fully override mongodb.fullname template
 ##
-fullnameOverride: "local-mongodb"
+fullnameOverride: "mongodb"
 ## @param namespaceOverride String to fully override common.names.namespace
 ##
 namespaceOverride: ""
@@ -721,7 +721,7 @@ pdb:
 service:
   ## @param service.nameOverride MongoDB(&reg;) service name
   ##
-  nameOverride: ""
+  nameOverride: "mongodb-service"
   ## @param service.type Kubernetes Service type (only for standalone architecture)
   ##
   type: ClusterIP
