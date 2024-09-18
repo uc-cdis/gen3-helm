@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grip-values
+data:
+  serviceName: {{ .Values.serviceName | quote }}
+  mongoConfig: |-
+    {{ toYaml .Values.mongoConfig| nindent 4}}

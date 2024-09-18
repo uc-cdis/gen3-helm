@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fhir-server.fullname" . }}
+  name: fhir-server-deployment
   labels:
     {{- include "fhir-server.labels" . | nindent 4 }}
 spec:
@@ -49,7 +49,6 @@ spec:
               path: /_status
               port: http
             initialDelaySeconds: 30
-
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:

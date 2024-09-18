@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: local-grip
+  name: grip-deployment
   labels:
     {{- include "grip.labels" . | nindent 4 }}
 spec:
@@ -27,12 +27,21 @@ spec:
       serviceAccountName: {{ include "grip.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: mongo-config-volume
+          configMap:
+            name: grip-values
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: mongo-config-volume
+            mountPath: /data/mongo.yml
+            subPath: mongoConfig
+            readOnly: true
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
