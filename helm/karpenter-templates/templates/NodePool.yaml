@@ -107,7 +107,7 @@ spec:
           memory.available: 5m
 
   disruption:
-    consolidationPolicy: WhenEmpty
+    consolidationPolicy: WhenEmptyOrUnderutilized
     consolidateAfter: 30s
     # Cycle nodes weekly
     expireAfter: 168h
