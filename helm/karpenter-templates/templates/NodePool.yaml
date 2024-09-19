@@ -108,7 +108,6 @@ spec:
 
   disruption:
     consolidationPolicy: WhenUnderutilized
-    consolidateAfter: 30s
     # Cycle nodes weekly
     expireAfter: 168h
     # Don't Allow more than 50% of nodes to be disrupted at once
@@ -119,7 +118,7 @@ spec:
     #  duration: 8h
     #  nodes: "0"
   limits:
-    cpu: "1000"
+    cpu: "2000"
     memory: 1000Gi
 ---
 apiVersion: karpenter.sh/v1beta1
