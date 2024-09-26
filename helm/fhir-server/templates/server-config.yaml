@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fhir-server-config
+data:
+  serviceName: {{ .Values.serviceName | quote }}
+  gripServiceName: {{ .Values.fhirServerConfig.gripServiceName | quote}}
+  gripGraphName: {{ .Values.fhirServerConfig.gripGraphName | quote}}

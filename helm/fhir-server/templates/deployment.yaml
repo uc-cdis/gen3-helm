@@ -33,6 +33,18 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: "GRIP_SERVICE_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  key:  gripServiceName
+                  name: fhir-server-config
+            - name: "GRIP_GRAPH_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  key:  gripGraphName
+                  name: fhir-server-config
+
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
