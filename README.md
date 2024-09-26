@@ -28,7 +28,7 @@ There's also an auto-generated table of basic configuration options here:
 [README.md for gen3 chart](./helm/gen3/README.md) (auto-generated documentation) or 
 
 
-To see documentation around setting up gen3 developer environments see [gen3_developer_environments.md](./docs/gen3_developer_environments.md)
+To see documentation around setting up gen3 developer environments see [our Example Deployment](https://docs.gen3.org/docs/Deployment/Example%20Deployment/).
 
 
 Use the following as a template for your `values.yaml` file for a minimum deployment of gen3 using these helm charts.
