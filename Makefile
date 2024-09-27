@@ -24,9 +24,14 @@ production-context: change-context  # Change to the Production context
 production production-context: CONTEXT=arn:aws:eks:us-west-2:119548034047:cluster/aced-commons-production
 
 cbds: DEPLOY=cbds
-cbds: check-context deploy ## Deploy the cbds commons
-cbds-context: change-context  # Change to the cbds context
+cbds: check-context deploy ## Deploy the cbds production commons
+cbds-context: change-context  # Change to the cbds production context
 cbds cbds-context: CONTEXT=cbds
+
+cbds-dev: DEPLOY=cbds-dev
+cbds-dev: check-context deploy ## Deploy the cbds development commons
+cbds-dev-context: change-context  # Change to the cbds development context
+cbds-dev cbds-dev-context: CONTEXT=cbds-dev
 
 context: ## Output the current Kubernetes context
 	@echo "Current context: $(shell kubectl config current-context)"
@@ -98,13 +103,19 @@ clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 deploy: check-context check-secrets
 	@echo "Deploying $(DEPLOY)"
 	@if [ "$(DEPLOY)" = "local" ]; then \
-		helm upgrade --install $(DEPLOY) ./helm/gen3 \
+		helm upgrade --install "$(DEPLOY)" ./helm/gen3 \
 		-f Secrets/values.yaml \
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml \
 		-f Secrets/TLS/gen3-certs.yaml; \
+	elif [ "$(DEPLOY)" = "cbds-dev" ]; then \
+		helm upgrade --install "local" ./helm/gen3 \
+		-f Secrets/values.yaml \
+		-f Secrets/user.yaml \
+		-f Secrets/fence-config.yaml \
+		-f Secrets/gen3-certs.yaml; \
 	else \
-		helm upgrade --install $(DEPLOY) ./helm/gen3 \
+		helm upgrade --install "$(DEPLOY_NEW)" ./helm/gen3 \
 		-f Secrets/values.yaml \
 		-f Secrets/user.yaml \
 		-f Secrets/fence-config.yaml; \
