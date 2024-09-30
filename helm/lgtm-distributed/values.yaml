@@ -37,6 +37,249 @@ grafana:
             serviceMap:
               datasourceUid: prom
 
+
+  alerting: 
+    rules.yaml:
+      apiVersion: 1
+      groups:
+      - orgId: 1
+        name: Alerts
+        folder: Alerts
+        interval: 5m
+        rules:
+          - uid: edwb8zgcvq96oc
+            title: HTTP 500 errors detected
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum by (cluster) (count_over_time({cluster=~".+"} | json | http_status_code="500" [1h])) > 0
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              summary: 'Alert: HTTP 500 errors detected in the environment: {{`{{ $labels.clusters }}`}}'
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: adwb9vhb7irr4b
+            title: Error Logs Detected in Usersync Job
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum by (cluster, namespace) (count_over_time({ app="gen3job", job_name=~"usersync-.*"} |= "ERROR - could not revoke policies from user `N/A`" [5m])) > 1
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: Error in usersync job detected in cluster {{`{{ $labels.clusters }}`}}, namespace {{`{{ $labels.namespace }}`}}.
+              summary: Error Logs Detected in Usersync Job
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: ddwbc12l6wc8wf
+            title: Hatchery panic in {{`{{ env.name }}`}}
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum by (cluster) (count_over_time({app="hatchery"} |= "panic" [5m])) > 1
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: Panic detected in app {{`{{ $labels.app }}`}} within cluster {{`{{ $labels.clusters }}`}}.
+              summary: Hatchery panic
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: cdwbcbphz1zb4a
+            title: Http status code 431
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum(count_over_time({cluster=~".+"} | json | http_status_code="431" [5m])) >= 2
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: Detected 431 HTTP status codes in the logs within the last 5 minutes.
+              summary: Http status code 431
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: bdwbck1lgwdfka
+            title: Indexd is getting an excessive amount of traffic
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum by (cluster) (count_over_time({cluster=~".+", app="indexd", status="info"} [5m])) > 50000
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: High number of info status logs detected in the indexd service in cluster {{`{{ $labels.clusters }}`}}.
+              summary: Indexd is getting an excessive amount of traffic
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: fdwbe5t439zpcd
+            title: Karpenter Resource Mismatch
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: |
+                      sum by (cluster) (count_over_time({namespace="karpenter", cluster=~".+"} |= "ERROR" |= "not found" |= "getting providerRef" [5m])) > 10
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: More than 10 errors detected in the karpenter namespace in cluster {{`{{ $labels.clusters }}`}} related to providerRef not found.
+              summary: Karpenter Resource Mismatch
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+          - uid: fdwbeuftc7400c
+            title: Nginx is logging excessive " limiting requests, excess:"
+            condition: A
+            data:
+              - refId: A
+                queryType: instant
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: loki
+                model:
+                  datasource:
+                      type: loki
+                      uid: loki
+                  editorMode: code
+                  expr: sum by (app, cluster) (count_over_time({app=~".+", cluster=~".+"} |= "status:error" |= "limiting requests, excess:" [5m])) > 1000
+                  hide: false
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  queryType: instant
+                  refId: A
+            noDataState: OK
+            execErrState: KeepLast
+            for: 5m
+            annotations:
+              description: 'More than 1000 "limiting requests, excess" errors detected in service {{`{{ $labels.app }}`}} (cluster: {{`{{ $labels.clusters }}`}}) within the last 5 minutes.'
+              summary: Nginx is logging excessive " limiting requests, excess:"
+            labels: {}
+            isPaused: false
+            notification_settings:
+              receiver: Slack
+    contactpoints.yaml:
+      secret:
+        apiVersion: 1
+        contactPoints:
+          - orgId: 1
+            name: slack
+            receivers:
+              - uid: first_uid
+                type: Slack
+                settings:
+                  url: https://hooks.slack.com/services/XXXXXXXXXX
+                  group: slack
+                  summary: |
+                    {{ `{{ include "default.message" . }}` }}
+
+
 loki:
   # -- Deploy Loki if enabled. See [upstream readme](https://github.com/grafana/helm-charts/tree/main/charts/loki-distributed#values) for full values reference.
   enabled: true
@@ -106,3 +349,4 @@ tempo:
   enabled: true
   ingester:
     replicas: 3
+    
