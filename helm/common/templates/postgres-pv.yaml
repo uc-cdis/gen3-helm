@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+  labels:
+    app.kubernetes.io/name: postgresql
+spec:
+  capacity:
+    storage: 30Gi # Adjust the size as needed
+  accessModes:
+    - ReadWriteOnce # Adjust the access mode as needed
+  claimRef:
+    namespace: default
+    name: data-local-postgresql-0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /bitnami/postgresql

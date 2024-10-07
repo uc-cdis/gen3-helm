@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elasticsearch-pv
+  labels:
+    app: elasticsearch-master
+spec:
+  storageClassName: local-storage
+  volumeMode: Filesystem
+  capacity:
+    storage: 30Gi # Adjust the size as needed
+  accessModes:
+    - ReadWriteOnce # Adjust the access mode as needed
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /usr/share/elasticsearch/data
+
+  claimRef:
+    namespace: default
+    name: elasticsearch-master-elasticsearch-master-0
+
