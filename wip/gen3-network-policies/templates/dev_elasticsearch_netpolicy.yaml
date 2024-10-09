@@ -1,0 +1,29 @@
+{{- if .Values.global.dev }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dev-elasticsearch-ingress-netpolicy
+spec:
+  podSelector:
+    matchLabels:
+      app: gen3-elasticsearch-master
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dev-elasticsearch-egress-netpolicy
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: gen3-elasticsearch-master
+{{- end }}

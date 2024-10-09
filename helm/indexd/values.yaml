@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -52,7 +51,8 @@ global:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -68,6 +68,32 @@ global:
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - fence
+    - presigned-url-fence
+    - fenceshib
+    - peregrine
+    - sheepdog
+    - ssjdispatcherjob
+    - metadata
+    - mariner
+    - mariner-engine
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - fence
+    - presigned-url-fence
+    - fenceshib
+    - peregrine
+    - sheepdog
+    - ssjdispatcherjob
+    - metadata
+    - mariner
+    - mariner-engine
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -150,11 +176,13 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Security context for the pod
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -206,19 +234,19 @@ affinity: {}
 
 # -- (list) Volumes to attach to the pod
 volumes:
-- name: uwsgi-config
-  configMap:
-    name: indexd-uwsgi
-- name: config-volume
-  secret:
-    secretName: "indexd-settings"
+  - name: uwsgi-config
+    configMap:
+      name: indexd-uwsgi
+  - name: config-volume
+    secret:
+      secretName: "indexd-settings"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/local_settings.py"
-  subPath: "local_settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/indexd/local_settings.py"
+    subPath: "local_settings.py"
 
 # -- (list) Environment variables to pass to the container
 env:
