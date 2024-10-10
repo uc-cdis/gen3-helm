@@ -18,7 +18,9 @@ A Helm chart for provisioning databases in gen3
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.netPolicy | bool | `{"enabled":true}` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"dbSubnets":[],"enabled":true}` | Configuration for network policies. |
+| global.netPolicy.dbSubnets | array | `[]` | A list of subnets where databases reside. This is to enable access in production environments |
+| global.netPolicy.enabled | bool | `true` | Whether or not to apply netpolicies |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |

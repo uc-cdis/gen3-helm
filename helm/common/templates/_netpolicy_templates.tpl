@@ -2,23 +2,25 @@
   Templates for network policies that can be used by various subcharts
 */}}
 
-{{ define "common.db_netpolicy" -}}
- {{- if .Values.global.netPolicy.enabled }}
+{{- define "common.db_netpolicy" -}}
+  {{- if .Values.global.netPolicy.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ .Chart.Name }}-db-netpolicy
 spec:
   egress:
+  {{- range .Values.global.netPolicy.dbSubnets }}
   - to:
     - ipBlock:
-        cidr: {{ .Values.global.netPolicy.dbSubnet }}
+        cidr: {{ . }}
+  {{- end }}
   podSelector:
     matchLabels: 
       app: {{ .Chart.Name }}
   policyTypes:
   - Egress
- {{- end }}
+  {{- end }}
 {{- end }}
 
 {{ define "common.ingress_netpolicy" -}}
