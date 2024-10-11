@@ -1,0 +1,89 @@
+qureshi@cdistestdevadmin:~/gen3-helm/helm/gen3$ kubectl get networkpolicies
+NAME                             POD-SELECTOR                                                                                                        AGE
+allowdns-netpolicy               <none>                                                                                                              21m
+arborist-db-netpolicy            app=arborist                                                                                                        21m
+argo-workflows-netpolicy         app in (cohort-middleware,indexd,revproxy,wts)                                                                      21m
+argocd-netpolicy                 app in (cohort-middleware,revproxy,wts)                                                                             21m
+auth-egress-netpolicy            <none>                                                                                                              21m
+aws-es-proxy-egress-netpolicy    app in (arranger,arranger-dashboard,arranger-server,guppy,metadata,spark,tube)                                      21m
+aws-es-proxy-ingress-netpolicy   app=aws-es-proxy                                                                                                    21m
+external-egress-netpolicy        internet=yes                                                                                                        12m
+fence-db-netpolicy               app=fence                                                                                                           21m
+gen3job-netpolicy                app=gen3job                                                                                                         21m
+general-egress-netpolicy         app in (ambassador-gen3,revproxy)                                                                                   21m
+indexd-db-netpolicy              app=indexd                                                                                                          21m
+indexd-egress-netpolicy          app in (fence,fenceshib,mariner,mariner-engine,metadata,peregrine,presigned-url-fence,sheepdog,ssjdispatcherjob)    21m
+indexd-ingress-netpolicy         app=indexd                                                                                                          21m
+jupyter-hub-nb-netpolicy         app=jupyterhub                                                                                                      21m
+jupyter-hub-netpolicy            app=jupyter-hub                                                                                                     21m
+linklocal-netpolicy              linklocal=yes                                                                                                       13m
+metadata-db-netpolicy            app=metadata                                                                                                        21m
+netpolicy-allow-nothing          <none>                                                                                                              13m
+netpolicy-auth-ingress           authprovider=yes                                                                                                    21m
+netpolicy-gen3job-in             <none>                                                                                                              21m
+peregrine-db-netpolicy           app=peregrine                                                                                                       21m
+peregrine-egress-netpolicy       app in (pidgin)                                                                                                     21m
+peregrine-ingress-netpolicy      app=peregrine                                                                                                       21m
+revproxy-egress-netpolicy        app in (portal,sowerjob)                                                                                            21m
+revproxy-ingress-netpolicy       app=revproxy                                                                                                        21m
+revproxy-netpolicy               app in (ambassador-gen3,auspice,ohdsi-atlas,ohdsi-webapi,revproxy,superset,superset-redis-master,superset-worker)   21m
+s3-netpolicy                     s3=yes                                                                                                              21m
+sheepdog-db-netpolicy            app=sheepdog                                                                                                        21m
+ssjdispatcherjob-netpolicy       app=ssjdispatcherjob                                                                                                21m
+qureshi@cdistestdevadmin:~/gen3-helm/helm/gen3$ cd
+qureshi@cdistestdevadmin:~$ vi 
+qureshi@cdistestdevadmin:~$ vi cloud-automation^C
+qureshi@cdistestdevadmin:~$ vi cloud-automation/kube/services/netpolicy/
+base/      gen3/      README.md  user/      
+qureshi@cdistestdevadmin:~$ vi cloud-automation/kube/services/netpolicy/base/
+allowdns_netpolicy.yaml       allow_nothing_netpolicy.yaml  metrics_netpolicy.yaml        README.md
+qureshi@cdistestdevadmin:~$ vi cloud-automation/kube/services/netpolicy/gen3/
+auth_netpolicy.yaml        nolimit_netpolicy.yaml     README.md                  userhelper_netpolicy.yaml  
+linklocal_netpolicy.yaml   public_netpolicy.yaml      services/                  vpc_netpolicy.yaml         
+qureshi@cdistestdevadmin:~$ vi cloud-automation/kube/services/netpolicy/gen3/public_netpolicy.yaml 
+
+
+
+
+
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: public-ingress-to-netpolicy
+spec:
+  podSelector:
+    matchLabels:
+      public: "yes"
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app: revproxy
+      - podSelector:
+          matchLabels:
+            app: ambassador-gen3
+  policyTypes:
+   - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: public-egress-to-netpolicy
+spec:
+  podSelector:
+    matchExpressions:
+    - key: app
+      operator: In
+      values:
+      - revproxy
+      - ambassador-gen3
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            public: "yes"
+  policyTypes:
+   - Egress

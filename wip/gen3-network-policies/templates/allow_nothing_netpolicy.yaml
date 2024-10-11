@@ -1,7 +1,7 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: netpolicy-allow-nothing
+  name: allow-nothing-netpolicy
 spec:
   policyTypes:
   - Ingress

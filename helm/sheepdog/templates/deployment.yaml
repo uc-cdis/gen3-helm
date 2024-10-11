@@ -23,12 +23,12 @@ spec:
   template:
     metadata:
       labels:
+        # gen3 networkpolicy labels
+        public: "yes"
+        netnolimit: "yes"
+        s3: "yes"
         {{- include "sheepdog.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        # gen3 networkpolicy labels
-        netnolimit: 'yes'
-        public: 'yes'
-        s3: 'yes'
       annotations:
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
