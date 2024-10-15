@@ -48,14 +48,14 @@ alloy:
         }
       }
     }
-    
+
     // loki write endpoint
     loki.write "endpoint" {
       endpoint {
         url = "http://grafana-loki-gateway.monitoring:80/loki/api/v1/push"
       }
     }
-    
+
     faro.receiver "default" {
         server {
           listen_address = "0.0.0.0"
