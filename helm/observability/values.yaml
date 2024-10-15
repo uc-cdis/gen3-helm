@@ -739,7 +739,7 @@ lgtm:
       ingressClassName: "alb"
       tls:
         # -- (list) TLS configuration for the ingress. Reference to a secret that contains the TLS certificate.
-        - secretName: aws-load-balancer-tls
+        - secretName:
     # -- (map) Persistence configuration for Grafana.
     persistence:
       # -- (bool) Enable or disable persistence for Grafana data.
