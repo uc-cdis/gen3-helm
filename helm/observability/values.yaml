@@ -43,13 +43,13 @@ lgtm:
           - path: /prometheus/api/v1/query
       # -- (list) hostname for mimir ingress.
       hosts:
-       - mimir.example.com
+        - mimir.example.com
 
     # -- (map) minio configuration.
     minio:
       # -- (bool) Enable or disable minio.
       enabled: false
-  
+
     # -- (map) Rollout Operator configuration.
     rollout_operator:
       # -- (map) Docker image information.
@@ -66,7 +66,7 @@ lgtm:
 
     mimir:
       # -- (map) Structured configuration settings for mimir.
-      structuredConfig: 
+      structuredConfig:
         limits:
           # -- (int) Maximum number of global series allowed per user. Set to '0' for unlimited.
           max_global_series_per_user: 0
@@ -95,7 +95,7 @@ lgtm:
         query_scheduler:
           # -- (string) Mode for service discovery in the query scheduler. Set to 'dns' for DNS-based service discovery.
           service_discovery_mode: "dns"
-    
+
     alertmanager:
       # -- (map) Configuration for persistent volume in Alertmanager.
       persistentVolume:
@@ -531,7 +531,7 @@ lgtm:
                 # -- (list) List of values for the node selector, representing allowed zones.
                 values:
                 - us-east-1a
-    
+
     # -- (map) Scaling and configuring loki queryFrontend.
     queryFrontend:
       # -- (map) Resource requests and limits for queryFrontend.
@@ -631,7 +631,7 @@ lgtm:
     # -- (map) Loki configuration.
     loki:
       # -- (map) Loki image details.
-      image: 
+      image:
         # -- (string) Container image registry for Loki.
         registry: quay.io/cdis
         # -- (string) Repository for the Loki image.
@@ -656,7 +656,7 @@ lgtm:
               # -- (string) Index rotation period for Loki, in hours.
               period: 24h
       # -- (map) Structured configuration settings for Loki.
-      structuredConfig: 
+      structuredConfig:
         server:
           # -- (string) Log level for Loki server. Options include 'info', 'debug', etc.
           log_level: debug
@@ -673,7 +673,7 @@ lgtm:
           storage:
             # -- (null) Filesystem storage is disabled.
             filesystem: null
-            s3: 
+            s3:
               # -- (string) AWS region for S3 storage.
               region: us-east-1
               # # -- (string) S3 bucket names for Loki storage.
@@ -685,17 +685,17 @@ lgtm:
     enabled: true
     # -- (map) Affinity rules for scheduling Grafana pods.
     affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
-              - key: topology.kubernetes.io/zone
-                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
-                operator: In
-                # -- (list) List of values for the node selector, representing allowed zones.
-                values:
-                - us-east-1a
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+            - key: topology.kubernetes.io/zone
+              # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+              operator: In
+              # -- (list) List of values for the node selector, representing allowed zones.
+              values:
+              - us-east-1a
     # -- (map) Init container to chown data directories for Grafana.
     initChownData:
       image:
@@ -716,7 +716,7 @@ lgtm:
 
     # -- (string) Reference a secret for environment variables.
     envFromSecret:
-    ingress: 
+    ingress:
       # -- (bool) Enable or disable ingress for Grafana.
       enabled: true
       # -- (map) Annotations for Grafana ingress.
@@ -733,7 +733,7 @@ lgtm:
           # alb.ingress.kubernetes.io/target-type: 'ip'
           # alb.ingress.kubernetes.io/inbound-cidrs: <cidrs>
       # -- (list) Hostname(s) for Grafana ingress.
-      hosts: 
+      hosts:
         - grafana.example.com
       # -- (string) Ingress class name to be used (e.g., 'alb' for AWS Application Load Balancer).
       ingressClassName: "alb"
@@ -752,7 +752,7 @@ lgtm:
       # -- (string) Repository for the Grafana image.
       repository: grafana
       # -- (string) Pull policy for the Grafana image (e.g., 'Always').
-      pullPolicy: Always 
+      pullPolicy: Always
       # -- (string) Tag for the Grafana image version.
       tag: master
 
@@ -820,7 +820,7 @@ lgtm:
         # -- (bool) Enable or disable Okta authentication.
         enabled: true
         # -- (string) Icon used for Okta in the Grafana UI.
-        icon:  okta
+        icon: okta
         # -- (bool) Allow users to sign up automatically using Okta.
         allow_sign_up: true
         # -- (bool) Automatically log in users using Okta when visiting Grafana.
@@ -887,8 +887,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum by (cluster) (count_over_time({cluster=~".+"} | json | http_status_code="500" [1h])) > 0
                     hide: false
@@ -917,8 +917,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum by (cluster, namespace) (count_over_time({ app="gen3job", job_name=~"usersync-.*"} |= "ERROR - could not revoke policies from user `N/A`" [5m])) > 1
                     hide: false
@@ -948,8 +948,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum by (cluster) (count_over_time({app="hatchery"} |= "panic" [5m])) > 1
                     hide: false
@@ -979,8 +979,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum(count_over_time({cluster=~".+"} | json | http_status_code="431" [5m])) >= 2
                     hide: false
@@ -1010,8 +1010,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum by (cluster) (count_over_time({cluster=~".+", app="indexd", status="info"} [5m])) > 50000
                     hide: false
@@ -1041,8 +1041,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: |
                         sum by (cluster) (count_over_time({namespace="karpenter", cluster=~".+"} |= "ERROR" |= "not found" |= "getting providerRef" [5m])) > 10
@@ -1073,8 +1073,8 @@ lgtm:
                   datasourceUid: loki
                   model:
                     datasource:
-                        type: loki
-                        uid: loki
+                      type: loki
+                      uid: loki
                     editorMode: code
                     expr: sum by (app, cluster) (count_over_time({app=~".+", cluster=~".+"} |= "status:error" |= "limiting requests, excess:" [5m])) > 1000
                     hide: false
