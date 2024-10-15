@@ -6,7 +6,7 @@ This document provides a guide for deploying Grafana Alloy to your Kubernetes cl
 
 In this deployment, the Alloy ConfigMap plays a crucial role in configuring which logs are collected for Loki and which metrics are gathered for Mimir. It also specifies the endpoints for Loki and Mimir where the data will be sent.
 
-Before deploying Alloy, it is important to first deploy the "observability" Helm chart, as it provides the necessary components and configuration for Alloy to function properly. Please refer to the SETUP.md observability chart documentation for instructions on how to set it up before proceeding with the Alloy deployment.
+Before deploying Alloy, it is important to first deploy the "observability" Helm chart, as it provides the necessary components and configuration for Alloy to function properly. Please refer to the [SETUP.md](https://github.com/uc-cdis/gen3-helm/blob/master/helm/observability/SETUP.md) observability chart documentation for instructions on how to set it up before proceeding with the Alloy deployment.
 
 ## Configuring Alloy
 

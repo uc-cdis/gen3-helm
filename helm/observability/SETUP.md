@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Helm chart provides an all-in-one solution for deploying Mimir, Loki, and Grafana to your Kubernetes cluster, enabling a complete observability stack for metrics, logs, and visualization.
+The Observability Helm chart provides an all-in-one solution for deploying Mimir, Loki, and Grafana to your Kubernetes cluster, enabling a complete observability stack for metrics, logs, and visualization.
 
 ### Grafana: 
 A leading open-source platform for data visualization and monitoring. Grafana allows you to create rich, interactive dashboards from a variety of data sources, making it easy to analyze metrics and logs from your systems.
@@ -14,11 +14,22 @@ Grafana Mimir is a highly scalable time-series database optimized for storing an
 Grafana Loki is a log aggregation system designed to efficiently collect, store, and query logs from your applications. It works seamlessly with Grafana, providing an integrated way to visualize logs alongside metrics.
 
 By deploying this Helm chart, you'll set up these three components together, allowing you to monitor your systems and applications comprehensively with metrics from Mimir, logs from Loki, and dashboards and alerts in Grafana.
+
+### Alloy:
+Grafana Alloy is a powerful observability tool that collects and ships logs and metrics from your services to Grafana Loki and Mimir for storage and analysis.
+
+***Note: Grafana is deployed in a separate Helm Chart. You will need to follow the instructions outlined in [Alloy Chart](../alloy/SETUP.md) after completing the following guide.
+
+### Faro Collector (Alloy):
+Alloy Faro Collector is a specialized configuration of Alloy that enables it to gather Real User Monitoring (RUM) data from Portal through Grafana Faro. In this role, Alloy acts as an ingestion point for RUM data.
+
+***Note: The Faro Collector is deployed in a separate Helm Chart. You will need to follow the instructions outlined in [faro.md](../faro-collector/SETUP.md) after completing the following guide.
+
 ## General Architecture
 
-The Alloy Helm chart can be deployed across one or more environments or clusters. In this setup, Loki and Mimir are configured with internal ingress resources, enabling Alloy to send metrics and logs securely via VPC peering connections. Both Loki and Mimir write the ingested data to Amazon S3 for scalable and durable storage. This data can be queried and visualized through Grafana, which is hosted behind an internet-facing ingress. Access to Grafana can be restricted using CIDR ranges defined through the ALB ingress annotation: alb.ingress.kubernetes.io/inbound-cidrs: "cidrs". Additionally, the chart supports SAML authentication for Grafana, configured through the grafana.ini field, ensuring secure user access.
+In this setup, Loki and Mimir are configured with internal ingress resources, enabling Alloy to send metrics and logs securely via VPC peering connections. Both Loki and Mimir write the ingested data to Amazon S3 for scalable and durable storage. This data can be queried and visualized through Grafana, which is hosted behind an internet-facing ingress. Access to Grafana can be restricted using CIDR ranges defined through the ALB ingress annotation: alb.ingress.kubernetes.io/inbound-cidrs: "cidrs". Additionally, the chart supports SAML authentication for Grafana, configured through the grafana.ini field, ensuring secure user access.
 
-![Grafana Architecture](image.png)
+![Grafana Architecture](Grafana.png)
 
 ### Fips compliant images
 

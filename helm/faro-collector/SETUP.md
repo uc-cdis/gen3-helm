@@ -4,7 +4,7 @@
 
 This guide provides a step-by-step approach to configuring an Alloy instance to collect Grafana Faro logs sent over the internet, similar to Real User Monitoring (RUM). The Portal service generates Faro logs, which Alloy collects and forwards to Loki for storage and analysis in Grafana. Additionally, this guide explains how to enable metrics in the Fence service and adjust the Faro URL in the Gen3 Portal configuration to route metrics to your Alloy instance. Future updates will enable more Gen3 services to offer metric collection.
 
-Before deploying Alloy, it is important to first deploy the "observability" Helm chart, as it provides the necessary components and configuration for Alloy to function properly. Please refer to the observability chart documentation for instructions on how to set it up before proceeding with the Alloy deployment.
+Before deploying Alloy, it is important to first deploy the "observability" Helm chart, as it provides the necessary components and configuration for Alloy to function properly. Please refer to the [SETUP.md](https://github.com/uc-cdis/gen3-helm/blob/master/helm/observability/SETUP.md) observability chart documentation for instructions on how to set it up before proceeding with the Alloy deployment.
 
 ### Why Does Faro Require an Internet-Facing Ingress?
 
