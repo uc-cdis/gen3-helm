@@ -1,0 +1,346 @@
+apiVersion: neuvector.com/v1
+kind: NvSecurityRule
+metadata:
+  name: nv.etl-cronjob-rule.{{ .Release.Namespace }}
+spec:
+  dlp:
+    settings: []
+    status: true
+  egress:
+  - action: allow
+    applications:
+    - DNS
+    name: nv.kube-dns.kube-system-egress-0
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: kube-dns.kube-system
+      - key: domain
+        op: =
+        value: kube-system
+      name: nv.kube-dns.kube-system
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.{{ .Values.ES_HOST }}.{{ .Release.Namespace }}-egress-1
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.ES_HOST }}.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.{{ .Values.ES_HOST }}.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - PostgreSQL
+    name: nv.{{ .Values.DB_HOST }}.{{ .Release.Namespace }}-egress-2
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: {{ .Values.DB_HOST }}.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.{{ .Values.DB_HOST }}.{{ .Release.Namespace }}
+      original_name: ""
+  - action: allow
+    applications:
+    - SSL
+    name: external-egress-3
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria: []
+      name: external
+      original_name: ""
+  - action: allow
+    applications:
+    - HTTP
+    name: nv.revproxy-deployment.{{ .Release.Namespace }}-egress-4
+    ports: any
+    priority: 0
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: =
+        value: revproxy-deployment.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: nv.revproxy-deployment.{{ .Release.Namespace }}
+      original_name: ""
+  file: []
+  ingress:
+  - action: allow
+    applications:
+    - any
+    name: nv.etl-cronjob.{{ .Release.Namespace }}-ingress-0
+    ports: tcp/9000
+    priority: 0
+    selector:
+      comment: ""
+      name: Workload:ingress
+      original_name: ""
+  process:
+  - action: allow
+    allow_update: false
+    name: basename
+    path: /usr/bin/basename
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /bin/bash
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: bash
+    path: /usr/bin/setsid
+  - action: allow
+    allow_update: false
+    name: cat
+    path: /bin/cat
+  - action: allow
+    allow_update: false
+    name: chmod
+    path: /bin/chmod
+  - action: allow
+    allow_update: false
+    name: cp
+    path: /bin/cp
+  - action: allow
+    allow_update: false
+    name: df
+    path: /bin/df
+  - action: allow
+    allow_update: false
+    name: dirname
+    path: /usr/bin/dirname
+  - action: allow
+    allow_update: false
+    name: dpkg
+    path: /usr/bin/dpkg
+  - action: allow
+    allow_update: false
+    name: dpkg-query
+    path: /usr/bin/dpkg-query
+  - action: allow
+    allow_update: false
+    name: du
+    path: /usr/bin/du
+  - action: allow
+    allow_update: false
+    name: env
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: getconf
+    path: /usr/bin/getconf
+  - action: allow
+    allow_update: false
+    name: gzip
+    path: /bin/gzip
+  - action: allow
+    allow_update: false
+    name: hadoop
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: hdfs
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: head
+    path: /usr/bin/head
+  - action: allow
+    allow_update: false
+    name: id
+    path: /usr/bin/id
+  - action: allow
+    allow_update: false
+    name: java
+    path: /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+  - action: allow
+    allow_update: false
+    name: jks-keystore
+    path: /bin/dash
+  - action: allow
+    allow_update: false
+    name: ld-2.28.so
+    path: /lib/x86_64-linux-gnu/ld-2.28.so
+  - action: allow
+    allow_update: false
+    name: ld-linux-x86-64
+    path: /lib/x86_64-linux-gnu/ld-2.28.so
+  - action: allow
+    allow_update: false
+    name: ld-linux-x86-64.so.2
+    path: /lib/x86_64-linux-gnu/ld-2.28.so
+  - action: allow
+    allow_update: false
+    name: ldd
+    path: /bin/bash
+  - action: allow
+    allow_update: false
+    name: ls
+    path: /bin/ls
+  - action: allow
+    allow_update: false
+    name: mkdir
+    path: /bin/mkdir
+  - action: allow
+    allow_update: false
+    name: mountpoint
+    path: /bin/mountpoint
+  - action: allow
+    allow_update: false
+    name: mv
+    path: /bin/mv
+  - action: allow
+    allow_update: false
+    name: nice
+    path: /usr/bin/nice
+  - action: allow
+    allow_update: false
+    name: nohup
+    path: /usr/bin/nohup
+  - action: allow
+    allow_update: false
+    name: pause
+    path: /pause
+  - action: allow
+    allow_update: false
+    name: ps
+    path: /bin/ps
+  - action: allow
+    allow_update: false
+    name: psql
+    path: /usr/bin/perl
+  - action: allow
+    allow_update: false
+    name: psql
+    path: /usr/lib/postgresql/11/bin/psql
+  - action: allow
+    allow_update: false
+    name: python
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: python3
+    path: /usr/local/bin/python3.9
+  - action: allow
+    allow_update: false
+    name: readlink
+    path: /bin/readlink
+  - action: allow
+    allow_update: false
+    name: renice
+    path: /usr/bin/renice
+  - action: allow
+    allow_update: false
+    name: rm
+    path: /bin/rm
+  - action: allow
+    allow_update: false
+    name: sed
+    path: /bin/sed
+  - action: allow
+    allow_update: false
+    name: setsid
+    path: /usr/bin/setsid
+  - action: allow
+    allow_update: false
+    name: sh
+    path: /bin/dash
+  - action: allow
+    allow_update: false
+    name: slaves.sh
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: sleep
+    path: /bin/sleep
+  - action: allow
+    allow_update: false
+    name: spark-class
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: spark-submit
+    path: /usr/bin/env
+  - action: allow
+    allow_update: false
+    name: sqoop
+    path: /bin/bash
+  - action: allow
+    allow_update: false
+    name: ssh-keygen
+    path: /usr/bin/ssh-keygen
+  - action: allow
+    allow_update: false
+    name: sysctl
+    path: /sbin/sysctl
+  - action: allow
+    allow_update: false
+    name: tail
+    path: /usr/bin/tail
+  - action: allow
+    allow_update: false
+    name: tar
+    path: /bin/tar
+  - action: allow
+    allow_update: false
+    name: touch
+    path: /bin/touch
+  - action: allow
+    allow_update: false
+    name: tr
+    path: /usr/bin/tr
+  - action: allow
+    allow_update: false
+    name: uname
+    path: /bin/uname
+  - action: allow
+    allow_update: false
+    name: wget
+    path: /usr/bin/wget
+  - action: allow
+    allow_update: false
+    name: yarn
+    path: /usr/bin/env
+  process_profile:
+    baseline: zero-drift
+  target:
+    selector:
+      comment: ""
+      criteria:
+      - key: service
+        op: regex
+        value: etl-cronjob-.*\.{{ .Release.Namespace }}
+      - key: domain
+        op: =
+        value: {{ .Release.Namespace }}
+      name: etl-cronjob.{{ .Release.Namespace }}
+      original_name: ""
+  waf:
+    settings: []
+    status: true
