@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  alloy:
+  - apiVersion: v2
+    appVersion: master
+    created: "2024-10-16T19:09:40.40596577Z"
+    dependencies:
+    - name: alloy
+      repository: https://grafana.github.io/helm-charts
+      version: 0.9.1
+    description: A Helm chart for deploying Grafana Alloy
+    digest: f99b0d204d2697ae69ba34fe810e9ee95e8757009eb60821dec4b80ff36c86d0
+    name: alloy
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/alloy-0.1.0/alloy-0.1.0.tgz
+    version: 0.1.0
   ambassador:
   - apiVersion: v2
     appVersion: 1.4.2
@@ -1430,6 +1445,16 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/elasticsearch-0.1.0/elasticsearch-0.1.0.tgz
     version: 0.1.0
   etl:
+  - apiVersion: v2
+    appVersion: master
+    created: "2024-10-16T19:09:40.597998498Z"
+    description: A Helm chart for gen3 etl
+    digest: dbec1cf1491afa41ae45e5d9b2ea6a89a4a0e40c6010e906ef8a24c2e60fb41a
+    name: etl
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/etl-0.1.2/etl-0.1.2.tgz
+    version: 0.1.2
   - apiVersion: v2
     appVersion: master
     created: "2024-05-01T14:49:00.640379714Z"
@@ -7644,6 +7669,22 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/indexd-0.0.1/indexd-0.0.1.tgz
     version: 0.0.1
+  lgtma-chart:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-10-16T19:09:40.901694041Z"
+    dependencies:
+    - alias: lgtm
+      name: lgtm-distributed
+      repository: https://grafana.github.io/helm-charts
+      version: 2.1.0
+    description: A Helm chart for deploying the LGTM stack with additional resources
+    digest: 6ddf665450ada2bcc008edfd4d70f791981afdbcd6c68034b5698ac5a0e25beb
+    name: lgtma-chart
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/lgtma-chart-0.1.0/lgtma-chart-0.1.0.tgz
+    version: 0.1.0
   manifestservice:
   - apiVersion: v2
     appVersion: master
@@ -10205,4 +10246,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-09-09T21:40:00.676038961Z"
+generated: "2024-10-16T19:09:40.902375587Z"
