@@ -33,7 +33,7 @@ In this setup, Loki and Mimir are configured with internal ingress resources, en
 
 ### Fips compliant images
 
-Gen3 provides FIPS-compliant images, which are set as the default in the values file for Grafana, Mimir, and Loki. These images are self-hosted and maintained by the Gen3 Platform Team, ensuring secure and compliant operations. While the Platform Team manages image upgrades, the service versions will be updated as needed to align with operational requirements and best practices.
+Gen3 provides FIPS-compliant images, which are set as the default in the values file for Grafana, Mimir, and Loki. These images are self-hosted and maintained by the Gen3 Platform Team, ensuring secure and compliant operations. The Platform Team is responsible for managing image upgrades, and service versions will be updated as deemed necessary by the team.
 
 ### Helm Chart Links
 The links below will take you to the Grafana LGTM chart, as well as the Grafana, Loki, and Mimir charts, providing a comprehensive list of configurable options to help you further customize your setup.
