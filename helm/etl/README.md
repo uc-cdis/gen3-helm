@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -9,6 +9,11 @@ A Helm chart for gen3 etl
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | esEndpoint | string | `"gen3-elasticsearch-master"` |  |
+| esGarbageCollect | map | `{"custom_image":null,"enabled":false,"schedule":"0 0 * * *","slack_webhook":"None"}` | Configuration options for es garbage cronjob. |
+| esGarbageCollect.custom_image | string | `nil` | To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image. |
+| esGarbageCollect.enabled | bool | `false` | Whether to create es garbage collect cronjob. |
+| esGarbageCollect.schedule | string | `"0 0 * * *"` | The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default. |
+| esGarbageCollect.slack_webhook | string | `"None"` | Slack webhook endpoint to use for cronjob. |
 | etlMapping.mappings[0].aggregated_props[0].fn | string | `"count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].name | string | `"_samples_count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].path | string | `"samples"` |  |
