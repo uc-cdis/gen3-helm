@@ -179,7 +179,9 @@ There are [some commons sql queries that can be found here](https://github.com/u
 
 ### Setting up OIDC clients
 
-OIDC clients are used by applications to authenticate to fence. Many times this is external users to setup apps which leverage gen3 and an OIDC will have to be client will need to be setup for them. After creation, the client_id/secret will need to be shared with the application owner. To create these clients you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence#register-oauth-client).
+OIDC (OpenID Connect) clients allow applications to authenticate with Fence. This setup is often necessary for external users who want to integrate their applications with Gen3. For each application, you'll need to create a unique OIDC client, which will provide a client_id and client_secret for the application to use.
+
+Once the client is created, share the client_id and client_secret with the application owner so they can configure their application to authenticate with Fence. To create these clients, you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/setup.md#register-oauth-client).
 
 
 ---
