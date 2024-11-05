@@ -185,7 +185,7 @@ spec:
             if hash alembic 2>/dev/null; then
               echo "Running DB migration"
               cd /wts
-              alembic upgrade head
+              poetry run alembic upgrade head || alembic upgrade head
             else
               echo "Alembic not installed - not running DB migration"
             fi
