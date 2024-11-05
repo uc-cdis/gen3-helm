@@ -104,7 +104,7 @@ arborist:
 
 ## Extra Information
 
-Common arborist database queries can be found [here](https://github.com/uc-cdis/cdis-wiki/blob/master/dev/gen3-sql-queries.md#arborist-database).
+[Find common arborist database queries here](https://github.com/uc-cdis/cdis-wiki/blob/master/dev/gen3-sql-queries.md#arborist-database).
 
 ---
 
@@ -160,12 +160,12 @@ You need to ensure a proper working fence-config file. Fence is highly configura
 8. CIRRUS_CFG
   * If google buckets are used you need to configure this block. It is used to setup the google bucket workflow, which essentially creates google users and google bucket access groups, which get filled with users and added to bucket policies to allow implicit access to users.
 
-For more infomation see [this](https://github.com/uc-cdis/fence/blob/master/fence/config-default.yaml)
+For more infomation, [see this](https://github.com/uc-cdis/fence/blob/master/fence/config-default.yaml)
 
 
-For user.yaml see this how to construct one properly. This will control access to your data commons:
+A user.yaml will control access to your data commons. To see how to construct a user.yaml properly:
 
-https://github.com/uc-cdis/fence/blob/master/docs/user.yaml_guide.md 
+https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/user.yaml_guide.md 
 
 ## Extra Information
 
@@ -175,11 +175,13 @@ Fence is split into 2 deployments. There is the regular fence deployment which h
 
 ### Troubleshooting Fence
 
-There are some commons sql queries that can be found [here](https://github.com/uc-cdis/cdis-wiki/blob/master/dev/gen3-sql-queries.md#fence-database). 
+There are [some commons sql queries that can be found here](https://github.com/uc-cdis/cdis-wiki/blob/master/dev/gen3-sql-queries.md#fence-database). 
 
 ### Setting up OIDC clients
 
-OIDC clients are used by applications to authenticate to fence. Many times this is external users to setup apps which leverage gen3 and an OIDC will have to be client will need to be setup for them. After creation, the client_id/secret will need to be shared with the application owner. To create these clients you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence#register-oauth-client).
+OIDC (OpenID Connect) clients allow applications to authenticate with Fence. This setup is often necessary for external users who want to integrate their applications with Gen3. For each application, you'll need to create a unique OIDC client, which will provide a client_id and client_secret for the application to use.
+
+Once the client is created, share the client_id and client_secret with the application owner so they can configure their application to authenticate with Fence. To create these clients, you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/setup.md#register-oauth-client).
 
 
 ---
@@ -196,7 +198,7 @@ Guppy is used to render the explorer page. It uses elastic search indices to ren
 For a full set of configuration see the [helm README.md for guppy](../helm/guppy/README.md) or read the [values.yaml](../helm/guppy/values.yaml) directly
 
 
-There is also config that needs to be set within the global block around the tier access level, defining how the explorer page should handle displaying unauthorized files, and the limit to how far unauthroized user can filter down files. Last there is a guppy block that needs to be configured with the elastic search indices guppy will use to render the explorer page.
+There is also config that needs to be set within the global block around the tier access level, defining how the explorer page should handle displaying unauthorized files, and the limit to how far unauthorized user can filter down files. Last, there is a guppy block that needs to be configured with the elastic search indices guppy will use to render the explorer page.
 
 ```
 global:
@@ -230,7 +232,7 @@ guppy:
 ```
 
 
-You will also need a mapping file to map the fields you want to pull from postgres into the elasticsearch indices. There are too many fields to describe here, but an example mapping file can be found [here](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/etlMapping.yaml).
+You will also need a mapping file to map the fields you want to pull from postgres into the elasticsearch indices. There are too many fields to describe here, but [an example mapping file can be found here](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/etlMapping.yaml).
 
 Last, guppy works closely with portal to render the explorer page. You will need to ensure a proper [dataExplorer block](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/portal/gitops.json#L212) is setup within the gitops.json file, referencing fields that have been pulled from postgres into the elasticsearch indices.
 
@@ -454,9 +456,9 @@ portal:
 ```
 
 
-To do this you can follow the example [here](https://github.com/uc-cdis/data-portal/blob/master/docs/portal_config.md).
+To do this you can follow [the example here](https://github.com/uc-cdis/data-portal/blob/master/docs/portal_config.md).
 
-Portal can also be configured with different images and icons by updating the values, similar to [this](https://github.com/uc-cdis/cdis-manifest/tree/master/gen3.biodatacatalyst.nhlbi.nih.gov/portal).
+Portal can also be configured with different images and icons by updating the values, [similar to this](https://github.com/uc-cdis/cdis-manifest/tree/master/gen3.biodatacatalyst.nhlbi.nih.gov/portal). 
 
 ## Extra Information
 
