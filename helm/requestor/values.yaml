@@ -190,6 +190,10 @@ volumeMounts:
   #   readOnly: true
   #   mountPath: "/src/requestor-config.yaml"
   #   subPath: "requestor-config.yaml"
+  # - name: "config-volume"
+  #   readOnly: true
+  #   mountPath: "/requestor/requestor-config.yaml"
+  #   subPath: "requestor-config.yaml"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -223,7 +227,7 @@ command: ["/bin/sh"]
 args:
   - "-c"
   - |
-    /env/bin/alembic upgrade head
+    poetry run alembic upgrade head || /env/bin/alembic upgrade head
 
 # Service and Pod
 # -- (map) Kubernetes service information.
