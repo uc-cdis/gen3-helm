@@ -185,6 +185,7 @@ spec:
             if hash alembic 2>/dev/null; then
               echo "Running DB migration"
               cd /wts
+              # Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility 
               poetry run alembic upgrade head || alembic upgrade head
             else
               echo "Alembic not installed - not running DB migration"
