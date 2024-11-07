@@ -16,7 +16,7 @@ metricsEnabled: false
 
 # Deployment
 # -- (map) Annotations to add to the pod.
-podAnnotations: { "gen3.io/network-ingress": "argo-wrapper" }
+podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
