@@ -61,6 +61,7 @@ global:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
   # -- (bool) Global flags to control and manage network policies for a Gen3 installation
+  # NOTE: Network policies are currently a beta feature. Use with caution!
   netPolicy:
     # -- (bool) Whether network policies are enabled
     enabled: false
