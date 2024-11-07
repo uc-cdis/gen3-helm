@@ -33,6 +33,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.netPolicy.enabled | bool | `false` |  |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-es-proxy","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
