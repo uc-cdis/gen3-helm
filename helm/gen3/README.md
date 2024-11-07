@@ -19,16 +19,16 @@ Helm chart to deploy Gen3 Data Commons
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../../wip/gen3-network-policies | gen3-network-policies | 0.1.1 |
-| file://../ambassador | ambassador | 0.1.13 |
+| file://../ambassador | ambassador | 0.1.15 |
 | file://../arborist | arborist | 0.1.13 |
 | file://../argo-wrapper | argo-wrapper | 0.1.9 |
-| file://../audit | audit | 0.1.14 |
+| file://../audit | audit | 0.1.15 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.11 |
 | file://../common | common | 0.1.15 |
-| file://../etl | etl | 0.1.2 |
+| file://../etl | etl | 0.1.3 |
 | file://../fence | fence | 0.1.24 |
 | file://../frontend-framework | frontend-framework | 0.1.4 |
-| file://../guppy | guppy | 0.1.14 |
+| file://../guppy | guppy | 0.1.15 |
 | file://../hatchery | hatchery | 0.1.11 |
 | file://../indexd | indexd | 0.1.16 |
 | file://../manifestservice | manifestservice | 0.1.16 |
@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../neuvector | neuvector | 0.1.1 |
 | file://../peregrine | peregrine | 0.1.15 |
 | file://../pidgin | pidgin | 0.1.12 |
-| file://../portal | portal | 0.1.18 |
+| file://../portal | portal | 0.1.19 |
 | file://../requestor | requestor | 0.1.13 |
 | file://../revproxy | revproxy | 0.1.18 |
 | file://../sheepdog | sheepdog | 0.1.16 |
