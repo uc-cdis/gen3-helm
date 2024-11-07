@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -50,7 +49,8 @@ global:
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -103,7 +103,6 @@ postgresql:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
-
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
@@ -144,7 +143,8 @@ podSecurityContext:
   # fsGroup: 2000
 
 # -- (map) Security context to apply to the container
-securityContext: {}
+securityContext:
+  {}
 
   # -- (map) Linux capabilities to drop
   # capabilities:
@@ -215,7 +215,6 @@ env:
   # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
   - name: JWKS_ENDPOINT
     value: "http://fence-service/.well-known/jwks"
-
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

@@ -49,7 +49,8 @@ global:
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -148,7 +149,8 @@ podAnnotations: {}
 podSecurityContext: {}
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
 
   # capabilities:
   #   drop:
@@ -163,6 +165,17 @@ service:
   type: ClusterIP
   # -- (int) Port on which the service is exposed
   port: 80
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - fence
+    - presigned-url-fence
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - fence
+    - presigned-url-fence
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -191,7 +204,6 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 
@@ -203,20 +215,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - audit
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - audit
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -253,7 +265,8 @@ server:
     # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
   # -- (map) AWS credentials to access SQS queue.
-  AWS_CREDENTIALS: {}
+  AWS_CREDENTIALS:
+    {}
     # cred1:
     #   aws_access_key_id:
     #   aws_secret_access_key:

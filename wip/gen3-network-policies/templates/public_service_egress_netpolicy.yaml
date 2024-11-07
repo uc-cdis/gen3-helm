@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: general-egress-netpolicy
+spec:
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            public: "yes"
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - revproxy
+          - ambassador-gen3
+  policyTypes:
+    - Egress

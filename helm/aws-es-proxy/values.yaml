@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -116,6 +115,27 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 9200
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - arranger
+    - arranger-server
+    - arranger-dashboard
+    - guppy
+    - metadata
+    - spark
+    - tube
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - arranger
+    - arranger-server
+    - arranger-dashboard
+    - guppy
+    - metadata
+    - spark
+    - tube
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -52,7 +51,8 @@ global:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: true
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -106,20 +106,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - guppy
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - guppy
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the pod.
 volumes:
@@ -141,7 +141,6 @@ image:
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
-
 
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
@@ -171,7 +170,6 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
-
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
@@ -186,10 +184,10 @@ service:
 # Configmap
 # -- (list) Elasticsearch index configurations
 indices:
-- index: dev_case
-  type: case
-- index: dev_file
-  type: file
+  - index: dev_case
+    type: case
+  - index: dev_file
+    type: file
 # -- (string) The Elasticsearch configuration index
 configIndex: dev_case-array-config
 # -- (string) The field used for access control and authorization filters

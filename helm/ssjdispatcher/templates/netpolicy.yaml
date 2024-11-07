@@ -1,0 +1,14 @@
+{{- if .Values.ssjdispatcher.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpolicy-ssjdispatcherjob
+spec:
+  podSelector:
+    matchLabels:
+      app: ssjdispatcherjob
+  egress:
+    - {}
+  policyTypes:
+   - Egress
+{{- end }}

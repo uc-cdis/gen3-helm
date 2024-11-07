@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
@@ -17,7 +16,7 @@ metricsEnabled: false
 
 # Deployment
 # -- (map) Annotations to add to the pod.
-podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
+podAnnotations: { "gen3.io/network-ingress": "argo-wrapper" }
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -52,20 +51,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - argo-wrapper
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - argo-wrapper
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the pod.
 volumes:
@@ -108,12 +107,22 @@ service:
   # -- (int) The port number that the service exposes.
   port: 8000
 
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - argo-wrapper
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - argo-wrapper
+
 # Configmap
 # -- (list) The workflow scaling groups to be used by Argo.
 scalingGroups:
-- user1: "workflow1"
-- user2: "workflow2"
-- user3: "workflow3"
+  - user1: "workflow1"
+  - user2: "workflow2"
+  - user3: "workflow3"
 # -- (string) S3 bucket name for Argo artifacts (allows pre-signed URLs).
 s3Bucket: "argo-artifact-downloadable"
 # -- (string) Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs).
