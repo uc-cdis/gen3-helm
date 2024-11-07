@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.45](https://img.shields.io/badge/Version-0.1.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -21,7 +21,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.12 |
 | file://../arborist | arborist | 0.1.12 |
 | file://../argo-wrapper | argo-wrapper | 0.1.8 |
-| file://../audit | audit | 0.1.13 |
+| file://../audit | audit | 0.1.14 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.10 |
 | file://../common | common | 0.1.14 |
 | file://../etl | etl | 0.1.3 |
@@ -31,17 +31,17 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.10 |
 | file://../indexd | indexd | 0.1.15 |
 | file://../manifestservice | manifestservice | 0.1.15 |
-| file://../metadata | metadata | 0.1.13 |
+| file://../metadata | metadata | 0.1.14 |
 | file://../neuvector | neuvector | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.14 |
 | file://../pidgin | pidgin | 0.1.11 |
-| file://../portal | portal | 0.1.17 |
-| file://../requestor | requestor | 0.1.12 |
+| file://../portal | portal | 0.1.19 |
+| file://../requestor | requestor | 0.1.13 |
 | file://../revproxy | revproxy | 0.1.17 |
 | file://../sheepdog | sheepdog | 0.1.15 |
 | file://../sower | sower | 0.1.13 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.11 |
-| file://../wts | wts | 0.1.14 |
+| file://../wts | wts | 0.1.15 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
