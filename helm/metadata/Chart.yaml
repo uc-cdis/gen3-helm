@@ -24,14 +24,14 @@ version: 0.1.14
 appVersion: "master"
 
 dependencies:
-- name: common
-  version: 0.1.14
-  repository: file://../common
-- name: postgresql
-  version: 11.9.13
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: postgres.separate
-- name: elasticsearch
-  version: "7.17.1"
-  repository: "https://helm.elastic.co"
-  condition: elasticsearch.separate
+  - name: common
+    version: 0.1.15
+    repository: file://../common
+  - name: postgresql
+    version: 11.9.13
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgres.separate
+  - name: elasticsearch
+    version: "7.17.1"
+    repository: "https://helm.elastic.co"
+    condition: elasticsearch.separate

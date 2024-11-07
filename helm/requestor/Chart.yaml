@@ -23,12 +23,11 @@ version: 0.1.13
 # It is recommended to use it with quotes.
 appVersion: "master"
 
-
 dependencies:
-- name: common
-  version: 0.1.14
-  repository: file://../common
-- name: postgresql
-  version: 11.9.13
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: postgres.separate
+  - name: common
+    version: 0.1.15
+    repository: file://../common
+  - name: postgresql
+    version: 11.9.13
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgres.separate

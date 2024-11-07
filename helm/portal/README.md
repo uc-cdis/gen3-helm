@@ -8,7 +8,7 @@ A Helm chart for gen3 data-portal
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 
 ## Values
 
