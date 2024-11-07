@@ -30,11 +30,11 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
+        netnolimit: "yes"
+        public: "yes" 
+        userhelper: "yes"
         {{- include "wts.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        public: "yes"
-        netnolimit: "yes"
-        userhelper: "yes"
     spec:
       affinity:
         podAntiAffinity:
