@@ -48,9 +48,9 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
+  # -- (map) Controls network policy settings
   netPolicy:
-    enabled: true
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -103,7 +103,7 @@ postgresql:
 releaseLabel: production
 
 # -- (map) Annotations to add to the pod
-podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
+podAnnotations: { "gen3.io/network-ingress": "sheepdog" }
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
