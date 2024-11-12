@@ -21,6 +21,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
         {{- include "ambassador.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:

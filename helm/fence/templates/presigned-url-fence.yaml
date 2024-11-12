@@ -21,7 +21,11 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
-        app: presigned-url-fence 
+        app: "presigned-url-fence" 
+        authprovder: "yes"
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:

@@ -17,11 +17,11 @@ spec:
   template:
     metadata:
       labels:
+        public: "yes"
+        s3: "yes"
+        userhelper: "yes"
         {{- include "manifestservice.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        s3: "yes"
-        public: "yes"
-        userhelper: "yes"
       annotations:
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
