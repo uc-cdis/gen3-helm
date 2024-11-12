@@ -103,7 +103,7 @@ postgresql:
 releaseLabel: production
 
 # -- (map) Annotations to add to the pod
-podAnnotations: { "gen3.io/network-ingress": "sheepdog" }
+podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
