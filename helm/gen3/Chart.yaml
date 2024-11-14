@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
