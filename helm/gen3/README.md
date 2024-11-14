@@ -167,7 +167,7 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
-| pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
+| pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
