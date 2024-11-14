@@ -238,7 +238,7 @@ peregrine:
 
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
-  enabled: true
+  enabled: false
 
 portal:
   # -- (bool) Whether to deploy the portal subchart.

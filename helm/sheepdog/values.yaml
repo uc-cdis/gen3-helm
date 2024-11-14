@@ -188,6 +188,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/sheepdog/settings.py"
     subPath: "settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "sheepdog/bin/settings.py"
+    subPath: "settings.py"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

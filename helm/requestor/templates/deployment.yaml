@@ -152,4 +152,4 @@ spec:
           args:
             - "-c"
             - |
-              /env/bin/alembic upgrade head
+              poetry run alembic upgrade head || /env/bin/alembic upgrade head
