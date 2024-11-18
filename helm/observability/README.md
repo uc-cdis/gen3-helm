@@ -306,4 +306,3 @@ A Helm chart for deploying the LGTM stack with additional resources
 | lgtm.mimir.store_gateway.zoneAwareReplication.topologyKey | string | `"kubernetes.io/hostname"` | Topology key used for zone-aware replication. |
 | lgtm.role.arn | string | `nil` | The arn of the aws role to associate with the service account that will be used for Loki and Mimir. Documentation on IRSA setup https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html |
 | lgtm.tempo.enabled | bool | `false` | Enable or disable tempo. |
-

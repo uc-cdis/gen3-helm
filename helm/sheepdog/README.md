@@ -106,4 +106,3 @@ A Helm chart for gen3 Sheepdog Service
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | terminationGracePeriodSeconds | int | `50` | sheepdog transactions take forever - try to let the complete before termination |
 | volumeMounts | list | `[{"mountPath":"/var/www/sheepdog/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"},{"mountPath":"sheepdog/bin/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"}]` | Volumes to mount to the container. |
-

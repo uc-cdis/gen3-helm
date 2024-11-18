@@ -113,4 +113,3 @@ A Helm chart for gen3 Requestor Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | volumeMounts | list | `nil` | Volumes to mount to the container. |
-
