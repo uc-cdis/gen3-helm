@@ -57,7 +57,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: 3000
               name: http
               protocol: TCP
           envFrom:
