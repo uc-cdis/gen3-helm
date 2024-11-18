@@ -18,7 +18,6 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../../wip/gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../ambassador | ambassador | 0.1.16 |
 | file://../arborist | arborist | 0.1.14 |
 | file://../argo-wrapper | argo-wrapper | 0.1.10 |
@@ -28,6 +27,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../etl | etl | 0.1.5 |
 | file://../fence | fence | 0.1.26 |
 | file://../frontend-framework | frontend-framework | 0.1.5 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.16 |
 | file://../hatchery | hatchery | 0.1.12 |
 | file://../indexd | indexd | 0.1.18 |

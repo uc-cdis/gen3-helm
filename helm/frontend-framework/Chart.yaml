@@ -25,5 +25,5 @@ appVersion: "develop"
 
 dependencies:
   - name: common
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../common

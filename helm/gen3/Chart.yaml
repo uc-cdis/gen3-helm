@@ -93,7 +93,7 @@ dependencies:
     condition: wts.enabled
   - name: gen3-network-policies
     version: 0.1.2
-    repository: "file://../../wip/gen3-network-policies"
+    repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
 
   - name: elasticsearch

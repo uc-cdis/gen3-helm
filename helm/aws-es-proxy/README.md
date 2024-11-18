@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.15 |
+| file://../common | common | 0.1.16 |
 
 ## Values
 

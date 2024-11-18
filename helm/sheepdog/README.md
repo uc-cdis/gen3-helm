@@ -8,7 +8,7 @@ A Helm chart for gen3 Sheepdog Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.15 |
+| file://../common | common | 0.1.16 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
