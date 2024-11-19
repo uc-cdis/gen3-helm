@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: etl-cronjob
 spec:
-  schedule: "0 0 1 1 */5"
+  schedule: {{ .Values.schedule }}
   jobTemplate:
     spec:
       backoffLimit: 0
