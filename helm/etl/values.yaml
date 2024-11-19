@@ -154,3 +154,5 @@ esGarbageCollect:
   custom_image:
   # -- (string) Slack webhook endpoint to use for cronjob.
   slack_webhook: None
+
+schedule: "*/30 * * * *"
