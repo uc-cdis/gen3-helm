@@ -94,8 +94,8 @@ spec:
               path: /
               {{- end }}
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 60
+            initialDelaySeconds: 5
+            periodSeconds: 10
             timeoutSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
