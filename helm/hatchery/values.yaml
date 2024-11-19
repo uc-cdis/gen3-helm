@@ -206,6 +206,11 @@ hatchery:
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
 
+  # -- (bool) Whether to skip node selector for . Defaults to `global.dev`.
+  skipNodeSelector: false
+  # -- (bool) Whether to use internal services url. Defaults to `global.dev`.
+  useInternalServicesUrl: false
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"

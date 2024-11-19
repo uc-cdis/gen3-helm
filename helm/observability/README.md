@@ -1,6 +1,6 @@
 # lgtma-chart
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
 A Helm chart for deploying the LGTM stack with additional resources
 
@@ -306,4 +306,3 @@ A Helm chart for deploying the LGTM stack with additional resources
 | lgtm.mimir.store_gateway.zoneAwareReplication.topologyKey | string | `"kubernetes.io/hostname"` | Topology key used for zone-aware replication. |
 | lgtm.role.arn | string | `nil` | The arn of the aws role to associate with the service account that will be used for Loki and Mimir. Documentation on IRSA setup https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html |
 | lgtm.tempo.enabled | bool | `false` | Enable or disable tempo. |
-

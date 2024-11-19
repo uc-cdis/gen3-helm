@@ -1,6 +1,6 @@
 # requestor
 
-![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Requestor Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.15 |
+| file://../common | common | 0.1.16 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -113,4 +113,3 @@ A Helm chart for gen3 Requestor Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | volumeMounts | list | `nil` | Volumes to mount to the container. |
-

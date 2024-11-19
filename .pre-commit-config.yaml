@@ -4,6 +4,8 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
+        additional_dependencies: ["gibberish-detector"]
+  
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.5.0
     hooks:
@@ -15,15 +17,16 @@ repos:
   #   hooks:
   #   - id: helmlint
 
-  - repo: local
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: "v1.14.2"
     hooks:
-      - id: helm-docs
-        args: ["-c", "helm"]
-        description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
-        entry: git-hook/helm-docs.sh
-        language: script
-        name: Helm Docs
-        require_serial: true
+    #  Use a pinned version of helm-docs in a container to generate consistent documentation.
+      - name: helm-docs
+        id: helm-docs-container
+        entry: jnorwood/helm-docs:v1.14.2
+        args:
+        - "--chart-search-root=helm"
+        - "--skip-version-footer"
 
   - repo: local
     hooks:

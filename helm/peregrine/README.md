@@ -1,6 +1,6 @@
 # peregrine
 
-![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Peregrine service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Peregrine service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.15 |
+| file://../common | common | 0.1.16 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -101,4 +101,3 @@ A Helm chart for gen3 Peregrine service
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[{"mountPath":"/var/www/peregrine/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"},{"mountPath":"peregrine/bin/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"emptyDir":{},"name":"shared-data"},{"name":"config-volume","secret":{"secretName":"peregrine-secret"}}]` | Volumes to attach to the container. |
-
