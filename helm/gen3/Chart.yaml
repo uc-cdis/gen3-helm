@@ -28,7 +28,7 @@ dependencies:
     version: 0.1.15
     repository: file://../common
   - name: etl
-    version: 0.1.4
+    version: 0.1.5
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
