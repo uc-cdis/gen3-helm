@@ -1,3 +1,0 @@
-{{- if and .Values.global.pdb (gt (int .Values.replicaCount) 1) }}
-{{ include "common.pod_disruption_budget" . }}
-{{- end  }}
