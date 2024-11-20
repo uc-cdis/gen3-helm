@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: s3-netpolicy
+spec:
+  egress:
+  - to: {{ toYaml .Values.s3CidrRanges | nindent 4}}
+  podSelector:
+    matchLabels:
+      s3: "yes"
+  policyTypes:
+  - Egress

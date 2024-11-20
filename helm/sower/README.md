@@ -8,7 +8,7 @@ A Helm chart for gen3 sower
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 
 ## Values
 
@@ -50,7 +50,7 @@ A Helm chart for gen3 sower
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
@@ -69,6 +69,9 @@ A Helm chart for gen3 sower
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
+| netPolicy | map | `{"egressApps":["pidgin"],"ingressApps":["pidgin"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["pidgin"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["pidgin"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podSecurityContext | map | `{"fsGroup":1000,"runAsUser":1000}` | Security context to apply to the pod |

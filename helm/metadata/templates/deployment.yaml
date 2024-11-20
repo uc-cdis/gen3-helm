@@ -19,12 +19,11 @@ spec:
   template:
     metadata:
       labels:
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
         {{- include "metadata.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        # gen3 networkpolicy labels
-        netnolimit: 'yes'
-        public: 'yes'
-        userhelper: 'yes'
       annotations: 
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}

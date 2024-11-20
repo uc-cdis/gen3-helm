@@ -1,7 +1,6 @@
 # Default values for peregrine.
 # This is a YAML-formatted file.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -46,8 +45,9 @@ global:
   logsBucket: logs-gen3
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -74,7 +74,6 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
-
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -139,11 +138,13 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Security context for the pod
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -157,6 +158,16 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - pidgin
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - pidgin
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -199,17 +210,21 @@ env:
 
 # -- (list) Volumes to attach to the container.
 volumes:
-- name: shared-data
-  emptyDir: {}
-- name: config-volume
-  secret:
-    secretName: "peregrine-secret"
+  - name: shared-data
+    emptyDir: {}
+  - name: config-volume
+    secret:
+      secretName: "peregrine-secret"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/peregrine/settings.py"
+    subPath: "settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "peregrine/bin/settings.py"
     subPath: "settings.py"
 
 # Values to determine the labels that are used for the deployment, pod, etc.

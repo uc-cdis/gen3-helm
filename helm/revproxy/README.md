@@ -8,7 +8,7 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 
 ## Values
 
@@ -38,7 +38,7 @@ A Helm chart for gen3 revproxy
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -67,6 +67,9 @@ A Helm chart for gen3 revproxy
 | ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
+| netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |

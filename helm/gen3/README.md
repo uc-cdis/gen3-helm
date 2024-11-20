@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.45](https://img.shields.io/badge/Version-0.1.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.49](https://img.shields.io/badge/Version-0.1.49-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,30 +18,31 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.12 |
-| file://../arborist | arborist | 0.1.12 |
-| file://../argo-wrapper | argo-wrapper | 0.1.8 |
-| file://../audit | audit | 0.1.13 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.10 |
-| file://../common | common | 0.1.14 |
-| file://../etl | etl | 0.1.3 |
-| file://../fence | fence | 0.1.23 |
-| file://../frontend-framework | frontend-framework | 0.1.3 |
-| file://../guppy | guppy | 0.1.13 |
-| file://../hatchery | hatchery | 0.1.10 |
-| file://../indexd | indexd | 0.1.15 |
-| file://../manifestservice | manifestservice | 0.1.15 |
-| file://../metadata | metadata | 0.1.13 |
-| file://../neuvector | neuvector | 0.1.0 |
-| file://../peregrine | peregrine | 0.1.14 |
-| file://../pidgin | pidgin | 0.1.11 |
-| file://../portal | portal | 0.1.18 |
-| file://../requestor | requestor | 0.1.12 |
-| file://../revproxy | revproxy | 0.1.17 |
-| file://../sheepdog | sheepdog | 0.1.15 |
-| file://../sower | sower | 0.1.13 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.11 |
-| file://../wts | wts | 0.1.14 |
+| file://../../wip/gen3-network-policies | gen3-network-policies | 0.1.1 |
+| file://../ambassador | ambassador | 0.1.15 |
+| file://../arborist | arborist | 0.1.13 |
+| file://../argo-wrapper | argo-wrapper | 0.1.9 |
+| file://../audit | audit | 0.1.15 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.12 |
+| file://../common | common | 0.1.15 |
+| file://../etl | etl | 0.1.4 |
+| file://../fence | fence | 0.1.25 |
+| file://../frontend-framework | frontend-framework | 0.1.4 |
+| file://../guppy | guppy | 0.1.15 |
+| file://../hatchery | hatchery | 0.1.11 |
+| file://../indexd | indexd | 0.1.17 |
+| file://../manifestservice | manifestservice | 0.1.16 |
+| file://../metadata | metadata | 0.1.15 |
+| file://../neuvector | neuvector | 0.1.1 |
+| file://../peregrine | peregrine | 0.1.16 |
+| file://../pidgin | pidgin | 0.1.12 |
+| file://../portal | portal | 0.1.20 |
+| file://../requestor | requestor | 0.1.15 |
+| file://../revproxy | revproxy | 0.1.18 |
+| file://../sheepdog | sheepdog | 0.1.18 |
+| file://../sower | sower | 0.1.14 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.12 |
+| file://../wts | wts | 0.1.17 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -102,7 +103,9 @@ Helm chart to deploy Gen3 Data Commons
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
+| global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
+| global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.master.host | string | `nil` | global postgres master host |
@@ -164,7 +167,7 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
-| pidgin.enabled | bool | `true` | Whether to deploy the pidgin subchart. |
+| pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |

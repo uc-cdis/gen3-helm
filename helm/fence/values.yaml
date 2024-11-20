@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -61,8 +60,9 @@ global:
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -193,7 +193,8 @@ podSecurityContext:
   fsGroup: 101
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -222,7 +223,6 @@ resources:
     cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
-
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -259,20 +259,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - fence
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - fence
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -516,875 +516,214 @@ projects:
 # -- (string) USER YAML. Passed in as a multiline string.
 USER_YAML: |
   cloud_providers: {}
-  groups: {}
   authz:
-    # policies automatically given to anyone, even if they haven't authenticated
-    anonymous_policies: ['open_data_reader', 'full_open_access']
+    # policies automatically given to anyone, even if they are not authenticated
+    anonymous_policies:
+    - open_data_reader
 
-    # policies automatically given to authenticated users (in addition to their other
-    # policies)
-    all_users_policies: ['open_data_reader', 'authn_open_access']
+    # policies automatically given to authenticated users (in addition to their other policies)
+    all_users_policies: []
 
-    user_project_to_resource:
-      QA: /programs/QA
-      DEV: /programs/DEV
-      test: /programs/QA/projects/test
-      jenkins: /programs/jnkns/projects/jenkins
-      jenkins2: /programs/jnkns/projects/jenkins2
-      jnkns: /programs/jnkns
+    groups:
+    # can CRUD programs and projects and upload data files
+    - name: data_submitters
+      policies:
+      - services.sheepdog-admin
+      - data_upload
+      - MyFirstProject_submitter
+      users:
+      - username1@gmail.com
 
-    policies:
-      # General Access
-      - id: 'workspace'
-        description: 'be able to use workspace'
-        resource_paths: ['/workspace']
-        role_ids: ['workspace_user']
-      - id: 'dashboard'
-        description: 'be able to use the commons dashboard'
-        resource_paths: ['/dashboard']
-        role_ids: ['dashboard_user']
-      - id: 'prometheus'
-        description: 'be able to use prometheus'
-        resource_paths: ['/prometheus']
-        role_ids: ['prometheus_user']
-      - id: 'ttyadmin'
-        description: 'be able to use the admin tty'
-        resource_paths: ['/ttyadmin']
-        role_ids: ['ttyadmin_user']
-      - id: 'mds_admin'
-        description: 'be able to use metadata service'
-        resource_paths: ['/mds_gateway']
-        role_ids: ['mds_user']
-      - id: 'data_upload'
-        description: 'upload raw data files to S3'
-        role_ids: ['file_uploader']
-        resource_paths: ['/data_file']
-      - description: be able to use sower job
-        id: sower
-        resource_paths: [/sower]
-        role_ids: [sower_user]
-      - id: 'mariner_admin'
-        description: 'full access to mariner API'
-        resource_paths: ['/mariner']
-        role_ids: ['mariner_admin']
-      - id: audit_reader
-        role_ids:
-        - audit_reader
-        resource_paths:
-        - /services/audit
-      - id: audit_login_reader
-        role_ids:
-        - audit_reader
-        resource_paths:
-        - /services/audit/login
-      - id: audit_presigned_url_reader
-        role_ids:
-        - audit_reader
-        resource_paths:
-        - /services/audit/presigned_url
-      - id: requestor_admin
-        role_ids:
-        - requestor_admin
-        resource_paths:
-        - /programs
-      - id: requestor_reader
-        role_ids:
-        - requestor_reader
-        resource_paths:
-        - /programs
-      - id: requestor_creator
-        role_ids:
-        - requestor_creator
-        resource_paths:
-        - /programs
-      - id: requestor_updater
-        role_ids:
-        - requestor_updater
-        resource_paths:
-        - /programs
-      - id: requestor_deleter
-        role_ids:
-        - requestor_deleter
-        resource_paths:
-        - /programs
-      # Data Access
-
-      # All programs policy
-      - id: 'all_programs_reader'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths: ['/programs']
-
-      # # example if need access to write to storage
-      # - id: 'programs.jnkns-storage_writer'
-      #   description: ''
-      #   role_ids:
-      #     - 'storage_writer'
-      #   resource_paths: ['/programs/jnkns']
-
-      - id: 'programs.jnkns-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/jnkns'
-          - '/gen3/programs/jnkns'
-
-      - id: 'programs.jnkns-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/jnkns'
-          - '/gen3/programs/jnkns'
-
-
-      - id: 'programs.QA-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/QA'
-          - '/gen3/programs/QA'
-
-      - id: 'programs.QA-admin-no-storage'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-        resource_paths:
-          - '/programs/QA'
-          - '/gen3/programs/QA'
-
-      - id: 'programs.QA-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/QA'
-          - '/gen3/programs/QA'
-
-      - id: 'programs.DEV-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-          - 'storage_writer'
-        resource_paths:
-          - '/programs/DEV'
-          - '/gen3/programs/DEV'
-
-      - id: 'programs.DEV-storage_writer'
-        description: ''
-        role_ids:
-          - 'storage_writer'
-        resource_paths: ['/programs/DEV']
-
-      - id: 'programs.DEV-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/DEV'
-          - '/gen3/programs/DEV'
-
-      - id: 'programs.test-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/test'
-          - '/gen3/programs/test'
-
-      - id: 'programs.test-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/programs/test'
-          - '/gen3/programs/test'
-
-      - id: 'abc-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/abc'
-
-      - id: 'gen3-admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/gen3'
-
-      - id: 'gen3-hmb-researcher'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_reader'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-          - '/consents/HMB'
-          - '/gen3'
-
-      - id: 'abc.programs.test_program.projects.test_project1-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/abc/programs/test_program/projects/test_project1'
-
-      - id: 'abc.programs.test_program.projects.test_project2-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/abc/programs/test_program/projects/test_project2'
-
-      - id: 'abc.programs.test_program2.projects.test_project3-viewer'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths:
-          - '/abc/programs/test_program2/projects/test_project3'
-
-      # Open data policies
-      - id: 'authn_open_access'
-        resource_paths: ['/programs/open/projects/authnRequired']
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-      - id: 'full_open_access'
-        resource_paths: ['/programs/open/projects/1000G']
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-      - id: 'open_data_reader'
-        description: ''
-        role_ids:
-          - 'reader'
-          - 'storage_reader'
-        resource_paths: ['/open']
-      - id: 'open_data_admin'
-        description: ''
-        role_ids:
-          - 'creator'
-          - 'reader'
-          - 'updater'
-          - 'deleter'
-          - 'storage_writer'
-          - 'storage_reader'
-        resource_paths: ['/open']
-
-      # Consent Code Policies
-      - id: 'not-for-profit-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NPU'
-
-      - id: 'publication-required-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/PUB'
-
-      - id: 'gru-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-
-      - id: 'gru-cc-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-
-      - id: 'hmb-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-          - '/consents/HMB'
-
-      - id: 'poa-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-          - '/consents/POA'
-
-      - id: 'ds-lung-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-          - '/consents/HMB'
-          - '/consents/DS_LungDisease'
-
-      - id: 'ds-chronic-obstructive-pulmonary-disease-researcher'
-        description: ''
-        role_ids:
-          - 'admin'
-        resource_paths:
-          - '/consents/NRES'
-          - '/consents/GRU'
-          - '/consents/GRU_CC'
-          - '/consents/HMB'
-          - '/consents/DS_ChronicObstructivePulmonaryDisease'
-
-      - id: 'services.sheepdog-admin'
-        description: 'CRUD access to programs and projects'
-        role_ids:
-          - 'sheepdog_admin'
-        resource_paths:
-          - '/services/sheepdog/submission/program'
-          - '/services/sheepdog/submission/project'
-
-      # indexd
-      - id: 'indexd_admin'
-        description: 'full access to indexd API'
-        role_ids:
-          - 'indexd_admin'
-        resource_paths:
-          - '/programs'
-          - '/services/indexd/admin'
-      # # TODO resource path '/' is not valid right now in arborist, trying to decide
-      # #      how to handle all resources
-      # - id: 'indexd_admin'
-      #   description: ''
-      #   role_ids:
-      #     - 'indexd_record_creator'
-      #     - 'indexd_record_reader'
-      #     - 'indexd_record_updater'
-      #     - 'indexd_delete_record'
-      #     - 'indexd_storage_reader'
-      #     - 'indexd_storage_writer'
-      #   resource_paths: ['/']
-      # - id: 'indexd_record_reader'
-      #   description: ''
-      #   role_ids:
-      #     - 'indexd_record_reader'
-      #   resource_paths: ['/']
-      # - id: 'indexd_record_editor'
-      #   description: ''
-      #   role_ids:
-      #     - 'indexd_record_creator'
-      #     - 'indexd_record_reader'
-      #     - 'indexd_record_updater'
-      #     - 'indexd_delete_record'
-      #   resource_paths: ['/']
-      # - id: 'indexd_storage_reader'
-      #   description: ''
-      #   role_ids:
-      #     - 'indexd_storage_reader'
-      #   resource_paths: ['/']
-      # - id: 'indexd_storage_editor'
-      #   description: ''
-      #   role_ids:
-      #     - 'indexd_storage_reader'
-      #     - 'indexd_storage_writer'
-      #   resource_paths: ['/']
-
-      # argo
-      - id: argo
-        description: be able to use argo
-        resource_paths: [/argo]
-        role_ids: [argo_user]
+    # can create/update/delete indexd records
+    - name: indexd_admins
+      policies:
+      - indexd_admin
+      users:
+      - username1@gmail.com
 
     resources:
-      # General Access
-      - name: 'data_file'
-        description: 'data files, stored in S3'
-      - name: 'dashboard'
-        description: 'commons /dashboard'
-      - name: 'mds_gateway'
-        description: 'commons /mds-admin'
-      - name: 'prometheus'
-        description: 'commons /prometheus and /grafana'
-      - name: 'ttyadmin'
-        description: 'commons /ttyadmin'
-      - name: 'workspace'
-      - name: "sower"
-      - name: 'mariner'
-        description: 'workflow execution service'
-      - name: argo
-
-      # OLD Data
-      - name: 'programs'
+    - name: workspace
+    - name: data_file
+    - name: services
+      subresources:
+      - name: sheepdog
         subresources:
-          - name: 'open'
-            subresources:
-              - name: 'projects'
-                subresources:
-                  - name: '1000G'
-                  - name: 'authnRequired'
-          - name: 'QA'
-            subresources:
-              - name: 'projects'
-                subresources:
-                  - name: 'test'
-          - name: 'DEV'
-            subresources:
-              - name: 'projects'
-                subresources:
-                  - name: 'test'
-          - name: 'jnkns'
-            subresources:
-              - name: 'projects'
-                subresources:
-                  - name: 'jenkins'
-                  - name: 'jenkins2'
-          - name: 'test'
-            subresources:
-              - name: 'projects'
-                subresources:
-                  - name: 'test'
-
-      # NEW Data WITH PREFIX
-      - name: 'gen3'
+        - name: submission
+          subresources:
+          - name: program
+          - name: project
+      - name: 'indexd'
         subresources:
-          - name: 'programs'
-            subresources:
-              - name: 'QA'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'test'
-              - name: 'DEV'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'test'
-              - name: 'jnkns'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'jenkins'
-                      - name: 'jenkins2'
-              - name: 'test'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'test'
-
-      # consents obtained from DUO and NIH
-      # https://github.com/EBISPOT/DUO
-      # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4721915/
-      - name: 'consents'
+          - name: 'admin'
+      - name: audit
         subresources:
-          - name: 'NRES'
-            description: 'no restriction'
-          - name: 'GRU'
-            description: 'general research use'
-          - name: 'GRU_CC'
-            description: 'general research use and clinical care'
-          - name: 'HMB'
-            description: 'health/medical/biomedical research'
-          - name: 'POA'
-            description: 'population origins or ancestry research'
-          - name: 'NMDS'
-            description: 'no general methods research'
-          - name: 'NPU'
-            description: 'not-for-profit use only'
-          - name: 'PUB'
-            description: 'publication required'
-          - name: 'DS_LungDisease'
-            description: 'disease-specific research for lung disease'
-          - name: 'DS_ChronicObstructivePulmonaryDisease'
-            description: 'disease-specific research for chronic obstructive pulmonary disease'
-
-      - name: 'abc'
+          - name: presigned_url
+          - name: login
+    - name: open
+    - name: programs
+      subresources:
+      - name: MyFirstProgram
         subresources:
-          - name: 'programs'
-            subresources:
-              - name: 'foo'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'bar'
-              - name: 'test_program'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'test_project1'
-                      - name: 'test_project2'
-              - name: 'test_program2'
-                subresources:
-                  - name: 'projects'
-                    subresources:
-                      - name: 'test_project3'
+        - name: projects
+          subresources:
+          - name: MyFirstProject
 
+    policies:
+    - id: workspace
+      description: be able to use workspace
+      resource_paths:
+      - /workspace
+      role_ids:
+      - workspace_user
+    - id: data_upload
+      description: upload raw data files to S3
+      role_ids:
+      - file_uploader
+      resource_paths:
+      - /data_file
+    - id: services.sheepdog-admin
+      description: CRUD access to programs and projects
+      role_ids:
+        - sheepdog_admin
+      resource_paths:
+        - /services/sheepdog/submission/program
+        - /services/sheepdog/submission/project
+    - id: indexd_admin
+      description: full access to indexd API
+      role_ids:
+        - indexd_admin
+      resource_paths:
+        - /programs
+    - id: open_data_reader
+      role_ids:
+        - peregrine_reader
+        - guppy_reader
+        - fence_storage_reader
+      resource_paths:
+      - /open
+    - id: all_programs_reader
+      role_ids:
+      - peregrine_reader
+      - guppy_reader
+      - fence_storage_reader
+      resource_paths:
+      - /programs
+    - id: MyFirstProject_submitter
+      role_ids:
+      - reader
+      - creator
+      - updater
+      - deleter
+      - storage_reader
+      - storage_writer
+      resource_paths:
+      - /programs/MyFirstProgram/projects/MyFirstProject
 
-      # "Sheepdog admin" resources
-      - name: 'services'
-        subresources:
-          - name: 'sheepdog'
-            subresources:
-              - name: 'submission'
-                subresources:
-                  - name: 'program'
-                  - name: 'project'
-          - name: 'indexd'
-            subresources:
-              - name: 'admin'
-              - name: 'bundles'
-          - name: audit
-            subresources:
-              - name: presigned_url
-              - name: login
-
-
-      - name: 'open'
-
-    # action/methods:
-    #     create, read, update, delete, read-storage, write-storage,
-    #     file_upload, access
     roles:
-      # General Access
-      - id: 'file_uploader'
-        description: 'can upload data files'
-        permissions:
-          - id: 'file_upload'
-            action:
-              service: '*'
-              method: 'file_upload'
-      - id: 'workspace_user'
-        permissions:
-          - id: 'workspace_access'
-            action:
-              service: 'jupyterhub'
-              method: 'access'
-      - id: 'dashboard_user'
-        permissions:
-          - id: 'dashboard_access'
-            action:
-              service: 'dashboard'
-              method: 'access'
-      - id: 'mds_user'
-        permissions:
-          - id: 'mds_access'
-            action:
-              service: 'mds_gateway'
-              method: 'access'
-      - id: 'prometheus_user'
-        permissions:
-          - id: 'prometheus_access'
-            action:
-              service: 'prometheus'
-              method: 'access'
-      - id: 'ttyadmin_user'
-        permissions:
-          - id: 'ttyadmin_access'
-            action:
-              service: 'ttyadmin'
-              method: 'access'
-      - id: 'sower_user'
-        permissions:
-          - id: 'sower_access'
-            action:
-              service: 'job'
-              method: 'access'
-      - id: 'mariner_admin'
-        permissions:
-          - id: 'mariner_access'
-            action:
-              service: 'mariner'
-              method: 'access'
-      - id: audit_reader
-        permissions:
-          - id: audit_reader_action
-            action:
-              service: audit
-              method: read
-
-      # All services
-      - id: 'admin'
-        description: ''
-        permissions:
-          - id: 'admin'
-            action:
-              service: '*'
-              method: '*'
-      - id: 'creator'
-        description: ''
-        permissions:
-          - id: 'creator'
-            action:
-              service: '*'
-              method: 'create'
-      - id: 'reader'
-        description: ''
-        permissions:
-          - id: 'reader'
-            action:
-              service: '*'
-              method: 'read'
-      - id: 'updater'
-        description: ''
-        permissions:
-          - id: 'updater'
-            action:
-              service: '*'
-              method: 'update'
-      - id: 'deleter'
-        description: ''
-        permissions:
-          - id: 'deleter'
-            action:
-              service: '*'
-              method: 'delete'
-      - id: 'storage_writer'
-        description: ''
-        permissions:
-          - id: 'storage_writer'
-            action:
-              service: '*'
-              method: 'write-storage'
-      - id: 'storage_reader'
-        description: ''
-        permissions:
-          - id: 'storage_reader'
-            action:
-              service: '*'
-              method: 'read-storage'
-
-
-      # Sheepdog admin role
-      - id: 'sheepdog_admin'
-        description: 'sheepdog admin role for program project crud'
-        permissions:
-          - id: 'sheepdog_admin_action'
-            action:
-              service: 'sheepdog'
-              method: '*'
-
-
-      # indexd
-      - id: 'indexd_admin'
-        # this only works if indexd.arborist is enabled in manifest!
-        description: 'full access to indexd API'
-        permissions:
-          - id: 'indexd_admin'
-            action:
-              service: 'indexd'
-              method: '*'
-      - id: 'indexd_record_creator'
-        description: ''
-        permissions:
-          - id: 'indexd_record_creator'
-            action:
-              service: 'indexd'
-              method: 'create'
-      - id: 'indexd_record_reader'
-        description: ''
-        permissions:
-          - id: 'indexd_record_reader'
-            action:
-              service: 'indexd'
-              method: 'read'
-      - id: 'indexd_record_updater'
-        description: ''
-        permissions:
-          - id: 'indexd_record_updater'
-            action:
-              service: 'indexd'
-              method: 'update'
-      - id: 'indexd_delete_record'
-        description: ''
-        permissions:
-          - id: 'indexd_delete_record'
-            action:
-              service: 'indexd'
-              method: 'delete'
-      - id: 'indexd_storage_reader'
-        description: ''
-        permissions:
-          - id: 'indexd_storage_reader'
-            action:
-              service: 'indexd'
-              method: 'read-storage'
-      - id: 'indexd_storage_writer'
-        description: ''
-        permissions:
-          - id: 'indexd_storage_writer'
-            action:
-              service: 'indexd'
-              method: 'write-storage'
-
-      # arborist
-      - id: 'arborist_creator'
-        description: ''
-        permissions:
-          - id: 'arborist_creator'
-            action:
-              service: 'arborist'
-              method: 'create'
-      - id: 'arborist_reader'
-        description: ''
-        permissions:
-          - id: 'arborist_reader'
-            action:
-              service: 'arborist'
-              method: 'read'
-      - id: 'arborist_updater'
-        description: ''
-        permissions:
-          - id: 'arborist_updater'
-            action:
-              service: 'arborist'
-              method: 'update'
-      - id: 'arborist_deleter'
-        description: ''
-        permissions:
-          - id: 'arborist_deleter'
-            action:
-              service: 'arborist'
-              method: 'delete'
-
-      # requestor
-      - id: requestor_admin
-        permissions:
-        - id: requestor_admin_action
+    - id: file_uploader
+      permissions:
+      - id: file_upload
+        action:
+          service: fence
+          method: file_upload
+    - id: workspace_user
+      permissions:
+      - id: workspace_access
+        action:
+          service: jupyterhub
+          method: access
+    - id: sheepdog_admin
+      description: CRUD access to programs and projects
+      permissions:
+      - id: sheepdog_admin_action
+        action:
+          service: sheepdog
+          method: '*'
+    - id: indexd_admin
+      description: full access to indexd API
+      permissions:
+      - id: indexd_admin
+        action:
+          service: indexd
+          method: '*'
+    - id: admin
+      permissions:
+        - id: admin
           action:
-            service: requestor
+            service: '*'
             method: '*'
-      - id: requestor_reader
-        permissions:
-        - id: requestor_reader_action
+    - id: creator
+      permissions:
+        - id: creator
           action:
-            service: requestor
-            method: read
-      - id: requestor_creator
-        permissions:
-        - id: requestor_creator_action
-          action:
-            service: requestor
+            service: '*'
             method: create
-      - id: requestor_updater
-        permissions:
-        - id: requestor_updater_action
+    - id: reader
+      permissions:
+        - id: reader
           action:
-            service: requestor
+            service: '*'
+            method: read
+    - id: updater
+      permissions:
+        - id: updater
+          action:
+            service: '*'
             method: update
-      - id: requestor_deleter
-        permissions:
-        - id: requestor_deleter_action
+    - id: deleter
+      permissions:
+        - id: deleter
           action:
-            service: requestor
+            service: '*'
             method: delete
-      # argo
-      - id: argo_user
-        permissions:
-          - id: argo_access
-            action:
-              service: argo
-              method: access
+    - id: storage_writer
+      permissions:
+        - id: storage_creator
+          action:
+            service: '*'
+            method: write-storage
+    - id: storage_reader
+      permissions:
+        - id: storage_reader
+          action:
+            service: '*'
+            method: read-storage
+    - id: peregrine_reader
+      permissions:
+      - id: peregrine_reader
+        action:
+          method: read
+          service: peregrine
+    - id: guppy_reader
+      permissions:
+      - id: guppy_reader
+        action:
+          method: read
+          service: guppy
+    - id: fence_storage_reader
+      permissions:
+      - id: fence_storage_reader
+        action:
+          method: read-storage
+          service: fence
 
   clients:
-    basic-test-client:
-      policies:
-      - abc-admin
-      - gen3-admin
-    basic-test-abc-client:
-      policies:
-      - abc-admin
     wts:
       policies:
       - all_programs_reader
-      - workspace
+      - open_data_reader
 
   users:
-    ### BEGIN INTERNS SECTION ###
-    ### END INTERNS SECTION ###
-    qureshi@uchicago.edu:
-      admin: true
+    username1@gmail.com: {}
+    username2:
+      tags:
+        name: John Doe
+        email: johndoe@gmail.com
       policies:
-      - data_upload
-      - workspace
-      - dashboard
-      - mds_admin
-      - prometheus
-      - sower
-      - services.sheepdog-admin
-      - programs.QA-admin
-      - programs.test-admin
-      - programs.DEV-admin
-      - programs.jnkns-admin
-      - indexd_admin
-      - ttyadmin
-      projects:
-      - auth_id: QA
-        privilege: [create, read, update, delete, upload, read-storage]
-      - auth_id: test
-        privilege: [create, read, update, delete, upload, read-storage]
-      - auth_id: DEV
-        privilege: [create, read, update, delete, upload, read-storage]
-      - auth_id: jenkins
-        privilege: [create, read, update, delete, upload, read-storage]
-      - auth_id: jenkins2
-        privilege: [create, read, update, delete, upload, read-storage]
-      - auth_id: jnkns
-        privilege: [create, read, update, delete, upload, read-storage]
+      - MyFirstProject_submitter
+
+  cloud_providers: {}
+  groups: {}
 
 # -- (map) Public configuration settings for Fence app
 FENCE_CONFIG_PUBLIC: {}
@@ -1392,7 +731,7 @@ FENCE_CONFIG_PUBLIC: {}
 # -- (map) Private configuration settings for Fence app
 FENCE_CONFIG:
   # -- (string) Name of the Fence app
-  APP_NAME: 'Gen3 Data Commons'
+  APP_NAME: "Gen3 Data Commons"
 
   # -- (string) A URL-safe base64-encoded 32-byte key for encrypting keys in db
   # in python you can use the following script to generate one:
@@ -1440,7 +779,7 @@ FENCE_CONFIG:
   ENABLE_CSRF_PROTECTION: true
 
   # -- (str) signing key for WTForms to sign CSRF tokens with
-  WTF_CSRF_SECRET_KEY: '{{ENCRYPTION_KEY}}'
+  WTF_CSRF_SECRET_KEY: "{{ENCRYPTION_KEY}}"
 
   # -- (bool) fence (at the moment) attempts a migration on startup. setting this to false will disable that
   # WARNING: ONLY set to false if you do NOT want to automatically migrate your database.
@@ -1450,7 +789,6 @@ FENCE_CONFIG:
   # NOTE: We are working to improve the migration process in the near future
   ENABLE_DB_MIGRATION: true
 
-
   # -- (dict) Configurations for OpenID Connect (OIDC) authentication
   #   - Fully configure at least one client so login works
   #   - WARNING: Be careful changing the *_ALLOWED_SCOPES as you can break basic
@@ -1458,32 +796,32 @@ FENCE_CONFIG:
   OPENID_CONNECT:
     # any OIDC IDP that does not differ from the generic implementation can be
     # configured without code changes
-    generic_oidc_idp:  # choose a unique ID and replace this key
+    generic_oidc_idp:   # choose a unique ID and replace this key
       # -- (str) Optional; display name for this IDP
-      name: 'some_idp'
+      name: "some_idp"
       # -- (str) Client ID
-      client_id: ''
+      client_id: ""
       # -- (str) Client secret
-      client_secret: ''
+      client_secret: ""
       # -- (str) Redirect URL for this IDP
-      redirect_url: '{{BASE_URL}}/login/some_idp/login'  # replace IDP name
+      redirect_url: "{{BASE_URL}}/login/some_idp/login"   # replace IDP name
       # use `discovery` to configure IDPs that do not expose a discovery
       # endpoint. One of `discovery_url` or `discovery` should be configured
       # -- (str) URL of the OIDC discovery endpoint for the IDP
-      discovery_url: 'https://server.com/.well-known/openid-configuration'
+      discovery_url: "https://server.com/.well-known/openid-configuration"
       discovery:
         # -- (str) Authorization endpoint URL
-        authorization_endpoint: ''
+        authorization_endpoint: ""
         # -- (str) Token endpoint URL
-        token_endpoint: ''
+        token_endpoint: ""
         # -- (str) JSON Web Key Set (JWKS) URI
-        jwks_uri: ''
+        jwks_uri: ""
       # -- (str) Optional; claims field to get the user_id from (default "sub")
-      user_id_field: ''
+      user_id_field: ""
       # -- (str) Optional; claims field to get the user email from (default "email")
-      email_field: ''
+      email_field: ""
       # -- (str) Optional; default is "openid"
-      scope: ''
+      scope: ""
     # These Google values must be obtained from Google's Cloud Console
     # Follow: https://developers.google.com/identity/protocols/OpenIDConnect
     #
@@ -1493,24 +831,24 @@ FENCE_CONFIG:
     # -- (dict) Configuration for Google authentication provider
     google:
       # -- (str) URL of the OIDC discovery endpoint for Google
-      discovery_url: 'https://accounts.google.com/.well-known/openid-configuration'
+      discovery_url: "https://accounts.google.com/.well-known/openid-configuration"
       # -- (str) Client ID
-      client_id: ''
+      client_id: ""
       # -- (str) Client secret
-      client_secret: ''
+      client_secret: ""
       # -- (str) The allowed redirect back to fence, should not need to change
-      redirect_url: '{{BASE_URL}}/login/google/login/'
+      redirect_url: "{{BASE_URL}}/login/google/login/"
       # -- (str) The scope to request from Google (default "openid email")
-      scope: 'openid email'
+      scope: "openid email"
       # if mock is true, will fake a successful login response from Google in /login/google
       #     NOTE: this will also modify the behavior of /link/google endpoints
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       # will login as the username set in cookie DEV_LOGIN_COOKIE_NAME or default provided
       # here
       # -- (str) Optional; defaults to '{{MOCK_GOOGLE_AUTH}}' for backwards compatibility with older cfg files
-      mock: ''
+      mock: ""
       # -- (str) Optional; defaults to 'test@example.com'
-      mock_default_user: 'test@example.com'
+      mock_default_user: "test@example.com"
 
     # -- (dict): Contains multi-tenant Fence configuration
     # Support for multi-tenant fence (another fence is this fence's IDP)
@@ -1520,40 +858,40 @@ FENCE_CONFIG:
       # -- (str): Root URL for the other fence
       # this api_base_url should be the root url for the OTHER fence
       # something like: https://example.com
-      api_base_url: ''
+      api_base_url: ""
 
       # -- (str): ID of the client of this fence on the other fence
       # this client_id and client_secret should be obtained by registering THIS fence as
       # a new client of the OTHER fence
-      client_id: ''
+      client_id: ""
 
       # -- (str): Secret of the client of this fence on the other fence
-      client_secret: ''
+      client_secret: ""
 
       # -- dict: Additional client parameters
       client_kwargs:
         # -- (str): Space-separated string of scopes
         # openid is required to use OIDC flow
-        scope: 'openid'
+        scope: "openid"
 
         # -- (str): The URL to which the other fence will redirect after logging in
-        redirect_uri: '{{BASE_URL}}/login/fence/login'
+        redirect_uri: "{{BASE_URL}}/login/fence/login"
 
       # -- (str): URL for authorization endpoint of the other fence
       # The next 3 should not need to be changed if the provider is following
       # Oauth2 endpoint naming conventions
-      authorize_url: '{{api_base_url}}/oauth2/authorize'
+      authorize_url: "{{api_base_url}}/oauth2/authorize"
 
       # -- (str): URL for access token endpoint of the other fence
-      access_token_url: '{{api_base_url}}/oauth2/token'
+      access_token_url: "{{api_base_url}}/oauth2/token"
 
       # -- (str): URL for refresh token endpoint of the other fence
-      refresh_token_url: '{{api_base_url}}/oauth2/token'
+      refresh_token_url: "{{api_base_url}}/oauth2/token"
 
       # -- (str): Name of the provider for consent screens
       # Custom name to display for consent screens. If not provided, will use `fence`.
       # If the other fence is using NIH Login, you should make name: `NIH Login`
-      name: ''
+      name: ""
 
       # -- (bool): Whether to mock a successful login response for testing purposes
       # if mock is true, will fake a successful login response for login
@@ -1561,72 +899,72 @@ FENCE_CONFIG:
       mock: false
 
       # -- (str): Default user for mock login
-      mock_default_user: 'test@example.com'
+      mock_default_user: "test@example.com"
 
       # -- (str): URL of the shibboleth discovery endpoint if needed for InCommon login
       # this is needed to enable InCommon login, if some LOGIN_OPTIONS are configured with idp=fence and a list of shib_idps:
-      shibboleth_discovery_url: 'https://login.bionimbus.org/Shibboleth.sso/DiscoFeed'
+      shibboleth_discovery_url: "https://login.bionimbus.org/Shibboleth.sso/DiscoFeed"
 
     orcid:
-      discovery_url: 'https://orcid.org/.well-known/openid-configuration'
-      client_id: ''
-      client_secret: ''
+      discovery_url: "https://orcid.org/.well-known/openid-configuration"
+      client_id: ""
+      client_secret: ""
       # make sure you put the FULL url for this deployment in the allowed redirects in
       # ORCID.org. DO NOT include {{BASE_URL}} at ORCID.org, you need to actually put the
       # full url
-      redirect_url: '{{BASE_URL}}/login/orcid/login/'
-      scope: 'openid'
+      redirect_url: "{{BASE_URL}}/login/orcid/login/"
+      scope: "openid"
       # if mock is true, will fake a successful login response for login
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       mock: false
-      mock_default_user: '0000-0002-2601-8132'
+      mock_default_user: "0000-0002-2601-8132"
     ras:
-      discovery_url: 'https://sts.nih.gov/.well-known/openid-configuration'
-      client_id: ''
-      client_secret: ''
-      redirect_url: '{{BASE_URL}}/login/ras/callback'
-      scope: 'openid email profile ga4gh_passport_v1'
+      discovery_url: "https://sts.nih.gov/.well-known/openid-configuration"
+      client_id: ""
+      client_secret: ""
+      redirect_url: "{{BASE_URL}}/login/ras/callback"
+      scope: "openid email profile ga4gh_passport_v1"
       # if mock is true, will fake a successful login response for login
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       mock: false
-      mock_default_user: 'test@example.com'
+      mock_default_user: "test@example.com"
     # Create a client in Azure here:
     #   https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredAppsPreview
     # Currently supports organizational account only, so when registering a new App in
     # Azure, make sure to select the `Accounts in any organizational directory` for
     # supported account types.
     microsoft:
-      discovery_url: 'https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration'
+      discovery_url: "https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration"
       # after registering a new appl, client_id can be found as
       # "APPLICATION (CLIENT) ID" in Microsoft Azure
-      client_id: ''
+      client_id: ""
       # You have a generate a secret in Azure for this app, there should be a
       # "Certificates & secrets" section where you can create a "New client secret"
-      client_secret: ''
+      client_secret: ""
       # make sure you put the FULL url for this deployment in the allowed redirects in
       # your app in Azure. DO NOT include {{BASE_URL}} in Azure, you need to actually put the
       # full url
-      redirect_url: '{{BASE_URL}}/login/microsoft/login/'
-      scope: 'openid email'
+      redirect_url: "{{BASE_URL}}/login/microsoft/login/"
+      scope: "openid email"
       # if mock is true, will fake a successful login response for login
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       mock: false
-      mock_default_user: 'test@example.com'
+      mock_default_user: "test@example.com"
     # For information on configuring an Okta tenant as an OIDC IdP refer to Okta documentation at:
     # https://developer.okta.com/docs/reference/api/oidc/#2-okta-as-the-identity-platform-for-your-app-or-api
     okta:
-      discovery_url: ''
-      client_id: ''
-      client_secret: ''
-      redirect_url: '{{BASE_URL}}/login/okta/login/'
-      scope: 'openid email'
+      discovery_url: ""
+      client_id: ""
+      client_secret: ""
+      redirect_url: "{{BASE_URL}}/login/okta/login/"
+      scope: "openid email"
     cognito:
       # You must create a user pool in order to have a discovery url
-      discovery_url: 'https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration'
-      client_id: ''
-      client_secret: ''
-      redirect_url: '{{BASE_URL}}/login/cognito/login/'
-      scope: 'openid email'
+      discovery_url: "https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}/.well-known/openid-configuration"
+      client_id: ""
+      client_secret: ""
+      redirect_url: "{{BASE_URL}}/login/cognito/login/"
+      scope: "openid email"
       # In the case where Cognito is being used solely as an intermediary to a single IdP,
       # and that IdP is a SAML IdP with no 'email_verified' outgoing claim, but it is safe
       # to assume all emails from this SAML IdP are in fact verified, we may set this to True
@@ -1634,28 +972,28 @@ FENCE_CONFIG:
     # CILogon subscribers can create and manage OIDC clients using COmanage Registry.
     # Free tier users may request OIDC clients at https://cilogon.org/oauth2/register
     cilogon:
-      discovery_url: 'https://cilogon.org/.well-known/openid-configuration'
-      client_id: ''
-      client_secret: ''
+      discovery_url: "https://cilogon.org/.well-known/openid-configuration"
+      client_id: ""
+      client_secret: ""
       # When registering the Callback URLs for your CILogon OIDC client be
       # sure to include the FULL url for this deployment, including the https:// scheme
       # and server FQDN.
-      redirect_url: '{{BASE_URL}}/login/cilogon/login/'
-      scope: 'openid email profile'
+      redirect_url: "{{BASE_URL}}/login/cilogon/login/"
+      scope: "openid email profile"
       # if mock is true, will fake a successful login response for login
       # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
       mock: false
-      mock_default_user: 'http://cilogon.org/serverT/users/64703'
+      mock_default_user: "http://cilogon.org/serverT/users/64703"
     synapse:
-      discovery_url: ''
-      client_id: ''
-      client_secret: ''
-      redirect_url: ''
-      scope: 'openid'
+      discovery_url: ""
+      client_id: ""
+      client_secret: ""
+      redirect_url: ""
+      scope: "openid"
     shibboleth:
-      client_id: ''
-      client_secret: ''
-      redirect_url: '{{BASE_URL}}/login/shib/login'
+      client_id: ""
+      client_secret: ""
+      redirect_url: "{{BASE_URL}}/login/shib/login"
 
   # these are the *possible* scopes a client can be given, NOT scopes that are
   # given to all clients. You can be more restrictive during client creation
@@ -1669,7 +1007,6 @@ FENCE_CONFIG:
     - "google_link"
     - "ga4gh_passport_v1"
 
-
   # -- (list) these are the scopes that CAN be included in a user's own access_token
   USER_ALLOWED_SCOPES:
     - "fence"
@@ -1681,7 +1018,6 @@ FENCE_CONFIG:
     - "google_service_account"
     - "google_link"
     - "ga4gh_passport_v1"
-
 
   # -- (list) these are the scopes that a browser session can create for a user (very similar to USER_ALLOWED_SCOPES, as the session will actually create access_tokens for an actively logged in user)
   SESSION_ALLOWED_SCOPES:
@@ -1715,15 +1051,15 @@ FENCE_CONFIG:
   # be used by the frontend to display secondary buttons differently).
   # -- (list) List of enabled login options (used by data-portal to display login buttons).
   LOGIN_OPTIONS:
-    - name: 'Login from Google'
-      desc: 'description'
+    - name: "Login from Google"
+      desc: "description"
       idp: google
 
   # -- (string) Default login provider. - must be configured in LOGIN_OPTIONS and OPENID_CONNECT - - if several options in LOGIN_OPTIONS are defined for this IDP, will default to the first one
   DEFAULT_LOGIN_IDP: google
 
   # -- (string) Default login URL: DEPRECATED and replaced by LOGIN_OPTIONS + DEFAULT_LOGIN_IDP configs
-  DEFAULT_LOGIN_URL: '{{BASE_URL}}/login/google'
+  DEFAULT_LOGIN_URL: "{{BASE_URL}}/login/google"
 
   # `LOGIN_REDIRECT_WHITELIST` is a list of extra whitelisted URLs which can be redirected
   # to by the `/login/*` endpoints. Fence automatically populates this with the redirect
@@ -1735,7 +1071,6 @@ FENCE_CONFIG:
   ### DEPRECATED and replaced by OPENID_CONNECT + LOGIN_OPTIONS configs
   ENABLED_IDENTITY_PROVIDERS: {}
 
-
   # //////////////////////////////////////////////////////////////////////////////////////
   # LIBRARY CONFIGURATION (authlib & flask)
   #   - Already contains reasonable defaults
@@ -1743,16 +1078,15 @@ FENCE_CONFIG:
   # authlib-specific configs for OIDC flow and JWTs
   # NOTE: the OAUTH2_JWT_KEY cfg gets set automatically by fence if keys are setup
   #       correctly
-  OAUTH2_JWT_ALG: 'RS256'
+  OAUTH2_JWT_ALG: "RS256"
   OAUTH2_JWT_ENABLED: true
-  OAUTH2_JWT_ISS: '{{BASE_URL}}'
-  OAUTH2_PROVIDER_ERROR_URI: '/api/oauth2/errors'
+  OAUTH2_JWT_ISS: "{{BASE_URL}}"
+  OAUTH2_PROVIDER_ERROR_URI: "/api/oauth2/errors"
 
   # used for flask, "path mounted under by the application / web server"
   # since we deploy as microservices, fence is typically under {{base}}/user
   # this is also why our BASE_URL default ends in /user
-  APPLICATION_ROOT: '/user'
-
+  APPLICATION_ROOT: "/user"
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # Tokens, Lifetimes, & Expirations
@@ -1850,9 +1184,9 @@ FENCE_CONFIG:
   #   - Contains defaults for using NIH's Login.
   # //////////////////////////////////////////////////////////////////////////////////////
   # assumes shibboleth is deployed under {{BASE_URL}}/shibboleth
-  SHIBBOLETH_HEADER: 'persistent_id'
-  SSO_URL: 'https://auth.nih.gov/affwebservices/public/saml2sso?SPID={{BASE_URL}}/shibboleth&RelayState='
-  ITRUST_GLOBAL_LOGOUT: 'https://auth.nih.gov/siteminderagent/smlogout.asp?mode=nih&AppReturnUrl='
+  SHIBBOLETH_HEADER: "persistent_id"
+  SSO_URL: "https://auth.nih.gov/affwebservices/public/saml2sso?SPID={{BASE_URL}}/shibboleth&RelayState="
+  ITRUST_GLOBAL_LOGOUT: "https://auth.nih.gov/siteminderagent/smlogout.asp?mode=nih&AppReturnUrl="
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # dbGaP USER SYNCING SUPPORT
@@ -1865,13 +1199,13 @@ FENCE_CONFIG:
   # fence's README for more information
   dbGaP:
     - info:
-        host: ''
-        username: ''
-        password: ''
+        host: ""
+        username: ""
+        password: ""
         port: 22
-        proxy: ''
-      protocol: 'sftp'
-      decrypt_key: ''
+        proxy: ""
+      protocol: "sftp"
+      decrypt_key: ""
       # parse out the consent from the dbgap accession number such that something
       # like "phs000123.v1.p1.c2" becomes "phs000123.c2".
       #
@@ -1891,7 +1225,7 @@ FENCE_CONFIG:
       # subsequently gives access to an Arborist resource representing this common area
       # as well)
       study_common_exchange_areas:
-        'example': 'test_common_exchange_area'
+        "example": "test_common_exchange_area"
         # 'studyX': 'test_common_exchange_area'
         # 'studyY': 'test_common_exchange_area'
         # 'studyZ': 'test_common_exchange_area'
@@ -1899,8 +1233,8 @@ FENCE_CONFIG:
       # actual data lives in. For example, `studyX` data may exist in multiple organizations, so
       # we need to know how to map authorization to all orgs resources
       study_to_resource_namespaces:
-        '_default': ['/']
-        'test_common_exchange_area': ['/dbgap/']
+        "_default": ["/"]
+        "test_common_exchange_area": ["/dbgap/"]
         # above are for default support and exchange area support
         # below are further examples
         #
@@ -1915,7 +1249,7 @@ FENCE_CONFIG:
   # Will NOT MATCH forms like: phs000123
   #
   # WARNING: Do not change this without consulting the code that uses it
-  DBGAP_ACCESSION_WITH_CONSENT_REGEX: '(?P<phsid>phs[0-9]+)(.(?P<version>v[0-9]+)){0,1}(.(?P<participant_set>p[0-9]+)){0,1}.(?P<consent>c[0-9]+)'
+  DBGAP_ACCESSION_WITH_CONSENT_REGEX: "(?P<phsid>phs[0-9]+)(.(?P<version>v[0-9]+)){0,1}(.(?P<participant_set>p[0-9]+)){0,1}.(?P<consent>c[0-9]+)"
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # STORAGE BACKENDS AND CREDENTIALS
@@ -1993,7 +1327,7 @@ FENCE_CONFIG:
   # `DATA_UPLOAD_BUCKET` specifies an S3 bucket to which data files are uploaded,
   # using the `/data/upload` endpoint. This must be one of the first keys under
   # `S3_BUCKETS` (since these are the buckets fence has credentials for).
-  DATA_UPLOAD_BUCKET: 'bucket1'
+  DATA_UPLOAD_BUCKET: "bucket1"
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # PROXY
@@ -2015,9 +1349,9 @@ FENCE_CONFIG:
   INDEXD: http://indexd-service
 
   # this is the username which fence uses to make authenticated requests to indexd
-  INDEXD_USERNAME: 'fence'
+  INDEXD_USERNAME: "fence"
   # this is the password which fence uses to make authenticated requests to indexd
-  INDEXD_PASSWORD: ''
+  INDEXD_PASSWORD: ""
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # AZURE STORAGE BLOB CONFIGURATION
@@ -2031,13 +1365,13 @@ FENCE_CONFIG:
   # AZ_BLOB_CONTAINER_URL: 'https://storageaccount.blob.core.windows.net/container/'
   # this is the container used for uploading, and should match the storage account
   # used in the connection string for AZ_BLOB_CREDENTIALS
-  AZ_BLOB_CONTAINER_URL: 'https://myfakeblob.blob.core.windows.net/my-fake-container/'
+  AZ_BLOB_CONTAINER_URL: "https://myfakeblob.blob.core.windows.net/my-fake-container/"
 
   # url where authz microservice is running
   ARBORIST: http://arborist-service
 
   # url where the audit-service is running
-  AUDIT_SERVICE: 'http://audit-service'
+  AUDIT_SERVICE: "http://audit-service"
   ENABLE_AUDIT_LOGS:
     presigned_url: false
     login: false
@@ -2060,20 +1394,20 @@ FENCE_CONFIG:
   # Setting this up allows fence to create buckets, manage Google groups, etc.
   # See directions here for setting up cirrus: https://github.com/uc-cdis/cirrus
   CIRRUS_CFG:
-    GOOGLE_API_KEY: ''
-    GOOGLE_PROJECT_ID: ''
-    GOOGLE_APPLICATION_CREDENTIALS: ''
-    GOOGLE_STORAGE_CREDS: ''
-    GOOGLE_ADMIN_EMAIL: ''
-    GOOGLE_IDENTITY_DOMAIN: ''
-    GOOGLE_CLOUD_IDENTITY_ADMIN_EMAIL: ''
+    GOOGLE_API_KEY: ""
+    GOOGLE_PROJECT_ID: ""
+    GOOGLE_APPLICATION_CREDENTIALS: ""
+    GOOGLE_STORAGE_CREDS: ""
+    GOOGLE_ADMIN_EMAIL: ""
+    GOOGLE_IDENTITY_DOMAIN: ""
+    GOOGLE_CLOUD_IDENTITY_ADMIN_EMAIL: ""
 
   # Prefix to namespace Google Groups on a single Cloud Identity (see cirrus
   # setup for more info on Cloud Identity)
   #
   # NOTE: Make this short! Less than 8 characters if possible. Google has
   #       length restrictions on group names.
-  GOOGLE_GROUP_PREFIX: ''
+  GOOGLE_GROUP_PREFIX: ""
 
   # Prefix to namespace Google Service Accounts in a single Google Cloud Platform Project.
   # This is primarily to support multiple instances of fence references the same Google
@@ -2081,7 +1415,7 @@ FENCE_CONFIG:
   #
   # NOTE: Make this short! Less than 8 characters if possible. Google has
   #       length restrictions on service account names.
-  GOOGLE_SERVICE_ACCOUNT_PREFIX: ''
+  GOOGLE_SERVICE_ACCOUNT_PREFIX: ""
 
   # A Google Project identitifier representing the default project to bill to for
   # accessing Google Requester Pays buckets (for signed urls and/or temporary service account
@@ -2120,17 +1454,17 @@ FENCE_CONFIG:
   #
   # NOTE: Example in comments below
   GUN_MAIL:
-    'datacommons.io':
-      smtp_hostname: 'smtp.mailgun.org'
-      api_key: ''
-      default_login: 'postmaster@mailgun.example.com'
-      api_url: 'https://api.mailgun.net/v3/mailgun.example.com'
-      smtp_password: ''
+    "datacommons.io":
+      smtp_hostname: "smtp.mailgun.org"
+      api_key: ""
+      default_login: "postmaster@mailgun.example.com"
+      api_url: "https://api.mailgun.net/v3/mailgun.example.com"
+      smtp_password: ""
 
   # For emails regarding users certificates
-  EMAIL_SERVER: 'localhost'
-  SEND_FROM: 'example@gmail.com'
-  SEND_TO: 'example@gmail.com'
+  EMAIL_SERVER: "localhost"
+  SEND_FROM: "example@gmail.com"
+  SEND_TO: "example@gmail.com"
 
   # //////////////////////////////////////////////////////////////////////////////////////
   # DATA ACCESS: GOOGLE LINKING & SERVICE ACCOUNT REGISTRATION
@@ -2161,9 +1495,9 @@ FENCE_CONFIG:
   REMOVE_SERVICE_ACCOUNT_EMAIL_NOTIFICATION:
     enable: false
     # this domain MUST exist in GUN_MAIL config
-    domain: 'example.com'
-    from: 'do-not-reply@example.com'
-    subject: 'User service account removal notification'
+    domain: "example.com"
+    from: "do-not-reply@example.com"
+    subject: "User service account removal notification"
     # the {} gets replaced dynamically in the Python code to be the Project ID
     content: >
       Service accounts were removed from access control data because some users or
@@ -2174,13 +1508,13 @@ FENCE_CONFIG:
     #
     # WARNING: This is NOT a bcc so the email is visible to the end-user
     admin:
-      - 'admin@example.edu'
+      - "admin@example.edu"
 
   PROBLEM_USER_EMAIL_NOTIFICATION:
     # this domain MUST exist in GUN_MAIL config
-    domain: 'example.com'
-    from: 'do-not-reply@example.com'
-    subject: 'Account access error notification'
+    domain: "example.com"
+    from: "do-not-reply@example.com"
+    subject: "Account access error notification"
     # the {} gets replaced dynamically in the Python code to be the Project ID
     content: >
       The Data Commons Framework utilizes dbGaP for data access authorization.
@@ -2192,55 +1526,55 @@ FENCE_CONFIG:
     #
     # WARNING: This is NOT a bcc so the email is visible to the end-user
     admin:
-      - 'admin@example.edu'
+      - "admin@example.edu"
 
   # Service account email domains that represent a service account that Google owns.
   # These are usually created when a sepcific GCP service is enabled.
   # This is used for Service Account Validation for Data Access.
   GOOGLE_MANAGED_SERVICE_ACCOUNT_DOMAINS:
-    - 'dataflow-service-producer-prod.iam.gserviceaccount.com'
-    - 'cloudbuild.gserviceaccount.com'
-    - 'cloud-ml.google.com.iam.gserviceaccount.com'
-    - 'container-engine-robot.iam.gserviceaccount.com'
-    - 'dataflow-service-producer-prod.iam.gserviceaccount.com'
-    - 'sourcerepo-service-accounts.iam.gserviceaccount.com'
-    - 'dataproc-accounts.iam.gserviceaccount.com'
-    - 'gae-api-prod.google.com.iam.gserviceaccount.com'
-    - 'genomics-api.google.com.iam.gserviceaccount.com'
-    - 'containerregistry.iam.gserviceaccount.com'
-    - 'container-analysis.iam.gserviceaccount.com'
-    - 'cloudservices.gserviceaccount.com'
-    - 'stackdriver-service.iam.gserviceaccount.com'
-    - 'appspot.gserviceaccount.com'
-    - 'partnercontent.gserviceaccount.com'
-    - 'trifacta-gcloud-prod.iam.gserviceaccount.com'
-    - 'gcf-admin-robot.iam.gserviceaccount.com'
-    - 'compute-system.iam.gserviceaccount.com'
-    - 'gcp-sa-websecurityscanner.iam.gserviceaccount.com'
-    - 'storage-transfer-service.iam.gserviceaccount.com'
-    - 'firebase-sa-management.iam.gserviceaccount.com'
-    - 'firebase-rules.iam.gserviceaccount.com'
-    - 'gcp-sa-cloudbuild.iam.gserviceaccount.com'
-    - 'gcp-sa-automl.iam.gserviceaccount.com'
-    - 'gcp-sa-datalabeling.iam.gserviceaccount.com'
-    - 'gcp-sa-cloudscheduler.iam.gserviceaccount.com'
+    - "dataflow-service-producer-prod.iam.gserviceaccount.com"
+    - "cloudbuild.gserviceaccount.com"
+    - "cloud-ml.google.com.iam.gserviceaccount.com"
+    - "container-engine-robot.iam.gserviceaccount.com"
+    - "dataflow-service-producer-prod.iam.gserviceaccount.com"
+    - "sourcerepo-service-accounts.iam.gserviceaccount.com"
+    - "dataproc-accounts.iam.gserviceaccount.com"
+    - "gae-api-prod.google.com.iam.gserviceaccount.com"
+    - "genomics-api.google.com.iam.gserviceaccount.com"
+    - "containerregistry.iam.gserviceaccount.com"
+    - "container-analysis.iam.gserviceaccount.com"
+    - "cloudservices.gserviceaccount.com"
+    - "stackdriver-service.iam.gserviceaccount.com"
+    - "appspot.gserviceaccount.com"
+    - "partnercontent.gserviceaccount.com"
+    - "trifacta-gcloud-prod.iam.gserviceaccount.com"
+    - "gcf-admin-robot.iam.gserviceaccount.com"
+    - "compute-system.iam.gserviceaccount.com"
+    - "gcp-sa-websecurityscanner.iam.gserviceaccount.com"
+    - "storage-transfer-service.iam.gserviceaccount.com"
+    - "firebase-sa-management.iam.gserviceaccount.com"
+    - "firebase-rules.iam.gserviceaccount.com"
+    - "gcp-sa-cloudbuild.iam.gserviceaccount.com"
+    - "gcp-sa-automl.iam.gserviceaccount.com"
+    - "gcp-sa-datalabeling.iam.gserviceaccount.com"
+    - "gcp-sa-cloudscheduler.iam.gserviceaccount.com"
 
   # The types of service accounts that are allowed to be registered at
   # /google/service_accounts endpoints
   ALLOWED_USER_SERVICE_ACCOUNT_DOMAINS:
     # compute engine default service account
-    - 'developer.gserviceaccount.com'
+    - "developer.gserviceaccount.com"
     # app engine default service account
-    - 'appspot.gserviceaccount.com'
+    - "appspot.gserviceaccount.com"
     # user-managed service account
-    - 'iam.gserviceaccount.com'
+    - "iam.gserviceaccount.com"
 
   # Synapse integration and DREAM challenge mapping. Team is from Synapse, and group is
   # providing the actual permission in Arborist. User will be added to the group for TTL
   # seconds if the team matches.
-  DREAM_CHALLENGE_TEAM: 'DREAM'
-  DREAM_CHALLENGE_GROUP: 'DREAM'
-  SYNAPSE_URI: 'https://repo-prod.prod.sagebase.org/auth/v1'
+  DREAM_CHALLENGE_TEAM: "DREAM"
+  DREAM_CHALLENGE_GROUP: "DREAM"
+  SYNAPSE_URI: "https://repo-prod.prod.sagebase.org/auth/v1"
   SYNAPSE_JWKS_URI:
   # deprecated, use the discovery_url in the OPENID_CONNECT block for the synapse client
   SYNAPSE_DISCOVERY_URL:
@@ -2255,14 +1589,14 @@ FENCE_CONFIG:
   # If user registers, add them to configured Arborist group; idea is that the Arborist group
   # will have access to download data.
   REGISTER_USERS_ON: false
-  REGISTERED_USERS_GROUP: ''
+  REGISTERED_USERS_GROUP: ""
   # RAS refresh_tokens expire in 15 days
   RAS_REFRESH_EXPIRATION: 1296000
   # List of JWT issuers from which Fence will accept GA4GH visas
   GA4GH_VISA_ISSUER_ALLOWLIST:
-    - '{{BASE_URL}}'
-    - 'https://sts.nih.gov'
-    - 'https://stsstg.nih.gov'
+    - "{{BASE_URL}}"
+    - "https://sts.nih.gov"
+    - "https://stsstg.nih.gov"
   # Number of projects that can be registered to a Google Service Accont
   SERVICE_ACCOUNT_LIMIT: 6
 
@@ -2278,4 +1612,4 @@ FENCE_CONFIG:
     fallback_to_dbgap_sftp: false
     visa_types:
       ras: ["https://ras.nih.gov/visas/v1", "https://ras.nih.gov/visas/v1.1"]
-  RAS_USERINFO_ENDPOINT: '/openid/connect/v1.1/userinfo'
+  RAS_USERINFO_ENDPOINT: "/openid/connect/v1.1/userinfo"

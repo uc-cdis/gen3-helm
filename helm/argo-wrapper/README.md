@@ -8,7 +8,7 @@ A Helm chart for gen3 Argo Wrapper Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 
 ## Values
 
@@ -31,6 +31,9 @@ A Helm chart for gen3 Argo Wrapper Service
 | environment | string | `"default"` | Environment name. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
+| global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
+| global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/argo-wrapper","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
@@ -39,6 +42,9 @@ A Helm chart for gen3 Argo Wrapper Service
 | indexdAdminUser | string | `"fence"` | Admin user for Indexd. |
 | internalS3Bucket | string | `"argo-internal-bucket"` | Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs). |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| netPolicy | map | `{"egressApps":["argo-wrapper"],"ingressApps":["argo-wrapper"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["argo-wrapper"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["argo-wrapper"]` | List of app labels that require ingress to this service |
 | partOf | string | `"Apps-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{"gen3.io/network-ingress":"argo-wrapper"}` | Annotations to add to the pod. |
 | pvc | string | `"test-pvc"` | PVC for Argo. |

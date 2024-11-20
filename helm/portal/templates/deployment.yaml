@@ -24,9 +24,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
+        public: "yes"
         {{- include "portal.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        public: "yes"
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:

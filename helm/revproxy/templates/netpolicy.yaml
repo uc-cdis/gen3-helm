@@ -1,0 +1,61 @@
+{{ include "common.ingress_netpolicy" . }}
+
+---
+
+{{ include "common.egress_netpolicy" . }}
+
+---
+
+{{- if .Values.global.netPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: revproxy-netpolicy
+spec:
+  podSelector:
+    matchExpressions:
+    - key: app
+      operator: In
+      values:
+      - revproxy
+      - ambassador-gen3
+      - auspice
+      - ohdsi-atlas
+      - ohdsi-webapi
+      - superset
+      - superset-worker
+      - superset-redis-master
+  ingress:
+    - from:
+      - ipBlock:
+           cidr: 0.0.0.0/0
+      ports:
+         - port: 80
+         - port: 4000
+         - port: 8080
+         - port: 81
+         - port: 82
+         - port: 443
+         - port: 8088
+         - port: 9090
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            app: prometheus
+    - to: 
+      - namespaceSelector:
+          matchLabels:
+            app: grafana
+    - to: 
+      - namespaceSelector:
+          matchLabels:
+            app: argo
+    - to: 
+      - namespaceSelector:
+          matchLabels:
+            app: argocd
+  policyTypes:
+   - Ingress
+   - Egress
+{{- end }}

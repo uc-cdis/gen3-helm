@@ -1,6 +1,6 @@
 # aws-es-proxy
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for AWS ES Proxy Service for gen3
 
@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 
 ## Values
 
@@ -33,12 +33,16 @@ A Helm chart for AWS ES Proxy Service for gen3
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.netPolicy.enabled | bool | `false` |  |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-es-proxy","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/aws-es-proxy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| netPolicy | map | `{"egressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"],"ingressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]` | List of app labels that require ingress to this service |
 | partOf | string | `"Explorer-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `nil` | Annotations to add to the pod |
 | ports | list | `[{"containerPort":9200}]` | List of container ports |

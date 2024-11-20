@@ -1,6 +1,6 @@
 # requestor
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Requestor Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.14 |
+| file://../common | common | 0.1.15 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -23,7 +23,7 @@ A Helm chart for gen3 Requestor Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["requestor"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | arboristUrl | string | `"http://arborist-service"` | Arborist service URL. |
-| args | list | `["-c","/env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
+| args | list | `["-c","# Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility\npoetry run alembic upgrade head || /env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
@@ -51,7 +51,7 @@ A Helm chart for gen3 Requestor Service
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.onlyDbgap | bool | `false` | Forces ONLY a dbgap sync if "true", IGNORING user.yaml |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
