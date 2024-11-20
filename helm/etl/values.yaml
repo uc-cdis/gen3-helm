@@ -148,3 +148,5 @@ schedule: "*/30 * * * *"
 suspendCronjob: true
 
 legacySupport: false
+
+etlForced: "TRUE"

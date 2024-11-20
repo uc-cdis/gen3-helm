@@ -14,6 +14,7 @@ A Helm chart for gen3 etl
 | esGarbageCollect.enabled | bool | `false` | Whether to create es garbage collect cronjob. |
 | esGarbageCollect.schedule | string | `"0 0 * * *"` | The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default. |
 | esGarbageCollect.slack_webhook | string | `"None"` | Slack webhook endpoint to use for cronjob. |
+| etlForced | string | `"TRUE"` |  |
 | etlMapping.mappings[0].aggregated_props[0].fn | string | `"count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].name | string | `"_samples_count"` |  |
 | etlMapping.mappings[0].aggregated_props[0].path | string | `"samples"` |  |
