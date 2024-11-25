@@ -245,4 +245,4 @@ commonLabels:
 # -- (map) External secrets configuration
 externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
-  credsFile: 
+  credsFile:
