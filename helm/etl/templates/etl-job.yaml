@@ -4,7 +4,7 @@ metadata:
   name: etl-cronjob
 spec:
   suspend: {{ .Values.suspendCronjob }}
-  schedule: "{{ .Values.schedule }}"
+  schedule: {{ .Values.schedule | quote }}
   jobTemplate:
     spec:
       backoffLimit: 0
