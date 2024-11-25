@@ -145,7 +145,7 @@ esGarbageCollect:
 
 schedule: "*/30 * * * *"
 
-suspendCronjob: "true"
+suspendCronjob: true
 
 legacySupport: false
 
