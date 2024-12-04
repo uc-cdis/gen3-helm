@@ -2352,6 +2352,131 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2024-12-04T19:15:57.872925859Z"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.16
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.14
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.10
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.16
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.13
+    - name: common
+      repository: file://../common
+      version: 0.1.16
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.5
+    - condition: frontend-framework.enabled
+      name: frontend-framework
+      repository: file://../frontend-framework
+      version: 0.1.5
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.26
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.16
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.12
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.18
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.17
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.16
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.17
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.21
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.16
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.19
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.19
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.14
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.15
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.18
+    - condition: global.netPolicy.enabled
+      name: gen3-network-policies
+      repository: file://../gen3-network-policies
+      version: 0.1.2
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: neuvector.enabled
+      name: neuvector
+      repository: file://../neuvector
+      version: 0.1.2
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 5742d0c2d4b09496c5021b40d417db4fd6a3a047a44b1b457326b4faa6a60fa1
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.50/gen3-0.1.50.tgz
+    version: 0.1.50
+  - apiVersion: v2
+    appVersion: master
     created: "2024-11-19T20:30:44.630497891Z"
     dependencies:
     - condition: ambassador.enabled
@@ -11655,6 +11780,20 @@ entries:
   ssjdispatcher:
   - apiVersion: v2
     appVersion: master
+    created: "2024-12-04T19:15:57.983613386Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.16
+    description: A Helm chart for gen3 ssjdispatcher
+    digest: 705286667ece3e88ff152136a8ddf770347578c20a89900f32e06d1c6e029fc7
+    name: ssjdispatcher
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/ssjdispatcher-0.1.14/ssjdispatcher-0.1.14.tgz
+    version: 0.1.14
+  - apiVersion: v2
+    appVersion: master
     created: "2024-11-19T20:30:47.398394874Z"
     dependencies:
     - name: common
@@ -12205,4 +12344,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-19T20:30:47.541966271Z"
+generated: "2024-12-04T19:15:57.984455402Z"
