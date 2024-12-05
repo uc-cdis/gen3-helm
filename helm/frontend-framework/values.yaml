@@ -126,6 +126,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+port: 3000
+
 # -- (list) List of environment variables to add to the deployment.
 env: []
 

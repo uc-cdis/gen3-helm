@@ -205,6 +205,8 @@ extraImages:
 
 # -- (map) GitOps configuration for portal
 gitops:
+  # -- (string) 
+  gen3Bundle: ""
   # -- (string) multiline string - gitops.json
   json: |
     {
