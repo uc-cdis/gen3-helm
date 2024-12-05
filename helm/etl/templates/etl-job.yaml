@@ -3,7 +3,8 @@ kind: CronJob
 metadata:
   name: etl-cronjob
 spec:
-  schedule: "0 0 1 1 */5"
+  suspend: {{ .Values.suspendCronjob }}
+  schedule: {{ .Values.schedule | quote }}
   jobTemplate:
     spec:
       backoffLimit: 0
@@ -35,6 +36,12 @@ spec:
                         values:
                           - ONDEMAND
           volumes:
+            {{- if .Values.legacySupport }}
+            - name: config-volume
+              secret:
+                defaultMode: 420
+                secretName: etl-secret  
+            {{- end }}        
             - name: signal-volume
               emptyDir: {}
             - name: creds-volume
@@ -80,9 +87,6 @@ spec:
                 requests:
                   cpu: {{  .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
-                # limits:
-                #   cpu: {{ .Values.resources.spark.limits.cpu }}
-                #   memory: {{ .Values.resources.spark.limits.memory }}
               command: ["/bin/bash" ]
               args: 
                 - "-c"
@@ -105,7 +109,6 @@ spec:
                   while true; do sleep 5; done
             - name: tube
               imagePullPolicy: IfNotPresent
-              # image: quay.io/cdis/tube:feat_helm_test
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
@@ -153,7 +156,7 @@ spec:
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
                 - name: ETL_FORCED
-                  value: "TRUE"
+                  value: {{ .Values.etlForced }}
                 - name: gen3Env
                   valueFrom:
                     configMapKeyRef:
@@ -166,11 +169,11 @@ spec:
                       key: slack_webhook
                       optional: true
               volumeMounts:
-                # - name: "creds-volume"
-                #   readOnly: true
-                #   mountPath: "/gen3/tube/creds.json"
-                #   subPath: creds.json
-                # Volume to signal when to kill spark
+                {{- if .Values.legacySupport }}
+                - mountPath: /tube/tube/settings.py
+                  name: config-volume
+                  subPath: settings.py
+                {{- end }}
                 - mountPath: /usr/share/pod
                   name: signal-volume
                 - name: "etl-mapping"
@@ -185,9 +188,6 @@ spec:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
-                # limits:
-                #   cpu: {{ .Values.resources.tube.limits.cpu }}
-                #   memory: {{ .Values.resources.tube.limits.memory }}
               command: ["/bin/bash"]
               args:
                 - "-c"
@@ -199,9 +199,13 @@ spec:
 
                   # Port 9000 is open, continue with the rest of the script
                   echo "Port 9000 is now open. Continuing with the script..."
-
-                  echo "python run_config.py && python run_etl.py"
-                  python run_config.py && python run_etl.py
+                  if [[ $ETL_FORCED != "false" ]]; then
+                    echo "python run_config.py && python run_etl.py --force"
+                    python run_config.py && python run_etl.py --force
+                  else
+                    echo "python run_config.py && python run_etl.py"
+                    python run_config.py && python run_etl.py
+                  fi
                   exitcode=$?
                   
                   # Kill sidecar and all processes

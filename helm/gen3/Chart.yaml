@@ -28,7 +28,7 @@ dependencies:
     version: 0.1.16
     repository: file://../common
   - name: etl
-    version: 0.1.5
+    version: 0.1.6
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.13
+    version: 0.1.14
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
