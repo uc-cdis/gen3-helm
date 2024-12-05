@@ -226,7 +226,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:GPE-1252
+      image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
@@ -282,7 +282,7 @@ sowerConfig:
     action: export-files
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:GPE-1252
+      image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
         - name: DICTIONARY_URL

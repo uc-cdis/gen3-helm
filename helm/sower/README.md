@@ -124,7 +124,7 @@ A Helm chart for gen3 sower
 | sowerConfig[0].container.env[7].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[0].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[0].container.name | string | `"job-task"` |  |
 | sowerConfig[0].container.pull_policy | string | `"Always"` |  |
@@ -163,7 +163,7 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.env[8].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[1].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[1].container.name | string | `"job-task"` |  |
 | sowerConfig[1].container.pull_policy | string | `"Always"` |  |
