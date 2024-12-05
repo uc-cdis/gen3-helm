@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -31,9 +31,11 @@ A Helm chart for gen3 sower
 | awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"pelicanserviceG3auto":null}` | External Secrets settings. |
-| externalSecrets.createK8sPelicanServiceSecret | string | `false` | Will create the Helm "manifestservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"createK8sSowerJobsSecret":false,"pelicanserviceG3auto":null,"sowerjobsG3auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sPelicanServiceSecret | string | `false` | Will create the Helm "pelicanservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.createK8sSowerJobsSecret | string | `false` | Will create the Helm "sower-jobs-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.pelicanserviceG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto" |
+| externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
@@ -45,7 +47,7 @@ A Helm chart for gen3 sower
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
-| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sower secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
@@ -177,6 +179,7 @@ A Helm chart for gen3 sower
 | sowerConfig[1].restart_policy | string | `"Never"` |  |
 | sowerConfig[1].volumes[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[1].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerjobsG3auto | string | `"{\n  \"index-object-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\",\n    \"indexd_user\": \"diirm\",\n    \"indexd_password\": \"$indexdPassword\"\n  },\n  \"download-indexd-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  },\n  \"get-dbgap-metadata\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  },\n  \"ingest-metadata-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  }\n}\n"` | Additional configuration for Sower Jobs Passed in as a multiline string. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
