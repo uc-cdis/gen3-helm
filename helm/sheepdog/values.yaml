@@ -180,7 +180,7 @@ indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
 # -- (string) URL for the arborist service
 arboristUrl: http://arborist-service
-authNamespace: default
+authNamespace: ""
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:

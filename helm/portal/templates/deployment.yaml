@@ -117,8 +117,7 @@ spec:
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
-              # optional: true
-              value: ""
+              value: {{ .Values.gitops.gen3Bundle | quote }}
             - name: LOGOUT_INACTIVE_USERS
               valueFrom:
                 configMapKeyRef:

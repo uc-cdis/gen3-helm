@@ -35,14 +35,17 @@ spec:
         - name: frontend-framework
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /ff
-          #     port: 80
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 30
-          #   timeoutSeconds: 30
-          #   failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
+              path: /ff
+              {{- else }}
+              path: /
+              {{- end }}
+              port: {{ .Values.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
           readinessProbe:
             httpGet:
               {{- if eq "portal" .Values.global.frontendRoot }}
@@ -50,14 +53,14 @@ spec:
               {{- else }}
               path: /
               {{- end }}
-              port: 3000
+              port: {{ .Values.port }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.port }}
               name: http
               protocol: TCP
           envFrom:
@@ -65,6 +68,8 @@ spec:
                 name: {{ include "frontend-framework.fullname" . }}-configmap
                 optional: true
           env:
+            - name: PORT
+              value: {{ .Values.port | quote }}
             - name: HOSTNAME
               value: revproxy-service
             {{- if eq "portal" .Values.global.frontendRoot }}
@@ -74,27 +79,4 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
-            # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
-            # see https://github.com/npm/cli/issues/3163
-            - name: NPM_CONFIG_UPDATE_NOTIFIER
-              value: "false"
-#needed to be adjusted to use the gen3 umbrella chart or local var ^ 
-#adding a var in helpers.tpl for later- Elise
-             {{- with .Values.datadogApplicationId  }}      
-            - name: DATADOG_APPLICATION_ID
-              # Optional client token for Datadog
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.datadogClientToken  }}      
-            - name: DATADOG_CLIENT_TOKEN
-              # Optional client token for Datadog
-              value: {{ . }}
-            {{- end }}
-            {{- with .Values.dataUploadBucket  }}
-            - name: DATA_UPLOAD_BUCKET
-              value: {{ . }}
-            {{- end }}
-              # S3 bucket name for data upload, for setting up CSP
-              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
-            # - name: BASENAME
               
