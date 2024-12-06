@@ -1,0 +1,10 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sSowerJobsSecret) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sower-jobs-g3auto
+type: Opaque
+stringData:
+  config.json: |
+    {{ .Values.sowerjobsG3auto | nindent 4 }}
+{{- end }}

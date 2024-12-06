@@ -52,7 +52,7 @@ spec:
                 name: etl-mapping
             - name: fence-yaml
               configMap:
-                name: useryaml
+                name: fence
           containers:
             - name: gen3-spark
               image: {{ .Values.image.spark.repository }}:{{ .Values.image.spark.tag }}
@@ -156,7 +156,7 @@ spec:
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
                 - name: ETL_FORCED
-                  value: {{ .Values.etlForced }}
+                  value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
                   valueFrom:
                     configMapKeyRef:
@@ -183,7 +183,7 @@ spec:
                 - name: "fence-yaml"
                   readOnly: true
                   mountPath: "/gen3/tube/user.yaml"
-                  subPath: useryaml
+                  subPath: user.yaml
               resources:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}

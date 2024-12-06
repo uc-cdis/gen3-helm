@@ -55,7 +55,7 @@ global:
   dispatcherJobNum: "10"
   # -- (map) External Secrets settings.
   externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed.
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sower secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
@@ -65,12 +65,16 @@ metricsEnabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "manifestservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  # -- (string) Will create the Helm "pelicanservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
   createK8sPelicanServiceSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto"
   pelicanserviceG3auto:
+  # -- (string) Will create the Helm "sower-jobs-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sSowerJobsSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto"
+  sowerjobsG3auto:
 
-# -- (map) Secret information for Usersync and External Secrets.
+# -- (map) Values for sower secrets and keys for External Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
@@ -222,7 +226,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:GPE-1252
+      image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
@@ -278,7 +282,7 @@ sowerConfig:
     action: export-files
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:GPE-1252
+      image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
@@ -336,6 +340,41 @@ sowerConfig:
         secret:
           secretName: pelicanservice-g3auto
     restart_policy: Never
+
+# -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
+sowerjobsG3auto: |
+  {
+    "index-object-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName",
+      "indexd_user": "diirm",
+      "indexd_password": "$indexdPassword"
+    },
+    "download-indexd-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    },
+    "get-dbgap-metadata": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    },
+    "ingest-metadata-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    }
+  }
 
 # -- (map) Service account to use or create.
 serviceAccount:
