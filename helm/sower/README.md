@@ -87,7 +87,7 @@ A Helm chart for gen3 sower
 | resources.requests | map | `{"cpu":"100m","memory":"20Mi"}` | The amount of resources that the container requests |
 | resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
 | resources.requests.memory | string | `"20Mi"` | The amount of memory requested |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for Usersync and External Secrets. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Values for sower secrets and keys for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |

@@ -176,6 +176,9 @@ Helm chart to deploy Gen3 Data Commons
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
 | revproxy.ingress.hosts | list | `[{"host":"chart-example.local"}]` | Where to route the traffic. |
 | revproxy.ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets and DB Secrets. |
+| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
+| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |

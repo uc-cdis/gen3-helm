@@ -74,7 +74,7 @@ externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto"
   sowerjobsG3auto:
 
-# -- (map) Secret information for Usersync and External Secrets.
+# -- (map) Values for sower secrets and keys for External Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
