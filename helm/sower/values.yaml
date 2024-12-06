@@ -341,7 +341,7 @@ sowerConfig:
           secretName: pelicanservice-g3auto
     restart_policy: Never
 
-# -- (string) Additional configuration for Sower Jobs Passed in as a multiline string.
+# -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
 sowerjobsG3auto: |
   {
     "index-object-manifest": {
