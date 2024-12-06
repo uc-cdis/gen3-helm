@@ -156,7 +156,7 @@ spec:
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
                 - name: ETL_FORCED
-                  value: {{ .Values.etlForced }}
+                  value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
                   valueFrom:
                     configMapKeyRef:
