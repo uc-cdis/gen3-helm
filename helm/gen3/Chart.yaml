@@ -32,7 +32,7 @@ dependencies:
   repository: file://../etl
   condition: etl.enabled
 - name: frontend-framework
-  version: 0.1.1
+  version: 0.1.2
   repository: "file://../frontend-framework"
   condition: frontend-framework.enabled
 - name: fence
@@ -68,7 +68,7 @@ dependencies:
   repository: "file://../metadata"
   condition: metadata.enabled
 - name: mongodb
-  version: "13.16.3"
+  version: "16.0.3"
   repository: "file://../mongodb"
   condition: mongodb.enabled
 - name: portal
@@ -76,7 +76,7 @@ dependencies:
   repository: "file://../portal"
   condition: portal.enabled
 - name: requestor
-  version: 0.1.11
+  version: 0.1.16
   repository: "file://../requestor"
   condition: requestor.enabled
 - name: revproxy
@@ -103,6 +103,14 @@ dependencies:
   version: 11.9.13
   repository: "https://charts.bitnami.com/bitnami"
   condition: global.dev
+- name: image-viewer
+  version: 0.1.0
+  repository: "file://../image-viewer"
+  condition: image-viewer.enabled
+- name: viv
+  version: 0.1.0
+  repository: "file://../viv"
+  condition: viv.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #

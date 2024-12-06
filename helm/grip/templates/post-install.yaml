@@ -11,13 +11,25 @@ spec:
     spec:
       containers:
       - name: grip
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        # Use an Alpine image with curl pre-installed
+        image: "curlimages/curl:latest"
         imagePullPolicy: Always
-        env:
-          {{- toYaml .Values.env | nindent 10 }}
-        command: ["/bin/sh" ]
+        command: ["/bin/sh"]
         args:
           - "-c"
           - |
-            apk add --no-cache curl && sleep 10 && curl -X POST 'http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER'
+            echo "Waiting for the grip service to be available..."
+            until curl -s --head --request GET http://{{ .Values.serviceName }}:8201/graphql/_status | grep "200 OK" > /dev/null; do
+              echo "Grip service not ready, retrying in 5 seconds..."
+              sleep 5
+            done
+            echo "Grip is online. Creating CALIPER Graph"
+            curl -X POST 'http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER'
+            echo "Adding Caliper schema from https://raw.githubusercontent.com/bmeg/iceberg/7f6cfdb558d05370fc645b5ab894b98b38a01e1b/schemas/graph/graph-fhir.json"
+            curl -s https://raw.githubusercontent.com/bmeg/iceberg/7f6cfdb558d05370fc645b5ab894b98b38a01e1b/schemas/graph/graph-fhir.json -o /tmp/schema.json
+            echo '{"graph":"CALIPER","data":' > /tmp/request.json
+            cat /tmp/schema.json >> /tmp/request.json
+            echo '}' >> /tmp/request.json
+            curl -X POST --header "Content-Type: application/json" --data @/tmp/request.json http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER/jsonschema
+
       restartPolicy: OnFailure

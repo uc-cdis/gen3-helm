@@ -2,7 +2,6 @@ postgres.txt
 **/charts/
 notes/
 Chart.lock
-service.*
 *.crt
 *.key
 *.csr

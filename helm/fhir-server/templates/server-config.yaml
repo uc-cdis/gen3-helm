@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: fhir-server-config
 data:
-  serviceName: {{ .Values.serviceName | quote }}
-  gripServiceName: {{ .Values.fhirServerConfig.gripServiceName | quote}}
-  gripGraphName: {{ .Values.fhirServerConfig.gripGraphName | quote}}
+  serviceName: {{ .Values.serviceName | default "fhir-server-service" | quote }}
+  {{- if .Values.fhirServerConfig }}
+  gripServiceName: {{ .Values.fhirServerConfig.gripServiceName | default "grip-service" | quote }}
+  gripGraphName: {{ .Values.fhirServerConfig.gripGraphName | default "CALIPER" | quote }}
+  {{- end }}

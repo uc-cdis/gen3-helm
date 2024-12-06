@@ -122,6 +122,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- (list) List of environment variables to add to the deployment.
+env: []
+
 # -- (map) Node selector to apply to the pod
 nodeSelector: {}
 
