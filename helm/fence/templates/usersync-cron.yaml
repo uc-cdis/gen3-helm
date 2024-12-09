@@ -119,8 +119,8 @@ spec:
                     echo "ERROR: failed to generate ETL config"
                     exit 1
                   fi
-                  # kubectl delete configmap fence > /dev/null 2>&1
-                  # kubectl create configmap fence --from-file=/tmp/user.yaml
+                  kubectl delete configmap fence > /dev/null 2>&1
+                  kubectl create configmap fence --from-file=/tmp/user.yaml
                   if [ "${slackWebHook}" != 'None' ]; then
                     curl -X POST --data-urlencode "payload={\"text\": \"AWSHelper: Syncing users on ${gen3Env}\"}" "${slackWebHook}"
                   fi
