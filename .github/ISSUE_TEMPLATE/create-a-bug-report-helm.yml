@@ -45,13 +45,21 @@ body:
 
   - type: textarea
     attributes:
+      label: "What kind of cluster are you using? (e.g. Kind, Minikube, EKS, GKE, etc.)"
+
+  - type: textarea
+    attributes:
       label: "Are you using any custom parameters or values?"
       description: "Add any parameter used via `--set` or as a `values.yaml` customization."
+    validations:
+      required: true
 
   - type: textarea
     attributes:
       label: "What is the expected behavior?"
       description: "If possible please provide textual output instead of screenshots."
+    validations:
+      required: true
 
   - type: textarea
     attributes:
