@@ -1,0 +1,18 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sManifestServiceSecret) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: manifestservice-g3auto
+type: Opaque
+stringData:
+  config.json: |-
+      {
+        "manifest_bucket_name": "{{ .Values.manifestserviceG3auto.bucketName }}",
+        "hostname": "{{ .Values.global.hostname }}",
+        {{ if and .Values.manifestserviceG3auto.awsaccesskey .Values.manifestserviceG3auto.awssecretkey }}
+        "aws_access_key_id": "{{ .Values.manifestserviceG3auto.awsaccesskey }}",
+        "aws_secret_access_key": "{{ .Values.manifestserviceG3auto.awssecretkey }}",
+        {{ end }}
+        "prefix": "{{ .Values.manifestserviceG3auto.prefix }}"
+      }
+{{- end }}

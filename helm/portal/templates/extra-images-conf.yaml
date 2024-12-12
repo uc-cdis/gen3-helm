@@ -1,0 +1,11 @@
+{{- with .Values.extraImages }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portal-extra-images
+data: 
+  config.txt:
+  {{- range . }}
+    {{ .url }}
+  {{ end }}
+  {{- end }}

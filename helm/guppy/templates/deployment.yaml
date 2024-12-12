@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: guppy-deployment
+  labels:
+    {{- include "guppy.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -17,16 +19,16 @@ spec:
   template:
     metadata:
       labels:
+      {{- include "guppy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-      {{- if eq (include "guppy.ddEnabled" . ) "true" }}
-        tags.datadoghq.com/service: "guppy"
-        # TODO: move this to helpers so we can have this populated from a configmap
-        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
-      {{- end }}
-        {{- include "guppy.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/guppy_config.yaml") . | sha256sum }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -60,19 +62,15 @@ spec:
             - name: GUPPY_CONFIG_FILEPATH
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
-              value: {{ default "elasticsearch:9200"  .Values.esEndpoint }}
+              value: {{ default "gen3-elasticsearch-master:9200"  .Values.esEndpoint }}
             {{- with .Values.arboristUrl }}
             - name: GEN3_ARBORIST_ENDPOINT
               value: {{ . }}
             {{- end }}
             - name: TIER_ACCESS_LEVEL
-              value: {{ include "guppy.tierAccessLevel" . }}
-            {{- with .Values.tierAccessLimit }}
+              value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
-              value: {{ . | quote }}
-            {{- end }}
-
-
+              value: {{ .Values.global.tierAccessLimit | quote }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

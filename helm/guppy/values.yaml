@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -14,10 +14,12 @@ global:
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -42,21 +44,24 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers.
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: "1000"
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
 
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -69,11 +74,11 @@ autoscaling:
   # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
-# -- (map) AWS credentials to access the db restore job S3 bucket
+# -- (map) Secret information to access the db restore job S3 bucket.
 secrets:
-  # -- (string) AWS access key.
+  # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
-  # -- (string) AWS secret access key.
+  # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 
 # -- (int) Number of replicas for the deployment.
@@ -101,20 +106,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - guppy
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - guppy
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the pod.
 volumes:
@@ -137,16 +142,11 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: ""
+esEndpoint: "gen3-elasticsearch-master:9200"
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
-# -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
-tierAccessLevel: regular
-# -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-tierAccessLimit: 1000
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -170,7 +170,6 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
-
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
@@ -185,10 +184,10 @@ service:
 # Configmap
 # -- (list) Elasticsearch index configurations
 indices:
-- index: dev_case
-  type: case
-- index: dev_file
-  type: file
+  - index: dev_case
+    type: case
+  - index: dev_file
+    type: file
 # -- (string) The Elasticsearch configuration index
 configIndex: dev_case-array-config
 # -- (string) The field used for access control and authorization filters
@@ -199,4 +198,16 @@ enableEncryptWhitelist: true
 encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
-dbRestore: true
+dbRestore: false
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Explorer-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:

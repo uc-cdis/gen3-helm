@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -14,10 +14,12 @@ global:
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -42,20 +44,28 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (string) Path to the user.yaml file in S3.
-  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -63,11 +73,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: nginx
+  repository: quay.io/cdis/ssjdispatcher
   # -- (string) Docker pull policy.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "2022.08"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -79,7 +89,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -112,18 +123,6 @@ nodeSelector: {}
 # -- (list) Tolerations for the pods
 tolerations: []
 
-# -- (map) Labels to use for selecting the deployment.
-selectorLabels:
-  app: ssjdispatcher
-  release: production
-
-# -- (map) Labels for the ssjdispatcher service.
-labels:
-  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
-  netnolimit: "yes"
-  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
-  public: "yes"
-
 # -- (map) Security context to apply to the pod
 podSecurityContext:
   # -- (int) User that all the processes will run under in the container.
@@ -136,20 +135,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - ssjdispatcher
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - ssjdispatcher
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -235,3 +234,21 @@ serviceAccount:
   # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: "ssjdispatcher-service-account"
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Workspace-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+
+# -- (map) External secrets configuration
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
+  credsFile:

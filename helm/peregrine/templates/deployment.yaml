@@ -13,12 +13,18 @@ spec:
       {{- include "peregrine.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
+        public: "yes"
+        s3: "yes"
         {{- include "peregrine.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -70,6 +76,12 @@ spec:
                   optional: false
             - name: FLASK_SECRET_KEY
               value: "TODO: FIX THIS!!!"
+            - name: INDEXD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-service-creds
+                  key: sheepdog
+                  optional: false
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
@@ -138,11 +150,10 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/peregrine/wsgi.py"
-              subPath: "settings.py"
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

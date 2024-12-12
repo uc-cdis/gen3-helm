@@ -10,18 +10,22 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: ambassador
+      {{- include "ambassador.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
-        app: ambassador
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end}}
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
+        {{- include "ambassador.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:

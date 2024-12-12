@@ -1,3 +1,39 @@
+# Default values for aws-es-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+  netPolicy:
+    enabled: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  awsCreds: "aws-es-proxy-aws-credentials"
+
 # -- (map) Annotations to add to the pod
 podAnnotations:
 
@@ -11,6 +47,13 @@ autoscaling:
   maxReplicas: 100
   # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
+
+# -- (map) Secret information to access AWS ES cluster.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -32,9 +75,6 @@ automountServiceAccountToken: false
 
 # -- (list) Volumes to attach to the pod
 volumes:
-  - name: credentials
-    secret:
-      secretName: aws-es-proxy
 
 # -- (map) Docker image information.
 image:
@@ -78,9 +118,35 @@ service:
   # -- (int) The port number that the service exposes.
   port: 9200
 
-# -- (map) Secret information
-secrets:
-  # -- (str) AWS access key ID
-  awsAccessKeyId: ""
-  # -- (str) AWS secret access key
-  awsSecretAccessKey: ""
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - arranger
+    - arranger-server
+    - arranger-dashboard
+    - guppy
+    - metadata
+    - spark
+    - tube
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - arranger
+    - arranger-server
+    - arranger-dashboard
+    - guppy
+    - metadata
+    - spark
+    - tube
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Explorer-Tab"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:

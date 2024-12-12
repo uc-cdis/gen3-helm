@@ -2,3 +2,5 @@ postgres.txt
 **/charts/
 notes/
 Chart.lock
+.DS_Store
+_sample-*/

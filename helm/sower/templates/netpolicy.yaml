@@ -1,0 +1,22 @@
+{{ include "common.ingress_netpolicy" . }}
+
+---
+
+{{ include "common.egress_netpolicy" . }}
+
+---
+
+{{- if .Values.global.netPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sowerjob-netpolicy
+spec:
+  podSelector:
+    matchLabels:
+      app: sowerjob
+  egress:
+    - {}
+  policyTypes:
+   - Egress
+{{- end }}

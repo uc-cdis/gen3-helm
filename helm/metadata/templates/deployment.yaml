@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metadata-deployment
+  labels:
+    {{- include "metadata.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -17,17 +19,15 @@ spec:
   template:
     metadata:
       labels:
-        # gen3 networkpolicy labels
-        netnolimit: 'yes'
-        public: 'yes'
-        userhelper: 'yes'
-      {{- if eq (include "metadata.ddEnabled" . ) "true" }}
-        tags.datadoghq.com/service: "guppy"
-        # TODO: move this to helpers so we can have this populated from a configmap
-        tags.datadoghq.com/env: {{ .Values.dataDog.env }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
-      {{- end }}
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
         {{- include "metadata.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations: 
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -86,7 +86,7 @@ spec:
                   optional: false
             {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ . }}
+              value: {{ . | quote }}
             {{- end }}
             {{- with .Values.aggMdsNamespace}}
             - name: AGG_MDS_NAMESPACE

@@ -34,21 +34,27 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "ambassador.labels" -}}
-helm.sh/chart: {{ include "ambassador.chart" . }}
-{{ include "ambassador.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "ambassador.selectorLabels" -}}
-service: ambassador
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
 {{- end }}
-
+{{- end }}
 {{/*
 Create the name of the service account to use
 */}}

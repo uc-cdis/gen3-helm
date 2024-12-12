@@ -1,0 +1,199 @@
+# Default values for frontend-framework.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+# -- (map) Global configuration options.
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  # -- (map) Postgres database configuration.
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (string) S3 bucket name for Kubernetes manifest files.
+  kubeBucket: kube-gen3
+  # -- (string) S3 bucket name for log files.
+  logsBucket: logs-gen3
+  # -- (bool) Whether to sync data from dbGaP.
+  syncFromDbgap: false
+  # -- (string) Path to the user.yaml file in S3.
+  userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`.
+  tierAccessLevel: libre
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: 10
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (int) Number of replicas for the deployment.
+replicaCount: 1
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/frontend-framework
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "develop"
+
+# -- (list) Docker image pull secrets.
+imagePullSecrets: []
+
+# -- (string) Override the name of the chart.
+nameOverride: ""
+
+# -- (string) Override the full name of the deployment.
+fullnameOverride: ""
+
+# -- (map) Service account to use or create.
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+  # -- (string) The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- (map) Annotations to add to the pod
+podAnnotations: {}
+
+# -- (map) Security context to apply to the pod
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+# -- (map) Security context to apply to the container
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# -- (map) Kubernetes service information.
+service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
+  type: ClusterIP
+  # -- (int) The port number that the service exposes.
+  port: 80
+
+# -- (map) Configuration for autoscaling the number of replicas
+autoscaling:
+  # -- (bool) Whether autoscaling is enabled
+  enabled: false
+  # -- (int) The minimum number of replicas to scale down to
+  minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
+  maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+port: 3000
+
+# -- (list) List of environment variables to add to the deployment.
+env: []
+
+# -- (map) Node selector to apply to the pod
+nodeSelector: {}
+
+# -- (list) Tolerations to apply to the pod
+tolerations: []
+
+# -- (int) Number of old revisions to retain
+revisionHistoryLimit: 2
+
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 2
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 25%
+
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - frontend-framework
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
+
+# -- (bool) Automount the default service account token
+automountServiceAccountToken: false
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
+  requests:
+    # -- (string) The amount of CPU requested
+    cpu: 0.6
+    # -- (string) The amount of memory requested
+    memory: 512Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of memory the container can use
+    cpu: 0.6
+    memory: 4096Mi
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "dev"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Front-End"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:

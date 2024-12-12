@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "peregrine.fullname" . }}-test-connection"
+  name: peregrine-test-connection
   labels:
     {{- include "peregrine.labels" . | nindent 4 }}
   annotations:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "peregrine.fullname" . }}:{{ .Values.service.port }}']
+      args: ['peregrine-service:{{ .Values.service.port }}/_status']
   restartPolicy: Never

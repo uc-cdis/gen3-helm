@@ -1,0 +1,77 @@
+alloy:
+  alloy:
+    extraPorts:
+      - name: "faro"
+        port: 12347
+        targetPort: 12347
+        protocol: "TCP"
+    clustering:
+      enabled: true
+    configMap:
+      name: alloy-gen3
+      key: config
+
+  ingress:
+    # -- Enables ingress for Alloy (Faro port)
+    enabled: true
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    ingressClassName: "alb"
+    annotations: {}
+      ## Recommended annotations for AWS ALB (Application Load Balancer).
+      # alb.ingress.kubernetes.io/certificate-arn: <cert arn>
+      # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+      # alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=600
+      # alb.ingress.kubernetes.io/scheme: internet-facing
+      # alb.ingress.kubernetes.io/ssl-policy: <ssl policy>
+      # alb.ingress.kubernetes.io/ssl-redirect: '443'
+      # alb.ingress.kubernetes.io/tags: Environment=<environment name>
+      # alb.ingress.kubernetes.io/target-type: ip
+    labels: {}
+    path: /
+    faroPort: 12347
+    hosts:
+      - faro.example.com
+
+  alloyConfigmapData: |
+    logging {
+      level    = "info"
+      format   = "json"
+    }
+
+    otelcol.exporter.otlp "tempo" {
+      client {
+        endpoint = "http://grafana-tempo-distributor.monitoring:4317"
+        tls {
+            insecure = true
+            insecure_skip_verify = true
+        }
+      }
+    }
+
+    // loki write endpoint
+    loki.write "endpoint" {
+      endpoint {
+        url = "http://grafana-loki-gateway.monitoring:80/loki/api/v1/push"
+      }
+    }
+
+    faro.receiver "default" {
+        server {
+          listen_address = "0.0.0.0"
+          listen_port = 12347
+          cors_allowed_origins = ["*"]
+        }
+
+        extra_log_labels = {
+          service = "frontend-app",
+          app_name = "",
+          app_environment = "",
+          app_namespace = "",
+          app_version = "",
+        }
+        output {
+            logs   = [loki.write.endpoint.receiver]
+            traces = [otelcol.exporter.otlp.tempo.input]
+        }
+    }

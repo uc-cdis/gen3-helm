@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aws-es-proxy-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
+  {{- with .Values.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
@@ -24,13 +24,18 @@ spec:
     metadata:
       labels:
         {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
+    annotations:
+      {{- if .Values.metricsEnabled }}
+      {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
     spec:
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: credentials
+          secret:
+            secretName: {{.Chart.Name}}-aws-config
       containers:
         - name: "esproxy"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

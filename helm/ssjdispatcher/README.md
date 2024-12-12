@@ -1,8 +1,14 @@
 # ssjdispatcher
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common | common | 0.1.16 |
 
 ## Values
 
@@ -23,26 +29,33 @@ A Helm chart for gen3 ssjdispatcher
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | awsRegion | string | `"us-east-1"` | AWS region to be used. |
 | awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | dispatcherJobNum | string | `"10"` | Ssjdispater job number. |
+| externalSecrets | map | `{"credsFile":null}` | External secrets configuration |
+| externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
-| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
-| global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
+| global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed. |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
+| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
-| global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
 | global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
 | global.postgres.master.host | string | `nil` | hostname of postgres server |
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
@@ -50,23 +63,21 @@ A Helm chart for gen3 ssjdispatcher
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
-| global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"nginx","tag":""}` | Docker image information. |
-| image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
-| image.repository | string | `"nginx"` | Docker repository. |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ssjdispatcher","tag":"2022.08"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
+| image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
-| labels | map | `{"netnolimit":"yes","public":"yes"}` | Labels for the ssjdispatcher service. |
-| labels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
-| labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
+| partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podSecurityContext | map | `{"fsGroup":1000,"runAsUser":1000}` | Security context to apply to the pod |
 | podSecurityContext.fsGroup | int | `1000` | Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod. |
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"cpu":1,"memory":"2400Mi"},"requests":{"cpu":0.1,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"cpu":1,"memory":"2400Mi"}` | The maximum amount of resources that the container is allowed to use |
@@ -76,7 +87,7 @@ A Helm chart for gen3 ssjdispatcher
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context for the containers in the pod |
-| selectorLabels | map | `{"app":"ssjdispatcher","release":"production"}` | Labels to use for selecting the deployment. |
+| selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
@@ -102,6 +113,3 @@ A Helm chart for gen3 ssjdispatcher
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[{"mountPath":"/credentials.json","name":"ssjdispatcher-creds-volume","readOnly":true,"subPath":"credentials.json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"name":"ssjdispatcher-creds-volume","secret":{"secretName":"ssjdispatcher-creds"}}]` | Volumes to attach to the container. |
-
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

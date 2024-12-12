@@ -13,12 +13,17 @@ spec:
       {{- include "indexd.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
+        public: "yes"
         {{- include "indexd.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -68,8 +73,13 @@ spec:
                   name: indexd-dbcreds
                   key: dbcreated
                   optional: false
+            - name: DEFAULT_PREFIX
+              value: {{ .Values.defaultPrefix }}
             {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
+            - name: "uwsgi-config"
+              mountPath: "/etc/uwsgi/uwsgi.ini"
+              subPath: uwsgi.ini
             - name: "config-volume"
               readOnly: true
               mountPath: "/var/www/indexd/local_settings.py"

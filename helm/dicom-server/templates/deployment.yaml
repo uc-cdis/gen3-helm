@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dicom-server-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
+  {{- with .Values.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
@@ -21,8 +21,12 @@ spec:
     metadata:
       labels:
         {{- include "dicom-server.selectorLabels" . | nindent 8 }}
-        release: "production"
+        {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -48,6 +52,7 @@ spec:
             timeoutSeconds: 30
           ports:
             - containerPort: 8042
+          env:
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dicom-viewer-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
+  {{- with .Values.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
@@ -15,14 +15,17 @@ spec:
   selector:
     matchLabels:
       {{- include "dicom-viewer.selectorLabels" . | nindent 6 }}
-      release: "production"
       public: "yes"
   template:
     metadata:
       labels:
         {{- include "dicom-viewer.selectorLabels" . | nindent 8 }}
-        release: "production"
+        {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: "dicom-viewer"
@@ -44,6 +47,7 @@ spec:
             timeoutSeconds: 30
           ports:
             - containerPort: 80
+          env:
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
