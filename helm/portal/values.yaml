@@ -363,6 +363,7 @@ gitops:
       },
       "explorerConfig":[
         {
+          "tabTitle": "Data",
           "charts": {
             "project_id": {
               "chartType": "count",
@@ -417,6 +418,7 @@ gitops:
           }
         },
         {
+          "tabTitle": "File",
           "charts": {
             "data_type": {
               "chartType": "stackedBar",
