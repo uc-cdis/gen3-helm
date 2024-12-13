@@ -51,13 +51,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{.Chart.Name}}-aws-config
-                  key: aws_access_key_id
+                  key: access-key
                   optional: true
             - name: "AWS_SECRET_ACCESS_KEY"
               valueFrom:
                 secretKeyRef:
                   name: {{.Chart.Name}}-aws-config
-                  key: aws_secret_access_key
+                  key: secret-access-key
                   optional: true
           {{- with .Values.volumeMounts }}
           volumeMounts:
