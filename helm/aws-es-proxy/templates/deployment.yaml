@@ -47,6 +47,18 @@ spec:
           env:
             - name: ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
+            - name: "AWS_ACCESS_KEY_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Chart.Name}}-aws-config
+                  key: aws_access_key_id
+                  optional: true
+            - name: "AWS_SECRET_ACCESS_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Chart.Name}}-aws-config
+                  key: aws_secret_access_key
+                  optional: true
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
