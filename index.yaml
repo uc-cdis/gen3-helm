@@ -1725,6 +1725,16 @@ entries:
   etl:
   - apiVersion: v2
     appVersion: master
+    created: "2024-12-17T17:11:52.430704895Z"
+    description: A Helm chart for gen3 etl
+    digest: 786fcb5c11c0b70f0e9adae69cff73206877ce20cbf224def349bf3ed58cd44b
+    name: etl
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/etl-0.1.8/etl-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: master
     created: "2024-12-09T17:30:14.021001607Z"
     description: A Helm chart for gen3 etl
     digest: 5f8c64a254d02952593f3948cbfda10ad71cb137829921aea78d5ef7db8fa6fd
@@ -12732,4 +12742,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-09T17:30:14.995769486Z"
+generated: "2024-12-17T17:11:52.431378946Z"
