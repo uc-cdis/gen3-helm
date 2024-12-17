@@ -50,9 +50,13 @@ spec:
             - name: etl-mapping
               configMap:
                 name: etl-mapping
-            - name: fence-yaml
+            - name: fence-usersync-yaml
               configMap:
                 name: fence
+                optional: true
+            - name: fence-useryaml
+              configMap:
+                name: useryaml
           containers:
             - name: gen3-spark
               image: {{ .Values.image.spark.repository }}:{{ .Values.image.spark.tag }}
@@ -180,10 +184,12 @@ spec:
                   readOnly: true
                   mountPath: "/gen3/tube/etlMapping.yaml"
                   subPath: "etlMapping.yaml"
-                - name: "fence-yaml"
-                  readOnly: true
-                  mountPath: "/gen3/tube/user.yaml"
+                - name: fence-usersync-yaml
+                  mountPath: /gen3/tube/fence-user.yaml
                   subPath: user.yaml
+                - name: fence-useryaml
+                  mountPath: /gen3/tube/useryaml-user.yaml
+                  subPath: useryaml
               resources:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}
@@ -192,6 +198,14 @@ spec:
               args:
                 - "-c"
                 - |
+                  if [ -f "/gen3/tube/fence-user.yaml" ]; then
+                    cp /gen3/tube/fence-user.yaml /gen3/tube/user.yaml
+                    echo "Using Fence usersync user.yaml."
+                  else
+                    cp /gen3/tube/useryaml-user.yaml /gen3/tube/user.yaml
+                    echo "Using Fence useryaml."
+                  fi
+
                   while ! bash -c "echo >/dev/tcp/localhost/9000"; do
                     echo "Spark is not ready on port 9000... waiting for 10 seconds."
                     sleep 10
