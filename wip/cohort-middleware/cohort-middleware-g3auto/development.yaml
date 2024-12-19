@@ -1,0 +1,16 @@
+# Can probably hardcode this
+arborist_endpoint: "http://arborist-service"
+global_reader_role: "public"
+atlas_db:
+  host: "{{ .Values.postgres.host }}"
+  port: "{{ .Values.postgres.port }}"
+  username: "{{ .Values.postgres.username }}"
+  password: "{{ .Values.postgres.password }}"
+  db: "{{ .Values.postgres.db }}"
+  schema: ohdsi
+# optional validation config:
+validate:
+  # TODO need to get an explanation for this from VA team
+  single_observation_for_concept_ids:
+    # HARE concept id:
+    - "2000007027"
