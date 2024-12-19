@@ -10963,6 +10963,20 @@ entries:
   portal:
   - apiVersion: v2
     appVersion: master
+    created: "2024-12-19T22:26:39.439820097Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.16
+    description: A Helm chart for gen3 data-portal
+    digest: c75b2592ee72462aeb49d9e2e09aa962a7147f4e8d06bccfdcc9a2e28de9576e
+    name: portal
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/portal-0.1.23/portal-0.1.23.tgz
+    version: 0.1.23
+  - apiVersion: v2
+    appVersion: master
     created: "2024-12-05T20:58:39.405269776Z"
     dependencies:
     - name: common
@@ -13006,4 +13020,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-19T21:18:39.592936747Z"
+generated: "2024-12-19T22:26:39.440815994Z"
