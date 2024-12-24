@@ -71,7 +71,7 @@ spec:
             - name: PORT
               value: {{ .Values.port | quote }}
             - name: HOSTNAME
-              value: revproxy-service
+              value: "0.0.0.0"
             {{- if eq "portal" .Values.global.frontendRoot }}
             - name: BASE_PATH
               value: /ff
@@ -79,4 +79,4 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
-              
+
