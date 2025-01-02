@@ -14,7 +14,7 @@ image:
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "master"
+    tag: "2024.11"
 
 
 # -- (list) Docker image pull secrets.
