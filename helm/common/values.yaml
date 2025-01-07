@@ -2,9 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -41,8 +44,13 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Configuration for network policies.
+  netPolicy:
+    # -- (bool) Whether or not to apply netpolicies
+    enabled: true
+
+    # -- (array) A list of subnets where databases reside. This is to enable access in production environments
+    dbSubnets: []
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.

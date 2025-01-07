@@ -4,10 +4,10 @@ metadata:
   name: portal-deployment
   labels:
     {{- include "portal.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "portal.selectorLabels" . | nindent 6 }}
@@ -16,17 +16,23 @@ spec:
     {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "portal.selectorLabels" . | nindent 8 }}
-        public: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
+      labels:
+        public: "yes"
+        {{- include "portal.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -82,10 +88,14 @@ spec:
           #   failureThreshold: 30
           readinessProbe:
             httpGet:
+              {{- if eq "gen3ff" .Values.global.frontendRoot }}
+              path: /portal
+              {{- else }}
               path: /
+              {{- end }}
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 60
+            initialDelaySeconds: 5
+            periodSeconds: 10
             timeoutSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -96,9 +106,6 @@ spec:
           #   - /bin/bash
           #   - ./dockerStart.sh
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: HOSTNAME
               value: revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
@@ -110,8 +117,7 @@ spec:
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
-              # optional: true
-              value: ""
+              value: {{ .Values.gitops.gen3Bundle | quote }}
             - name: LOGOUT_INACTIVE_USERS
               valueFrom:
                 configMapKeyRef:
@@ -192,6 +198,10 @@ spec:
             {{- with .Values.dataUploadBucket  }}
             - name: DATA_UPLOAD_BUCKET
               value: {{ . }}
+            {{- end }}
+            {{- if eq "gen3ff" .Values.global.frontendRoot }}
+            - name: BASENAME
+              value: /portal
             {{- end }}
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|

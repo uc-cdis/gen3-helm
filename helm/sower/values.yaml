@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -49,12 +48,38 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sower secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "pelicanservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sPelicanServiceSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto"
+  pelicanserviceG3auto:
+  # -- (string) Will create the Helm "sower-jobs-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sSowerJobsSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto"
+  sowerjobsG3auto:
+
+# -- (map) Values for sower secrets and keys for External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsSecretAccessKey:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -78,7 +103,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -92,6 +118,16 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - pidgin
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - pidgin
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -123,20 +159,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - sower
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - sower
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -193,36 +229,54 @@ sowerConfig:
       image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
-      - name: DICTIONARY_URL
-        valueFrom:
-          configMapKeyRef:
-            name: manifest-global
-            key: dictionary_url
-      - name: GEN3_HOSTNAME
-        valueFrom:
-          configMapKeyRef:
-            name: manifest-global
-            key: hostname
-      - name: ROOT_NODE
-        value: subject
+        - name: DICTIONARY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: dictionary_url
+        - name: GEN3_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: hostname
+        - name: ROOT_NODE
+          value: subject
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: host
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: database
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: password
+        - name: SHEEPDOG
+          valueFrom:
+            secretKeyRef:
+              name: indexd-service-creds
+              key: sheepdog
       volumeMounts:
-      - name: pelican-creds-volume
-        readOnly: true
-        mountPath: "/pelican-creds.json"
-        subPath: config.json
-      - name: peregrine-creds-volume
-        readOnly: true
-        mountPath: "/peregrine-creds.json"
-        subPath: creds.json
-      cpu-limit: '1'
+        - name: pelican-creds-volume
+          readOnly: true
+          mountPath: "/pelican-creds.json"
+          subPath: config.json
+      cpu-limit: "1"
       memory-limit: 12Gi
     volumes:
-    - name: pelican-creds-volume
-      secret:
-        secretName: pelicanservice-g3auto
-    - name: peregrine-creds-volume
-      secret:
-        secretName: peregrine-creds
+      - name: pelican-creds-volume
+        secret:
+          secretName: pelicanservice-g3auto
     restart_policy: Never
   - name: pelican-export-files
     action: export-files
@@ -231,40 +285,96 @@ sowerConfig:
       image: quay.io/cdis/pelican-export:master
       pull_policy: Always
       env:
-      - name: DICTIONARY_URL
-        valueFrom:
-          configMapKeyRef:
-            name: manifest-global
-            key: dictionary_url
-      - name: GEN3_HOSTNAME
-        valueFrom:
-          configMapKeyRef:
-            name: manifest-global
-            key: hostname
-      - name: ROOT_NODE
-        value: file
-      - name: EXTRA_NODES
-        value: ''
+        - name: DICTIONARY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: dictionary_url
+        - name: GEN3_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: hostname
+        - name: ROOT_NODE
+          value: file
+        - name: EXTRA_NODES
+          value: ""
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: host
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: database
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: peregrine-dbcreds
+              key: password
+        - name: SHEEPDOG
+          valueFrom:
+            secretKeyRef:
+              name: indexd-service-creds
+              key: sheepdog
       volumeMounts:
-      - name: pelican-creds-volume
-        readOnly: true
-        mountPath: "/pelican-creds.json"
-        subPath: config.json
-      - name: peregrine-creds-volume
-        readOnly: true
-        mountPath: "/peregrine-creds.json"
-        subPath: creds.json
-      cpu-limit: '1'
+        - name: pelican-creds-volume
+          readOnly: true
+          mountPath: "/pelican-creds.json"
+          subPath: config.json
+        - name: peregrine-creds-volume
+          readOnly: true
+          mountPath: "/peregrine-creds.json"
+          subPath: creds.json
+      cpu-limit: "1"
       memory-limit: 12Gi
     volumes:
-    - name: pelican-creds-volume
-      secret:
-        secretName: pelicanservice-g3auto
-    - name: peregrine-creds-volume
-      secret:
-        secretName: peregrine-creds
+      - name: pelican-creds-volume
+        secret:
+          secretName: pelicanservice-g3auto
     restart_policy: Never
 
+# -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
+sowerjobsG3auto: |
+  {
+    "index-object-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName",
+      "indexd_user": "diirm",
+      "indexd_password": "$indexdPassword"
+    },
+    "download-indexd-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    },
+    "get-dbgap-metadata": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    },
+    "ingest-metadata-manifest": {
+      "job_requires": {
+        "arborist_url": "http://arborist-service",
+        "job_access_req": []
+      },
+      "bucket": "$bucketName"
+    }
+  }
 
 # -- (map) Service account to use or create.
 serviceAccount:

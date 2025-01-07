@@ -1,36 +1,39 @@
 repos:
   - repo: git@github.com:Yelp/detect-secrets
-    rev: v0.13.1
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
+        additional_dependencies: ["gibberish-detector"]
+  
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.5.0
     hooks:
       - id: no-commit-to-branch
         args: [--branch, develop, --branch, master, --pattern, release/.*]
-  
+
   # - repo: https://github.com/gruntwork-io/pre-commit
   #   rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
   #   hooks:
   #   - id: helmlint
 
-  - repo: local 
-    hooks: 
-    - id: helm-docs
-      args: []
-      description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
-      entry: git-hook/helm-docs.sh
-      language: script
-      name: Helm Docs
-      require_serial: true
-  
-  - repo: local 
-    hooks: 
-    - id: helm-chart-bump
-      args: []
-      description: Updates the .Chart.yaml with updates version if there are changes since master branch. This is to ensure we bump our charts for updates.
-      entry: git-hook/helm-bump.sh
-      language: script
-      name: Helm Docs
-      require_serial: true
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: "v1.14.2"
+    hooks:
+    #  Use a pinned version of helm-docs in a container to generate consistent documentation.
+      - name: helm-docs
+        id: helm-docs-container
+        entry: jnorwood/helm-docs:v1.14.2
+        args:
+        - "--chart-search-root=helm"
+        - "--skip-version-footer"
+
+  - repo: local
+    hooks:
+      - id: helm-chart-bump
+        args: []
+        description: Updates the .Chart.yaml with updates version if there are changes since master branch. This is to ensure we bump our charts for updates.
+        entry: git-hook/helm-bump.sh
+        language: script
+        name: Helm Docs
+        require_serial: true

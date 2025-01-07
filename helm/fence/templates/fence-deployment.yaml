@@ -4,9 +4,6 @@ metadata:
   name: fence-deployment
   labels:
     {{- include "fence.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -16,15 +13,21 @@ spec:
       {{- include "fence.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/publicconfig: {{ include (print $.Template.BasePath "/fence-config-public.yaml") . | sha256sum }}
+        checksum/secretconfig: {{ include (print $.Template.BasePath "/fence-config.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "fence.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      labels:
+        authprovider: "yes"
+        netnolimit: "yes"
+        userhelper: "yes"
+        {{- include "fence.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
@@ -61,16 +64,12 @@ spec:
           args:
             - "-c"
             - |
-              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
               bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
@@ -94,8 +93,7 @@ spec:
           args:
             - "-c"
             - |
-              # echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
               if fence-create migrate --help > /dev/null 2>&1; then
                 if ! grep -E 'ENABLE_DB_MIGRATION"?: *false' /var/www/fence/fence-config.yaml; then
                   echo "Running db migration: fence-create migrate"

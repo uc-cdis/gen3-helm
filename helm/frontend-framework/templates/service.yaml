@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "frontend-framework-service"
+  labels:
+    {{- include "frontend-framework.labels" . | nindent 4 }}
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: {{ .Values.port }}
+      name: http
+    - protocol: TCP
+      port: 443
+      targetPort: {{ .Values.port }}
+      name: https
+  type: ClusterIP
+  selector:
+    {{- include "frontend-framework.selectorLabels" . | nindent 4 }}

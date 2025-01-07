@@ -1,6 +1,6 @@
 # peregrine
 
-![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Peregrine service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Peregrine service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.9 |
+| file://../common | common | 0.1.16 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -24,9 +24,6 @@ A Helm chart for gen3 Peregrine service
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
-| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
-| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | env | list | `nil` | Environment variables to pass to the container |
 | externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
@@ -35,7 +32,6 @@ A Helm chart for gen3 Peregrine service
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -47,7 +43,7 @@ A Helm chart for gen3 Peregrine service
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -63,7 +59,11 @@ A Helm chart for gen3 Peregrine service
 | image.repository | string | `"quay.io/cdis/peregrine"` | The Docker image repository for the fence service |
 | image.tag | string | `"feat_jq-audience"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
+| netPolicy | map | `{"egressApps":["pidgin"],"ingressApps":["pidgin"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["pidgin"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["pidgin"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
@@ -99,8 +99,5 @@ A Helm chart for gen3 Peregrine service
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| volumeMounts | list | `[{"mountPath":"/var/www/peregrine/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/var/www/peregrine/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"},{"mountPath":"peregrine/bin/settings.py","name":"config-volume","readOnly":true,"subPath":"settings.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"emptyDir":{},"name":"shared-data"},{"name":"config-volume","secret":{"secretName":"peregrine-secret"}}]` | Volumes to attach to the container. |
-
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

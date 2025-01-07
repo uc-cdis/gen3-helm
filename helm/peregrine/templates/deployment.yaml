@@ -4,9 +4,6 @@ metadata:
   name: peregrine-deployment
   labels:
     {{- include "peregrine.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -16,15 +13,18 @@ spec:
       {{- include "peregrine.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "peregrine.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
+      labels:
+        public: "yes"
+        s3: "yes"
+        {{- include "peregrine.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -44,9 +44,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -79,6 +76,12 @@ spec:
                   optional: false
             - name: FLASK_SECRET_KEY
               value: "TODO: FIX THIS!!!"
+            - name: INDEXD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-service-creds
+                  key: sheepdog
+                  optional: false
             - name: PGHOST
               valueFrom:
                 secretKeyRef:

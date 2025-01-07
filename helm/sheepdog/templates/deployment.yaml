@@ -8,9 +8,6 @@ metadata:
   {{- end }}
   labels:
     {{- include "sheepdog.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -26,13 +23,15 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
-        netnolimit: 'yes'
-        public: 'yes'
-        s3: 'yes'
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        public: "yes"
+        netnolimit: "yes"
+        s3: "yes"
+        {{- include "sheepdog.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -50,10 +49,8 @@ spec:
       initContainers:
         - name: sheepdog-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
           - name: DICTIONARY_URL
             value: {{ .Values.dictionaryUrl }}
           - name: PGHOST
@@ -97,11 +94,17 @@ spec:
               # sheepdog sets up core data model now,
               # but suffers from a race condition doing it ...
               #
-              echo datamodel_postgres_admin create-all -U "${PGUSER}" -P XXXXXXX -H "${PGHOST}" -D "${PGDB}"
-              datamodel_postgres_admin create-all -U "${PGUSER}" -P "${PGPASSWORD}" -H "${PGHOST}" -D "${PGDB}"
-              
-              echo python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password XXXXX --host "${PGHOST}" --database "${PGDB}"
-              python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password "${PGPASSWORD}" --host "${PGHOST}" --database "${PGDB}"
+              if command -v python &> /dev/null; then
+                echo datamodel_postgres_admin create-all -U "${PGUSER}" -P XXXXXXX -H "${PGHOST}" -D "${PGDB}"
+                datamodel_postgres_admin create-all -U "${PGUSER}" -P "${PGPASSWORD}" -H "${PGHOST}" -D "${PGDB}"
+                echo python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password XXXXX --host "${PGHOST}" --database "${PGDB}"
+                python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password "${PGPASSWORD}" --host "${PGHOST}" --database "${PGDB}"
+              else
+                echo poetry run datamodel_postgres_admin create-all -U "${PGUSER}" -P XXXXXXX -H "${PGHOST}" -D "${PGDB}"
+                poetry run datamodel_postgres_admin create-all -U "${PGUSER}" -P "${PGPASSWORD}" -H "${PGHOST}" -D "${PGDB}"
+                echo poetry run python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password XXXXX --host "${PGHOST}" --database "${PGDB}"
+                poetry run python /sheepdog/bin/setup_transactionlogs.py --user "${PGUSER}"  --password "${PGPASSWORD}" --host "${PGHOST}" --database "${PGDB}"
+              fi
       containers:
         - name: sheepdog
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

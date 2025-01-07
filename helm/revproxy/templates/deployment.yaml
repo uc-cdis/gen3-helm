@@ -4,9 +4,6 @@ metadata:
   name: revproxy-deployment
   labels:
     {{- include "revproxy.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
   annotations:
     gen3.io/network-ingress: "portal,sowerjob"
 spec:
@@ -23,15 +20,17 @@ spec:
   {{- end }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configMaps.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "revproxy.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
-        {{- end }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         {{- if .Values.userhelperEnabled }}
         userhelper: "yes"
         {{- end}}
@@ -75,7 +74,7 @@ spec:
               path: /_status
               port: 80
             initialDelaySeconds: 5
-            periodSeconds: 30
+            periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
@@ -83,9 +82,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
@@ -125,7 +121,7 @@ spec:
               secretKeyRef:
                 name: gateway-g3auto
                 key: base64Authz.txt
-                optional: true  
+                optional: true
           - name: MDS_AUTHZ
             valueFrom:
               secretKeyRef:
@@ -192,7 +188,7 @@ spec:
                 echo "modsecurity on;" >> /etc/nginx/gen3_server_modsec.conf
                 echo "modsecurity_rules_file /etc/nginx/modsec/main.conf;" >> /etc/nginx/gen3_server_modsec.conf
               fi
-    
+
               exec nginx -g 'daemon off;'
       {{- with .Values.nodeSelector }}
       nodeSelector:

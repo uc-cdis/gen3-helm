@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-framework-deployment
+  labels:
+    {{- include "frontend-framework.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "frontend-framework.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "frontend-framework.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        public: "yes"
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      containers:
+        - name: frontend-framework
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
+              path: /ff
+              {{- else }}
+              path: /
+              {{- end }}
+              port: {{ .Values.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              {{- if eq "portal" .Values.global.frontendRoot }}
+              path: /ff
+              {{- else }}
+              path: /
+              {{- end }}
+              port: {{ .Values.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.port }}
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "frontend-framework.fullname" . }}-configmap
+                optional: true
+          env:
+            - name: PORT
+              value: {{ .Values.port | quote }}
+            - name: HOSTNAME
+              value: revproxy-service
+            {{- if eq "portal" .Values.global.frontendRoot }}
+            - name: BASE_PATH
+              value: /ff
+            {{- else}}
+            - name: NEXT_PUBLIC_PORTAL_BASENAME
+              value: /portal
+            {{- end }}
+              

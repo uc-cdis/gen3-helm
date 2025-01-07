@@ -13,12 +13,21 @@ spec:
       app: presigned-url-fence
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/publicconfig: {{ include (print $.Template.BasePath "/fence-config-public.yaml") . | sha256sum }}
+        checksum/secretconfig: {{ include (print $.Template.BasePath "/fence-config.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
-        app: presigned-url-fence 
+        app: "presigned-url-fence" 
+        authprovder: "yes"
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
@@ -54,8 +63,7 @@ spec:
           args:
             - "-c"
             - |
-              echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+              python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: gen3-network-policies
+description: A Helm chart that holds network policies needed to run Gen3
+
+type: application
+
+version: 0.1.2
+
+appVersion: "0.1.2"
