@@ -9,6 +9,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: useryaml
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   backoffLimit: 10
   template:
