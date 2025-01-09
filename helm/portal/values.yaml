@@ -399,7 +399,15 @@ gitops:
             "enabled": false
           },
           "dropdowns": {},
-          "buttons": [],
+          "buttons": [
+            {
+            "enabled": true,
+            "type": "export-to-workspace",
+            "title": "Export to Workspace",
+            "leftIcon": "datafile",
+            "rightIcon": "download"
+            }
+            ],
           "guppyConfig": {
             "dataType": "case",
             "nodeCountTitle": "Cases",
@@ -411,7 +419,7 @@ gitops:
               "resourceIndexType": "file",
               "resourceIdField": "object_id",
               "referenceIdFieldInResourceIndex": "_case_id",
-              "referenceIdFieldInDataIndex": "node_id"
+              "referenceIdFieldInDataIndex": "_case_id"
             },
             "accessibleFieldCheckList": ["_case_id"],
             "accessibleValidationField": "_case_id"
@@ -441,6 +449,15 @@ gitops:
               }
             ]
           },
+          "buttons": [
+            {
+            "enabled": true,
+            "type": "export-to-workspace",
+            "title": "Export to Workspace",
+            "leftIcon": "datafile",
+            "rightIcon": "download"
+            }
+          ],
           "table": {
             "enabled": true,
             "fields": [
@@ -458,13 +475,13 @@ gitops:
             ],
             "nodeCountTitle": "Files",
             "manifestMapping": {
-              "resourceIndexType": "case",
-              "resourceIdField": "_case_id",
+              "resourceIndexType": "file",
+              "resourceIdField": "object_id",
               "referenceIdFieldInResourceIndex": "object_id",
               "referenceIdFieldInDataIndex": "object_id"
             },
-            "accessibleFieldCheckList": ["_case_id"],
-            "accessibleValidationField": "_case_id",
+            "accessibleFieldCheckList": ["project_id"],
+            "accessibleValidationField": "project_id",
             "downloadAccessor": "object_id"
           }
         }
