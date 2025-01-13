@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.57](https://img.shields.io/badge/Version-0.1.57-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.58](https://img.shields.io/badge/Version-0.1.58-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -32,6 +32,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.12 |
 | file://../indexd | indexd | 0.1.18 |
 | file://../manifestservice | manifestservice | 0.1.18 |
+| file://../meshcard | meshcard | 0.1.1 |
 | file://../metadata | metadata | 0.1.17 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.17 |
@@ -156,6 +157,7 @@ Helm chart to deploy Gen3 Data Commons
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
+| meshcard.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
 | neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |

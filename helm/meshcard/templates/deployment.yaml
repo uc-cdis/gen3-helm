@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meshcard-deployment
+  labels:
+    {{- include "meshcard.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "meshcard.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
+        {{- include "meshcard.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations: 
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      volumes: 
+        - name: config-volume-g3auto
+          secret:
+            secretName: meshcard-g3auto
+        - name: config-volume
+          secret:
+            secretName: meshcard-config
+            optional: true
+        - name: config-manifest
+          configMap:
+            name: manifest-meshcard
+            optional: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env: 
+            - name: GEN3_DEBUG
+              value: "False"
+            # - name: DB_HOST
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: meshcard-dbcreds
+            #       key: host
+            #       optional: false  
+            # - name: DB_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: meshcard-dbcreds
+            #       key: username
+            #       optional: false
+            # - name: DB_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: meshcard-dbcreds
+            #       key: password
+            #       optional: false
+            # - name: DB_DATABASE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: meshcard-dbcreds
+            #       key: database
+            #       optional: false
+            # - name: DBREADY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: meshcard-dbcreds
+            #       key: dbcreated
+            #       optional: false
+            {{- with .Values.useAggMds }}
+            - name: USE_AGG_MDS
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.aggMdsNamespace}}
+            - name: AGG_MDS_NAMESPACE
+              value: {{ . }}
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 80
+          ports:
+            - containerPort: 80
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

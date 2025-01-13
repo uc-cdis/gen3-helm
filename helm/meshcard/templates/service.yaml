@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "meshcard-service"
+  {{- with .Values.serviceAnnotations }}
+  annotations: 
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "meshcard.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "meshcard.selectorLabels" . | nindent 4 }}
+  {{- with .Values.service.port }}
+  ports:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  type: {{ .Values.service.type }}

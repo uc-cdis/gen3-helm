@@ -228,6 +228,10 @@ manifestservice:
   # -- (bool) Whether to deploy the manifest service subchart.
   enabled: true
 
+meshcard:
+  # -- (bool) Whether to deploy the metadata subchart.
+  enabled: true
+
 metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
