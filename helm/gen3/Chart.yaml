@@ -28,7 +28,7 @@ dependencies:
     version: 0.1.16
     repository: file://../common
   - name: etl
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -40,7 +40,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
@@ -128,7 +128,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.57
+version: 0.1.58
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

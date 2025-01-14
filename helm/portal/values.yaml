@@ -452,7 +452,7 @@ gitops:
           "buttons": [
             {
             "enabled": true,
-            "type": "export-to-workspace",
+            "type": "export-files-to-workspace",
             "title": "Export to Workspace",
             "leftIcon": "datafile",
             "rightIcon": "download"
@@ -475,8 +475,8 @@ gitops:
             ],
             "nodeCountTitle": "Files",
             "manifestMapping": {
-              "resourceIndexType": "file",
-              "resourceIdField": "object_id",
+              "resourceIndexType": "case",
+              "resourceIdField": "_case_id",
               "referenceIdFieldInResourceIndex": "object_id",
               "referenceIdFieldInDataIndex": "object_id"
             },

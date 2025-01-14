@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -62,6 +62,9 @@ A Helm chart for gen3 etl
 | etlMapping.mappings[0].joining_props[0].props[2].fn | string | `"set"` |  |
 | etlMapping.mappings[0].joining_props[0].props[2].name | string | `"_file_id"` |  |
 | etlMapping.mappings[0].joining_props[0].props[2].src | string | `"_file_id"` |  |
+| etlMapping.mappings[0].joining_props[0].props[3].fn | string | `"set"` |  |
+| etlMapping.mappings[0].joining_props[0].props[3].name | string | `"object_id"` |  |
+| etlMapping.mappings[0].joining_props[0].props[3].src | string | `"object_id"` |  |
 | etlMapping.mappings[0].name | string | `"dev_case"` |  |
 | etlMapping.mappings[0].props[0].name | string | `"submitter_id"` |  |
 | etlMapping.mappings[0].props[1].name | string | `"project_id"` |  |
