@@ -1154,6 +1154,18 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/aws-es-proxy-0.0.1/aws-es-proxy-0.0.1.tgz
     version: 0.0.1
+  cluster-level-resources:
+  - apiVersion: v2
+    appVersion: 1.17.0
+    created: "2025-01-14T17:02:35.909419764Z"
+    description: An app-of-apps Helm chart that allows for flexible deployment of
+      resources that support Gen3
+    digest: 85475627f3a489a313162f89fbfd56642695a7229380759ca7e6b4eb35c9c4c1
+    name: cluster-level-resources
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/cluster-level-resources-0.5.3/cluster-level-resources-0.5.3.tgz
+    version: 0.5.3
   common:
   - apiVersion: v2
     appVersion: master
@@ -13455,4 +13467,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-01-09T17:41:25.944263166Z"
+generated: "2025-01-14T17:02:35.910256757Z"
