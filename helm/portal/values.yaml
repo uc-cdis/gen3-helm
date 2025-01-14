@@ -480,8 +480,8 @@ gitops:
               "referenceIdFieldInResourceIndex": "object_id",
               "referenceIdFieldInDataIndex": "object_id"
             },
-            "accessibleFieldCheckList": ["project_id"],
-            "accessibleValidationField": "project_id",
+            "accessibleFieldCheckList": ["_case_id"],
+            "accessibleValidationField": "_case_id",
             "downloadAccessor": "object_id"
           }
         }
