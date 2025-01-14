@@ -1,6 +1,6 @@
 # guppy
 
-![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Guppy Service
 
@@ -30,7 +30,7 @@ A Helm chart for gen3 Guppy Service
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
-| configIndex | string | `"dev_case-array-config"` | The Elasticsearch configuration index |
+| configIndex | string | `"dev_array-config"` | The Elasticsearch configuration index |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | dataDog | bool | `{"enabled":false,"env":"dev"}` | Whether Datadog is enabled. |
 | dbRestore | bool | `false` | Whether or not to restore elasticsearch indices from a snapshot in s3 |

@@ -189,7 +189,7 @@ indices:
   - index: dev_file
     type: file
 # -- (string) The Elasticsearch configuration index
-configIndex: dev_case-array-config
+configIndex: dev_array-config
 # -- (string) The field used for access control and authorization filters
 authFilterField: auth_resource_path
 # -- (bool) Whether or not to enable encryption for specified fields
