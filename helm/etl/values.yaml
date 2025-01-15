@@ -108,6 +108,9 @@ etlMapping:
             - name: _file_id
               src: _file_id
               fn: set
+            - name: object_id
+              src: object_id
+              fn: set
     - name: dev_file
       doc_type: file
       type: collector
