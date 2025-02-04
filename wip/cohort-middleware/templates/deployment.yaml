@@ -23,6 +23,7 @@ spec:
         dbohdsi: "yes"
         dbomop-data: "yes"
         public: "yes"
+        app: "cohort-middleware"
         {{- include "cohort-middleware.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:     
