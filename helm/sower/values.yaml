@@ -329,10 +329,6 @@ sowerConfig:
           readOnly: true
           mountPath: "/pelican-creds.json"
           subPath: config.json
-        - name: peregrine-creds-volume
-          readOnly: true
-          mountPath: "/peregrine-creds.json"
-          subPath: creds.json
       cpu-limit: "1"
       memory-limit: 12Gi
     volumes:
