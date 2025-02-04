@@ -1,5 +1,8 @@
 # Can probably hardcode this
+catch_all_cohort_id: 121
+worker_pool_size: 10
 arborist_endpoint: "http://arborist-service"
+batch_size: 30
 global_reader_role: "public"
 atlas_db:
   host: "{{ .Values.postgres.host }}"
