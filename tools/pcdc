@@ -10,6 +10,7 @@ CLEAR_ELASTICSEARCH="clear_elasticsearch.sh"
 RESTART_POD="restart_pod.sh"
 LOGS="logs.sh"
 LOAD_DATA="load_data.sh"
+CRONJOB_SCRIPT="cronjob.sh"
 
 
 # Check if command is provided as an argument
@@ -58,6 +59,10 @@ case "$command" in
     "load_data")
         # Run the connect_to_pod.sh script with the remaining arguments
         "$LOAD_DATA" "$@"
+        ;;
+    "cronjob")
+        # Run the CRONJOB_SCRIPT.sh script with the remaining arguments
+        "$CRONJOB_SCRIPT" "$@"
         ;;
     *)  
         echo "Invalid command: $command"
