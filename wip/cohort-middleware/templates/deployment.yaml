@@ -30,7 +30,8 @@ spec:
         - name: cohort-middleware-g3auto
           secret:
             secretName: cohort-middleware-g3auto             
-      serviceAccountName: {{ include "cohort-middleware.serviceAccountName" . }}
+      #serviceAccountName: {{ include "cohort-middleware.serviceAccountName" . }}
+      serviceAccountName: default
       automountServiceAccountToken: false
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
