@@ -7,28 +7,28 @@ Helm charts for deploying [Gen3](https://gen3.org) on any kubernetes cluster.
 
 # Deploying gen3 with helm
 
-## TL;DR 
+## TL;DR
 ```
 helm repo add gen3 https://helm.gen3.org
 helm repo update
-helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
+helm upgrade --install gen3 gen3/gen3 -f ./values.yaml
 ```
 
-For more information on how to deploy Gen3 with helm, please see the [Gen3 Example Deployment Guide](https://docs.gen3.org/docs/Deployment/Example%20Deployment)
+For more information on how to deploy Gen3 with helm, please see the [Gen3 Example Deployment Guide](https://docs.gen3.org/gen3-resources/operator-guide/helm/)
 
 https://docs.gen3.org
 
 
 ## Configuration
 
-For a full set of configuration options see the [CONFIGURATION.md](./docs/CONFIGURATION.md) for a more in depth instructions on how to configure each service. 
+For a full set of configuration options see the [CONFIGURATION.md](./docs/CONFIGURATION.md) for a more in depth instructions on how to configure each service.
 
-There's also an auto-generated table of basic configuration options here: 
+There's also an auto-generated table of basic configuration options here:
 
-[README.md for gen3 chart](./helm/gen3/README.md) (auto-generated documentation) or 
+[README.md for gen3 chart](./helm/gen3/README.md) (auto-generated documentation) or
 
 
-To see documentation around setting up gen3 developer environments see [our Example Deployment](https://docs.gen3.org/docs/Deployment/Example%20Deployment/).
+To see documentation around setting up gen3 developer environments see [our Example Deployment](https://docs.gen3.org/gen3-resources/operator-guide/helm/helm-deploy-example/).
 
 
 Use the following as a template for your `values.yaml` file for a minimum deployment of gen3 using these helm charts.
@@ -39,19 +39,19 @@ Use the following as a template for your `values.yaml` file for a minimum deploy
 global:
   hostname: example-commons.com
 
-fence: 
+fence:
   FENCE_CONFIG:
-    # Any fence-config overrides here. 
+    # Any fence-config overrides here.
 ```
 
 
 ## Gen3 Login Options
-Gen3 does not have any IDP, but can integrate with many. We will cover Google login here, but refer to the fence documentation for additional options. 
+Gen3 does not have any IDP, but can integrate with many. We will cover Google login here, but refer to the fence documentation for additional options.
 
 TL/DR: At minimum to have google logins working you need to set these settings in your `values.yaml` file
 
 ```
-fence: 
+fence:
   FENCE_CONFIG:
     OPENID_CONNECT:
       google:
@@ -62,7 +62,7 @@ fence:
 
 #### Google login generation
 
-You need to set up a google credential for google login as that's the default enabled option in fence. 
+You need to set up a google credential for google login as that's the default enabled option in fence.
 
 
 The following steps explain how to create credentials for your gen3
@@ -76,9 +76,9 @@ Name your OAuth 2.0 client and click Create.
 
 For `Authorized Javascript Origins` add `https://<hostname>`
 
-For `"Authorized redirect URIs"` add  `https://<hostname>/user/login/google/login/` 
+For `"Authorized redirect URIs"` add  `https://<hostname>/user/login/google/login/`
 
-After configuration is complete, take note of the client ID that was created. You will need the client ID and client secret to complete the next steps. 
+After configuration is complete, take note of the client ID that was created. You will need the client ID and client secret to complete the next steps.
 
 
 # Troubleshooting
