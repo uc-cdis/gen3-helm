@@ -6,7 +6,8 @@ data:
   json: |
     {
         "user-namespace": "jupyter-pods-{{ .Release.Name }}",
-        "localdev": {{ .Values.global.dev }},
+        "skip-node-selector": {{ or .Values.global.dev .Values.hatchery.skipNodeSelector }},
+        "use-internal-services-url": {{ or .Values.global.dev .Values.hatchery.useInternalServicesUrl }},
         "sub-dir": "/lw-workspace",
         "user-volume-size": "10Gi",
         "sidecar": {{ tpl (.Values.hatchery.sidecarContainer | toJson) . }},

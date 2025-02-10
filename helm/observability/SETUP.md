@@ -117,7 +117,7 @@ This Helm chart comes equipped with built-in Gen3 alerts, defined in the 'alerti
 
 ### Built-in Gen3 Dashboards
 
-We'll soon be releasing Gen3 dashboards, providing users with Gen3-specific visualizations. Please check back here to see if they have been released.
+You can utilize Gen3-specific visualizations by visiting our [grafana-dashboards repo](https://github.com/uc-cdis/grafana-dashboards).
 
 ## Configuring Mimir
 

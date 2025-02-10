@@ -1,0 +1,307 @@
+{{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "workflow" "enabled") }}
+  {{ if eq (index .Values "karpenter-crds" "migration") true }}
+---
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: workflow
+spec:
+  amiFamily: AL2
+  amiSelectorTerms:
+  - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
+    owner: "143731057154"
+  blockDeviceMappings:
+  - deviceName: /dev/xvda
+    ebs:
+      deleteOnTermination: true
+      encrypted: true
+      volumeSize: 50Gi
+      volumeType: gp3
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  role: eks_{{ index .Values "karpenter-crds" "selectorTag" }}_workers_role
+
+  securityGroupSelectorTerms:
+  - tags:
+    {{- if ne (index .Values "karpenter-crds" "workflow" "sgSelector") "" }}
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "workflow" "sgSelector" }}
+    {{- else }}
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-workflow
+    {{- end }}
+
+  subnetSelectorTerms:
+  - tags:
+     karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-karpenter
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+    purpose: workflow
+
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+    sysctl -w fs.inotify.max_user_watches=12000
+
+    sudo yum update -y
+
+    --BOUNDARY--
+---
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: workflow
+spec:
+  disruption:
+    {{ if eq (index .Values "karpenter-crds" "workflow" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "workflow" "consolidateAfter" }}
+    {{ end }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "workflow" "consolidationPolicy" }}
+    expireAfter: {{ index .Values "karpenter-crds" "workflow" "expireAfter" }}
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  template:
+    metadata:
+      labels:
+        role: workflow
+    spec:
+      kubelet:
+        evictionHard:
+          memory.available: 5%
+        evictionSoft:
+          memory.available: 10%
+        evictionSoftGracePeriod:
+          memory.available: 5m
+        kubeReserved:
+          cpu: 480m
+          ephemeral-storage: 3Gi
+          memory: 1632Mi
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: workflow
+      requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+        - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+        - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+        - c
+        - m
+        - r
+        - t
+      taints:
+      - effect: NoSchedule
+        key: role
+        value: workflow
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: workflow
+spec:
+  subnetSelector:
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+  securityGroupSelector:
+    # TODO this is an example of how to parameterize this, we should expand this when helpful
+    {{- if ne (index .Values "karpenter-crds" "workflow" "sgSelector") "" }}
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "workflow" "sgSelector" }}
+    {{- else }}
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-workflow
+    {{- end }}
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-workflow-karpenter
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+    purpose: workflow
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+
+    sysctl -w fs.inotify.max_user_watches=12000
+
+    # --BOUNDARY
+    # Content-Type: text/cloud-config; charset="us-ascii"
+
+    # mounts:
+    #   - ['fstype': 'bpf', 'mountpoint': '/sys/fs/bpf', 'opts': 'rw,relatime']
+
+    --BOUNDARY--
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 50Gi
+        volumeType: gp2
+        encrypted: true
+        deleteOnTermination: true
+---
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: workflow
+spec:
+  requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["on-demand"]
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+    - key: karpenter.k8s.aws/instance-category
+      operator: In
+      values:
+      - c
+      - m
+      - r
+      - t
+  taints:
+    - key: role
+      value: workflow
+      effect: NoSchedule
+    - key: karpenter.sh/legacy
+      value: "true"
+      effect: NoSchedule
+  labels:
+    role: workflow
+  #TODO this could be paramaterized
+  limits:
+    resources:
+      cpu: 1000
+  providerRef:
+    name: workflow
+  # Allow pods to be rearranged
+  consolidation:
+    enabled: {{ index .Values "karpenter-crds.workflow.consolidation" }}
+  # Kill nodes after 7 days to ensure they stay up to date
+  # TODO This could be paramaterized
+  ttlSecondsUntilExpired: 604800
+  {{ else }}
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: workflow
+spec:
+  subnetSelector:
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+  securityGroupSelector:
+    # TODO this is an example of how to parameterize this, we should expand this when helpful
+    {{- if ne (index .Values "karpenter-crds" "workflow" "sgSelector") "" }}
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "workflow" "sgSelector" }}
+    {{- else }}
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-workflow
+    {{- end }}
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-workflow-karpenter
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+    purpose: workflow
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+
+    sysctl -w fs.inotify.max_user_watches=12000
+
+    # --BOUNDARY
+    # Content-Type: text/cloud-config; charset="us-ascii"
+
+    # mounts:
+    #   - ['fstype': 'bpf', 'mountpoint': '/sys/fs/bpf', 'opts': 'rw,relatime']
+
+    --BOUNDARY--
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 50Gi
+        volumeType: gp2
+        encrypted: true
+        deleteOnTermination: true
+---
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: workflow
+spec:
+  requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["on-demand"]
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+    - key: karpenter.k8s.aws/instance-category
+      operator: In
+      values:
+      - c
+      - m
+      - r
+      - t
+  taints:
+    - key: role
+      value: workflow
+      effect: NoSchedule
+  labels:
+    role: workflow
+  #TODO this could be paramaterized
+  limits:
+    resources:
+      cpu: 1000
+  providerRef:
+    name: workflow
+  # Allow pods to be rearranged
+  consolidation:
+    enabled: {{ index .Values "karpenter-crds.workflow.consolidation" }}
+  # Kill nodes after 7 days to ensure they stay up to date
+  # TODO This could be paramaterized
+  ttlSecondsUntilExpired: 604800
+  {{ end }}
+{{ end }}

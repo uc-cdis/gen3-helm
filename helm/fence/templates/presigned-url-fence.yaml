@@ -14,6 +14,8 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/publicconfig: {{ include (print $.Template.BasePath "/fence-config-public.yaml") . | sha256sum }}
+        checksum/secretconfig: {{ include (print $.Template.BasePath "/fence-config.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

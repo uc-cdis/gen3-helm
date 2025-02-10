@@ -25,6 +25,7 @@ spec:
         netnolimit: 'yes'
         public: 'yes'
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/guppy_config.yaml") . | sha256sum }}
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}

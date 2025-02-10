@@ -11,6 +11,8 @@ global:
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
+    # -- (string) internal or internet-facing
+    scheme: internet-facing
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.

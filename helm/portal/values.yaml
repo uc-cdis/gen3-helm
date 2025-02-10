@@ -205,6 +205,8 @@ extraImages:
 
 # -- (map) GitOps configuration for portal
 gitops:
+  # -- (string)
+  gen3Bundle: ""
   # -- (string) multiline string - gitops.json
   json: |
     {
@@ -359,110 +361,131 @@ gitops:
         "discoveryUseAggMDS": false,
         "studyRegistration": false
       },
-      "dataExplorerConfig": {
-        "charts": {
-          "project_id": {
-            "chartType": "count",
-            "title": "Projects"
+      "explorerConfig": [
+        {
+          "tabTitle": "Data",
+          "charts": {
+            "project_id": {
+              "chartType": "count",
+              "title": "Projects"
+            },
+            "_case_id": {
+              "chartType": "count",
+              "title": "Cases"
+            },
+            "gender": {
+              "chartType": "pie",
+              "title": "Gender"
+            },
+            "race": {
+              "chartType": "bar",
+              "title": "Race"
+            }
           },
-          "_case_id": {
-            "chartType": "count",
-            "title": "Cases"
+          "filters": {
+            "tabs": [
+              {
+                "title": "Case",
+                "fields":[
+                  "project_id",
+                  "gender",
+                  "race",
+                  "ethnicity"
+                ]
+              }
+            ]
           },
-          "gender": {
-            "chartType": "pie",
-            "title": "Gender"
+          "table": {
+            "enabled": false
           },
-          "race": {
-            "chartType": "bar",
-            "title": "Race"
+          "dropdowns": {},
+          "buttons": [
+            {
+            "enabled": true,
+            "type": "export-to-workspace",
+            "title": "Export to Workspace",
+            "leftIcon": "datafile",
+            "rightIcon": "download"
+            }
+            ],
+          "guppyConfig": {
+            "dataType": "case",
+            "nodeCountTitle": "Cases",
+            "fieldMapping": [
+              { "field": "disease_type", "name": "Disease type" },
+              { "field": "primary_site", "name": "Site where samples were collected"}
+            ],
+            "manifestMapping": {
+              "resourceIndexType": "file",
+              "resourceIdField": "object_id",
+              "referenceIdFieldInResourceIndex": "_case_id",
+              "referenceIdFieldInDataIndex": "_case_id"
+            },
+            "accessibleFieldCheckList": ["_case_id"],
+            "accessibleValidationField": "_case_id"
           }
         },
-        "filters": {
-          "tabs": [
-            {
-              "title": "Case",
-              "fields":[
-                "project_id",
-                "gender",
-                "race",
-                "ethnicity"
-              ]
+        {
+          "tabTitle": "File",
+          "charts": {
+            "data_type": {
+              "chartType": "stackedBar",
+              "title": "File Type"
+            },
+            "data_format": {
+              "chartType": "stackedBar",
+              "title": "File Format"
             }
-          ]
-        },
-        "table": {
-          "enabled": false
-        },
-        "dropdowns": {},
-        "buttons": [],
-        "guppyConfig": {
-          "dataType": "case",
-          "nodeCountTitle": "Cases",
-          "fieldMapping": [
-            { "field": "disease_type", "name": "Disease type" },
-            { "field": "primary_site", "name": "Site where samples were collected"}
+          },
+          "filters": {
+            "tabs": [
+              {
+                "title": "File",
+                "fields": [
+                  "project_id",
+                  "data_type",
+                  "data_format"
+                ]
+              }
+            ]
+          },
+          "buttons": [
+            {
+            "enabled": true,
+            "type": "export-files-to-workspace",
+            "title": "Export to Workspace",
+            "leftIcon": "datafile",
+            "rightIcon": "download"
+            }
           ],
-          "manifestMapping": {
-            "resourceIndexType": "file",
-            "resourceIdField": "object_id",
-            "referenceIdFieldInResourceIndex": "_case_id",
-            "referenceIdFieldInDataIndex": "node_id"
+          "table": {
+            "enabled": true,
+            "fields": [
+              "project_id",
+              "file_name",
+              "file_size",
+              "object_id"
+            ]
           },
-          "accessibleFieldCheckList": ["_case_id"],
-          "accessibleValidationField": "_case_id"
-        }
-      },
-      "fileExplorerConfig": {
-        "charts": {
-          "data_type": {
-            "chartType": "stackedBar",
-            "title": "File Type"
-          },
-          "data_format": {
-            "chartType": "stackedBar",
-            "title": "File Format"
+          "dropdowns": {},
+          "guppyConfig": {
+            "dataType": "file",
+            "fieldMapping": [
+              { "field": "object_id", "name": "GUID" }
+            ],
+            "nodeCountTitle": "Files",
+            "manifestMapping": {
+              "resourceIndexType": "case",
+              "resourceIdField": "_case_id",
+              "referenceIdFieldInResourceIndex": "object_id",
+              "referenceIdFieldInDataIndex": "object_id"
+            },
+            "accessibleFieldCheckList": ["_case_id"],
+            "accessibleValidationField": "_case_id",
+            "downloadAccessor": "object_id"
           }
-        },
-        "filters": {
-          "tabs": [
-            {
-              "title": "File",
-              "fields": [
-                "project_id",
-                "data_type",
-                "data_format"
-              ]
-            }
-          ]
-        },
-        "table": {
-          "enabled": true,
-          "fields": [
-            "project_id",
-            "file_name",
-            "file_size",
-            "object_id"
-          ]
-        },
-        "dropdowns": {},
-        "guppyConfig": {
-          "dataType": "file",
-          "fieldMapping": [
-            { "field": "object_id", "name": "GUID" }
-          ],
-          "nodeCountTitle": "Files",
-          "manifestMapping": {
-            "resourceIndexType": "case",
-            "resourceIdField": "_case_id",
-            "referenceIdFieldInResourceIndex": "object_id",
-            "referenceIdFieldInDataIndex": "object_id"
-          },
-          "accessibleFieldCheckList": ["_case_id"],
-          "accessibleValidationField": "_case_id",
-          "downloadAccessor": "object_id"
         }
-      }
+      ]
     }
   # -- (string) - favicon in base64
   favicon: "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"

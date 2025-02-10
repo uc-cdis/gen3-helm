@@ -238,7 +238,7 @@ peregrine:
 
 pidgin:
   # -- (bool) Whether to deploy the pidgin subchart.
-  enabled: true
+  enabled: false
 
 portal:
   # -- (bool) Whether to deploy the portal subchart.
@@ -321,3 +321,10 @@ neuvector:
   DB_HOST: development-gen3-postgresql
   # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
   ES_HOST: gen3-elasticsearch-master
+
+# -- (map) Secret information for External Secrets and DB Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
