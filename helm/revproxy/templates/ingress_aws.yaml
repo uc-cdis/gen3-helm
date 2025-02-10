@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: revproxy-alb
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/scheme: {{ .Values.global.aws.scheme }}
     alb.ingress.kubernetes.io/tags: Environment={{ .Values.global.environment }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.global.revproxyArn }}
     alb.ingress.kubernetes.io/group.name: {{ .Values.global.environment }}

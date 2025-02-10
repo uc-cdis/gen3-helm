@@ -1,0 +1,36 @@
+{{ if index .Values "aws-s3-mountpoint" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-s3-mountpoint
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-mountpoint-s3-csi-driver
+      repoURL: https://awslabs.github.io/mountpoint-s3-csi-driver
+      targetRevision: {{ index .Values "aws-s3-mountpoint" "targetRevision" }}
+      helm:
+        releaseName: aws-s3-mountpoint
+      {{- if index .Values "aws-s3-mountpoint" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/aws-s3-mountpoint.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          node:
+            serviceAccount:
+              annotations:
+                "eks.amazonaws.com/role-arn": "arn:aws:iam::{{ .Values.accountNumber }}:role/AmazonEKS_S3_CSI_DriverRole-{{ .Values.cluster }}"
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}

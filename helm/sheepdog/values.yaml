@@ -180,13 +180,17 @@ indexdUrl: http://indexd-service
 fenceUrl: http://fence-service
 # -- (string) URL for the arborist service
 arboristUrl: http://arborist-service
-authNamespace: default
+authNamespace: ""
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/sheepdog/settings.py"
+    subPath: "settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "sheepdog/bin/settings.py"
     subPath: "settings.py"
 
 # -- (map) Resource requests and limits for the containers in the pod

@@ -76,6 +76,12 @@ spec:
                   optional: false
             - name: FLASK_SECRET_KEY
               value: "TODO: FIX THIS!!!"
+            - name: INDEXD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-service-creds
+                  key: sheepdog
+                  optional: false
             - name: PGHOST
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,30 @@
+{{ if index .Values "ebs-csi-driver" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ebs-csi-driver
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-ebs-csi-driver
+      repoURL: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+      targetRevision: {{ index .Values "ebs-csi-driver" "targetRevision" }}
+      helm:
+        releaseName: ebs-csi-driver
+      {{- if index .Values "ebs-csi-driver" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/ebs-csi-driver.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}
