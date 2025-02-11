@@ -23,7 +23,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.10 |
 | file://../audit | audit | 0.1.16 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.13 |
-| file://../cohort-middleware | cohort-middleware | 0.1.0 |
+| file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
 | file://../etl | etl | 0.1.10 |
 | file://../fence | fence | 0.1.29 |
@@ -38,10 +38,10 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.17 |
 | file://../portal | portal | 0.1.26 |
 | file://../requestor | requestor | 0.1.16 |
-| file://../revproxy | revproxy | 0.1.20 |
+| file://../revproxy | revproxy | 0.1.21 |
 | file://../sheepdog | sheepdog | 0.1.20 |
 | file://../sower | sower | 0.1.16 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.17 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.18 |
 | file://../wts | wts | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
