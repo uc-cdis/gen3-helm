@@ -188,8 +188,8 @@ hatchery:
         - "/bin/sh"
         - root
     containers:
-      - # -- (int) port to proxy traffic to in docker contaniner
-        target-port: 8888
+      # -- (int) port to proxy traffic to in docker contaniner
+      - target-port: 8888
         # -- (string) cpu limit of workspace container
         cpu-limit: "1.0"
         # -- (string) memory limit of workspace container
