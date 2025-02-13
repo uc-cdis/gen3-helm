@@ -5,23 +5,23 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: ambassador
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.10
+    version: 0.1.11
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.13
+    version: 0.1.14
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: common
@@ -36,39 +36,39 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.12
+    version: 0.1.13
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
@@ -84,11 +84,11 @@ dependencies:
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.16
+    version: 0.1.17
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies

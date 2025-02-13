@@ -18,30 +18,30 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.16 |
-| file://../arborist | arborist | 0.1.14 |
-| file://../argo-wrapper | argo-wrapper | 0.1.10 |
-| file://../audit | audit | 0.1.16 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.13 |
+| file://../ambassador | ambassador | 0.1.17 |
+| file://../arborist | arborist | 0.1.15 |
+| file://../argo-wrapper | argo-wrapper | 0.1.11 |
+| file://../audit | audit | 0.1.17 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
 | file://../common | common | 0.1.16 |
 | file://../etl | etl | 0.1.10 |
-| file://../fence | fence | 0.1.29 |
+| file://../fence | fence | 0.1.30 |
 | file://../frontend-framework | frontend-framework | 0.1.6 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../guppy | guppy | 0.1.17 |
-| file://../hatchery | hatchery | 0.1.12 |
-| file://../indexd | indexd | 0.1.18 |
-| file://../manifestservice | manifestservice | 0.1.18 |
-| file://../metadata | metadata | 0.1.17 |
+| file://../guppy | guppy | 0.1.18 |
+| file://../hatchery | hatchery | 0.1.13 |
+| file://../indexd | indexd | 0.1.19 |
+| file://../manifestservice | manifestservice | 0.1.19 |
+| file://../metadata | metadata | 0.1.18 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.17 |
-| file://../portal | portal | 0.1.26 |
-| file://../requestor | requestor | 0.1.16 |
+| file://../peregrine | peregrine | 0.1.18 |
+| file://../portal | portal | 0.1.27 |
+| file://../requestor | requestor | 0.1.17 |
 | file://../revproxy | revproxy | 0.1.21 |
-| file://../sheepdog | sheepdog | 0.1.20 |
-| file://../sower | sower | 0.1.16 |
+| file://../sheepdog | sheepdog | 0.1.21 |
+| file://../sower | sower | 0.1.17 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.18 |
-| file://../wts | wts | 0.1.18 |
+| file://../wts | wts | 0.1.19 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
