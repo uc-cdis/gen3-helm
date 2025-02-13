@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.58](https://img.shields.io/badge/Version-0.1.58-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -37,10 +37,10 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.17 |
 | file://../portal | portal | 0.1.26 |
 | file://../requestor | requestor | 0.1.16 |
-| file://../revproxy | revproxy | 0.1.19 |
+| file://../revproxy | revproxy | 0.1.20 |
 | file://../sheepdog | sheepdog | 0.1.20 |
 | file://../sower | sower | 0.1.16 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.16 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.17 |
 | file://../wts | wts | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
@@ -181,4 +181,7 @@ Helm chart to deploy Gen3 Data Commons
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
+| tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
