@@ -1,0 +1,96 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "gen3-integration-tests"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gen3.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "gen3.labels" . | nindent 8 }}
+    spec:
+      hostNetwork: true
+      serviceAccountName: kubectl-access
+      volumes:
+        - name: kube-api-access
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3607
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace
+        - name: api-keys
+          emptyDir: {}
+      initContainers:
+        - name: generate-api-keys
+          image: quay.io/cdis/gen3-integration-tests:master
+          imagePullPolicy: Always
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: hostname
+            - name: GEN3_INSTANCE_TYPE
+              value: HELM_LOCAL
+          volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+            - name: api-keys
+              mountPath: /root/.gen3
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              mkdir /root/.gen3
+              bash scripts/helm/generate_api_keys.sh test_data/test_setup/users.csv $HOSTNAME
+      containers:
+        - name: code-vigil
+          image: quay.io/cdis/gen3-integration-tests:master
+          imagePullPolicy: Always
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: hostname
+            - name: GEN3_INSTANCE_TYPE
+              value: HELM_LOCAL
+            - name: TEST_LABEL
+              value: "{{ .Values.tests.TEST_LABEL }}"
+            - name: SERVICE_TO_TEST
+              value: "{{ .Values.tests.SERVICE_TO_TEST }}"
+          volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+            - name: api-keys
+              mountPath: /root/.gen3
+          resources:
+            {{- toYaml .Values.tests.resources | nindent 12 }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              if [ -z "$SERVICE_TO_TEST" ]; then
+                  echo "Run tests"
+                  GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto  -m "not wip" --dist loadscope $TEST_LABEL
+              else
+                  echo "Run tests pertaining to specific service"
+                  GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
+              fi
+      restartPolicy: Never
