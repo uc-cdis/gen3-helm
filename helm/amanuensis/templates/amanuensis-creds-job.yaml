@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: amanuensis-creds
+  labels:
+    redeploy-hash: "{{ .Release.Revision }}"
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      serviceAccountName: "amanuensis-jobs"
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+      containers:
+      - name: awshelper
+        image: "quay.io/cdis/awshelper:master"
+        imagePullPolicy: Always
+        env:
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: password
+                optional: false
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: username
+                optional: false
+          - name: PGDB
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: database
+                optional: false
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: host
+                optional: false
+          - name: PGPORT
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: port
+                optional: false
+          - name: DBREADY
+            valueFrom:
+              secretKeyRef:
+                name: amanuensis-dbcreds
+                key: dbcreated
+                optional: false
+          - name: HOSTNAME
+            value: "{{ .Values.global.hostname }}"
+          - name: DATA_DOWNLOAD_BUCKET
+            value: "{{ .Values.AWS_CREDENTIALS.DATA_DELIVERY_S3_BUCKET.bucket_name }}"
+          - name: AWS_ACCESS_KEY_ID
+            value: "{{ .Values.AWS_CREDENTIALS.DATA_DELIVERY_S3_BUCKET.aws_access_key_id }}"
+          - name: AWS_SECRET_ACCESS_KEY
+            value: "{{ .Values.AWS_CREDENTIALS.DATA_DELIVERY_S3_BUCKET.aws_secret_access_key }}"
+        volumeMounts:
+          - name: shared-data
+            mountPath: /mnt/shared
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - |
+            if kubectl get secret amanuensis-creds; then
+              kubectl delete secret amanuensis-creds
+            fi
+            cat <<EOF > /mnt/shared/creds.json
+            {
+              "db_host": "${PGHOST}",
+              "db_username": "${PGUSER}",
+              "db_password": "${PGPASSWORD}",
+              "db_database": "${PGDB}",
+              "hostname": "${HOSTNAME}",
+              "indexd_password": "",
+              "data_delivery_bucket": "${DATA_DOWNLOAD_BUCKET}",
+              "data_delivery_bucket_aws_key_id": "${AWS_ACCESS_KEY_ID}",
+              "data_delivery_bucket_aws_access_key": "${AWS_SECRET_ACCESS_KEY}"
+            }
+            EOF
+
+            kubectl create secret generic amanuensis-creds --from-file=/mnt/shared/creds.json
+      restartPolicy: Never

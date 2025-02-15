@@ -5,8 +5,26 @@ cd "$(dirname "$0")/../helm/gen3" || exit 1 || exit 1
 
 rm ../../values.yaml
 
+# Initialize variables
+DISABLE_UPDATE=false
+
+
+
 project="$1"
 shift
+
+# Parse arguments
+for arg in "$@"; do
+  case $arg in
+    --disable-update)
+      DISABLE_UPDATE=true
+      shift # Remove --disable-update from arguments
+      ;;
+    *)
+      # Pass through other arguments
+      ;;
+  esac
+done
 # Check if ../../secret-values.yaml exists
 if [ -f ../../secret-values.yaml ]; then
   yq '. *= load("../../secret-values.yaml")' ../../$project-default-values.yaml > ../../values.yaml
@@ -40,17 +58,26 @@ if [ $# -gt 0 ]; then
   # Iterate over each argument (service name)
   for service_name in "$@"
   do
+    # Skip if service_name is disable-update
+    if [ "$service_name" = "--disable-update" ]; then
+      continue
+    fi
+
     # Delete the deployment corresponding to the service name
     kubectl delete deployment ${service_name}-deployment
     if [ "$service_name" = "gearbox" ]; then
       kubectl delete job gearbox-g3auto-patch
     fi
-
   done
 fi
 
-# Run helm dependency update
-helm dependency update
+# Conditionally run helm dependency update
+if [ "$DISABLE_UPDATE" = false ]; then
+  echo "Running helm dependency update..."
+  helm dependency update
+else
+  echo "Skipping helm dependency update..."
+fi
 
 # Run helm upgrade --install command
 helm upgrade --install $project . -f ../../values.yaml

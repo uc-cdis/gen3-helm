@@ -48,6 +48,55 @@ def load_json(file_name, app_name, search_folders=None):
         return json.load(reader)
 
 
+def inject_creds_into_fence_config(creds_file_path, config_file_path):
+    creds_file = open(creds_file_path, "r")
+    creds = json.load(creds_file)
+    creds_file.close()
+
+    # get secret values from creds.json file
+    db_host = _get_nested_value(creds, "db_host")
+    db_username = _get_nested_value(creds, "db_username")
+    db_password = _get_nested_value(creds, "db_password")
+    db_database = _get_nested_value(creds, "db_database")
+    hostname = _get_nested_value(creds, "hostname")
+    indexd_password = _get_nested_value(creds, "indexd_password")
+    google_client_secret = _get_nested_value(creds, "google_client_secret")
+    google_client_id = _get_nested_value(creds, "google_client_id")
+    hmac_key = _get_nested_value(creds, "hmac_key")
+    db_path = "postgresql://{}:{}@{}:5432/{}".format(
+        db_username, db_password, db_host, db_database
+    )
+
+    config_file = open(config_file_path, "r").read()
+
+    print("  DB injected with value(s) from creds.json")
+    config_file = _replace(config_file, "DB", db_path)
+
+    print("  BASE_URL injected with value(s) from creds.json")
+    config_file = _replace(config_file, "BASE_URL", "https://{}/user".format(hostname))
+
+    print("  INDEXD_PASSWORD injected with value(s) from creds.json")
+    config_file = _replace(config_file, "INDEXD_PASSWORD", indexd_password)
+    config_file = _replace(config_file, "INDEXD_USERNAME", "fence")
+
+    print("  ENCRYPTION_KEY injected with value(s) from creds.json")
+    config_file = _replace(config_file, "ENCRYPTION_KEY", hmac_key)
+
+    print(
+        "  OPENID_CONNECT/google/client_secret injected with value(s) "
+        "from creds.json"
+    )
+    config_file = _replace(
+        config_file, "OPENID_CONNECT/google/client_secret", google_client_secret
+    )
+
+    print("  OPENID_CONNECT/google/client_id injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "OPENID_CONNECT/google/client_id", google_client_id
+    )
+
+    open(config_file_path, "w+").write(config_file)
+
 def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     creds_file = open(creds_file_path, "r")
     creds = json.load(creds_file)
@@ -88,17 +137,77 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
         config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key", data_delivery_bucket_aws_access_key
     )
 
-    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET injected with value(s) from creds.json")
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name injected with value(s) from creds.json")
     config_file = _replace(
-        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET", data_delivery_bucket, key_only=True
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name", data_delivery_bucket
     )
 
+    # modify USER_API to http://user-service/ if hostname is localhost
+
+    if hostname == "localhost":
+        print("  USER_API set to http://fence-service/")
+        config_file = _replace(config_file, "USER_API", "http://fence-service/")
     # print("  ENCRYPTION_KEY injected with value(s) from creds.json")
     # config_file = _replace(config_file, "ENCRYPTION_KEY", hmac_key)
 
 
     open(config_file_path, "w+").write(config_file)
 
+
+def set_prod_defaults(config_file_path):
+    config_file = open(config_file_path, "r").read()
+
+    print(
+        "  CIRRUS_CFG/GOOGLE_APPLICATION_CREDENTIALS set as "
+        "var/www/fence/fence_google_app_creds_secret.json"
+    )
+    config_file = _replace(
+        config_file,
+        "CIRRUS_CFG/GOOGLE_APPLICATION_CREDENTIALS",
+        "/var/www/fence/fence_google_app_creds_secret.json",
+    )
+
+    print(
+        "  CIRRUS_CFG/GOOGLE_STORAGE_CREDS set as "
+        "var/www/fence/fence_google_storage_creds_secret.json"
+    )
+    config_file = _replace(
+        config_file,
+        "CIRRUS_CFG/GOOGLE_STORAGE_CREDS",
+        "/var/www/fence/fence_google_storage_creds_secret.json",
+    )
+
+    print("  INDEXD set as http://indexd-service/")
+    config_file = _replace(config_file, "INDEXD", "http://indexd-service/")
+
+    print("  ARBORIST set as http://arborist-service/")
+    config_file = _replace(config_file, "ARBORIST", "http://arborist-service/")
+
+    print("  HTTP_PROXY/host set as cloud-proxy.internal.io")
+    config_file = _replace(config_file, "HTTP_PROXY/host", "cloud-proxy.internal.io")
+
+    print("  HTTP_PROXY/port set as 3128")
+    config_file = _replace(config_file, "HTTP_PROXY/port", 3128)
+
+    print("  DEBUG set to false")
+    config_file = _replace(config_file, "DEBUG", False)
+
+    print("  MOCK_AUTH set to false")
+    config_file = _replace(config_file, "MOCK_AUTH", False)
+
+    print("  MOCK_GOOGLE_AUTH set to false")
+    config_file = _replace(config_file, "MOCK_GOOGLE_AUTH", False)
+
+    print("  AUTHLIB_INSECURE_TRANSPORT set to true")
+    config_file = _replace(config_file, "AUTHLIB_INSECURE_TRANSPORT", True)
+
+    print("  SESSION_COOKIE_SECURE set to true")
+    config_file = _replace(config_file, "SESSION_COOKIE_SECURE", True)
+
+    print("  ENABLE_CSRF_PROTECTION set to true")
+    config_file = _replace(config_file, "ENABLE_CSRF_PROTECTION", True)
+
+    open(config_file_path, "w+").write(config_file)
 
 def set_prod_defaults_amanuensis(config_file_path):
     config_file = open(config_file_path, "r").read()
@@ -134,7 +243,6 @@ def set_prod_defaults_amanuensis(config_file_path):
     config_file = _replace(config_file, "ENABLE_CSRF_PROTECTION", True)
 
     open(config_file_path, "w+").write(config_file)
-
 
 def inject_other_files_into_fence_config(other_files, config_file_path):
     additional_cfgs = _get_all_additional_configs(other_files)
@@ -251,7 +359,7 @@ def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=
         return yaml_config
 
     # set new start point to past current match and move on to next match
-    start = matches.end(0)
+    start = start + matches.end(0)
     nested_level += 1
     del nested_path_to_replace[0]
 
@@ -351,7 +459,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--other_files_to_inject",
         nargs="+",
-        help="amanuensis_credentials.json, local_settings.py, amanuensis_settings.py file(s) to "
+        help="fence_credentials.json, local_settings.py, fence_settings.py file(s) to "
         "inject into the configuration yaml",
     )
     parser.add_argument(
@@ -359,8 +467,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    inject_creds_into_amanuensis_config(args.creds_file_to_inject, args.config_file)
-    set_prod_defaults_amanuensis(args.config_file)
+    if args.config_file == "new-amanuensis-config.yaml":
+        inject_creds_into_amanuensis_config(args.creds_file_to_inject, args.config_file)
+        set_prod_defaults_amanuensis(args.config_file)
+    else:
+        inject_creds_into_fence_config(args.creds_file_to_inject, args.config_file)
+        set_prod_defaults(args.config_file)
 
     if args.other_files_to_inject:
         inject_other_files_into_fence_config(
