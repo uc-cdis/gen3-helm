@@ -44,6 +44,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             - name: FENCE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -149,7 +152,7 @@ spec:
             - name: GEN3_SIDECAR
               value: "False"
             - name: CONF_HOSTNAME
-              value: {{ .Values.global.hostname }}
+              value: {{ .Values.global.hostname | quote }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
