@@ -39,6 +39,9 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           env:
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
