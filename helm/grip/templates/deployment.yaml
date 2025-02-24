@@ -74,10 +74,24 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
-            - "/bin/sh"
-            - "-c"
-            - >
-              grip server -c mongo.yml -w graphql=gen3_writer.so -w reader=grip-graphql-endpoint.so -l reader:config=./config/gen3.js -l reader:graph=CALIPER
+            - /app/grip
+          args:
+            - server
+            - -c
+            - mongo.yml
+            - -w
+            - graphql=gen3_writer.so
+            - -w
+            - reader=grip-graphql-endpoint.so
+            - -l
+            - reader:config=./config/gen3.js
+            - -l
+            - reader:graph=CALIPER
+          env:
+            - name: GOMAXPROCS
+              value: "4"
+            - name: GOMEMLIMIT
+              value: "7000000000"
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
