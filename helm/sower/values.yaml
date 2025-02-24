@@ -221,6 +221,9 @@ strategy:
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: true
 
+# -- (list) Environment variables to pass to the container
+env:
+
 sowerConfig:
   - name: pelican-export
     action: export

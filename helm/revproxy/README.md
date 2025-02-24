@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -23,10 +23,11 @@ A Helm chart for gen3 revproxy
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"wafv2":{"enabled":false,"wafAclArn":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"scheme":"internet-facing","wafv2":{"enabled":false,"wafAclArn":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.scheme | string | `"internet-facing"` | internal or internet-facing |
 | global.aws.wafv2 | map | `{"enabled":false,"wafAclArn":null}` | WAF configuration |
 | global.aws.wafv2.enabled | bool | `false` | Set to true if using AWS WAFv2 |
 | global.aws.wafv2.wafAclArn | string | `nil` | ARN for the WAFv2 ACL. |
