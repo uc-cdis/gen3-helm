@@ -63,6 +63,13 @@ global:
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (bool) Whether or not to deploy external secrets as part of this release
+  enable: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto"
+  cohortMiddlewareG3Auto:
+
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: quay.io/cdis/cohort-middleware

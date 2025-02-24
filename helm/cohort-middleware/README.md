@@ -40,6 +40,9 @@ A Helm chart for gen3 cohort-middleware
 | config.db | string | `"atlas_default"` |  |
 | config.globalReaderRole | string | `"public"` |  |
 | config.schema | string | `"ohdsi"` |  |
+| externalSecrets | map | `{"cohortMiddlewareG3Auto":null,"enable":false}` | External Secrets settings. |
+| externalSecrets.cohortMiddlewareG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto" |
+| externalSecrets.enable | bool | `false` | Whether or not to deploy external secrets as part of this release |
 | fullnameOverride | string | `""` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |

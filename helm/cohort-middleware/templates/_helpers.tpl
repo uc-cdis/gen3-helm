@@ -60,3 +60,11 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+  cohortmiddleware-g3auto secret
+*/}}
+{{- define "cohort-middleware-g3auto" -}}
+{{- default "cohort-middleware-g3auto" .Values.externalSecrets.cohortMiddlewareG3Auto }}
+{{- end }}
