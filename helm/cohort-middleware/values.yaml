@@ -65,8 +65,6 @@ replicaCount: 1
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (bool) Whether or not to deploy external secrets as part of this release
-  deploy: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto"
   cohortMiddlewareG3Auto:
 
