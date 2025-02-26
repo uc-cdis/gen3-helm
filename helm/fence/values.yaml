@@ -118,6 +118,8 @@ usersync:
   slack_webhook: None
   # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
   slack_send_dbgap: false
+  # -- (list) Environment variables to pass to the job.
+  env:
 
 # -- (map) Secret information for Usersync and External Secrets.
 secrets:
