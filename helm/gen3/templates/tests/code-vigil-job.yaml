@@ -66,14 +66,22 @@ spec:
           args:
             - "-c"
             - |
+              set -e
               echo "Waiting for fence-check to complete..."
               kubectl wait --for=condition=complete --timeout=600s job/fence-check
+              if ! kubectl get job fence-check >/dev/null 2>&1; then
+                echo "Error: job 'fence-check' does not exist!"
+                exit 1
+              fi
               echo "Fence-check completed. Starting main job."
               kubectl create job --from=cronjob/usersync usersync-integration-test
               echo "Waiting for usersync to complete..."
+              if ! kubectl get cronjob usersync >/dev/null 2>&1; then
+                echo "Error: cronjob 'usersync' does not exist!"
+                exit 1
+              fi
               kubectl wait --for=condition=complete --timeout=600s job/usersync-integration-test
               echo "Usersync completed."
-              exit 1
           volumeMounts:
             - name: kube-api-access
               mountPath: /var/run/secrets/kubernetes.io/serviceaccount
@@ -99,7 +107,6 @@ spec:
           args:
             - "-c"
             - |
-              mkdir /root/.gen3
               bash scripts/helm/generate_api_keys.sh test_data/test_setup/users.csv $HOSTNAME
       containers:
         - name: code-vigil
