@@ -342,3 +342,6 @@ tests:
     limits:
       cpu: "1"
       memory: "10G"
+  image:
+    tag:
+    # change to master!
