@@ -36,7 +36,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
@@ -60,7 +60,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -80,11 +80,11 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.17
+    version: 0.1.18
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts

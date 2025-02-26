@@ -25,7 +25,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
 | file://../common | common | 0.1.16 |
 | file://../etl | etl | 0.1.10 |
-| file://../fence | fence | 0.1.30 |
+| file://../fence | fence | 0.1.31 |
 | file://../frontend-framework | frontend-framework | 0.1.6 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.18 |
@@ -34,13 +34,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.19 |
 | file://../metadata | metadata | 0.1.18 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.18 |
+| file://../peregrine | peregrine | 0.1.19 |
 | file://../portal | portal | 0.1.27 |
 | file://../requestor | requestor | 0.1.17 |
-| file://../revproxy | revproxy | 0.1.22 |
+| file://../revproxy | revproxy | 0.1.23 |
 | file://../sheepdog | sheepdog | 0.1.21 |
-| file://../sower | sower | 0.1.17 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.18 |
+| file://../sower | sower | 0.1.18 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.19 |
 | file://../wts | wts | 0.1.19 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
