@@ -148,6 +148,11 @@ frontend-framework:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "develop"
 
+# -- (map) Configurations for cohort-middleware chart.
+cohort-middleware:
+  # -- (bool) Whether to deploy the cohort-middleware subchart.
+  enabled: false
+
 # -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
@@ -183,8 +188,8 @@ hatchery:
         - "/bin/sh"
         - root
     containers:
-      -  # -- (int) port to proxy traffic to in docker contaniner
-        target-port: 8888
+      # -- (int) port to proxy traffic to in docker contaniner
+      - target-port: 8888
         # -- (string) cpu limit of workspace container
         cpu-limit: "1.0"
         # -- (string) memory limit of workspace container
