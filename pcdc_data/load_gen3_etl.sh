@@ -1,23 +1,24 @@
-GEN3_SCRIPTS_REPO="https://github.com/chicagopcdc/gen3_scripts.git"
-GEN3_SCRIPTS_REPO_BRANCH="origin/gen3-helm"
-
+GEN3_SCRIPTS_REPO="https://github.com/chicagopcdc/gen3_etl.git"
+GEN3_SCRIPTS_REPO_BRANCH="origin/update-requirments"
+ENV_FILE="../.env"
+CREDENTIALS_FILE="../credentials.json"
 
 #------------------------------------------------------
 # Clean up
 #------------------------------------------------------
-rm -rf ./gen3_scripts
+rm -rf ./gen3_etl
 echo "removed old folder"
 
 #------------------------------------------------------
 # Clone or Update chicagopcdc/data-simulator repo
 #------------------------------------------------------
-echo "Clone or Update chicagopcdc/gen3-scripts repo from github"
+echo "Clone or Update chicagopcdc/gen3_etl repo from github"
 
 # Does the repo exist?  If not, go get it!
-if [ ! -d "./gen3_scripts" ]; then
+if [ ! -d "./gen3_etl" ]; then
   git clone $GEN3_SCRIPTS_REPO
 
-  cd ./gen3_scripts
+  cd ./gen3_etl
 
   git checkout -t $GEN3_SCRIPTS_REPO_BRANCH
   git pull
@@ -29,10 +30,5 @@ fi
 
 
 
-#load in files to gen3_load
-cp ../.env ./gen3_scripts/gen3_load
-cp ../credentials.json ./gen3_scripts/gen3_load
-
-#load in files to es_etl_patch
-cp ../.env ./gen3_scripts/es_etl_patch
-cp ../credentials.json ./gen3_scripts/es_etl_patch
+#load in files to gen3_load and es_etl_patch
+cp $ENV_FILE ./gen3_etl/elasticsearch && cp $ENV_FILE ./gen3_etl/graph && cp $CREDENTIALS_FILE ./gen3_etl/elasticsearch && cp $CREDENTIALS_FILE ./gen3_etl/graph

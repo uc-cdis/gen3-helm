@@ -111,6 +111,7 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     data_delivery_bucket = _get_nested_value(creds, "data_delivery_bucket")
     data_delivery_bucket_aws_key_id = _get_nested_value(creds, "data_delivery_bucket_aws_key_id")
     data_delivery_bucket_aws_access_key = _get_nested_value(creds, "data_delivery_bucket_aws_access_key")
+    csl_key = _get_nested_value(creds, "csl_key")
 
     db_path = "postgresql://{}:{}@{}:5432/{}".format(
         db_username, db_password, db_host, db_database
@@ -140,6 +141,11 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name injected with value(s) from creds.json")
     config_file = _replace(
         config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name", data_delivery_bucket
+    )
+
+    print("  CSL_KEY injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "CSL_KEY", csl_key
     )
 
     # modify USER_API to http://user-service/ if hostname is localhost

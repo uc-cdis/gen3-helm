@@ -1,10 +1,10 @@
 #!/bin/bash
 
+source ../.env
+
 pcdc clear_elasticsearch
 
-cd ./gen3_scripts/es_etl_patch
-
-rm -rf env/
+cd ./gen3_etl/elasticsearch
 
 # Check if the 'env' directory exists
 if [ ! -d "env" ]; then
@@ -15,13 +15,10 @@ else
     echo "Virtual environment 'env' already exists."
 fi
 
+# Activate the virtual environment
 source env/bin/activate
 
-pip install pyyaml==5.3.1
-pip install python-dotenv
-pip install gen3==4.5.0
-
-pip install -r requirements.txt
+poetry install
 
 curr_dir=$(pwd)
 auth_file_path="$curr_dir/env/lib/python3.9/site-packages/gen3/auth.py"
@@ -48,13 +45,12 @@ sed -i "" -E 's/(requests\..*)\)/\1, verify=False)/' "$submission_file_path"
 
 echo "submission file edited successfully."
 
+mkdir -p files
+
 cd etl
 
 python etl.py et
 
-#update the env variable to the mapping
-latest_file=$(ls -1 ../files/nested_mapping_*.json | sort -r | head -n 1) 
-cp $latest_file ../files/nested_mapping.json
 
 python etl.py l
 

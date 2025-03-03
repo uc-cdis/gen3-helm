@@ -49,8 +49,6 @@ spec:
             readOnly: true
             mountPath: "/var/www/amanuensis/creds.json"
             subPath: creds.json
-          - mountPath: /tmp/pod
-            name: tmp-pod
         command: ["/bin/bash"]
         args:
           - "-c"
@@ -61,6 +59,6 @@ spec:
             fence-create migrate
             if [[ $? != 0 ]]; then
               echo "WARNING: non zero exit code: $?"
+              exit 1
             fi
-            touch /tmp/pod/completed
       restartPolicy: OnFailure

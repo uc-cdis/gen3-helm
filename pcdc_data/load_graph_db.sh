@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd ./gen3_scripts/gen3_load
+source ../.env
 
-rm -rf env/
+cd ./gen3_etl/graph
 
 # Check if the 'env' directory exists
 if [ ! -d "env" ]; then
@@ -13,9 +13,10 @@ else
     echo "Virtual environment 'env' already exists."
 fi
 
+# Activate the virtual environment
 source env/bin/activate
 
-pip install -r requirements.txt
+poetry install
 
 curr_dir=$(pwd)
 auth_file_path="$curr_dir/env/lib/python3.9/site-packages/gen3/auth.py"
@@ -46,3 +47,5 @@ echo "submission file edited successfully."
 cd ./operations
 
 python etl.py load
+
+deactivate
