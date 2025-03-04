@@ -24,6 +24,10 @@ dependencies:
     version: 0.1.14
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
+  - name: cohort-middleware
+    version: 0.1.1
+    repository: "file://../cohort-middleware"
+    condition: cohort-middleware.enabled
   - name: common
     version: 0.1.16
     repository: file://../common
