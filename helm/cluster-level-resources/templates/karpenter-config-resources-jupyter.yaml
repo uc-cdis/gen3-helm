@@ -1,0 +1,178 @@
+{{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "jupyter" "enabled") }}
+{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+apiVersion: karpenter.k8s.aws/v1
+{{- else }}
+apiVersion: karpenter.k8s.aws/v1beta1
+{{- end }}
+kind: EC2NodeClass
+metadata:
+  name: jupyter
+spec:
+  amiFamily: AL2
+  amiSelectorTerms:
+  - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
+    owner: "143731057154"
+  blockDeviceMappings:
+  - deviceName: /dev/xvda
+    ebs:
+      deleteOnTermination: true
+      encrypted: true
+      volumeSize: 50Gi
+      volumeType: gp3
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  role: eks_{{ index .Values "karpenter-crds" "selectorTag" }}_workers_role
+
+  securityGroupSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-jupyter
+
+  subnetSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-karpenter
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+    purpose: jupyter
+
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+    sysctl -w fs.inotify.max_user_watches=12000
+
+    sudo yum update -y
+
+    --BOUNDARY--
+{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+  kubelet:
+    evictionHard:
+      memory.available: 5%
+    evictionSoft:
+      memory.available: 10%
+    evictionSoftGracePeriod:
+      memory.available: 5m
+    kubeReserved:
+      cpu: 480m
+      ephemeral-storage: 3Gi
+      memory: 1632Mi
+{{- end }}
+---
+{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: jupyter
+spec:
+  template:
+    metadata:
+      labels:
+        role: jupyter
+    spec:
+      taints:
+        - effect: NoSchedule
+          key: role
+          value: jupyter
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: jupyter
+      expireAfter: 168h
+      terminationGracePeriod: 48h
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - amd64
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values:
+            - c
+            - m
+            - r
+            - t
+
+  disruption:
+    {{ if eq (index .Values "karpenter-crds" "default" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
+    {{ end }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
+    budgets:
+    - nodes: 10%
+
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+{{- else }}
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: jupyter
+spec:
+  disruption:
+    {{ if eq (index .Values "karpenter-crds" "jupyter" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "jupyter" "consolidateAfter" }}
+    {{ end }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "jupyter" "consolidationPolicy" }}
+    expireAfter: {{ index .Values "karpenter-crds" "jupyter" "expireAfter" }}
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  template:
+    metadata:
+      labels:
+        role: jupyter
+    spec:
+      kubelet:
+        evictionHard:
+          memory.available: 5%
+        evictionSoft:
+          memory.available: 10%
+        evictionSoftGracePeriod:
+          memory.available: 5m
+        kubeReserved:
+          cpu: 480m
+          ephemeral-storage: 3Gi
+          memory: 1632Mi
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: jupyter
+      requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+        - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+        - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+        - c
+        - m
+        - r
+        - t
+      taints:
+      - effect: NoSchedule
+        key: role
+        value: jupyter
+{{- end }}
+{{ end }}
