@@ -22,6 +22,7 @@ spec:
       ref: values
       {{- else }}
         values: |
+          dnsPolicy: Default
           webhook:
             enabled: falsex
           serviceAccount:
