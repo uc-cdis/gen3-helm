@@ -82,6 +82,7 @@ spec:
               fi
               kubectl wait --for=condition=complete --timeout=600s job/usersync-integration-test
               echo "Usersync completed."
+              kubectl delete job usersync-integration-test
           volumeMounts:
             - name: kube-api-access
               mountPath: /var/run/secrets/kubernetes.io/serviceaccount
