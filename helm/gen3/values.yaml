@@ -333,3 +333,19 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
+
+# -- (map) Environment variables that control which tests are run.
+tests:
+  # -- (str) Name of the test that will run. Default is empty as GH workflow automatically sets this.
+  TEST_LABEL:
+  # -- (str) Name of the service we are testing. Default is empty as GH workflow automatically sets this.
+  SERVICE_TO_TEST:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "6G"
+    limits:
+      cpu: "1"
+      memory: "10G"
+  image:
+    tag:
