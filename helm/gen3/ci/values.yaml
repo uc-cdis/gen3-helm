@@ -1,0 +1,45 @@
+global:
+  hostname: 
+  # Deploy postgres/elasticsearch in same deployment for development purposes. 
+  dev: true
+
+audit: 
+  enabled: false
+
+revproxy:
+  ingress:
+    enabled: true
+    className: cloudflare-tunnel
+    hosts:
+      - host: 
+        paths:
+          - path: /
+            pathType: Prefix
+    resources:
+      requests:
+        memory: "105Mi"
+        cpu: "15m"
+
+fence:
+  image:
+    tag: 2025.01
+  usersync:
+    usersync: false
+    userYamlS3Path: s3://cdis-gen3-users/local_helm_testing/user.yaml
+    env:
+      - name: TEST
+        value: "testing"
+  FENCE_CONFIG:
+    # if true, will bypass OIDC login, and login a user with username "test"
+    # WARNING: DO NOT ENABLE IN PRODUCTION (for testing purposes only)
+    MOCK_GOOGLE_AUTH: true
+
+portal:
+  image:
+    repository: quay.io/cdis/data-portal-prebuilt
+    tag: "dev"
+
+  resources:
+    requests:
+      cpu: "0.2"
+      memory: 100Mi
