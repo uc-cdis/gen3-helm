@@ -29,7 +29,7 @@ spec:
 
   containers:
     - name: container-configmap
-      image: quay.io/ohsu-comp-bio/aced-etl:feature_grip
+      image: quay.io/ohsu-comp-bio/aced-etl:development
       imagePullPolicy: Always
       volumeMounts:
         # Gen3 credentials file

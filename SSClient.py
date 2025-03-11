@@ -64,14 +64,12 @@ def conv_shorthand(env: str) -> str:
         return "development"
     if env == "prod":
         return "production"
-    if env == "cbds-dev":
-        return "cbds_dev"
+    
     return env
 
 
 def match_env_with_id(env: str, id: Optional[int]):
     "Associates environment secret with its SS ID"
-
     conv_env = conv_shorthand(env)
     prefix = "Secrets-"
     if id is not None:
@@ -90,7 +88,9 @@ def match_env_with_id(env: str, id: Optional[int]):
     if conv_env in ["cbds", "CBDS"]:
         return SECRETS_CBDS, f"{prefix}cbds"
     if conv_env in ["cbds-dev", "CBDS-DEV"]:
-        return SECRETS_CBDS_DEV, f"{prefix}cbds_dev"
+        return SECRETS_CBDS_DEV, f"{prefix}cbds-dev"
+    
+    raise Exception(f"no matching environment found for {conv_env} \nSee the Makefile for supported ENV keywords")
 
 
 def _fetch_cached_token() -> str:
