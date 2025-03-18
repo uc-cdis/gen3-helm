@@ -38,6 +38,7 @@ spec:
         - name: config-volume-g3auto
           secret:
             secretName: meshcard-g3auto
+            optional: true
         - name: config-volume
           secret:
             secretName: meshcard-config
@@ -82,14 +83,14 @@ spec:
             #       name: meshcard-dbcreds
             #       key: dbcreated
             #       optional: false
-            {{- with .Values.useAggMds }}
-            - name: USE_AGG_MDS
-              value: {{ . | quote }}
-            {{- end }}
-            {{- with .Values.aggMdsNamespace}}
-            - name: AGG_MDS_NAMESPACE
-              value: {{ . }}
-            {{- end }}
+            # {{- with .Values.useAggMds }}
+            # - name: USE_AGG_MDS
+            #   value: {{ . | quote }}
+            # {{- end }}
+            # {{- with .Values.aggMdsNamespace}}
+            # - name: AGG_MDS_NAMESPACE
+            #   value: {{ . }}
+            # {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:
