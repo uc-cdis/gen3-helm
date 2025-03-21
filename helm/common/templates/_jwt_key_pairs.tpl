@@ -40,7 +40,7 @@ roleRef:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Chart.Name }}-create-public-key
+  name: {{ .Chart.Name }}-create-public-key-{{ .Release.Revision }}
   labels:
     app: gen3job
 spec:
@@ -94,7 +94,16 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-jwt-keys
+  annotations:
+    helm.sh/resource-policy: keep
 type: Opaque
 data:
+  {{- if (lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name)) }}
+  # Secret exists - don't regenerate the private key
+  {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name)) }}
+  jwt_private_key.pem: {{ index $existingSecret.data "jwt_private_key.pem" | quote }}
+  {{- else }}
+  # Secret doesn't exist yet - generate a new key
   jwt_private_key.pem: {{ genPrivateKey "rsa" | b64enc | quote }}
+  {{- end }}
 {{- end }}

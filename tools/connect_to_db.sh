@@ -6,10 +6,11 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-service_name=$1
+project_name=$1
+service_name=$2
 
 # Retrieve password from secret
 password=$(kubectl get secret ${service_name}-dbcreds -o jsonpath="{.data.password}" | base64 --decode)
 
 # Execute command in the pod
-kubectl exec -it pcdc-postgresql-0 -- /bin/bash -c "PGPASSWORD='${password}' psql -h pcdc-postgresql -U ${service_name}_pcdc -d ${service_name}_pcdc"
+kubectl exec -it ${project_name}-postgresql-0 -- /bin/bash -c "PGPASSWORD='${password}' psql -h ${project_name}-postgresql -U ${service_name}_${project_name} -d ${service_name}_${project_name}"

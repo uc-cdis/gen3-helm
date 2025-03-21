@@ -380,6 +380,7 @@ volumes:
       items:
         - key: jwt_public_key.pem
           path: jwt_public_key.pem
+    optional: true
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:

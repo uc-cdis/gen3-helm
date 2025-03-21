@@ -219,7 +219,7 @@ spec:
               mountPath: /data-portal/custom/images
             {{- end }}
             - name: "config-volume"
-              mountPath: "/data-portal/data/config/gitops.json"
+              mountPath: "/data-portal/data/config/pcdc.json"
               subPath: "gitops.json"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"

@@ -322,7 +322,7 @@ portal:
   #enabled: false
   image: 
     repository: "quay.io/pcdc/windmill"
-    tag: "1.34.0"
+    tag: "1.36.1"
     pullPolicy: IfNotPresent
   resources:
     requests:

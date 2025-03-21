@@ -27,7 +27,7 @@ shift  # Remove the first argument (command)
 case "$command" in
     "psql")
         # Run the connect_to_db.sh script with the remaining arguments
-        "$CONNECT_SCRIPT" "$@"
+        "$CONNECT_SCRIPT" gearbox "$@"
         ;;
     "roll")
         # Run the roll.sh script with the remaining arguments
