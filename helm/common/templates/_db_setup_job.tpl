@@ -189,7 +189,6 @@ data:
     {{- if index $existingSecret.data "dbcreated" }}
     dbcreated: {{ index $existingSecret.data "dbcreated" | quote }}
     {{- end }}
-  {{- end }}
   {{- else }}
     database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
     username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
