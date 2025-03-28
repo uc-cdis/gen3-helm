@@ -54,6 +54,12 @@ global:
     enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
+  # -- (string) Name of dataCommons
+  siteName: gen3.datacommons.io
+  # -- (string) Repository for the config
+  configRepo: https://github.com/uc-cdis/cdis-manifest.git
+  # -- (string) Branch name to pull config from
+  configBranch: master
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
