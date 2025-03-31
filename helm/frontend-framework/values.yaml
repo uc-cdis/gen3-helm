@@ -54,12 +54,6 @@ global:
     enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
-  # -- (string) Name of dataCommons
-  siteName: gen3.datacommons.io
-  # -- (string) Repository for the config
-  configRepo: https://github.com/uc-cdis/cdis-manifest.git
-  # -- (string) Branch name to pull config from
-  configBranch: master
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
@@ -133,6 +127,13 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 port: 3000
+
+# -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
+configDir: gen3.datacommons.io/gen3ff
+# -- (string) Repository for the config for CDIS this is cdis-manifest
+configRepo: https://github.com/uc-cdis/cdis-manifest.git
+# -- (string) Branch name to set config from
+configBranch: master
 
 # -- (list) List of environment variables to add to the deployment.
 env: []
