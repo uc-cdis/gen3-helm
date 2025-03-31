@@ -35,12 +35,12 @@ spec:
         - name: config-puller
           image: alpine/git
           env:
-            - name: SITE_NAME
-              value: { { .Values.siteName | quote } }
+            - name: CONFIG_DIR
+              value: {{ .Values.configDir }}
             - name: GIT_REPO
-              value: { { .Values.configRepo | quote } }
+              value: {{ .Values.configRepo  }}
             - name: GIT_BRANCH
-              value: { { .Values.configBranch | quote } }
+              value: {{ .Values.configBranch }}
           command:
             - /bin/sh
             - -c
@@ -49,14 +49,17 @@ spec:
               cd /tmp/repo
               git clone --filter=blob:none --no-checkout --depth 1 --sparse ${GIT_REPO} siteconfig
               cd siteconfig
-              git sparse-checkout set --cone ${SITE_NAME}
-              git fetch origin ${GIT_BRANCH}:${GIT_BRANCH}
-              git switch ${GIT_BRANCH}
-              mkdir -p /target-config
-              cp -r /tmp/repo/siteconfig/${SITE_NAME}/gen3ff/config /target-config/
+              git sparse-checkout set --cone ${CONFIG_DIR}
+              git fetch origin ${GIT_BRANCH}:config_branch
+              git switch config_branch
+              mkdir -p /gen3/config
+              cp -r /tmp/repo/siteconfig/${CONFIG_DIR}/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/${CONFIG_DIR}/public/* /gen3/public
           volumeMounts:
             - name: config-volume
-              mountPath: /target-config
+              mountPath: /gen3/config
+            - name: public-volume
+              mountPath: /gen3/public
       containers:
         - name: frontend-framework
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -105,4 +108,13 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
-              
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gen3/config
+            - name: public-volume
+              mountPath: /gen3/public
+      volumes:
+        - name: config-volume
+          emptyDir: {}
+        - name: public-volume
+          emptyDir: {}
