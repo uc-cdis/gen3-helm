@@ -2,7 +2,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "wts.fullname" . }}
+  name: wts-role-{{ $.Release.Namespace }}
 rules:
 - apiGroups: [""]
   resources: ["namespaces", "pods"]
