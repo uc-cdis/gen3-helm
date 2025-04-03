@@ -62,7 +62,8 @@ spec:
         - name: api-keys
           emptyDir: {}
         - name: allure-results
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: allure-results-pvc
       initContainers:
         - name: run-usersync
           image: bitnami/kubectl
