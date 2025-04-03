@@ -12,13 +12,13 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include (printf "%s.fullname" .Chart.Name )}}
-  maxReplicas: 1
-  minReplicas: 1
+    name: {{ include (printf "%s.fullname" .Chart.Name) . }}
+  maxReplicas: {{ .Values.autoscaling.minReplicas }}
+  minReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
     - resource:
         name: cpu
         target:
           averageUtilization: 40
-          type: Utilization
+        type: Utilization
 {{- end }}

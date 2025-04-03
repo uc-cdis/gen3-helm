@@ -1,1 +1,1 @@
-{{ include "common.horizontal_pod_autoscaler" }}
+{{ include "common.horizontal_pod_autoscaler" . }}
