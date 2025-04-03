@@ -30,7 +30,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.6 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.18 |
-| file://../hatchery | hatchery | 0.1.13 |
+| file://../hatchery | hatchery | 0.1.14 |
 | file://../indexd | indexd | 0.1.19 |
 | file://../manifestservice | manifestservice | 0.1.20 |
 | file://../metadata | metadata | 0.1.18 |
