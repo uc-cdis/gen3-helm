@@ -61,6 +61,8 @@ spec:
                         fieldPath: metadata.namespace
         - name: api-keys
           emptyDir: {}
+        - name: allure-results
+          emptyDir: {}
       initContainers:
         - name: run-usersync
           image: bitnami/kubectl
@@ -133,6 +135,8 @@ spec:
               readOnly: true
             - name: api-keys
               mountPath: /root/.gen3
+            - name: allure-results
+              mountPath: /gen3-integration-tests/allure-results
           resources:
             {{- toYaml .Values.tests.resources | nindent 12 }}
           command: ["/bin/bash"]
