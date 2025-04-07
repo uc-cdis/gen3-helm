@@ -144,6 +144,7 @@ spec:
           args:
             - "-c"
             - |
+              mkdir output
               if [ -z "$SERVICE_TO_TEST" ]; then
                   echo "Running the following tests..."
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip\" --dist loadscope $TEST_LABEL"
@@ -153,4 +154,5 @@ spec:
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
+              sleep 1000000000
       restartPolicy: Never
