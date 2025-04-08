@@ -144,7 +144,6 @@ spec:
           args:
             - "-c"
             - |
-              mkdir output
               if [ -z "$SERVICE_TO_TEST" ]; then
                   echo "Running the following tests..."
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip\" --dist loadscope $TEST_LABEL"
