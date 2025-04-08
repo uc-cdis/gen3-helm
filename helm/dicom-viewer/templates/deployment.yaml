@@ -2,15 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dicom-viewer-deployment
-  {{- with .Values.podAnnotations }}
   annotations:
+  {{- with .Values.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
     {{- include "dicom-viewer.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -23,9 +20,11 @@ spec:
     metadata:
       labels:
         {{- include "dicom-viewer.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -49,9 +48,6 @@ spec:
           ports:
             - containerPort: 80
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

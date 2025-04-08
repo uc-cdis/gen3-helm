@@ -1,0 +1,788 @@
+# The name of the cluster this configuration is going to. This should match the name of the directory configuration
+# is stored in
+cluster: "unfunded"
+project: unfunded
+
+# AWS account number that this cluster lives in
+accountNumber: "xxxxxxxxxxxx"
+
+eksClusterEndpoint: ""
+
+# This is universal for all of our configuration, we assume that all of the configuration (i.e. values files)
+# live in the same repo, on the same branch
+configuration:
+  configurationRepo: https://github.com/uc-cdis/gen3-gitops
+  configurationRevision: master
+
+alb-controller:
+  enabled: false
+  targetRevision: "1.11.0"
+  configuration:
+    enabled: false
+
+aws-s3-mountpoint:
+  enabled: false
+  targetRevision: "1.11.0"
+  configuration:
+    enabled: false
+
+calico:
+  enabled: false
+  targetRevision: "v3.29.1"
+  configuration:
+    enabled: false
+
+coreDNS:
+  enabled: false
+  targetRevision: "v1.37.0"
+  configuration:
+    enabled: false
+
+ebs-csi-driver:
+  enabled: false
+  targetRevision: "2.38.1"
+  configuration:
+    enabled: false
+
+fluentd:
+  enabled: false
+  targetRevision: "0.5.2"
+  configuration:
+    enabled: false
+
+grafana-alloy:
+  enabled: false
+  targetRevision: 0.4.0
+  configuration:
+    enabled: false
+
+karpenter:
+  enabled: false
+  awsRegion: "us-east-1"
+  targetRevision: v0.32.9
+  configuration:
+    enabled: false
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "1"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+  controller:
+    image:
+      tag: "v0.32.9"
+      digest: "sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"
+
+karpenter-crds:
+  enabled: false
+  targetRevision: master
+  amiSelectorName: "EKS-FIPS*"
+  selectorTag: ""
+  migration: false
+  default:
+    enabled: true
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    additionalTags: {}
+  jupyter:
+    enabled: true
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    additionalTags: {}
+  workflow:
+    enabled: true
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    sgSelector: ""
+    additionalTags: {}
+
+kube-state-metrics:
+  enabled: false
+  configuration:
+    enabled: false
+  targetRevision: 5.28.0
+
+vpc-cni:
+  enabled: false
+  targetRevision: v1.16.2
+  configuration:
+    enabled: false
+
+# =============================================================================================
+# THIS IS THE CONFIGURATION THAT GOES INTO THE ALLOY CONFIGMAP. CUSTOMIZE AT YOUR OWN PERIL!!!!
+# =============================================================================================
+alloy-configmap-data: |
+  logging {
+    level    = "info"
+    format   = "json"
+    write_to = [loki.write.endpoint.receiver]
+  }
+
+  /////////////////////// OTLP START ///////////////////////
+
+  otelcol.receiver.otlp "default" {
+    grpc {}
+    http {}
+
+    output {
+      metrics = [otelcol.processor.batch.default.input]
+      traces = [otelcol.processor.batch.default.input]
+    }
+  }
+
+  otelcol.processor.batch "default" {
+    output {
+      metrics = [otelcol.exporter.prometheus.default.input]
+      traces  = [otelcol.exporter.otlp.tempo.input]
+    }
+  }
+
+  otelcol.exporter.prometheus "default" {
+    forward_to = [prometheus.remote_write.default.receiver]
+  }
+
+  otelcol.exporter.otlp "tempo" {
+    client {
+      endpoint = "http://monitoring-tempo-distributor.monitoring:4317"
+      // Configure TLS settings for communicating with the endpoint.
+      tls {
+          // The connection is insecure.
+          insecure = true
+          // Do not verify TLS certificates when connecting.
+          insecure_skip_verify = true
+      }
+    }
+  }
+
+
+  /////////////////////// OTLP END ///////////////////////
+
+  // discover all pods, to be used later in this config
+  discovery.kubernetes "pods" {
+    role = "pod"
+  }
+
+  // discover all services, to be used later in this config
+  discovery.kubernetes "services" {
+    role = "service"
+  }
+
+  // discover all nodes, to be used later in this config
+  discovery.kubernetes "nodes" {
+    role = "node"
+  }
+
+  // Generic scrape of any pod with Annotation "prometheus.io/scrape: true"
+  discovery.relabel "annotation_autodiscovery_pods" {
+    targets = discovery.kubernetes.pods.targets
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+      regex = "true"
+      action = "keep"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_job"]
+      action = "replace"
+      target_label = "job"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_instance"]
+      action = "replace"
+      target_label = "instance"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+      action = "replace"
+      target_label = "__metrics_path__"
+    }
+
+    // Choose the pod port
+    // The discovery generates a target for each declared container port of the pod.
+    // If the metricsPortName annotation has value, keep only the target where the port name matches the one of the annotation.
+    rule {
+      source_labels = ["__meta_kubernetes_pod_container_port_name"]
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_portName"]
+      regex = "(.+)"
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_container_port_name"]
+      action = "keepequal"
+      target_label = "__tmp_port"
+    }
+
+    // If the metrics port number annotation has a value, override the target address to use it, regardless whether it is
+    // one of the declared ports on that Pod.
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port", "__meta_kubernetes_pod_ip"]
+      regex = "(\\d+);(([A-Fa-f0-9]{1,4}::?){1,7}[A-Fa-f0-9]{1,4})"
+      replacement = "[$2]:$1" // IPv6
+      target_label = "__address__"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port", "__meta_kubernetes_pod_ip"]
+      regex = "(\\d+);((([0-9]+?)(\\.|$)){4})" // IPv4, takes priority over IPv6 when both exists
+      replacement = "$2:$1"
+      target_label = "__address__"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scheme"]
+      action = "replace"
+      target_label = "__scheme__"
+    }
+
+
+    // add labels
+    rule {
+      source_labels = ["__meta_kubernetes_pod_name"]
+      target_label = "pod"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_container_name"]
+      target_label = "container"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_controller_name"]
+      target_label = "controller"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      target_label = "namespace"
+    }
+
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app"]
+      target_label = "app"
+    }
+
+    // map all labels
+    rule {
+      action = "labelmap"
+      regex  = "__meta_kubernetes_pod_label_(.+)"
+    }
+  }
+
+  // Generic scrape of any service with
+  // Annotation Autodiscovery
+  discovery.relabel "annotation_autodiscovery_services" {
+    targets = discovery.kubernetes.services.targets
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_scrape"]
+      regex = "true"
+      action = "keep"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_job"]
+      action = "replace"
+      target_label = "job"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_instance"]
+      action = "replace"
+      target_label = "instance"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_path"]
+      action = "replace"
+      target_label = "__metrics_path__"
+    }
+
+    // Choose the service port
+    rule {
+      source_labels = ["__meta_kubernetes_service_port_name"]
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_portName"]
+      regex = "(.+)"
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_port_name"]
+      action = "keepequal"
+      target_label = "__tmp_port"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_service_port_number"]
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_port"]
+      regex = "(.+)"
+      target_label = "__tmp_port"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_port_number"]
+      action = "keepequal"
+      target_label = "__tmp_port"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_scheme"]
+      action = "replace"
+      target_label = "__scheme__"
+    }
+  }
+
+  prometheus.scrape "metrics" {
+    job_name   = "integrations/autodiscovery_metrics"
+    targets  = concat(discovery.relabel.annotation_autodiscovery_pods.output, discovery.relabel.annotation_autodiscovery_services.output)
+    honor_labels = true
+    clustering {
+      enabled = true
+    }
+    forward_to = [prometheus.relabel.metrics_service.receiver]
+  }
+
+
+  // Node Exporter
+  // TODO: replace with https://grafana.com/docs/alloy/latest/reference/components/prometheus.exporter.unix/
+  discovery.relabel "node_exporter" {
+    targets = discovery.kubernetes.pods.targets
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance"]
+      regex = "monitoring-extras"
+      action = "keep"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+      regex = "node-exporter"
+      action = "keep"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_node_name"]
+      action = "replace"
+      target_label = "instance"
+    }
+  }
+
+  prometheus.scrape "node_exporter" {
+    job_name   = "integrations/node_exporter"
+    targets  = discovery.relabel.node_exporter.output
+    scrape_interval = "60s"
+    clustering {
+      enabled = true
+    }
+    forward_to = [prometheus.relabel.node_exporter.receiver]
+  }
+
+  prometheus.relabel "node_exporter" {
+    rule {
+      source_labels = ["__name__"]
+      regex = "up|node_cpu.*|node_network.*|node_exporter_build_info|node_filesystem.*|node_memory.*|process_cpu_seconds_total|process_resident_memory_bytes"
+      action = "keep"
+    }
+    forward_to = [prometheus.relabel.metrics_service.receiver]
+  }
+
+
+  // cAdvisor
+  // discovery.relabel "cadvisor" {
+  //  targets = discovery.kubernetes.nodes.targets
+  //  rule {
+  //    target_label = "__address__"
+  //    replacement  = "kubernetes.default.svc.cluster.local:443"
+  //  }
+  //  rule {
+  //    source_labels = ["__meta_kubernetes_node_name"]
+  //    regex         = "(.+)"
+  //    replacement   = "/api/v1/nodes/${1}/proxy/metrics/cadvisor"
+  //    target_label  = "__metrics_path__"
+  //  }
+  // }
+
+  // prometheus.scrape "cadvisor" {
+  //  job_name   = "integrations/kubernetes/cadvisor"
+  //  targets    = discovery.relabel.cadvisor.output
+  //  scheme     = "https"
+  //  scrape_interval = "60s"
+  //  bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  //  tls_config {
+  //    insecure_skip_verify = true
+  //  }
+  //  clustering {
+  //    enabled = true
+  //  }
+  //  forward_to = [prometheus.relabel.cadvisor.receiver]
+  //}
+
+  //prometheus.relabel "cadvisor" {
+  //  rule {
+  //    source_labels = ["__name__"]
+  //    regex = "up|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_cpu_usage_seconds_total|container_fs_reads_bytes_total|container_fs_reads_total|container_fs_writes_bytes_total|container_fs_writes_total|container_memory_cache|container_memory_rss|container_memory_swap|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_receive_packets_dropped_total|container_network_receive_packets_total|container_network_transmit_bytes_total|container_network_transmit_packets_dropped_total|container_network_transmit_packets_total|machine_memory_bytes"
+  //    action = "keep"
+  //  }
+  //  forward_to = [prometheus.relabel.metrics_service.receiver]
+  // }
+
+  // Logs from all pods
+  discovery.relabel "all_pods" {
+    targets = discovery.kubernetes.pods.targets
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      target_label = "namespace"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_name"]
+      target_label = "pod"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_container_name"]
+      target_label = "container"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_controller_name"]
+      target_label = "controller"
+    }
+
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app"]
+      target_label = "app"
+    }
+
+    // map all labels
+    rule {
+      action = "labelmap"
+      regex  = "__meta_kubernetes_pod_label_(.+)"
+    }
+
+  }
+
+  loki.source.kubernetes "pods" {
+    targets = discovery.relabel.all_pods.output
+    forward_to = [loki.write.endpoint.receiver]
+  }
+
+  // kube-state-metrics
+  discovery.relabel "relabel_kube_state_metrics" {
+    targets = discovery.kubernetes.services.targets
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      regex = "monitoring"
+      action = "keep"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_service_name"]
+      regex = "monitoring-extras-kube-state-metrics"
+      action = "keep"
+    }
+  }
+
+  prometheus.scrape "kube_state_metrics" {
+    targets = discovery.relabel.relabel_kube_state_metrics.output
+    job_name = "kube-state-metrics"
+    metrics_path = "/metrics"
+    forward_to = [prometheus.remote_write.default.receiver]
+  }
+
+  // Kubelet
+  discovery.relabel "kubelet" {
+    targets = discovery.kubernetes.nodes.targets
+    rule {
+      target_label = "__address__"
+      replacement  = "kubernetes.default.svc.cluster.local:443"
+    }
+    rule {
+      source_labels = ["__meta_kubernetes_node_name"]
+      regex         = "(.+)"
+      replacement   = "/api/v1/nodes/${1}/proxy/metrics"
+      target_label  = "__metrics_path__"
+    }
+  }
+
+  prometheus.scrape "kubelet" {
+    job_name   = "integrations/kubernetes/kubelet"
+    targets  = discovery.relabel.kubelet.output
+    scheme   = "https"
+    scrape_interval = "60s"
+    bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+    tls_config {
+      insecure_skip_verify = true
+    }
+    clustering {
+      enabled = true
+    }
+    forward_to = [prometheus.relabel.kubelet.receiver]
+  }
+
+  prometheus.relabel "kubelet" {
+    rule {
+      source_labels = ["__name__"]
+      regex = "up|container_cpu_usage_seconds_total|kubelet_certificate_manager_client_expiration_renew_errors|kubelet_certificate_manager_client_ttl_seconds|kubelet_certificate_manager_server_ttl_seconds|kubelet_cgroup_manager_duration_seconds_bucket|kubelet_cgroup_manager_duration_seconds_count|kubelet_node_config_error|kubelet_node_name|kubelet_pleg_relist_duration_seconds_bucket|kubelet_pleg_relist_duration_seconds_count|kubelet_pleg_relist_interval_seconds_bucket|kubelet_pod_start_duration_seconds_bucket|kubelet_pod_start_duration_seconds_count|kubelet_pod_worker_duration_seconds_bucket|kubelet_pod_worker_duration_seconds_count|kubelet_running_container_count|kubelet_running_containers|kubelet_running_pod_count|kubelet_running_pods|kubelet_runtime_operations_errors_total|kubelet_runtime_operations_total|kubelet_server_expiration_renew_errors|kubelet_volume_stats_available_bytes|kubelet_volume_stats_capacity_bytes|kubelet_volume_stats_inodes|kubelet_volume_stats_inodes_used|kubernetes_build_info|namespace_workload_pod|rest_client_requests_total|storage_operation_duration_seconds_count|storage_operation_errors_total|volume_manager_total_volumes"
+      action = "keep"
+    }
+    forward_to = [prometheus.relabel.metrics_service.receiver]
+  }
+
+  // Cluster Events
+  loki.source.kubernetes_events "cluster_events" {
+    job_name   = "integrations/kubernetes/eventhandler"
+    log_format = "logfmt"
+    forward_to = [loki.write.endpoint.receiver]
+  }
+
+
+  // Why is this needed?
+  prometheus.relabel "metrics_service" {
+    forward_to = [prometheus.remote_write.default.receiver]
+  }
+
+
+  // Write Endpoints
+  // prometheus write endpoint
+  prometheus.remote_write "default" {
+    external_labels = {
+      cluster = "{{ .Values.cluster }}",
+      project = "{{ .Values.project }}",
+    }
+    endpoint {
+      url = "https://mimir.planx-pla.net/api/v1/push"
+
+      headers = {
+        "X-Scope-OrgID" = "anonymous",
+      }
+
+    }
+  }
+
+  // loki write endpoint
+  loki.write "endpoint" {
+    external_labels =  {
+      cluster = "{{ .Values.cluster }}",
+      project = "{{ .Values.project }}",
+    }
+    endpoint {
+      url = "https://loki.planx-pla.net/loki/api/v1/push"
+    }
+  }
+
+# =======================================================================
+# THIS IS THE CONFIGURATION FOR FLUENTD. CUSTOMIZE AT YOUR OWN PERIL!!!!!
+# =======================================================================
+fluentd-configmap-data: |
+  <label @FLUENT_LOG>
+    <match fluent.**>
+      @type null
+    </match>
+  </label>
+
+
+  <source>
+    @type tail
+    @id in_tail_container_logs
+    path /var/log/containers/*.log
+    pos_file /var/log/fluentd-containers.log.pos
+    tag "#{ENV['FLUENT_CONTAINER_TAIL_TAG'] || 'kubernetes.*'}"
+    exclude_path "#{ENV['FLUENT_CONTAINER_TAIL_EXCLUDE_PATH'] || use_default}"
+    read_from_head true
+    <parse>
+      @type "#{ENV['FLUENT_CONTAINER_TAIL_PARSER_TYPE'] || 'json'}"
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </parse>
+  </source>
+
+  <source>
+    @type tail
+    path /var/log/messages
+    pos_file /var/log/host-messages.log.pos
+    <parse>
+      @type syslog
+    </parse>
+    tag host.messages
+  </source>
+
+
+  <source>
+    @type tail
+    path /var/log/secure
+    pos_file /var/log/host-secure.log.pos
+    <parse>
+      @type syslog
+    </parse>
+    tag host.secure
+  </source>
+
+  <source>
+    @type tail
+    @id in_tail_docker
+    path /var/log/docker.log
+    pos_file /var/log/fluentd-docker.log.pos
+    tag docker
+    <parse>
+      @type regexp
+      expression /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+    </parse>
+  </source>
+
+
+  <source>
+    @type tail
+    @id in_tail_kubelet
+    multiline_flush_interval 5s
+    path /var/log/kubelet.log
+    pos_file /var/log/fluentd-kubelet.log.pos
+    tag kubelet
+    <parse>
+      @type kubernetes
+    </parse>
+  </source>
+
+  <filter kubernetes.**>
+    @type kubernetes_metadata
+    @id filter_kube_metadata
+    kubernetes_url "#{ENV['FLUENT_FILTER_KUBERNETES_URL'] || 'https://' + ENV.fetch('KUBERNETES_SERVICE_HOST') + ':' + ENV.fetch('KUBERNETES_SERVICE_PORT') + '/api'}"
+    verify_ssl "#{ENV['KUBERNETES_VERIFY_SSL'] || true}"
+    ca_file "#{ENV['KUBERNETES_CA_FILE']}"
+    skip_labels "#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_LABELS'] || 'false'}"
+    skip_container_metadata "#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_CONTAINER_METADATA'] || 'false'}"
+    skip_master_url "#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_MASTER_URL'] || 'false'}"
+    skip_namespace_metadata "#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_NAMESPACE_METADATA'] || 'false'}"
+  </filter>
+
+  <match kubernetes.var.log.containers.**_kube-system_**>
+    @type null
+  </match>
+
+  <match kubernetes.var.log.containers.**_logging_**>
+    @type null
+  </match>
+
+  <match docker>
+    @type rewrite_tag_filter
+    <rule>
+      key $._HOSTNAME
+      pattern ^(.+)$
+      tag $1.docker
+    </rule>
+  </match>
+
+  <match kubelet>
+    @type rewrite_tag_filter
+    <rule>
+      key $._HOSTNAME
+      pattern ^(.+)$
+      tag $1.kubelet
+    </rule>
+  </match>
+
+  <match host.messages>
+    @type rewrite_tag_filter
+    <rule>
+      key $.host
+      pattern ^(.+)$
+      tag $1.messages
+    </rule>
+  </match>
+
+  <match host.secure>
+    @type rewrite_tag_filter
+    <rule>
+      key $.host
+      pattern ^(.+)$
+      tag $1.secure
+    </rule>
+  </match>
+
+  <match kubernetes.var.**>
+    @type rewrite_tag_filter
+    <rule>
+      # json structured log - consider adoption a standard json schema:
+      #    https://github.com/timberio/log-event-json-schema
+      key message
+      pattern /^\{\s*"gen3log":/
+      tag kubernetes.gen3.json.${tag}
+    </rule>
+    <rule>
+      # combined log format - default Apache and nginx structure
+      #    https://httpd.apache.org/docs/1.3/logs.html#combined
+      key message
+      pattern /^(((\d+\.\d+\.\d+\.\d+)|-)\s+){2}\S+\s+\[\d\d?\//
+      tag kubernetes.gen3.combined.${tag}
+    </rule>
+    <rule>
+      # unstructured log line
+      key message
+      pattern /\S/
+      tag kubernetes.gen3.raw.${tag}
+    </rule>
+
+  </match>
+
+  <filter kubernetes.gen3.json.**>
+    @type record_transformer
+    <record>
+      log_type json
+      # This one doesn't work for whatever reason, if you do ${record["kubernetes"]} the whole blob would be added, but can't access subobjects
+      #container_name ${record["kubernetes"]["container_name"]}
+    </record>
+  </filter>
+
+  <filter kubernetes.gen3.combined.**>
+    @type record_transformer
+    <record>
+      log_type combined
+    </record>
+  </filter>
+
+  <filter kubernetes.gen3.raw.**>
+    @type record_transformer
+    <record>
+      log_type raw
+    </record>
+  </filter>
+
+  <match kubernetes.gen3.**>
+    @type rewrite_tag_filter
+    <rule>
+      key $.kubernetes.pod_name
+      pattern ^(.+)$
+      tag "#{Time.now.strftime('%Y-%m-%d')}.$1"
+    </rule>
+  #  <rule>
+  #    key $.kubernetes
+  #    pattern ^(.+)$
+  #    tag $1.container_name
+  #  </rule>
+  </match>
+
+  #<match "#{Time.now.strftime('%Y-%m-%d')}.**">
+  #  @type rewrite_tag_filter
+  #  <rule>
+  #    key $.kubernetes.container_name
+  #    pattern ^(.+)$
+      #tag $1.${tag}
+  #    tag ${tag}.$1
+  #  </rule>
+  #</match>
+
+  # TODO:
+  # * python stack traces: "Traceback (most recent call last):""
+  #     https://docs.fluentd.org/v0.12/articles/parser_multiline#formatn
+  #
+  # Idea: add `visitor` cookie to revproxy ...
+
+
+  <match **>
+    @type cloudwatch_logs
+    @id out_cloudwatch_logs
+    log_group_name "#{ENV['LOG_GROUP_NAME']}"
+    auto_create_stream true
+    use_tag_as_stream true
+    retention_in_days "#{ENV['RETENTION_IN_DAYS'] || 'nil'}"
+    json_handler yajl # To avoid UndefinedConversionError
+    log_rejected_request "#{ENV['LOG_REJECTED_REQUEST']}" # Log rejected request for missing parts
+  </match>

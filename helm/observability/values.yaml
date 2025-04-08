@@ -1,0 +1,1108 @@
+---
+lgtm:
+  #  -- (map) Configuration for IRSA role to use with service accounts.
+  role:
+    # -- (string) The arn of the aws role to associate with the service account that will be used for Loki and Mimir.
+    # Documentation on IRSA setup https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
+    arn:
+
+  #  -- (map) Tempo configuration (currently disabled).
+  tempo:
+    # -- (bool) Enable or disable tempo.
+    enabled: false
+
+  #  -- (map) Mimir configuration.
+  mimir:
+    # -- (map) Docker image information.
+    image:
+      # -- (string) The Docker image repository for mimir.
+      repository: quay.io/cdis/mimir
+      #  -- (string) The Docker image tag for the mimir.
+      tag: master
+    #  -- (map) Mimir ingress configuration.
+    ingress:
+      #  -- (map) Annotations to add to mimir ingress.
+      annotations: {}
+        ## Recommended annotations for AWS ALB (Application Load Balancer).
+        # alb.ingress.kubernetes.io/certificate-arn: <cert arn>
+        # alb.ingress.kubernetes.io/ssl-redirect: '443'
+        # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+        # alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=600
+        # alb.ingress.kubernetes.io/scheme: internal
+        # alb.ingress.kubernetes.io/ssl-policy: <ssl policy>
+        # alb.ingress.kubernetes.io/tags: Environment=<environment name>
+        # alb.ingress.kubernetes.io/target-type: ip
+      # -- (bool) Enable or disable mirmir ingress.
+      enabled: true
+      # -- (string) Class name for ingress.
+      ingressClassName: "alb"
+      # -- (map) Additional paths to add to the ingress.
+      paths:
+        # -- (list) Additional paths to add to the query frontend.
+        query-frontend:
+          - path: /prometheus/api/v1/query
+      # -- (list) hostname for mimir ingress.
+      hosts:
+        - mimir.example.com
+
+    # -- (map) minio configuration.
+    minio:
+      # -- (bool) Enable or disable minio.
+      enabled: false
+
+    # -- (map) Rollout Operator configuration.
+    rollout_operator:
+      # -- (map) Docker image information.
+      image:
+        # -- (string) The Docker image repository for the rollout-operator.
+        repository: quay.io/cdis/rollout-operator
+        #  -- (string) The Docker image tag for the rollout-operator.
+        tag: master
+    serviceAccount:
+      # -- (bool) Whether to create a service account or not. In case 'create' is false, do set 'name' to an existing service account name. The "observability" SA will be created by default via Helm.
+      create: false
+      # -- (string) Override for the generated service account name.
+      name: observability
+
+    mimir:
+      # -- (map) Structured configuration settings for mimir.
+      structuredConfig:
+        limits:
+          # -- (int) Maximum number of global series allowed per user. Set to '0' for unlimited.
+          max_global_series_per_user: 0
+          # -- (int) The rate limit for ingestion, measured in samples per second.
+          ingestion_rate: 10000000
+        common:
+          storage:
+            # -- (string) Backend storage configuration. For example, s3 for AWS S3 storage.
+            backend: s3
+            s3:
+              # -- (string) The S3 endpoint to use for storage. Ensure this matches your region.
+              endpoint: s3.us-east-1.amazonaws.com
+              # -- (string) AWS region where your S3 bucket is located.
+              region: us-east-1
+              # # -- (string) Name of the S3 bucket used for storage.
+              # bucket_name: <bucket name>
+        blocks_storage:
+          # -- (string) Prefix used for storing blocks data.
+          storage_prefix: blocks
+        alertmanager_storage:
+          # -- (string) Prefix used for storing Alertmanager data.
+          storage_prefix: alertmanager
+        ruler_storage:
+          # -- (string) Prefix used for storing ruler data.
+          storage_prefix: ruler
+        query_scheduler:
+          # -- (string) Mode for service discovery in the query scheduler. Set to 'dns' for DNS-based service discovery.
+          service_discovery_mode: "dns"
+
+    alertmanager:
+      # -- (map) Configuration for persistent volume in Alertmanager.
+      persistentVolume:
+        # -- (bool) Enable or disable the persistent volume for Alertmanager. Set to 'true' to enable, 'false' to disable.
+        enabled: true
+      # -- (int) Number of replicas for Alertmanager. Determines how many instances of Alertmanager to run.
+      replicas: 3
+      # -- (map) Affinity rules for scheduling Alertmanager pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      resources:
+        # -- (map) Resource limits for Alertmanager pods.
+        limits:
+          # -- (string) Memory limit for Alertmanager pods.
+          memory: 2Gi
+        # -- (map) Resource requests for Alertmanager pods.
+        requests:
+          # -- (string) CPU request for Alertmanager pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for Alertmanager pods. Determines how much memory is guaranteed for the pod.
+          memory: 1Gi
+      # -- (map) Configuration for deploying Alertmanager as a StatefulSet.
+      statefulSet:
+        # -- (bool) Enable or disable the StatefulSet deployment for Alertmanager. Set to 'true' to enable, 'false' to disable.
+        enabled: true
+
+    compactor:
+      # -- (map) Affinity rules for scheduling compactor pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (map) Persistent volume configuration for the compactor component.
+      persistentVolume:
+        # -- (string) Size of the persistent volume to be used by the compactor.
+        size: 50Gi
+      resources:
+        # -- (map) Resource limits for the compactor component.
+        limits:
+          # -- (string) Memory limit for the compactor pods.
+          memory: 3Gi
+        # -- (map) Resource requests for the compactor component.
+        requests:
+          # -- (string) CPU request for the compactor pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for the compactor pods. Determines how much memory is guaranteed for the pod.
+          memory: 2Gi
+
+    distributor:
+      # -- (map) Affinity rules for scheduling distributor pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the distributor component. Determines how many instances to run.
+      replicas: 3
+      resources:
+        # -- (map) Resource limits for the distributor component.
+        limits:
+          # -- (string) Memory limit for the distributor pods.
+          memory: 12Gi
+        # -- (map) Resource requests for the distributor component.
+        requests:
+          # -- (string) CPU request for the distributor pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the distributor pods. Determines how much memory is guaranteed for the pod.
+          memory: 8Gi
+
+    ingester:
+      # -- (map) Persistent volume configuration for the ingester component.
+      persistentVolume:
+        # -- (string) Size of the persistent volume to be used by the ingester.
+        size: 50Gi
+      # -- (int) Number of replicas for the ingester component. Determines how many instances to run.
+      replicas: 5
+      resources:
+        # -- (map) Resource limits for the ingester component.
+        limits:
+          # -- (string) Memory limit for the ingester pods.
+          memory: 12Gi
+        # -- (map) Resource requests for the ingester component.
+        requests:
+          # -- (string) CPU request for the ingester pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 3.5
+          # -- (string) Memory request for the ingester pods. Determines how much memory is guaranteed for the pod.
+          memory: 8Gi
+      # -- (map) Topology spread constraints for the ingester component. Empty by default.
+      topologySpreadConstraints: {}
+      affinity:
+        # -- (map) Affinity rules for scheduling ingester pods.
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (map) Zone-aware replication settings. Helps distribute data across zones.
+      zoneAwareReplication:
+        # -- (string) Topology key used for zone-aware replication.
+        topologyKey: 'kubernetes.io/hostname'
+
+    overrides_exporter:
+      # -- (map) Affinity rules for scheduling overrides_exporter pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the overrides_exporter component. Determines how many instances to run.
+      replicas: 1
+      resources:
+        # -- (map) Resource limits for the overrides_exporter component.
+        limits:
+          # -- (string) Memory limit for the overrides_exporter pods.
+          memory: 128Mi
+        # -- (map) Resource requests for the overrides_exporter component.
+        requests:
+          # -- (string) CPU request for the overrides_exporter pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 100m
+          # -- (string) Memory request for the overrides_exporter pods. Determines how much memory is guaranteed for the pod.
+          memory: 128Mi
+
+    querier:
+      # -- (map) Affinity rules for scheduling querier pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the querier component. Determines how many instances to run.
+      replicas: 3
+      resources:
+        # -- (map) Resource limits for the querier component.
+        limits:
+          # -- (string) Memory limit for the querier pods.
+          memory: 8Gi
+        # -- (map) Resource requests for the querier component.
+        requests:
+          # -- (string) CPU request for the querier pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the querier pods. Determines how much memory is guaranteed for the pod.
+          memory: 6Gi
+
+    query_scheduler:
+      # -- (map) Affinity rules for scheduling query_scheduler pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+
+    query_frontend:
+      # -- (map) Affinity rules for scheduling query_frontend pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the query_frontend component. Determines how many instances to run.
+      replicas: 2
+      resources:
+        # -- (map) Resource limits for the query_frontend component.
+        limits:
+          # -- (string) Memory limit for the query_frontend pods.
+          memory: 3Gi
+        # -- (map) Resource requests for the query_frontend component.
+        requests:
+          # -- (string) CPU request for the query_frontend pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the query_frontend pods. Determines how much memory is guaranteed for the pod.
+          memory: 2Gi
+
+
+    ruler:
+      # -- (map) Affinity rules for scheduling ruler pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the ruler component. Determines how many instances to run.
+      replicas: 2
+      resources:
+        # -- (map) Resource limits for the ruler component.
+        limits:
+          # -- (string) Memory limit for the ruler pods.
+          memory: 5Gi
+        # -- (map) Resource requests for the ruler component.
+        requests:
+          # -- (string) CPU request for the ruler pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for the ruler pods. Determines how much memory is guaranteed for the pod.
+          memory: 4Gi
+
+    store_gateway:
+      # -- (map) Affinity rules for scheduling store_gateway pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (map) Persistent volume configuration for the store_gateway component.
+      persistentVolume:
+        # -- (string) Size of the persistent volume to be used by the store_gateway.
+        size: 50Gi
+      # -- (int) Number of replicas for the store_gateway component. Determines how many instances to run.
+      replicas: 2
+      resources:
+        # -- (map) Resource limits for the store_gateway component.
+        limits:
+          # -- (string) Memory limit for the store_gateway pods.
+          memory: 8Gi
+        # -- (map) Resource requests for the store_gateway component.
+        requests:
+          # -- (string) CPU request for the store_gateway pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for the store_gateway pods. Determines how much memory is guaranteed for the pod.
+          memory: 6Gi
+      # -- (map) Topology spread constraints for the store_gateway component. Empty by default.
+      topologySpreadConstraints: {}
+      # -- (map) Zone-aware replication settings. Helps distribute data across zones.
+      zoneAwareReplication:
+        # -- (string) Topology key used for zone-aware replication.
+        topologyKey: 'kubernetes.io/hostname'
+
+    nginx:
+      # -- (string) Affinity rules for scheduling nginx pods. Passed in as a multiline string.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      image:
+        # -- (string) Container image registry for nginx.
+        registry: quay.io/nginx
+        # -- (string) Repository for nginx unprivileged image.
+        repository: nginx-unprivileged
+      # -- (int) Number of replicas for the nginx component. Determines how many instances to run.
+      replicas: 3
+      resources:
+        # -- (map) Resource limits for the nginx component.
+        limits:
+          # -- (string) Memory limit for the nginx pods.
+          memory: 731Mi
+        # -- (map) Resource requests for the nginx component.
+        requests:
+          # -- (string) CPU request for the nginx pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for the nginx pods. Determines how much memory is guaranteed for the pod.
+          memory: 512Mi
+
+    gateway:
+      # -- (map) Affinity rules for scheduling gateway pods.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the gateway component. Determines how many instances to run.
+      replicas: 3
+      resources:
+        # -- (map) Resource limits for the gateway component.
+        limits:
+          # -- (string) Memory limit for the gateway pods.
+          memory: 731Mi
+        # -- (map) Resource requests for the gateway component.
+        requests:
+          # -- (string) CPU request for the gateway pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 1
+          # -- (string) Memory request for the gateway pods. Determines how much memory is guaranteed for the pod.
+          memory: 512Mi
+
+
+  #  -- (map) Loki configuration.
+  loki:
+    # -- (map) Persistence settings for loki.
+    persistence:
+      # -- (bool) Enable or disable persistence.
+      enabled: true
+    # -- (string) Service account configuration for loki.
+    serviceAccount:
+      # -- (string) Service account to use (will be created by default via this helm chart).
+      name: observability
+    gateway:
+      # -- (string) Affinity rules for scheduling gateway pods. Passed in as a multiline string.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values:
+                - us-east-1a
+      #  -- (map) Loki ingress configuration.
+      ingress:
+        #  -- (map) Annotations to add to loki ingress.
+        annotations: {}
+          ## Recommended annotations for AWS ALB (Application Load Balancer).
+          # alb.ingress.kubernetes.io/certificate-arn: <cert arn>
+          # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+          # alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=600
+          # alb.ingress.kubernetes.io/scheme: internal
+          # alb.ingress.kubernetes.io/ssl-policy: <ssl policy>
+          # alb.ingress.kubernetes.io/ssl-redirect: '443'
+          # alb.ingress.kubernetes.io/tags: Environment=<environment>
+          # alb.ingress.kubernetes.io/target-type: ip
+        # -- (bool) Enable or disable loki ingress.
+        enabled: true
+        # -- (string) Class name for ingress.
+        ingressClassName: "alb"
+        # -- (list) Hosts for loki ingress.
+        hosts:
+          # -- (string) Hostname for loki ingress.
+          - host: loki.example.com
+            paths:
+              # New data structure introduced
+              - path: /
+                # Newly added optional property
+                pathType: Prefix
+
+    # -- (map) Scaling and configuring loki querier.
+    querier:
+      # -- (map) Resource requests and limits for querier.
+      resources:
+        # -- (map) Resource limits for the querier component.
+        limits:
+          # -- (string) Memory limit for the querier pods.
+          memory: 6Gi
+        # -- (map) Resource requests for the querier component.
+        requests:
+          # -- (string) CPU request for the querier pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the querier pods. Determines how much memory is guaranteed for the pod.
+          memory: 4Gi
+      # -- (string) Affinity rules for scheduling querier pods. Passed in as a multiline string.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+
+    # -- (map) Scaling and configuring loki queryFrontend.
+    queryFrontend:
+      # -- (map) Resource requests and limits for queryFrontend.
+      resources:
+        # -- (map) Resource limits for the queryFrontend component.
+        limits:
+          # -- (string) Memory limit for the queryFrontend pods.
+          memory: 6Gi
+        # -- (map) Resource requests for the queryFrontend component.
+        requests:
+          # -- (string) CPU request for the queryFrontend pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the queryFrontend pods. Determines how much memory is guaranteed for the pod.
+          memory: 4Gi
+      # -- (map) Affinity rules for scheduling queryFrontend pods.  Passed in as a multiline string.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+
+    # -- (map) Scaling and configuring loki distributor.
+    distributor:
+      # -- (map) Affinity rules for scheduling distributor pods.  Passed in as a multiline string.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (int) Number of replicas for the distributor component. Determines how many instances to run.
+      replicas: 3
+      # -- (int) Maximum number of unavailable replicas allowed during an update.
+      maxUnavailable: 2
+      resources:
+        # -- (map) Resource limits for the distributor component.
+        limits:
+          # -- (string) Memory limit for the distributor pods.
+          memory: 6Gi
+        # -- (map) Resource requests for the distributor component.
+        requests:
+          # -- (string) CPU request for the distributor pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 2
+          # -- (string) Memory request for the distributor pods. Determines how much memory is guaranteed for the pod.
+          memory: 4Gi
+
+
+    # -- (map) Scaling and configuring loki ingester.  Passed in as a multiline string.
+    ingester:
+      # -- (map) Affinity rules for scheduling ingester pods.
+      affinity: |
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+              - key: topology.kubernetes.io/zone
+                # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+                operator: In
+                # -- (list) List of values for the node selector, representing allowed zones.
+                values:
+                - us-east-1a
+      # -- (map) Persistent volume configuration for the ingester component.
+      persistentVolume:
+        # -- (string) Size of the persistent volume to be used by the ingester.
+        size: 50Gi
+      # -- (int) Number of replicas for the ingester component. Determines how many instances to run.
+      replicas: 3
+      # -- (int) Maximum number of unavailable replicas allowed during an update.
+      maxUnavailable: 2
+      resources:
+        # -- (map) Resource limits for the ingester component.
+        limits:
+          # -- (string) Memory limit for the ingester pods.
+          memory: 12Gi
+        # -- (map) Resource requests for the ingester component.
+        requests:
+          # -- (string) CPU request for the ingester pods. Determines how much CPU is guaranteed for the pod.
+          cpu: 3.5
+          # -- (string) Memory request for the ingester pods. Determines how much memory is guaranteed for the pod.
+          memory: 8Gi
+
+
+    # -- (map) Loki configuration.
+    loki:
+      # -- (map) Loki image details.
+      image:
+        # -- (string) Container image registry for Loki.
+        registry: quay.io/cdis
+        # -- (string) Repository for the Loki image.
+        repository: loki
+        # -- (string) Tag for the Loki image version.
+        tag: master
+
+      # -- (map) Schema configuration for Loki.
+      schemaConfig:
+        configs:
+          - from: 2024-04-01
+            # -- (string) Storage engine used by Loki.
+            store: tsdb
+            # -- (string) Object store for Loki data (e.g., S3).
+            object_store: s3
+            # -- (string) Schema version for Loki.
+            schema: v13
+            # -- (map) Index configuration for Loki.
+            index:
+              # -- (string) Prefix for the Loki index.
+              prefix: loki_index_
+              # -- (string) Index rotation period for Loki, in hours.
+              period: 24h
+      # -- (map) Structured configuration settings for Loki.
+      structuredConfig:
+        server:
+          # -- (string) Log level for Loki server. Options include 'info', 'debug', etc.
+          log_level: debug
+        limits_config:
+          # -- (int) Maximum number of series that can be queried at once.
+          max_query_series: 30000
+          # -- (int) Maximum number of streams a single user can have.
+          max_streams_per_user: 100000
+          # -- (int) Maximum number of log entries per query.
+          max_entries_limit_per_query: 100000000
+        common:
+          # -- (string) Path prefix where Loki stores data.
+          path_prefix: /var/loki
+          storage:
+            # -- (null) Filesystem storage is disabled.
+            filesystem: null
+            s3:
+              # -- (string) AWS region for S3 storage.
+              region: us-east-1
+              # # -- (string) S3 bucket names for Loki storage.
+              # bucketnames: <bucket name>
+
+  # -- (map) Grafana configuration.
+  grafana:
+    # -- (bool) Deploy Grafana if enabled. See [upstream readme](https://github.com/grafana/helm-charts/tree/main/charts/grafana#configuration) for full values reference.
+    enabled: true
+    # -- (map) Affinity rules for scheduling Grafana pods.
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            # -- (string) Node label key for affinity. Ensures pods are scheduled on nodes in the specified zone.
+            - key: topology.kubernetes.io/zone
+              # -- (string) Operator to apply to the node selector. 'In' means the node must match one of the values.
+              operator: In
+              # -- (list) List of values for the node selector, representing allowed zones.
+              values:
+              - us-east-1a
+    # -- (map) Init container to chown data directories for Grafana.
+    initChownData:
+      image:
+        # -- (string) Container image registry for the init container.
+        registry: quay.io/cdis
+        # -- (string) Repository for the busybox image.
+        repository: busybox
+        # -- (string) Tag for the busybox image version.
+        tag: 1.32.0
+    # -- (map) Image used to download Grafana dashboards.
+    downloadDashboardsImage:
+      # -- (string) Container image registry for the dashboard download image.
+      registry: quay.io/curl
+      # -- (string) Repository for the curl image.
+      repository: curl
+      # -- (string) Tag for the curl image version.
+      tag: 8.8.0
+
+    # -- (string) Reference a secret for environment variables.
+    envFromSecret:
+    ingress:
+      # -- (bool) Enable or disable ingress for Grafana.
+      enabled: true
+      # -- (map) Annotations for Grafana ingress.
+      annotations: {}
+
+          ## Recommended annotations for AWS ALB (Application Load Balancer).
+          # alb.ingress.kubernetes.io/ssl-redirect: '443'
+          # alb.ingress.kubernetes.io/certificate-arn:  <cert arn>
+          # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+          # alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=600
+          # alb.ingress.kubernetes.io/scheme: internet-facing
+          # alb.ingress.kubernetes.io/ssl-policy: <ssl policy>
+          # alb.ingress.kubernetes.io/tags: Environment=<environment>
+          # alb.ingress.kubernetes.io/target-type: 'ip'
+          # alb.ingress.kubernetes.io/inbound-cidrs: <cidrs>
+      # -- (list) Hostname(s) for Grafana ingress.
+      hosts:
+        - grafana.example.com
+      # -- (string) Ingress class name to be used (e.g., 'alb' for AWS Application Load Balancer).
+      ingressClassName: "alb"
+      tls:
+        # -- (list) TLS configuration for the ingress. Reference to a secret that contains the TLS certificate.
+        - secretName:
+    # -- (map) Persistence configuration for Grafana.
+    persistence:
+      # -- (bool) Enable or disable persistence for Grafana data.
+      enabled: true
+
+    # -- (map) Image configuration for Grafana.
+    image:
+      # -- (string) Container image registry for Grafana.
+      registry: quay.io/cdis
+      # -- (string) Repository for the Grafana image.
+      repository: grafana
+      # -- (string) Pull policy for the Grafana image (e.g., 'Always').
+      pullPolicy: Always
+      # -- (string) Tag for the Grafana image version.
+      tag: master
+
+    # -- (map) Environment variables for Grafana.
+    env:
+      # -- (string) Root URL configuration for the Grafana server.
+      GF_SERVER_ROOT_URL: "https://grafana.example.com"
+
+    # -- (map) Configuration for dashboard providers in Grafana.
+    dashboardProviders:
+      dashboardproviders.yaml:
+        # -- (int) API version for dashboard provider configuration.
+        apiVersion: 1
+        # -- (list) List of dashboard providers.
+        providers:
+        - name: 'grafana-dashboards-kubernetes'
+          # -- (int) Organization ID in Grafana.
+          orgId: 1
+          # -- (string) Folder where the dashboards will be placed in Grafana.
+          folder: 'Kubernetes'
+          # -- (string) Type of dashboard provider, usually 'file'.
+          type: file
+          # -- (bool) Prevent deletion of the provided dashboards.
+          disableDeletion: true
+          # -- (bool) Allow editing of the dashboards.
+          editable: true
+          # -- (map) Options for the dashboard provider.
+          options:
+            # -- (string) Path to the dashboard files.
+            path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+
+    # -- (map) Dashboards configuration. URLs to fetch specific Kubernetes-related Grafana dashboards.
+    # Gen3 specific dashboards can be found here. https://github.com/uc-cdis/grafana-dashboards
+    dashboards:
+      grafana-dashboards-kubernetes:
+        k8s-system-api-server:
+          # -- (string) URL to the dashboard JSON file for the Kubernetes API server.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+          # -- (string) Authentication token for accessing the dashboard URL (optional).
+          token: ''
+        k8s-system-coredns:
+          # -- (string) URL to the dashboard JSON file for CoreDNS in Kubernetes.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+          token: ''
+        k8s-views-global:
+          # -- (string) URL to the dashboard JSON file for global views in Kubernetes.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+          token: ''
+        k8s-views-namespaces:
+          # -- (string) URL to the dashboard JSON file for Kubernetes namespace views.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+          token: ''
+        k8s-views-nodes:
+          # -- (string) URL to the dashboard JSON file for Kubernetes node views.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+          token: ''
+        k8s-views-pods:
+          # -- (string) URL to the dashboard JSON file for Kubernetes pod views.
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+          token: ''
+
+    grafana.ini:
+      # -- (map) Okta authentication settings in Grafana.
+      auth.okta:
+        # -- (bool) Enable or disable Okta authentication.
+        enabled: true
+        # -- (string) Icon used for Okta in the Grafana UI.
+        icon: okta
+        # -- (bool) Allow users to sign up automatically using Okta.
+        allow_sign_up: true
+        # -- (bool) Automatically log in users using Okta when visiting Grafana.
+        auto_login: true
+        # # -- (string) Okta client ID.
+        # client_id:
+        # # -- (string) Okta client secret.
+        # client_secret:
+        # # -- (string) Okta authorization URL.
+        # auth_url:
+        # # -- (string) Okta token URL.
+        # token_url:
+        # # -- (string) Okta API URL.
+        # api_url:
+      # -- (map) User configuration settings in Grafana.
+      users:
+        # -- (string) Auto-assign the specified role to new users upon login. Options: Viewer, Editor, Admin.
+        auto_assign_org_role: Editor
+      # -- (map) Logging configuration in Grafana.
+      log:
+        # -- (string) Logging level for Grafana. Options: debug, info, warn, error.
+        level: debug
+      # -- (map) Server configuration in Grafana.
+      server:
+        # -- (string) Domain name for the Grafana server.
+        domain: grafana.example.com
+        # -- (string) Root URL for Grafana, using the domain name.
+        root_url: "https://%(domain)s/"
+      # -- (map) Feature toggles in Grafana.
+      feature_toggles:
+        # -- (bool) Enable Single Sign-On (SSO) settings API.
+        ssoSettingsApi: true
+        # -- (bool) Enable support for transformations using variables in Grafana.
+        transformationsVariableSupport: true
+        # -- (list) Features to be enabled in Grafana.
+        enable: ssoSettingsAPI transformationsVariableSupport
+
+    # -- (map) Gen3 built-in alerting configuration in Grafana.
+    alerting:
+      # -- (string) Alerting rules configuration file.
+      rules.yaml:
+        # -- (int) API version for the alerting rules configuration.
+        apiVersion: 1
+        # -- (list) Groups of alerting rules.
+        groups:
+        - orgId: 1
+          # -- (string) Name of the alert group.
+          name: Alerts
+          # -- (string) Folder where the alerts will be placed in Grafana.
+          folder: Alerts
+          # -- (string) Interval at which the alert rules are evaluated.
+          interval: 5m
+          # -- (list) List of alerting rules to be defined (add specific rules here).
+          rules:
+            - uid: edwb8zgcvq96oc
+              title: HTTP 500 errors detected
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum by (cluster) (count_over_time({cluster=~".+"} | json | http_status_code="500" [1h])) > 0
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                summary: 'Alert: HTTP 500 errors detected in the environment: {{`{{ $labels.clusters }}`}}'
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: adwb9vhb7irr4b
+              title: Error Logs Detected in Usersync Job
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum by (cluster, namespace) (count_over_time({ app="gen3job", job_name=~"usersync-.*"} |= "ERROR - could not revoke policies from user `N/A`" [5m])) > 1
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: Error in usersync job detected in cluster {{`{{ $labels.clusters }}`}}, namespace {{`{{ $labels.namespace }}`}}.
+                summary: Error Logs Detected in Usersync Job
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: ddwbc12l6wc8wf
+              title: Hatchery panic in {{`{{ env.name }}`}}
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum by (cluster) (count_over_time({app="hatchery"} |= "panic" [5m])) > 1
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: Panic detected in app {{`{{ $labels.app }}`}} within cluster {{`{{ $labels.clusters }}`}}.
+                summary: Hatchery panic
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: cdwbcbphz1zb4a
+              title: Http status code 431
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum(count_over_time({cluster=~".+"} | json | http_status_code="431" [5m])) >= 2
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: Detected 431 HTTP status codes in the logs within the last 5 minutes.
+                summary: Http status code 431
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: bdwbck1lgwdfka
+              title: Indexd is getting an excessive amount of traffic
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum by (cluster) (count_over_time({cluster=~".+", app="indexd", status="info"} [5m])) > 50000
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: High number of info status logs detected in the indexd service in cluster {{`{{ $labels.clusters }}`}}.
+                summary: Indexd is getting an excessive amount of traffic
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: fdwbe5t439zpcd
+              title: Karpenter Resource Mismatch
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: |
+                        sum by (cluster) (count_over_time({namespace="karpenter", cluster=~".+"} |= "ERROR" |= "not found" |= "getting providerRef" [5m])) > 10
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: More than 10 errors detected in the karpenter namespace in cluster {{`{{ $labels.clusters }}`}} related to providerRef not found.
+                summary: Karpenter Resource Mismatch
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+            - uid: fdwbeuftc7400c
+              title: Nginx is logging excessive " limiting requests, excess:"
+              condition: A
+              data:
+                - refId: A
+                  queryType: instant
+                  relativeTimeRange:
+                    from: 600
+                    to: 0
+                  datasourceUid: loki
+                  model:
+                    datasource:
+                      type: loki
+                      uid: loki
+                    editorMode: code
+                    expr: sum by (app, cluster) (count_over_time({app=~".+", cluster=~".+"} |= "status:error" |= "limiting requests, excess:" [5m])) > 1000
+                    hide: false
+                    intervalMs: 1000
+                    maxDataPoints: 43200
+                    queryType: instant
+                    refId: A
+              noDataState: OK
+              execErrState: KeepLast
+              for: 5m
+              annotations:
+                description: 'More than 1000 "limiting requests, excess" errors detected in service {{`{{ $labels.app }}`}} (cluster: {{`{{ $labels.clusters }}`}}) within the last 5 minutes.'
+                summary: Nginx is logging excessive " limiting requests, excess:"
+              labels: {}
+              isPaused: false
+              notification_settings:
+                receiver: Slack
+      contactpoints.yaml:
+        secret:
+          apiVersion: 1
+          contactPoints:
+            - orgId: 1
+              name: slack
+              receivers:
+                - uid: first_uid
+                  type: Slack
+                  settings:
+                    url: https://hooks.slack.com/services/XXXXXXXXXX
+                    group: slack
+                    summary: |
+                      {{ `{{ include "default.message" . }}` }}

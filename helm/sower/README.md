@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 sower
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.16 |
 
 ## Values
 
@@ -31,27 +31,29 @@ A Helm chart for gen3 sower
 | awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"pelicanserviceG3auto":null}` | External Secrets settings. |
-| externalSecrets.createK8sPelicanServiceSecret | string | `false` | Will create the Helm "manifestservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| env | list | `nil` | Environment variables to pass to the container |
+| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"createK8sSowerJobsSecret":false,"pelicanserviceG3auto":null,"sowerjobsG3auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sPelicanServiceSecret | string | `false` | Will create the Helm "pelicanservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.createK8sSowerJobsSecret | string | `false` | Will create the Helm "sower-jobs-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.pelicanserviceG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto" |
+| externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
-| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any manifestservice secrets you have deployed. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sower secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
@@ -68,9 +70,14 @@ A Helm chart for gen3 sower
 | image.repository | string | `"quay.io/cdis/sower"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
+| netPolicy | map | `{"egressApps":["pidgin"],"ingressApps":["pidgin"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["pidgin"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["pidgin"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| pelican.bucket | string | `"sower-pfb-bucket"` |  |
 | podSecurityContext | map | `{"fsGroup":1000,"runAsUser":1000}` | Security context to apply to the pod |
 | podSecurityContext.fsGroup | int | `1000` | Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod. |
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
@@ -82,7 +89,7 @@ A Helm chart for gen3 sower
 | resources.requests | map | `{"cpu":"100m","memory":"20Mi"}` | The amount of resources that the container requests |
 | resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
 | resources.requests.memory | string | `"20Mi"` | The amount of memory requested |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for Usersync and External Secrets. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Values for sower secrets and keys for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
@@ -106,20 +113,20 @@ A Helm chart for gen3 sower
 | sowerConfig[0].container.env[2].value | string | `"subject"` |  |
 | sowerConfig[0].container.env[3].name | string | `"DB_HOST"` |  |
 | sowerConfig[0].container.env[3].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[4].name | string | `"DB_DATABASE"` |  |
 | sowerConfig[0].container.env[4].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[5].name | string | `"DB_USER"` |  |
 | sowerConfig[0].container.env[5].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[6].name | string | `"DB_PASS"` |  |
 | sowerConfig[0].container.env[6].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[7].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[0].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[0].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[0].container.name | string | `"job-task"` |  |
 | sowerConfig[0].container.pull_policy | string | `"Always"` |  |
@@ -145,20 +152,20 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.env[3].value | string | `""` |  |
 | sowerConfig[1].container.env[4].name | string | `"DB_HOST"` |  |
 | sowerConfig[1].container.env[4].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[5].name | string | `"DB_DATABASE"` |  |
 | sowerConfig[1].container.env[5].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[6].name | string | `"DB_USER"` |  |
 | sowerConfig[1].container.env[6].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[7].name | string | `"DB_PASS"` |  |
 | sowerConfig[1].container.env[7].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[8].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:GPE-1252"` |  |
+| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
 | sowerConfig[1].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[1].container.name | string | `"job-task"` |  |
 | sowerConfig[1].container.pull_policy | string | `"Always"` |  |
@@ -166,18 +173,14 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.volumeMounts[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[1].container.volumeMounts[0].readOnly | bool | `true` |  |
 | sowerConfig[1].container.volumeMounts[0].subPath | string | `"config.json"` |  |
-| sowerConfig[1].container.volumeMounts[1].mountPath | string | `"/peregrine-creds.json"` |  |
-| sowerConfig[1].container.volumeMounts[1].name | string | `"peregrine-creds-volume"` |  |
-| sowerConfig[1].container.volumeMounts[1].readOnly | bool | `true` |  |
-| sowerConfig[1].container.volumeMounts[1].subPath | string | `"creds.json"` |  |
 | sowerConfig[1].name | string | `"pelican-export-files"` |  |
 | sowerConfig[1].restart_policy | string | `"Never"` |  |
 | sowerConfig[1].volumes[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[1].volumes[0].secret.secretName | string | `"pelicanservice-g3auto"` |  |
+| sowerjobsG3auto | string | `"{\n  \"index-object-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\",\n    \"indexd_user\": \"diirm\",\n    \"indexd_password\": \"$indexdPassword\"\n  },\n  \"download-indexd-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  },\n  \"get-dbgap-metadata\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  },\n  \"ingest-metadata-manifest\": {\n    \"job_requires\": {\n      \"arborist_url\": \"http://arborist-service\",\n      \"job_access_req\": []\n    },\n    \"bucket\": \"$bucketName\"\n  }\n}\n"` | Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[{"mountPath":"/sower_config.json","name":"sower-config","readOnly":true,"subPath":"sower_config.json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"items":[{"key":"json","path":"sower_config.json"}],"name":"manifest-sower"},"name":"sower-config"}]` | Volumes to attach to the container. |
-

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-fence
+data:
+  fence-config-public.yaml: |
+    {{- with .Values.FENCE_CONFIG_PUBLIC }}
+    {{- toYaml . | nindent 4 }}
+    {{ end }}
+

@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -51,12 +50,11 @@ global:
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
@@ -67,6 +65,35 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - fence
+    - presigned-url-fence
+    - fenceshib
+    - peregrine
+    - sheepdog
+    - ssjdispatcherjob
+    - metadata
+    - mariner
+    - mariner-engine
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - fence
+    - presigned-url-fence
+    - fenceshib
+    - peregrine
+    - sheepdog
+    - ssjdispatcherjob
+    - metadata
+    - mariner
+    - mariner-engine
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -149,11 +176,13 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Security context for the pod
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -205,19 +234,19 @@ affinity: {}
 
 # -- (list) Volumes to attach to the pod
 volumes:
-- name: uwsgi-config
-  configMap:
-    name: indexd-uwsgi
-- name: config-volume
-  secret:
-    secretName: "indexd-settings"
+  - name: uwsgi-config
+    configMap:
+      name: indexd-uwsgi
+  - name: config-volume
+    secret:
+      secretName: "indexd-settings"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-- name: "config-volume"
-  readOnly: true
-  mountPath: "/var/www/indexd/local_settings.py"
-  subPath: "local_settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/indexd/local_settings.py"
+    subPath: "local_settings.py"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -244,11 +273,3 @@ partOf: "S3-GS"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

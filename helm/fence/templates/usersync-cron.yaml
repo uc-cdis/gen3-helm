@@ -17,8 +17,12 @@ metadata:
   name: usersync
 spec:
   schedule: {{ .Values.usersync.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 4
       template:
         metadata:
           labels:
@@ -52,6 +56,7 @@ spec:
               emptyDir: {}
             - name: cred-volume
               secret:
+                optional: true
               {{- if .Values.global.aws.useLocalSecret.enabled }}
                 secretName: {{ .Values.global.aws.useLocalSecret.localSecretName }}
               {{- else }}
@@ -66,15 +71,18 @@ spec:
               image: {{ .Values.usersync.custom_image | default "quay.io/cdis/awshelper:master" }}
               imagePullPolicy: Always
               env:
-              - name: gen3Env
-                valueFrom:
+                - name: gen3Env
+                  valueFrom:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-              - name: userYamlS3Path
-                value: {{ .Values.usersync.userYamlS3Path | quote }}
-              - name: slackWebHook
-                value: {{ .Values.usersync.slack_webhook | quote }}
+                - name: userYamlS3Path
+                  value: {{ .Values.usersync.userYamlS3Path | quote }}
+                - name: slackWebHook
+                  value: {{ .Values.usersync.slack_webhook | quote }}
+                {{- with .Values.usersync.env }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
               volumeMounts:
                 - name: user-yaml
                   mountPath: /var/www/fence
@@ -115,8 +123,8 @@ spec:
                     echo "ERROR: failed to generate ETL config"
                     exit 1
                   fi
-                  # kubectl delete configmap fence > /dev/null 2>&1
-                  # kubectl create configmap fence --from-file=/tmp/user.yaml
+                  kubectl delete configmap fence > /dev/null 2>&1
+                  kubectl create configmap fence --from-file=/tmp/user.yaml
                   if [ "${slackWebHook}" != 'None' ]; then
                     curl -X POST --data-urlencode "payload={\"text\": \"AWSHelper: Syncing users on ${gen3Env}\"}" "${slackWebHook}"
                   fi
@@ -126,17 +134,22 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
-            - name: SYNC_FROM_DBGAP
-              value: {{ .Values.usersync.syncFromDbgap | quote }}
-            - name: ADD_DBGAP
-              value: {{ .Values.usersync.addDbgap | quote }}
-            - name: ONLY_DBGAP
-              value: {{ .Values.usersync.onlyDbgap | quote }}
-            - name: SLACK_SEND_DBGAP
-              value: {{ .Values.usersync.slack_send_dbgap | quote }}
-            - name: slackWebHook
-              value: {{ .Values.usersync.slack_webhook | quote }}
-            {{- toYaml .Values.env | nindent 12 }}
+              - name: SYNC_FROM_DBGAP
+                value: {{ .Values.usersync.syncFromDbgap | quote }}
+              - name: ADD_DBGAP
+                value: {{ .Values.usersync.addDbgap | quote }}
+              - name: ONLY_DBGAP
+                value: {{ .Values.usersync.onlyDbgap | quote }}
+              - name: SLACK_SEND_DBGAP
+                value: {{ .Values.usersync.slack_send_dbgap | quote }}
+              - name: slackWebHook
+                value: {{ .Values.usersync.slack_webhook | default "" | quote }}
+              {{- with .Values.env }}
+              {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- with .Values.usersync.env }}
+              {{- toYaml . | nindent 14 }}
+              {{- end }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared

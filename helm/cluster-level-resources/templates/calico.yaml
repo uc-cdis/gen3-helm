@@ -1,0 +1,37 @@
+{{ if index .Values "calico" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: calico
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: tigera-operator
+      repoURL: https://docs.tigera.io/calico/charts
+      targetRevision: {{ index .Values "calico" "targetRevision" }}
+      helm:
+        releaseName: calico
+      {{- if index .Values "calico" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/calico.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          installation:
+            kubernetesProvider: EKS
+            registry: quay.io/
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - Force=true
+    - ServerSideApply=true
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}

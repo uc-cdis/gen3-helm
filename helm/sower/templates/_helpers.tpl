@@ -73,3 +73,10 @@ Create the name of the service account to use
 {{- define "pelicanservice-g3auto" -}}
 {{- default "pelicanservice-g3auto" .Values.externalSecrets.pelicanserviceG3auto }}
 {{- end }}
+
+{{/*
+  Sowerjobs g3 Auto Secrets Manager Name
+*/}}
+{{- define "sower-jobs-g3auto" -}}
+{{- default "sower-jobs-g3auto" .Values.externalSecrets.sowerjobsG3auto }}
+{{- end }}

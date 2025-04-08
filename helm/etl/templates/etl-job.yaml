@@ -3,7 +3,8 @@ kind: CronJob
 metadata:
   name: etl-cronjob
 spec:
-  schedule: "0 0 1 1 */5"
+  suspend: {{ .Values.suspendCronjob }}
+  schedule: {{ .Values.schedule | quote }}
   jobTemplate:
     spec:
       backoffLimit: 0
@@ -35,6 +36,12 @@ spec:
                         values:
                           - ONDEMAND
           volumes:
+            {{- if .Values.legacySupport }}
+            - name: config-volume
+              secret:
+                defaultMode: 420
+                secretName: etl-secret  
+            {{- end }}        
             - name: signal-volume
               emptyDir: {}
             - name: creds-volume
@@ -43,7 +50,11 @@ spec:
             - name: etl-mapping
               configMap:
                 name: etl-mapping
-            - name: fence-yaml
+            - name: fence-usersync-yaml
+              configMap:
+                name: fence
+                optional: true
+            - name: fence-useryaml
               configMap:
                 name: useryaml
           containers:
@@ -80,9 +91,6 @@ spec:
                 requests:
                   cpu: {{  .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
-                # limits:
-                #   cpu: {{ .Values.resources.spark.limits.cpu }}
-                #   memory: {{ .Values.resources.spark.limits.memory }}
               command: ["/bin/bash" ]
               args: 
                 - "-c"
@@ -105,7 +113,6 @@ spec:
                   while true; do sleep 5; done
             - name: tube
               imagePullPolicy: IfNotPresent
-              # image: quay.io/cdis/tube:feat_helm_test
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
@@ -153,7 +160,7 @@ spec:
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
                 - name: ETL_FORCED
-                  value: "TRUE"
+                  value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
                   valueFrom:
                     configMapKeyRef:
@@ -166,32 +173,39 @@ spec:
                       key: slack_webhook
                       optional: true
               volumeMounts:
-                # - name: "creds-volume"
-                #   readOnly: true
-                #   mountPath: "/gen3/tube/creds.json"
-                #   subPath: creds.json
-                # Volume to signal when to kill spark
+                {{- if .Values.legacySupport }}
+                - mountPath: /tube/tube/settings.py
+                  name: config-volume
+                  subPath: settings.py
+                {{- end }}
                 - mountPath: /usr/share/pod
                   name: signal-volume
                 - name: "etl-mapping"
                   readOnly: true
                   mountPath: "/gen3/tube/etlMapping.yaml"
                   subPath: "etlMapping.yaml"
-                - name: "fence-yaml"
-                  readOnly: true
-                  mountPath: "/gen3/tube/user.yaml"
+                - name: fence-usersync-yaml
+                  mountPath: /gen3/tube/fence-user.yaml
+                  subPath: user.yaml
+                - name: fence-useryaml
+                  mountPath: /gen3/tube/useryaml-user.yaml
                   subPath: useryaml
               resources:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
-                # limits:
-                #   cpu: {{ .Values.resources.tube.limits.cpu }}
-                #   memory: {{ .Values.resources.tube.limits.memory }}
               command: ["/bin/bash"]
               args:
                 - "-c"
                 - |
+                  if [ -f "/gen3/tube/fence-user.yaml" ]; then
+                    cp /gen3/tube/fence-user.yaml /gen3/tube/user.yaml
+                    echo "Using Fence usersync user.yaml."
+                  else
+                    cp /gen3/tube/useryaml-user.yaml /gen3/tube/user.yaml
+                    echo "Using Fence useryaml."
+                  fi
+
                   while ! bash -c "echo >/dev/tcp/localhost/9000"; do
                     echo "Spark is not ready on port 9000... waiting for 10 seconds."
                     sleep 10
@@ -199,9 +213,13 @@ spec:
 
                   # Port 9000 is open, continue with the rest of the script
                   echo "Port 9000 is now open. Continuing with the script..."
-
-                  echo "python run_config.py && python run_etl.py"
-                  python run_config.py && python run_etl.py
+                  if [[ $ETL_FORCED != "false" ]]; then
+                    echo "python run_config.py && python run_etl.py --force"
+                    python run_config.py && python run_etl.py --force
+                  else
+                    echo "python run_config.py && python run_etl.py"
+                    python run_config.py && python run_etl.py
+                  fi
                   exitcode=$?
                   
                   # Kill sidecar and all processes

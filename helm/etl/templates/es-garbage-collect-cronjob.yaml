@@ -1,0 +1,85 @@
+{{- if .Values.esGarbageCollect.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitops-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitops-sa-role
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces","services"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "delete", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitops-sa-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gitops-sa-role
+subjects:
+  - kind: ServiceAccount
+    name: gitops-sa
+    namespace: default
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: es-garbage
+spec:
+  schedule: {{ .Values.esGarbageCollect.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          restartPolicy: Never
+          serviceAccountName: gitops-sa
+          securityContext:
+            fsGroup: 1000
+          containers:
+          - name: awshelper
+            image: {{ .Values.esGarbageCollect.custom_image | default "quay.io/cdis/awshelper:master" }}
+            imagePullPolicy: Always
+            env:
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: regional
+            - name: ESHOST
+              value: {{ printf "%s:9200" .Values.esEndpoint | quote }}
+            - name: slackWebHook
+              value: {{ .Values.esGarbageCollect.slack_webhook | quote }}
+            command: ["/bin/bash" ]
+            args:
+              - "-c"
+              - |
+                export GEN3_HOME="$HOME/cloud-automation"
+                source "$GEN3_HOME/gen3/gen3setup.sh"
+                echo $ESHOST
+                if gen3 klock lock es-garbage-job gitops 900; then
+                    repoList="$(gen3 es garbage)"
+                    for indexName in $repoList; do
+                    echo "deleting index $indexName"
+                    gen3 es delete "$indexName"
+                    done
+                    if [[ -n "$repoList" && -n "$slackWebHook" && "$slackWebHook" != "None" ]]; then
+                    curl -X POST --data-urlencode "payload={\"text\": \"es-garbage-collect in $(gen3 api hostname): \n\`\`\`\n${repoList}\n\`\`\`\"}" "${slackWebHook}"
+                    fi
+                    gen3 klock unlock es-garbage-job gitops
+                else
+                    echo "Failed to acquire es-garbage-job lock: exiting without attempting to sync"
+                fi
+                echo "Exit code: $?"
+{{- end }}

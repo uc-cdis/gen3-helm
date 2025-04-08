@@ -1,0 +1,36 @@
+{{ if index .Values "vpc-cni" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vpc-cni
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-vpc-cni
+      repoURL: https://aws.github.io/eks-charts
+      targetRevision: {{ index .Values "vpc-cni" "targetRevision" }}
+      helm:
+        releaseName: vpc-cni
+      {{- if index .Values "vpc-cni" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/vpc-cni.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: master
+      ref: values
+      {{- else }}
+        values: |
+          enableNetworkPolicy: false
+          originalMatchLabels: true
+          env:
+            ANNOTATE_POD_IP: "true"
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}
