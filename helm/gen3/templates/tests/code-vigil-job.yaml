@@ -153,5 +153,6 @@ spec:
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
-              sleep 1000000000
+              sleep 120
+              mv output/report.md allure-results
       restartPolicy: Never
