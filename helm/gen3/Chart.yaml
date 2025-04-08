@@ -31,6 +31,14 @@ dependencies:
   - name: common
     version: 0.1.16
     repository: file://../common
+  - name: dicom-server
+    version: 0.1.12
+    repository: file://../dicom-server
+    condition: dicom-server.enabled
+  - name: dicom-viewer
+    version: 0.1.12
+    repository: file://../dicom-viewer
+    condition: dicom-viewer.enabled
   - name: etl
     version: 0.1.10
     repository: file://../etl
