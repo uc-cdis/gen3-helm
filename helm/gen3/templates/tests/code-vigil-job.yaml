@@ -162,6 +162,12 @@ spec:
         {{- if .Values.tests.githubaction }}
         - name: localstack-save-artifacts
           image: quay.io/cdis/awshelper:master
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: hostname
           volumeMounts:
             - name: artifacts
               mountPath: /gen3-integration-tests
@@ -169,6 +175,12 @@ spec:
           args:
             - "-c"
             - |
+              echo "Waiting for output files..."
+              while [ ! -s /shared/output/report.md ]; do
+                echo "Waiting for test completion ..."
+                sleep 2
+              done
+              echo "Both report.md and allure-results are ready!"
               alias aws="aws --endpoint-url=http://localstack.localstack.svc.cluster.local:4566" 
               export AWS_DEFAULT_REGION=us-east-1 
               export AWS_ACCESS_KEY_ID=test 
