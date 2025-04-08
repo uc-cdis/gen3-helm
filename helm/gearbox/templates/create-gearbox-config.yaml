@@ -1,0 +1,69 @@
+# DB Setup ServiceAccount
+# Needs to update/ create secrets to signal that db is ready for use.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Chart.Name }}-secret-patch-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Chart.Name }}-secret-patch-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Chart.Name }}-secret-patch-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: {{ .Chart.Name }}-secret-patch-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Chart.Name }}-secret-patch-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gearbox-g3auto-patch
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      serviceAccountName: {{ .Chart.Name }}-secret-patch-sa
+      containers:
+        - name: gearbox-g3auto-patch
+          image: bitnami/kubectl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                if kubectl get secret gearbox-dbcreds; then
+                  echo "gearbox-dbcreds secret found"
+                  password=$(kubectl get secret gearbox-dbcreds -o jsonpath="{.data.password}" | base64 --decode)
+                  echo "Retrieved password from gearbox-dbcreds"
+                  gearbox_env=$(kubectl get secret gearbox-g3auto -o jsonpath="{.data.gearbox\.env}" | base64 --decode)
+                  echo "Current gearbox.env content: $gearbox_env"
+                  updated_gearbox_env=$(echo "${gearbox_env}\nDB_PASSWORD=${password}")
+                  echo "Updated gearbox.env content: $updated_gearbox_env"
+                  encoded_gearbox_env=$(echo -n "$updated_gearbox_env" | base64 -w 0)
+                  kubectl patch secret gearbox-g3auto -p "{\"data\":{\"gearbox.env\":\"${encoded_gearbox_env}\"}}"
+                  echo "Patched gearbox-g3auto with updated gearbox.env"
+                  kubectl patch secret gearbox-g3auto -p '{"data":{"secretready":"dHJ1ZQo="}}'
+                  echo "Patched gearbox-g3auto with secretready"
+                  break
+                else
+                  echo "Waiting for gearbox-dbcreds secret to be created"
+                  sleep 5
+                fi
+              done
+      restartPolicy: Never
+
+

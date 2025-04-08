@@ -1,0 +1,473 @@
+global:
+  dev: true
+  hostname: localhost
+  portal_app: gitops
+  dictionaryUrl: https://pcdc-gen3-dictionaries.s3.amazonaws.com/pcdc-schema-demo-amia.json
+  authz_entity_name: "subject"
+  tls:
+    cert: |
+      -----BEGIN CERTIFICATE-----
+      MIIDDTCCAfWgAwIBAgIQcMmHCSPIuchREDNi1OpQ5DANBgkqhkiG9w0BAQsFADAP
+      MQ0wCwYDVQQDEwRnZW4zMB4XDTI0MDMyNTIyMDgwNFoXDTI1MDMyNTIyMDgwNFow
+      FDESMBAGA1UEAxMJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+      CgKCAQEAoTT4Y1GJ5aTwA8emKdCiPL9RCOIALYygX9lmpQ6loSE5rS4u6bgbztSg
+      9EV5mvV+oNA1g473rgwyjNlJEIQJvEO323okDjXI47j09N5a9aGhRc0bhfGlwmt/
+      gE6NZUuI/u9wjIh8nLysh4rOYrN2+Us9WRfBL8wjmRZWNFRygrEMB9lHzPefEQoU
+      p4BcOh4oLbu8//x3Of5fwDMitL5gQtSmZFnLMbK0HD7CJWNz9DQA1n9e8rRg5KWA
+      N7Tu6MIaY/H/DVCL3LfswIBSF6eQ73umGHf1zhS7PLSHPxYxkEeg35KKriN+7492
+      38Ra3bi0CzTey0It+EK+zjtt1fd7XQIDAQABo2AwXjAOBgNVHQ8BAf8EBAMCBaAw
+      HQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAwGA1UdEwEB/wQCMAAwHwYD
+      VR0jBBgwFoAUIK7MtOCIs/DygzZ1/vR3ieAwplAwDQYJKoZIhvcNAQELBQADggEB
+      AIWgFxpLfZ9LUc90qdiC2yHaLKyTN/LMdkUjw82ULVLYJ0ot0JJaJvO4iDFe/Ra9
+      t13LUhcE+W4ChentUHvwYKO5zghf4UtiryM8/wqmcZ03xyswdVaKuk5Ov39/9sTJ
+      6rfzMpf3mJZDO6JYC475TCQQ3hKAUUzOiFg41CMeqAy9vn0zgBk58IzZmruvdn43
+      YH6N/ooqVTj3CnkmVkWoB4zBjDzX9DuxpYvqI3seD7qLtXK2cm2X+Pqv90UoPsB/
+      XegALjODFpTbN5Scvbpb3npXEKbvR7X9+xy7BbVYD2K0FQ9+S1UTU8Rz7Dh9SDHM
+      Ixy5W9o6gVFhB5mxceOxKNc=
+      -----END CERTIFICATE-----
+    key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEogIBAAKCAQEAoTT4Y1GJ5aTwA8emKdCiPL9RCOIALYygX9lmpQ6loSE5rS4u
+      6bgbztSg9EV5mvV+oNA1g473rgwyjNlJEIQJvEO323okDjXI47j09N5a9aGhRc0b
+      hfGlwmt/gE6NZUuI/u9wjIh8nLysh4rOYrN2+Us9WRfBL8wjmRZWNFRygrEMB9lH
+      zPefEQoUp4BcOh4oLbu8//x3Of5fwDMitL5gQtSmZFnLMbK0HD7CJWNz9DQA1n9e
+      8rRg5KWAN7Tu6MIaY/H/DVCL3LfswIBSF6eQ73umGHf1zhS7PLSHPxYxkEeg35KK
+      riN+749238Ra3bi0CzTey0It+EK+zjtt1fd7XQIDAQABAoIBAG+AhfWcZncSuHjE
+      1SfDCRRfeBtexqS6ygrCAn9UPDfRFWW1tfkuwP00kQekLlKCT03H9dvDPYmDIkvN
+      1v23dkxjwn3qY5n4lbT9L2FXky6m1zfCgLEKzY5GcHA85QwVTPKYhw6NMTPwRJ2T
+      4uDeJQKVih9fkN4Qoua2TnXvmyzNU49ffgFMJ0Ec7vNmS7MCUtlGec1Y0xKgTflt
+      yqhChpG2MBxdX8tLNgSC+lgRBZSzRaP/0oGZuV3FQ7W4fuXLNN8CdhSzHbVlbK+D
+      CO1f6nqZ8PZKJ/7SGwB2Q05EqscNAF3tl1dsGpnLqOLpnqJ2+f/H4W6/uB2tAILd
+      ySaC53kCgYEAwOHrNulo7HLgSXEs4/Ta9nLPoZxpDxkNKCRENDJCsoakQ2O33aL4
+      mrHdSmxGqecpoCvkifx/ZCN073ZykVIoSY70+N7f79EytGjkAzDxEAnYMKSU7SSJ
+      TGA+c8Juqh6uvbMuJy/ZiQE6DZsweqhxopov7xSd89RIvNaBZdXq3QcCgYEA1fWJ
+      VHCEeQGl6eMtSWOfiADUnmOG70xlvmpzlD18pTTCIF7V1rFaAXjJl0ldI3mASJy/
+      usiHZq54bUWcvof8DjI7YJ0OS8e7pmUZK9+O9fGTLIf8TIz6qq0PfERk+SyWGdAo
+      Z8HQMJBKWX809KPkJ9isd62wfREHVazfljxdL3sCgYBwxKTsWdKKSy9uQMjqDcHm
+      zIEwD24s8YyLp4hoq+nqzmVDMQ3SevG2H78tP9ighRIFHyRiuEkSlthLGIkrBUmg
+      mAAJcOSkJT7r01dbtkV6BwdqiQ65Bt9u0+Yvb8GbnIy1RAj7yDH6s8jpI45YaBrn
+      4hWcRgWDBN3x6ceFbmf+CQKBgA5vwNJnvSiFCfLcF0Qqaqs8kxwUzxf6aasNd7r6
+      4xwqkSap/3e7A72xrrh8hMJOAm/j07QAr9In14xX9BmPB1zV2tfMARjv4yN5Ete4
+      /+ZsZGfOzSFFKey2PKM/4ihF7+LR/sfxdeCw+7NKOAKBxHVD029H0u69ZWdMgNGc
+      RRVdAoGAFH7huA61ylOGh/W6IMU0wvJqg9SeT53JoZTr++0MS+0sdYoRGrq4RzSZ
+      bXKuvqZaSrXMRB9JZ72FfpjwZhDPZtNOXJV00K4yjZIui6h+TPsDk4lnxVSPYMpP
+      My/zrtJTCPM+Gqa6mhYTz4fyITv7igxqyECakrCa/Ct0SVDZbSI=
+      -----END RSA PRIVATE KEY-----
+
+arborist:
+  image: 
+    repository: quay.io/cdis/arborist
+    tag: 2024.03
+
+fence: 
+  FENCE_CONFIG:
+    DEBUG: true
+    MOCK_STORAGE: true
+    #fill in
+    AMANUENSIS_PUBLIC_KEY_PATH: '/fence/keys/key/jwt_public_key.pem'
+    MOCK_GOOGLE_AUTH: true
+    mock_default_user: 'test@example.com'
+  volumes:
+    - name: old-config-volume
+      secret:
+        secretName: "fence-secret"
+    - name: json-secret-volume
+      secret:
+        secretName: "fence-json-secret"
+        optional: true
+    - name: creds-volume
+      secret:
+        secretName: "fence-creds"
+    - name: config-helper
+      configMap:
+        name: config-helper
+        optional: true
+    - name: logo-volume
+      configMap:
+        name: "logo-config"
+    - name: config-volume
+      secret:
+        secretName: "fence-config"
+    - name: fence-google-app-creds-secret-volume
+      secret:
+        secretName: "fence-google-app-creds-secret"
+    - name: fence-google-storage-creds-secret-volume
+      secret:
+        secretName: "fence-google-storage-creds-secret"
+    - name: fence-jwt-keys
+      secret:
+        secretName: "fence-jwt-keys"
+    - name: privacy-policy
+      configMap:
+        name: "privacy-policy"
+    - name: yaml-merge
+      configMap:
+        name: "fence-yaml-merge"
+        optional: true
+
+  volumeMounts:
+    - name: "old-config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/local_settings.py"
+      subPath: local_settings.py
+    - name: "json-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_credentials.json"
+      subPath: fence_credentials.json
+    - name: "creds-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/creds.json"
+      subPath: creds.json
+    - name: "config-helper"
+      readOnly: true
+      mountPath: "/var/www/fence/config_helper.py"
+      subPath: config_helper.py
+    - name: "logo-volume"
+      readOnly: true
+      mountPath: "/fence/fence/static/img/logo.svg"
+      subPath: "logo.svg"
+    - name: "privacy-policy"
+      readOnly: true
+      mountPath: "/fence/fence/static/privacy_policy.md"
+      subPath: "privacy_policy.md"
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config.yaml"
+      subPath: fence-config.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_private_key.pem"
+      subPath: "jwt_private_key.pem"
+    
+  image:
+    repository: quay.io/pcdc/fence
+    tag: "helm-test"
+    pullPolicy: Always
+  USER_YAML: |
+    authz:
+
+      resources:
+        - name: 'gearbox_gateway'
+        - name: 'data_file'
+          description: 'data files, stored in S3'
+        - name: 'sower'
+          description: 'sower resource'
+        - name: workspace
+          description: jupyter notebooks
+        - name: analysis
+          description: analysis tool service
+        - name: portal
+          description: data portal service
+        - name: privacy
+          description: User privacy policy
+        - name: 'services'
+          subresources:
+          - name: 'sheepdog'
+            subresources:
+            - name: 'submission'
+              subresources:
+              - name: 'program'
+              - name: 'project'
+          - name: 'amanuensis'
+          - name: 'fence'
+            subresources:
+              - name: 'admin'
+        - name: programs
+          subresources:
+          - name: pcdc
+
+      policies:
+        - id: gearbox_admin
+          resource_paths: ['/gearbox_gateway']
+          role_ids: ['gearbox_user']
+        - id: 'data_upload'
+          description: 'upload raw data files to S3'
+          resource_paths: 
+          - /data_file
+          role_ids: 
+          - file_uploader
+        - id: 'services.amanuensis-admin'
+          description: 'admin access to amanuensis'
+          role_ids:
+            - 'amanuensis_admin'
+          resource_paths:
+            - '/services/amanuensis'
+        - id: 'services.fence-admin'
+          description: 'admin access to fence'
+          role_ids:
+            - 'fence_admin'
+          resource_paths:
+            - '/services/fence/admin'   
+        - id: workspace
+          description: be able to use workspace
+          resource_paths: 
+          - /workspace
+          role_ids: 
+          - workspace_user
+        - id: analysis
+          description: be able to use analysis tool service
+          resource_paths: 
+          - /analysis
+          role_ids: 
+          - analysis_user
+        - id: privacy_policy
+          description:  User agreed on the privacy policy
+          resource_paths:
+            - /privacy
+          role_ids:
+            - reader
+        - id: indexd_admin
+          description: full access to indexd API
+          role_ids:
+            - indexd_admin
+          resource_paths:
+            - /programs
+        - description: be able to use sower job
+          id: sower
+          resource_paths: [/sower]
+          role_ids: [sower_user]
+        - id: 'services.sheepdog-admin'
+          description: 'CRUD access to programs and projects'
+          role_ids:
+            - 'sheepdog_admin'
+          resource_paths:
+            - '/services/sheepdog/submission/program'
+            - '/services/sheepdog/submission/project'
+        - id: all_programs_reader
+          role_ids:
+          - reader
+          - storage_reader
+          resource_paths:
+          - /programs
+        - id: login_no_access
+          role_ids:
+          - reader
+          resource_paths:
+          - /portal
+        - id: 'data_admin'
+          description: 'policy test, should write a policy per resource and assign to user in order to avoid duplicating policies'
+          role_ids:
+            - admin
+          resource_paths:
+            - /programs
+            - /programs/pcdc
+          
+    
+      roles:
+        - id: 'gearbox_user'
+          permissions:
+            - id: 'gearbox_access'
+              action:
+                  service: '*'
+                  method: '*'
+        - id: 'file_uploader'
+          description: 'can upload data files'
+          permissions:
+            - id: 'file_upload'
+              action:
+                  service: 'fence'
+                  method: 'file_upload'
+        - id: 'amanuensis_admin'
+          description: 'can do admin work on project/data request'
+          permissions:
+            - id: 'amanuensis_admin_action'
+              action: 
+                  service: 'amanuensis'
+                  method: '*'
+        - id: 'fence_admin'
+          description: 'can use the admin endpoint in Fence'
+          permissions:
+            - id: 'fence_admin_permission'
+              action: 
+                  service: 'fence'
+                  method: '*'
+        - id: workspace_user
+          permissions:
+          - action: {method: access, service: jupyterhub}
+            id: workspace_access
+        - id: sower_user
+          permissions:
+          - action: {method: access, service: job}
+            id: sower_access
+        - id: analysis_user
+          permissions:
+          - action: {method: access, service: analysis}
+            id: analysis_access
+        # Sheepdog admin role
+        - id: 'sheepdog_admin'
+          description: 'sheepdog admin role for program project crud'
+          permissions:
+            - id: 'sheepdog_admin_action'
+              action:
+                service: 'sheepdog'
+                method: '*'
+        - id: indexd_admin
+          description: full access to indexd API
+          permissions:
+          - id: indexd_admin
+            action:
+              service: indexd
+              method: '*'
+        - id: admin
+          permissions:
+            - id: admin
+              action:
+                service: '*'
+                method: '*'
+        - id: creator
+          permissions:
+            - id: creator
+              action:
+                service: '*'
+                method: create
+        - id: reader
+          permissions:
+            - id: reader
+              action:
+                service: '*'
+                method: read
+        - id: updater
+          permissions:
+            - id: updater
+              action:
+                service: '*'
+                method: update
+        - id: deleter
+          permissions:
+            - id: deleter
+              action:
+                service: '*'
+                method: delete
+        - id: storage_writer
+          permissions:
+            - id: storage_creator
+              action:
+                service: '*'
+                method: write-storage
+        - id: storage_reader
+          permissions:
+            - id: storage_reader
+              action:
+                service: '*'
+                method: read-storage
+      
+    users:
+      ### BEGIN INTERNS SECTION ###
+      ### END INTERNS SECTION ###
+      pmurdoch@uchicago.edu:
+        admin: true
+        policies:
+          - gearbox_admin
+          - data_upload
+          - workspace
+          - services.sheepdog-admin
+          - services.amanuensis-admin
+          - data_admin
+          - analysis
+          - privacy_policy
+          - login_no_access
+          - sower
+portal:
+  image: 
+    repository: quay.io/pcdc/gearbox_fe
+    tag: "dev"
+  resources:
+    requests:
+      cpu: 1.0
+  gitops: 
+    json: |
+      {
+        "s3_bucket": "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
+      }
+  
+  gearboxS3Bucket: "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
+
+revproxy:
+  image:
+    repository: quay.io/cdis/nginx
+    tag: 2023.09
+
+gearbox:
+  enabled: true
+  image:
+    repository: quay.io/pcdc/gearbox_be
+    tag: 1.3.0
+    pullPolicy: Always
+
+gearbox-middleware:
+  enabled: true
+  image:
+    repository: quay.io/pcdc/gearbox-middleware
+    tag: "helm-test"
+    pullPolicy: Always
+
+########################################################################################
+#                               DISABLED SERVICES                                      #
+########################################################################################
+elasticsearch:
+  enabled: false
+
+amanuensis:
+  enabled: false
+
+guppy:
+  enabled: false
+
+manifestservice:
+  enabled: false
+
+pcdcanalysistools:
+  enabled: false
+
+peregrine:
+  enabled: false
+
+sheepdog:
+  enabled: false
+
+sower:
+  enabled: false
+
+wts:
+  enabled: false
+
+ambassador:
+  # -- (bool) Whether to deploy the ambassador subchart.
+  enabled: false
+
+argo-wrapper:
+  # -- (bool) Whether to deploy the argo-wrapper subchart.
+  enabled: false
+
+audit:
+  # -- (bool) Whether to deploy the audit subchart.
+  enabled: false
+
+aws-es-proxy:
+  enabled: false
+
+metadata:
+  # -- (bool) Whether to deploy the metadata subchart.
+  enabled: false
+
+pidgin:
+  # -- (bool) Whether to deploy the pidgin subchart.
+  enabled: false
+
+indexd:
+  enabled: false
+
+hatchery:
+  enabled: false

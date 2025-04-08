@@ -9,5 +9,6 @@ secret-values.yaml
 credentials.json
 CA/
 temp.yaml
-values.yaml
+/values.yaml
 gen3_scripts/
+gen3_etl/

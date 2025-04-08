@@ -28,40 +28,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-          - name: PGHOST
-            valueFrom:
-              secretKeyRef:
-                name: amanuensis-dbcreds
-                key: host
-                optional: false
-          - name: PGUSER
-            valueFrom:
-              secretKeyRef:
-                name: amanuensis-dbcreds
-                key: username
-                optional: false
-          - name: PGPASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: amanuensis-dbcreds
-                key: password
-                optional: false
-          - name: PGDB
-            valueFrom:
-              secretKeyRef:
-                name: amanuensis-dbcreds
-                key: database
-                optional: false
-          - name: DBREADY
-            valueFrom:
-              secretKeyRef:
-                name: amanuensis-dbcreds
-                key: dbcreated
-                optional: false
-          - name: DB
-            value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
-          - name: AMANUENSIS_DB
-            value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
           - name: PYTHONPATH
             value: /var/www/amanuensis
           - name: AMANUENSIS_PUBLIC_CONFIG
@@ -83,8 +49,6 @@ spec:
             readOnly: true
             mountPath: "/var/www/amanuensis/creds.json"
             subPath: creds.json
-          - mountPath: /tmp/pod
-            name: tmp-pod
         command: ["/bin/bash"]
         args:
           - "-c"
@@ -95,6 +59,6 @@ spec:
             fence-create migrate
             if [[ $? != 0 ]]; then
               echo "WARNING: non zero exit code: $?"
+              exit 1
             fi
-            touch /tmp/pod/completed
       restartPolicy: OnFailure

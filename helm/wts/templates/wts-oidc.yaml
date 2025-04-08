@@ -24,7 +24,7 @@ spec:
       containers:
         - name: fence-client
           # TODO: Make this configurable
-          image: "quay.io/cdis/fence:master"
+          image: "quay.io/pcdc/fence:helm-test"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # TODO: ADD RESOURCES
           # resources:

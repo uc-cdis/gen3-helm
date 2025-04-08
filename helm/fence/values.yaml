@@ -373,6 +373,14 @@ volumes:
     configMap:
       name: "fence-yaml-merge"
       optional: true
+  
+  - name: amanuensis-jwt-keys
+    secret:
+      secretName: "amanuensis-jwt-keys"
+      items:
+        - key: jwt_public_key.pem
+          path: jwt_public_key.pem
+    optional: true
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -420,6 +428,11 @@ volumeMounts:
     readOnly: true
     mountPath: "/fence/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
+  - name: "amanuensis-jwt-keys"
+    readOnly: true
+    mountPath: "/amanuensis/jwt_public_key.pem"
+    subPath: "jwt_public_key.pem"
+
 
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts:
@@ -1401,6 +1414,8 @@ FENCE_CONFIG:
   #     key = base64.urlsafe_b64encode(os.urandom(32))
   #     print(key)
   ENCRYPTION_KEY: REPLACEME
+
+  AMANUENSIS_PUBLIC_KEY_PATH: '/amanuensis/jwt_public_key.pem'
 
   # -- (map) Debug and security settings
   # Modify based on whether you're in a dev environment or in production

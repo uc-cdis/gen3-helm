@@ -1,0 +1,161 @@
+# Default values for gearbox.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  # -- (map) Postgres database configuration.
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (string) S3 bucket name for Kubernetes manifest files.
+  kubeBucket: kube-gen3
+  # -- (string) S3 bucket name for log files.
+  logsBucket: logs-gen3
+  # -- (bool) Whether to sync data from dbGaP.
+  syncFromDbgap: false
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+  tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: 1000
+  # -- (bool) Whether network policies are enabled.
+  netPolicy: true
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: 10
+  # -- (bool) Whether Datadog is enabled.
+  ddEnabled: false
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+
+replicaCount: 1
+
+image:
+  repository: quay.io/pcdc/gearbox-middleware
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: test_criterion_patch_Tue__09_Apr_2024_22_32_33_GMT
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  requests:
+    cpu: 0.8
+    memory: 1024Mi
+  limits:
+    cpu: 2
+    memory: 2048Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+
+volumes:
+  - name: gearbox-middleware-jwt-keys
+    secret:
+      secretName: "gearbox-middleware-jwt-keys"
+      items:
+        - key: jwt_private_key.pem
+          path: jwt_private_key.pem
+  - name: config-volume-g3auto
+    secret:
+      secretName: "gearbox-middleware-g3auto"
+      optional: true
+  # This volume may or may not be needed or available. See kube-setup-gearbox.sh and note that this
+  # is only available if a <manifest dir>/gearbox directory exists.
+  - name: config-volume
+    secret:
+      secretName: gearbox-middleware-config
+      optional: true
+
+volumeMounts:
+  - name: "gearbox-middleware-jwt-keys"
+    readOnly: true
+    mountPath: "/gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
+    subPath: jwt_private_key.pem
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: "/gearbox_middleware/.env"
+    subPath: gearbox-middleware.env
+  - name: config-volume
+    readOnly: true
+    mountPath: /aggregate_config.json
+    subPath: aggregate_config.json

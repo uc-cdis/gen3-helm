@@ -33,6 +33,9 @@ spec:
       - name: pcdcanalysistools-jwt-keys
         secret:
           secretName: "pcdcanalysistools-jwt-keys"
+          items:
+            - key: jwt_private_key.pem
+              path: jwt_private_key.pem
       # - name: config-helper
       #   secret:
       #     secretName: "pcdcanalysistools-secret"

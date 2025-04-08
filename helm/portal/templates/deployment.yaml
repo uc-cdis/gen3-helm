@@ -209,13 +209,17 @@ spec:
               # S3 bucket name for data upload, for setting up CSP
               #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
             # - name: BASENAME
+            {{- with .Values.gearboxS3Bucket  }}
+            - name: GEARBOX_S3_BUCKET
+              value: {{ . }}
+            {{- end }}
           volumeMounts:
             {{- if .Values.extraImages  }}
             - name: extra-images
               mountPath: /data-portal/custom/images
             {{- end }}
             - name: "config-volume"
-              mountPath: "/data-portal/data/config/gitops.json"
+              mountPath: "/data-portal/data/config/pcdc.json"
               subPath: "gitops.json"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"

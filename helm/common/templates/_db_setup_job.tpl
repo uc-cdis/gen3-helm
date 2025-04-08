@@ -175,15 +175,30 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
 data:
-  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-dbcreds" .Chart.Name)) }}
+  {{- if $existingSecret }}
+    database: {{ index $existingSecret.data "database" | quote }}
+    username: {{ index $existingSecret.data "username" | quote }}
+    port: {{ index $existingSecret.data "port" | quote }}
+    password: {{ index $existingSecret.data "password" | quote }}
+    host: {{ index $existingSecret.data "host" | quote }}
+    {{- if index $existingSecret.data "dbcreated" }}
+    dbcreated: {{ index $existingSecret.data "dbcreated" | quote }}
+    {{- end }}
   {{- else }}
-  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    port: {{ $.Values.postgres.port | b64enc | quote }}
+    password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+    {{- if $.Values.global.dev }}
+    host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+    {{- else }}
+    host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

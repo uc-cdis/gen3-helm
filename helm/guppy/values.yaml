@@ -128,6 +128,12 @@ volumes:
       items:
         - key: guppy_config.json
           path: guppy_config.json
+  - name: pcdcanalysistools-jwt-keys
+    secret:
+      secretName: "pcdcanalysistools-jwt-keys"
+      items:
+        - key: jwt_public_key.pem
+          path: jwt_public_key.pem
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
@@ -154,6 +160,10 @@ volumeMounts:
     readOnly: true
     mountPath: /guppy/guppy_config.json
     subPath: guppy_config.json
+  - name: "pcdcanalysistools-jwt-keys"
+    readOnly: true
+    mountPath: "/guppy/jwt_public_key.pem"
+    subPath: "jwt_public_key.pem"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
