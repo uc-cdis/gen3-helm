@@ -150,7 +150,7 @@ spec:
             - |
               if [ -z "$SERVICE_TO_TEST" ]; then
                   echo "Running the following tests..."
-                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip and not dicom_viewer\" --dist loadscope $TEST_LABEL"
+                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip\" --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto  -m "not wip" --dist loadscope $TEST_LABEL
               else
                   echo "Running tests pertaining to specific service..."
