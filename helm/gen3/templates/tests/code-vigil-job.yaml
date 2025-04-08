@@ -61,9 +61,11 @@ spec:
                         fieldPath: metadata.namespace
         - name: api-keys
           emptyDir: {}
-        - name: allure-results
-          persistentVolumeClaim:
-            claimName: allure-results-pvc
+        - name: artifacts
+          emptyDir: {}
+        # - name: allure-results
+        #   persistentVolumeClaim:
+        #     claimName: allure-results-pvc
       initContainers:
         - name: run-usersync
           image: bitnami/kubectl
@@ -136,8 +138,10 @@ spec:
               readOnly: true
             - name: api-keys
               mountPath: /root/.gen3
-            - name: allure-results
-              mountPath: /gen3-integration-tests/allure-results
+            # - name: allure-results
+            #   mountPath: /gen3-integration-tests/allure-results
+            - name: artifacts
+              mountPath: /gen3-integration-tests
           resources:
             {{- toYaml .Values.tests.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -146,13 +150,31 @@ spec:
             - |
               if [ -z "$SERVICE_TO_TEST" ]; then
                   echo "Running the following tests..."
-                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip\" --dist loadscope $TEST_LABEL"
+                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip and not dicom_viewer\" --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto  -m "not wip" --dist loadscope $TEST_LABEL
               else
                   echo "Running tests pertaining to specific service..."
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
-              sleep 120
-              mv output/report.md allure-results
+              # sleep 120
+              
+        {{- if .Values.tests.githubaction }}
+        - name: localstack-save-artifacts
+          image: quay.io/cdis/awshelper:master
+          volumeMounts:
+            - name: artifacts
+              mountPath: /gen3-integration-tests
+          command: [ "/bin/bash" ]
+          args:
+            - "-c"
+            - |
+              alias aws="aws --endpoint-url=http://localstack.localstack.svc.cluster.local:4566" 
+              export AWS_DEFAULT_REGION=us-east-1 
+              export AWS_ACCESS_KEY_ID=test 
+              export AWS_SECRET_ACCESS_KEY=test 
+              aws s3 mb s3://$HOSTNAME
+              aws s3 cp output/report.md s3://$HOSTNAME/output/
+              aws s3 cp allure-results s3://$HOSTNAME/ --recursive
+        {{- end }}
       restartPolicy: Never

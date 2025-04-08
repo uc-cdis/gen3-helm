@@ -353,3 +353,5 @@ tests:
       memory: "10G"
   image:
     tag:
+  # -- (bool) Set to true if running in Github action
+  githubaction: false
