@@ -182,6 +182,9 @@ spec:
             - name: AWS_ENDPOINT_URL
               value: 'http://localstack.localstack.svc.cluster.local:4566'
           volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
             - name: allure-artifact
               mountPath: /gen3-integration-tests/allure-results
             - name: report-artifact
