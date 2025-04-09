@@ -185,11 +185,11 @@ spec:
             - "-c"
             - |
               echo "Waiting for output files..."
-              while [ ! -s /shared/output/report.md ]; do
+              while [ ! -s /gen3-integration-tests/output/report.md ]; do
                 echo "Waiting for test completion ..."
-                sleep 2
+                sleep 3
               done
-              echo "Both report.md and allure-results are ready!"
+              echo "Results are ready!"
               alias aws="aws --endpoint-url=http://localstack.localstack.svc.cluster.local:4566" 
               export AWS_DEFAULT_REGION=us-east-1 
               export AWS_ACCESS_KEY_ID=test 
