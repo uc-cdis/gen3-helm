@@ -196,6 +196,7 @@ spec:
                 sleep 3
               done
               echo "Results are ready!"
+              sleep 1000000
               aws s3 mb s3://$HOSTNAME
               aws s3 cp /gen3-integration-tests/output/report.md s3://$HOSTNAME/output/
               aws s3 cp /gen3-integration-tests/allure-results s3://$HOSTNAME/ --recursive
