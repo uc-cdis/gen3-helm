@@ -63,6 +63,8 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dicom-server.enabled | bool | `false` |  |
+| dicom-viewer.enabled | bool | `false` |  |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
