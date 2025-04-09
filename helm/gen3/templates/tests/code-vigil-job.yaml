@@ -175,6 +175,12 @@ spec:
                 configMapKeyRef:
                   name: manifest-global
                   key: hostname
+            - name: AWS_ACCESS_KEY_ID
+              value: test
+            - name: AWS_SECRET_ACCESS_KEY
+              value: test
+            - name: AWS_ENDPOINT_URL
+              value: 'http://localstack.localstack.svc.cluster.local:4566'
           volumeMounts:
             - name: allure-artifact
               mountPath: /gen3-integration-tests/allure-results
@@ -190,12 +196,8 @@ spec:
                 sleep 3
               done
               echo "Results are ready!"
-              alias aws="aws --endpoint-url=http://localstack.localstack.svc.cluster.local:4566" 
-              export AWS_DEFAULT_REGION=us-east-1 
-              export AWS_ACCESS_KEY_ID=test 
-              export AWS_SECRET_ACCESS_KEY=test 
               aws s3 mb s3://$HOSTNAME
-              aws s3 cp output/report.md s3://$HOSTNAME/output/
-              aws s3 cp allure-results s3://$HOSTNAME/ --recursive
+              aws s3 cp /gen3-integration-tests/output/report.md s3://$HOSTNAME/output/
+              aws s3 cp /gen3-integration-tests/allure-results s3://$HOSTNAME/ --recursive
         {{- end }}
       restartPolicy: Never
