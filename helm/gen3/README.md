@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.64](https://img.shields.io/badge/Version-0.1.64-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.65](https://img.shields.io/badge/Version-0.1.65-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -25,6 +25,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
 | file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
+| file://../dicom-server | dicom-server | 0.1.12 |
+| file://../dicom-viewer | dicom-viewer | 0.1.12 |
 | file://../etl | etl | 0.1.10 |
 | file://../fence | fence | 0.1.31 |
 | file://../frontend-framework | frontend-framework | 0.1.6 |
@@ -61,6 +63,8 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dicom-server.enabled | bool | `false` |  |
+| dicom-viewer.enabled | bool | `false` |  |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
@@ -168,7 +172,8 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"githubaction":false,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
+| tests.githubaction | bool | `false` | Set to true if running in Github action |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
