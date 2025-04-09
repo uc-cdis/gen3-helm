@@ -157,7 +157,7 @@ spec:
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
-              # sleep 120
+              sleep 120
               
         {{- if .Values.tests.githubaction }}
         - name: localstack-save-artifacts
