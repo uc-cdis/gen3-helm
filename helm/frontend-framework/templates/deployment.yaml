@@ -47,14 +47,20 @@ spec:
             - |
               mkdir -p /tmp/repo
               cd /tmp/repo
-              git clone --filter=blob:none --no-checkout --depth 1 --sparse ${GIT_REPO} siteconfig
+              # Clone with sparse checkout and filter
+              git clone --depth 1 ${GIT_REPO} siteconfig
               cd siteconfig
-              git sparse-checkout set --cone ${CONFIG_DIR}
+
+              # Fetch the branch
               git fetch origin ${GIT_BRANCH}:config_branch
               git switch config_branch
-              mkdir -p /gen3/config
-              cp -r /tmp/repo/siteconfig/${CONFIG_DIR}/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/${CONFIG_DIR}/public/* /gen3/public
+              {{- if .Values.configDir }}
+              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/public/* /gen3/public
+              {{- else }}
+              cp -r /tmp/repo/siteconfig/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/public/* /gen3/public
+              {{- end }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config

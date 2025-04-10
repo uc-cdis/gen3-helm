@@ -64,11 +64,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: quay.io/cdis/frontend-framework
+  repository: quay.io/cdis/commons-frontend-app
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "develop"
+  tag: "main"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -129,11 +129,11 @@ autoscaling:
 port: 3000
 
 # -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
-configDir: gen3.datacommons.io/gen3ff
+configDir: ""
 # -- (string) Repository for the config for CDIS this is cdis-manifest
-configRepo: https://github.com/uc-cdis/cdis-manifest.git
+configRepo: https://github.com/uc-cdis/prometheus-data-platform.git
 # -- (string) Branch name to set config from
-configBranch: master
+configBranch: main
 
 # -- (list) List of environment variables to add to the deployment.
 env: []

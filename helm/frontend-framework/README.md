@@ -28,9 +28,9 @@ A Helm chart for the gen3 frontend framework
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
-| configBranch | string | `"master"` | Branch name to set config from |
-| configDir | string | `"gen3.datacommons.io/gen3ff"` | directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff) |
-| configRepo | string | `"https://github.com/uc-cdis/cdis-manifest.git"` | Repository for the config for CDIS this is cdis-manifest |
+| configBranch | string | `"main"` | Branch name to set config from |
+| configDir | string | `""` | directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff) |
+| configRepo | string | `"https://github.com/uc-cdis/prometheus-data-platform.git"` | Repository for the config for CDIS this is cdis-manifest |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[]` | List of environment variables to add to the deployment. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -60,10 +60,10 @@ A Helm chart for the gen3 frontend framework
 | global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`. |
 | global.userYamlS3Path | string | `"s3://cdis-gen3-users/test/user.yaml"` | Path to the user.yaml file in S3. |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
-| image.repository | string | `"quay.io/cdis/frontend-framework"` | Docker repository. |
-| image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
+| image.repository | string | `"quay.io/cdis/commons-frontend-app"` | Docker repository. |
+| image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
