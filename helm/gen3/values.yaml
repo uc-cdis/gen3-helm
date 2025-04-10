@@ -361,4 +361,14 @@ tests:
   image:
     tag:
   # -- (bool) Set to true if running in Github action
-  githubaction: false
+  uploadArtifacts: false
+  # -- (map) AWS credentials to access s3 bucket.
+  artifactCreds:
+    # -- (str) AWS access key ID. 
+    awsAccessKeyId:
+    # -- (str) AWS secret access key ID. 
+    awsSecretAccessKey:
+    # -- (str) Name of AWS artifact bucket. 
+    artifactBucketName:
+    # -- (str) Path were the artifacts should be placed.
+    artifactPath:

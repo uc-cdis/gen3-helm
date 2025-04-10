@@ -172,8 +172,13 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"githubaction":false,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"artifactCreds":{"artifactBucketName":null,"artifactPath":null,"awsAccessKeyId":null,"awsSecretAccessKey":null},"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}},"uploadArtifacts":false}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
-| tests.githubaction | bool | `false` | Set to true if running in Github action |
+| tests.artifactCreds | map | `{"artifactBucketName":null,"artifactPath":null,"awsAccessKeyId":null,"awsSecretAccessKey":null}` | AWS credentials to access s3 bucket. |
+| tests.artifactCreds.artifactBucketName | str | `nil` | Name of AWS artifact bucket.  |
+| tests.artifactCreds.artifactPath | str | `nil` | Path were the artifacts should be placed. |
+| tests.artifactCreds.awsAccessKeyId | str | `nil` | AWS access key ID.  |
+| tests.artifactCreds.awsSecretAccessKey | str | `nil` | AWS secret access key ID.  |
+| tests.uploadArtifacts | bool | `false` | Set to true if running in Github action |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |

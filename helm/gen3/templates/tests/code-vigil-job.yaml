@@ -61,13 +61,6 @@ spec:
                         fieldPath: metadata.namespace
         - name: api-keys
           emptyDir: {}
-        - name: allure-artifact
-          emptyDir: {}
-        - name: report-artifact
-          emptyDir: {}
-        # - name: allure-results
-        #   persistentVolumeClaim:
-        #     claimName: allure-results-pvc
       initContainers:
         - name: run-usersync
           image: bitnami/kubectl
@@ -134,6 +127,14 @@ spec:
               value: "{{ .Values.tests.TEST_LABEL }}"
             - name: SERVICE_TO_TEST
               value: "{{ .Values.tests.SERVICE_TO_TEST }}"
+            - name: AWS_ACCESS_KEY_ID
+              value: "{{ .Values.tests.artifactCreds.awsAccessKeyId }}"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "{{ .Values.tests.artifactCreds.awsSecretAccessKey }}"
+            - name: ARTIFACT_BUCKET
+              value: "{{ .Values.tests.artifactCreds.artifactBucketName }}"
+            - name: ARTIFACT_PATH
+              value: "{{ .Values.tests.artifactCreds.artifactPath }}"
           resources:
             limits:
               cpu: 2
@@ -144,12 +145,6 @@ spec:
               readOnly: true
             - name: api-keys
               mountPath: /root/.gen3
-            # - name: allure-results
-            #   mountPath: /gen3-integration-tests/allure-results
-            - name: allure-artifact
-              mountPath: /gen3-integration-tests/allure-results
-            - name: report-artifact
-              mountPath: /gen3-integration-tests/output
           resources:
             {{- toYaml .Values.tests.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -165,43 +160,13 @@ spec:
                   echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
-              
-        {{- if .Values.tests.githubaction }}
-        - name: localstack-save-artifacts
-          image: quay.io/cdis/awshelper:master
-          env:
-            - name: HOSTNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: hostname
-            - name: AWS_ACCESS_KEY_ID
-              value: test
-            - name: AWS_SECRET_ACCESS_KEY
-              value: test
-            - name: AWS_ENDPOINT_URL
-              value: 'http://localstack.localstack.svc.cluster.local:4566'
-          volumeMounts:
-            - name: kube-api-access
-              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              readOnly: true
-            - name: allure-artifact
-              mountPath: /gen3-integration-tests/allure-results
-            - name: report-artifact
-              mountPath: /gen3-integration-tests/output
-          command: [ "/bin/bash" ]
-          args:
-            - "-c"
-            - |
-              echo "Waiting for output files..."
-              while [ ! -s /gen3-integration-tests/output/report.md ]; do
-                echo "Waiting for test completion ..."
-                sleep 3
-              done
-              echo "Results are ready!"
-              sleep 1000000
-              aws s3 mb s3://$HOSTNAME
-              aws s3 cp /gen3-integration-tests/output/report.md s3://$HOSTNAME/output/
-              aws s3 cp /gen3-integration-tests/allure-results s3://$HOSTNAME/ --recursive
-        {{- end }}
+            {{- if .Values.tests.uploadArtifacts }}
+              aws s3 sync /gen3-integration-tests/output/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/output/
+              # aws s3 sync /gen3-integration-tests/allure-results/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/
+              allure generate allure-results -o allure-report --clean
+              aws s3 sync ./allure-report/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/
+              if [ $? -ne 0 ]; then
+                echo "Failed to generate and upload allure report"
+              fi
+            {{- end }}
       restartPolicy: Never
