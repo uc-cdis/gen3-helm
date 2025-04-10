@@ -41,7 +41,9 @@ spec:
               secret:
                 defaultMode: 420
                 secretName: etl-secret  
-            {{- end }}        
+            {{- end }}  
+            - name: emptydir
+              emptyDir: {}      
             - name: signal-volume
               emptyDir: {}
             - name: creds-volume
@@ -54,9 +56,11 @@ spec:
               configMap:
                 name: fence
                 optional: true
+                defaultMode: 0744
             - name: fence-useryaml
               configMap:
                 name: useryaml
+                defaultMode: 0744
           containers:
             - name: gen3-spark
               image: {{ .Values.image.spark.repository }}:{{ .Values.image.spark.tag }}
@@ -70,8 +74,7 @@ spec:
               readinessProbe:
                 tcpSocket:
                   port: 9000
-                initialDelaySeconds: 10
-                periodSeconds: 30
+                periodSeconds: 10
               env:
               - name: DICTIONARY_URL
                 valueFrom:
@@ -95,10 +98,6 @@ spec:
               args: 
                 - "-c"
                 - |
-                  trap 'exit 0' SIGINT SIGQUIT SIGTERM
-                  # get /usr/local/share/ca-certificates/cdis-ca.crt into system bundle
-                  ssh server sudo /etc/init.d/ssh start
-                  # update-ca-certificates
                   python run_config.py
                   hdfs namenode -format
                   hdfs --daemon start namenode
@@ -110,7 +109,7 @@ spec:
                   hdfs dfs -mkdir /jars
                   hdfs dfs -mkdir /archive
                   /spark/sbin/start-all.sh
-                  while true; do sleep 5; done
+                  while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && echo "Exiting with exit code $exit_code" && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
               imagePullPolicy: IfNotPresent
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
@@ -159,6 +158,8 @@ spec:
                   value: 4g
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
+                - name: XDG_DATA_HOME
+                  value: /tube
                 - name: ETL_FORCED
                   value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
@@ -178,18 +179,23 @@ spec:
                   name: config-volume
                   subPath: settings.py
                 {{- end }}
+                - mountPath: /tube/gen3/tube
+                  name: emptydir
+                  defaultMode: 0755
                 - mountPath: /usr/share/pod
                   name: signal-volume
                 - name: "etl-mapping"
                   readOnly: true
-                  mountPath: "/gen3/tube/etlMapping.yaml"
+                  mountPath: "/tube/gen3/tube/etlMapping.yaml"
                   subPath: "etlMapping.yaml"
                 - name: fence-usersync-yaml
-                  mountPath: /gen3/tube/fence-user.yaml
+                  mountPath: /tube/gen3/tube/fence-user.yaml
                   subPath: user.yaml
+                  defaultMode: 0755
                 - name: fence-useryaml
-                  mountPath: /gen3/tube/useryaml-user.yaml
+                  mountPath: /tube/gen3/tube/useryaml-user.yaml
                   subPath: useryaml
+                  defaultMode: 0755
               resources:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}
@@ -198,14 +204,15 @@ spec:
               args:
                 - "-c"
                 - |
-                  if [ -f "/gen3/tube/fence-user.yaml" ]; then
-                    cp /gen3/tube/fence-user.yaml /gen3/tube/user.yaml
+                  # Trap multiple signals to capture different exit scenarios
+                  trap 'echo $? > /usr/share/pod/exit' EXIT SIGTERM SIGINT SIGHUP
+                  if [ -f "/tube/gen3/tube/fence-user.yaml" ]; then
+                    cp /tube/gen3/tube/fence-user.yaml /tube/gen3/tube/user.yaml
                     echo "Using Fence usersync user.yaml."
                   else
-                    cp /gen3/tube/useryaml-user.yaml /gen3/tube/user.yaml
+                    cp /tube/gen3/tube/useryaml-user.yaml /tube/gen3/tube/user.yaml
                     echo "Using Fence useryaml."
                   fi
-
                   while ! bash -c "echo >/dev/tcp/localhost/9000"; do
                     echo "Spark is not ready on port 9000... waiting for 10 seconds."
                     sleep 10
@@ -221,9 +228,11 @@ spec:
                     python run_config.py && python run_etl.py
                   fi
                   exitcode=$?
-                  
-                  # Kill sidecar and all processes
+
+                  # Immediately write exit code to the shared file signalling to spark to die.
+                  echo "Writing exit code to signal file to let spark die"
+                  echo "$exitcode" > /usr/share/pod/exit
+
                   echo "Exit code: $exitcode"
-                  pkill -u root && exit $exitcode
-                  exit "$exitcode" &
+                  exit "$exitcode"
           restartPolicy: Never
