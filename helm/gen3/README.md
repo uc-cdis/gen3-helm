@@ -26,7 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
 | file://../etl | etl | 0.1.11 |
-| file://../fence | fence | 0.1.31 |
+| file://../fence | fence | 0.1.32 |
 | file://../frontend-framework | frontend-framework | 0.1.6 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.18 |
