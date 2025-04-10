@@ -70,8 +70,7 @@ spec:
               readinessProbe:
                 tcpSocket:
                   port: 9000
-                initialDelaySeconds: 10
-                periodSeconds: 30
+                periodSeconds: 10
               env:
               - name: DICTIONARY_URL
                 valueFrom:
@@ -110,7 +109,7 @@ spec:
                   hdfs dfs -mkdir /jars
                   hdfs dfs -mkdir /archive
                   /spark/sbin/start-all.sh
-                  while true; do sleep 5; done
+                  while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
               imagePullPolicy: IfNotPresent
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
@@ -198,6 +197,8 @@ spec:
               args:
                 - "-c"
                 - |
+                  # Trap multiple signals to capture different exit scenarios
+                  trap 'echo $? > /usr/share/pod/exit' EXIT SIGTERM SIGINT SIGHUP
                   if [ -f "/gen3/tube/fence-user.yaml" ]; then
                     cp /gen3/tube/fence-user.yaml /gen3/tube/user.yaml
                     echo "Using Fence usersync user.yaml."
@@ -221,9 +222,11 @@ spec:
                     python run_config.py && python run_etl.py
                   fi
                   exitcode=$?
-                  
-                  # Kill sidecar and all processes
+
+                  # Immediately write exit code to the shared file signalling to spark to die.
+                  echo "Writing exit code to signal file to let spark die"
+                  echo "$exitcode" > /usr/share/pod/exit
+
                   echo "Exit code: $exitcode"
-                  pkill -u root && exit $exitcode
-                  exit "$exitcode" &
+                  exit "$exitcode"
           restartPolicy: Never
