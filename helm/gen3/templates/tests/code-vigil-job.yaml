@@ -2,6 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: fence-check
+  labels:
+    "helm.sh/hook": test
   annotations:
     "helm.sh/hook": test
 spec:
@@ -30,6 +32,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "gen3.labels" . | nindent 4 }}
+    "helm.sh/hook": test
   annotations:
     "helm.sh/hook": test
 spec:
