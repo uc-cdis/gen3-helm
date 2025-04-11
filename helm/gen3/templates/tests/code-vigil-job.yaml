@@ -135,6 +135,8 @@ spec:
               value: "{{ .Values.tests.artifactCreds.artifactBucketName }}"
             - name: ARTIFACT_PATH
               value: "{{ .Values.tests.artifactCreds.artifactPath }}"
+            - name: SECOND_FULL_PATH
+              value: "{{ .Values.tests.artifactCreds.secondaryFullPath }}"
           resources:
             limits:
               cpu: 2
@@ -162,9 +164,10 @@ spec:
               fi
             {{- if .Values.tests.uploadArtifacts }}
               aws s3 sync /gen3-integration-tests/output/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/output/
-              # aws s3 sync /gen3-integration-tests/allure-results/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/
               allure generate allure-results -o allure-report --clean
               aws s3 sync ./allure-report/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/
+              # Keeping this for now so allure report can be served
+              aws s3 sync ./allure-report/ s3://$SECOND_FULL_PATH
               if [ $? -ne 0 ]; then
                 echo "Failed to generate and upload allure report"
               fi

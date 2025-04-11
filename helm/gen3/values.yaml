@@ -372,3 +372,5 @@ tests:
     artifactBucketName:
     # -- (str) Path were the artifacts should be placed.
     artifactPath:
+    # -- (str) Secondary bucket + path to sync to S3.
+    secondaryFullPath:
