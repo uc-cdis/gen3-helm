@@ -31,16 +31,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      {{- if .Values.customConfig.enabled }}
       initContainers:
         - name: config-puller
           image: alpine/git
           env:
             - name: CONFIG_DIR
-              value: {{ .Values.configDir }}
+              value: {{ .Values.customConfig.dir }}
             - name: GIT_REPO
-              value: {{ .Values.configRepo  }}
+              value: {{ .Values.customConfig.repo  }}
             - name: GIT_BRANCH
-              value: {{ .Values.configBranch }}
+              value: {{ .Values.customConfig.branch }}
           command:
             - /bin/sh
             - -c
@@ -66,6 +67,7 @@ spec:
               mountPath: /gen3/config
             - name: public-volume
               mountPath: /gen3/public
+          {{- end }}
       containers:
         - name: frontend-framework
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

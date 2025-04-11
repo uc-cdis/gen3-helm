@@ -28,10 +28,11 @@ A Helm chart for the gen3 frontend framework
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
-| configBranch | string | `"main"` | Branch name to set config from |
-| configDir | string | `""` | directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff) |
-| configRepo | string | `"https://github.com/uc-cdis/commons-frontend-app.git"` | Repository for the config for CDIS this is cdis-manifest |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| customConfig.branch | string | `"main"` | Branch name to set config from |
+| customConfig.dir | string | `""` | directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff) |
+| customConfig.enabled | bool | `false` |  |
+| customConfig.repo | string | `"https://github.com/uc-cdis/commons-frontend-app.git"` | Repository for the config for CDIS this is cdis-manifest |
 | env | list | `[]` | List of environment variables to add to the deployment. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":{"enabled":false},"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |

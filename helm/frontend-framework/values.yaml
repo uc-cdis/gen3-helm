@@ -128,12 +128,15 @@ autoscaling:
 
 port: 3000
 
-# -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
-configDir: ""
-# -- (string) Repository for the config for CDIS this is cdis-manifest
-configRepo: https://github.com/uc-cdis/commons-frontend-app.git
-# -- (string) Branch name to set config from
-configBranch: main
+
+customConfig:
+  enabled: false
+  # -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
+  dir: ""
+  # -- (string) Repository for the config for CDIS this is cdis-manifest
+  repo: https://github.com/uc-cdis/commons-frontend-app.git
+  # -- (string) Branch name to set config from
+  branch: main
 
 # -- (list) List of environment variables to add to the deployment.
 env: []
