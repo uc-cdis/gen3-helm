@@ -144,9 +144,9 @@ frontend-framework:
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the frontend-framework.
-    repository: "quay.io/cdis/frontend-framework"
+    repository: "quay.io/cdis/commons-frontend-app"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "develop"
+    tag: "main"
 
 # -- (map) Configurations for cohort-middleware chart.
 cohort-middleware:

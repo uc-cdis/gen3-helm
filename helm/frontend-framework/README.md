@@ -30,7 +30,7 @@ A Helm chart for the gen3 frontend framework
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | configBranch | string | `"main"` | Branch name to set config from |
 | configDir | string | `""` | directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff) |
-| configRepo | string | `"https://github.com/uc-cdis/prometheus-data-platform.git"` | Repository for the config for CDIS this is cdis-manifest |
+| configRepo | string | `"https://github.com/uc-cdis/commons-frontend-app.git"` | Repository for the config for CDIS this is cdis-manifest |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[]` | List of environment variables to add to the deployment. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
