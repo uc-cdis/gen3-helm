@@ -116,11 +116,13 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
+          {{- if .Values.customConfig.enabled }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
             - name: public-volume
               mountPath: /gen3/public
+          {{- end }}
       volumes:
         - name: config-volume
           emptyDir: {}
