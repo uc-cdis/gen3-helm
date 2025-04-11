@@ -163,6 +163,7 @@ spec:
                   GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
               fi
             {{- if .Values.tests.uploadArtifacts }}
+              sleep 10000000
               aws s3 sync /gen3-integration-tests/output/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/output/
               allure generate allure-results -o allure-report --clean
               aws s3 sync ./allure-report/ s3://$ARTIFACT_BUCKET/$ARTIFACT_PATH/
