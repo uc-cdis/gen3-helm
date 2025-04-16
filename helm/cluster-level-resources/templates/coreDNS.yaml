@@ -48,7 +48,7 @@ spec:
 
           prometheus:
             service:
-              enabled: true                  
+              enabled: true
       {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
