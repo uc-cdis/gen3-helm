@@ -29,7 +29,7 @@ spec:
             name: karpenter
             create: true
             annotations:
-              eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/karpenter-controller-role-{{ .Values.eksClusterName | default .Values.cluster }}"
+              eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}-karpenter-sa"
           settings:
             clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
             clusterEndpoint: {{ .Values.eksClusterEndpoint }}
