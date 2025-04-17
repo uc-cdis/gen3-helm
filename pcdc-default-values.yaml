@@ -60,10 +60,11 @@ arborist:
     tag: "2025.01"
 
 amanuensis:
+  enabled: true
   image:
-    repository: "amanuensis"
-    tag: "test"
-    pullPolicy: Never
+    repository: "quay.io/pcdc/amanuensis"
+    tag: "2.24.0"
+    pullPolicy: IfNotPresent
 
 fence: 
   FENCE_CONFIG:
@@ -309,6 +310,7 @@ manifestservice:
     tag: "2025.01"
 
 pcdcanalysistools:
+  enabled: true
   image:
     repository: quay.io/pcdc/pcdcanalysistools
     tag: "1.8.9"
@@ -345,6 +347,49 @@ sower:
   image:
     repository: quay.io/cdis/sower
     tag: "2025.01"
+  pelican:
+    bucket: "gen3-helm-pelican-export"
+  # -- (map) Secret information for Usersync and External Secrets.
+
+  sowerConfig:
+    - name: pelican-export
+      action: export
+      container:
+        name: job-task
+        image: quay.io/pcdc/pelican:1.3.3_export
+        pull_policy: Always
+        env:
+        - name: DICTIONARY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: dictionary_url
+        - name: GEN3_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: manifest-global
+              key: hostname
+        - name: ROOT_NODE
+          value: subject
+        volumeMounts:
+          - name: pelican-creds-volume
+            readOnly: true
+            mountPath: "/pelican-creds.json"
+            subPath: config.json
+          - name: peregrine-creds-volume
+            readOnly: true
+            mountPath: "/peregrine-creds.json"
+            subPath: creds.json
+        cpu-limit: '1'
+        memory-limit: 2Gi
+      volumes:
+        - name: pelican-creds-volume
+          secret:
+            secretName: pelicanservice-g3auto
+        - name: peregrine-creds-volume
+          secret:
+            secretName: peregrine-creds
+      restart_policy: Never
 
 wts:
   enabled: false
@@ -352,6 +397,29 @@ wts:
     repository: quay.io/cdis/workspace-token-service
     tag: 2025.01
 
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: false
+
+elasticsearch:
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config
+    
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 500Mi
+    limits:
+      cpu: 1
+      memory: 2Gi
 ########################################################################################
 #                               DISABLED SERVICES                                      #
 ########################################################################################
@@ -389,4 +457,7 @@ gearbox:
   enabled: false
 
 gearbox-middleware:
+  enabled: false
+
+cohort-middleware:
   enabled: false

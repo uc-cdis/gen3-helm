@@ -1,0 +1,66 @@
+{{ if index .Values "grafana-alloy" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-alloy
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: alloy
+      targetRevision: {{ index .Values "grafana-alloy" "targetRevision" }}
+      helm:
+        releaseName: alloy
+      {{- if index .Values "grafana-alloy" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/grafana-alloy.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          controller:
+            type: "deployment"
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: topology.kubernetes.io/zone
+                      operator: In
+                      values:
+                      - us-east-1a
+
+          alloy:
+            stabilityLevel: "public-preview"
+            uiPathPrefix: /alloy
+            # -- Extra ports to expose on the Alloy container.
+            extraPorts:
+              - name: "otel-grpc"
+                port: 4317
+                targetPort: 4317
+                protocol: "TCP"
+              - name: "otel-http"
+                port: 4318
+                targetPort: 4318
+                protocol: "TCP"
+            clustering:
+              enabled: true
+            configMap:
+              name: alloy-gen3
+              key: config
+            resources:
+              requests:
+                cpu: 1000m
+                memory: 1Gi
+      {{- end }}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+{{ end }}

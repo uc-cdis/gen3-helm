@@ -2,17 +2,25 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
   environment: default
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (bool) Global flags to control and manage network policies for a Gen3 installation
+  # NOTE: Network policies are currently a beta feature. Use with caution!
+  netPolicy:
+    # -- (bool) Whether network policies are enabled
+    enabled: false
+
+    # -- (array) A CIDR range representing a database subnet, that services with a database need access to
+    dbSubnet: ""
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # Deployment
 # -- (map) Annotations to add to the pod.
@@ -51,20 +59,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - argo-wrapper
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - argo-wrapper
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the pod.
 volumes:
@@ -107,12 +115,22 @@ service:
   # -- (int) The port number that the service exposes.
   port: 8000
 
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - argo-wrapper
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - argo-wrapper
+
 # Configmap
 # -- (list) The workflow scaling groups to be used by Argo.
 scalingGroups:
-- user1: "workflow1"
-- user2: "workflow2"
-- user3: "workflow3"
+  - user1: "workflow1"
+  - user2: "workflow2"
+  - user3: "workflow3"
 # -- (string) S3 bucket name for Argo artifacts (allows pre-signed URLs).
 s3Bucket: "argo-artifact-downloadable"
 # -- (string) Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs).
@@ -135,11 +153,3 @@ partOf: "Apps-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

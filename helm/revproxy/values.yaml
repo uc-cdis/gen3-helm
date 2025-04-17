@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   tls:
@@ -12,10 +11,18 @@ global:
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
+    # -- (string) internal or internet-facing
+    scheme: internet-facing
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    # -- (map) WAF configuration
+    wafv2:
+      # -- (bool) Set to true if using AWS WAFv2
+      enabled: false
+      # -- (string) ARN for the WAFv2 ACL.
+      wafAclArn:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -54,16 +61,18 @@ global:
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -117,11 +126,13 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Pod-level security context.
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
 # -- (map) Container-level security context.
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -136,6 +147,18 @@ service:
   # -- (int) The port number that the service exposes.
   port: 80
 
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - portal
+    - sowerjob
+
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - portal
+    - sowerjob
+
 # -- (map) Configuration for revproxy ingress.
 ingress:
   # -- (bool) Whether to create the ingress
@@ -143,7 +166,8 @@ ingress:
   # -- (string) The ingress class name.
   className: ""
   # -- (map) Annotations to add to the ingress.
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # -- (list) Where to route the traffic.
@@ -227,11 +251,3 @@ partOf: "Front-End"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

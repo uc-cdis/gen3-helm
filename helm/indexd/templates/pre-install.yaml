@@ -82,8 +82,15 @@ spec:
             # Script always succeeds if it runs (echo exits with 0)
             # indexd image does not include jq, so use python 
             - |
-              echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
-              python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
-              echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
-              python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+              if command -v python &> /dev/null; then
+                echo 'python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
+                python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
+                echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
+                python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+              else
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+              fi
       restartPolicy: Never

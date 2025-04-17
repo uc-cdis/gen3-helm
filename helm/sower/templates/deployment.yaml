@@ -16,9 +16,14 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "sower.selectorLabels" . | nindent 8 }}
-        public: "yes"        
         netnolimit: "yes"
+        public: "yes"
+        {{- include "sower.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}        
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -34,6 +39,9 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           env:
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:

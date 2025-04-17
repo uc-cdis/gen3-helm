@@ -4,9 +4,6 @@ metadata:
   name: arborist-deployment
   labels:
     {{- include "arborist.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -16,15 +13,19 @@ spec:
       {{- include "arborist.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "arborist.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
+      labels:
+        authprovider: "yes"
+        dbarborist: "yes"
+        public: "yes"
+        {{- include "arborist.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       {{- with .Values.volumes }}
       volumes:
@@ -74,9 +75,7 @@ spec:
               # run arborist
               /go/src/github.com/uc-cdis/arborist/bin/arborist
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
+
             {{- toYaml .Values.env | nindent 12 }}
             - name: PGPASSWORD
               valueFrom:

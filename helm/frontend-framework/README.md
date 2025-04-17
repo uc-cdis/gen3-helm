@@ -1,6 +1,6 @@
 # frontend-framework
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: develop](https://img.shields.io/badge/AppVersion-develop-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: develop](https://img.shields.io/badge/AppVersion-develop-informational?style=flat-square)
 
 A Helm chart for the gen3 frontend framework
 
@@ -8,7 +8,7 @@ A Helm chart for the gen3 frontend framework
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.16 |
 
 ## Values
 
@@ -29,16 +29,13 @@ A Helm chart for the gen3 frontend framework
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| datadogLogsInjection | bool | `false` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
-| datadogProfilingEnabled | bool | `false` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
-| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
+| env | list | `[]` | List of environment variables to add to the deployment. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"ddEnabled":false,"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":true,"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
+| global | map | `{"aws":{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false},"dev":true,"dictionaryUrl":"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json","dispatcherJobNum":10,"environment":"default","hostname":"localhost","kubeBucket":"kube-gen3","logsBucket":"logs-gen3","netPolicy":{"enabled":false},"portalApp":"gitops","postgres":{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}},"publicDataSets":true,"revproxyArn":"arn:aws:acm:us-east-1:123456:certificate","syncFromDbgap":false,"tierAccessLevel":"libre","userYamlS3Path":"s3://cdis-gen3-users/test/user.yaml"}` | Global configuration options. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `10` | Number of dispatcher jobs. |
@@ -46,7 +43,7 @@ A Helm chart for the gen3 frontend framework
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres | map | `{"dbCreate":true,"master":{"host":null,"password":null,"port":"5432","username":"postgres"}}` | Postgres database configuration. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -65,11 +62,13 @@ A Helm chart for the gen3 frontend framework
 | image.repository | string | `"quay.io/cdis/frontend-framework"` | Docker repository. |
 | image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
+| port | int | `3000` |  |
 | release | string | `"dev"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"cpu":0.6,"memory":"4096Mi"},"requests":{"cpu":0.6,"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -92,4 +91,3 @@ A Helm chart for the gen3 frontend framework
 | strategy.rollingUpdate.maxSurge | int | `2` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `"25%"` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
-

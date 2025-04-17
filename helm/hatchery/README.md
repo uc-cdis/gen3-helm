@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Hatchery
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.10 |
+| file://../common | common | 0.1.16 |
 
 ## Values
 
@@ -22,16 +22,12 @@ A Helm chart for gen3 Hatchery
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
-| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
-| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
 | env | list | `[{"name":"HTTP_PORT","value":"8000"},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}]` | Environment variables to pass to the container |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -40,7 +36,7 @@ A Helm chart for gen3 Hatchery
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
-| global.netPolicy | bool | `true` | Whether network policies are enabled. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -53,7 +49,8 @@ A Helm chart for gen3 Hatchery
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
-| hatchery | map | `{"containers":[{"args":["--NotebookApp.base_url=/lw-workspace/proxy/","--NotebookApp.default_url=/lab","--NotebookApp.password=''","--NotebookApp.token=''","--NotebookApp.shutdown_no_activity_timeout=5400","--NotebookApp.quit_button=False"],"command":["start-notebook.sh"],"cpu-limit":"1.0","env":{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"},"fs-gid":100,"gen3-volume-location":"/home/jovyan/.gen3","image":"quay.io/cdis/heal-notebooks:combined_tutorials__latest","lifecycle-post-start":["/bin/sh","-c","export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"],"memory-limit":"2Gi","name":"(Tutorials) Example Analysis Jupyter Lab Notebooks","path-rewrite":"/lw-workspace/proxy/","ready-probe":"/lw-workspace/proxy/","target-port":8888,"use-tls":"false","user-uid":1000,"user-volume-location":"/home/jovyan/pd"}],"sidecarContainer":{"args":[],"command":["/bin/bash","./sidecar.sh"],"cpu-limit":"0.1","env":{"HOSTNAME":"{{ .Values.global.hostname }}","NAMESPACE":"{{ .Release.Namespace }}"},"image":"quay.io/cdis/ecs-ws-sidecar:master","lifecycle-pre-stop":["su","-c","echo test","-s","/bin/sh","root"],"memory-limit":"256Mi"}}` | Hatchery sidcar container configuration. |
+| hatchery | map | `{"containers":[{"args":["--NotebookApp.base_url=/lw-workspace/proxy/","--NotebookApp.default_url=/lab","--NotebookApp.password=''","--NotebookApp.token=''","--NotebookApp.shutdown_no_activity_timeout=5400","--NotebookApp.quit_button=False"],"command":["start-notebook.sh"],"cpu-limit":"1.0","env":{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"},"fs-gid":100,"gen3-volume-location":"/home/jovyan/.gen3","image":"quay.io/cdis/heal-notebooks:combined_tutorials__latest","lifecycle-post-start":["/bin/sh","-c","export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"],"memory-limit":"2Gi","name":"(Tutorials) Example Analysis Jupyter Lab Notebooks","path-rewrite":"/lw-workspace/proxy/","ready-probe":"/lw-workspace/proxy/","target-port":8888,"use-tls":"false","user-uid":1000,"user-volume-location":"/home/jovyan/pd"}],"sidecarContainer":{"args":[],"command":["/bin/bash","./sidecar.sh"],"cpu-limit":"0.1","env":{"HOSTNAME":"{{ .Values.global.hostname }}","NAMESPACE":"{{ .Release.Namespace }}"},"image":"quay.io/cdis/ecs-ws-sidecar:master","lifecycle-pre-stop":["su","-c","echo test","-s","/bin/sh","root"],"memory-limit":"256Mi"},"skipNodeSelector":false,"useInternalServicesUrl":false}` | Hatchery sidcar container configuration. |
+| hatchery.containers | list | `[{"args":["--NotebookApp.base_url=/lw-workspace/proxy/","--NotebookApp.default_url=/lab","--NotebookApp.password=''","--NotebookApp.token=''","--NotebookApp.shutdown_no_activity_timeout=5400","--NotebookApp.quit_button=False"],"command":["start-notebook.sh"],"cpu-limit":"1.0","env":{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"},"fs-gid":100,"gen3-volume-location":"/home/jovyan/.gen3","image":"quay.io/cdis/heal-notebooks:combined_tutorials__latest","lifecycle-post-start":["/bin/sh","-c","export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"],"memory-limit":"2Gi","name":"(Tutorials) Example Analysis Jupyter Lab Notebooks","path-rewrite":"/lw-workspace/proxy/","ready-probe":"/lw-workspace/proxy/","target-port":8888,"use-tls":"false","user-uid":1000,"user-volume-location":"/home/jovyan/pd"}]` | Notebook configuration. |
 | hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
@@ -61,11 +58,14 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.image | string | `"quay.io/cdis/ecs-ws-sidecar:master"` | The sidecar image. |
 | hatchery.sidecarContainer.lifecycle-pre-stop | list | `["su","-c","echo test","-s","/bin/sh","root"]` | Commands that are run before the container is stopped. |
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
+| hatchery.skipNodeSelector | bool | `false` | Whether to skip node selector for . Defaults to `global.dev`. |
+| hatchery.useInternalServicesUrl | bool | `false` | Whether to use internal services url. Defaults to `global.dev`. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/hatchery"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -85,4 +85,3 @@ A Helm chart for gen3 Hatchery
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
-

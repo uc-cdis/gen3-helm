@@ -1,0 +1,38 @@
+{{ if index .Values "alb-controller" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alb-controller
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-load-balancer-controller
+      repoURL: https://aws.github.io/eks-charts
+      targetRevision: {{ index .Values "alb-controller" "targetRevision" }}
+      helm:
+        releaseName: alb-controller
+      {{- if index .Values "alb-controller" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/alb-controller.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
+          serviceAccount:
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--default--ingress
+            name: aws-load-balancer-controller
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}

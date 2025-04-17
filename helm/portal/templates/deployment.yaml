@@ -4,9 +4,6 @@ metadata:
   name: portal-deployment
   labels:
     {{- include "portal.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,17 +16,23 @@ spec:
     {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "portal.selectorLabels" . | nindent 8 }}
-        public: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
+      labels:
+        public: "yes"
+        {{- include "portal.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -103,9 +106,6 @@ spec:
           #   - /bin/bash
           #   - ./dockerStart.sh
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: HOSTNAME
               value: revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
@@ -119,8 +119,7 @@ spec:
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             - name: GEN3_BUNDLE
-              # optional: true
-              value: ""
+              value: {{ .Values.gitops.gen3Bundle | quote }}
             - name: LOGOUT_INACTIVE_USERS
               valueFrom:
                 configMapKeyRef:

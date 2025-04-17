@@ -27,6 +27,7 @@ spec:
       labels:
         app: acronymbot
         {{- include "acronymbot.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

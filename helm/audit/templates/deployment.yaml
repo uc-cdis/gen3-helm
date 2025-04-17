@@ -4,9 +4,6 @@ metadata:
   name: audit-deployment
   labels:
     {{- include "audit.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -16,15 +13,17 @@ spec:
       {{- include "audit.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "audit.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
-        {{- end }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "audit.serviceAccountName" . }}
       volumes:
@@ -56,9 +55,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -94,6 +90,11 @@ spec:
               - name: "config-volume"
                 readOnly: true
                 mountPath: "/src/audit-service-config.yaml"
+                subPath: "audit-service-config.yaml"
+              # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+              - name: "config-volume"
+                readOnly: true
+                mountPath: "/audit/audit-service-config.yaml"
                 subPath: "audit-service-config.yaml"
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -139,11 +140,17 @@ spec:
           args:
             - "-c"
             - |
-              /env/bin/alembic upgrade head
+              # Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility 
+              poetry run alembic upgrade head || /env/bin/alembic upgrade head
           volumeMounts:
             - name: "config-volume"
               readOnly: true
               mountPath: "/src/audit-service-config.yaml"
+              subPath: "audit-service-config.yaml"
+            # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/audit/audit-service-config.yaml"
               subPath: "audit-service-config.yaml"
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}

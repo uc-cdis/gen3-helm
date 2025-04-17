@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vpc-netpolicy
+spec:
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 172.0.0.0/8
+  podSelector:
+    matchLabels:
+      netvpc: "yes"
+  policyTypes:
+  - Egress

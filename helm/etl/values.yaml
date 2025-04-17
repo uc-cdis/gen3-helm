@@ -14,7 +14,7 @@ image:
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "master"
+    tag: "2024.11"
 
 
 # -- (list) Docker image pull secrets.
@@ -33,12 +33,6 @@ resources:
       cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      # -- (string) The maximum amount of CPU the container can use
-      cpu: 1.0
-      # -- (string) The maximum amount of memory the container can use
-      memory: 2Gi
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
@@ -46,12 +40,6 @@ resources:
       cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      # -- (string) The maximum amount of CPU the container can use
-      cpu: 1.0
-      # -- (string) The maximum amount of memory the container can use
-      memory: 2Gi
 
 
 esEndpoint: gen3-elasticsearch-master
@@ -120,6 +108,9 @@ etlMapping:
             - name: _file_id
               src: _file_id
               fn: set
+            - name: object_id
+              src: object_id
+              fn: set
     - name: dev_file
       doc_type: file
       type: collector
@@ -143,3 +134,22 @@ etlMapping:
       target_nodes:
         - name: slide_image
           path: slides.samples.cases
+
+# -- (map) Configuration options for es garbage cronjob.
+esGarbageCollect:
+  # -- (bool) Whether to create es garbage collect cronjob.
+  enabled: false
+  # -- (string) The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default.
+  schedule: "0 0 * * *"
+  # -- (string) To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image.
+  custom_image:
+  # -- (string) Slack webhook endpoint to use for cronjob.
+  slack_webhook: None
+
+schedule: "*/30 * * * *"
+
+suspendCronjob: true
+
+legacySupport: false
+
+etlForced: "TRUE"

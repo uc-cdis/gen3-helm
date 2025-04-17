@@ -104,6 +104,10 @@ fence:
       configMap:
         name: "fence-yaml-merge"
         optional: true
+    - name: config-volume-public
+      configMap:
+        name: "manifest-fence"
+      optional: true
 
   volumeMounts:
     - name: "old-config-volume"
@@ -150,6 +154,10 @@ fence:
       readOnly: true
       mountPath: "/fence/keys/key/jwt_private_key.pem"
       subPath: "jwt_private_key.pem"
+    - name: "config-volume-public"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-public.yaml"
+      subPath: fence-config-public.yaml
     
   image:
     repository: quay.io/pcdc/fence
@@ -379,6 +387,8 @@ fence:
           - privacy_policy
           - login_no_access
           - sower
+
+
 portal:
   image: 
     repository: quay.io/pcdc/gearbox_fe
@@ -470,4 +480,7 @@ indexd:
   enabled: false
 
 hatchery:
+  enabled: false
+
+cohort-middleware:
   enabled: false

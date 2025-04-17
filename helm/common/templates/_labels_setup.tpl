@@ -35,3 +35,17 @@ release: "production"
 release: "dev"
 {{- end }}
 {{- end }}
+
+{{- define "common.extraLabels" -}}
+hostname: {{ .Values.global.hostname }}
+{{- if .Values.extraLabels }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "common.grafanaAnnotations" -}}
+prometheus.io/path: /metrics
+prometheus.io/scrape: "true"
+{{- end }}

@@ -5,6 +5,7 @@ metadata:
 data: 
   useryaml: {{ .Values.USER_YAML | toYaml | nindent 4}}
 ---
+{{ if not .Values.usersync.usersync }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -47,3 +48,4 @@ spec:
             # can be removed once this is merged: https://github.com/uc-cdis/fence/pull/1096
             fence-create sync --arborist http://arborist-service --yaml /var/www/fence/user.yaml
       restartPolicy: OnFailure
+{{ end }}
