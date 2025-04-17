@@ -5,5 +5,5 @@ metadata:
   name: alloy-gen3
   namespace: monitoring
 data:
-  config: {{ tpl (index .Values "alloy-configmap-data") . | toYaml | indent 2}}
+  config: {{ tpl (index .Values "alloy-configmap-data") . | toYaml | indent 2 }}
 {{ end }}

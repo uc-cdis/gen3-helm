@@ -1,0 +1,9 @@
+{{- if index .Values "fluentd" "enabled" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gen3-fluentd-conf
+  namespace: kube-system
+data:
+  fluentd.conf: {{ index .Values "fluentd-configmap-data" | indent 2 }}
+{{- end }}

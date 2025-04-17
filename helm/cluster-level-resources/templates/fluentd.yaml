@@ -20,8 +20,7 @@ spec:
       ref: values
       {{- else }}
         values: |
-          fileConfigs:
-            gen3.conf: | {{ index .Values "fluentd-configmap-data" | nindent 14 }}
+          mainConfigMapNameOverride: gen3-fluentd-conf
           env:
             - name: "FLUENTD_CONF"
               value: "../../../etc/fluent/config.d/gen3.conf"
