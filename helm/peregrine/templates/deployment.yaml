@@ -84,7 +84,7 @@ spec:
                 secretKeyRef:
                   name: indexd-service-creds
                   key: sheepdog
-                  optional: false
+                  optional: true
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
@@ -153,7 +153,6 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname | quote }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
             - name: "config-volume"
               readOnly: true

@@ -41,7 +41,8 @@ global:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.
@@ -50,20 +51,6 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
-
-  postgres:
-    # -- (bool) Whether the database should be created.
-    dbCreate: true
-    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
-    master:
-      # -- (string) hostname of postgres server
-      host:
-      # -- (string) username of superuser in postgres. This is used to create or restore databases
-      username: postgres
-      # -- (string) password for superuser in postgres. This is used to create or restore databases
-      password:
-      # -- (string) Port for Postgres.
-      port: "5432"
 
 postgres:
   # (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore

@@ -62,9 +62,9 @@ arborist:
 amanuensis:
   enabled: true
   image:
-    repository: "amanuensis"
-    tag: "test"
-    pullPolicy: Never
+    repository: "quay.io/pcdc/amanuensis"
+    tag: "2.24.0"
+    pullPolicy: IfNotPresent
 
 fence: 
   FENCE_CONFIG:
@@ -397,6 +397,12 @@ wts:
     repository: quay.io/cdis/workspace-token-service
     tag: 2025.01
 
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: false
+
 elasticsearch:
   clusterName: gen3-elasticsearch
   maxUnavailable: 0
@@ -451,4 +457,7 @@ gearbox:
   enabled: false
 
 gearbox-middleware:
+  enabled: false
+
+cohort-middleware:
   enabled: false

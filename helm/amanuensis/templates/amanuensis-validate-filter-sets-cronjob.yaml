@@ -5,7 +5,7 @@ metadata:
   labels:
     redeploy-hash: "{{ .Release.Revision }}"
 spec:
-  schedule: "* * * * *"
+  schedule: "0 0 1 * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3 
   jobTemplate:

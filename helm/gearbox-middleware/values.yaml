@@ -41,7 +41,8 @@ global:
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: 1000
   # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: 10
   # -- (bool) Whether Datadog is enabled.

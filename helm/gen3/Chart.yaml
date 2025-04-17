@@ -95,22 +95,22 @@ dependencies:
     version: 0.1.19
     repository: "file://../wts"
     condition: wts.enabled
-- name: pcdcanalysistools
-  version: "0.1.0"
-  repository: "file://../pcdcanalysistools"
-  condition: pcdcanalysistools.enabled
-- name: amanuensis
-  version: "0.1.1"
-  repository: "file://../amanuensis"
-  condition: amanuensis.enabled
-- name: gearbox
-  version: "0.1.0"
-  repository: "file://../gearbox"
-  condition: gearbox.enabled
-- name: gearbox-middleware
-  version: "0.1.0"
-  repository: "file://../gearbox-middleware"
-  condition: gearbox-middleware.enabled
+  - name: pcdcanalysistools
+    version: "0.1.0"
+    repository: "file://../pcdcanalysistools"
+    condition: pcdcanalysistools.enabled
+  - name: amanuensis
+    version: "0.1.1"
+    repository: "file://../amanuensis"
+    condition: amanuensis.enabled
+  - name: gearbox
+    version: "0.1.0"
+    repository: "file://../gearbox"
+    condition: gearbox.enabled
+  - name: gearbox-middleware
+    version: "0.1.0"
+    repository: "file://../gearbox-middleware"
+    condition: gearbox-middleware.enabled
 
   - name: gen3-network-policies
     version: 0.1.2
