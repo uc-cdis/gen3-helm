@@ -22,8 +22,8 @@ spec:
         values: |
           mainConfigMapNameOverride: gen3-fluentd-conf
           env:
-            - name: "FLUENTD_CONF"
-              value: "../../../etc/fluent/config.d/gen3.conf"
+            # - name: "FLUENTD_CONF"
+            #   value: "../../../etc/fluent/config.d/gen3.conf"
             - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
               value: "cri"
             - name: AWS_REGION
