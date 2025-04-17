@@ -5,5 +5,5 @@ metadata:
   name: gen3-fluentd-conf
   namespace: kube-system
 data:
-  fluentd.conf: {{ index .Values "fluentd-configmap-data" | indent 2 }}
+  fluentd.conf: {{ index .Values "fluentd-configmap-data" | toYaml | indent 2 }}
 {{- end }}
