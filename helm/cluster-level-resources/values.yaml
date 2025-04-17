@@ -641,6 +641,8 @@ fluentd-configmap-data: |
     </parse>
   </source>
 
+
+
   <filter kubernetes.**>
     @type kubernetes_metadata
     @id filter_kube_metadata
