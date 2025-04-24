@@ -89,21 +89,7 @@ spec:
       expireAfter: 168h
       terminationGracePeriod: 48h
       requirements:
-        - key: karpenter.sh/capacity-type
-          operator: In
-          values:
-            - on-demand
-        - key: kubernetes.io/arch
-          operator: In
-          values:
-            - amd64
-        - key: karpenter.k8s.aws/instance-category
-          operator: In
-          values:
-            - c
-            - m
-            - r
-            - t
+      {{ toYaml (index .Values "karpenter-crds" "jupyter" "requirements") | nindent 6 }}
 
   disruption:
     consolidateAfter: {{ index .Values "karpenter-crds" "jupyter" "consolidateAfter" }}
@@ -150,21 +136,7 @@ spec:
         kind: EC2NodeClass
         name: jupyter
       requirements:
-      - key: karpenter.sh/capacity-type
-        operator: In
-        values:
-        - on-demand
-      - key: kubernetes.io/arch
-        operator: In
-        values:
-        - amd64
-      - key: karpenter.k8s.aws/instance-category
-        operator: In
-        values:
-        - c
-        - m
-        - r
-        - t
+      {{ toYaml (index .Values "karpenter-crds" "jupyter" "requirements") | nindent 6 }}
       taints:
       - effect: NoSchedule
         key: role
