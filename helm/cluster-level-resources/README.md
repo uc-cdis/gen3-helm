@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.7](https://img.shields.io/badge/Version-0.6.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.8](https://img.shields.io/badge/Version-0.6.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -43,6 +43,19 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
+| karpenter-crds.default.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.default.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.default.requirements[0].values[1] | string | `"spot"` |  |
+| karpenter-crds.default.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.default.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.default.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.default.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.default.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.default.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.default.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.enabled | bool | `false` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
@@ -50,6 +63,18 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.jupyter.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.jupyter.enabled | bool | `true` |  |
 | karpenter-crds.jupyter.expireAfter | string | `"168h"` |  |
+| karpenter-crds.jupyter.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.jupyter.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.jupyter.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.jupyter.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.jupyter.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.jupyter.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.jupyter.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.jupyter.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.jupyter.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.migration | bool | `false` |  |
 | karpenter-crds.selectorTag | string | `""` |  |
 | karpenter-crds.targetRevision | string | `"master"` |  |
@@ -59,6 +84,18 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.workflow.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.workflow.enabled | bool | `true` |  |
 | karpenter-crds.workflow.expireAfter | string | `"168h"` |  |
+| karpenter-crds.workflow.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.workflow.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.workflow.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.workflow.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.workflow.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.workflow.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.workflow.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.workflow.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.workflow.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.workflow.sgSelector | string | `""` |  |
 | karpenter.awsRegion | string | `"us-east-1"` |  |
 | karpenter.configuration.enabled | bool | `false` |  |
