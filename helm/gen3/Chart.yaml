@@ -92,13 +92,21 @@ dependencies:
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
     version: 0.1.2
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
+  - name: dicom-server
+    version: 0.1.12
+    repository: file://../dicom-server
+    condition: dicom-server.enabled
+  - name: dicom-viewer
+    version: 0.1.12
+    repository: file://../dicom-viewer
+    condition: dicom-viewer.enabled
 
   - name: elasticsearch
     version: 7.10.2
@@ -132,7 +140,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.67
+version: 0.1.68
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.67](https://img.shields.io/badge/Version-0.1.67-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.68](https://img.shields.io/badge/Version-0.1.68-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -25,6 +25,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
 | file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
+| file://../dicom-server | dicom-server | 0.1.12 |
+| file://../dicom-viewer | dicom-viewer | 0.1.12 |
 | file://../etl | etl | 0.1.11 |
 | file://../fence | fence | 0.1.32 |
 | file://../frontend-framework | frontend-framework | 0.1.7 |
@@ -42,7 +44,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sheepdog | sheepdog | 0.1.21 |
 | file://../sower | sower | 0.1.19 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.19 |
-| file://../wts | wts | 0.1.19 |
+| file://../wts | wts | 0.1.20 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -61,6 +63,8 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
+| dicom-viewer.enabled | bool | `false` | Whether to deploy the dicom-viewer subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
