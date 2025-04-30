@@ -27,10 +27,17 @@ roleRef:
   name: {{ .Chart.Name }}-secret-patch-role
   apiGroup: rbac.authorization.k8s.io
 ---
+{{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "gearbox-g3auto" }}
+{{- $shouldRunJob := true }}
+{{- if and $existingSecret (index $existingSecret.data "secretready") }}
+  {{- $shouldRunJob = false }}
+{{- end }}
+
+{{- if $shouldRunJob }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: gearbox-g3auto-patch
+  name: gearbox-g3auto-patch-{{ .Release.Revision }}
 spec:
   template:
     metadata:
@@ -65,5 +72,6 @@ spec:
                 fi
               done
       restartPolicy: Never
+{{- end }}
 
 
