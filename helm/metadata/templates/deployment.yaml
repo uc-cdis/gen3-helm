@@ -80,12 +80,14 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
+            {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ .Values.useAggMds }}
-              optional: true
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.aggMdsNamespace}}
             - name: AGG_MDS_NAMESPACE
-              value: {{ .Values.aggMdsNamespace}}
-              optional: true
+              value: {{ . }}
+            {{- end }}
             - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
               value: {{ .Values.aggMdsDefaultDataDictField}}
               optional: true
