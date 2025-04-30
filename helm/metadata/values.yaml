@@ -263,10 +263,6 @@ volumeMounts:
     readOnly: true
     mountPath: /aggregate_config.json
     subPath: aggregate_config.json
-  - name: config-manifest
-    readOnly: true
-    mountPath: /metadata.json
-    subPath: json
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
