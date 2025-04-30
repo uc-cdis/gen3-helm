@@ -142,36 +142,6 @@ env:
     value: http://esproxy-service:9200
   - name: AWS_REGION
     value: "us-east-1"
-  - name: PGHOST
-    valueFrom:
-      secretKeyRef:
-        name: gearbox-dbcreds
-        key: host
-        optional: false
-  - name: PGUSER
-    valueFrom:
-      secretKeyRef:
-        name: gearbox-dbcreds
-        key: username
-        optional: false
-  - name: PGPASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: gearbox-dbcreds
-        key: password
-        optional: false
-  - name: PGDB
-    valueFrom:
-      secretKeyRef:
-        name: gearbox-dbcreds
-        key: database
-        optional: false
-  - name: DBREADY
-    valueFrom:
-      secretKeyRef:
-        name: gearbox-dbcreds
-        key: dbcreated
-        optional: false
   - name: GB_SECRET_READY
     valueFrom:
       secretKeyRef:
