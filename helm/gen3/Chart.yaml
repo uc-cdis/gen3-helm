@@ -60,7 +60,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog

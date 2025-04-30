@@ -35,12 +35,12 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.13 |
 | file://../indexd | indexd | 0.1.19 |
 | file://../manifestservice | manifestservice | 0.1.19 |
-| file://../metadata | metadata | 0.1.18 |
+| file://../metadata | metadata | 0.1.19 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.19 |
 | file://../portal | portal | 0.1.27 |
 | file://../requestor | requestor | 0.1.17 |
-| file://../revproxy | revproxy | 0.1.24 |
+| file://../revproxy | revproxy | 0.1.25 |
 | file://../sheepdog | sheepdog | 0.1.21 |
 | file://../sower | sower | 0.1.19 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.19 |

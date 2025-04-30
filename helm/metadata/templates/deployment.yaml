@@ -42,10 +42,6 @@ spec:
           secret:
             secretName: metadata-config
             optional: true
-        - name: config-manifest
-          configMap:
-            name: manifest-metadata
-            optional: true
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
