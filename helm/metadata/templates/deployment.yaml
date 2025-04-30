@@ -80,14 +80,15 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
-            {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ . | quote }}
-            {{- end }}
-            {{- with .Values.aggMdsNamespace}}
+              value: {{ .Values.useAggMds }}
+              optional: true
             - name: AGG_MDS_NAMESPACE
-              value: {{ . }}
-            {{- end }}
+              value: {{ .Values.aggMdsNamespace}}
+              optional: true
+            - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
+              value: {{ .Values.aggMdsDefaultDataDictField}}
+              optional: true
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:

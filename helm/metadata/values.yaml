@@ -176,6 +176,8 @@ esEndpoint: http://gen3-elasticsearch-master:9200
 useAggMds: "False"
 # -- (string) Namespae to use if AggMds is enabled.
 aggMdsNamespace: default
+# -- (string)
+aggMdsDefaultDataDictField:
 
 aggMdsConfig: |
   {
