@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -77,6 +77,7 @@ A Helm chart for gen3 sower
 | netPolicy.ingressApps | array | `["pidgin"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| pelican.bucket | string | `"sower-pfb-bucket"` |  |
 | podSecurityContext | map | `{"fsGroup":1000,"runAsUser":1000}` | Security context to apply to the pod |
 | podSecurityContext.fsGroup | int | `1000` | Group that Kubernetes will change the permissions of all files in volumes to when volumes are mounted by a pod. |
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
@@ -112,16 +113,16 @@ A Helm chart for gen3 sower
 | sowerConfig[0].container.env[2].value | string | `"subject"` |  |
 | sowerConfig[0].container.env[3].name | string | `"DB_HOST"` |  |
 | sowerConfig[0].container.env[3].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[3].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[4].name | string | `"DB_DATABASE"` |  |
 | sowerConfig[0].container.env[4].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[4].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[5].name | string | `"DB_USER"` |  |
 | sowerConfig[0].container.env[5].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[5].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[6].name | string | `"DB_PASS"` |  |
 | sowerConfig[0].container.env[6].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[0].container.env[6].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[0].container.env[7].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[0].container.env[7].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
@@ -151,16 +152,16 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.env[3].value | string | `""` |  |
 | sowerConfig[1].container.env[4].name | string | `"DB_HOST"` |  |
 | sowerConfig[1].container.env[4].valueFrom.secretKeyRef.key | string | `"host"` |  |
-| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[4].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[5].name | string | `"DB_DATABASE"` |  |
 | sowerConfig[1].container.env[5].valueFrom.secretKeyRef.key | string | `"database"` |  |
-| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[5].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[6].name | string | `"DB_USER"` |  |
 | sowerConfig[1].container.env[6].valueFrom.secretKeyRef.key | string | `"username"` |  |
-| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[6].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[7].name | string | `"DB_PASS"` |  |
 | sowerConfig[1].container.env[7].valueFrom.secretKeyRef.key | string | `"password"` |  |
-| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.name | string | `"peregrine-dbcreds"` |  |
+| sowerConfig[1].container.env[7].valueFrom.secretKeyRef.name | string | `"sheepdog-dbcreds"` |  |
 | sowerConfig[1].container.env[8].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
@@ -172,10 +173,6 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.volumeMounts[0].name | string | `"pelican-creds-volume"` |  |
 | sowerConfig[1].container.volumeMounts[0].readOnly | bool | `true` |  |
 | sowerConfig[1].container.volumeMounts[0].subPath | string | `"config.json"` |  |
-| sowerConfig[1].container.volumeMounts[1].mountPath | string | `"/peregrine-creds.json"` |  |
-| sowerConfig[1].container.volumeMounts[1].name | string | `"peregrine-creds-volume"` |  |
-| sowerConfig[1].container.volumeMounts[1].readOnly | bool | `true` |  |
-| sowerConfig[1].container.volumeMounts[1].subPath | string | `"creds.json"` |  |
 | sowerConfig[1].name | string | `"pelican-export-files"` |  |
 | sowerConfig[1].restart_policy | string | `"Never"` |  |
 | sowerConfig[1].volumes[0].name | string | `"pelican-creds-volume"` |  |

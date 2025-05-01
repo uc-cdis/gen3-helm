@@ -144,9 +144,14 @@ frontend-framework:
   # -- (map) Docker image information.
   image:
     # -- (string) The Docker image repository for the frontend-framework.
-    repository: "quay.io/cdis/frontend-framework"
+    repository: "quay.io/cdis/commons-frontend-app"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "develop"
+    tag: "main"
+
+# -- (map) Configurations for cohort-middleware chart.
+cohort-middleware:
+  # -- (bool) Whether to deploy the cohort-middleware subchart.
+  enabled: false
 
 # -- (map) Configurations for guppy chart.
 guppy:
@@ -183,8 +188,8 @@ hatchery:
         - "/bin/sh"
         - root
     containers:
-      -  # -- (int) port to proxy traffic to in docker contaniner
-        target-port: 8888
+      # -- (int) port to proxy traffic to in docker contaniner
+      - target-port: 8888
         # -- (string) cpu limit of workspace container
         cpu-limit: "1.0"
         # -- (string) memory limit of workspace container
@@ -278,6 +283,10 @@ wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
 
+sower:
+  # -- (bool) Whether to deploy the sower subchart.
+  enabled: false
+
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
@@ -328,3 +337,19 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
+
+# -- (map) Environment variables that control which tests are run.
+tests:
+  # -- (str) Name of the test that will run. Default is empty as GH workflow automatically sets this.
+  TEST_LABEL:
+  # -- (str) Name of the service we are testing. Default is empty as GH workflow automatically sets this.
+  SERVICE_TO_TEST:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "6G"
+    limits:
+      cpu: "1"
+      memory: "10G"
+  image:
+    tag:

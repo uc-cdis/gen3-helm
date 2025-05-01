@@ -244,25 +244,26 @@ sowerConfig:
               key: hostname
         - name: ROOT_NODE
           value: subject
+        # TO DO- make a separate pelican user to access sheepdog.
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: host
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: database
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: username
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: password
         - name: SHEEPDOG
           valueFrom:
@@ -305,22 +306,22 @@ sowerConfig:
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: host
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: database
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: username
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: password
         - name: SHEEPDOG
           valueFrom:
@@ -332,10 +333,6 @@ sowerConfig:
           readOnly: true
           mountPath: "/pelican-creds.json"
           subPath: config.json
-        - name: peregrine-creds-volume
-          readOnly: true
-          mountPath: "/peregrine-creds.json"
-          subPath: creds.json
       cpu-limit: "1"
       memory-limit: 12Gi
     volumes:
@@ -343,6 +340,9 @@ sowerConfig:
         secret:
           secretName: pelicanservice-g3auto
     restart_policy: Never
+
+pelican:
+  bucket: "sower-pfb-bucket"
 
 # -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
 sowerjobsG3auto: |

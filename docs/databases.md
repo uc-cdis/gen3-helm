@@ -1,7 +1,7 @@
 # Databases in gen3 helm charts
 This document will describe how databases are provisioned, and used in gen3 when deploying gen3 with helm charts. 
 
-We hihgly recommend the use of a managed postgres service such as AWS RDS/Aurora, or manage postgres outside of the helm deployment, when deploying gen3 to production environments. 
+We highly recommend the use of a managed postgres service such as AWS RDS/Aurora, or manage postgres outside of the helm deployment, when deploying gen3 to production environments. 
 
 The bundled version of postgres, that is used for development purposes, is deployed using this helm chart https://bitnami.com/stack/postgresql/helm
 

@@ -6,6 +6,8 @@ project: unfunded
 # AWS account number that this cluster lives in
 accountNumber: "xxxxxxxxxxxx"
 
+eksClusterEndpoint: ""
+
 # This is universal for all of our configuration, we assume that all of the configuration (i.e. values files)
 # live in the same repo, on the same branch
 configuration:
@@ -14,31 +16,31 @@ configuration:
 
 alb-controller:
   enabled: false
-  targetRevision: 1.7.1
+  targetRevision: "1.11.0"
   configuration:
     enabled: false
 
 aws-s3-mountpoint:
   enabled: false
-  targetRevision: 1.8.0
+  targetRevision: "1.11.0"
   configuration:
     enabled: false
 
 calico:
   enabled: false
-  targetRevision: v3.27.0
+  targetRevision: "v3.29.1"
   configuration:
     enabled: false
 
 coreDNS:
   enabled: false
-  targetRevision: v1.29.0
+  targetRevision: "v1.37.0"
   configuration:
     enabled: false
 
 ebs-csi-driver:
   enabled: false
-  targetRevision: 2.36.0
+  targetRevision: "2.38.1"
   configuration:
     enabled: false
 
@@ -56,6 +58,7 @@ grafana-alloy:
 
 karpenter:
   enabled: false
+  awsRegion: "us-east-1"
   targetRevision: v0.32.9
   configuration:
     enabled: false
@@ -71,12 +74,6 @@ karpenter:
       tag: "v0.32.9"
       digest: "sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"
 
-karpenter-templates:
-  enabled: false
-  targetRevision: feat/karpenter-templates
-  configuration:
-    enabled: false
-
 karpenter-crds:
   enabled: false
   targetRevision: master
@@ -89,12 +86,47 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    additionalTags: {}
+    requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values:
+      - on-demand
+      - spot
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+    - key: karpenter.k8s.aws/instance-category
+      operator: In
+      values:
+      - c
+      - m
+      - r
+      - t
   jupyter:
     enabled: true
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    additionalTags: {}
+    requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values:
+      - on-demand
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+    - key: karpenter.k8s.aws/instance-category
+      operator: In
+      values:
+      - c
+      - m
+      - r
+      - t
   workflow:
     enabled: true
     consolidation: true
@@ -102,6 +134,23 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     sgSelector: ""
+    additionalTags: {}
+    requirements:
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values:
+        - on-demand
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+    - key: karpenter.k8s.aws/instance-category
+      operator: In
+      values:
+        - c
+        - m
+        - r
+        - t
 
 kube-state-metrics:
   enabled: false

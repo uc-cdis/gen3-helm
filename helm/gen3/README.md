@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.67](https://img.shields.io/badge/Version-0.1.67-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,30 +18,31 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.16 |
-| file://../arborist | arborist | 0.1.14 |
-| file://../argo-wrapper | argo-wrapper | 0.1.10 |
-| file://../audit | audit | 0.1.16 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.13 |
+| file://../ambassador | ambassador | 0.1.17 |
+| file://../arborist | arborist | 0.1.15 |
+| file://../argo-wrapper | argo-wrapper | 0.1.11 |
+| file://../audit | audit | 0.1.17 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
+| file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
-| file://../etl | etl | 0.1.10 |
-| file://../fence | fence | 0.1.30 |
-| file://../frontend-framework | frontend-framework | 0.1.6 |
+| file://../etl | etl | 0.1.11 |
+| file://../fence | fence | 0.1.32 |
+| file://../frontend-framework | frontend-framework | 0.1.7 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../guppy | guppy | 0.1.17 |
-| file://../hatchery | hatchery | 0.1.12 |
-| file://../indexd | indexd | 0.1.18 |
-| file://../manifestservice | manifestservice | 0.1.18 |
-| file://../metadata | metadata | 0.1.17 |
+| file://../guppy | guppy | 0.1.18 |
+| file://../hatchery | hatchery | 0.1.13 |
+| file://../indexd | indexd | 0.1.19 |
+| file://../manifestservice | manifestservice | 0.1.19 |
+| file://../metadata | metadata | 0.1.18 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.18 |
-| file://../portal | portal | 0.1.26 |
-| file://../requestor | requestor | 0.1.16 |
-| file://../revproxy | revproxy | 0.1.22 |
-| file://../sheepdog | sheepdog | 0.1.20 |
-| file://../sower | sower | 0.1.17 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.18 |
-| file://../wts | wts | 0.1.18 |
+| file://../peregrine | peregrine | 0.1.19 |
+| file://../portal | portal | 0.1.27 |
+| file://../requestor | requestor | 0.1.17 |
+| file://../revproxy | revproxy | 0.1.24 |
+| file://../sheepdog | sheepdog | 0.1.21 |
+| file://../sower | sower | 0.1.19 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.19 |
+| file://../wts | wts | 0.1.19 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -58,6 +59,8 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
+| cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
@@ -75,11 +78,11 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}}` | Configurations for frontend-framework chart. |
+| frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}}` | Configurations for frontend-framework chart. |
 | frontend-framework.enabled | bool | `false` | Whether to deploy the frontend-framework subchart. |
-| frontend-framework.image | map | `{"repository":"quay.io/cdis/frontend-framework","tag":"develop"}` | Docker image information. |
-| frontend-framework.image.repository | string | `"quay.io/cdis/frontend-framework"` | The Docker image repository for the frontend-framework. |
-| frontend-framework.image.tag | string | `"develop"` | Overrides the image tag whose default is the chart appVersion. |
+| frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
+| frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
+| frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -118,29 +121,12 @@ Helm chart to deploy Gen3 Data Commons
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
-| hatchery.hatchery.containers[0].args[0] | string | `"--NotebookApp.base_url=/lw-workspace/proxy/"` |  |
-| hatchery.hatchery.containers[0].args[1] | string | `"--NotebookApp.default_url=/lab"` |  |
-| hatchery.hatchery.containers[0].args[2] | string | `"--NotebookApp.password=''"` |  |
-| hatchery.hatchery.containers[0].args[3] | string | `"--NotebookApp.token=''"` |  |
-| hatchery.hatchery.containers[0].args[4] | string | `"--NotebookApp.shutdown_no_activity_timeout=5400"` |  |
-| hatchery.hatchery.containers[0].args[5] | string | `"--NotebookApp.quit_button=False"` |  |
-| hatchery.hatchery.containers[0].command[0] | string | `"start-notebook.sh"` |  |
+| hatchery.hatchery.containers[0] | int | `{"args":["--NotebookApp.base_url=/lw-workspace/proxy/","--NotebookApp.default_url=/lab","--NotebookApp.password=''","--NotebookApp.token=''","--NotebookApp.shutdown_no_activity_timeout=5400","--NotebookApp.quit_button=False"],"command":["start-notebook.sh"],"cpu-limit":"1.0","env":{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"},"fs-gid":100,"gen3-volume-location":"/home/jovyan/.gen3","image":"quay.io/cdis/heal-notebooks:combined_tutorials__latest","lifecycle-post-start":["/bin/sh","-c","export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"],"memory-limit":"2Gi","name":"(Tutorials) Example Analysis Jupyter Lab Notebooks","path-rewrite":"/lw-workspace/proxy/","ready-probe":"/lw-workspace/proxy/","target-port":8888,"use-tls":"false","user-uid":1000,"user-volume-location":"/home/jovyan/pd"}` | port to proxy traffic to in docker contaniner |
 | hatchery.hatchery.containers[0].cpu-limit | string | `"1.0"` | cpu limit of workspace container |
 | hatchery.hatchery.containers[0].env | object | `{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"}` | environment variables for workspace container |
-| hatchery.hatchery.containers[0].fs-gid | int | `100` |  |
-| hatchery.hatchery.containers[0].gen3-volume-location | string | `"/home/jovyan/.gen3"` |  |
 | hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/heal-notebooks:combined_tutorials__latest"` | docker image for workspace |
-| hatchery.hatchery.containers[0].lifecycle-post-start[0] | string | `"/bin/sh"` |  |
-| hatchery.hatchery.containers[0].lifecycle-post-start[1] | string | `"-c"` |  |
-| hatchery.hatchery.containers[0].lifecycle-post-start[2] | string | `"export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"` |  |
 | hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
 | hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
-| hatchery.hatchery.containers[0].path-rewrite | string | `"/lw-workspace/proxy/"` |  |
-| hatchery.hatchery.containers[0].ready-probe | string | `"/lw-workspace/proxy/"` |  |
-| hatchery.hatchery.containers[0].target-port | int | `8888` | port to proxy traffic to in docker contaniner |
-| hatchery.hatchery.containers[0].use-tls | string | `"false"` |  |
-| hatchery.hatchery.containers[0].user-uid | int | `1000` |  |
-| hatchery.hatchery.containers[0].user-volume-location | string | `"/home/jovyan/pd"` |  |
 | hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
@@ -180,5 +166,9 @@ Helm chart to deploy Gen3 Data Commons
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
+| sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
+| tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
