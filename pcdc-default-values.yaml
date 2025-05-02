@@ -371,6 +371,8 @@ sower:
               key: hostname
         - name: ROOT_NODE
           value: subject
+        - name: OUTPUT_FILE_FORMAT
+          value: ZIP
         volumeMounts:
           - name: pelican-creds-volume
             readOnly: true

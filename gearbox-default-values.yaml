@@ -107,7 +107,7 @@ fence:
     - name: config-volume-public
       configMap:
         name: "manifest-fence"
-      optional: true
+        optional: true
 
   volumeMounts:
     - name: "old-config-volume"
@@ -154,11 +154,22 @@ fence:
       readOnly: true
       mountPath: "/fence/keys/key/jwt_private_key.pem"
       subPath: "jwt_private_key.pem"
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_public_key.pem"
+      subPath: "jwt_public_key.pem"
     - name: "config-volume-public"
       readOnly: true
       mountPath: "/var/www/fence/fence-config-public.yaml"
       subPath: fence-config-public.yaml
-    
+  
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+  # securityContext:
+  #   allowPrivilegeEscalation: false
+  #   runAsNonRoot: true
   image:
     repository: quay.io/pcdc/fence
     tag: "helm-test"
@@ -390,6 +401,7 @@ fence:
 
 
 portal:
+  enabled: true
   image: 
     repository: quay.io/pcdc/gearbox_fe
     tag: "dev"
@@ -405,6 +417,7 @@ portal:
   gearboxS3Bucket: "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
 
 revproxy:
+  enabled: true
   image:
     repository: quay.io/cdis/nginx
     tag: 2023.09

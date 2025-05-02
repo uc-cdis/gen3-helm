@@ -1,5 +1,4 @@
 {{- define "common.jwt_public_key_setup_sa" -}}
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -30,13 +29,18 @@ roleRef:
   kind: Role
   name: {{ .Chart.Name }}-jwt-public-key-patch-role
   apiGroup: rbac.authorization.k8s.io
-
-
 {{- end }}
 
 ---
 
 {{- define "common.create_public_key_job" -}}
+{{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name) }}
+{{- $shouldRunJob := true }}
+{{- if and $existingSecret (index $existingSecret.data "jwt_public_key.pem") }}
+  {{- $shouldRunJob = false }}
+{{- end }}
+
+{{- if $shouldRunJob }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -83,12 +87,10 @@ spec:
         
       restartPolicy: OnFailure
 {{- end }}
+{{- end }}
+
 ---
 
-{{/*
-Create k8s secrets for creating jwt key pairs
-*/}}
-# JWT key Secrets
 {{- define "common.jwt-key-pair-secret" -}}
 apiVersion: v1
 kind: Secret
@@ -98,10 +100,11 @@ metadata:
     helm.sh/resource-policy: keep
 type: Opaque
 data:
-  {{- if (lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name)) }}
-  # Secret exists - don't regenerate the private key
   {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name)) }}
+  {{- if $existingSecret }}
+  # Secret exists - don't regenerate the keys
   jwt_private_key.pem: {{ index $existingSecret.data "jwt_private_key.pem" | quote }}
+  jwt_public_key.pem: {{ index $existingSecret.data "jwt_public_key.pem" | quote }}
   {{- else }}
   # Secret doesn't exist yet - generate a new key
   jwt_private_key.pem: {{ genPrivateKey "rsa" | b64enc | quote }}
