@@ -401,7 +401,7 @@ fence:
 
 
 portal:
-  enabled: false
+  enabled: true
   image: 
     repository: quay.io/pcdc/gearbox_fe
     tag: "dev"
@@ -423,14 +423,14 @@ revproxy:
     tag: 2023.09
 
 gearbox:
-  enabled: false
+  enabled: true
   image:
     repository: quay.io/pcdc/gearbox_be
     tag: 1.3.0
     pullPolicy: Always
 
 gearbox-middleware:
-  enabled: false
+  enabled: true
   image:
     repository: quay.io/pcdc/gearbox-middleware
     tag: "helm-test"
