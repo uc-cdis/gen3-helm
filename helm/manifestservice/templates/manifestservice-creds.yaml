@@ -15,4 +15,9 @@ stringData:
         {{ end }}
         "prefix": "{{ .Values.manifestserviceG3auto.prefix }}"
       }
+data:
+  {{- if and .Values.manifestserviceG3auto.awsaccesskey .Values.manifestserviceG3auto.awssecretkey }}
+  aws_access_key_id: {{ .Values.manifestserviceG3auto.awsaccesskey | b64enc | quote }}
+  aws_secret_access_key: {{ .Values.manifestserviceG3auto.awssecretkey | b64enc | quote }}
+  {{- end }}
 {{- end }}
