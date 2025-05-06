@@ -67,6 +67,13 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{/*
+  WTS g3 Auto Secrets Manager Name
+*/}}
+{{- define "wts-g3auto" -}}
+{{- default "{{.Values.global.environment}}-wts-g3auto" .Values.externalSecrets.metadataG3auto }}
+{{- end }}
+
 
 {{/*
  Postgres Password lookup
