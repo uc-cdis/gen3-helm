@@ -37,7 +37,7 @@ spec:
         - name: credentials
           secret:
             secretName: {{.Chart.Name}}-aws-config
-          optional: true
+            optional: true
       containers:
         - name: "esproxy"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
