@@ -72,5 +72,5 @@ Create the name of the jupyter namespace
 */}}
 {{- define "hatchery.jupyterNamespace" -}}
 {{- defaultVal := printf "jupyter-pods-%s" {{ .Release.Namespace }} }}
-{{- default defaultVal .Values.jupyterNamespace}}
+{{- default $defaultVal .Values.jupyterNamespace}}
 {{- end }}
