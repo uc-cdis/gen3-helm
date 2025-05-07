@@ -66,3 +66,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the jupyter namespace
+*/}}
+{{- define "hatchery.jupyterNamepsace" -}}
+{{- default ("jupyter-pods-{{ .Release.Namespace }}" .Values.jupyterNamespace)}}
+{{- end }}
