@@ -71,5 +71,5 @@ Create the name of the service account to use
 Create the name of the jupyter namespace
 */}}
 {{- define "hatchery.jupyterNamespace" -}}
-{{- default (eval "jupyter-pods-{{ .Release.Namespace }}") .Values.jupyterNamespace}}
+{{- default ("jupyter-pods-{{ get .Release .Release.Namespace }}") .Values.jupyterNamespace}}
 {{- end }}
