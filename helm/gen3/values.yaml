@@ -312,6 +312,9 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+  resources:
+    requests:
+      cpu: "500m"
 
 # (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
 #   NeuVector must be installed separately.

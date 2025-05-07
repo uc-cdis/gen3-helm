@@ -28,13 +28,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dicom-server | dicom-server | 0.1.12 |
 | file://../dicom-viewer | dicom-viewer | 0.1.12 |
 | file://../etl | etl | 0.1.11 |
-| file://../fence | fence | 0.1.32 |
+| file://../fence | fence | 0.1.33 |
 | file://../frontend-framework | frontend-framework | 0.1.7 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.18 |
 | file://../hatchery | hatchery | 0.1.13 |
 | file://../indexd | indexd | 0.1.19 |
-| file://../manifestservice | manifestservice | 0.1.19 |
+| file://../manifestservice | manifestservice | 0.1.20 |
 | file://../metadata | metadata | 0.1.19 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.19 |
@@ -70,6 +70,7 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
+| elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
