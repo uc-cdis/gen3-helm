@@ -168,7 +168,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
