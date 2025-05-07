@@ -5,7 +5,7 @@ metadata:
 data: 
   json: |
     {
-        "user-namespace": "jupyter-pods-{{ .Release.Name }}",
+        "user-namespace": "{{ include "hatchery.jupyterNamespace" . }}",
         "skip-node-selector": {{ or .Values.global.dev .Values.hatchery.skipNodeSelector }},
         "use-internal-services-url": {{ or .Values.global.dev .Values.hatchery.useInternalServicesUrl }},
         "sub-dir": "/lw-workspace",
