@@ -1,5 +1,4 @@
 {{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sManifestServiceSecret) }}
-  {{- if not (lookup "v1" "Secret" .Release.Namespace "manifestservice-g3auto") }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -16,5 +15,4 @@ stringData:
         {{ end }}
         "prefix": "{{ .Values.manifestserviceG3auto.prefix }}"
       }
-  {{- end }}
 {{- end }}
