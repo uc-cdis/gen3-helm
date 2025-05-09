@@ -176,6 +176,8 @@ esEndpoint: http://gen3-elasticsearch-master:9200
 useAggMds: "False"
 # -- (string) Namespae to use if AggMds is enabled.
 aggMdsNamespace: default
+# -- (string)
+aggMdsDefaultDataDictField:
 
 aggMdsConfig: |
   {
@@ -261,10 +263,6 @@ volumeMounts:
     readOnly: true
     mountPath: /aggregate_config.json
     subPath: aggregate_config.json
-  - name: config-manifest
-    readOnly: true
-    mountPath: /metadata.json
-    subPath: json
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
