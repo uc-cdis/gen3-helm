@@ -1,4 +1,5 @@
 {{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sFenceConfigSecret) }}
+  {{- if .Values.remove }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -9,5 +10,6 @@ stringData:
     {{- with .Values.FENCE_CONFIG }}
     {{- toYaml . | nindent 4 }}
     {{ end }}
+  {{- end }}
 ---
 {{- end }}
