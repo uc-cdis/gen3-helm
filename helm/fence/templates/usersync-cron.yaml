@@ -30,6 +30,23 @@ spec:
         spec:
           serviceAccountName: usersync-job
           volumes:
+            - name: fence-ssh-keys
+              secret:
+                secretName: "ci-fence-ssh-keys"
+                defaultMode: 0400
+                items:
+                  - key: id_rsa
+                    path: id_rsa
+                  - key: id_rsa.pub
+                    path: id_rsa.pub
+                optional: true
+            - name: fence-sshconfig
+              configMap:
+                name: "fence-sshconfig"
+            # - name: fence-ssh-keys
+            #   secret:
+            #     secretName: "fence-ssh-keys"
+            #     defaultMode: 0400
             - name: user-yaml
               configMap:
                 name: useryaml
@@ -91,6 +108,17 @@ spec:
                 - name: cred-volume
                   mountPath: "/home/ubuntu/.aws/credentials"
                   subPath: credentials
+                - name:  "fence-ssh-keys"
+                  mountPath: "/root/.ssh/"
+                  readOnly: true
+                # - name: "fence-ssh-keys"
+                #   mountPath: "/root/.ssh/id_rsa"
+                #   subPath: "id_rsa"
+                # - name: "fence-ssh-keys"
+                #   mountPath: "/root/.ssh/id_rsa.pub"
+                #   subPath: "id_rsa.pub"
+                - name: "fence-sshconfig"
+                  mountPath: "/root/.ssh/config"
               command: ["/bin/bash" ]
               args:
                 - "-c"
