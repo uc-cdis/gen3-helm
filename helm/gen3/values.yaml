@@ -80,6 +80,7 @@ global:
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
     dbCreate: false
+    clusterSecretStoreRef: ""
 
 # Dependancy Charts
 

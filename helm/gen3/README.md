@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.68](https://img.shields.io/badge/Version-0.1.68-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.69](https://img.shields.io/badge/Version-0.1.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -27,14 +27,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.16 |
 | file://../dicom-server | dicom-server | 0.1.12 |
 | file://../dicom-viewer | dicom-viewer | 0.1.12 |
-| file://../etl | etl | 0.1.11 |
+| file://../etl | etl | 0.1.12 |
 | file://../fence | fence | 0.1.33 |
 | file://../frontend-framework | frontend-framework | 0.1.7 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.18 |
 | file://../hatchery | hatchery | 0.1.13 |
-| file://../indexd | indexd | 0.1.19 |
-| file://../manifestservice | manifestservice | 0.1.19 |
+| file://../indexd | indexd | 0.1.20 |
+| file://../manifestservice | manifestservice | 0.1.20 |
 | file://../metadata | metadata | 0.1.19 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.19 |
@@ -104,7 +104,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"dbCreate":false,"deploy":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false}` | External Secrets settings. |
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |

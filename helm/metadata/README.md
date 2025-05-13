@@ -81,9 +81,8 @@ A Helm chart for gen3 Metadata Service
 | image.repository | string | `"quay.io/cdis/metadata-service"` | Docker repository. |
 | image.tag | string | `"feat_es-7"` | Overrides the image tag whose default is the chart appVersion. |
 | initContainerName | string | `"metadata-db-migrate"` | Name of the init container. |
-| initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
-| initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
+| initResources | map | `{"limits":{"memory":"512Mi"}}` | Resource limits for the init container. |
+| initResources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
 | initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
@@ -100,9 +99,8 @@ A Helm chart for gen3 Metadata Service
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
 | resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.cpu | string | `0.1` | The amount of CPU requested |

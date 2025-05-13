@@ -32,7 +32,7 @@ dependencies:
     version: 0.1.16
     repository: file://../common
   - name: etl
-    version: 0.1.11
+    version: 0.1.12
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -52,11 +52,11 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
@@ -140,7 +140,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.68
+version: 0.1.69
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

@@ -90,7 +90,6 @@ spec:
             {{- end }}
             - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
               value: {{ .Values.aggMdsDefaultDataDictField}}
-              optional: true
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:
