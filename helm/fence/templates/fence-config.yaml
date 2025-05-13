@@ -1,9 +1,8 @@
 {{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sFenceConfigSecret) }}
-  {{- if .Values.remove }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: fence-config
+  name: fence-config-test
 stringData:
   fence-config.yaml: |
     BASE_URL: https://{{ .Values.global.hostname }}/user
