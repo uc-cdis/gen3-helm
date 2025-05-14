@@ -1,6 +1,6 @@
 # requestor
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
@@ -75,10 +75,10 @@ A Helm chart for gen3 Requestor Service
 | image.repository | string | `"quay.io/cdis/requestor"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | initContainerName | string | `"requestor-db-migrate"` | Name of the init container. |
-| initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
-| initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
-| initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| initResources | map | `{"requests":{"cpu":0.2,"memory":"100Mi"}}` | Resource limits for the init container. |
+| initResources.requests | map | `{"cpu":0.2,"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
+| initResources.requests.cpu | string | `0.2` | The maximum amount of CPU the container can use |
+| initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |

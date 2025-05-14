@@ -294,9 +294,11 @@ initVolumeMounts:
 # -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
+  requests:
+    # -- (string) The maximum amount of CPU the container can use
+    cpu: 0.2
     # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
+    memory: 100Mi
 # -- (list) Command to run for the init container.
 command: ["/bin/sh"]
 # -- (list) Arguments to pass to the init container.

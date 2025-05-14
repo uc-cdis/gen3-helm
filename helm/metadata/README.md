@@ -81,9 +81,10 @@ A Helm chart for gen3 Metadata Service
 | image.repository | string | `"quay.io/cdis/metadata-service"` | Docker repository. |
 | image.tag | string | `"feat_es-7"` | Overrides the image tag whose default is the chart appVersion. |
 | initContainerName | string | `"metadata-db-migrate"` | Name of the init container. |
-| initResources | map | `{"limits":{"memory":"512Mi"}}` | Resource limits for the init container. |
-| initResources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| initResources | map | `{"requests":{"cpu":0.2,"memory":"100Mi"}}` | Resource limits for the init container. |
+| initResources.requests | map | `{"cpu":0.2,"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
+| initResources.requests.cpu | string | `0.2` | The maximum amount of CPU the container can use |
+| initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
 | initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
