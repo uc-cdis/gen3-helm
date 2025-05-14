@@ -30,6 +30,10 @@ spec:
         spec:
           serviceAccountName: usersync-job
           volumes:
+            - name: yaml-merge
+              configMap:
+                name: "fence-yaml-merge"
+                optional: false
             - name: fence-sshconfig
               configMap:
                 name: "fence-sshconfig"
@@ -178,12 +182,16 @@ spec:
                 mountPath: /mnt/shared
               - name: "config-volume"
                 readOnly: true
-                mountPath: "/var/www/fence/fence-config.yaml"
+                mountPath: "/var/www/fence/fence-config-secret.yaml"
                 subPath: fence-config.yaml
               - name: "config-volume-public"
                 readOnly: true
                 mountPath: "/var/www/fence/fence-config-public.yaml"
                 subPath: fence-config-public.yaml
+              - name: "yaml-merge"
+                readOnly: true
+                mountPath: "/var/www/fence/yaml_merge.py"
+                subPath: yaml_merge.py
               - name: "creds-volume"
                 readOnly: true
                 mountPath: "/var/www/fence/creds.json"
@@ -217,7 +225,6 @@ spec:
               - |
                 sed -i 's/KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,/KexAlgorithms ecdh-sha2-nistp256,/g' /etc/crypto-policies/back-ends/openssh.config
                 sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /fence/.venv/lib/python3.9/site-packages/paramiko/pkey.py
-                echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 # pip3 install SQLAlchemy==1.3.6
