@@ -8,7 +8,7 @@ spec:
   storageClassName: local-storage
   volumeMode: Filesystem
   capacity:
-    storage: 30Gi # Adjust the size as needed
+    storage: {{ .Values.persistence.capacity | default "30Gi" }}
   accessModes:
     - ReadWriteOnce # Adjust the access mode as needed
   persistentVolumeReclaimPolicy: Retain

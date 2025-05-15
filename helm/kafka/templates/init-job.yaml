@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-init
+  labels:
+    app.kubernetes.io/name: kafka-topic-init
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: create-grip-history-topic
+          image: bitnami/kafka:latest
+          env:
+            - name: KAFKA_CLIENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-kafka-user-passwords
+                  key: client-passwords
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Checking Kafka connectivity..."
+              while ! (echo > /dev/tcp/{{ .Release.Name }}-kafka-controller-headless/9092) 2>/dev/null; do
+                echo "Waiting for Kafka..."
+                sleep 2
+              done
+              echo "Kafka is up. Creating topic..."
+
+              cat <<EOF > /tmp/kafka-client.properties
+              security.protocol=SASL_PLAINTEXT
+              sasl.mechanism=PLAIN
+              sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="user1" password="${KAFKA_CLIENT_PASSWORD}";
+              EOF
+
+              kafka-topics.sh --create \
+                --bootstrap-server {{ .Release.Name }}-kafka-controller-headless:9092 \
+                --replication-factor 1 \
+                --partitions 1 \
+                --topic grip-history \
+                --command-config /tmp/kafka-client.properties

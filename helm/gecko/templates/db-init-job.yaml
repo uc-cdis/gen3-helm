@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "gecko.fullname" . }}-db-init
+spec:
+  backoffLimit: 10
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: db-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              #!/bin/bash
+              set -e
+              echo "Waiting for database to be ready..."
+              until psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT 1"; do
+                echo "Database not ready yet, waiting..."
+                sleep 5
+              done
+              echo "Database ready, initializing..."
+              psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" <<EOF
+              \c gecko_local
+              CREATE TABLE IF NOT EXISTS documents (
+                  name VARCHAR(255) PRIMARY KEY,
+                  content JSONB
+              );
+              EOF
+              echo "Database initialization complete."
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: gecko-dbcreds
+                  key: host
+                  optional: false
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: gecko-dbcreds
+                  key: port
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: gecko-dbcreds
+                  key: username
+                  optional: false
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gecko-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: gecko-dbcreds
+                  key: database
+                  optional: false
+            - name: PGSSLMODE
+              value: "disable"
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

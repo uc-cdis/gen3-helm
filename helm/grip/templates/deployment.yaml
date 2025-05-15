@@ -28,56 +28,53 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-        - name: mongo-config-volume
-          configMap:
-            name: grip-values
-      initContainers:
-        - name: wait-for-mongodb
-          image: busybox:1.35
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              echo "Waiting for MongoDB to be available..."
-              until nc -zv mongodb-service 27017; do
-                echo "MongoDB is not ready, sleeping..."
-                sleep 5
-              done
-              echo "MongoDB is running"
+        - name: pebble-storage
+          persistentVolumeClaim:
+            claimName: pebble-pvc
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-          - name: mongo-config-volume
-            mountPath: /data/mongo.yml
-            subPath: mongoConfig
-            readOnly: true
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /graphql/_status
+              path: /writer/_status
               port: 8201
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
-              path: /graphql/_status
+              path: /writer/_status
               port: 8201
             initialDelaySeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
-            - "/bin/sh"
-            - "-c"
-            - >
-              grip server -c mongo.yml -w graphql=gen3_writer.so -w reader=grip-graphql-endpoint.so -l reader:config=./config/gen3.js -l reader:graph=CALIPER
+            - /app/grip
+          args:
+            - server
+            - -d
+            - grids
+            - -w
+            - writer=gen3_writer.so
+            - -w
+            - graphql=gql-gen.so
+            - -l
+            - graphql:graph=CALIPER
+          env:
+            - name: GOMAXPROCS
+              value: "4"
+            - name: GOMEMLIMIT
+              value: "7000000000"
+          volumeMounts:  # Added volume mount
+            - name: pebble-storage
+              mountPath: /data/grip-grids.db
 
       {{- with .Values.nodeSelector }}
       nodeSelector:

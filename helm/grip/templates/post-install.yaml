@@ -19,17 +19,17 @@ spec:
           - "-c"
           - |
             echo "Waiting for the grip service to be available..."
-            until curl -s --head --request GET http://{{ .Values.serviceName }}:8201/graphql/_status | grep "200 OK" > /dev/null; do
+            until curl -s --head --request GET http://{{ .Values.serviceName }}:8201/writer/_status | grep "200 OK" > /dev/null; do
               echo "Grip service not ready, retrying in 5 seconds..."
               sleep 5
             done
-            echo "Grip is online. Creating CALIPER Graph"
-            curl -X POST 'http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER'
-            echo "Adding Caliper schema from https://raw.githubusercontent.com/bmeg/iceberg/7f6cfdb558d05370fc645b5ab894b98b38a01e1b/schemas/graph/graph-fhir.json"
+            echo "Grip is online. Creating {{.Values.graphName}} Graph"
+            curl -X POST 'http://{{ .Values.serviceName }}:8201/v1/graph/{{.Values.graphName}}'
+            echo "Adding {{.Values.graphName}} schema from https://raw.githubusercontent.com/bmeg/iceberg/7f6cfdb558d05370fc645b5ab894b98b38a01e1b/schemas/graph/graph-fhir.json"
             curl -s https://raw.githubusercontent.com/bmeg/iceberg/7f6cfdb558d05370fc645b5ab894b98b38a01e1b/schemas/graph/graph-fhir.json -o /tmp/schema.json
-            echo '{"graph":"CALIPER","data":' > /tmp/request.json
+            echo '{"graph":"{{.Values.graphName}}","data":' > /tmp/request.json
             cat /tmp/schema.json >> /tmp/request.json
             echo '}' >> /tmp/request.json
-            curl -X POST --header "Content-Type: application/json" --data @/tmp/request.json http://{{ .Values.serviceName }}:8201/v1/graph/CALIPER/jsonschema
+            curl -X POST --header "Content-Type: application/json" --data @/tmp/request.json http://{{ .Values.serviceName }}:8201/v1/graph/{{.Values.graphName}}/jsonschema
 
       restartPolicy: OnFailure
