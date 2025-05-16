@@ -1,3 +1,4 @@
+{{- if .Values.usersync.syncFromDbgap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -29,3 +30,4 @@ data:
       Host cloud-proxy.internal.io
         StrictHostKeyChecking no
         UserKnownHostsFile=/dev/null
+{{- end }}

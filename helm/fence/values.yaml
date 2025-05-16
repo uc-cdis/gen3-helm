@@ -103,6 +103,8 @@ externalSecrets:
   fenceConfig:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys"
+  fenceSshKeys:
 
 # -- (map) Configuration options for usersync cronjob.
 usersync:

@@ -19,10 +19,10 @@ Helm chart to deploy Gen3 Data Commons
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../ambassador | ambassador | 0.1.17 |
-| file://../arborist | arborist | 0.1.15 |
+| file://../arborist | arborist | 0.1.16 |
 | file://../argo-wrapper | argo-wrapper | 0.1.11 |
-| file://../audit | audit | 0.1.17 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
+| file://../audit | audit | 0.1.18 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.15 |
 | file://../cohort-middleware | cohort-middleware | 0.1.1 |
 | file://../common | common | 0.1.16 |
 | file://../dicom-server | dicom-server | 0.1.12 |
@@ -31,18 +31,18 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.33 |
 | file://../frontend-framework | frontend-framework | 0.1.7 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../guppy | guppy | 0.1.18 |
+| file://../guppy | guppy | 0.1.19 |
 | file://../hatchery | hatchery | 0.1.13 |
-| file://../indexd | indexd | 0.1.20 |
+| file://../indexd | indexd | 0.1.21 |
 | file://../manifestservice | manifestservice | 0.1.20 |
 | file://../metadata | metadata | 0.1.19 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.19 |
+| file://../peregrine | peregrine | 0.1.20 |
 | file://../portal | portal | 0.1.27 |
 | file://../requestor | requestor | 0.1.18 |
 | file://../revproxy | revproxy | 0.1.25 |
-| file://../sheepdog | sheepdog | 0.1.21 |
-| file://../sower | sower | 0.1.19 |
+| file://../sheepdog | sheepdog | 0.1.22 |
+| file://../sower | sower | 0.1.20 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.19 |
 | file://../wts | wts | 0.1.20 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
@@ -88,10 +88,12 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
 | global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
@@ -173,7 +175,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":null},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |

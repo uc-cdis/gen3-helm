@@ -9,7 +9,7 @@ dependencies:
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.15
+    version: 0.1.16
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
@@ -17,11 +17,11 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cohort-middleware
@@ -44,7 +44,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
@@ -88,7 +88,7 @@ dependencies:
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.19
+    version: 0.1.20
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts

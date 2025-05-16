@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: fence-config-test
+  name: fence-config
 stringData:
   fence-config.yaml: |
     BASE_URL: https://{{ .Values.global.hostname }}/user
