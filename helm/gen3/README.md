@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.18 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.15 |
 | file://../cohort-middleware | cohort-middleware | 0.1.1 |
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 | file://../dicom-server | dicom-server | 0.1.12 |
 | file://../dicom-viewer | dicom-viewer | 0.1.12 |
 | file://../etl | etl | 0.1.12 |
