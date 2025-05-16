@@ -51,12 +51,12 @@ spec:
     aws:
       service: SecretsManager
       region: {{ .Values.global.aws.region }}
-      # auth:
-      #   {{- if .Values.global.aws.secretStoreServiceAccount.enabled }}
-      #   jwt:
-      #     serviceAccountRef:
-      #       name: {{ .Values.global.aws.secretStoreServiceAccount.name }}
-      #   {{- else }}
+      auth:
+        {{- if .Values.global.aws.secretStoreServiceAccount.enabled }}
+        jwt:
+          serviceAccountRef:
+            name: {{ .Values.global.aws.secretStoreServiceAccount.name }}
+        {{- else }}
       #   secretRef:
       #     accessKeyIDSecretRef:
       #       name: {{.Chart.Name}}-aws-config
