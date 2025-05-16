@@ -125,3 +125,10 @@ Create the name of the service account to use
 {{- define "fence-config" -}}
 {{- default "fence-config" .Values.externalSecrets.fenceConfig }}
 {{- end }}
+
+{{/*
+  Fence SSH Keys Secrets Manager Name
+*/}}
+{{- define "fence-ssh-keys" -}}
+{{- default "fence-ssh-keys" .Values.externalSecrets.fenceSshKeys }}
+{{- end }}
