@@ -57,14 +57,14 @@ spec:
           serviceAccountRef:
             name: {{ .Values.global.aws.secretStoreServiceAccount.name }}
         {{- else }}
-        secretRef:
-          accessKeyIDSecretRef:
-            name: {{.Chart.Name}}-aws-config
-            key: access-key
-          secretAccessKeySecretRef:
-            name: {{.Chart.Name}}-aws-config
-            key: secret-access-key
-        {{- end}}
+      #   secretRef:
+      #     accessKeyIDSecretRef:
+      #       name: {{.Chart.Name}}-aws-config
+      #       key: access-key
+      #     secretAccessKeySecretRef:
+      #       name: {{.Chart.Name}}-aws-config
+      #       key: secret-access-key
+      #   {{- end}}
 {{- end }}
 
 

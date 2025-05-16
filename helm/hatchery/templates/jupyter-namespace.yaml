@@ -1,4 +1,4 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "jupyter-pods-{{ .Release.Name }}"
+  name: "{{ include "hatchery.jupyterNamespace" . }}"
