@@ -364,4 +364,4 @@ tests:
       cpu: "1"
       memory: "10G"
   image:
-    tag:
+    tag: master
