@@ -69,6 +69,8 @@ replicaCount: 1
 
 # -- (map) External Secrets settings.
 externalSecrets:
+  # -- (string) Will create the Helm "cohort-middleware-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sCohortMiddlewareSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto"
   cohortMiddlewareG3Auto:
 

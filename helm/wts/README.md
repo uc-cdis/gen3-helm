@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -65,6 +65,7 @@ A Helm chart for gen3 workspace token service
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
 | oidc_client_secret | string | `nil` | Secret for the OIDC client. |
+| oidc_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |
