@@ -71,8 +71,8 @@ metricsEnabled: false
 externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
-  # -- (string) Will override the name of the aws secret containing the key appcreds.json
-  appcreds:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "wts-g3auto".
+  wtsG3auto:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:

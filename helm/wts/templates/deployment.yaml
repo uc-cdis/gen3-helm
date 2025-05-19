@@ -87,13 +87,13 @@ spec:
               secretKeyRef:
                 name: wts-oidc-client
                 key: client_id
-                optional: true
+                optional: false
           - name: OIDC_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
                 name: wts-oidc-client
                 key: client_secret
-                optional: true
+                optional: false
           - name: SECRET_CONFIG
             value: "/var/www/wts/appcreds.json"
           - name: AUTH_PLUGINS
