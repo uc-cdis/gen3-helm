@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.25](https://img.shields.io/badge/Version-0.1.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -60,7 +60,7 @@ A Helm chart for gen3 revproxy
 | image.repository | string | `"nginx"` | Docker repository. |
 | image.tag | string | `"stable-perl"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| ingress | map | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}],"tls":[]}` | Configuration for revproxy ingress. |
+| ingress | map | `{"annotations":{},"aws":{"group":""},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}],"tls":[]}` | Configuration for revproxy ingress. |
 | ingress.annotations | map | `{}` | Annotations to add to the ingress. |
 | ingress.className | string | `""` | The ingress class name. |
 | ingress.enabled | bool | `false` | Whether to create the ingress |
