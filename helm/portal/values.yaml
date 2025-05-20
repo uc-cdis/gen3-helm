@@ -198,7 +198,7 @@ commonLabels:
 
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
-  - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
+  - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/feat/deployment-canary/docs/images/canaryHelmLogo.png
 
 # -- (map) GitOps configuration for portal
 gitops:
