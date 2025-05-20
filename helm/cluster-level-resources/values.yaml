@@ -44,6 +44,12 @@ ebs-csi-driver:
   configuration:
     enabled: false
 
+external-secrets:
+  enabled: false
+  targetRevision: "0.9.13"
+  configuration:
+    enabled: false
+
 fluentd:
   enabled: false
   targetRevision: "0.5.2"
@@ -88,22 +94,22 @@ karpenter-crds:
     expireAfter: "168h"
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-      - on-demand
-      - spot
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-      - c
-      - m
-      - r
-      - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+          - spot
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
   jupyter:
     enabled: true
     consolidation: true
@@ -112,21 +118,21 @@ karpenter-crds:
     expireAfter: "168h"
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-      - on-demand
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-      - c
-      - m
-      - r
-      - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
   workflow:
     enabled: true
     consolidation: true
@@ -136,21 +142,21 @@ karpenter-crds:
     sgSelector: ""
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-        - on-demand
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-        - c
-        - m
-        - r
-        - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
 
 kube-state-metrics:
   enabled: false
