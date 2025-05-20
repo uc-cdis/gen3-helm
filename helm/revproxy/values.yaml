@@ -97,11 +97,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: nginx
+  repository: "quay.io/cdis/nginx"
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "stable-perl"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

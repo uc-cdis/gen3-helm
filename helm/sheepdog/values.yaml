@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 

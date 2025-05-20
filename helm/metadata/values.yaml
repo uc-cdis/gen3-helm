@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -176,6 +181,8 @@ esEndpoint: http://gen3-elasticsearch-master:9200
 useAggMds: "False"
 # -- (string) Namespae to use if AggMds is enabled.
 aggMdsNamespace: default
+# -- (string)
+aggMdsDefaultDataDictField:
 
 aggMdsConfig: |
   {
@@ -261,10 +268,6 @@ volumeMounts:
     readOnly: true
     mountPath: /aggregate_config.json
     subPath: aggregate_config.json
-  - name: config-manifest
-    readOnly: true
-    mountPath: /metadata.json
-    subPath: json
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -276,8 +279,6 @@ resources:
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
@@ -298,11 +299,11 @@ initVolumeMounts:
 # -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
+  requests:
     # -- (string) The maximum amount of CPU the container can use
-    cpu: 0.8
+    cpu: 0.2
     # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
+    memory: 100Mi
 # -- (list) Command to run for the init container.
 command: ["/bin/sh"]
 # -- (list) Arguments to pass to the init container.
