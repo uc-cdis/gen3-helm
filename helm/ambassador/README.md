@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
 
 A Helm chart for deploying ambassador for gen3
 
@@ -8,7 +8,7 @@ A Helm chart for deploying ambassador for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -39,11 +39,10 @@ A Helm chart for deploying ambassador for gen3
 | podSecurityContext | map | `{"runAsUser":8888}` | Pod-level security context. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"memory":"100Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"400Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"400Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":"100m","memory":"100Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"100Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"100Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Container-level security context. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |

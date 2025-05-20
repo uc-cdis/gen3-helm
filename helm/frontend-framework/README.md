@@ -74,11 +74,9 @@ A Helm chart for the gen3 frontend framework
 | port | int | `3000` |  |
 | release | string | `"dev"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":0.6,"memory":"4096Mi"},"requests":{"cpu":0.6,"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":0.6,"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `0.6` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.6,"memory":"512Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.6` | The amount of CPU requested |
+| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |

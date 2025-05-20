@@ -50,11 +50,10 @@ A Helm chart for AWS ES Proxy Service for gen3
 | ports | list | `[{"containerPort":9200}]` | List of container ports |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"cpu":0.1,"memory":"250Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"250Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"250Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"250Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"250Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access AWS ES cluster. |

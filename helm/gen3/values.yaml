@@ -363,10 +363,8 @@ tests:
   SERVICE_TO_TEST:
   resources:
     requests:
-      cpu: "1"
       memory: "6G"
     limits:
-      cpu: "1"
       memory: "10G"
   image:
     tag: master

@@ -18,12 +18,12 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.17 |
+| file://../ambassador | ambassador | 0.1.18 |
 | file://../arborist | arborist | 0.1.16 |
-| file://../argo-wrapper | argo-wrapper | 0.1.11 |
+| file://../argo-wrapper | argo-wrapper | 0.1.12 |
 | file://../audit | audit | 0.1.18 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.15 |
-| file://../cohort-middleware | cohort-middleware | 0.1.1 |
+| file://../cohort-middleware | cohort-middleware | 0.1.2 |
 | file://../common | common | 0.1.18 |
 | file://../dicom-server | dicom-server | 0.1.12 |
 | file://../dicom-viewer | dicom-viewer | 0.1.12 |
@@ -32,13 +32,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.8 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.19 |
-| file://../hatchery | hatchery | 0.1.13 |
+| file://../hatchery | hatchery | 0.1.14 |
 | file://../indexd | indexd | 0.1.21 |
 | file://../manifestservice | manifestservice | 0.1.20 |
 | file://../metadata | metadata | 0.1.19 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.20 |
-| file://../portal | portal | 0.1.27 |
+| file://../portal | portal | 0.1.28 |
 | file://../requestor | requestor | 0.1.18 |
 | file://../revproxy | revproxy | 0.1.25 |
 | file://../sheepdog | sheepdog | 0.1.22 |
@@ -175,7 +175,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"memory":"10G"},"requests":{"memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |

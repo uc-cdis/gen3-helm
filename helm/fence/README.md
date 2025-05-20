@@ -167,12 +167,10 @@ A Helm chart for gen3 Fence
 | projects | string | `nil` |  |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
-| resources | map | `{"limits":{"cpu":1,"memory":"2Gi"},"requests":{"cpu":0.3,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for Usersync and External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |

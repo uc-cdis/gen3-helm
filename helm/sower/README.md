@@ -85,11 +85,10 @@ A Helm chart for gen3 sower
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"cpu":"100m","memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"400Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"400Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":"100m","memory":"20Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"20Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"20Mi"` | The amount of memory requested |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Values for sower secrets and keys for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |

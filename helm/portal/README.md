@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 data-portal
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -77,11 +77,10 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"cpu":2,"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"4096Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":2,"memory":"4096Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `2` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"4096Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"4096Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |

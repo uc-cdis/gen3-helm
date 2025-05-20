@@ -172,14 +172,10 @@ service:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.2
     # -- (string) The amount of memory requested
     memory: 120Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 0.5
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 

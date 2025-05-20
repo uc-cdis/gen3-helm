@@ -99,12 +99,10 @@ A Helm chart for gen3 etl
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
-| resources | map | `{"spark":{"requests":{"cpu":0.3,"memory":"128Mi"}},"tube":{"requests":{"cpu":0.3,"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
-| resources.spark.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.spark.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
+| resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| resources.tube.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.tube.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
 | suspendCronjob | bool | `true` |  |
