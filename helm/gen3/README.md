@@ -21,13 +21,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.18 |
 | file://../arborist | arborist | 0.1.16 |
 | file://../argo-wrapper | argo-wrapper | 0.1.12 |
-| file://../audit | audit | 0.1.17 |
+| file://../audit | audit | 0.1.18 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.15 |
-| file://../cohort-middleware | cohort-middleware | 0.1.1 |
+| file://../cohort-middleware | cohort-middleware | 0.1.2 |
 | file://../common | common | 0.1.17 |
 | file://../etl | etl | 0.1.11 |
-| file://../fence | fence | 0.1.32 |
-| file://../frontend-framework | frontend-framework | 0.1.7 |
+| file://../fence | fence | 0.1.33 |
+| file://../frontend-framework | frontend-framework | 0.1.8 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.19 |
 | file://../hatchery | hatchery | 0.1.14 |
