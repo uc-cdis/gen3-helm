@@ -8,7 +8,7 @@ A Helm chart for gen3 Argo Wrapper Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.17 |
 
 ## Values
 
