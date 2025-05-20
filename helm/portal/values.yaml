@@ -198,7 +198,7 @@ commonLabels:
 
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
-  - url: https://ih1.redbubble.net/image.2999386445.4584/flat,750x,075,f-pad,750x1000,f8f8f8.jpg
+  - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
 
 # -- (map) GitOps configuration for portal
 gitops:
