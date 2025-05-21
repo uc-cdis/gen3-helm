@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.17 |
 
 ## Values
 
@@ -62,6 +62,10 @@ A Helm chart for AWS ES Proxy Service for gen3
 | service | map | `{"port":9200,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `9200` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount | map | `{"annotations":{},"create":true,"name":"aws-es-proxy-sa"}` | Service account to use or create. |
+| serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
+| serviceAccount.name | string | `"aws-es-proxy-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
