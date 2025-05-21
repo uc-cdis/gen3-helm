@@ -1,4 +1,4 @@
-{{- if .Values.oidc_job_enabled }}
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
