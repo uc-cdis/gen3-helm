@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.9](https://img.shields.io/badge/Version-0.6.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.10](https://img.shields.io/badge/Version-0.6.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -59,6 +59,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.requirements[2].values[1] | string | `"m"` |  |
 | karpenter-crds.default.requirements[2].values[2] | string | `"r"` |  |
 | karpenter-crds.default.requirements[2].values[3] | string | `"t"` |  |
+| karpenter-crds.default.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.enabled | bool | `false` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
@@ -78,6 +79,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.jupyter.requirements[2].values[1] | string | `"m"` |  |
 | karpenter-crds.jupyter.requirements[2].values[2] | string | `"r"` |  |
 | karpenter-crds.jupyter.requirements[2].values[3] | string | `"t"` |  |
+| karpenter-crds.jupyter.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.migration | bool | `false` |  |
 | karpenter-crds.selectorTag | string | `""` |  |
 | karpenter-crds.targetRevision | string | `"master"` |  |
@@ -100,6 +102,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.workflow.requirements[2].values[2] | string | `"r"` |  |
 | karpenter-crds.workflow.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.workflow.sgSelector | string | `""` |  |
+| karpenter-crds.workflow.volumeSize | string | `"50Gi"` |  |
 | karpenter.awsRegion | string | `"us-east-1"` |  |
 | karpenter.configuration.enabled | bool | `false` |  |
 | karpenter.controller.image.digest | string | `"sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"` |  |
