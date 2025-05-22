@@ -76,7 +76,7 @@ externalSecrets:
   # -- (bool) Will create the WTS secret or pull it from AWS Secrets Manager. Default is false.
   createK8sWtsSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "wts-g3auto".
-  wtsG3auto:  
+  wtsG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "wts-oidc-client".
   wtsOidcClient:
 
