@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.10](https://img.shields.io/badge/Version-0.6.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.11](https://img.shields.io/badge/Version-0.6.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -25,6 +25,13 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | coreDNS.configuration.enabled | bool | `false` |  |
 | coreDNS.enabled | bool | `false` |  |
 | coreDNS.targetRevision | string | `"v1.37.0"` |  |
+| crossplane-crds.configuration.enabled | bool | `false` |  |
+| crossplane-crds.enabled | bool | `false` |  |
+| crossplane-crds.region | string | `"us-east-1"` |  |
+| crossplane-crds.targetRevision | string | `"v0.52.5"` |  |
+| crossplane.configuration.enabled | bool | `false` |  |
+| crossplane.enabled | bool | `false` |  |
+| crossplane.targetRevision | string | `"crossplane-stable"` |  |
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.38.1"` |  |

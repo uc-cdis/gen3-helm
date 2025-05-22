@@ -1,0 +1,660 @@
+{{ if index .Values "crossplane" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: crossplane
+      repoURL: https://charts.crossplane.io/stable
+      targetRevision: {{ index .Values "crossplane" "targetRevision" }}
+      helm:
+        releaseName: crossplane
+      {{- if index .Values "crossplane" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/crossplane.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: 
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: crossplane-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+{{ end }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Replace these placeholders before applying:
+#   AWS_ACCOUNT_ID:      e.g. 123456789012
+#   OIDC_PROVIDER_ARN:   e.g. oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE
+#   OIDC_PROVIDER_FULL:  arn:aws:iam::<AWS_ACCOUNT_ID>:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}
+#   VPC_NAME:            your-vpc-name
+#   NAMESPACE:           your-k8s-namespace
+#   SQS_ARN:             arn:aws:sqs:region:account:queue-name
+#   S3_BUCKET_DASH:      dashboard-<AWS_ACCOUNT_ID>-{{ Values.global.environment }}-gen3
+#   S3_BUCKET_MAN:       manifestservice-{{ Values.global.environment }}-{{ .Release.Namespace }}
+#   S3_BUCKET_OBS:       {{ Values.global.environment }}-observability-bucket
+# ProviderConfig “provider-aws” must already exist in your cluster.
+# ─────────────────────────────────────────────────────────────────────────────
+
+---
+# 1️⃣ Audit Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: audit-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "Service": "ec2.amazonaws.com" },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:audit-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 2️⃣ Audit Role Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: audit-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    policyName: "audit-role-policy"
+    policyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "sqs:ReceiveMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:DeleteMessage"
+            ],
+            "Resource": ["{{ Values.global.environment }}-audit-sqs-queue"]
+          }
+        ]
+      }
+
+---
+# 3️⃣ Fence Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: fence-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:fence-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 4️⃣ Fence Role Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: fence-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    policyName: "fence-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["sqs:SendMessage"],
+            "Resource":["{{ Values.global.environment }}-audit-sqs-queue, {{ Values.global.environment }}-ssjdispatcher-sqs-queue"]
+          }
+        ]
+      }
+
+---
+# 7️⃣ Hatchery Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: hatchery-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:hatchery-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 8️⃣ Hatchery Role Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: hatchery-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    policyName: "hatchery-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["sts:AssumeRole"],
+            "Resource":["arn:aws:iam::*:role/csoc_adminvm*"]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["ec2:*"],
+            "Resource":"*"
+          }
+        ]
+      }
+---
+# 9️⃣ Hatchery Managed Policy Attachment
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: hatchery-ram-full-access
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    policyArn: "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess"
+
+---
+# 1️⃣0️⃣ Manifestservice Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: manifestservice-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    description: "Role for manifestservice service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:manifestservice-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣1️⃣ Manifestservice Role Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: manifestservice-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    policyName: "manifestservice-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:List*","s3:Get*"],
+            "Resource":[
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*",
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
+            ]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
+            "Resource":"arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*"
+          }
+        ]
+      }
+
+---
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: manifestservice-bucket
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
+    acl: private
+    forceDestroy: false
+    tags:
+      Organization: gen3
+      description: Created by crossplane
+    versioningConfiguration:
+      status: {{ .Values.global.crossplane.s3.versioningEnabled }}
+    serverSideEncryptionConfiguration:
+      rules:
+        - applyServerSideEncryptionByDefault:
+            sseAlgorithm: aws:kms
+            {{- if .Values.global.crossplane.s3.kmsKeyId }}
+            kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
+            {{- end }}
+
+
+
+
+
+
+
+# 1️⃣2️⃣ AWS Load Balancer Controller Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: alb-controller-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-aws-load-balancer-controller-sa"
+    description: "Role for ALB controller service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:kube-system:aws-load-balancer-controller",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣3️⃣ AWS Load Balancer Controller Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: alb-controller-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-aws-load-balancer-controller-sa"
+    policyName: "aws-load-balancer-controller-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":"iam:createServiceLinkedRole",
+            "Resource":"*",
+            "Condition":{ "StringEquals":{"iam:AWSServiceName":"elasticloadbalancing.amazonaws.com"} }
+          },
+          {
+            "Effect":"Allow",
+            "Action":[
+              "ec2:DescribeAccountAttributes","ec2:DescribeAddresses","ec2:DescribeAvailabilityZones",
+              "...(other ec2/elbv2/wafv2/shield actions as in your TF block)..."
+            ],
+            "Resource":"*"
+          },
+          {
+            "Effect":"Allow",
+            "Action":["ec2:AuthorizeSecurityGroupIngress","ec2:RevokeSecurityGroupIngress"],
+            "Resource":"*"
+          },
+          {
+            "Effect":"Allow",
+            "Action":"ec2:CreateSecurityGroup",
+            "Resource":"*"
+          },
+          {
+            "Effect":"Allow",
+            "Action":"ec2:CreateTags",
+            "Resource":"arn:aws:ec2:*:*:security-group/*",
+            "Condition":{
+              "StringEquals":{"ec2:CreateAction":"CreateSecurityGroup"},
+              "Null":{"aws:RequestTag/elbv2.k8s.aws/cluster":"false"}
+            }
+          },
+          {
+            "Effect":"Allow",
+            "Action":["ec2:CreateTags","ec2:DeleteTags"],
+            "Resource":"arn:aws:ec2:*:*:security-group/*",
+            "Condition":{
+              "Null":{
+                "aws:RequestTag/elbv2.k8s.aws/cluster":"true",
+                "aws:ResourceTag/elbv2.k8s.aws/cluster":"false"
+              }
+            }
+          },
+          {
+            "Effect":"Allow",
+            "Action":["elasticloadbalancing:AddTags","elasticloadbalancing:RemoveTags"],
+            "Resource":[
+              "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+              "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+              "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+            ],
+            "Condition":{
+              "Null":{
+                "aws:RequestTag/elbv2.k8s.aws/cluster":"true",
+                "aws:ResourceTag/elbv2.k8s.aws/cluster":"false"
+              }
+            }
+          }
+          /* …and all the other statements from your Terraform block… */
+        ]
+      }
+
+---
+# 1️⃣4️⃣ External-Secrets Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: external-secrets-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
+    description: "Role for external-secrets service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:external-secrets",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣5️⃣ External-Secrets Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: external-secrets-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
+    policyName: "external-secrets-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["secretsmanager:ListSecrets","secretsmanager:GetSecretValue"],
+            "Resource":"*"
+          }
+        ]
+      }
+
+---
+# 1️⃣6️⃣ S3-Mountpoint CSI Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: s3-mountpoint-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-s3-mountpoint-sa"
+    description: "Role for s3 mountpoint service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:kube-system:s3-csi-driver-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣7️⃣ S3-Mountpoint Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: s3-mountpoint-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-s3-mountpoint-sa"
+    policyName: "s3-mountpoint-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:ListBucket"],
+            "Resource":"*"
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:GetObject","s3:PutObject","s3:AbortMultipartUpload","s3:DeleteObject"],
+            "Resource":"*"
+          }
+        ]
+      }
+
+---
+# 1️⃣8️⃣ Grafana Observability Role
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: grafana-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-observability-role"
+    description: "Role for grafana service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:monitoring:observability",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣9️⃣ Grafana Observability Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: grafana-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-observability-role"
+    policyName: "grafana-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":[
+              "s3:AbortMultipartUpload",
+              "s3:DeleteObject",
+              "s3:GetObject",
+              "s3:ListBucket",
+              "s3:PutObject",
+              "s3:DeleteObjectVersion",
+              "s3:GetObjectVersion",
+              "s3:PutObjectAcl",
+              "s3:GetObjectAcl",
+              "s3:ListBucketMultipartUploads",
+              "s3:ListBucketVersions"
+            ],
+            "Resource":[
+              "arn:aws:s3:::<S3_BUCKET_OBS>",
+              "arn:aws:s3:::<S3_BUCKET_OBS>/*"
+            ]
+          }
+        ]
+      }

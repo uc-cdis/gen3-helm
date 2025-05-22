@@ -1,0 +1,36 @@
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: irsa-runtimeconfig
+spec:
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.crossplane-crds.iamRoleName }}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-aws:{{ .Values.crossplane-crds.providerVersion }}
+  controllerConfigRef:
+    name: aws-config
+---
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name:  provider-aws
+spec:
+  credentials:
+    source: InjectedIdentity
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-config
+spec:
+  env:
+  # AWS region required to resolve service endpoints
+  - name: AWS_REGION
+    value: {{ .Values.crossplane-crds.region }}

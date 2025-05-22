@@ -38,6 +38,19 @@ coreDNS:
   configuration:
     enabled: false
 
+crossplane:
+  enabled: false
+  targetRevision: "crossplane-stable"
+  configuration:
+    enabled: false
+
+crossplane-crds:
+  enabled: false
+  region: "us-east-1"
+  targetRevision: "v0.52.5"
+  configuration:
+    enabled: false
+
 ebs-csi-driver:
   enabled: false
   targetRevision: "2.38.1"

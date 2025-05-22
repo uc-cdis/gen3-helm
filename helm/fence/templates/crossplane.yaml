@@ -1,0 +1,54 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: fence-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:fence-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: fence-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    policyName: "fence-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["sqs:SendMessage"],
+            "Resource":["{{ Values.global.environment }}-audit-sqs-queue, {{ Values.global.environment }}-ssjdispatcher-sqs-queue"]
+          }
+        ]
+      }
+{{- end}}

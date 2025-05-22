@@ -28,6 +28,18 @@ global:
       enabled: false
       # -- (string) Name of the local secret.
       localSecretName:
+  # -- (map) Kubernetes configuration
+  crossplane: 
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    
+
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:

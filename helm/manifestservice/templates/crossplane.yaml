@@ -1,0 +1,88 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: manifestservice-sa-role
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    description: "Role for manifestservice service account for {{ Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:manifestservice-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+# 1️⃣1️⃣ Manifestservice Role Inline Policy
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: manifestservice-sa-inline-policy
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    policyName: "manifestservice-role-policy"
+    policyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:List*","s3:Get*"],
+            "Resource":[
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*",
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
+            ]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
+            "Resource":"arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*"
+          }
+        ]
+      }
+
+---
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: manifestservice-bucket
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
+    acl: private
+    forceDestroy: false
+    tags:
+      Organization: gen3
+      description: Created by crossplane
+    versioningConfiguration:
+      status: {{ .Values.global.crossplane.s3.versioningEnabled }}
+    serverSideEncryptionConfiguration:
+      rules:
+        - applyServerSideEncryptionByDefault:
+            sseAlgorithm: aws:kms
+            {{- if .Values.global.crossplane.s3.kmsKeyId }}
+            kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
+            {{- end }}
+{{- end}}            
