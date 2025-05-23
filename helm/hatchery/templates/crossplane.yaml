@@ -7,7 +7,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
     description: "Role for ES proxy service account for {{ Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -39,7 +39,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
     policyName: "hatchery-role-policy"
     policyDocument: |
       {
@@ -67,6 +67,6 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
     policyArn: "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess"
 {{- end }}

@@ -7,7 +7,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
     description: "Role for manifestservice service account for {{ Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -39,7 +39,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
     policyName: "manifestservice-role-policy"
     policyDocument: |
       {

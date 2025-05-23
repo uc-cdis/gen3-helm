@@ -7,8 +7,8 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
-    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    description: "Role for ES proxy service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
@@ -57,7 +57,7 @@ spec:
               "sqs:GetQueueAttributes",
               "sqs:DeleteMessage"
             ],
-            "Resource": ["{{ Values.global.environment }}-audit-sqs-queue"]
+            "Resource": ["{{ .Values.global.environment }}-audit-sqs-queue"]
           }
         ]
       }
@@ -70,7 +70,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    queueName: "{{ Values.global.environment }}-audit-sqs-queue"
+    queueName: "{{ .Values.global.environment }}-audit-sqs-queue"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600
     tags:

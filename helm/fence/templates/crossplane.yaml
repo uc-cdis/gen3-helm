@@ -7,8 +7,8 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
-    description: "Role for ES proxy service account for {{ Values.global.environment }}"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    description: "Role for ES proxy service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
@@ -38,7 +38,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
     policyName: "fence-role-policy"
     policyDocument: |
       {
@@ -47,7 +47,7 @@ spec:
           {
             "Effect":"Allow",
             "Action":["sqs:SendMessage"],
-            "Resource":["{{ Values.global.environment }}-audit-sqs-queue, {{ Values.global.environment }}-ssjdispatcher-sqs-queue"]
+            "Resource":["{{ .Values.global.environment }}-audit-sqs-queue, {{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
           }
         ]
       }
