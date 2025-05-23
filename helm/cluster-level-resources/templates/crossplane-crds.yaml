@@ -1,3 +1,4 @@
+---
 {{- if index .Values "crossplane-crds" "useIRSA" }}
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
