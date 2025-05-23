@@ -1,4 +1,4 @@
-{{ if .Values.crossplane-crds.useIRSA }}
+{{- if index .Values "crossplane-crds" "useIRSA" }}
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
@@ -7,7 +7,7 @@ spec:
   serviceAccountTemplate:
     metadata:
       annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.crossplane-crds.iamRoleName }}
+        eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ index .Values "crossplane-crds" "iamRoleName" }}
 ---
 apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
@@ -17,7 +17,7 @@ spec:
   credentials:
     source: InjectedIdentity
 ---
-{{ else }}
+{{- else }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -27,8 +27,8 @@ type: Opaque
 stringData:
   creds: |
     [default]
-    aws_access_key_id = {{ .Values.crossplane-crds.awsAccessKeyID }}
-    aws_secret_access_key = {{ .Values.crossplane-crds.awsSecretAccessKey }}
+    aws_access_key_id = {{ index .Values "crossplane-crds" "awsAccessKeyID" }}
+    aws_secret_access_key = {{ index .Values "crossplane-crds" "awsSecretAccessKey" }}
 ---
 apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
@@ -42,13 +42,13 @@ spec:
       name: aws-creds
       key: creds
 ---
-{{ end }}
+{{- end }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-aws
 spec:
-  package: xpkg.upbound.io/crossplane-contrib/provider-aws:{{ .Values.crossplane-crds.providerVersion }}
+  package: xpkg.upbound.io/crossplane-contrib/provider-aws:{{ index .Values "crossplane-crds" "providerVersion" }}
   controllerConfigRef:
     name: aws-config
 ---
@@ -68,4 +68,4 @@ spec:
   env:
   # AWS region required to resolve service endpoints
   - name: AWS_REGION
-    value: {{ .Values.crossplane-crds.region }}
+    value: {{ index .Values "crossplane-crds" "region" }}
