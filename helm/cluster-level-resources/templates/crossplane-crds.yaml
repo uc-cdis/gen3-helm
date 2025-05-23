@@ -1,5 +1,4 @@
-{{- if .Values.crossplane-crds.useIRSA }}
-# IRSA deployment runtime config
+{{ if .Values.crossplane-crds.useIRSA }}
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
@@ -18,8 +17,7 @@ spec:
   credentials:
     source: InjectedIdentity
 ---
-{{- else }}
-# Secret with AWS creds file
+{{ else }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -32,7 +30,6 @@ stringData:
     aws_access_key_id = {{ .Values.crossplane-crds.awsAccessKeyID }}
     aws_secret_access_key = {{ .Values.crossplane-crds.awsSecretAccessKey }}
 ---
-# Secret‐backed ProviderConfig
 apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -45,7 +42,7 @@ spec:
       name: aws-creds
       key: creds
 ---
-{{- end }}
+{{ end }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
