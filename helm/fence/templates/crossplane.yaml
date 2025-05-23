@@ -2,7 +2,7 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: fence-sa-role
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
 spec:
   providerConfigRef:
     name: provider-aws
@@ -33,7 +33,7 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicy
 metadata:
-  name: fence-sa-inline-policy
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
