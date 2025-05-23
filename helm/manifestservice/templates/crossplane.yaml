@@ -76,7 +76,7 @@ spec:
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
 metadata:
-  name: manifestservice-bucket
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
 spec:
   providerConfigRef:
     name: provider-aws
@@ -84,7 +84,7 @@ spec:
     bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
     acl: private
     forceDestroy: false
-    locationConstraint: {{ .Values.global.crossplane.s3.region }}
+    locationConstraint: {{ .Values.global.aws.region }}
     tags:
       Organization: gen3
       description: Created by crossplane

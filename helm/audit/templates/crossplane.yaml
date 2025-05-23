@@ -56,7 +56,7 @@ spec:
               "sqs:GetQueueAttributes",
               "sqs:DeleteMessage"
             ],
-            "Resource": ["{{ .Values.global.environment }}-audit-sqs-queue"]
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue"]
           }
         ]
       }
@@ -76,7 +76,7 @@ spec:
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
-  name: generic-queue
+  name: "{{ .Values.global.environment }}-audit-sqs-queue"
 spec:
   providerConfigRef:
     name: provider-aws
