@@ -49,7 +49,7 @@ kind: Provider
 metadata:
   name: provider-aws
 spec:
-  package: xpkg.upbound.io/crossplane-contrib/provider-aws:{{ index .Values "crossplane-crds" "providerVersion" }}
+  package: xpkg.upbound.io/crossplane-contrib/provider-aws:{{ index .Values "crossplane-crds" "targetRevision" }}
   controllerConfigRef:
     name: aws-config
 ---
