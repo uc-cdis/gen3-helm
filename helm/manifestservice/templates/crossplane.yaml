@@ -30,7 +30,6 @@ spec:
         ]
       }
 ---
-# 1️⃣1️⃣ Manifestservice Role Inline Policy
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicy
 metadata:
@@ -40,8 +39,8 @@ spec:
     name: provider-aws
   forProvider:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
-    policyName: "manifestservice-role-policy"
-    policyDocument: |
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-role-policy"
+    document: |
       {
         "Version":"2012-10-17",
         "Statement":[
@@ -62,6 +61,18 @@ spec:
       }
 
 ---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: manifestservice-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
+    policyArnRef: 
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-role-policy"
+---
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
 metadata:
@@ -73,11 +84,14 @@ spec:
     bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
     acl: private
     forceDestroy: false
+    locationConstraint: {{ .Values.global.crossplane.s3.region }}
     tags:
       Organization: gen3
       description: Created by crossplane
     versioningConfiguration:
-      status: {{ .Values.global.crossplane.s3.versioningEnabled }}
+      {{- if .Values.global.crossplane.s3.versioningEnabled }}
+      status: "Enabled"
+      {{- end }}
     serverSideEncryptionConfiguration:
       rules:
         - applyServerSideEncryptionByDefault:

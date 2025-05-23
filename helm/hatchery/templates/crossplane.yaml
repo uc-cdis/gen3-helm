@@ -30,7 +30,6 @@ spec:
         ]
       }
 ---
-# 8️⃣ Hatchery Role Inline Policy
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicy
 metadata:
@@ -39,9 +38,8 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
-    policyName: "hatchery-role-policy"
-    policyDocument: |
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-role-policy"
+    document: |
       {
         "Version":"2012-10-17",
         "Statement":[
@@ -58,7 +56,6 @@ spec:
         ]
       }
 ---
-# 9️⃣ Hatchery Managed Policy Attachment
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
@@ -68,5 +65,6 @@ spec:
     name: provider-aws
   forProvider:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
-    policyArn: "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess"
+    policyArnRef: 
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-role-policy"
 {{- end }}

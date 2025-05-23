@@ -44,9 +44,8 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
-    policyName: "audit-role-policy"
-    policyDocument: |
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+    document: |
       {
         "Version": "2012-10-17",
         "Statement": [
@@ -62,6 +61,18 @@ spec:
         ]
       }
 ---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: audit-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+---
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
@@ -71,6 +82,7 @@ spec:
     name: provider-aws
   forProvider:
     queueName: "{{ .Values.global.environment }}-audit-sqs-queue"
+    region: "{{ .Values.global.aws.region }}"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600
     tags:
