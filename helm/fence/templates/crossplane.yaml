@@ -31,7 +31,7 @@ spec:
       }
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
-kind: RolePolicy
+kind: Policy
 metadata:
   name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
 spec:
