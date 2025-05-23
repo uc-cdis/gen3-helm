@@ -25,10 +25,14 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | coreDNS.configuration.enabled | bool | `false` |  |
 | coreDNS.enabled | bool | `false` |  |
 | coreDNS.targetRevision | string | `"v1.37.0"` |  |
+| crossplane-crds.awsAccessKeyID | string | `"YOUR_ACCESS_KEY_ID"` |  |
+| crossplane-crds.awsSecretAccessKey | string | `"YOUR_SECRET_ACCESS_KEY"` |  |
 | crossplane-crds.configuration.enabled | bool | `false` |  |
 | crossplane-crds.enabled | bool | `false` |  |
+| crossplane-crds.iamRoleName | string | `"crossplane-role"` |  |
 | crossplane-crds.region | string | `"us-east-1"` |  |
 | crossplane-crds.targetRevision | string | `"v0.52.5"` |  |
+| crossplane-crds.useIRSA | bool | `true` |  |
 | crossplane.configuration.enabled | bool | `false` |  |
 | crossplane.enabled | bool | `false` |  |
 | crossplane.targetRevision | string | `"crossplane-stable"` |  |

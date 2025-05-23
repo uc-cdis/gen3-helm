@@ -1,3 +1,5 @@
+{{- if .Values.crossplane-crds.useIRSA }}
+# IRSA deployment runtime config
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
@@ -8,6 +10,42 @@ spec:
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.crossplane-crds.iamRoleName }}
 ---
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: provider-aws
+spec:
+  credentials:
+    source: InjectedIdentity
+---
+{{- else }}
+# Secret with AWS creds file
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-creds
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  creds: |
+    [default]
+    aws_access_key_id = {{ .Values.crossplane-crds.awsAccessKeyID }}
+    aws_secret_access_key = {{ .Values.crossplane-crds.awsSecretAccessKey }}
+---
+# Secret‐backed ProviderConfig
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: provider-aws
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: aws-creds
+      key: creds
+---
+{{- end }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
