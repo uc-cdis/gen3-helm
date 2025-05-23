@@ -17,7 +17,7 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -40,7 +40,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
@@ -48,7 +48,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
