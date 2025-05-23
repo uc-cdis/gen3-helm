@@ -35,7 +35,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | crossplane-crds.useIRSA | bool | `true` |  |
 | crossplane.configuration.enabled | bool | `false` |  |
 | crossplane.enabled | bool | `false` |  |
-| crossplane.targetRevision | string | `"crossplane-stable"` |  |
+| crossplane.targetRevision | string | `"1.19.2"` |  |
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.38.1"` |  |

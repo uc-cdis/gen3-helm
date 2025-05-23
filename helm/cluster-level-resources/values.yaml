@@ -40,7 +40,7 @@ coreDNS:
 
 crossplane:
   enabled: false
-  targetRevision: "crossplane-stable"
+  targetRevision: "1.19.2"
   configuration:
     enabled: false
 
