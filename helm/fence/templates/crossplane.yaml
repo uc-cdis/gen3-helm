@@ -46,7 +46,7 @@ spec:
           {
             "Effect":"Allow",
             "Action":["sqs:SendMessage"],
-            "Resource":[""arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue, "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
+            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue, "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
           }
         ]
       }
