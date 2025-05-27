@@ -44,55 +44,55 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.21
+    version: 0.1.22
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies

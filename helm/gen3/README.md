@@ -32,20 +32,20 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.35 |
 | file://../frontend-framework | frontend-framework | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../guppy | guppy | 0.1.19 |
-| file://../hatchery | hatchery | 0.1.14 |
-| file://../indexd | indexd | 0.1.21 |
-| file://../manifestservice | manifestservice | 0.1.21 |
-| file://../metadata | metadata | 0.1.20 |
+| file://../guppy | guppy | 0.1.20 |
+| file://../hatchery | hatchery | 0.1.15 |
+| file://../indexd | indexd | 0.1.22 |
+| file://../manifestservice | manifestservice | 0.1.22 |
+| file://../metadata | metadata | 0.1.21 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.20 |
-| file://../portal | portal | 0.1.28 |
-| file://../requestor | requestor | 0.1.18 |
-| file://../revproxy | revproxy | 0.1.25 |
-| file://../sheepdog | sheepdog | 0.1.22 |
-| file://../sower | sower | 0.1.21 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.21 |
-| file://../wts | wts | 0.1.21 |
+| file://../peregrine | peregrine | 0.1.21 |
+| file://../portal | portal | 0.1.29 |
+| file://../requestor | requestor | 0.1.19 |
+| file://../revproxy | revproxy | 0.1.26 |
+| file://../sheepdog | sheepdog | 0.1.23 |
+| file://../sower | sower | 0.1.22 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.22 |
+| file://../wts | wts | 0.1.22 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
