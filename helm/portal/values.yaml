@@ -200,6 +200,10 @@ commonLabels:
 extraImages:
   # - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
 
+# -- (bool) Whether to enable the v2 portal where it is built in s3 using mountpoint.
+# Requires mountpoint to be enabled in the cluster.
+v2Enabled: false
+
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string)
