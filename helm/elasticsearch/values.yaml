@@ -53,7 +53,7 @@ secretMounts: []
 #    defaultMode: 0755
 
 hostAliases: []
-#- ip: "127.0.0.1"
+# - ip: "127.0.0.1"
 #  hostnames:
 #  - "foo.local"
 #  - "bar.local"
@@ -97,7 +97,7 @@ sidecarResources: {}
 networkHost: "0.0.0.0"
 
 volumeClaimTemplate:
-  accessModes: [ "ReadWriteOnce" ]
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 30Gi
@@ -124,7 +124,7 @@ podSecurityPolicy:
       - secret
       - configMap
       - persistentVolumeClaim
-      - emptyDir      
+      - emptyDir
 
 persistence:
   enabled: true
