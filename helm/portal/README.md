@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -95,3 +95,4 @@ A Helm chart for gen3 data-portal
 | strategy.rollingUpdate.maxSurge | int | `2` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `"25%"` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
+| v2Enabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |
