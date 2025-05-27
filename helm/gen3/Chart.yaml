@@ -100,7 +100,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.1
+    version: 0.1.13
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: dicom-viewer
