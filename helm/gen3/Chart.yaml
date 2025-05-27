@@ -107,11 +107,15 @@ dependencies:
     version: 0.1.12
     repository: file://../dicom-viewer
     condition: dicom-viewer.enabled
-
   - name: elasticsearch
-    version: 7.10.2
-    repository: "https://helm.elastic.co"
+    version: 7.10.3-SNAPSHOT
+    repository: file://../elasticsearch
     condition: global.dev
+
+  # - name: elasticsearch
+  #   version: 7.10.2
+  #   repository: "https://helm.elastic.co"
+  #   condition: global.dev
   - name: postgresql
     version: 11.9.13
     repository: "https://charts.bitnami.com/bitnami"
