@@ -149,6 +149,7 @@ Helm chart to deploy Gen3 Data Commons
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
+| maxUnavailable | int | `0` |  |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
 | neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |

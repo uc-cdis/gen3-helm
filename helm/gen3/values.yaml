@@ -309,6 +309,7 @@ postgresql:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
+maxUnavailable: 0
 elasticsearch:
   clusterName: gen3-elasticsearch
   maxUnavailable: 0
