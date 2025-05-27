@@ -181,9 +181,6 @@ resources:
     # -- (string) The amount of memory requested
     memory: 4096Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
-    # -- (string) The maximum amount of memory the container can use
-    memory: 4096Mi
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

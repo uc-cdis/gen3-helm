@@ -161,6 +161,8 @@ netPolicy:
 
 # -- (map) Configuration for revproxy ingress.
 ingress:
+  aws:
+    group: ""
   # -- (bool) Whether to create the ingress
   enabled: false
   # -- (string) The ingress class name.

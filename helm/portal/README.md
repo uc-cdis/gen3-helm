@@ -77,9 +77,7 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"4096Mi"},"requests":{"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"memory":"4096Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.memory | string | `"4096Mi"` | The maximum amount of memory the container can use |
+| resources | map | `{"requests":{"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.requests | map | `{"memory":"4096Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"4096Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
