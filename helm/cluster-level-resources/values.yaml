@@ -92,6 +92,7 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -116,6 +117,7 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -139,6 +141,7 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     sgSelector: ""
     additionalTags: {}
     requirements:

@@ -18,7 +18,7 @@ spec:
     ebs:
       deleteOnTermination: true
       encrypted: true
-      volumeSize: 50Gi
+      volumeSize: {{ index .Values "karpenter-crds" "default" "volumeSize" }}
       volumeType: gp3
   metadataOptions:
     httpEndpoint: enabled
