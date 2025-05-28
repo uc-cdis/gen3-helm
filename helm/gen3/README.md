@@ -27,7 +27,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.18 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
-| file://../elasticsearch | elasticsearch | 7.10.3-SNAPSHOT |
 | file://../etl | etl | 0.1.12 |
 | file://../fence | fence | 0.1.35 |
 | file://../frontend-framework | frontend-framework | 0.1.9 |
@@ -47,6 +46,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ssjdispatcher | ssjdispatcher | 0.1.22 |
 | file://../wts | wts | 0.1.22 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
