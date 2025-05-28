@@ -29,15 +29,11 @@ resources:
   tube:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
 

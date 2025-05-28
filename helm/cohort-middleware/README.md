@@ -1,6 +1,6 @@
 # cohort-middleware
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 cohort-middleware
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 cohort-middleware
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.17 |
+| file://../common | common | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -97,7 +97,6 @@ A Helm chart for gen3 cohort-middleware
 | readinessProbe.httpGet.port | int | `8080` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.memory | string | `"4Gi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"128Mi"` |  |
 | securityContext | object | `{}` |  |
 | service.port | int | `80` |  |

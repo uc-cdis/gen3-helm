@@ -79,8 +79,6 @@ resources:
     memory: 400Mi
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 100m
     # -- (string) The amount of memory requested
     memory: 100Mi
 
