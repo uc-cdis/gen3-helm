@@ -250,8 +250,5 @@ externalSecrets:
   createK8sSsjdispatcherSecret: false
   # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
   createK8sJwtKeysSecret: false
-
   # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
   credsFile:
-  # -- (string) Will create the Helm "ssjdispatcher-creds"" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sSsjSecret: false
