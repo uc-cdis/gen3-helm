@@ -144,6 +144,11 @@ frontend-framework:
     tag: "develop"
 
 # -- (map) Configurations for guppy chart.
+gen3-user-data-library:
+  # -- (bool) Whether to deploy the guppy subchart.
+  enabled: false
+
+# -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
   enabled: false
