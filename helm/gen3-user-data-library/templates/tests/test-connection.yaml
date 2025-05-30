@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "gen3-user-data-library.fullname" . }}-test-connection"
+  labels:
+    {{- include "gen3-user-data-library.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "gen3-user-data-library.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
