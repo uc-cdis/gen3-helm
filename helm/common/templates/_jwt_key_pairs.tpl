@@ -96,8 +96,6 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-jwt-keys
-  annotations:
-    helm.sh/resource-policy: keep
 type: Opaque
 data:
   {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-jwt-keys" .Chart.Name)) }}
