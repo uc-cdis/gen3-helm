@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.17 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -23,8 +23,12 @@ A Helm chart for gen3 workspace token service
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
+| externalSecrets.createK8sWtsSecret | bool | `false` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is false. |
+| externalSecrets.createWtsOidcClientSecret | bool | `true` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is true. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.wtsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-g3auto". |
+| externalSecrets.wtsOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-oidc-client". |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
@@ -65,6 +69,7 @@ A Helm chart for gen3 workspace token service
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
 | oidc_client_secret | string | `nil` | Secret for the OIDC client. |
+| oidc_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |
