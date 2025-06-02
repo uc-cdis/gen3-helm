@@ -1,6 +1,6 @@
 # aws-es-proxy
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for AWS ES Proxy Service for gen3
 
@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.17 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -25,10 +25,12 @@ A Helm chart for AWS ES Proxy Service for gen3
 | esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | externalSecrets | map | `{"awsCreds":"aws-es-proxy-aws-credentials"}` | External Secrets settings. |
 | externalSecrets.awsCreds | string | `"aws-es-proxy-aws-credentials"` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
@@ -48,11 +50,10 @@ A Helm chart for AWS ES Proxy Service for gen3
 | ports | list | `[{"containerPort":9200}]` | List of container ports |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"cpu":0.1,"memory":"250Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"250Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"250Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"250Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"250Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access AWS ES cluster. |
