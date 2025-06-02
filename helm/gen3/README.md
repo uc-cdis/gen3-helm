@@ -22,7 +22,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../arborist | arborist | 0.1.17 |
 | file://../argo-wrapper | argo-wrapper | 0.1.13 |
 | file://../audit | audit | 0.1.20 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.17 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
 | file://../common | common | 0.1.18 |
 | file://../dicom-server | dicom-server | 0.1.13 |
