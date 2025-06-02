@@ -161,6 +161,14 @@ karpenter-crds:
           - r
           - t
 
+kube-proxy:
+  enabled: false
+  image:
+    repo: "602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"
+    tag: "v1.31.2-minimal-eksbuild.3"
+  configuration:
+    enabled: false
+
 kube-state-metrics:
   enabled: false
   configuration:
