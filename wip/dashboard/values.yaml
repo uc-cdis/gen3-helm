@@ -117,23 +117,23 @@ volumes:
   - name: config-volume
     secret:
       secretName: "dashboard-g3auto"
-  - name: aws-iam-token
-    projected:
-      defaultMode: 420
-      sources:
-        - serviceAccountToken:
-            audience: sts.amazonaws.com
-            expirationSeconds: 86400
-            path: token
+  # - name: aws-iam-token
+  #   projected:
+  #     defaultMode: 420
+  #     sources:
+  #       - serviceAccountToken:
+  #           audience: sts.amazonaws.com
+  #           expirationSeconds: 86400
+  #           path: token
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/etc/gen3"
-  - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
-    name: aws-iam-token
-    readOnly: true
+  # - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+  #   name: aws-iam-token
+  #   readOnly: true
 
 nodeSelector: {}
 
