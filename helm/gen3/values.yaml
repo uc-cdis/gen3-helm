@@ -14,6 +14,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
     # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
     secretStoreServiceAccount:
       # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
@@ -97,6 +102,7 @@ global:
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
     dbCreate: false
+    clusterSecretStoreRef: ""
 
 # Dependancy Charts
 
@@ -304,6 +310,14 @@ sower:
   # -- (bool) Whether to deploy the sower subchart.
   enabled: false
 
+dicom-viewer:
+  # -- (bool) Whether to deploy the dicom-viewer subchart.
+  enabled: false
+
+dicom-server:
+  # -- (bool) Whether to deploy the dicom-server subchart.
+  enabled: false
+
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
@@ -321,6 +335,9 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+  resources:
+    requests:
+      cpu: "500m"
 
 # (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
 #   NeuVector must be installed separately.
@@ -363,10 +380,8 @@ tests:
   SERVICE_TO_TEST:
   resources:
     requests:
-      cpu: "1"
       memory: "6G"
     limits:
-      cpu: "1"
       memory: "10G"
   image:
     tag: master

@@ -22,6 +22,7 @@ spec:
       initContainers:
         - name: wait-for-indexd
           image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
           command: ["/bin/sh","-c"]
           args: ["while [ $(curl -sw '%{http_code}' http://indexd-service/index -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for indexd...'; done"]
       containers:

@@ -124,6 +124,10 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter.resources.requests.cpu | string | `"1"` |  |
 | karpenter.resources.requests.memory | string | `"1Gi"` |  |
 | karpenter.targetRevision | string | `"v0.32.9"` |  |
+| kube-proxy.configuration.enabled | bool | `false` |  |
+| kube-proxy.enabled | bool | `false` |  |
+| kube-proxy.image.repo | string | `"602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"` |  |
+| kube-proxy.image.tag | string | `"v1.31.2-minimal-eksbuild.3"` |  |
 | kube-state-metrics.configuration.enabled | bool | `false` |  |
 | kube-state-metrics.enabled | bool | `false` |  |
 | kube-state-metrics.targetRevision | string | `"5.28.0"` |  |
