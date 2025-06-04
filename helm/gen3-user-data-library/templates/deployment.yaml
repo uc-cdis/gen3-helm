@@ -40,9 +40,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
             - name: GEN3_DEBUG
-              value: {{ .Values.debug}}
+              value: "True"
             - name: GUNICORN_WORKERS
-              value: {{ .Values.gunicornWorkers}}
+              value: "1"
+            - name: URL_PREFIX
+              value: '/library'
+            - name: PYTHONHTTPSVERIFY
+              value: '0'
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -76,6 +80,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
+              name: http
           livenessProbe:
             httpGet:
               path: /_status

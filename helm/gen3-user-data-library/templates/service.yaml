@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "gen3-user-data-library"
+  name: "gen3-user-data-library-service"
   labels:
     {{ include "gen3-user-data-library.labels" . | nindent 4 }}
 spec:

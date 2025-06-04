@@ -34,22 +34,27 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "gen3-user-data-library.labels" -}}
-helm.sh/chart: {{ include "gen3-user-data-library.chart" . }}
-{{ include "gen3-user-data-library.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.commonLabels }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.commonLabels" .)}}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "gen3-user-data-library.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "gen3-user-data-library.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
 {{- end }}
-
+{{- end }}
 
 {{/*
  Postgres Password lookup
