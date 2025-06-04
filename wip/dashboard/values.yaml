@@ -123,6 +123,9 @@ volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "/etc/gen3"
+  - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+    name: aws-iam-token
+    readOnly: true
 
 nodeSelector: {}
 
