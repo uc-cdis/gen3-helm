@@ -55,7 +55,7 @@ Create the name of the service account to use
 */}}
 {{- define "dashboard.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "dashboard.fullname" .) .Values.serviceAccount.name }}
+{{- default "dashboard-sa" .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: file://../../helm/common
+  version: 0.1.15
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.9.13
+digest: sha256:fea7f71f836be3981da24fc7d1e7393f1aa29630dd692061ab844b1605128064
+generated: "2024-12-12T13:57:27.18217-05:00"
