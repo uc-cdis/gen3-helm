@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.35](https://img.shields.io/badge/Version-0.1.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.36](https://img.shields.io/badge/Version-0.1.36-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -135,6 +135,7 @@ A Helm chart for gen3 Fence
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| googleCronJobs | map | `{"enabled":false}` | Configuration for the Google Cloud Storage cron jobs. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
