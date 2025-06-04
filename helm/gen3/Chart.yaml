@@ -4,6 +4,10 @@ description: Helm chart to deploy Gen3 Data Commons
 
 # Dependencies
 dependencies:
+  - name: access-backend
+    version: 0.1.0
+    repository: "file://../access-backend"
+    condition: access-backend.enabled
   - name: ambassador
     version: 0.1.20
     repository: "file://../ambassador"
