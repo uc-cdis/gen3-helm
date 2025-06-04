@@ -158,3 +158,6 @@ postgres:
   password:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
+
+
+gunicornWorkers: 1
