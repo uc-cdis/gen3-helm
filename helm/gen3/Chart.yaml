@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
