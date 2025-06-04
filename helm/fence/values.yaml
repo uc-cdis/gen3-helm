@@ -521,6 +521,10 @@ projects:
 #     S3:
 #     github.com:
 
+# -- (map) Configuration for the Google Cloud Storage cron jobs.
+googleCronJobs:
+  enabled: false
+
 # -- (string) USER YAML. Passed in as a multiline string.
 USER_YAML: |
   cloud_providers: {}
