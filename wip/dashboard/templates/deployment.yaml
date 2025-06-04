@@ -16,12 +16,12 @@ spec:
   template:
     metadata:
       {{- with .Values.podAnnotations }}
-        public: yes
-        s3: yes
-        netvpc: yes
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        public: yes
+        s3: yes
+        netvpc: yes
         {{- include "dashboard.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
