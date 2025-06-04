@@ -87,7 +87,7 @@ spec:
               value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
             # TODO This NEEDS to be parameterized
             - name: AWS_ROLE_ARN
-              value: arn:aws:iam::707767160287:role/gen3_service/qaplanetv1--qa-mickey--dashboard
+              value: arn:aws:iam::707767160287:role/gen3_service/devplanetv2--aidan--dashboard
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
