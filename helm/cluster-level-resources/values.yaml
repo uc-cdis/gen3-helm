@@ -26,6 +26,12 @@ aws-s3-mountpoint:
   configuration:
     enabled: false
 
+cert-manager:
+  enabled: false
+  targetRevision: "v1.17.2"
+  configuration:
+    enabled: false
+
 calico:
   enabled: false
   targetRevision: "v3.29.1"
