@@ -81,16 +81,6 @@ spec:
           env:
             - name: AWS_STS_REGIONAL_ENDPOINTS
               value: regional
-              # TODO parameterize this
-            # - name: AWS_DEFAULT_REGION
-            #   value: us-east-1
-            # - name: AWS_REGION
-            #   value: us-east-1
-            # - name: AWS_WEB_IDENTITY_TOKEN_FILE
-            #   value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
-            # # TODO This NEEDS to be parameterized
-            # - name: AWS_ROLE_ARN
-            #   value: arn:aws:iam::707767160287:role/gen3_service/devplanetv2--aidan--dashboard
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
