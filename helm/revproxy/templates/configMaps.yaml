@@ -5,7 +5,7 @@ metadata:
 data:
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | eval | nindent 4 }}
+  {{- $bytes | toString | tpl | nindent 4 }}
 {{- end}}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
   {{ "frontend-framework-service.conf" }}: |
