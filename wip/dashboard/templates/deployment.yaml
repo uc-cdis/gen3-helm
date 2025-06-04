@@ -22,6 +22,7 @@ spec:
         public: "yes"
         s3: "yes"
         netvpc: "yes"
+        app: "dashboard"
         {{- include "dashboard.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
