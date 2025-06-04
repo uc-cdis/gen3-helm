@@ -159,8 +159,8 @@ spec:
                 log "Config values - Prefix: $PREFIX, Bucket: $BUCKET"
                 
                 if [ ! -d "$PREFIX" ]; then
-                    log "ERROR: Directory '$PREFIX' does not exist in the repository"
-                    exit 1
+                    log "Directory '$PREFIX' does not exist in the repository, exiting"
+                    exit 0
                 fi
                 
                 log "Directory '$PREFIX' found in repository"
@@ -170,7 +170,7 @@ spec:
                 DASHBOARD_PATH="$PREFIX/dashboard"
                 
                 if [ ! -d "$DASHBOARD_PATH" ]; then
-                    log "ERROR: Dashboard folder does not exist at '$DASHBOARD_PATH'"
+                    log "Dashboard folder does not exist at '$DASHBOARD_PATH, exiting'"
                     exit 0
                 fi
                 
