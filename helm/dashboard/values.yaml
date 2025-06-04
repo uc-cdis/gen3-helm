@@ -6,6 +6,7 @@
 replicaCount: 1
 
 dashboardConfig:
+  gitopsRepo: "https://github.com/uc-cdis/cdis-manifest"
   bucket: generic-dashboard-bucket
   prefix: hostname.com
 

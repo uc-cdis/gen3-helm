@@ -14,6 +14,7 @@ A Helm chart for Kubernetes
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
+| dashboardConfig.gitopsRepo | string | `"https://github.com/uc-cdis/cdis-manifest"` |  |
 | dashboardConfig.prefix | string | `"hostname.com"` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |

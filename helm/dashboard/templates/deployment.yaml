@@ -77,7 +77,6 @@ spec:
 
             # Configuration
             CONFIG_FILE="/etc/gen3/config.json"
-            REPO_URL="https://github.com/uc-cdis/cdis-manifest"
             TEMP_DIR=$(mktemp -d)
 
             # Function to cleanup temporary directory
@@ -195,10 +194,11 @@ spec:
 
             # Run main function
             main "$@"
-
         env:
         - name: AWS_DEFAULT_REGION
-          value: "us-east-1"  # Adjust as needed
+          value: "us-east-1"
+        - name: REPO_URL
+          value: {{ .Values.dashboardConfig.gitopsRepo }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/gen3
