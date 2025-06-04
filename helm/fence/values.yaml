@@ -84,7 +84,6 @@ global:
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
 
-
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
 
@@ -805,7 +804,7 @@ FENCE_CONFIG:
   OPENID_CONNECT:
     # any OIDC IDP that does not differ from the generic implementation can be
     # configured without code changes
-    generic_oidc_idp:   # choose a unique ID and replace this key
+    generic_oidc_idp: # choose a unique ID and replace this key
       # -- (str) Optional; display name for this IDP
       name: "some_idp"
       # -- (str) Client ID
@@ -813,7 +812,7 @@ FENCE_CONFIG:
       # -- (str) Client secret
       client_secret: ""
       # -- (str) Redirect URL for this IDP
-      redirect_url: "{{BASE_URL}}/login/some_idp/login"   # replace IDP name
+      redirect_url: "{{BASE_URL}}/login/some_idp/login" # replace IDP name
       # use `discovery` to configure IDPs that do not expose a discovery
       # endpoint. One of `discovery_url` or `discovery` should be configured
       # -- (str) URL of the OIDC discovery endpoint for the IDP
