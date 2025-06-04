@@ -1,0 +1,127 @@
+{{- if .Values.mutatingWebhook.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mutating-webhook-sa
+  namespace: kube-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mutating-webhook-ingress-reader
+rules:
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mutating-webhook-ingress-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: mutating-webhook-sa
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: mutating-webhook-ingress-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mutating-webhook
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mutating-webhook
+  template:
+    metadata:
+      labels:
+        app: mutating-webhook
+    spec:
+      serviceAccountName: mutating-webhook-sa
+      containers:
+        - name: mutating-webhook
+          image: {{ .Values.mutatingWebhook.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: webhook-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mutating-webhook
+  namespace: kube-system
+spec:
+  ports:
+    - port: 443
+      targetPort: 8443
+  selector:
+    app: mutating-webhook
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: mutating-webhook
+  annotations:
+    cert-manager.io/inject-ca-from: kube-system/mutating-webhook-cert
+webhooks:
+  - name: mutating-webhook.k8s.io
+    clientConfig:
+      service:
+        name: mutating-webhook
+        namespace: kube-system
+        path: "/mutate"
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        resources: ["daemonsets"]
+      - operations: ["CREATE"]
+        apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        resources: ["deployments"]
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mutating-webhook-cert
+  namespace: kube-system
+spec:
+  secretName: webhook-certs #pragma: allowlist secret
+  dnsNames:
+  - mutating-webhook.kube-system.svc
+  issuerRef:
+    name: selfsigned
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+  namespace: kube-system
+spec:
+  selfSigned: {}
+{{- end }}
