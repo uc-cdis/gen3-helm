@@ -64,6 +64,145 @@ spec:
       serviceAccountName: {{ include "dashboard.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: dashboard-sync
+        image: quay.io/cdis/awshelper
+        command:
+          - /bin/bash
+          - -c
+          - |
+            #!/bin/bash
+
+            set -e  # Exit on any error
+
+            # Configuration
+            CONFIG_FILE="/home/aidan/testing-dashboard/config.json"
+            REPO_URL="https://github.com/uc-cdis/cdis-manifest"
+            TEMP_DIR=$(mktemp -d)
+
+            # Function to cleanup temporary directory
+            cleanup() {
+                echo "Cleaning up temporary directory..."
+                rm -rf "$TEMP_DIR"
+            }
+
+            # Set trap to cleanup on exit
+
+            # Function to log messages
+            log() {
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+            }
+
+            # Function to check if required tools are installed
+            check_dependencies() {
+                local missing_deps=()
+                
+                if ! command -v git &> /dev/null; then
+                    missing_deps+=("git")
+                fi
+                
+                if ! command -v jq &> /dev/null; then
+                    missing_deps+=("jq")
+                fi
+                
+                if ! command -v aws &> /dev/null; then
+                    missing_deps+=("aws")
+                fi
+                
+                if [ ${#missing_deps[@]} -ne 0 ]; then
+                    log "ERROR: Missing required dependencies: ${missing_deps[*]}"
+                    log "Please install the missing tools and try again."
+                    exit 1
+                fi
+            }
+
+            # Function to validate config file and extract values
+            get_config_value() {
+                local key=$1
+                if [ ! -f "$CONFIG_FILE" ]; then
+                    log "ERROR: Config file $CONFIG_FILE does not exist"
+                    exit 1
+                fi
+                
+                local value=$(jq -r ".$key" "$CONFIG_FILE" 2>/dev/null)
+                if [ "$value" == "null" ] || [ -z "$value" ]; then
+                    log "ERROR: Key '$key' not found or empty in $CONFIG_FILE"
+                    exit 1
+                fi
+                
+                echo "$value"
+            }
+
+            main() {
+                log "Starting dashboard sync process..."
+                
+                # Check dependencies
+                check_dependencies
+                
+                # Step 1: Check out the repository
+                log "Step 1: Cloning repository $REPO_URL"
+                cd "$TEMP_DIR"
+
+                if ! git clone "$REPO_URL" cdis-manifest; then
+                  log "ERROR: Failed to clone repository"
+                  exit 1
+                fi
+                
+                cd cdis-manifest
+                log "Repository cloned successfully"
+                
+                # Step 2: Get prefix from config and check if it exists as a directory
+                log "Step 2: Checking configuration and directory structure"
+                PREFIX=$(get_config_value "prefix")
+                BUCKET=$(get_config_value "bucket")
+                
+                log "Config values - Prefix: $PREFIX, Bucket: $BUCKET"
+                
+                if [ ! -d "$PREFIX" ]; then
+                    log "ERROR: Directory '$PREFIX' does not exist in the repository"
+                    exit 1
+                fi
+                
+                log "Directory '$PREFIX' found in repository"
+                
+                # Step 3: Check if there is a 'dashboard' folder in the prefix directory
+                log "Step 3: Checking for dashboard folder"
+                DASHBOARD_PATH="$PREFIX/dashboard"
+                
+                if [ ! -d "$DASHBOARD_PATH" ]; then
+                    log "ERROR: Dashboard folder does not exist at '$DASHBOARD_PATH'"
+                    exit 1
+                fi
+                
+                log "Dashboard folder found at '$DASHBOARD_PATH'"
+                
+                # Step 4: Upload to S3
+                log "Step 4: Uploading dashboard to S3"
+                S3_DESTINATION="s3://$BUCKET/$PREFIX/"
+                
+                log "Uploading from '$DASHBOARD_PATH' to '$S3_DESTINATION'"
+                
+                if ! aws s3 cp "$DASHBOARD_PATH" "$S3_DESTINATION" --recursive; then
+                    log "ERROR: Failed to upload dashboard to S3"
+                    exit 1
+                fi
+                
+                log "Dashboard successfully uploaded to S3"
+                log "Upload completed: $S3_DESTINATION"
+                
+                log "Dashboard sync process completed successfully!"
+            }
+
+            # Run main function
+            main "$@"
+
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: "us-east-1"  # Adjust as needed
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/gen3
+          readOnly: true
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
