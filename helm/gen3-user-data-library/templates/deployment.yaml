@@ -40,7 +40,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
             - name: GEN3_DEBUG
-              value: "False"
+              value: {{ .Values.debug}}
+            - name: GUNICORN_WORKERS
+              value: {{ .Values.gunicornWorkers}}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
