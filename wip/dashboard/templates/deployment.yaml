@@ -76,7 +76,7 @@ spec:
             set -e  # Exit on any error
 
             # Configuration
-            CONFIG_FILE="/home/aidan/testing-dashboard/config.json"
+            CONFIG_FILE="/etc/gen3/config.json"
             REPO_URL="https://github.com/uc-cdis/cdis-manifest"
             TEMP_DIR=$(mktemp -d)
 
