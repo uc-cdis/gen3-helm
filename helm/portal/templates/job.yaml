@@ -1,3 +1,4 @@
+{{- if and (.Values.global.crossplane.enabled) (.Values.v2Enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -237,4 +238,4 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
-              
+{{- end }}              

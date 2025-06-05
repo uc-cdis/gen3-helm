@@ -1,4 +1,4 @@
-{{- if .Values.global.crossplane.enabled }}
+{{- if and (.Values.global.crossplane.enabled) (.Values.v2Enabled }}
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
