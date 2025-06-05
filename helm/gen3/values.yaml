@@ -339,6 +339,12 @@ elasticsearch:
     requests:
       cpu: "500m"
 
+mutatingWebhook:
+  # -- (bool) Whether to deploy the mutating webhook service.
+  enabled: false
+  # -- (string) image
+  image: quay.io/cdis/node-affinity-daemonset:feat_deployments
+
 # (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
 #   NeuVector must be installed separately.
 #   Reference: https://open-docs.neuvector.com/basics/overview
