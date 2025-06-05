@@ -74,7 +74,7 @@ global:
       # -- (string) The kms key id for the s3 bucket.
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
-      versioningEnabled: false  
+      versioningEnabled: false
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false

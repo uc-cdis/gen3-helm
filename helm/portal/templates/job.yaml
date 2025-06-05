@@ -1,4 +1,4 @@
-{{- if and (.Values.global.crossplane.enabled) (.Values.v2Enabled }}
+{{- if and (.Values.global.crossplane.enabled) (.Values.v2Enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
