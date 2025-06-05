@@ -249,8 +249,3 @@ partOf: "Front-End"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# -- (map) Contains the in-cluster (service) URLs for non-gen3 services that may need to be accessed from a Gen3 deployment
-downstreamServices:
-  # -- (string) The endpoint for in-cluster Argo
-  argoEndpoint: http://argo-argo-workflows-server.argo.svc.cluster.local:2746
