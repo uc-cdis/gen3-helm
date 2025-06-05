@@ -31,6 +31,10 @@ dependencies:
   - name: common
     version: 0.1.18
     repository: file://../common
+  - name: dashboard
+    version: 0.1.0
+    repository: file://../dashboard
+    condition: dashboard.enabled
   - name: etl
     version: 0.1.12
     repository: file://../etl
@@ -76,7 +80,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog

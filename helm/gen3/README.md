@@ -25,6 +25,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
 | file://../common | common | 0.1.18 |
+| file://../dashboard | dashboard | 0.1.0 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
 | file://../etl | etl | 0.1.12 |
@@ -40,7 +41,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.21 |
 | file://../portal | portal | 0.1.30 |
 | file://../requestor | requestor | 0.1.19 |
-| file://../revproxy | revproxy | 0.1.26 |
+| file://../revproxy | revproxy | 0.1.27 |
 | file://../sheepdog | sheepdog | 0.1.23 |
 | file://../sower | sower | 0.1.22 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.22 |
@@ -63,6 +64,9 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
+| dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
+| dashboard.enabled | bool | `false` |  |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | dicom-viewer.enabled | bool | `false` | Whether to deploy the dicom-viewer subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
