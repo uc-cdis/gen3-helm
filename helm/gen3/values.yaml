@@ -34,7 +34,7 @@ global:
       # -- (string) Name of the local secret.
       localSecretName:
   # -- (map) Kubernetes configuration
-  crossplane: 
+  crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
     enabled: false
     # -- (string) The name of the crossplane provider config.
@@ -48,7 +48,6 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
-    
 
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true

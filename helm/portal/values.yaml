@@ -61,7 +61,7 @@ global:
   minAvialable: 1
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
   frontendRoot: "portal"
-  crossplane: 
+  crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
     enabled: false
     # -- (string) The name of the crossplane provider config.

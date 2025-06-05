@@ -37,7 +37,7 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
   # -- (map) Kubernetes configuration
-  crossplane: 
+  crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
     enabled: false
     # -- (string) The name of the crossplane provider config.
