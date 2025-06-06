@@ -113,7 +113,8 @@ secrets:
   userdb:
     fence:
     sheepdog:
-    # gateway:
+    ssj:
+    gateway:
   # -- (str) AWS access key ID to access the db restore job S3 bucket. Overrides global key.
   awsAccessKeyId:
   # -- (str) AWS secret access key ID to access the db restore job S3 bucket. Overrides global key.

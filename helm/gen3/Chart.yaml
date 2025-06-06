@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.22
+    version: 0.1.24
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -60,7 +60,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine

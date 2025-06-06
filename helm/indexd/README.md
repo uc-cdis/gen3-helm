@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -90,7 +90,7 @@ A Helm chart for gen3 indexd
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
 | resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"userdb":{"fence":null,"sheepdog":null}}` | Values for indexd secret. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"userdb":{"fence":null,"gateway":null,"sheepdog":null,"ssj":null}}` | Values for indexd secret. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID to access the db restore job S3 bucket. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID to access the db restore job S3 bucket. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
