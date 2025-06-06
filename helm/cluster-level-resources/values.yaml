@@ -44,6 +44,23 @@ coreDNS:
   configuration:
     enabled: false
 
+crossplane:
+  enabled: false
+  targetRevision: "1.19.2"
+  configuration:
+    enabled: false
+
+crossplane-crds:
+  enabled: false
+  useIRSA: true
+  iamRoleName: "crossplane-role"
+  awsAccessKeyID: "YOUR_ACCESS_KEY_ID"
+  awsSecretAccessKey: "YOUR_SECRET_ACCESS_KEY"
+  region: "us-east-1"
+  targetRevision: "v0.52.5"
+  configuration:
+    enabled: false
+
 ebs-csi-driver:
   enabled: false
   targetRevision: "2.38.1"
