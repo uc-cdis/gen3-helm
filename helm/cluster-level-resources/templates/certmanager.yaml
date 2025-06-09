@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: charts.jetstack.io
+    - repoURL: https://charts.jetstack.io
       targetRevision: {{ (index .Values "cert-manager" "targetRevision")}}
       chart: cert-manager
       helm:
