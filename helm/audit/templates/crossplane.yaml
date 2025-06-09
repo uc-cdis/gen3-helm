@@ -1,0 +1,91 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    description: "Role for ES proxy service account for {{ .Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "Service": "ec2.amazonaws.com" },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:audit-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+    document: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "sqs:ReceiveMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:DeleteMessage"
+            ],
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue"]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: audit-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+---
+apiVersion: sqs.aws.crossplane.io/v1beta1
+kind: Queue
+metadata:
+  name: "{{ .Values.global.environment }}-audit-sqs-queue"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    queueName: "{{ .Values.global.environment }}-audit-sqs-queue"
+    region: "{{ .Values.global.aws.region }}"
+    visibilityTimeoutSeconds: 300
+    messageRetentionSeconds: 1209600
+    tags:
+      Organization: "gen3"
+      description: "Created by Crossplane"
+{{- end }}

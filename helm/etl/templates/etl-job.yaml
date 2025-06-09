@@ -181,7 +181,6 @@ spec:
                 {{- end }}
                 - mountPath: /tube/gen3/tube
                   name: emptydir
-                  defaultMode: 0755
                 - mountPath: /usr/share/pod
                   name: signal-volume
                 - name: "etl-mapping"
@@ -191,11 +190,9 @@ spec:
                 - name: fence-usersync-yaml
                   mountPath: /tube/gen3/tube/fence-user.yaml
                   subPath: user.yaml
-                  defaultMode: 0755
                 - name: fence-useryaml
                   mountPath: /tube/gen3/tube/useryaml-user.yaml
                   subPath: useryaml
-                  defaultMode: 0755
               resources:
                 requests:
                   cpu: {{  .Values.resources.tube.requests.cpu }}

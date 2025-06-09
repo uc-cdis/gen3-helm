@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.10](https://img.shields.io/badge/Version-0.6.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.13](https://img.shields.io/badge/Version-0.6.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -19,12 +19,26 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | calico.configuration.enabled | bool | `false` |  |
 | calico.enabled | bool | `false` |  |
 | calico.targetRevision | string | `"v3.29.1"` |  |
+| cert-manager.configuration.enabled | bool | `false` |  |
+| cert-manager.enabled | bool | `false` |  |
+| cert-manager.targetRevision | string | `"v1.17.2"` |  |
 | cluster | string | `"unfunded"` |  |
 | configuration.configurationRepo | string | `"https://github.com/uc-cdis/gen3-gitops"` |  |
 | configuration.configurationRevision | string | `"master"` |  |
 | coreDNS.configuration.enabled | bool | `false` |  |
 | coreDNS.enabled | bool | `false` |  |
 | coreDNS.targetRevision | string | `"v1.37.0"` |  |
+| crossplane-crds.awsAccessKeyID | string | `"YOUR_ACCESS_KEY_ID"` |  |
+| crossplane-crds.awsSecretAccessKey | string | `"YOUR_SECRET_ACCESS_KEY"` |  |
+| crossplane-crds.configuration.enabled | bool | `false` |  |
+| crossplane-crds.enabled | bool | `false` |  |
+| crossplane-crds.iamRoleName | string | `"crossplane-role"` |  |
+| crossplane-crds.region | string | `"us-east-1"` |  |
+| crossplane-crds.targetRevision | string | `"v0.52.5"` |  |
+| crossplane-crds.useIRSA | bool | `true` |  |
+| crossplane.configuration.enabled | bool | `false` |  |
+| crossplane.enabled | bool | `false` |  |
+| crossplane.targetRevision | string | `"1.19.2"` |  |
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.38.1"` |  |
@@ -113,6 +127,10 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter.resources.requests.cpu | string | `"1"` |  |
 | karpenter.resources.requests.memory | string | `"1Gi"` |  |
 | karpenter.targetRevision | string | `"v0.32.9"` |  |
+| kube-proxy.configuration.enabled | bool | `false` |  |
+| kube-proxy.enabled | bool | `false` |  |
+| kube-proxy.image.repo | string | `"602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"` |  |
+| kube-proxy.image.tag | string | `"v1.31.2-minimal-eksbuild.3"` |  |
 | kube-state-metrics.configuration.enabled | bool | `false` |  |
 | kube-state-metrics.enabled | bool | `false` |  |
 | kube-state-metrics.targetRevision | string | `"5.28.0"` |  |

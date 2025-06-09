@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -171,14 +176,10 @@ service:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 

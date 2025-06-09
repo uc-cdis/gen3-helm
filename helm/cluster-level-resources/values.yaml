@@ -26,6 +26,12 @@ aws-s3-mountpoint:
   configuration:
     enabled: false
 
+cert-manager:
+  enabled: false
+  targetRevision: "v1.17.2"
+  configuration:
+    enabled: false
+
 calico:
   enabled: false
   targetRevision: "v3.29.1"
@@ -35,6 +41,23 @@ calico:
 coreDNS:
   enabled: false
   targetRevision: "v1.37.0"
+  configuration:
+    enabled: false
+
+crossplane:
+  enabled: false
+  targetRevision: "1.19.2"
+  configuration:
+    enabled: false
+
+crossplane-crds:
+  enabled: false
+  useIRSA: true
+  iamRoleName: "crossplane-role"
+  awsAccessKeyID: "YOUR_ACCESS_KEY_ID"
+  awsSecretAccessKey: "YOUR_SECRET_ACCESS_KEY"
+  region: "us-east-1"
+  targetRevision: "v0.52.5"
   configuration:
     enabled: false
 
@@ -160,6 +183,14 @@ karpenter-crds:
           - m
           - r
           - t
+
+kube-proxy:
+  enabled: false
+  image:
+    repo: "602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"
+    tag: "v1.31.2-minimal-eksbuild.3"
+  configuration:
+    enabled: false
 
 kube-state-metrics:
   enabled: false

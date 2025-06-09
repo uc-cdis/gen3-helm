@@ -1,6 +1,7 @@
 # portal
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+
 
 A Helm chart for gen3 data-portal
 
@@ -8,7 +9,7 @@ A Helm chart for gen3 data-portal
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.17 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -41,6 +42,12 @@ A Helm chart for gen3 data-portal
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
+| global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
+| global.crossplane.oidcProviderUrl | string | `"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"` | OIDC provider URL. This is used for authentication of roles/service accounts. |
+| global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
+| global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
+| global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -77,9 +84,8 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"requests":{"cpu":2,"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.requests | map | `{"cpu":2,"memory":"4096Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `2` | The amount of CPU requested |
+| resources | map | `{"requests":{"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.requests | map | `{"memory":"4096Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"4096Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | securityContext | map | `{}` | Security context to apply to the container |
@@ -95,3 +101,4 @@ A Helm chart for gen3 data-portal
 | strategy.rollingUpdate.maxSurge | int | `2` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `"25%"` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
+| v2Enabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |

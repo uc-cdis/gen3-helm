@@ -1,0 +1,32 @@
+{{ if index .Values "crossplane" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: crossplane
+      repoURL: https://charts.crossplane.io/stable
+      targetRevision: {{ index .Values "crossplane" "targetRevision" }}
+      helm:
+        releaseName: crossplane
+      {{- if index .Values "crossplane" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/crossplane.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: 
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: crossplane-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+{{ end }}

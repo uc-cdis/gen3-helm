@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Metadata Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.17 |
+| file://../common | common | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.17.1 |
 
@@ -24,6 +24,7 @@ A Helm chart for gen3 Metadata Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["metadata"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | aggMdsConfig | string | `"{\n  \"configuration\": {\n    \"schema\": {\n      \"_subjects_count\": {\n        \"type\": \"integer\"\n      },\n      \"__manifest\": {\n        \"description\": \"an array of filename (usually DRS ids and its size\",\n        \"type\": \"array\",\n        \"properties\": {\n          \"file_name\": {\n            \"type\": \"string\"\n          },\n          \"file_size\": {\n            \"type\": \"integer\"\n          }\n        }\n      },\n      \"tags\": {\n        \"type\": \"array\"\n      },\n      \"_unique_id\": {},\n      \"study_description\": {},\n      \"study_id\": {},\n      \"study_url\": {},\n      \"project_id\": {},\n      \"short_name\": {\n        \"default\": \"not_set\"\n      },\n      \"year\": {\n        \"default\": \"not_set\"\n      },\n      \"full_name\": {},\n      \"commons_url\": {},\n      \"commons\": {}\n    },\n    \"settings\": {\n      \"cache_drs\": true\n    }\n  },\n  \"adapter_commons\": {\n    \"Gen3\": {\n      \"mds_url\": \"https://gen3.datacommons.io/\",\n      \"commons_url\": \"gen3.datacommons.io/\",\n      \"adapter\": \"gen3\",\n      \"config\": {\n        \"guid_type\": \"discovery_metadata\",\n        \"study_field\": \"gen3_discovery\"\n      },\n      \"keep_original_fields\": false,\n      \"field_mappings\": {\n        \"tags\": \"path:tags\",\n        \"_unique_id\": \"path:_unique_id\",\n        \"study_description\": \"path:summary\",\n        \"full_name\": \"path:study_title\",\n        \"short_name\": \"path:short_name\",\n        \"year\": \"path:year\",\n        \"accession_number\": \"path:accession_number\",\n        \"commons\": \"Gen3 Data Commons\",\n        \"study_url\": {\n          \"path\": \"link\",\n          \"default\": \"unknown\"\n        }\n      }\n    }\n  }\n}\n"` |  |
+| aggMdsDefaultDataDictField | string | `nil` |  |
 | aggMdsNamespace | string | `"default"` | Namespae to use if AggMds is enabled. |
 | args | list | `["-c","# Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility\npoetry run alembic upgrade head || /env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
@@ -47,10 +48,12 @@ A Helm chart for gen3 Metadata Service
 | externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -80,10 +83,9 @@ A Helm chart for gen3 Metadata Service
 | image.repository | string | `"quay.io/cdis/metadata-service"` | Docker repository. |
 | image.tag | string | `"feat_es-7"` | Overrides the image tag whose default is the chart appVersion. |
 | initContainerName | string | `"metadata-db-migrate"` | Name of the init container. |
-| initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
-| initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
-| initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| initResources | map | `{"requests":{"memory":"100Mi"}}` | Resource limits for the init container. |
+| initResources.requests | map | `{"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
+| initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
 | initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -99,12 +101,10 @@ A Helm chart for gen3 Metadata Service
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
@@ -119,4 +119,4 @@ A Helm chart for gen3 Metadata Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
-| volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"},{"mountPath":"/metadata.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |

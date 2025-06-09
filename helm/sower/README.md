@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 sower
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.17 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -39,10 +39,12 @@ A Helm chart for gen3 sower
 | externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -83,11 +85,10 @@ A Helm chart for gen3 sower
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"cpu":"100m","memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"400Mi"},"requests":{"memory":"20Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"400Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"400Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":"100m","memory":"20Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `"100m"` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"20Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"20Mi"` | The amount of memory requested |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Values for sower secrets and keys for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
