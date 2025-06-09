@@ -95,9 +95,9 @@ webhooks:
         apiVersions: ["v1"]
         resources: ["daemonsets"]
       - operations: ["CREATE"]
-        apiGroups: ["apps"]
+        apiGroups: [""]
         apiVersions: ["v1"]
-        resources: ["deployments"]
+        resources: ["pods"]
     admissionReviewVersions: ["v1"]
     sideEffects: None
 

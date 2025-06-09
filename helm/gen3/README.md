@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.75](https://img.shields.io/badge/Version-0.1.75-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.76](https://img.shields.io/badge/Version-0.1.76-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -158,7 +158,7 @@ Helm chart to deploy Gen3 Data Commons
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | mutatingWebhook.enabled | bool | `false` | Whether to deploy the mutating webhook service. |
-| mutatingWebhook.image | string | `"quay.io/cdis/node-affinity-daemonset:feat_deployments"` | image |
+| mutatingWebhook.image | string | `"quay.io/cdis/node-affinity-daemonset:feat_pods"` | image |
 | neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
 | neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |
 | neuvector.enabled | bool | `false` |  |
