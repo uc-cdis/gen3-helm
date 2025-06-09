@@ -38,7 +38,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.21 |
-| file://../portal | portal | 0.1.30 |
+| file://../portal | portal | 0.1.31 |
 | file://../requestor | requestor | 0.1.19 |
 | file://../revproxy | revproxy | 0.1.27 |
 | file://../sheepdog | sheepdog | 0.1.23 |
