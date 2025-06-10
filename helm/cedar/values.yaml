@@ -86,6 +86,9 @@ externalSecrets:
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (map) Cedar configuration for ingestion job.
+ingestion:
+
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
