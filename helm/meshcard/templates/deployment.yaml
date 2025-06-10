@@ -53,36 +53,36 @@ spec:
           env: 
             - name: GEN3_DEBUG
               value: "False"
-            # - name: DB_HOST
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: meshcard-dbcreds
-            #       key: host
-            #       optional: false  
-            # - name: DB_USER
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: meshcard-dbcreds
-            #       key: username
-            #       optional: false
-            # - name: DB_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: meshcard-dbcreds
-            #       key: password
-            #       optional: false
-            # - name: DB_DATABASE
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: meshcard-dbcreds
-            #       key: database
-            #       optional: false
-            # - name: DBREADY
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: meshcard-dbcreds
-            #       key: dbcreated
-            #       optional: false
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: meshcard-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: meshcard-dbcreds
+                  key: username
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: meshcard-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: meshcard-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: meshcard-dbcreds
+                  key: dbcreated
+                  optional: false
             # {{- with .Values.useAggMds }}
             # - name: USE_AGG_MDS
             #   value: {{ . | quote }}
