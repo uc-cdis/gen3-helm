@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: dashboard-g3auto
+stringData:
+  config.json: |
+    {
+      "bucket": "{{ .Values.dashboardConfig.bucket }}",
+      "prefix": "{{ .Values.dashboardConfig.prefix }}"
+    }

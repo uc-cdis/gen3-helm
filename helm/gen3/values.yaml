@@ -175,6 +175,13 @@ cohort-middleware:
   # -- (bool) Whether to deploy the cohort-middleware subchart.
   enabled: false
 
+dashboard:
+  enabled: false
+
+  dashboardConfig:
+    bucket: generic-dashboard-bucket
+    prefix: hostname.com
+
 # -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
