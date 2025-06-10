@@ -88,6 +88,7 @@ replicaCount: 1
 
 # -- (map) Cedar configuration for ingestion job.
 ingestion:
+  image: "quay.io/cdis/awshelper:master"
 
 # -- (map) Docker image information.
 image:

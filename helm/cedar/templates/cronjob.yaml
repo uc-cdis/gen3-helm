@@ -51,7 +51,7 @@ spec:
                 secretName: cedar-g3auto
           initContainers:
             - name: cedar
-              image: {{ .Values.ingestion.custom_image | default "quay.io/cdis/awshelper:master" }}
+              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
               imagePullPolicy: Always
               env:
                 - name: HOSTNAME
@@ -110,7 +110,7 @@ spec:
                   fi
           containers:
             - name: awshelper
-              image: {{ .Values.ingestion.custom_image | default "quay.io/cdis/awshelper:master" }}
+              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
               imagePullPolicy: Always
               env:
                 - name: slackWebHook
