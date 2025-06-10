@@ -4,14 +4,14 @@ kind: Deployment
 metadata:
   name: cedar-wrapper-deployment
   labels:
-    {{- include "cedar-wrapper.labels" . | nindent 4 }}
+    {{- include "cedar.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "cedar-wrapper.selectorLabels" . | nindent 6 }}
+      {{- include "cedar.selectorLabels" . | nindent 6 }}
       release: {{ .Values.release }}
   revisionHistoryLimit: 2
   strategy:
@@ -32,7 +32,7 @@ spec:
         netnolimit: "yes"
         public: "yes"
         userhelper: "yes"
-        {{- include "cedar-wrapper.selectorLabels" . | nindent 8 }}
+        {{- include "cedar.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       automountServiceAccountToken: false
