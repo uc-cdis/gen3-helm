@@ -175,6 +175,13 @@ cohort-middleware:
   # -- (bool) Whether to deploy the cohort-middleware subchart.
   enabled: false
 
+dashboard:
+  enabled: false
+
+  dashboardConfig:
+    bucket: generic-dashboard-bucket
+    prefix: hostname.com
+
 # -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
@@ -342,7 +349,7 @@ mutatingWebhook:
   # -- (bool) Whether to deploy the mutating webhook service.
   enabled: false
   # -- (string) image
-  image: quay.io/cdis/node-affinity-daemonset:feat_deployments
+  image: quay.io/cdis/node-affinity-daemonset:feat_pods
 
 # (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
 #   NeuVector must be installed separately.

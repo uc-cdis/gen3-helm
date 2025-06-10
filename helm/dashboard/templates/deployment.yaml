@@ -1,0 +1,248 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-deployment
+  labels:
+    {{- include "dashboard.labels" . | nindent 4 }}
+  annotations:
+    gen3.io/network-ingress: "ambassador-gen3"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dashboard.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        public: "yes"
+        s3: "yes"
+        netvpc: "yes"
+        app: "dashboard"
+        {{- include "dashboard.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 25
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - dashboard
+              topologyKey: "kubernetes.io/hostname"
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot
+          - weight: 99
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - SPOT  
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: false
+      serviceAccountName: {{ include "dashboard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: dashboard-sync
+        image: quay.io/cdis/awshelper
+        command:
+          - /bin/bash
+          - -c
+          - |
+            #!/bin/bash
+
+            set -e  # Exit on any error
+
+            # Configuration
+            CONFIG_FILE="/etc/gen3/config.json"
+            TEMP_DIR=$(mktemp -d)
+
+            # Function to cleanup temporary directory
+            cleanup() {
+                echo "Cleaning up temporary directory..."
+                rm -rf "$TEMP_DIR"
+            }
+
+            # Set trap to cleanup on exit
+
+            # Function to log messages
+            log() {
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+            }
+
+            # Function to check if required tools are installed
+            check_dependencies() {
+                local missing_deps=()
+                
+                if ! command -v git &> /dev/null; then
+                    missing_deps+=("git")
+                fi
+                
+                if ! command -v jq &> /dev/null; then
+                    missing_deps+=("jq")
+                fi
+                
+                if ! command -v aws &> /dev/null; then
+                    missing_deps+=("aws")
+                fi
+                
+                if [ ${#missing_deps[@]} -ne 0 ]; then
+                    log "ERROR: Missing required dependencies: ${missing_deps[*]}"
+                    log "Please install the missing tools and try again."
+                    exit 1
+                fi
+            }
+
+            # Function to validate config file and extract values
+            get_config_value() {
+                local key=$1
+                if [ ! -f "$CONFIG_FILE" ]; then
+                    log "ERROR: Config file $CONFIG_FILE does not exist"
+                    exit 1
+                fi
+                
+                local value=$(jq -r ".$key" "$CONFIG_FILE" 2>/dev/null)
+                if [ "$value" == "null" ] || [ -z "$value" ]; then
+                    log "ERROR: Key '$key' not found or empty in $CONFIG_FILE"
+                    exit 1
+                fi
+                
+                echo "$value"
+            }
+
+            main() {
+                log "Starting dashboard sync process..."
+                
+                # Check dependencies
+                check_dependencies
+                
+                # Step 1: Check out the repository
+                log "Step 1: Cloning repository $REPO_URL"
+                cd "$TEMP_DIR"
+
+                if ! git clone "$REPO_URL" cdis-manifest; then
+                  log "ERROR: Failed to clone repository"
+                  exit 1
+                fi
+                
+                cd cdis-manifest
+                log "Repository cloned successfully"
+                
+                # Step 2: Get prefix from config and check if it exists as a directory
+                log "Step 2: Checking configuration and directory structure"
+                PREFIX=$(get_config_value "prefix")
+                BUCKET=$(get_config_value "bucket")
+                
+                log "Config values - Prefix: $PREFIX, Bucket: $BUCKET"
+                
+                if [ ! -d "$PREFIX" ]; then
+                    log "Directory '$PREFIX' does not exist in the repository, exiting"
+                    exit 0
+                fi
+                
+                log "Directory '$PREFIX' found in repository"
+                
+                # Step 3: Check if there is a 'dashboard' folder in the prefix directory
+                log "Step 3: Checking for dashboard folder"
+                DASHBOARD_PATH="$PREFIX/dashboard"
+                
+                if [ ! -d "$DASHBOARD_PATH" ]; then
+                    log "Dashboard folder does not exist at '$DASHBOARD_PATH, exiting'"
+                    exit 0
+                fi
+                
+                log "Dashboard folder found at '$DASHBOARD_PATH'"
+                
+                # Step 4: Upload to S3
+                log "Step 4: Uploading dashboard to S3"
+                S3_DESTINATION="s3://$BUCKET/$PREFIX/"
+                
+                log "Uploading from '$DASHBOARD_PATH' to '$S3_DESTINATION'"
+                
+                if ! aws s3 cp "$DASHBOARD_PATH" "$S3_DESTINATION" --recursive; then
+                    log "ERROR: Failed to upload dashboard to S3"
+                    exit 1
+                fi
+                
+                log "Dashboard successfully uploaded to S3"
+                log "Upload completed: $S3_DESTINATION"
+                
+                log "Dashboard sync process completed successfully!"
+            }
+
+            # Run main function
+            main "$@"
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: "us-east-1"
+        - name: REPO_URL
+          value: {{ .Values.dashboardConfig.gitopsRepo }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/gen3
+          readOnly: true
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          args:
+            - "launch"
+          ports:
+            - containerPort: 4000
+          env:
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: regional
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
