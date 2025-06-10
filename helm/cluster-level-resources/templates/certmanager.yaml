@@ -7,12 +7,14 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: charts.jetstack.io/cert-manager
+    - repoURL: https://charts.jetstack.io
       targetRevision: {{ (index .Values "cert-manager" "targetRevision")}}
       chart: cert-manager
       helm:
         releaseName: cert-manager
         values: |
+          crds:
+            enabled: true
   destination:
     server: "https://kubernetes.default.svc"
     namespace: cert-manager
