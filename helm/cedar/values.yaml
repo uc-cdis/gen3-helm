@@ -80,6 +80,8 @@ externalSecrets:
   cedarG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cedar-api-key".
   cedarAPIKey:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "cedar-directory-id".
+  cedarDirectoryId:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -183,6 +185,8 @@ roleName: cedar
 secrets:
   # -- (str) API key for Cedar.
   apiKey: ""
+  # -- (string) Values for Cedar directory ID.
+  cedarDirectoryId: ""
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

@@ -70,3 +70,10 @@ Selector labels
 {{- define "cedar-api-key" -}}
 {{- default "cedar-api-key" .Values.externalSecrets.cedarAPIKey }}
 {{- end }}
+
+{{/*
+  Cedar Directory ID Manager Name
+*/}}
+{{- define "cedar-directory-id" -}}
+{{- default "cedar-directory-id" .Values.externalSecrets.cedarDirectoryId }}
+{{- end }}

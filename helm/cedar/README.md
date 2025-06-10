@@ -22,8 +22,9 @@ A Helm chart for gen3 cedar wrapper
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
-| externalSecrets | map | `{"cedarAPIKey":null,"cedarG3auto":null,"createCedarClientSecret":true}` | External Secrets settings. |
+| externalSecrets | map | `{"cedarAPIKey":null,"cedarDirectoryId":null,"cedarG3auto":null,"createCedarClientSecret":true}` | External Secrets settings. |
 | externalSecrets.cedarAPIKey | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-api-key". |
+| externalSecrets.cedarDirectoryId | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-directory-id". |
 | externalSecrets.cedarG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-g3auto". |
 | externalSecrets.createCedarClientSecret | bool | `true` | Will create the cedar secret or pull it from AWS Secrets Manager. Default is true. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -75,8 +76,9 @@ A Helm chart for gen3 cedar wrapper
 | resources.requests | map | `{"memory":"120Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"120Mi"` | The amount of memory requested |
 | roleName | string | `"cedar"` | Name of the role to be used for the role binding. |
-| secrets | map | `{"apiKey":""}` | Values for cedar secret. |
+| secrets | map | `{"apiKey":"","cedarDirectoryId":""}` | Values for cedar secret. |
 | secrets.apiKey | str | `""` | API key for Cedar. |
+| secrets.cedarDirectoryId | string | `""` | Values for Cedar directory ID. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"httpPort":80,"httpsPort":443,"targetPort":8000,"type":"ClusterIP"}` | Configuration for the service |
