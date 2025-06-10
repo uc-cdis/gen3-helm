@@ -170,6 +170,11 @@ frontend-framework:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "main"
 
+# -- (map) Configurations for cedar chart.
+cedar:
+  # -- (bool) Whether to deploy the cedar subchart.
+  enabled: false
+
 # -- (map) Configurations for cohort-middleware chart.
 cohort-middleware:
   # -- (bool) Whether to deploy the cohort-middleware subchart.
