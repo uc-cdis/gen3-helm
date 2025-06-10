@@ -79,7 +79,7 @@ externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cedar-g3auto".
   cedarG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cedar-api-key".
-  cedarAPIKey: 
+  cedarAPIKey:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1

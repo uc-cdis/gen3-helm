@@ -27,7 +27,7 @@ dependencies:
   - name: cedar
     version: 0.1.1
     repository: "file://../cedar"
-    condition: cedar.enabled    
+    condition: cedar.enabled
   - name: cohort-middleware
     version: 0.1.4
     repository: "file://../cohort-middleware"
