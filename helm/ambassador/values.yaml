@@ -71,6 +71,9 @@ service:
 # -- (string) Namespace to use for user resources.
 userNamespace: "jupyter-pods"
 
+# -- (string) Namespace override to use for Jupyter resources.
+jupyterNamespace: ""
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The maximum amount of resources that the container is allowed to use
