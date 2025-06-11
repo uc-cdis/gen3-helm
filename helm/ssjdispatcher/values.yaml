@@ -231,6 +231,11 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "ssjdispatcher-service-account"
 
+# -- (map) Service account to use for ssj jobs.
+jobServiceAccount:
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"
