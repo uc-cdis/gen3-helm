@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: ambassador
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
@@ -24,6 +24,10 @@ dependencies:
     version: 0.1.18
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
+  - name: cedar
+    version: 0.1.1
+    repository: "file://../cedar"
+    condition: cedar.enabled
   - name: cohort-middleware
     version: 0.1.4
     repository: "file://../cohort-middleware"
@@ -144,7 +148,8 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.76
+
+version: 0.1.78
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
