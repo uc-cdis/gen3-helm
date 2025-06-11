@@ -64,12 +64,50 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
 
+# Arguments to pass to the boto3 client in access_backend
+extraArgs: '{"endpoint_url": "http://dynamodb:8000", "region_name": "us-east-1"}'
+# Common delimited string of usernames for the super admins
+superAdmins: ''
+# Common delimited string of usernames for the admins
+adminUsers: ''
+# Github organization for the repository to push user.yaml updates to
+gh_org: ''
+# Github repository to push user.yaml updates to
+gh_repo: ''
+# Path of the user.yaml file in the GH repo to push updates for
+gh_file: ''
+# Encrypted token with PR permission on the repo.
+gh_key: ''
+# Valid issuers for OIDC tokens
+jwt_issuers: 'https://localhost/user'
+# Comma delimited list of users to add as reviewers to PRs that are opened by access_backend
+review_requests_access: ''
+# Public signing keys from the OIDC provider
+jwt_signing_keys: ''
+# Path to the user.yaml file in the container that access_backend modifies.
+base_user_yaml_path: '/src/user.yaml'
+# Map of usernames to a list of arborist policies to assign to the admin
+admin_extra_policies: {}
+# Comma delimited list of PIs who should have new datasets propagate to the users under them
+cascade_new_access_to_users_under_this_admin: ''
+# Prefix for the dynamodb database, useful for environments with a preprod and prod that share the same dynamo instance
+db_namespace: ''
+# List of regexes that usernames cannot match in order to be added
+deny_username_patterns: ''
+allow_origins: ''
+disallow_access_subsetting: ''
+# List of PIs who should automatically receive access to new datasets
+inherit_access_to_all_new_datasets_to_this_admin: ''
+# True if access_backend should not open PRs when changes are submitted, false if otherwise. Does not bypass git branch rules.
+skip_pr: false
+debug: false
+
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sMetadataSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "metadata-g3auto"
-  metadataG3auto:
+  # -- (string) Will create the Helm "accessBackend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sAccessBackendSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "accessBackend-g3auto"
+  accessBackendG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 # -- (map) Secret information to access the db restore job S3 bucket.
@@ -168,44 +206,6 @@ resources:
     memory: 2048Mi
 
 metricsEnabled: false
-
-# Arguments to pass to the boto3 client in access_backend
-extraArgs: '{"endpoint_url": "http://dynamodb:8000", "region_name": "us-east-1"}'
-# Common delimited string of usernames for the super admins
-superAdmins: ''
-# Common delimited string of usernames for the admins
-adminUsers: ''
-# Github organization for the repository to push user.yaml updates to
-gh_org: ''
-# Github repository to push user.yaml updates to
-gh_repo: ''
-# Path of the user.yaml file in the GH repo to push updates for
-gh_file: ''
-# Encrypted token with PR permission on the repo.
-gh_key: ''
-# Valid issuers for OIDC tokens
-jwt_issuers: 'https://localhost/user'
-# Comma delimited list of users to add as reviewers to PRs that are opened by access_backend
-review_requests_access: ''
-# Public signing keys from the OIDC provider
-jwt_signing_keys: ''
-# Path to the user.yaml file in the container that access_backend modifies.
-base_user_yaml_path: '/src/user.yaml'
-# Map of usernames to a list of arborist policies to assign to the admin
-admin_extra_policies: {}
-# Comma delimited list of PIs who should have new datasets propagate to the users under them
-cascade_new_access_to_users_under_this_admin: ''
-# Prefix for the dynamodb database, useful for environments with a preprod and prod that share the same dynamo instance
-db_namespace: ''
-# List of regexes that usernames cannot match in order to be added
-deny_username_patterns: ''
-allow_origins: ''
-disallow_access_subsetting: ''
-# List of PIs who should automatically receive access to new datasets
-inherit_access_to_all_new_datasets_to_this_admin: ''
-# True if access_backend should not open PRs when changes are submitted, false if otherwise. Does not bypass git branch rules.
-skip_pr: false
-debug: true
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:

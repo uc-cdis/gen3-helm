@@ -37,13 +37,13 @@ A Helm chart for Kubernetes
 | base_user_yaml_path | string | `"/src/user.yaml"` |  |
 | cascade_new_access_to_users_under_this_admin | string | `""` |  |
 | db_namespace | string | `""` |  |
-| debug | bool | `true` |  |
+| debug | bool | `false` |  |
 | deny_username_patterns | string | `""` |  |
 | disallow_access_subsetting | string | `""` |  |
-| externalSecrets | map | `{"createK8sMetadataSecret":false,"dbcreds":null,"metadataG3auto":null}` | External Secrets settings. |
-| externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets | map | `{"accessBackendG3auto":null,"createK8sAccessBackendSecret":false,"dbcreds":null}` | External Secrets settings. |
+| externalSecrets.accessBackendG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "accessBackend-g3auto" |
+| externalSecrets.createK8sAccessBackendSecret | string | `false` | Will create the Helm "accessBackend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
-| externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
 | extraArgs | string | `"{\"endpoint_url\": \"http://dynamodb:8000\", \"region_name\": \"us-east-1\"}"` |  |
 | fullnameOverride | string | `""` |  |
 | gh_file | string | `""` |  |
