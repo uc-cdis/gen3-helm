@@ -1,0 +1,155 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cedar-ingestion
+  labels:
+    {{- include "cedar.labels" . | nindent 4 }}
+spec:
+  schedule: "* * * * *"
+  suspend: true
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          annotations:
+            {{- with .Values.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          labels:
+            app: gen3job
+            {{- include "cedar.selectorLabels" . | nindent 12 }}
+            {{- include "common.extraLabels" . | nindent 12 }}
+        spec:
+          serviceAccountName: useryaml-job
+          terminationGracePeriodSeconds: 10
+          automountServiceAccountToken: false
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: shared-data
+              emptyDir: {}
+            - name: cedar-client-volume-g3auto
+              secret:
+                secretName: cedar-g3auto
+          initContainers:
+            - name: cedar
+              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
+              imagePullPolicy: Always
+              env:
+                - name: HOSTNAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: global
+                      key: hostname
+                - name: CEDAR_DIRECTORY_ID
+                  value: {{ .Values.secrets.cedarDirectoryId | quote }}
+                - name: CEDAR_DIRECTORY_ID_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: cedar-g3auto
+                      key: directory_id.txt
+                - name: CEDAR_CLIENT_CREDENTIALS
+                  valueFrom:
+                    secretKeyRef:
+                      name: cedar-g3auto
+                      key: cedar_client_credentials.json
+              volumeMounts:
+                - name: shared-data
+                  mountPath: /mnt/shared
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  if [[ -z "$CEDAR_DIRECTORY_ID" ]]; then
+                    if [[ ! -z "$CEDAR_DIRECTORY_ID_SECRET" ]]; then
+                      echo "CEDAR_DIRECTORY_ID is from g3auto secret"
+                      export CEDAR_DIRECTORY_ID=$CEDAR_DIRECTORY_ID_SECRET
+                    else
+                      echo "ERROR: CEDAR_DIRECTORY_ID must be in secret or on command line" 1>&2
+                      exit 0
+                    fi
+                  else
+                    echo "CEDAR_DIRECTORY_ID is from command line parameter"
+                  fi
+
+                  if [[ ! -z "$CEDAR_CLIENT_CREDENTIALS" ]]; then
+                    export CEDAR_CLIENT_ID=$(echo $CEDAR_CLIENT_CREDENTIALS | jq -r .client_id)
+                    export CEDAR_CLIENT_SECRET=$(echo $CEDAR_CLIENT_CREDENTIALS | jq -r .client_secret)
+                  else
+                    echo "Could not read cedar-client credentials" 1>&2
+                    exit 0
+                  fi
+
+                  pip install pydash
+                  export GEN3_HOME="$HOME/cloud-automation"
+                  python ${GEN3_HOME}/files/scripts/healdata/heal-cedar-data-ingest.py --directory $CEDAR_DIRECTORY_ID --cedar_client_id $CEDAR_CLIENT_ID --cedar_client_secret $CEDAR_CLIENT_SECRET --hostname $HOSTNAME
+                  status=$?
+                  if [[ $status -ne 0 ]]; then
+                    echo "WARNING: non zero exit code: $status"
+                  else
+                    echo "All done - exit code: $status"
+                    touch /mnt/shared/success
+                  fi
+          containers:
+            - name: awshelper
+              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
+              imagePullPolicy: Always
+              env:
+                - name: slackWebHook
+                  valueFrom:
+                    configMapKeyRef:
+                      name: global
+                      key: slack_webhook
+                - name: gen3Env
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname
+              volumeMounts:
+                - name: shared-data
+                  mountPath: /mnt/shared
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  if [[ ! "$slackWebHook" =~ ^http ]]; then
+                    echo "Slack webhook not set"
+                    exit 0
+                  fi
+                  if ! [ -f /mnt/shared/success ]; then
+                    success="FAILED"
+                    color="ff0000"
+                  else
+                    success="SUCCESS"
+                    color="2EB67D"
+                  fi
+                  echo "Sending ${success} message to slack..."
+                  payload="{\"attachments\": [{\"fallback\": \"JOB ${success}: cedar-ingest cronjob on ${gen3Env}\",\"color\": \"#${color}\",\"title\": \"JOB ${success}: cedar-ingest cronjob on ${gen3Env}\",\"text\": \"Pod name: ${HOSTNAME}\",\"ts\": \"$(date +%s)\"}]}"
+                  curl -X POST --data-urlencode "payload=${payload}" "${slackWebHook}"
+          restartPolicy: Never
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

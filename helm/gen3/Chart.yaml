@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: ambassador
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
@@ -24,6 +24,10 @@ dependencies:
     version: 0.1.18
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
+  - name: cedar
+    version: 0.1.2
+    repository: "file://../cedar"
+    condition: cedar.enabled
   - name: cohort-middleware
     version: 0.1.4
     repository: "file://../cohort-middleware"
@@ -31,6 +35,10 @@ dependencies:
   - name: common
     version: 0.1.19
     repository: file://../common
+  - name: dashboard
+    version: 0.1.0
+    repository: file://../dashboard
+    condition: dashboard.enabled
   - name: etl
     version: 0.1.12
     repository: file://../etl
@@ -40,7 +48,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.37
+    version: 0.1.38
     repository: "file://../fence"
     condition: fence.enabled
   - name: guppy
@@ -76,7 +84,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -140,7 +148,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.76
+version: 0.1.79
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

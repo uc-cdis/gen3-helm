@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.76](https://img.shields.io/badge/Version-0.1.76-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.79](https://img.shields.io/badge/Version-0.1.79-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,17 +18,19 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.19 |
+| file://../ambassador | ambassador | 0.1.20 |
 | file://../arborist | arborist | 0.1.17 |
 | file://../argo-wrapper | argo-wrapper | 0.1.13 |
 | file://../audit | audit | 0.1.21 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
+| file://../cedar | cedar | 0.1.2 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
 | file://../common | common | 0.1.19 |
+| file://../dashboard | dashboard | 0.1.0 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
 | file://../etl | etl | 0.1.12 |
-| file://../fence | fence | 0.1.37 |
+| file://../fence | fence | 0.1.38 |
 | file://../frontend-framework | frontend-framework | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.20 |
@@ -40,7 +42,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.21 |
 | file://../portal | portal | 0.1.30 |
 | file://../requestor | requestor | 0.1.19 |
-| file://../revproxy | revproxy | 0.1.26 |
+| file://../revproxy | revproxy | 0.1.27 |
 | file://../sheepdog | sheepdog | 0.1.23 |
 | file://../sower | sower | 0.1.22 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.22 |
@@ -61,8 +63,13 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| cedar | map | `{"enabled":false}` | Configurations for cedar chart. |
+| cedar.enabled | bool | `false` | Whether to deploy the cedar subchart. |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
+| dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
+| dashboard.enabled | bool | `false` |  |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | dicom-viewer.enabled | bool | `false` | Whether to deploy the dicom-viewer subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
