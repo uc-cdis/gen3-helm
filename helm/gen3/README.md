@@ -26,7 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cedar | cedar | 0.1.2 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
 | file://../common | common | 0.1.18 |
-| file://../dashboard | dashboard | 0.1.0 |
+| file://../dashboard | dashboard | 0.1.1 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
 | file://../etl | etl | 0.1.12 |
@@ -34,15 +34,15 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../guppy | guppy | 0.1.20 |
-| file://../hatchery | hatchery | 0.1.16 |
+| file://../hatchery | hatchery | 0.1.17 |
 | file://../indexd | indexd | 0.1.24 |
 | file://../manifestservice | manifestservice | 0.1.23 |
 | file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../peregrine | peregrine | 0.1.21 |
-| file://../portal | portal | 0.1.30 |
+| file://../portal | portal | 0.1.31 |
 | file://../requestor | requestor | 0.1.19 |
-| file://../revproxy | revproxy | 0.1.27 |
+| file://../revproxy | revproxy | 0.1.28 |
 | file://../sheepdog | sheepdog | 0.1.23 |
 | file://../sower | sower | 0.1.22 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.22 |
