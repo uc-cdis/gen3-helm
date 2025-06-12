@@ -1,0 +1,9 @@
+{{ include "common.db_netpolicy" . }}
+
+---
+
+{{ include "common.ingress_netpolicy" . }}
+
+---
+
+{{ include "common.egress_netpolicy" . }}
