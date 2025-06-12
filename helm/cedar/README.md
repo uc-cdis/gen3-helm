@@ -22,6 +22,7 @@ A Helm chart for gen3 cedar wrapper
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | externalSecrets | map | `{"cedarAPIKey":null,"cedarDirectoryId":null,"cedarG3auto":null,"createCedarClientSecret":true}` | External Secrets settings. |
 | externalSecrets.cedarAPIKey | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-api-key". |
 | externalSecrets.cedarDirectoryId | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-directory-id". |
@@ -67,6 +68,7 @@ A Helm chart for gen3 cedar wrapper
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
+| partOf | string | `"Explorer-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
