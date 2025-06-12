@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.38](https://img.shields.io/badge/Version-0.1.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -87,7 +87,7 @@ A Helm chart for gen3 Fence
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"INDEXD_PASSWORD","valueFrom":{"secretKeyRef":{"key":"fence","name":"indexd-service-creds"}}},{"name":"gen3Env","valueFrom":{"configMapKeyRef":{"key":"hostname","name":"manifest-global"}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null,"fenceSshKeys":null}` | External Secrets settings. |
 | externalSecrets.createK8sFenceConfigSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sGoogleAppSecrets | string | `false` | Will create the Helm "fence-google-app-creds-secret" and "fence-google-storage-creds-secret" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sJwtKeysSecret | string | `false` | Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -96,21 +96,33 @@ A Helm chart for gen3 Fence
 | externalSecrets.fenceGoogleAppCredsSecret | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-google-app-creds-secret" |
 | externalSecrets.fenceGoogleStorageCredsSecret | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-google-storage-creds-secret" |
 | externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys" |
+| externalSecrets.fenceSshKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"useLocalSecret":{"enabled":false,"localSecretName":null,"localSecretNamespace":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"useLocalSecret":{"enabled":false,"localSecretName":null,"localSecretNamespace":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null,"localSecretNamespace":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
 | global.aws.useLocalSecret.localSecretNamespace | string | `nil` | Namespace of the local secret. |
+| global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
+| global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
+| global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
+| global.crossplane.oidcProviderUrl | string | `"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"` | OIDC provider URL. This is used for authentication of roles/service accounts. |
+| global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
+| global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
+| global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
-| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
-| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.clusterSecretStoreRef | string | `""` | Will use a manually deployed clusterSecretStore if defined. |
+| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
@@ -128,9 +140,9 @@ A Helm chart for gen3 Fence
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
-| global.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| googleCronJobs | map | `{"enabled":false}` | Configuration for the Google Cloud Storage cron jobs. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
@@ -163,12 +175,10 @@ A Helm chart for gen3 Fence
 | projects | string | `nil` |  |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
-| resources | map | `{"limits":{"cpu":1,"memory":"2Gi"},"requests":{"cpu":0.3,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for Usersync and External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |

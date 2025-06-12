@@ -1,6 +1,6 @@
 # cohort-middleware
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 cohort-middleware
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 cohort-middleware
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -40,8 +40,9 @@ A Helm chart for gen3 cohort-middleware
 | config.db | string | `"atlas_default"` |  |
 | config.globalReaderRole | string | `"public"` |  |
 | config.schema | string | `"ohdsi"` |  |
-| externalSecrets | map | `{"cohortMiddlewareG3Auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"cohortMiddlewareG3Auto":null,"createK8sCohortMiddlewareSecret":false}` | External Secrets settings. |
 | externalSecrets.cohortMiddlewareG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto" |
+| externalSecrets.createK8sCohortMiddlewareSecret | string | `false` | Will create the Helm "cohort-middleware-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | fullnameOverride | string | `""` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
@@ -96,7 +97,6 @@ A Helm chart for gen3 cohort-middleware
 | readinessProbe.httpGet.port | int | `8080` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.memory | string | `"4Gi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"128Mi"` |  |
 | securityContext | object | `{}` |  |
 | service.port | int | `80` |  |

@@ -26,6 +26,12 @@ aws-s3-mountpoint:
   configuration:
     enabled: false
 
+cert-manager:
+  enabled: false
+  targetRevision: "v1.17.2"
+  configuration:
+    enabled: false
+
 calico:
   enabled: false
   targetRevision: "v3.29.1"
@@ -38,9 +44,32 @@ coreDNS:
   configuration:
     enabled: false
 
+crossplane:
+  enabled: false
+  targetRevision: "1.19.2"
+  configuration:
+    enabled: false
+
+crossplane-crds:
+  enabled: false
+  useIRSA: true
+  iamRoleName: "crossplane-role"
+  awsAccessKeyID: "YOUR_ACCESS_KEY_ID"
+  awsSecretAccessKey: "YOUR_SECRET_ACCESS_KEY"
+  region: "us-east-1"
+  targetRevision: "v0.52.5"
+  configuration:
+    enabled: false
+
 ebs-csi-driver:
   enabled: false
   targetRevision: "2.38.1"
+  configuration:
+    enabled: false
+
+external-secrets:
+  enabled: false
+  targetRevision: "0.9.13"
   configuration:
     enabled: false
 
@@ -86,71 +115,82 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-      - on-demand
-      - spot
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-      - c
-      - m
-      - r
-      - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+          - spot
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
   jupyter:
     enabled: true
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-      - on-demand
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-      - c
-      - m
-      - r
-      - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
   workflow:
     enabled: true
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    volumeSize: 50Gi
     sgSelector: ""
     additionalTags: {}
     requirements:
-    - key: karpenter.sh/capacity-type
-      operator: In
-      values:
-        - on-demand
-    - key: kubernetes.io/arch
-      operator: In
-      values:
-      - amd64
-    - key: karpenter.k8s.aws/instance-category
-      operator: In
-      values:
-        - c
-        - m
-        - r
-        - t
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
+
+kube-proxy:
+  enabled: false
+  image:
+    repo: "602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"
+    tag: "v1.31.2-minimal-eksbuild.3"
+  configuration:
+    enabled: false
 
 kube-state-metrics:
   enabled: false

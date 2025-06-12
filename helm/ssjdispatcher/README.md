@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.18 |
 
 ## Values
 
@@ -32,7 +32,9 @@ A Helm chart for gen3 ssjdispatcher
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | dispatcherJobNum | string | `"10"` | Ssjdispater job number. |
-| externalSecrets | map | `{"credsFile":null}` | External secrets configuration |
+| externalSecrets | map | `{"createK8sJwtKeysSecret":false,"createK8sSsjdispatcherSecret":false,"credsFile":null}` | External secrets configuration |
+| externalSecrets.createK8sJwtKeysSecret | string | `false` | Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.createK8sSsjdispatcherSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
@@ -70,6 +72,8 @@ A Helm chart for gen3 ssjdispatcher
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
+| jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
+| jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
@@ -79,12 +83,10 @@ A Helm chart for gen3 ssjdispatcher
 | podSecurityContext.runAsUser | int | `1000` | User that all the processes will run under in the container. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":1,"memory":"2400Mi"},"requests":{"cpu":0.1,"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"2400Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"2400Mi"},"requests":{"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"2400Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2400Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |

@@ -109,7 +109,7 @@ spec:
           - name: SERVICE_PGDB
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ if eq .Chart.Name "peregrine" }}sheepdog-dbcreds{{ else }}{{ .Chart.Name }}-dbcreds{{ end }}
                 key: database
                 optional: false
           - name: SERVICE_PGPASS
@@ -131,7 +131,7 @@ spec:
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
             echo "PGUSER=$PGUSER"
-            
+
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
@@ -142,6 +142,23 @@ spec:
             done
             >&2 echo "Postgres is up - executing command"
 
+            # Wait until the sheepdog database to be created
+            if [ "{{ .Chart.Name }}" = "peregrine" ]; then
+              until psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 -tAc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1; do
+                echo "Waiting for database $SERVICE_PGDB to be created …"
+                sleep 5
+              done
+            fi
+
+            if [ "{{ .Chart.Name }}" = "peregrine" ]; then
+              echo "Granting peregrine role on sheepdog…"
+              gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+              psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+              gen3_log_info psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
+              psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
+              gen3_log_info psql -d "$SERVICE_PGDB" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$SERVICE_PGUSER\""
+              psql -d "$SERVICE_PGDB" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$SERVICE_PGUSER\""
+            fi
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
@@ -165,8 +182,8 @@ spec:
 {{- end }}
 
 
-{{/* 
-Create k8s secrets for connecting to postgres 
+{{/*
+Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
@@ -176,7 +193,7 @@ kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
-  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  database: {{ (ternary ($.Values.postgres.database | default (printf "sheepdog_%s" $.Release.Name)) ($.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)) (eq $.Chart.Name "peregrine")) | b64enc | quote }}
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}

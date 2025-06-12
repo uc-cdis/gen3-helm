@@ -30,6 +30,18 @@ spec:
         spec:
           serviceAccountName: usersync-job
           volumes:
+            - name: yaml-merge
+              configMap:
+                name: "fence-yaml-merge"
+                optional: false
+            - name: fence-sshconfig
+              configMap:
+                name: "fence-sshconfig"
+            - name: fence-ssh-keys
+              secret:
+                defaultMode: 0400
+                optional: true
+                secretName: fence-ssh-keys
             - name: user-yaml
               configMap:
                 name: useryaml
@@ -39,6 +51,10 @@ spec:
             - name: config-volume
               secret:
                 secretName: "fence-config"
+            - name: config-volume-public
+              configMap:
+                name: "manifest-fence"
+                optional: true
             - name: creds-volume
               secret:
                 secretName: "fence-creds"
@@ -65,6 +81,7 @@ spec:
           initContainers:
             - name: wait-for-fence
               image: curlimages/curl:latest
+              imagePullPolicy: IfNotPresent
               command: ["/bin/sh","-c"]
               args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
             - name: awshelper
@@ -91,6 +108,17 @@ spec:
                 - name: cred-volume
                   mountPath: "/home/ubuntu/.aws/credentials"
                   subPath: credentials
+                - name: fence-ssh-keys
+                  mountPath: /root/.ssh/id_rsa
+                  readOnly: true
+                  subPath: id_rsa
+                - name: fence-ssh-keys
+                  mountPath: /root/.ssh/id_rsa.pub
+                  readOnly: true
+                  subPath: id_rsa.pub
+                - name: fence-sshconfig
+                  mountPath: /root/.ssh/config
+                  subPath: config
               command: ["/bin/bash" ]
               args:
                 - "-c"
@@ -155,8 +183,16 @@ spec:
                 mountPath: /mnt/shared
               - name: "config-volume"
                 readOnly: true
-                mountPath: "/var/www/fence/fence-config.yaml"
+                mountPath: "/var/www/fence/fence-config-secret.yaml"
                 subPath: fence-config.yaml
+              - name: "config-volume-public"
+                readOnly: true
+                mountPath: "/var/www/fence/fence-config-public.yaml"
+                subPath: fence-config-public.yaml
+              - name: "yaml-merge"
+                readOnly: true
+                mountPath: "/var/www/fence/yaml_merge.py"
+                subPath: yaml_merge.py
               - name: "creds-volume"
                 readOnly: true
                 mountPath: "/var/www/fence/creds.json"
@@ -172,11 +208,25 @@ spec:
                 readOnly: true
                 mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
                 subPath: fence_google_storage_creds_secret.json
+              - name: fence-ssh-keys
+                mountPath: /root/.ssh/id_rsa
+                readOnly: true
+                subPath: id_rsa
+              - name: fence-ssh-keys
+                mountPath: /root/.ssh/id_rsa.pub
+                readOnly: true
+                subPath: id_rsa.pub
+              - name: fence-sshconfig
+                mountPath: /root/.ssh/config
+                subPath: config
             command: ["/bin/bash" ]
             args:
               - "-c"
               # Script always succeeds if it runs (echo exits with 0)
               - |
+                sed -i 's/KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,/KexAlgorithms ecdh-sha2-nistp256,/g' /etc/crypto-policies/back-ends/openssh.config
+                sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /fence/.venv/lib/python3.9/site-packages/paramiko/pkey.py
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 # pip3 install SQLAlchemy==1.3.6
                 # can be removed once this is merged: https://github.com/uc-cdis/fence/pull/1096

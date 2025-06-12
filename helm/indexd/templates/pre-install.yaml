@@ -22,6 +22,7 @@ spec:
       initContainers:
         - name: wait-for-indexd
           image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
           command: ["/bin/sh","-c"]
           args: ["while [ $(curl -sw '%{http_code}' http://indexd-service/index -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for indexd...'; done"]
       containers:
@@ -75,6 +76,18 @@ spec:
                 name: indexd-service-creds
                 key: sheepdog
                 optional: false
+          - name: SSJ_PASS
+            valueFrom:
+              secretKeyRef:
+                name: indexd-service-creds
+                key: ssj
+                optional: false
+          - name: GATEWAY_PASS
+            valueFrom:
+              secretKeyRef:
+                name: indexd-service-creds
+                key: gateway
+                optional: false
           imagePullPolicy: Always
           command: ["/bin/bash" ]
           args: 
@@ -87,10 +100,18 @@ spec:
                 python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
                 echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
                 python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+                echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}'
+                python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}"
+                echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}'
+                python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}"
               else
                 echo 'poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
                 poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
                 echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
                 poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}"
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}"
               fi
       restartPolicy: Never

@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.69](https://img.shields.io/badge/Version-0.1.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.81](https://img.shields.io/badge/Version-0.1.81-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,31 +18,35 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../ambassador | ambassador | 0.1.17 |
-| file://../arborist | arborist | 0.1.15 |
-| file://../argo-wrapper | argo-wrapper | 0.1.11 |
-| file://../audit | audit | 0.1.17 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.14 |
-| file://../cohort-middleware | cohort-middleware | 0.1.1 |
-| file://../common | common | 0.1.16 |
-| file://../etl | etl | 0.1.11 |
-| file://../fence | fence | 0.1.32 |
-| file://../frontend-framework | frontend-framework | 0.1.7 |
+| file://../ambassador | ambassador | 0.1.20 |
+| file://../arborist | arborist | 0.1.17 |
+| file://../argo-wrapper | argo-wrapper | 0.1.13 |
+| file://../audit | audit | 0.1.21 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
+| file://../cedar | cedar | 0.1.2 |
+| file://../cohort-middleware | cohort-middleware | 0.1.4 |
+| file://../common | common | 0.1.19 |
+| file://../dashboard | dashboard | 0.1.0 |
+| file://../dicom-server | dicom-server | 0.1.13 |
+| file://../dicom-viewer | dicom-viewer | 0.1.13 |
+| file://../etl | etl | 0.1.12 |
+| file://../fence | fence | 0.1.38 |
+| file://../frontend-framework | frontend-framework | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../guppy | guppy | 0.1.18 |
-| file://../hatchery | hatchery | 0.1.13 |
-| file://../indexd | indexd | 0.1.19 |
-| file://../manifestservice | manifestservice | 0.1.19 |
-| file://../metadata | metadata | 0.1.18 |
+| file://../guppy | guppy | 0.1.20 |
+| file://../hatchery | hatchery | 0.1.16 |
+| file://../indexd | indexd | 0.1.24 |
+| file://../manifestservice | manifestservice | 0.1.23 |
+| file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.19 |
-| file://../portal | portal | 0.1.27 |
-| file://../requestor | requestor | 0.1.17 |
-| file://../revproxy | revproxy | 0.1.24 |
-| file://../sheepdog | sheepdog | 0.1.21 |
-| file://../sower | sower | 0.1.19 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.19 |
-| file://../wts | wts | 0.1.19 |
+| file://../peregrine | peregrine | 0.1.22 |
+| file://../portal | portal | 0.1.30 |
+| file://../requestor | requestor | 0.1.19 |
+| file://../revproxy | revproxy | 0.1.27 |
+| file://../sheepdog | sheepdog | 0.1.23 |
+| file://../sower | sower | 0.1.22 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.23 |
+| file://../wts | wts | 0.1.22 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -59,13 +63,21 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| cedar | map | `{"enabled":false}` | Configurations for cedar chart. |
+| cedar.enabled | bool | `false` | Whether to deploy the cedar subchart. |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
+| dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
+| dashboard.enabled | bool | `false` |  |
+| dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
+| dicom-viewer.enabled | bool | `false` | Whether to deploy the dicom-viewer subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
+| elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
@@ -83,10 +95,12 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
 | global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
@@ -95,11 +109,18 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
+| global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
+| global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
+| global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
+| global.crossplane.oidcProviderUrl | string | `"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"` | OIDC provider URL. This is used for authentication of roles/service accounts. |
+| global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
+| global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
+| global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"dbCreate":false,"deploy":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false}` | External Secrets settings. |
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
@@ -143,6 +164,8 @@ Helm chart to deploy Gen3 Data Commons
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
+| mutatingWebhook.enabled | bool | `false` | Whether to deploy the mutating webhook service. |
+| mutatingWebhook.image | string | `"quay.io/cdis/node-affinity-daemonset:feat_pods"` | image |
 | neuvector.DB_HOST | string | `"development-gen3-postgresql"` |  |
 | neuvector.ES_HOST | string | `"gen3-elasticsearch-master"` |  |
 | neuvector.enabled | bool | `false` |  |
@@ -168,7 +191,7 @@ Helm chart to deploy Gen3 Data Commons
 | sheepdog.enabled | bool | `true` | Whether to deploy the sheepdog subchart. |
 | sower.enabled | bool | `false` | Whether to deploy the sower subchart. |
 | ssjdispatcher.enabled | bool | `false` | Whether to deploy the ssjdispatcher subchart. |
-| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"cpu":"1","memory":"10G"},"requests":{"cpu":"1","memory":"6G"}}}` | Environment variables that control which tests are run. |
+| tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"memory":"10G"},"requests":{"memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
