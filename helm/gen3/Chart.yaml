@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
