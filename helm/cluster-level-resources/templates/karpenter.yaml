@@ -34,7 +34,11 @@ spec:
             name: karpenter
             create: true
             annotations:
+<<<<<<< Updated upstream
               eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.eksClusterName | default .Values.cluster }}-karpenter-sa"
+=======
+              eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}-karpenter-sa"
+>>>>>>> Stashed changes
           settings:
             clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
             clusterEndpoint: {{ .Values.eksClusterEndpoint }}
