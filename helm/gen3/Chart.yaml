@@ -29,7 +29,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.18
+    version: 0.1.19
     repository: file://../common
   - name: etl
     version: 0.1.12
