@@ -131,7 +131,7 @@ spec:
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
             echo "PGUSER=$PGUSER"
-            
+
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
@@ -141,6 +141,14 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
+
+            # Wait until the sheepdog database to be created
+            if [ "{{ .Chart.Name }}" = "peregrine" ]; then
+              until psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 -tAc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1; do
+                echo "Waiting for database $SERVICE_PGDB to be created …"
+                sleep 5
+              done
+            fi
 
             if [ "{{ .Chart.Name }}" = "peregrine" ]; then
               echo "Granting peregrine role on sheepdog…"
@@ -174,8 +182,8 @@ spec:
 {{- end }}
 
 
-{{/* 
-Create k8s secrets for connecting to postgres 
+{{/*
+Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
