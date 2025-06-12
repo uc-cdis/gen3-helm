@@ -32,4 +32,16 @@ spec:
             echo '}' >> /tmp/request.json
             curl -X POST --header "Content-Type: application/json" --data @/tmp/request.json http://{{ .Values.serviceName }}:8201/v1/graph/{{.Values.graphName}}/jsonschema
 
+            vertex_labels=$(curl -s -X GET "http://{{.Values.serviceName}}:8201/v1/graph/{{.Values.graphName}}__schema__/label" | sed -n 's/.*"vertexLabels":\[\([^]]*\)\].*/\1/p' | sed 's/"//g' | tr ',' '\n')
+
+            echo "$vertex_labels" | while read -r label; do
+                JSON_PAYLOAD="{\"field\": \"auth_resource_path\"}"
+                curl -s -X POST \
+                    "http://{{.Values.serviceName}}:8201/v1/graph/CALYPR/index/${label}" \
+                    -H 'Content-Type: application/json' \
+                    -d "${JSON_PAYLOAD}"
+            done
+
+
+
       restartPolicy: OnFailure
