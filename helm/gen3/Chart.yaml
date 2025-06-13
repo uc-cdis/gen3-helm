@@ -51,6 +51,10 @@ dependencies:
     version: 0.1.38
     repository: "file://../fence"
     condition: fence.enabled
+  - name: gen3-user-data-library
+    version: 0.1.0
+    repository: "file://../gen3-user-data-library"
+    condition: gen3-user-data-library.enabled
   - name: guppy
     version: 0.1.20
     repository: "file://../guppy"
@@ -148,7 +152,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.82
+version: 0.1.83
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
