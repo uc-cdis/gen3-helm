@@ -71,6 +71,6 @@ Selector labels
 {{/*
   Gen3UserDataLibrary g3 Auto Secrets Manager Name
 */}}
-{{- define "gen3UserDataLibrary-g3auto" -}}
-{{- default "gen3UserDataLibrary-g3auto" .Values.externalSecrets.gen3UserDataLibraryG3auto }}
+{{- define "gen3userdatalibrary-g3auto" -}}
+{{- default "gen3userdatalibrary-g3auto" .Values.externalSecrets.gen3UserDataLibraryG3auto }}
 {{- end }}
