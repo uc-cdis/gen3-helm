@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,8 +8,8 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | latest |
+| file://../common | common | 0.1.19 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.46 |
 
 ## Values
 
@@ -66,11 +66,18 @@ A Helm chart for Kubernetes
 | externalSecrets.gen3workflowG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1"}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null,"useLocalSecret":{"enabled":false,"localSecretName":null}}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
+| global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null,"useLocalSecret":{"enabled":false,"localSecretName":null}}` | Service account and AWS role for authentication to AWS Secrets Manager |
+| global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
+| global.aws.secretStoreServiceAccount.name | string | `"secret-store-sa"` | Name of the service account to create |
+| global.aws.secretStoreServiceAccount.roleArn | string | `nil` | AWS Role ARN for Secret Store to use |
+| global.aws.secretStoreServiceAccount.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
+| global.aws.secretStoreServiceAccount.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
+| global.aws.secretStoreServiceAccount.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
