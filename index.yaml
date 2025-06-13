@@ -13001,6 +13001,24 @@ entries:
   gen3-user-data-library:
   - apiVersion: v2
     appVersion: main
+    created: "2025-06-13T20:46:13.698605967Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.19
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for Kubernetes
+    digest: 89ca879bf4069f629b2fe1fcece4fc8b2b17dc3c2b34c7f01b30853f9f85abd3
+    name: gen3-user-data-library
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-user-data-library-0.1.1/gen3-user-data-library-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: main
     created: "2025-06-13T17:05:36.831447392Z"
     dependencies:
     - name: common
@@ -18076,4 +18094,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-06-13T19:45:00.746751697Z"
+generated: "2025-06-13T20:46:13.699380072Z"
