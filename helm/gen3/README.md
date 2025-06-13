@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.81](https://img.shields.io/badge/Version-0.1.81-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.82](https://img.shields.io/badge/Version-0.1.82-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -95,6 +95,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
