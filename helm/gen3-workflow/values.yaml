@@ -14,6 +14,20 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
+    secretStoreServiceAccount:
+    # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
+      enabled: False
+      # -- (string) Name of the service account to create
+      name: secret-store-sa
+      # -- (string) AWS Role ARN for Secret Store to use
+      roleArn:
+      # -- (map) Local secret setting if using a pre-exising secret.
+      useLocalSecret:
+        # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+        enabled: false
+        # -- (string) Name of the local secret.
+        localSecretName:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 

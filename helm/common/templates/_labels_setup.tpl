@@ -40,7 +40,7 @@ release: "dev"
 hostname: {{ .Values.global.hostname }}
 {{- if .Values.extraLabels }}
     {{- with .Values.extraLabels }}
-    {{- toYaml . }}
+    {{- toYaml . | nindent 0 }}
     {{- end }}
 {{- end }}
 {{- end }}
