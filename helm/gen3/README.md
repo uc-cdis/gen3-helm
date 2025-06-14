@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.83](https://img.shields.io/badge/Version-0.1.83-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.84](https://img.shields.io/badge/Version-0.1.84-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -25,7 +25,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
 | file://../cedar | cedar | 0.1.2 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
-| file://../common | common | 0.1.19 |
+| file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.0 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
@@ -40,7 +40,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.23 |
 | file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.22 |
+| file://../peregrine | peregrine | 0.1.23 |
 | file://../portal | portal | 0.1.30 |
 | file://../requestor | requestor | 0.1.19 |
 | file://../revproxy | revproxy | 0.1.27 |
