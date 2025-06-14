@@ -33,7 +33,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.19
+    version: 0.1.20
     repository: file://../common
   - name: dashboard
     version: 0.1.0
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: guppy
@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -152,7 +152,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.83
+version: 0.1.84
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
