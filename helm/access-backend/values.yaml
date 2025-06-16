@@ -59,7 +59,7 @@ global:
   minAvialable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed.
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any access-backend secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
@@ -87,7 +87,7 @@ jwt_signing_keys: ''
 # Path to the user.yaml file in the container that access_backend modifies.
 base_user_yaml_path: '/src/user.yaml'
 # Map of usernames to a list of arborist policies to assign to the admin
-admin_extra_policies: {}
+admin_extra_policies: ''
 # Comma delimited list of PIs who should have new datasets propagate to the users under them
 cascade_new_access_to_users_under_this_admin: ''
 # Prefix for the dynamodb database, useful for environments with a preprod and prod that share the same dynamo instance
@@ -104,9 +104,9 @@ debug: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "accessBackend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  # -- (string) Will create the Helm "access-backend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
   createK8sAccessBackendSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "accessBackend-g3auto"
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "access-backend-g3auto"
   accessBackendG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:

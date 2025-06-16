@@ -64,6 +64,6 @@ Create the name of the service account to use
 {{/*
   AccessBackend g3 Auto Secrets Manager Name
 */}}
-{{- define "accessBackend-g3auto" -}}
-{{- default "accessBackend-g3auto" .Values.externalSecrets.accessBackendG3auto }}
+{{- define "access-backend-g3auto" -}}
+{{- default "access-backend-g3auto" .Values.externalSecrets.accessBackendG3auto }}
 {{- end }}

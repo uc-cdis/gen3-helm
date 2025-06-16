@@ -8,14 +8,14 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.18 |
+| file://../common | common | 0.1.20 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | adminUsers | string | `""` |  |
-| admin_extra_policies | object | `{}` |  |
+| admin_extra_policies | string | `""` |  |
 | affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].operator | string | `"In"` |  |
 | affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].preference.matchExpressions[0].values[0] | string | `"spot"` |  |
@@ -41,8 +41,8 @@ A Helm chart for Kubernetes
 | deny_username_patterns | string | `""` |  |
 | disallow_access_subsetting | string | `""` |  |
 | externalSecrets | map | `{"accessBackendG3auto":null,"createK8sAccessBackendSecret":false,"dbcreds":null}` | External Secrets settings. |
-| externalSecrets.accessBackendG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "accessBackend-g3auto" |
-| externalSecrets.createK8sAccessBackendSecret | string | `false` | Will create the Helm "accessBackend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.accessBackendG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "access-backend-g3auto" |
+| externalSecrets.createK8sAccessBackendSecret | string | `false` | Will create the Helm "access-backend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | extraArgs | string | `"{\"endpoint_url\": \"http://dynamodb:8000\", \"region_name\": \"us-east-1\"}"` |  |
 | fullnameOverride | string | `""` |  |
@@ -59,7 +59,7 @@ A Helm chart for Kubernetes
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
-| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any access-backend secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
