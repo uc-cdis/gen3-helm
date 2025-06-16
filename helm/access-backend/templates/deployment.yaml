@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: access-backend-deployment
+  labels:
+    {{- include "access-backend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "access-backend.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }} # ADD TO VALUES.YAML
+  {{- with .Values.strategy }} # ADD TO VALUES.YAML
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        public: "yes"
+        netnolimit: "yes"
+        {{- include "access-backend.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations: 
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name}}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}                           
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "access-backend-g3auto"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        env:
+          - name: GEN3_DEBUG
+            value: "False"
+          - name: AWS_DEFAULT_REGION
+            value: "us-east-1"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /_status
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /_status
+            port: 80
+        ports:
+        - name: http
+          containerPort: 80
+        {{- with .Values.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
