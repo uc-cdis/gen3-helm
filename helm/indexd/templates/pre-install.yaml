@@ -100,18 +100,18 @@ spec:
                 python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
                 echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
                 python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
-                echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}'
-                python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}"
-                echo 'python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}'
-                python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}"
+                echo 'python /indexd/bin/index_admin.py create --username "ssj" --password "${SSJ_PASS}'
+                python /indexd/bin/index_admin.py create --username "ssj" --password "${SSJ_PASS}"
+                echo 'python /indexd/bin/index_admin.py create --username "gateway" --password "${GATEWAY_PASS}'
+                python /indexd/bin/index_admin.py create --username "gateway" --password "${GATEWAY_PASS}"
               else
                 echo 'poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}'
                 poetry run python /indexd/bin/index_admin.py create --username "fence" --password "${FENCE_PASS}"
                 echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}'
                 poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SHEEPDOG_PASS}"
-                echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}'
-                poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${SSJ_PASS}"
-                echo 'poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}'
-                poetry run python /indexd/bin/index_admin.py create --username "sheepdog" --password "${GATEWAY_PASS}"
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "ssj" --password "${SSJ_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "ssj" --password "${SSJ_PASS}"
+                echo 'poetry run python /indexd/bin/index_admin.py create --username "gateway" --password "${GATEWAY_PASS}'
+                poetry run python /indexd/bin/index_admin.py create --username "gateway" --password "${GATEWAY_PASS}"
               fi
       restartPolicy: Never
