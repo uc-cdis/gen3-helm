@@ -26,20 +26,20 @@ global:
     # -- (string) Will use a manually deployed clusterSecretStore if defined.
     clusterSecretStoreRef: ""
   postgres:
-      # -- (bool) Whether the database should be created.
-      dbCreate: true
-      # -- (string) Name of external secret. Disabled if empty
-      externalSecret: ""
-      # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
-      master:
-        # -- (string) hostname of postgres server
-        host:
-        # -- (string) username of superuser in postgres. This is used to create or restore databases
-        username: postgres
-        # -- (string) password for superuser in postgres. This is used to create or restore databases
-        password:
-        # -- (string) Port for Postgres.
-        port: "5432"
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
 
@@ -122,7 +122,7 @@ AuthenticationEnabled: false
 RegisteredUsers:
   public: "hello"
 S3Storage:
-  BucketName: 
+  BucketName:
   Region: us-east-1
   AccessKey:
   SecretKey:
