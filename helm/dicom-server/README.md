@@ -1,6 +1,6 @@
 # dicom-server
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -25,10 +25,10 @@ A Helm chart for gen3 Dicom Server
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Settings for network policies |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"master"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"gen3-orthanc:gen3-0.1.2"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |
-| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"gen3-orthanc:gen3-0.1.2"` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Imaging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |

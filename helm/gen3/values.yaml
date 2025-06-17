@@ -276,6 +276,10 @@ metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
 
+orthanc:
+  # -- (bool) Whether to deploy the orthanc subchart.
+  enabled: false
+
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true

@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orthanc-deployment
+  annotations:
+  {{- with .Values.podAnnotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "orthanc.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "orthanc.selectorLabels" . | nindent 6 }}
+      public: "yes"
+      s3: "yes"
+  template:
+    metadata:
+      labels:
+        {{- include "orthanc.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        public: "yes"
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "orthanc"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe: 
+            httpGet:
+              path: /system
+              port: 8042
+              httpHeaders:
+                - name: Authorization
+                  value: Basic cHVibGljOmhlbGxv
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 30
+          livenessProbe: 
+            httpGet:
+              path: /system
+              port: 8042
+              httpHeaders:
+                - name: Authorization
+                  value: Basic cHVibGljOmhlbGxv
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 30
+          ports:
+            - containerPort: 8042
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: sheepdog-dbcreds
+                  key: host
+                  optional: false 
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: orthanc-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orthanc-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: orthanc-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: orthanc-dbcreds
+                  key: dbcreated
+                  optional: false
+            - name: DICOM_WEB_PLUGIN_ENABLED
+              value: "true"
+            - name: TCIA_PLUGIN_ENABLED
+              value: "true"
+            - name: ORTHANC_EXPLORER_2_ENABLED
+              value: "false"
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}

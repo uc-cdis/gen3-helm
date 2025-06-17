@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.86](https://img.shields.io/badge/Version-0.1.86-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.87](https://img.shields.io/badge/Version-0.1.87-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -41,6 +41,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.23 |
 | file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
+| file://../orthanc | orthanc | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.23 |
 | file://../portal | portal | 0.1.30 |
 | file://../requestor | requestor | 0.1.19 |
@@ -178,6 +179,7 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.ingress.namespace | string | `"nginx"` |  |
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
+| orthanc.enabled | bool | `false` | Whether to deploy the orthanc subchart. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
