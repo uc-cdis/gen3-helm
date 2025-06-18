@@ -57,6 +57,7 @@ Helm chart to deploy Gen3 Data Commons
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| access-backend.enabled | bool | `false` | Whether to deploy the access backend subchart. |
 | ambassador.enabled | bool | `true` | Whether to deploy the ambassador subchart. |
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
