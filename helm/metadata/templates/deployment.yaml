@@ -39,8 +39,8 @@ spec:
           secret:
             secretName: metadata-g3auto
         - name: config-volume
-          secret:
-            secretName: metadata-config
+          configMap:
+            name: agg-mds-config
             optional: true
       containers:
         - name: {{ .Chart.Name }}
