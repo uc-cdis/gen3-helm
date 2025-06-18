@@ -4,6 +4,10 @@ description: Helm chart to deploy Gen3 Data Commons
 
 # Dependencies
 dependencies:
+  - name: access-backend
+    version: 0.1.0
+    repository: "file://../access-backend"
+    condition: access-backend.enabled
   - name: ambassador
     version: 0.1.20
     repository: "file://../ambassador"
@@ -25,7 +29,7 @@ dependencies:
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -33,7 +37,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.19
+    version: 0.1.20
     repository: file://../common
   - name: dashboard
     version: 0.1.0
@@ -51,6 +55,10 @@ dependencies:
     version: 0.1.38
     repository: "file://../fence"
     condition: fence.enabled
+  - name: gen3-user-data-library
+    version: 0.1.1
+    repository: "file://../gen3-user-data-library"
+    condition: gen3-user-data-library.enabled
   - name: guppy
     version: 0.1.20
     repository: "file://../guppy"
@@ -60,7 +68,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -72,7 +80,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -148,7 +156,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.82
+version: 0.1.87
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

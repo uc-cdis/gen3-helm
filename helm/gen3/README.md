@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.82](https://img.shields.io/badge/Version-0.1.82-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.87](https://img.shields.io/badge/Version-0.1.87-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,14 +18,15 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../access-backend | access-backend | 0.1.0 |
 | file://../ambassador | ambassador | 0.1.20 |
 | file://../arborist | arborist | 0.1.17 |
 | file://../argo-wrapper | argo-wrapper | 0.1.13 |
 | file://../audit | audit | 0.1.21 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.18 |
-| file://../cedar | cedar | 0.1.2 |
+| file://../cedar | cedar | 0.1.3 |
 | file://../cohort-middleware | cohort-middleware | 0.1.4 |
-| file://../common | common | 0.1.19 |
+| file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.0 |
 | file://../dicom-server | dicom-server | 0.1.13 |
 | file://../dicom-viewer | dicom-viewer | 0.1.13 |
@@ -33,13 +34,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.38 |
 | file://../frontend-framework | frontend-framework | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.1 |
 | file://../guppy | guppy | 0.1.20 |
 | file://../hatchery | hatchery | 0.1.16 |
-| file://../indexd | indexd | 0.1.24 |
+| file://../indexd | indexd | 0.1.25 |
 | file://../manifestservice | manifestservice | 0.1.23 |
 | file://../metadata | metadata | 0.1.23 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.22 |
+| file://../peregrine | peregrine | 0.1.23 |
 | file://../portal | portal | 0.1.30 |
 | file://../requestor | requestor | 0.1.19 |
 | file://../revproxy | revproxy | 0.1.28 |
@@ -95,6 +97,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
