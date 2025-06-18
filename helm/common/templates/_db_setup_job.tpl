@@ -131,7 +131,7 @@ spec:
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
             echo "PGUSER=$PGUSER"
-            
+
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
@@ -141,7 +141,6 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
-
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
@@ -165,8 +164,8 @@ spec:
 {{- end }}
 
 
-{{/* 
-Create k8s secrets for connecting to postgres 
+{{/*
+Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
