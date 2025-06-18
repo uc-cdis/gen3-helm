@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -84,7 +84,7 @@ dependencies:
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
@@ -92,7 +92,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -156,7 +156,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.88
+version: 0.1.89
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
