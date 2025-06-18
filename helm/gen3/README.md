@@ -29,7 +29,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.0 |
 | file://../dicom-server | dicom-server | 0.1.15 |
-| file://../dicom-viewer | dicom-viewer | 0.1.13 |
 | file://../etl | etl | 0.1.12 |
 | file://../fence | fence | 0.1.38 |
 | file://../frontend-framework | frontend-framework | 0.1.9 |
@@ -41,6 +40,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.23 |
 | file://../metadata | metadata | 0.1.22 |
 | file://../neuvector | neuvector | 0.1.2 |
+| file://../ohif-viewer | ohif-viewer | 0.1.0 |
 | file://../orthanc | orthanc | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.23 |
 | file://../portal | portal | 0.1.30 |
@@ -74,7 +74,6 @@ Helm chart to deploy Gen3 Data Commons
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
-| dicom-viewer.enabled | bool | `false` | Whether to deploy the dicom-viewer subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
@@ -179,6 +178,7 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.ingress.namespace | string | `"nginx"` |  |
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
+| ohif-viewer.enabled | bool | `false` | Whether to deploy the ohif-viewer subchart. |
 | orthanc.enabled | bool | `false` | Whether to deploy the orthanc subchart. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |

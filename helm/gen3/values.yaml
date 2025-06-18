@@ -330,8 +330,8 @@ sower:
   # -- (bool) Whether to deploy the sower subchart.
   enabled: false
 
-dicom-viewer:
-  # -- (bool) Whether to deploy the dicom-viewer subchart.
+ohif-viewer:
+  # -- (bool) Whether to deploy the ohif-viewer subchart.
   enabled: false
 
 dicom-server:

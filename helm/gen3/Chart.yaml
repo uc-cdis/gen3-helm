@@ -119,10 +119,10 @@ dependencies:
     version: 0.1.15
     repository: file://../dicom-server
     condition: dicom-server.enabled
-  - name: dicom-viewer
-    version: 0.1.13
-    repository: file://../dicom-viewer
-    condition: dicom-viewer.enabled
+  - name: ohif-viewer
+    version: 0.1.0
+    repository: file://../ohif-viewer
+    condition: ohif-viewer.enabled
   - name: orthanc
     version: 0.1.0
     repository: file://../orthanc
