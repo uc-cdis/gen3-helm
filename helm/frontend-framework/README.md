@@ -1,6 +1,6 @@
 # frontend-framework
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: develop](https://img.shields.io/badge/AppVersion-develop-informational?style=flat-square)
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: develop](https://img.shields.io/badge/AppVersion-develop-informational?style=flat-square)
 
 A Helm chart for the gen3 frontend framework
 
@@ -8,7 +8,7 @@ A Helm chart for the gen3 frontend framework
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.18 |
+| file://../common | common | 0.1.20 |
 
 ## Values
 
