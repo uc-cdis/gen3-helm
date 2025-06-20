@@ -1,3 +1,4 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sOrthancG3auto) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -6,17 +7,19 @@ type: Opaque
 stringData:
   orthanc_config_overwrites.json: |
         {
-          "AuthenticationEnabled": {{ .Values.secrets.authenticationEnabled }},
+          "AuthenticationEnabled": {{ .Values.AuthenticationEnabled }},
           "PostgreSQL": {
-            "EnableIndex": {{ .Values.secrets.enableIndex }},
-            "EnableStorage": {{ .Values.secrets.enableStorage }},
-            "Port": {{ .Values.secrets.port }},
-            "Host": {{ .Values.secrets.host | quote }},
-            "Database": {{ .Values.secrets.dataBase | quote }},
-            "Username": {{ .Values.secrets.userName | quote }},
-            "Password": {{ include "dicom.postgres.password" . | quote }},
-            "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
-            "Lock": {{ .Values.secrets.lock }}
+            "EnableIndex": {{ .Values.EnableIndex }},
+            "EnableStorage": {{ .Values.EnableStorage }},
+            "Port": {{ .Values.Port }},
+            "Host": "${PGHOST}",
+            "Database": "${PGDB}",
+            "Username": "${PGUSER}",
+            "Password": "${PGPASSWORD}",
+            "IndexConnectionsCount": {{ .Values.IndexConnectionsCount }},
+            "Lock": {{ .Values.Lock }}
           },
           "PythonScript": "/etc/orthanc/authz_filter.py"
         }
+---
+{{- end }}

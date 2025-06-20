@@ -66,7 +66,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: "gen3-v3.8.0"
 
 # Service and Pod
 # -- (map) Kubernetes service information.

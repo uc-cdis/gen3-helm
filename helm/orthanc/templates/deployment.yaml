@@ -63,7 +63,7 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: sheepdog-dbcreds
+                  name: orthanc-dbcreds
                   key: host
                   optional: false 
             - name: PGUSER
