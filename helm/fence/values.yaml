@@ -146,6 +146,18 @@ usersync:
   # -- (list) Environment variables to pass to the job.
   env:
 
+fenceCleanupExpiredGa4ghInfo:
+  # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
+  schedule: "*/5 * * * *"
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+
+fenceDeleteExpiredClients:
+  # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
+  schedule: "*/5 * * * *"
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+
 # -- (map) Configuration options for fence-visa-update cronjob.
 fenceVisaUpdate:
   # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
@@ -1642,7 +1654,6 @@ FENCE_CONFIG:
   # Number of projects that can be registered to a Google Service Accont
   SERVICE_ACCOUNT_LIMIT: 6
   # whether or not to enable the `fence-visa-update` cronjob which updates users' visas.
-  # Note: this cronjob lives outstide of fence
   # /!\ if `ENABLE_VISA_UPDATE_CRON` is false, `GLOBAL_PARSE_VISAS_ON_LOGIN` CANNOT be none/true and
   # `parse_visas` CANNOT be used
   ENABLE_VISA_UPDATE_CRON: false
