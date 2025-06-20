@@ -67,37 +67,37 @@ global:
 # Arguments to pass to the boto3 client in access_backend
 extraArgs: '{"endpoint_url": "http://dynamodb:8000", "region_name": "us-east-1"}'
 # Common delimited string of usernames for the super admins
-superAdmins: ''
+superAdmins: ""
 # Common delimited string of usernames for the admins
-adminUsers: ''
+adminUsers: ""
 # Github organization for the repository to push user.yaml updates to
-gh_org: ''
+gh_org: ""
 # Github repository to push user.yaml updates to
-gh_repo: ''
+gh_repo: ""
 # Path of the user.yaml file in the GH repo to push updates for
-gh_file: ''
+gh_file: ""
 # Encrypted token with PR permission on the repo.
-gh_key: ''
+gh_key: ""
 # Valid issuers for OIDC tokens
-jwt_issuers: 'https://localhost/user'
+jwt_issuers: "https://localhost/user"
 # Comma delimited list of users to add as reviewers to PRs that are opened by access_backend
-review_requests_access: ''
+review_requests_access: ""
 # Public signing keys from the OIDC provider
-jwt_signing_keys: ''
+jwt_signing_keys: ""
 # Path to the user.yaml file in the container that access_backend modifies.
-base_user_yaml_path: '/src/user.yaml'
+base_user_yaml_path: "/src/user.yaml"
 # Map of usernames to a list of arborist policies to assign to the admin
-admin_extra_policies: ''
+admin_extra_policies: ""
 # Comma delimited list of PIs who should have new datasets propagate to the users under them
-cascade_new_access_to_users_under_this_admin: ''
+cascade_new_access_to_users_under_this_admin: ""
 # Prefix for the dynamodb database, useful for environments with a preprod and prod that share the same dynamo instance
-db_namespace: ''
+db_namespace: ""
 # List of regexes that usernames cannot match in order to be added
-deny_username_patterns: ''
-allow_origins: ''
-disallow_access_subsetting: ''
+deny_username_patterns: ""
+allow_origins: ""
+disallow_access_subsetting: ""
 # List of PIs who should automatically receive access to new datasets
-inherit_access_to_all_new_datasets_to_this_admin: ''
+inherit_access_to_all_new_datasets_to_this_admin: ""
 # True if access_backend should not open PRs when changes are submitted, false if otherwise. Does not bypass git branch rules.
 skip_pr: false
 debug: false
@@ -161,31 +161,31 @@ revisionHistoryLimit: 2
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 25
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - access-backend
-        topologyKey: "kubernetes.io/hostname"
+      - weight: 25
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - access-backend
+          topologyKey: "kubernetes.io/hostname"
   nodeAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      preference:
-        matchExpressions:
-        - key: karpenter.sh/capacity-type
-          operator: In
-          values:
-          - spot
-    - weight: 99
-      preference:
-        matchExpressions:
-        - key: eks.amazonaws.com/capacityType
-          operator: In
-          values:
-          - SPOT
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values:
+                - spot
+      - weight: 99
+        preference:
+          matchExpressions:
+            - key: eks.amazonaws.com/capacityType
+              operator: In
+              values:
+                - SPOT
 
 # Volume Mounts
 volumeMounts:
@@ -240,10 +240,12 @@ podAnnotations: {}
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -262,7 +264,8 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
