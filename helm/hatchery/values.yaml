@@ -158,8 +158,8 @@ volumeMounts:
     mountPath: /hatchery.json
     subPath: json
 
-# -- (map) Hatchery sidcar container configuration.
 hatchery:
+  json: ""
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
     cpu-limit: "0.1"

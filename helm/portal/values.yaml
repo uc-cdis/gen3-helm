@@ -210,7 +210,7 @@ commonLabels:
 
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
-  # - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
+  - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/feat/deployment-canary/docs/images/canaryHelmLogo.png
 
 # -- (bool) Whether to enable the v2 portal where it is built in s3 using mountpoint.
 # Requires mountpoint to be enabled in the cluster.
