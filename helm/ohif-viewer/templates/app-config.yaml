@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ohif-viewer-app-config
+data:
+  "app-config.js": |
+{{ .Values.APP_CONFIG | indent 4 }}

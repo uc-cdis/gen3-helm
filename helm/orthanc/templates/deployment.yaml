@@ -1,28 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dicom-server-deployment
+  name: orthanc-deployment
   annotations:
   {{- with .Values.podAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "dicom-server.labels" . | nindent 4 }}
+    {{- include "orthanc.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "dicom-server.selectorLabels" . | nindent 6 }}
-      release: "production"
+      {{- include "orthanc.selectorLabels" . | nindent 6 }}
       public: "yes"
+      s3: "yes"
   template:
     metadata:
       labels:
-        {{- include "dicom-server.selectorLabels" . | nindent 8 }}
+        {{- include "orthanc.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
+        s3: "yes"
       annotations:
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
@@ -33,13 +34,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: "dicom-server"
+        - name: "orthanc"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           readinessProbe: 
             httpGet:
               path: /system
               port: 8042
+              httpHeaders:
+                - name: Authorization
+                  value: Basic cHVibGljOmhlbGxv
             initialDelaySeconds: 5
             periodSeconds: 20
             timeoutSeconds: 30
@@ -47,6 +51,9 @@ spec:
             httpGet:
               path: /system
               port: 8042
+              httpHeaders:
+                - name: Authorization
+                  value: Basic cHVibGljOmhlbGxv
             initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 30
@@ -56,33 +63,39 @@ spec:
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
-                  name: dicom-server-dbcreds
+                  name: orthanc-dbcreds
                   key: host
                   optional: false 
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: dicom-server-dbcreds
+                  name: orthanc-dbcreds
                   key: username
                   optional: false 
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dicom-server-dbcreds
+                  name: orthanc-dbcreds
                   key: password
                   optional: false
             - name: PGDB
               valueFrom:
                 secretKeyRef:
-                  name: dicom-server-dbcreds
+                  name: orthanc-dbcreds
                   key: database
                   optional: false
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
-                  name: dicom-server-dbcreds
+                  name: orthanc-dbcreds
                   key: dbcreated
                   optional: false
+            - name: DICOM_WEB_PLUGIN_ENABLED
+              value: "true"
+            - name: TCIA_PLUGIN_ENABLED
+              value: "true"
+            - name: ORTHANC_EXPLORER_2_ENABLED
+              value: "false"
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
