@@ -32,10 +32,11 @@ A Helm chart for gen3 sower
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `nil` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"createK8sSowerJobsSecret":false,"pelicanserviceG3auto":null,"sowerjobsG3auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sPelicanServiceSecret":false,"createK8sSowerJobsSecret":false,"pelicanserviceG3auto":null,"peregrineRawSecret":null,"sowerjobsG3auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sPelicanServiceSecret | string | `false` | Will create the Helm "pelicanservice-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sSowerJobsSecret | string | `false` | Will create the Helm "sower-jobs-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.pelicanserviceG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "pelicanservice-g3auto" |
+| externalSecrets.peregrineRawSecret | string | `nil` | The name of an aws secrets manager secret that stores a cloud-automation compliant version of peregrine config, for sower jobs expecting that format. If left blank, will not create |
 | externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
