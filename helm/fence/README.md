@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -97,6 +97,10 @@ A Helm chart for gen3 Fence
 | externalSecrets.fenceGoogleStorageCredsSecret | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-google-storage-creds-secret" |
 | externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys" |
 | externalSecrets.fenceSshKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys" |
+| fenceCleanupExpiredGa4ghInfo.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
+| fenceCleanupExpiredGa4ghInfo.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
+| fenceDeleteExpiredClients.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
+| fenceDeleteExpiredClients.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | fenceVisaUpdate | map | `{"bufferSize":null,"chunkSize":null,"concurrency":null,"schedule":"30 * * * *","slack_webhook":"None","threadPoolSize":null}` | Configuration options for fence-visa-update cronjob. |
 | fenceVisaUpdate.bufferSize | int | `nil` | max size of queue |
 | fenceVisaUpdate.chunkSize | int | `nil` | size of chunk of users we want to take from each iteration |
