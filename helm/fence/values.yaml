@@ -146,6 +146,21 @@ usersync:
   # -- (list) Environment variables to pass to the job.
   env:
 
+# -- (map) Configuration options for fence-visa-update cronjob.
+fenceVisaUpdate:
+  # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
+  schedule: "30 * * * *"
+  # -- (int) number of concurrent users going through the visa update flow
+  concurrency:
+  # -- (int) size of chunk of users we want to take from each iteration
+  chunkSize:
+  # -- (int) number of Docker container CPU used for jwt verifcation
+  threadPoolSize:
+  # -- (int) max size of queue
+  bufferSize:
+  # -- (string) Slack webhook endpoint used with certain jobs.
+  slack_webhook: None
+
 # -- (map) Secret information for Usersync and External Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
@@ -1626,7 +1641,11 @@ FENCE_CONFIG:
     - "https://stsstg.nih.gov"
   # Number of projects that can be registered to a Google Service Accont
   SERVICE_ACCOUNT_LIMIT: 6
-
+  # whether or not to enable the `fence-visa-update` cronjob which updates users' visas.
+  # Note: this cronjob lives outstide of fence
+  # /!\ if `ENABLE_VISA_UPDATE_CRON` is false, `GLOBAL_PARSE_VISAS_ON_LOGIN` CANNOT be none/true and
+  # `parse_visas` CANNOT be used
+  ENABLE_VISA_UPDATE_CRON: false
   # Global sync visas during login
   # None(Default): Allow per client i.e. a fence client can pick whether or not to sync their visas during login with parse_visas param in /authorization endpoint
   # True: Parse for all clients i.e. a fence client will always sync their visas during login

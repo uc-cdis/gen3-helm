@@ -67,7 +67,8 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -80,7 +81,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -120,10 +122,11 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+volumeMounts:
+  - mountPath: /gen3userdatalibrary/.env
+    name: gen3-user-data-library-g3auto-volume
+    readOnly: true
+    subPath: gen3-user-data-library.env
 
 affinity: {}
 automountServiceAccountToken: false
@@ -174,7 +177,6 @@ externalSecrets:
   gen3UserDataLibraryG3auto:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
-
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false

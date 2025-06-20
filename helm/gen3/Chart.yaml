@@ -5,35 +5,35 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.1
+    version: 0.1.3
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.4
+    version: 0.1.5
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.5
+    version: 0.1.6
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
@@ -48,7 +48,7 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.10
+    version: 0.1.11
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
@@ -56,11 +56,11 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
-    version: 0.1.1
+    version: 0.1.2
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: guppy
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
@@ -68,19 +68,19 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -88,7 +88,7 @@ dependencies:
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
@@ -96,19 +96,19 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.23
+    version: 0.1.24
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.23
+    version: 0.1.24
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
