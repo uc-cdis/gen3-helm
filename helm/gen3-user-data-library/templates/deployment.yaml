@@ -78,19 +78,19 @@ spec:
                   optional: false
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               name: http
           livenessProbe:
             httpGet:
               path: /_status
-              port: 8080
+              port: 80
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 8080
+              port: 80
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
