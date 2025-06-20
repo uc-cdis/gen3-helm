@@ -87,6 +87,10 @@ spec:
             httpGet:
               path: /_status
               port: 80
+          volumes:
+            - name: gen3-user-data-library-g3auto-volume
+              secret:
+                secretName: gen3userdatalibrary-g3auto
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
