@@ -92,7 +92,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
