@@ -276,6 +276,10 @@ metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
 
+orthanc:
+  # -- (bool) Whether to deploy the orthanc subchart.
+  enabled: false
+
 peregrine:
   # -- (bool) Whether to deploy the peregrine subchart.
   enabled: true
@@ -326,12 +330,16 @@ sower:
   # -- (bool) Whether to deploy the sower subchart.
   enabled: false
 
-dicom-viewer:
-  # -- (bool) Whether to deploy the dicom-viewer subchart.
+ohif-viewer:
+  # -- (bool) Whether to deploy the ohif-viewer subchart.
   enabled: false
 
 dicom-server:
   # -- (bool) Whether to deploy the dicom-server subchart.
+  enabled: false
+
+access-backend:
+  # -- (bool) Whether to deploy the access backend subchart.
   enabled: false
 
 # -- (map) To configure postgresql subchart
