@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
-    version: 0.1.1
+    version: 0.1.2
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: guppy

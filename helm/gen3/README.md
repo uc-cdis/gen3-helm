@@ -34,7 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.40 |
 | file://../frontend-framework | frontend-framework | 0.1.11 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.1 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.2 |
 | file://../guppy | guppy | 0.1.22 |
 | file://../hatchery | hatchery | 0.1.18 |
 | file://../indexd | indexd | 0.1.27 |
