@@ -37,6 +37,7 @@ spec:
             - name: fence-sshconfig
               configMap:
                 name: "fence-sshconfig"
+                optional: true
             - name: fence-ssh-keys
               secret:
                 defaultMode: 0400
