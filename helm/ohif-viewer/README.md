@@ -39,10 +39,10 @@ A Helm chart for gen3 Ohif Viewer
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ohif-viewer","tag":"master"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ohif-viewer","tag":"gen3-v3.8.0"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/ohif-viewer"` | Docker repository. |
-| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"gen3-v3.8.0"` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Imaging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |

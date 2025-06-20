@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.40
+    version: 0.1.41
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -92,7 +92,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -160,7 +160,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.89
+version: 0.1.90
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
