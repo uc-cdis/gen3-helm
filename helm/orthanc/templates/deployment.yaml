@@ -65,31 +65,31 @@ spec:
                 secretKeyRef:
                   name: orthanc-dbcreds
                   key: host
-                  optional: false 
+                  optional: true 
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
                   name: orthanc-dbcreds
                   key: username
-                  optional: false 
+                  optional: true 
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: orthanc-dbcreds
                   key: password
-                  optional: false
+                  optional: true
             - name: PGDB
               valueFrom:
                 secretKeyRef:
                   name: orthanc-dbcreds
                   key: database
-                  optional: false
+                  optional: true
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
                   name: orthanc-dbcreds
                   key: dbcreated
-                  optional: false
+                  optional: true
             - name: DICOM_WEB_PLUGIN_ENABLED
               value: "true"
             - name: TCIA_PLUGIN_ENABLED

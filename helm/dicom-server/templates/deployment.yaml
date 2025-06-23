@@ -58,31 +58,31 @@ spec:
                 secretKeyRef:
                   name: dicom-server-dbcreds
                   key: host
-                  optional: false 
+                  optional: true
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
                   name: dicom-server-dbcreds
                   key: username
-                  optional: false 
+                  optional: true 
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: dicom-server-dbcreds
                   key: password
-                  optional: false
+                  optional: true
             - name: PGDB
               valueFrom:
                 secretKeyRef:
                   name: dicom-server-dbcreds
                   key: database
-                  optional: false
+                  optional: true
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
                   name: dicom-server-dbcreds
                   key: dbcreated
-                  optional: false
+                  optional: true
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
