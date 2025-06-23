@@ -1,45 +1,25 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sOrthancG3auto) }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: orthanc-g3auto
 type: Opaque
 stringData:
-  dbcreds.json: |
-        {
-          "db_host": {{ .Values.secrets.host | quote }},
-          "db_username": {{ .Values.secrets.userName | quote }},
-          "db_password": {{ include "dicom.postgres.password" . | quote }},
-          "db_database": {{ .Values.secrets.dataBase | quote }}
-        }
   orthanc_config_overwrites.json: |
         {
-          "AuthenticationEnabled": {{ .Values.secrets.authenticationEnabled }},
+          "AuthenticationEnabled": {{ .Values.AuthenticationEnabled }},
           "PostgreSQL": {
-            "EnableIndex": {{ .Values.secrets.enableIndex }},
-            "EnableStorage": {{ .Values.secrets.enableStorage }},
-            "Port": {{ .Values.secrets.port }},
-            "Host": {{ .Values.secrets.host | quote }},
-            "Database": {{ .Values.secrets.dataBase | quote }},
-            "Username": {{ .Values.secrets.userName | quote }},
-            "Password": {{ include "dicom.postgres.password" . | quote }},
-            "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
-            "Lock": {{ .Values.secrets.lock }}
+            "EnableIndex": {{ .Values.EnableIndex }},
+            "EnableStorage": {{ .Values.EnableStorage }},
+            "Port": {{ .Values.Port }},
+            "Host": "${PGHOST}",
+            "Database": "${PGDB}",
+            "Username": "${PGUSER}",
+            "Password": "${PGPASSWORD}",
+            "IndexConnectionsCount": {{ .Values.IndexConnectionsCount }},
+            "Lock": {{ .Values.Lock }}
           },
           "PythonScript": "/etc/orthanc/authz_filter.py"
         }
-  orthanc_config_overwrites.json_backup: |
-        { 
-          "AuthenticationEnabled": {{ .Values.secrets.authenticationEnabled }},  
-          "PostgreSQL": {
-            "EnableIndex": {{ .Values.secrets.enableIndex }},
-            "EnableStorage": {{ .Values.secrets.enableStorage }},
-            "Port": {{ .Values.secrets.port }},
-            "Host": {{ .Values.secrets.host | quote }},
-            "Database": {{ .Values.secrets.dataBase | quote }},
-            "Username": {{ .Values.secrets.userName | quote }},
-            "Password": {{ .Values.secrets.password | quote }},
-            "IndexConnectionsCount": {{ .Values.secrets.indexConnectionsCount }},
-            "Lock": {{ .Values.secrets.lock }}
-          },
-          "PythonScript": "/etc/orthanc/authz_filter.py"
-        }
+---
+{{- end }}

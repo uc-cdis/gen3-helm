@@ -1,6 +1,6 @@
-# dicom-server
+# orthanc
 
-![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -15,11 +15,18 @@ A Helm chart for gen3 Dicom Server
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | AuthenticationEnabled | bool | `false` | Whether or not the password protection is enabled. |
-| EnableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
-| EnableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
-| IndexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database. |
-| Lock | bool | `false` | Whether to lock the database. |
-| Port | string | `"5432"` | Port for Postgres. |
+| PostgreSQL.EnableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
+| PostgreSQL.EnableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
+| PostgreSQL.Enabled | bool | `false` | Whether or not to enable postgres for orthanc or just use s3. |
+| PostgreSQL.IndexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database |
+| PostgreSQL.Lock | bool | `false` | Whether to lock the database. |
+| PostgreSQL.Port | string | `"5432"` | Port for Postgres. |
+| RegisteredUsers.public | string | `"hello"` |  |
+| RemoteAccessAllowed | bool | `true` |  |
+| S3Storage.AccessKey | string | `nil` |  |
+| S3Storage.BucketName | string | `nil` |  |
+| S3Storage.Region | string | `"us-east-1"` |  |
+| S3Storage.SecretKey | string | `nil` |  |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
 | autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
@@ -27,9 +34,9 @@ A Helm chart for gen3 Dicom Server
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sOrthancG3auto":false,"orthancG3Auto":null}` | External Secrets settings. |
-| externalSecrets.createK8sOrthancG3auto | string | `false` | Will create the Helm "orthanc-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
-| externalSecrets.orthancG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
+| externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sOrthancS3G3auto | string | `false` | Will create the Helm "orthanc-s3-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.orthancS3G3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
@@ -47,10 +54,10 @@ A Helm chart for gen3 Dicom Server
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"gen3-orthanc:gen3-0.1.2"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"orthancteam-master-gen3-24.3.5"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |
-| image.tag | string | `"gen3-orthanc:gen3-0.1.2"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"orthancteam-master-gen3-24.3.5"` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Imaging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
@@ -70,4 +77,4 @@ A Helm chart for gen3 Dicom Server
 | service.port | int | `80` | The port number that the service exposes. |
 | service.targetport | int | `8042` | The port on the host machine that traffic is directed to. |
 | volumeMounts | list | `[{"mountPath":"/etc/orthanc/orthanc_config_overwrites.json","name":"config-volume-g3auto","readOnly":true,"subPath":"orthanc_config_overwrites.json"}]` | Volumes to mount to the pod. |
-| volumes | list | `[{"name":"config-volume-g3auto","secret":{"secretName":"orthanc-g3auto"}}]` | Volumes to attach to the pod. |
+| volumes | list | `[{"name":"config-volume-g3auto","secret":{"secretName":"orthanc-s3-g3auto"}}]` | Volumes to attach to the pod. |

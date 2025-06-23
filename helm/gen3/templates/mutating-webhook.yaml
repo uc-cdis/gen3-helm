@@ -89,6 +89,9 @@ webhooks:
         name: mutating-webhook
         namespace: kube-system
         path: "/mutate"
+    namespaceSelector:
+      matchLabels:
+        webhook.enabled: "true"
     rules:
       - operations: ["CREATE"]
         apiGroups: ["apps"]
@@ -100,6 +103,7 @@ webhooks:
         resources: ["pods"]
     admissionReviewVersions: ["v1"]
     sideEffects: None
+    failurePolicy: Ignore
 
 ---
 
