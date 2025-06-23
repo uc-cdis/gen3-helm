@@ -211,12 +211,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           args:
             - "launch"
-          ports:
-            - containerPort: 4000
           env:
             - name: AWS_STS_REGIONAL_ENDPOINTS
               value: regional
