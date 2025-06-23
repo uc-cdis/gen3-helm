@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.94](https://img.shields.io/badge/Version-0.1.94-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.95](https://img.shields.io/badge/Version-0.1.95-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -43,7 +43,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ohif-viewer | ohif-viewer | 0.1.0 |
 | file://../orthanc | orthanc | 0.1.0 |
 | file://../peregrine | peregrine | 0.1.25 |
-| file://../portal | portal | 0.1.33 |
+| file://../portal | portal | 0.1.34 |
 | file://../requestor | requestor | 0.1.21 |
 | file://../revproxy | revproxy | 0.1.32 |
 | file://../sheepdog | sheepdog | 0.1.25 |
