@@ -2163,6 +2163,20 @@ entries:
   dicom-server:
   - apiVersion: v2
     appVersion: master
+    created: "2025-06-23T17:35:03.474702574Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    description: A Helm chart for gen3 Dicom Server
+    digest: 4900d85ac2193f93145675b9cdbbebe7e258eb7a6bac808e6ac3095a5ee5caf8
+    name: dicom-server
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/dicom-server-0.1.16/dicom-server-0.1.16.tgz
+    version: 0.1.16
+  - apiVersion: v2
+    appVersion: master
     created: "2025-06-20T19:24:27.825882616Z"
     dependencies:
     - name: common
@@ -3641,6 +3655,163 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/frontend-framework-0.1.1/frontend-framework-0.1.1.tgz
     version: 0.1.1
   gen3:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-06-23T17:35:03.723453713Z"
+    dependencies:
+    - condition: access-backend.enabled
+      name: access-backend
+      repository: file://../access-backend
+      version: 0.1.3
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.22
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.19
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.15
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.23
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.20
+    - condition: cedar.enabled
+      name: cedar
+      repository: file://../cedar
+      version: 0.1.5
+    - condition: cohort-middleware.enabled
+      name: cohort-middleware
+      repository: file://../cohort-middleware
+      version: 0.1.6
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    - condition: dashboard.enabled
+      name: dashboard
+      repository: file://../dashboard
+      version: 0.1.1
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.12
+    - condition: frontend-framework.enabled
+      name: frontend-framework
+      repository: file://../frontend-framework
+      version: 0.1.11
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.41
+    - condition: gen3-user-data-library.enabled
+      name: gen3-user-data-library
+      repository: file://../gen3-user-data-library
+      version: 0.1.2
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.22
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.19
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.27
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.25
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.25
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.25
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.34
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.21
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.32
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.25
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.25
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.25
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.24
+    - condition: global.netPolicy.enabled
+      name: gen3-network-policies
+      repository: file://../gen3-network-policies
+      version: 0.1.2
+    - condition: dicom-server.enabled
+      name: dicom-server
+      repository: file://../dicom-server
+      version: 0.1.16
+    - condition: ohif-viewer.enabled
+      name: ohif-viewer
+      repository: file://../ohif-viewer
+      version: 0.1.0
+    - condition: orthanc.enabled
+      name: orthanc
+      repository: file://../orthanc
+      version: 0.1.1
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: neuvector.enabled
+      name: neuvector
+      repository: file://../neuvector
+      version: 0.1.2
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 1e09ac74a181f0de0e2646a6bc1df295b1d1ffe5e7e10484f97312672fdc99f5
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.1.96/gen3-0.1.96.tgz
+    version: 0.1.96
   - apiVersion: v2
     appVersion: master
     created: "2025-06-23T16:26:05.38241154Z"
@@ -17354,6 +17525,20 @@ entries:
   orthanc:
   - apiVersion: v2
     appVersion: master
+    created: "2025-06-23T17:35:03.8479726Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    description: A Helm chart for gen3 Dicom Server
+    digest: 97c69745b8cbc961b43e42f8ff37f7d5825b711f4a778b5cf97a2d29195932c2
+    name: orthanc
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/orthanc-0.1.1/orthanc-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: master
     created: "2025-06-20T19:24:28.40373115Z"
     dependencies:
     - name: common
@@ -20928,4 +21113,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-06-23T16:26:05.522430143Z"
+generated: "2025-06-23T17:35:03.849251869Z"
