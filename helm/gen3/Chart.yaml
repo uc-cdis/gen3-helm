@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
@@ -124,7 +124,7 @@ dependencies:
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.0
+    version: 0.1.1
     repository: file://../orthanc
     condition: orthanc.enabled
 
@@ -160,7 +160,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.95
+version: 0.1.96
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
