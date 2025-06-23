@@ -27,7 +27,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cedar | cedar | 0.1.5 |
 | file://../cohort-middleware | cohort-middleware | 0.1.6 |
 | file://../common | common | 0.1.20 |
-| file://../dashboard | dashboard | 0.1.1 |
+| file://../dashboard | dashboard | 0.1.2 |
 | file://../dicom-server | dicom-server | 0.1.16 |
 | file://../etl | etl | 0.1.12 |
 | file://../fence | fence | 0.1.41 |

@@ -40,7 +40,7 @@ dependencies:
     version: 0.1.20
     repository: file://../common
   - name: dashboard
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: etl
