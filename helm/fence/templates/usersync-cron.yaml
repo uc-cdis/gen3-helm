@@ -229,8 +229,6 @@ spec:
                 sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /fence/.venv/lib/python3.9/site-packages/paramiko/pkey.py
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
-                # pip3 install SQLAlchemy==1.3.6
-                # can be removed once this is merged: https://github.com/uc-cdis/fence/pull/1096
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
                     echo "running fence-create"
