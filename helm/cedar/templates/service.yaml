@@ -7,7 +7,7 @@ metadata:
     {{- include "cedar.labels" . | nindent 4 }}
 spec:
   selector:
-    app: cedar-wrapper
+    {{- include "cedar.selectorLabels" . | nindent 6 }}
   type: {{ .Values.service.type }}
   ports:
     - protocol: TCP
