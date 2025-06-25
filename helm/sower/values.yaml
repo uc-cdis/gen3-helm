@@ -78,8 +78,6 @@ externalSecrets:
   createK8sSowerJobsSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto"
   sowerjobsG3auto:
-  # -- (string) The name of an aws secrets manager secret that stores a cloud-automation compliant version of peregrine config, for sower jobs expecting that format. If left blank, will not create
-  peregrineRawSecret:
 
 # -- (map) Values for sower secrets and keys for External Secrets.
 secrets:
