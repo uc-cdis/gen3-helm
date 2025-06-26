@@ -1,6 +1,6 @@
 # access-backend
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -41,10 +41,9 @@ A Helm chart for Kubernetes
 | debug | bool | `false` |  |
 | deny_username_patterns | string | `""` |  |
 | disallow_access_subsetting | string | `""` |  |
-| externalSecrets | map | `{"accessBackendG3auto":null,"createK8sAccessBackendSecret":false,"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"accessBackendG3auto":null,"createK8sAccessBackendSecret":false}` | External Secrets settings. |
 | externalSecrets.accessBackendG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "access-backend-g3auto" |
 | externalSecrets.createK8sAccessBackendSecret | string | `false` | Will create the Helm "access-backend-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
-| externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | extraArgs | string | `"{\"endpoint_url\": \"http://dynamodb:8000\", \"region_name\": \"us-east-1\"}"` |  |
 | fullnameOverride | string | `""` |  |
 | gh_file | string | `""` |  |

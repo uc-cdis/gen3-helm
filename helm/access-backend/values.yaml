@@ -109,8 +109,7 @@ externalSecrets:
   createK8sAccessBackendSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "access-backend-g3auto"
   accessBackendG3auto:
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
-  dbcreds:
+
 # -- (map) Secret information to access the db restore job S3 bucket.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
