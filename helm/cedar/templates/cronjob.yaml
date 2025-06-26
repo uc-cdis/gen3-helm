@@ -23,9 +23,7 @@ spec:
             {{- include "cedar.selectorLabels" . | nindent 12 }}
             {{- include "common.extraLabels" . | nindent 12 }}
         spec:
-          serviceAccountName: useryaml-job
           terminationGracePeriodSeconds: 10
-          automountServiceAccountToken: false
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
@@ -57,7 +55,7 @@ spec:
                 - name: HOSTNAME
                   valueFrom:
                     configMapKeyRef:
-                      name: global
+                      name: manifest-global
                       key: hostname
                 - name: CEDAR_DIRECTORY_ID
                   value: {{ .Values.secrets.cedarDirectoryId | quote }}
@@ -116,7 +114,7 @@ spec:
                 - name: slackWebHook
                   valueFrom:
                     configMapKeyRef:
-                      name: global
+                      name: manifest-global
                       key: slack_webhook
                 - name: gen3Env
                   valueFrom:

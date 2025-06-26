@@ -95,6 +95,8 @@ global:
   manifestGlobalExtraValues: {}
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
   frontendRoot: "portal"
+  # -- (string) slack webhook for notifications
+  slackWebhook: ""
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
