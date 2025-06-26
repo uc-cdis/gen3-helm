@@ -41,8 +41,6 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
-                - name: PYTHONPATH
-                  value: /var/www/fence
                 - name: CONCURRENCY
                   value: {{ .Values.fenceVisaUpdate.concurrency}}
                 - name: CHUNK_SIZE
