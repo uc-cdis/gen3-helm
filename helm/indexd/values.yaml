@@ -263,6 +263,7 @@ uwsgi:
 
 # -- (string) default prefix for indexd
 defaultPrefix: "PREFIX/"
+useSingleTable: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
