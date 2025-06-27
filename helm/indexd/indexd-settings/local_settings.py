@@ -1,7 +1,7 @@
 from indexd.index.drivers.alchemy import SQLAlchemyIndexDriver
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
-from index.drivers.single_table_alchemy import SingleTableSQLAlchemyIndexDriver
+from indexd.drivers.single_table_alchemy import SingleTableSQLAlchemyIndexDriver
 
 
 from os import environ
@@ -47,11 +47,7 @@ if USE_SINGLE_TABLE:
                 usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
             ),
             echo=True,
-            index_config={
-                "DEFAULT_PREFIX": "testprefix:",
-                "PREPEND_PREFIX": True,
-                "ADD_PREFIX_ALIAS": False,
-            },
+            index_config=index_config
         )
     }
 else:
@@ -61,11 +57,7 @@ else:
                 usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
             ),
             echo=True,
-            index_config={
-                "DEFAULT_PREFIX": "testprefix:",
-                "PREPEND_PREFIX": True,
-                "ADD_PREFIX_ALIAS": False,
-            },
+            index_config=index_config
         )
     }
 
