@@ -60,7 +60,11 @@ spec:
             - name: ESHOST
               value: {{ printf "%s:9200" .Values.esEndpoint | quote }}
             - name: slackWebHook
-              value: {{ .Values.esGarbageCollect.slack_webhook | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: slack-webook
+                  key: slack_webhook
+                  optional: true
             command: ["/bin/bash" ]
             args:
               - "-c"

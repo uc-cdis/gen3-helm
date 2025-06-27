@@ -97,7 +97,11 @@ spec:
                 - name: userYamlS3Path
                   value: {{ .Values.usersync.userYamlS3Path | quote }}
                 - name: slackWebHook
-                  value: {{ .Values.usersync.slack_webhook | quote }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: slack-webook
+                      key: slack_webhook
+                      optional: true
                 {{- with .Values.usersync.env }}
                 {{- toYaml . | nindent 16 }}
                 {{- end }}
@@ -172,7 +176,11 @@ spec:
               - name: SLACK_SEND_DBGAP
                 value: {{ .Values.usersync.slack_send_dbgap | quote }}
               - name: slackWebHook
-                value: {{ .Values.usersync.slack_webhook | default "" | quote }}
+                valueFrom:
+                  secretKeyRef:
+                    name: slack-webook
+                    key: slack_webhook
+                    optional: true
               {{- with .Values.env }}
               {{- toYaml . | nindent 14 }}
               {{- end }}

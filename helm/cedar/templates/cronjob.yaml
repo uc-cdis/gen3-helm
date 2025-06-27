@@ -113,9 +113,10 @@ spec:
               env:
                 - name: slackWebHook
                   valueFrom:
-                    configMapKeyRef:
-                      name: manifest-global
+                    secretKeyRef:
+                      name: slack-webook
                       key: slack_webhook
+                      optional: true
                 - name: gen3Env
                   valueFrom:
                     configMapKeyRef:
