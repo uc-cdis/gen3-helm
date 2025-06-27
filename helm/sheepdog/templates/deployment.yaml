@@ -213,9 +213,14 @@ spec:
             - name: INDEX_CLIENT_HOST
               value: {{ . }}
             {{- end }}
+            {{- if eq .Values.global.dev false }}
+            - name: FENCE_URL
+              value: https://{{ .Values.global.hostname }}/user
+            {{- else }}
             {{- with .Values.fenceUrl }}
             - name: FENCE_URL
               value: {{ . }}
+            {{- end }}
             {{- end }}
             {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
