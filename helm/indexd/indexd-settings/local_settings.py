@@ -1,7 +1,7 @@
 from indexd.index.drivers.alchemy import SQLAlchemyIndexDriver
+from indexd.index.drivers.single_table_alchemy import SingleTableSQLAlchemyIndexDriver
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
-from indexd.drivers.single_table_alchemy import SingleTableSQLAlchemyIndexDriver
 
 
 from os import environ
