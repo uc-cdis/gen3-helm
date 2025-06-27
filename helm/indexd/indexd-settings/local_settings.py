@@ -33,7 +33,7 @@ if dist:
 
 arborist = environ.get("ARBORIST", "false").lower() == "true"
 
-USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", False)
+USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 
 # - DEFAULT_PREFIX: prefix to be prepended.
 # - PREPEND_PREFIX: the prefix is preprended to the generated GUID when a
@@ -41,7 +41,7 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", False)
 # - ADD_PREFIX_ALIAS: aliases are created for new records - "<PREFIX><GUID>".
 # Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
 # will be created as "<PREFIX><PREFIX><GUID>".
-if USE_SINGLE_TABLE is True:
+if USE_SINGLE_TABLE:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
             "postgresql://postgres:postgres@localhost:5432/indexd_tests",  # pragma: allowlist secret

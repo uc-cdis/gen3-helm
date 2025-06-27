@@ -103,7 +103,7 @@ A Helm chart for gen3 indexd
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| useSingleTable | bool | `false` |  |
+| useSingleTable | string | `"false"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
 | volumeMounts | list | `[{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}}]` | Volumes to attach to the pod |
