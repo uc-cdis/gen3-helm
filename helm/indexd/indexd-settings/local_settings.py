@@ -10,7 +10,6 @@ import json
 APP_NAME = "indexd"
 
 
-
 usr = environ.get("PGUSER", "indexd")
 db = environ.get("PGDB", "indexd")
 psw = environ.get("PGPASSWORD")
@@ -44,7 +43,9 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 if USE_SINGLE_TABLE:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
-            "postgresql://postgres:postgres@localhost:5432/indexd_tests",  # pragma: allowlist secret
+            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
+            ),
             echo=True,
             index_config={
                 "DEFAULT_PREFIX": "testprefix:",
@@ -56,7 +57,9 @@ if USE_SINGLE_TABLE:
 else:
     CONFIG["INDEX"] = {
         "driver": SQLAlchemyIndexDriver(
-            "postgresql://postgres:postgres@localhost:5432/indexd_tests",  # pragma: allowlist secret
+            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
+            ),
             echo=True,
             index_config={
                 "DEFAULT_PREFIX": "testprefix:",
