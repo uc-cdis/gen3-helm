@@ -1,4 +1,8 @@
 {{-  if .Values.googleCronJobs.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: useryaml-job
 ---
 # Note: change to batch/v1 once we bump to k8s 1.8
 apiVersion: batch/v1
