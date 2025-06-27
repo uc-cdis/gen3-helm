@@ -143,7 +143,7 @@ spec:
                   optional: true
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
-              value: {{ .Values.global.hostname }}
+              value: https://{{ .Values.global.hostname }}/user
             {{- else }}
             - name: FENCE_URL
               valueFrom:

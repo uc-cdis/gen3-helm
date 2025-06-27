@@ -215,7 +215,7 @@ spec:
             {{- end }}
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
-              value: {{ .Values.global.hostname }}
+              value: https://{{ .Values.global.hostname }}/user
             {{- else }}
             {{- with .Values.fenceUrl }}
             - name: FENCE_URL
