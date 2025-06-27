@@ -29,7 +29,7 @@ dependencies:
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
