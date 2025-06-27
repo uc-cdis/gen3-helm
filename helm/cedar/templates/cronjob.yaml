@@ -114,7 +114,7 @@ spec:
                 - name: slackWebHook
                   valueFrom:
                     secretKeyRef:
-                      name: slack-webook
+                      name: slack-webhook
                       key: slack_webhook
                       optional: true
                 - name: gen3Env

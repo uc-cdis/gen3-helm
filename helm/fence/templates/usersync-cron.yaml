@@ -99,7 +99,7 @@ spec:
                 - name: slackWebHook
                   valueFrom:
                     secretKeyRef:
-                      name: slack-webook
+                      name: slack-webhook
                       key: slack_webhook
                       optional: true
                 {{- with .Values.usersync.env }}
@@ -178,7 +178,7 @@ spec:
               - name: slackWebHook
                 valueFrom:
                   secretKeyRef:
-                    name: slack-webook
+                    name: slack-webhook
                     key: slack_webhook
                     optional: true
               {{- with .Values.env }}
