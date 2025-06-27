@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.1.105](https://img.shields.io/badge/Version-0.1.105-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.106](https://img.shields.io/badge/Version-0.1.106-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -20,30 +20,30 @@ Helm chart to deploy Gen3 Data Commons
 |------------|------|---------|
 | file://../access-backend | access-backend | 0.1.5 |
 | file://../ambassador | ambassador | 0.1.22 |
-| file://../arborist | arborist | 0.1.19 |
+| file://../arborist | arborist | 0.1.20 |
 | file://../argo-wrapper | argo-wrapper | 0.1.15 |
 | file://../audit | audit | 0.1.23 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.21 |
-| file://../cedar | cedar | 0.1.7 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.22 |
+| file://../cedar | cedar | 0.1.8 |
 | file://../cohort-middleware | cohort-middleware | 0.1.6 |
 | file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.2 |
 | file://../dicom-server | dicom-server | 0.1.16 |
-| file://../etl | etl | 0.1.12 |
-| file://../fence | fence | 0.1.43 |
+| file://../etl | etl | 0.1.13 |
+| file://../fence | fence | 0.1.44 |
 | file://../frontend-framework | frontend-framework | 0.1.11 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.2 |
 | file://../guppy | guppy | 0.1.22 |
 | file://../hatchery | hatchery | 0.1.19 |
 | file://../indexd | indexd | 0.1.27 |
-| file://../manifestservice | manifestservice | 0.1.25 |
-| file://../metadata | metadata | 0.1.25 |
+| file://../manifestservice | manifestservice | 0.1.26 |
+| file://../metadata | metadata | 0.1.26 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.0 |
 | file://../orthanc | orthanc | 0.1.1 |
-| file://../peregrine | peregrine | 0.1.25 |
-| file://../portal | portal | 0.1.34 |
+| file://../peregrine | peregrine | 0.1.26 |
+| file://../portal | portal | 0.1.35 |
 | file://../requestor | requestor | 0.1.21 |
 | file://../revproxy | revproxy | 0.1.33 |
 | file://../sheepdog | sheepdog | 0.1.25 |
@@ -114,6 +114,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
+| global.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
 | global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
@@ -125,9 +126,11 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createSlackWebhookSecret":false,"dbCreate":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
+| global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |

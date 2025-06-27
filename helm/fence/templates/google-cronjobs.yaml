@@ -139,9 +139,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:
@@ -311,9 +312,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:
@@ -483,9 +485,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:
@@ -661,9 +664,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:
@@ -833,9 +837,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:
@@ -966,9 +971,10 @@ spec:
             env:
               - name: slackWebHook
                 valueFrom:
-                    configMapKeyRef:
-                      name: global
-                      key: slack_webhook
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
               - name: gen3Env
                 valueFrom:
                     configMapKeyRef:

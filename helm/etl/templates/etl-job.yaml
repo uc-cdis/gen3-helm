@@ -169,8 +169,8 @@ spec:
                       key: hostname
                 - name: slackWebHook
                   valueFrom:
-                    configMapKeyRef:
-                      name: global
+                    secretKeyRef:
+                      name: slack-webhook
                       key: slack_webhook
                       optional: true
               volumeMounts:

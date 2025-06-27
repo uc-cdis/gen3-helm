@@ -95,6 +95,8 @@ global:
   manifestGlobalExtraValues: {}
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
   frontendRoot: "portal"
+  # -- (bool) Will create a Kubernetes Secret for the slack webhook.
+  createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
   # -- (map) External Secrets settings.
@@ -104,6 +106,10 @@ global:
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
     dbCreate: false
     clusterSecretStoreRef: ""
+    # -- (bool) Will create a Kubernetes Secret for the slack webhook.
+    createSlackWebhookSecret: false
+    # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
+    slackWebhookSecretName: ""
 
 # Dependancy Charts
 
