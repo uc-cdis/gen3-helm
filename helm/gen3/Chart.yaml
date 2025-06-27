@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
