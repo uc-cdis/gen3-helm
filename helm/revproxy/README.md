@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -60,7 +60,7 @@ A Helm chart for gen3 revproxy
 | image.repository | string | `"quay.io/cdis/nginx"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| ingress | map | `{"annotations":{},"aws":{"group":""},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}],"tls":[]}` | Configuration for revproxy ingress. |
+| ingress | map | `{"annotations":{},"aws":{"group":"","sslPolicy":"ELBSecurityPolicy-TLS13-1-2-Res-FIPS-2023-04"},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}],"tls":[]}` | Configuration for revproxy ingress. |
 | ingress.annotations | map | `{}` | Annotations to add to the ingress. |
 | ingress.className | string | `""` | The ingress class name. |
 | ingress.enabled | bool | `false` | Whether to create the ingress |
