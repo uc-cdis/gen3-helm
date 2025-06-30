@@ -20,4 +20,18 @@ echo "data-simulator branch changed to pyyaml-patch change when PR is completed"
 cd ./gen3_etl/graph
 mkdir ./fake_data
 ./generate.sh
+# Copy a version of subject.json that we will use in the script
+cp ./pcdc_data/gen3_etl/graph/fake_data/data-simulator/subject.json ./pcdc_data/external/
+
+# run our update script
+SUBJECT_JSON="./pcdc_data/external/subject.json"
+EXTERNAL_JSON="./pcdc_data/external/external_reference.json"
+UPDATE_SCRIPT="./pcdc_data/external/update_external_references.py"
+
+# Grab a version of the external_reference, as well as the subject, and connect them together via submitter_id
+python3 "$UPDATE_SCRIPT" "$SUBJECT_JSON" "$EXTERNAL_JSON"
+
+# copy our external_refernce.json to where it belongs
+cp ./pcdc_data/external/external_reference.json ./pcdc_data/gen3_etl/graph/fake_data/data-simulator/
+
 cd ../../

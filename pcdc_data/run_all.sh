@@ -28,9 +28,9 @@ fi
 chmod +x "$(dirname "$0")"/*.sh
 
 ./load_gen3_etl.sh
-
+# Update the build json file
 ./generate_data.sh
-
+# Update the external ref file
 ./load_graph_db.sh
 
 ./load_elasticsearch.sh
