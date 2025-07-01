@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.15 |
 | file://../audit | audit | 0.1.23 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.22 |
-| file://../cedar | cedar | 0.1.8 |
+| file://../cedar | cedar | 0.1.9 |
 | file://../cohort-middleware | cohort-middleware | 0.1.6 |
 | file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.2 |
@@ -35,18 +35,18 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.2 |
 | file://../guppy | guppy | 0.1.22 |
-| file://../hatchery | hatchery | 0.1.19 |
-| file://../indexd | indexd | 0.1.27 |
+| file://../hatchery | hatchery | 0.1.20 |
+| file://../indexd | indexd | 0.1.28 |
 | file://../manifestservice | manifestservice | 0.1.26 |
 | file://../metadata | metadata | 0.1.26 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.0 |
 | file://../orthanc | orthanc | 0.1.1 |
-| file://../peregrine | peregrine | 0.1.26 |
+| file://../peregrine | peregrine | 0.1.27 |
 | file://../portal | portal | 0.1.35 |
 | file://../requestor | requestor | 0.1.21 |
-| file://../revproxy | revproxy | 0.1.33 |
-| file://../sheepdog | sheepdog | 0.1.25 |
+| file://../revproxy | revproxy | 0.1.34 |
+| file://../sheepdog | sheepdog | 0.1.26 |
 | file://../sower | sower | 0.1.26 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.25 |
 | file://../wts | wts | 0.1.24 |

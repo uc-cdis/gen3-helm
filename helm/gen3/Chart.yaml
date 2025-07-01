@@ -29,7 +29,7 @@ dependencies:
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -64,11 +64,11 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -92,11 +92,11 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.33
+    version: 0.1.34
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
@@ -160,7 +160,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.0
+version: 0.2.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

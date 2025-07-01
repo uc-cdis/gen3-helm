@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "cedar.labels" . | nindent 4 }}
 spec:
-  schedule: "* * * * *"
-  suspend: true
+  schedule: "0 8,15 * * *"
+  suspend: false
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
