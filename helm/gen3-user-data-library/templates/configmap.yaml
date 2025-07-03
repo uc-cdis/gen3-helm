@@ -1,0 +1,9 @@
+{{- if .Values.itemSchemas}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gen3-user-data-library.fullname" . }}-config
+data:
+  item_schemas.json: |-
+    {{ .Values.itemSchemas| toJson | indent 4}}
+{{- end}}

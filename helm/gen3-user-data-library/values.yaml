@@ -128,6 +128,7 @@ volumeMounts:
     readOnly: true
     subPath: gen3-user-data-library.env
 
+
 affinity: {}
 automountServiceAccountToken: false
 
@@ -188,3 +189,10 @@ secrets:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 gunicornWorkers: 1
+
+
+# Item Schema
+itemSchemas: Null
+
+# Host Aliases
+hostAliases: []

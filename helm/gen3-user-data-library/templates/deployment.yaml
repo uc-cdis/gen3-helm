@@ -30,18 +30,31 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.hostAliases}}
+      hostAliases:
+        {{- toYaml . | nindent 4}}
+      {{- end}}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+
       volumes:
         - name: gen3-user-data-library-g3auto-volume
           secret:
             secretName: gen3userdatalibrary-g3auto
+        {{- if .Values.itemSchemas }}
+        - name: gen3-user-data-library-config-volume
+          configMap:
+            name: {{ include "gen3-user-data-library.fullname" . }}-config
+        {{- end }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           env:
             {{- toYaml .Values.env | nindent 12 }}
             - name: URL_PREFIX
@@ -76,10 +89,11 @@ spec:
                   name: gen3-user-data-library-dbcreds
                   key: dbcreated
                   optional: false
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           ports:
             - containerPort: 80
               name: http
+
           livenessProbe:
             httpGet:
               path: /_status
@@ -87,22 +101,34 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
+
           readinessProbe:
             httpGet:
               path: /_status
               port: 80
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.itemSchemas .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
+            {{- with .Values.volumeMounts }}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.itemSchemas }}
+            - name: gen3-user-data-library-config-volume
+              mountPath: /gen3userdatalibrary/config/item_schemas.json
+              readOnly: true
+              subPath: item_schemas.json
+            {{- end }}
+          {{- end}}
+
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
       initContainers:
         - name: gen3-user-data-library-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           env:
             - name: GEN3_DEBUG
               value: "False"
@@ -137,14 +163,23 @@ spec:
                   key: dbcreated
                   optional: false
 
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.itemSchemas .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- with .Values.volumeMounts }}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.itemSchemas }}
+            - name: gen3-user-data-library-config-volume
+              mountPath: /gen3userdatalibrary/config/item_schemas.json
+              readOnly: true
+              subPath: item_schemas.json
+            {{- end }}
+          {{- end}}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
           command: [ "/bin/sh" ]
           args:
             - "-c"
