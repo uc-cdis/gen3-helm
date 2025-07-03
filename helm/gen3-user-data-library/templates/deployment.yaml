@@ -163,6 +163,7 @@ spec:
                   key: dbcreated
                   optional: false
 
+          {{- if or .Values.itemSchemas .Values.volumeMounts }}
           volumeMounts:
             {{- with .Values.volumeMounts }}
             {{ toYaml . | nindent 12 }}
@@ -173,7 +174,7 @@ spec:
               readOnly: true
               subPath: item_schemas.json
             {{- end }}
-
+          {{- end}}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
