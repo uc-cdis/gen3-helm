@@ -48,6 +48,7 @@ A Helm chart for Kubernetes
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | gunicornWorkers | int | `1` |  |
+| hostAliases | list | `[]` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3-user-data-library"` |  |
 | image.tag | string | `"main"` |  |

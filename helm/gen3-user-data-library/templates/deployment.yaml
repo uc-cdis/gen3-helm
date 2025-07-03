@@ -21,6 +21,7 @@ spec:
       labels:
         {{- include "gen3-user-data-library.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
+        # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
         userhelper: 'yes'
@@ -29,10 +30,10 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.hostAliases}}
       hostAliases:
-        - ip: "172.18.0.2"
-          hostnames:
-            - "jacobdaugherty.dev.planx-pla.net"
+        {{- toYaml . | nindent 4}}
+      {{- end}}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -63,26 +64,31 @@ spec:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: host
+                  optional: false
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: username
+                  optional: false
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: password
+                  optional: false
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: database
+                  optional: false
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: dbcreated
+                  optional: false
 
           ports:
             - containerPort: 80
@@ -130,26 +136,31 @@ spec:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: host
+                  optional: false
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: username
+                  optional: false
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: password
+                  optional: false
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: database
+                  optional: false
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
                   name: gen3-user-data-library-dbcreds
                   key: dbcreated
+                  optional: false
 
           volumeMounts:
             {{- with .Values.volumeMounts }}
@@ -171,5 +182,6 @@ spec:
           args:
             - "-c"
             - |
+              # Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility
               printenv
               poetry run alembic upgrade head || /env/bin/alembic upgrade head

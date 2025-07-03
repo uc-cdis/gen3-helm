@@ -193,3 +193,6 @@ gunicornWorkers: 1
 
 # Item Schema
 itemSchemas: Null
+
+# Host Aliases
+hostAliases: []
