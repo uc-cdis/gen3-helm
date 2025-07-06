@@ -14,6 +14,9 @@ spec:
   - to:
     - ipBlock:
         cidr: {{ . }}
+  ports:
+    - protocol: TCP
+      port: 5432
   {{- end }}
   podSelector:
     matchLabels: 
