@@ -1,14 +1,18 @@
-postgres.txt
+# --- Folders ---
 **/charts/
 notes/
-Chart.lock
-.DS_Store
-_sample-*/
-secret-values.yaml
-.env
-credentials.json
 CA/
-temp.yaml
-/values.yaml
 gen3_scripts/
 gen3_etl/
+_sample-*/
+
+# --- Files ---
+Chart.lock
+.DS_Store                                   # macOS system file (usually ignored)
+secret-values.yaml                          # Helm secrets/values file
+.env                                        # Environment variables
+credentials.json                            # Instance generated service account or credentials
+temp.yaml
+/values.yaml                                # Main Helm values file
+postgres.txt
+pcdc_data/external/external_reference.json  # External reference data file for PCDC
