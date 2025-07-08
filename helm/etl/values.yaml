@@ -21,7 +21,8 @@ image:
 imagePullSecrets: []
 
 # -- (map) Annotations to add to the pod
-podAnnotations: {}
+podAnnotations:
+  checksum/config: {{ include (print $.Template.BasePath "/etl-mapping.yaml") . | sha256sum }}
 
 
 # -- (map) Resource requests and limits for the containers in the pod

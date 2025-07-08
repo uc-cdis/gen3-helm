@@ -25,6 +25,7 @@ spec:
         public: "yes"
         s3: "yes"
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-volumes-g3auto.yaml") . | sha256sum }}
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}

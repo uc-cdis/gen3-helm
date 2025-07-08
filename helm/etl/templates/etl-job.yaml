@@ -43,7 +43,7 @@ spec:
                 secretName: etl-secret  
             {{- end }}  
             - name: emptydir
-              emptyDir: {}      
+              emptyDir: {}
             - name: signal-volume
               emptyDir: {}
             - name: creds-volume

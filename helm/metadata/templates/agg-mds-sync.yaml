@@ -19,6 +19,8 @@ spec:
         metadata:
           labels:
             app: gen3job
+        annotations:
+          checksum/config: {{ include (print $.Template.BasePath "/agg-mds-sync.yaml") . | sha256sum }}
         spec:
           affinity:
             nodeAffinity:
