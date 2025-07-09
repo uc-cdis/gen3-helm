@@ -98,7 +98,7 @@ A Helm chart for gen3 etl
 | image.tube.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
-| podAnnotations | map | `{"checksum/config":{"":null}}` | Annotations to add to the pod |
+| podAnnotations | map | `{}` | Annotations to add to the pod |
 | resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
 | resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |

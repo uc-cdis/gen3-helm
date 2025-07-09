@@ -67,8 +67,3 @@ Create the name of the service account to use
 {{- define "access-backend-g3auto" -}}
 {{- default "access-backend-g3auto" .Values.externalSecrets.accessBackendG3auto }}
 {{- end }}
-
-{{- define "access-backend.externalSecrets.deploy" -}}
-{{- /* Use local value if set, fallback to global */ -}}
-{{- default .Values.global.externalSecrets.deploy .Values.externalSecrets.deploy }}
-{{- end }}

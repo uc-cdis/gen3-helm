@@ -13,6 +13,7 @@ spec:
           {{- with .Values.podAnnotations }}
           annotations:
             {{- toYaml . | nindent 12 }}
+            checksum/config: {{ include (print $.Template.BasePath "/etl-mapping.yaml") . | sha256sum }}
           {{- end }}
           labels:
             app: gen3job
