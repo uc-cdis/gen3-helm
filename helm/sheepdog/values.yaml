@@ -177,14 +177,6 @@ image:
   tag: "bug_auth-audience"
 
 # Environment Variables
-# -- (string) URL of the data dictionary.
-dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
-# -- (string) URL for the indexd service
-indexdUrl: http://indexd-service
-# -- (string) URL for the fence service
-fenceUrl: http://fence-service
-# -- (string) URL for the arborist service
-arboristUrl: http://arborist-service
 authNamespace: ""
 
 # -- (list) Volumes to mount to the container.

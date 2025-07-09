@@ -53,7 +53,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: DICTIONARY_URL
-            value: {{ .Values.dictionaryUrl }}
+            value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
           - name: PGHOST
             valueFrom:
               secretKeyRef:
@@ -209,24 +209,18 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              value: {{ include "sheepdog.dictionaryUrl" .}}
-            {{- with .Values.indexdUrl }}
+              value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
             - name: INDEX_CLIENT_HOST
-              value: {{ . }}
-            {{- end }}
+              value: {{ default "http://indexd-service" .Values.global.dictionaryUrl | quote }}
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
               value: https://{{ .Values.global.hostname }}/user
             {{- else }}
-            {{- with .Values.fenceUrl }}
             - name: FENCE_URL
-              value: {{ . }}
+              value: {{ default "http://fence-service" .Values.global.dictionaryUrl | quote }}
             {{- end }}
-            {{- end }}
-            {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
-              value: {{ . }}
-            {{- end }}
+              value: {{ default "http://arborist-service" .Values.global.dictionaryUrl | quote }}
             {{- with .Values.authNamespace }}
             - name: AUTH_NAMESPACE
               value: {{ . }}
