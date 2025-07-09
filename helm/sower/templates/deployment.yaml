@@ -48,11 +48,8 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DICTIONARY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: dictionary_url
-                  optional: true
+              value: {{ .Values.global.dictionaryUrl | quote }}
+              optional: true
             - name: GEN3_HOSTNAME
               value: {{ .Values.global.hostname }}
           ports:
