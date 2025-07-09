@@ -30,6 +30,9 @@ data:
   {{- with .Values.global.wtsURL }}
   "wts_url":  {{ . | quote }}
   {{- end -}}
+  {{- with .Values.global.arboristURL }}
+  "arborist_url":  {{ . | quote }}
+  {{- end -}}
   {{- with .Values.global.manifestServiceURL }}
   "manifest_service_url": {{ . | quote }}
   {{- end -}}

@@ -85,6 +85,7 @@ global:
   workspaceTimeoutInMinutes: 480
   maintenanceMode: off
   fenceURL:
+  arboristURL:
   indexdURL:
   workspaceURL:
   manifestServiceURL:

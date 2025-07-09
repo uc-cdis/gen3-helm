@@ -211,16 +211,16 @@ spec:
             - name: DICTIONARY_URL
               value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
             - name: INDEX_CLIENT_HOST
-              value: {{ default "http://indexd-service" .Values.global.dictionaryUrl | quote }}
+              value: {{ default "http://indexd-service" .Values.global.indexdURL | quote }}
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
               value: https://{{ .Values.global.hostname }}/user
             {{- else }}
             - name: FENCE_URL
-              value: {{ default "http://fence-service" .Values.global.dictionaryUrl | quote }}
+              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
             {{- end }}
             - name: ARBORIST_URL
-              value: {{ default "http://arborist-service" .Values.global.dictionaryUrl | quote }}
+              value: {{ default "http://arborist-service" .Values.global.arboristURL | quote }}
             {{- with .Values.authNamespace }}
             - name: AUTH_NAMESPACE
               value: {{ . }}

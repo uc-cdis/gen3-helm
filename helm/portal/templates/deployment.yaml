@@ -127,10 +127,10 @@ spec:
               value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
               optional: true
             - name: TIER_ACCESS_LEVEL
-              value: {{ .Values.global.tierAccessLimit | quote }}
+              value: {{ .Values.global.tierAccessLevel | quote }}
               optional: true
             - name: TIER_ACCESS_LIMIT
-              value: {{ .Values.global.tierAccessLevel | quote }}
+              value: {{ .Values.global.tierAccessLimit | quote }}
               optional: true
             - name: FENCE_URL
               value: {{ .Values.global.fenceURL | quote }}
