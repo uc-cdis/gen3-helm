@@ -69,6 +69,10 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
 
+# -- (bool) Whether the arborist rm exipred access cronjob is enabled.
+cronjob:
+  enabled: true
+
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
 
