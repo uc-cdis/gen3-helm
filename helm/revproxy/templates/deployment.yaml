@@ -87,20 +87,20 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: MAINTENANCE_MODE
-              value: {{ .Values.global.maintenanceMode | quote }}
-              optional: true
+            value: {{ .Values.global.maintenanceMode | quote }}
+            optional: true
           - name: FRONTEND_ROOT
-              value: {{ .Values.global.frontendRoot | quote }}
-              optional: true
+            value: {{ .Values.global.frontendRoot | quote }}
+            optional: true
           - name: ORIGINS_ALLOW_CREDENTIALS
-              value: {{ .Values.global.origins_allow_credentials | quote }}
-              optional: true
+            value: {{ .Values.global.origins_allow_credentials | quote }}
+            optional: true
           - name: COOKIE_DOMAIN
-              value: {{ .Values.global.cookieDomain | quote }}
-              optional: true
+            value: {{ .Values.global.cookieDomain | quote }}
+            optional: true
           - name: DES_NAMESPACE
-              value: {{ .Values.global.desNamespace | quote }}
-              optional: true
+            value: {{ .Values.global.desNamespace | quote }}
+            optional: true
           - name: INDEXD_AUTHZ
             valueFrom:
               secretKeyRef:
