@@ -2,35 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
-      # -- (string) AWS region for this deployment
-    region: us-east-1
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
-    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
-    secretStoreServiceAccount:
-    # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
-      enabled: False
-      # -- (string) Name of the service account to create
-      name: secret-store-sa
-      # -- (string) AWS Role ARN for Secret Store to use
-      roleArn:
-      # -- (map) Local secret setting if using a pre-exising secret.
-      useLocalSecret:
-        # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
-        enabled: false
-        # -- (string) Name of the local secret.
-        localSecretName:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: false
@@ -46,51 +33,27 @@ global:
       password:
       # -- (string) Port for Postgres.
       port: "5432"
-  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
-  environment: default
-  # -- (string) Hostname for the deployment.
-  hostname: localhost
-  # -- (string) ARN of the reverse proxy certificate.
-  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
-  # -- (string) URL of the data dictionary.
-  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
-  # -- (string) Portal application name.
-  portalApp: gitops
-  # -- (string) S3 bucket name for Kubernetes manifest files.
-  kubeBucket: kube-gen3
-  # -- (string) S3 bucket name for log files.
-  logsBucket: logs-gen3
-  # -- (bool) Whether public datasets are enabled.
-  publicDataSets: true
-  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
-  tierAccessLevel: libre
-  # -- (map) Controls network policy settings
-  netPolicy:
-    enabled: false
-  # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: "10"
-  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
-  pdb: false
-  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+
   # -- (map) External Secrets settings.
   externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3workflow secrets you have deployed.
-    deploy: true
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed.
+    deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
-    separateSecretStore: true
-
+    separateSecretStore: false
+  
+  # -- (map) Network policy settings.
+  netPolicy:
+    # -- (bool) Whether network policies are enabled
+    enabled: false
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sGen3WorkflowSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
-  gen3workflowG3auto:
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
-  dbcreds:
+  createK8sGen3WorkflowSecret: false # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  gen3workflowG3auto: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
+  dbcreds: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+
 # -- (map) Secret information for External Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
@@ -98,30 +61,24 @@ secrets:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 
-# -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set to true then these databases will be created for you
-postgres:
-  # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
-  dbCreate:
-  # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
-  host:
-  # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
-  database:
-  # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
-  username:
-  # -- (string) Port for Postgres.
-  port: "5432"
-  # -- (string) Password for Postgres. Will be autogenerated if left empty.
-  password:
-  # -- (string) Will create a Database for the individual service to help with developing it.
-  separate: false
+#TODO: Enable this when we have a postgres db for gen3workflow
+# # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set to true then these databases will be created for you
+# postgres:
+#   # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
+#   dbCreate:
+#   # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
+#   host:
+#   # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+#   database:
+#   # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+#   username:
+#   # -- (string) Port for Postgres.
+#   port: "5432"
+#   # -- (string) Password for Postgres. Will be autogenerated if left empty.
+#   password:
+#   # -- (string) Will create a Database for the individual service to help with developing it.
+#   separate: false
 
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
-# Disable persistence by default so we can spin up and down ephemeral environments
-postgresql:
-  primary:
-    persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: false
 
 # -- (int) Number of desired replicas
 replicaCount: 1
@@ -146,7 +103,7 @@ image:
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: "feat_plugin-support"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -195,36 +152,38 @@ service:
   # -- (int) Port on which the service is exposed
   port: 80
 
-# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
-netPolicy:
-  # -- (array) List of app labels that require ingress to this service
-  ingressApps:
-    - fence
-    - presigned-url-fence
+#TODO: Emable this when we are setting up network policies
+# # -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+# netPolicy:
+#   # -- (array) List of app labels that require ingress to this service
+#   ingressApps:
+#     - fence
+#     - presigned-url-fence
     
-  # -- (array) List of apps that this app requires egress to
-  egressApps:
-    - fence
-    - presigned-url-fence
+#   # -- (array) List of apps that this app requires egress to
+#   egressApps:
+#     - fence
+#     - presigned-url-fence
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
-  # -- (map) The amount of resources that the container requests
-  requests:
-    # -- (string) The amount of CPU requested
-    cpu: 100m
-    # -- (string) The amount of memory requested
-    memory: 1Gi
-  # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
-    # -- (string) The maximum amount of memory the container can use
-    memory: 1Gi
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
   # -- (bool) Whether autoscaling is enabled or not
   enabled: false
-  # -- (int) The minimum number of replicas to scale do2 wheeler wn to
+  # -- (int) The minimum number of replicas to scale down to
   minReplicas: 1
   # -- (int) The maximum number of replicas to scale up to
   maxReplicas: 4
@@ -313,7 +272,7 @@ release: "production"
 # -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
 criticalService: "false"
 # -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
-partOf: "Logging"
+partOf: "Workflow_Execution"
 # -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
@@ -338,13 +297,13 @@ workflowConfig:
   # -- (bool) Whether to enable KMS encryption for the workflow service.
   kmsEncryptionEnabled: false
 
-Funnel:
+funnel:
   # -- (map) Configuration for the Funnel container image.
   image:
     # -- (string) The Docker image repository for the Funnel service.
-    repository: quay.io/ohsu-comp-bio/funnel  
+    repository: quay.io/ohsu-comp-bio/funnel
     # -- (string) The Docker image tag for the Funnel service.
-    tag: testing  
+    tag: feature-plugins
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
     
@@ -361,6 +320,14 @@ Funnel:
       - cp
       - /app/build/plugins-go/authorizer
       - /opt/funnel/plugin-binaries/auth-plugin
+  mongodb:
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 10
+      periodSeconds: 10
+      failureThreshold: 10
+
 
   # -- (map) Configuration for the Funnel plugin.
   Plugins:
@@ -369,13 +336,13 @@ Funnel:
     Path: plugin-binaries/auth-plugin
     
     # -- (map) Parameters to send to the Funnel plugin.
-    Params:
+    Params: 
       # -- (string) S3 URL for Funnel plugin.
       S3Url: ""
       # -- (string) OIDC token URL for Funnel plugin.
-      OidcTokenUrl: ""
+      OidcTokenUrl: "" 
       # -- (string) OIDC client ID for Funnel plugin.
-      OidcClientId: ""
+      OidcClientId: "" 
       # -- (string) OIDC client secret for Funnel plugin.
       OidcClientSecret: ""
   
@@ -384,8 +351,8 @@ Funnel:
     # -- (string) Namespace where Funnel server will be created.
     Namespace: ""
     # -- (string) Namespace where Funnel jobs will be created.
-    JobsNamespace: $jobsNamespace
+    JobsNamespace: ""
 
   Logger:
     # Logging levels: debug, info, error
-    Level: info
+    level: info
