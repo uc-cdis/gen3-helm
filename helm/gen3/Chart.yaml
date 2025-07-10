@@ -9,15 +9,15 @@ dependencies:
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.15
+    version: 0.1.16
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
@@ -25,7 +25,7 @@ dependencies:
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.46
+    version: 0.1.47
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -60,19 +60,19 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: guppy
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
@@ -88,7 +88,7 @@ dependencies:
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy

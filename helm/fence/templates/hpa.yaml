@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: argo-wrapper-deployment
+  name: fence-deployment
   labels:
-    {{- include "argo-wrapper.labels" . | nindent 4 }}
+    {{- include "fence.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: argo-wrapper-deployment
+    name: fence-deployment
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
