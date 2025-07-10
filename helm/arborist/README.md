@@ -23,6 +23,7 @@ A Helm chart for gen3 arborist
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| cronjob | bool | `{"enabled":true}` | Whether the arborist rm exipred access cronjob is enabled. |
 | env | list | `[{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}]` | Environment variables to pass to the container |
 | env[0] | string | `{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}` | The URL of the JSON Web Key Set (JWKS) endpoint for authentication |
 | externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
