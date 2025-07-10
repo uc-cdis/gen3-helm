@@ -1,5 +1,8 @@
 # populate with normal values from a regular chart created by helm create
 
+global:
+  dictionaryUrl:
+
 image:
   tube:
     # -- (string) The Docker image repository for the fence service

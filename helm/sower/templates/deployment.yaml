@@ -21,6 +21,7 @@ spec:
         {{- include "sower.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}        
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/manifest-sower.yaml") . | sha256sum }}
         {{- if .Values.metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
@@ -47,11 +48,8 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DICTIONARY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: dictionary_url
-                  optional: true
+              value: {{ .Values.global.dictionaryUrl | quote }}
+              optional: true
             - name: GEN3_HOSTNAME
               value: {{ .Values.global.hostname }}
           ports:
