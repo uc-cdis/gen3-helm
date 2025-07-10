@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -90,21 +90,19 @@ A Helm chart for gen3 etl
 | etlMapping.mappings[1].target_nodes[0].name | string | `"slide_image"` |  |
 | etlMapping.mappings[1].target_nodes[0].path | string | `"slides.samples.cases"` |  |
 | etlMapping.mappings[1].type | string | `"collector"` |  |
-| image.spark.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| image.spark.pullPolicy | string | `"IfNotPresent"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.spark.repository | string | `"quay.io/cdis/gen3-spark"` | The Docker image repository for the spark service |
-| image.spark.tag | string | `"2024.11"` | Overrides the image tag whose default is the chart appVersion. |
-| image.tube.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| image.spark.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tube.pullPolicy | string | `"IfNotPresent"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.tube.repository | string | `"quay.io/cdis/tube"` | The Docker image repository for the fence service |
 | image.tube.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
-| resources | map | `{"spark":{"requests":{"cpu":0.3,"memory":"128Mi"}},"tube":{"requests":{"cpu":0.3,"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
-| resources.spark.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.spark.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
+| resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| resources.tube.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.tube.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
 | suspendCronjob | bool | `true` |  |

@@ -141,12 +141,17 @@ spec:
                   name: manifest-peregrine
                   key: peregrine_timeout
                   optional: true
+            {{- if eq .Values.global.dev false }}
+            - name: FENCE_URL
+              value: https://{{ .Values.global.hostname }}/user
+            {{- else }}
             - name: FENCE_URL
               valueFrom:
                 configMapKeyRef:
                   name: manifest-global
                   key: fence_url
                   optional: true
+            {{- end }}
             - name: ARBORIST_URL
               value: {{ .Values.arborist_url }}
             - name: GEN3_SIDECAR

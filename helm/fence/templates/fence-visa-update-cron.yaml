@@ -1,0 +1,116 @@
+{{- if .Values.FENCE_CONFIG.ENABLE_VISA_UPDATE_CRON -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: fence-visa-update
+spec:
+  schedule: {{ .Values.fenceVisaUpdate.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          serviceAccountName: fence-visa-update-job
+          volumes:
+            - name: yaml-merge
+              configMap:
+                name: "fence-yaml-merge"
+            - name: config-volume
+              secret:
+                secretName: "fence-config"
+            - name: config-volume-public
+              configMap:
+                name: "manifest-fence"
+                optional: true
+            - name: fence-google-app-creds-secret-volume
+              secret:
+                secretName: "fence-google-app-creds-secret"
+            - name: fence-google-storage-creds-secret-volume
+              secret:
+                secretName: "fence-google-storage-creds-secret"
+            - name: shared-data
+              emptyDir: {}
+          containers:
+          - name: fence
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: Always
+            env:
+                - name: CONCURRENCY
+                  value: {{ .Values.fenceVisaUpdate.concurrency}}
+                - name: CHUNK_SIZE
+                  value: {{ .Values.fenceVisaUpdate.chunkSize}}
+                - name: THREAD_POOL_SIZE
+                  value: {{ .Values.fenceVisaUpdate.threadPoolSize}}
+                - name: BUFFER_SIZE
+                  value: {{ .Values.fenceVisaUpdate.bufferSize}}
+                - name: slackWebHook
+                  value: {{ .Values.fenceVisaUpdate.slack_webhook | quote }}
+                - name: FENCE_PUBLIC_CONFIG
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-fence
+                      key: fence-config-public.yaml
+                      optional: true
+                {{- toYaml .Values.env | nindent 16 }}
+
+            volumeMounts:
+              - name: "yaml-merge"
+                readOnly: true
+                mountPath: "/var/www/fence/yaml_merge.py"
+                subPath: yaml_merge.py
+              - name: "config-volume"
+                readOnly: true
+                mountPath: "/var/www/fence/fence-config-secret.yaml"
+                subPath: fence-config.yaml
+              - name: "config-volume-public"
+                readOnly: true
+                mountPath: "/var/www/fence/fence-config-public.yaml"
+                subPath: fence-config-public.yaml
+              - name: "fence-google-app-creds-secret-volume"
+                readOnly: true
+                mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+                subPath: fence_google_app_creds_secret.json
+              - name: "fence-google-storage-creds-secret-volume"
+                readOnly: true
+                mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+                subPath: fence_google_storage_creds_secret.json
+            command: ["/bin/bash" ]
+            args:
+              - "-c"
+              - |
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
+
+                create_command="fence-create update-visas"
+
+                if [[ -n "$CHUNK_SIZE" ]]; then
+                    create_command+=" --chunk-size $CHUNK_SIZE"
+                fi
+                if [[ -n "$THREAD_POOL_SIZE" ]]; then
+                    create_command+=" --thread-pool-size $THREAD_POOL_SIZE"
+                fi
+                if [[ -n "$BUFFER_SIZE" ]]; then
+                    create_command+=" --buffer-size $BUFFER_SIZE"
+                fi
+                if [[ -n "$CONCURRENCY" ]]; then
+                    create_command+=" --concurrency $CONCURRENCY"
+                fi
+
+                $create_command
+                exitcode=$?
+
+                if [ "${slackWebHook}" != 'None' ]; then
+                  curl -X POST --data-urlencode "payload={\"text\": \"VisaUpdate: Updating visas for users on ${gen3Env}\"}" "${slackWebHook}"
+                fi
+                if [[ $exitcode == 1 && "${slackWebHook}" != 'None' ]]; then
+                  curl -X POST --data-urlencode "payload={\"text\" :\"JOBFAILED: Visa Update job on ${gen3Env}\"}" "${slackWebHook}"
+                fi
+                echo "Exit code: $exitcode"
+                exit "$exitcode"
+          restartPolicy: Never
+{{- end }}

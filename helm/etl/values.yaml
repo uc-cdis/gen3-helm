@@ -5,16 +5,16 @@ image:
     # -- (string) The Docker image repository for the fence service
     repository: quay.io/cdis/tube
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "master"
   spark:
     # -- (string) The Docker image repository for the spark service
     repository: quay.io/cdis/gen3-spark
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "2024.11"
+    tag: "master"
 
 
 # -- (list) Docker image pull secrets.
@@ -29,15 +29,11 @@ resources:
   tube:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
 

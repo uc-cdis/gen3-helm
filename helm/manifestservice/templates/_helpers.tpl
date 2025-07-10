@@ -60,7 +60,7 @@ Create the name of the service account to use
 */}}
 {{- define "manifestservice.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "manifestservice.fullname" .) .Values.serviceAccount.name }}
+{{- default "manifestservice-sa" .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

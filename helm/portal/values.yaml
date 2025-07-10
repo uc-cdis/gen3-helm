@@ -61,6 +61,20 @@ global:
   minAvialable: 1
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
   frontendRoot: "portal"
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
@@ -178,14 +192,9 @@ automountServiceAccountToken: false
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 2.0
     # -- (string) The amount of memory requested
     memory: 4096Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
-    # -- (string) The maximum amount of memory the container can use
-    memory: 4096Mi
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -201,7 +210,10 @@ commonLabels:
 
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
-  # - url: https://raw.githubusercontent.com/uc-cdis/gen3-helm/master/docs/images/gen3-blue-dark.png
+
+# -- (bool) Whether to enable the v2 portal where it is built in s3 using mountpoint.
+# Requires mountpoint to be enabled in the cluster.
+v2Enabled: false
 
 # -- (map) GitOps configuration for portal
 gitops:

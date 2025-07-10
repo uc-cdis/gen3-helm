@@ -51,7 +51,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: AMBASSADOR_NAMESPACE
-            value: {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
+            value: {{- if .Values.jupyterNamespace }}
+              {{ .Values.jupyterNamespace | quote }}
+            {{- else }}
+              {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
+            {{- end }}          
           - name: AMBASSADOR_SINGLE_NAMESPACE
             value: "true"
           ports:

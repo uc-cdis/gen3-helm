@@ -17,7 +17,7 @@ spec:
     ebs:
       deleteOnTermination: true
       encrypted: true
-      volumeSize: 50Gi
+      volumeSize: {{ index .Values "karpenter-crds" "jupyter" "volumeSize" }}
       volumeType: gp3
   metadataOptions:
     httpEndpoint: enabled
@@ -48,12 +48,9 @@ spec:
     Content-Type: text/x-shellscript; charset="us-ascii"
 
     #!/bin/bash -x
-    instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
-    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
     echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
-    sysctl -w fs.inotify.max_user_watches=12000
-
-    sudo yum update -y
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys &
+    sysctl -w fs.inotify.max_user_watches=12000 &
 
     --BOUNDARY--
 {{- if eq .Values.karpenter.targetRevision "1.0.8" }}
@@ -92,27 +89,11 @@ spec:
       expireAfter: 168h
       terminationGracePeriod: 48h
       requirements:
-        - key: karpenter.sh/capacity-type
-          operator: In
-          values:
-            - on-demand
-        - key: kubernetes.io/arch
-          operator: In
-          values:
-            - amd64
-        - key: karpenter.k8s.aws/instance-category
-          operator: In
-          values:
-            - c
-            - m
-            - r
-            - t
+      {{ toYaml (index .Values "karpenter-crds" "jupyter" "requirements") | nindent 6 }}
 
   disruption:
-    {{ if eq (index .Values "karpenter-crds" "default" "consolidationPolicy" ) "WhenEmpty" }}
-    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
-    {{ end }}
-    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "jupyter" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "jupyter" "consolidationPolicy" }}
     budgets:
     - nodes: 10%
 
@@ -155,21 +136,7 @@ spec:
         kind: EC2NodeClass
         name: jupyter
       requirements:
-      - key: karpenter.sh/capacity-type
-        operator: In
-        values:
-        - on-demand
-      - key: kubernetes.io/arch
-        operator: In
-        values:
-        - amd64
-      - key: karpenter.k8s.aws/instance-category
-        operator: In
-        values:
-        - c
-        - m
-        - r
-        - t
+      {{ toYaml (index .Values "karpenter-crds" "jupyter" "requirements") | nindent 6 }}
       taints:
       - effect: NoSchedule
         key: role

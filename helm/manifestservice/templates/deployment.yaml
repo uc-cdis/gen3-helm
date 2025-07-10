@@ -28,6 +28,7 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ include "manifestservice.serviceAccountName" . }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -42,6 +43,37 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
+            {{- if and .Values.manifestserviceG3auto.awsaccesskey .Values.manifestserviceG3auto.awssecretkey }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: manifestservice-g3auto
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: manifestservice-g3auto
+                  key: aws_secret_access_key
+            {{- else if or (.Values.secrets.awsSecretAccessKey) (.Values.global.aws.awsSecretAccessKey) (.Values.global.aws.externalSecrets.enabled) (.Values.global.aws.useLocalSecret.enabled) }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                {{- if .Values.global.aws.useLocalSecret.enabled }}
+                  name: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+                {{- else }}
+                  name: {{.Chart.Name}}-aws-config
+                {{- end }}
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                {{- if .Values.global.aws.useLocalSecret.enabled }}
+                  name: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+                {{- else }}
+                  name: {{.Chart.Name}}-aws-config
+                {{- end }}
+                  key: secret-access-key
+            {{- end }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:

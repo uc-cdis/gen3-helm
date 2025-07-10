@@ -118,8 +118,10 @@ spec:
               value: {{ .Values.global.dictionaryUrl }}
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
+            {{- if .Values.gitops.gen3Bundle }}
             - name: GEN3_BUNDLE
               value: {{ .Values.gitops.gen3Bundle | quote }}
+            {{- end }}
             - name: LOGOUT_INACTIVE_USERS
               valueFrom:
                 configMapKeyRef:

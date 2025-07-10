@@ -1,0 +1,190 @@
+# Default values for gen3-user-data-library.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+debug: false
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: quay.io/cdis/gen3-user-data-library
+  # This sets the pull policy for images.
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: main
+
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 80
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+# -- (list) Environment variables to pass to the container
+env:
+  - name: GEN3_DEBUG
+    value: "false"
+  - name: ARBORIST_URL
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: arborist_url
+        optional: true
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+  - mountPath: /gen3userdatalibrary/.env
+    name: gen3-user-data-library-g3auto-volume
+    readOnly: true
+    subPath: gen3-user-data-library.env
+
+affinity: {}
+automountServiceAccountToken: false
+
+# -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
+postgres:
+  # (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore
+  dbRestore: false
+  # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
+  dbCreate:
+  # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
+  host:
+  # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  database:
+  # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  username:
+  # -- (string) Port for Postgres.
+  port: "5432"
+  # -- (string) Password for Postgres. Will be autogenerated if left empty.
+  password:
+  # -- (string) Will create a Database for the individual service to help with developing it.
+  separate: false
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
+# Disable persistence by default so we can spin up and down ephemeral environments
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: false
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Data_Library"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "gen3UserDataLibrary-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sGen3UserDataLibrarySecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto"
+  gen3UserDataLibraryG3auto:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) Secret information to access the db restore job S3 bucket.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
+gunicornWorkers: 1

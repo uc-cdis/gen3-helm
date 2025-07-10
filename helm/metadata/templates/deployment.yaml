@@ -39,12 +39,8 @@ spec:
           secret:
             secretName: metadata-g3auto
         - name: config-volume
-          secret:
-            secretName: metadata-config
-            optional: true
-        - name: config-manifest
           configMap:
-            name: manifest-metadata
+            name: agg-mds-config
             optional: true
       containers:
         - name: {{ .Chart.Name }}
@@ -92,6 +88,8 @@ spec:
             - name: AGG_MDS_NAMESPACE
               value: {{ . }}
             {{- end }}
+            - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
+              value: {{ .Values.aggMdsDefaultDataDictField}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:

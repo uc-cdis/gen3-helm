@@ -16,6 +16,7 @@ data:
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
   "authz_entity_name": {{.Values.global.authz_entity_name | quote }}
   "frontend_root": {{ .Values.global.frontendRoot | quote }}
+  "slack_webhook": {{ .Values.global.slackWebhook }}
   {{- with .Values.global.origins_allow_credentials }}
   "origins_allow_credentials": {{ . | toJson | quote }}
   {{- end -}}

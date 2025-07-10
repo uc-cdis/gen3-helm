@@ -26,16 +26,18 @@ spec:
         {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
-    annotations:
       {{- if .Values.metricsEnabled }}
+      annotations:
       {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      serviceAccountName: {{ include "aws-es-proxy.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
         - name: credentials
           secret:
             secretName: {{.Chart.Name}}-aws-config
+            optional: true
       containers:
         - name: "esproxy"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
