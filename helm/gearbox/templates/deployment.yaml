@@ -79,8 +79,8 @@ spec:
           args:
             - "-c"
             - |
-              /env/bin/alembic upgrade head
-      
+              poetry run alembic upgrade head
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

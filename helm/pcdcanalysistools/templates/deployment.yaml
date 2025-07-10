@@ -141,6 +141,10 @@ spec:
               value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "False"
+            - name: FLASK_ENV
+              value: development
+            - name: FLASK_APP
+              value: PcdcAnalysisTools.wsgi
           volumeMounts:
             - name: "config-volume"
               readOnly: true
