@@ -86,7 +86,7 @@ spec:
             - /bin/bash
             - -c
             - |
-              validate-filter-sets            
+              validate-filter-sets
       restartPolicy: Never
   # Optional: add a backoff limit to control retries
   backoffLimit: 3

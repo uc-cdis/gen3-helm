@@ -64,8 +64,7 @@ spec:
             - |
               echo "${AMANUENSIS_PUBLIC_CONFIG:-""}" > "/var/www/amanuensis/amanuensis-config-public.yaml"
               python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml > /var/www/amanuensis/amanuensis-config.yaml
-              #bash /amanuensis/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then /dockerrun.sh; fi
-              bash /dockerrun.sh
+              if [[ -f /amanuensis/dockerrun.bash ]]; then bash /amanuensis/dockerrun.bash; elif [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; else echo 'Error: Neither /amanuensis/dockerrun.bash nor /dockerrun.sh exists.' >&2; exit 1; fi
           env:
             {{- if .Values.global.ddEnabled }}
             {{- include "common.datadogEnvVar" . | nindent 12 }}
