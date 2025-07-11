@@ -76,29 +76,37 @@ spec:
               AURORA_USER=$(get_secret "$TARGET_NS" "$AURORA_SECRET" username)
               AURORA_PASS=$(get_secret "$TARGET_NS" "$AURORA_SECRET" password)
 
+              echo "DEBUG: SOURCE_DB=$SOURCE_DB, SOURCE_HOST=$SOURCE_HOST, TARGET_USER=$TARGET_USER"
+              echo "DEBUG: AURORA_HOST=$AURORA_HOST, AURORA_USER=$AURORA_USER"
+
               if [[ "$SOURCE_HOST" != "$TARGET_HOST" || "$TARGET_HOST" != "$AURORA_HOST" ]]; then
-                echo "Host mismatch detected!"; #exit 1
+                echo "WARNING: Host mismatch detected! Proceeding anyway."
+              fi
+
+              export PGPASSWORD="$AURORA_PASS"
+
+              db_exists=$(psql -h "$AURORA_HOST" -U "$AURORA_USER" -tAc "SELECT 1 FROM pg_database WHERE datname='$SOURCE_DB'")
+              if [[ "$db_exists" != "1" ]]; then
+                echo "ERROR: Source DB does not exist: $SOURCE_DB" >&2
+                exit 1
               fi
 
               TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
 
-              export PGPASSWORD="$AURORA_PASS"
+              # Block new connections to source DB and terminate existing
+              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
+              UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$SOURCE_DB';
+              SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();
+EOF
 
+              # Clone DB
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
               GRANT "$TARGET_USER" TO "$AURORA_USER";
-              SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();
               CREATE DATABASE "$TARGET_DB" WITH TEMPLATE "$SOURCE_DB" OWNER "$TARGET_USER";
-              EOF
+EOF
 
-              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d "$TARGET_DB" <<EOF
-              DO \$\$ DECLARE tbl record;
-              BEGIN
-                FOR tbl IN SELECT table_schema || '.' || table_name FROM information_schema.tables WHERE table_schema = 'public'
-                LOOP
-                  EXECUTE 'ALTER TABLE ' || tbl.full_table_name || ' OWNER TO "$TARGET_USER";';
-                END LOOP;
-              END \$\$;
-              EOF
+              # Re-enable connections to source DB
+              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "UPDATE pg_database SET datallowconn = TRUE WHERE datname = '$SOURCE_DB';"
 
               echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
