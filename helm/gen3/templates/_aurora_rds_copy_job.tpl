@@ -50,7 +50,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: aurora-db-copy-container
-          image: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/awshelper:latest
+          image: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/awshelper:master
           command:
             - "/bin/bash"
             - "-c"
