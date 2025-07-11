@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for provisioning databases in gen3
 
@@ -8,6 +8,13 @@ A Helm chart for provisioning databases in gen3
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
+| auroraRdsCopyJob.enabled | bool | `false` |  |
+| auroraRdsCopyJob.services | list | `[]` |  |
+| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
+| auroraRdsCopyJob.targetNamespace | string | `""` |  |
+| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
+| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | global.aws | map | `{"region":"us-east-1"}` | AWS configuration |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
