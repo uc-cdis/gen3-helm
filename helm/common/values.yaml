@@ -56,12 +56,3 @@ global:
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
 
-# Default configuration for auroraRdsCopyJob
-auroraRdsCopyJob:
-  enabled: false
-  auroraMasterSecret: ""
-  sourceNamespace: ""
-  targetNamespace: ""
-  writeToK8sSecret: false
-  writeToAwsSecret: false
-  services: []

@@ -8,13 +8,6 @@ A Helm chart for provisioning databases in gen3
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
-| auroraRdsCopyJob.enabled | bool | `false` |  |
-| auroraRdsCopyJob.services | list | `[]` |  |
-| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
-| auroraRdsCopyJob.targetNamespace | string | `""` |  |
-| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
-| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | global.aws | map | `{"region":"us-east-1"}` | AWS configuration |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |

@@ -62,6 +62,13 @@ Helm chart to deploy Gen3 Data Commons
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
+| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
+| auroraRdsCopyJob.enabled | bool | `false` |  |
+| auroraRdsCopyJob.services | list | `[]` |  |
+| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
+| auroraRdsCopyJob.targetNamespace | string | `""` |  |
+| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
+| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
