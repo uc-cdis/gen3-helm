@@ -101,7 +101,6 @@ SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_
 EOF
 
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
-GRANT "$TARGET_USER" TO "$AURORA_USER";
 CREATE DATABASE "$TARGET_DB" WITH TEMPLATE "$SOURCE_DB" OWNER "$TARGET_USER";
 EOF
 
@@ -121,7 +120,7 @@ EOF
 
               if {{ $.Values.auroraRdsCopyJob.writeToAwsSecret | quote }} == "true"; then
                 aws secretsmanager update-secret --secret-id "$TARGET_SECRET" \
-                  --secret-string "$(aws secretsmanager get-secret-value --secret-id $TARGET_SECRET | jq '.SecretString' | jq --arg db "$TARGET_DB" '.database=$db')"
+                  --secret-string "$(aws secretsmanager get-secret-value --secret-id $TARGET_SECRET | jq '.SecretString' | jq --arg db \"$TARGET_DB\" '.database = $db')"
               fi
 
               echo "Database copied successfully: $SOURCE_DB -> $TARGET_DB"
