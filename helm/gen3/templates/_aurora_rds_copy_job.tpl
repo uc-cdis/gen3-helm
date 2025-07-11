@@ -1,4 +1,4 @@
-{{- define "common.auroraRdsCopyJob" }}
+{{- define "gen3.auroraRdsCopyJob" }}
 
 # aurora-db-copy-access.yaml
 ---
