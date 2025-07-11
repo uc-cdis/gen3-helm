@@ -1,0 +1,2 @@
+{{- include "common.auroraRdsCopyJob" . }}
+

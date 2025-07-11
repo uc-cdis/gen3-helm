@@ -1,5 +1,39 @@
+{{- define "common.auroraRdsCopyJob" }}
+
+# aurora-db-copy-access.yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aurora-db-copy-sa
+  namespace: {{ .Values.auroraRdsCopyJob.targetNamespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aurora-db-copy-secret-reader
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aurora-db-copy-sa-binding-{{ .Values.auroraRdsCopyJob.targetNamespace }}
+subjects:
+  - kind: ServiceAccount
+    name: aurora-db-copy-sa
+    namespace: {{ .Values.auroraRdsCopyJob.targetNamespace }}
+roleRef:
+  kind: ClusterRole
+  name: aurora-db-copy-secret-reader
+  apiGroup: rbac.authorization.k8s.io
+
+# aurora-db-copy-job.yaml
 {{- if .Values.auroraRdsCopyJob.enabled }}
 {{- range .Values.auroraRdsCopyJob.services }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -86,3 +120,6 @@ spec:
               echo "Database copied successfully: $SOURCE_DB -> $TARGET_DB"
 {{- end }}
 {{- end }}
+
+{{- end }}
+
