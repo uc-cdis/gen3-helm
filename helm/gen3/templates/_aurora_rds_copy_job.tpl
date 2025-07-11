@@ -61,11 +61,11 @@ spec:
                 kubectl -n "$1" get secret "$2" -o jsonpath="{.data.$3}" | base64 --decode
               }
 
-              SOURCE_NS={{ $.Values.auroraRdsCopyJob.sourceNamespace }}
-              TARGET_NS={{ $.Values.auroraRdsCopyJob.targetNamespace }}
-              SOURCE_SECRET={{ .sourceSecret }}
-              TARGET_SECRET={{ .targetSecret }}
-              AURORA_SECRET={{ $.Values.auroraRdsCopyJob.auroraMasterSecret }}
+              SOURCE_NS="{{ $.Values.auroraRdsCopyJob.sourceNamespace }}"
+              TARGET_NS="{{ $.Values.auroraRdsCopyJob.targetNamespace }}"
+              SOURCE_SECRET="{{ .sourceSecret }}"
+              TARGET_SECRET="{{ .targetSecret }}"
+              AURORA_SECRET="{{ $.Values.auroraRdsCopyJob.auroraMasterSecret }}"
 
               SOURCE_DB=$(get_secret "$SOURCE_NS" "$SOURCE_SECRET" database)
               SOURCE_HOST=$(get_secret "$SOURCE_NS" "$SOURCE_SECRET" host)
@@ -92,7 +92,6 @@ spec:
               fi
 
               TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
-
               echo "DEBUG: TARGET_DB=$TARGET_DB"
 
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
