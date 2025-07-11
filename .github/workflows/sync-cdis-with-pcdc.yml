@@ -1,0 +1,43 @@
+name: Sync upstream master to pcdc_dev
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  sync-upstream:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout your repo
+        uses: actions/checkout@v4
+        with:
+          ref: pcdc_dev
+          fetch-depth: 0
+
+      - name: Add upstream remote and fetch
+        run: |
+          git remote add upstream https://github.com/uc-cdis/gen3-helm.git
+          git fetch upstream master
+
+      - name: Create sync branch
+        run: |
+          git checkout -B sync-upstream-master
+          git merge upstream/master --no-edit
+
+      - name: Push sync branch
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: sync-upstream-master
+
+      - name: Create or update PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: sync-upstream-master
+          target_branch: pcdc_dev
+          title: "Sync upstream master to pcdc_dev"
+          body: "Automatic PR to sync latest changes from upstream master."
+          draft: false
