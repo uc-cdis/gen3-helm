@@ -108,7 +108,7 @@ EOF
 
               echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
-              if {{ $.Values.auroraRdsCopyJob.writeToK8sSecret | quote }} == "true"; then
+              if [[ "{{ $.Values.auroraRdsCopyJob.writeToK8sSecret }}" == "true" ]]; then
                 PATCH="{\"data\":{\"{{ .serviceName }}\":\"$TARGET_DB\"}}"
                 if kubectl -n "$TARGET_NS" get secret cloned-db-names >/dev/null 2>&1; then
                   kubectl -n "$TARGET_NS" patch secret cloned-db-names --type merge -p "$PATCH"
