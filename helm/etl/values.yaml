@@ -16,13 +16,11 @@ image:
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "2024.11"
 
-
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
 
 # -- (map) Annotations to add to the pod
 podAnnotations: {}
-
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -40,7 +38,6 @@ resources:
       cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
-
 
 esEndpoint: gen3-elasticsearch-master
 
@@ -134,6 +131,14 @@ etlMapping:
       target_nodes:
         - name: slide_image
           path: slides.samples.cases
+    - name: subject
+      doc_type: subject
+      type: aggregator
+      root: subject
+      props:
+        - name: submitter_id
+        - name: project_id
+        - name: external_references
 
 # -- (map) Configuration options for es garbage cronjob.
 esGarbageCollect:
