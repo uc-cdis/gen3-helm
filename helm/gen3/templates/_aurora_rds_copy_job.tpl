@@ -37,7 +37,7 @@ roleRef:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: aurora-db-copy-{{ .serviceName }}-{{ now | date "060204_150405" }}
+  name: aurora-db-copy-{{ .serviceName }}-{{ now | date "060204-150405" }}
   namespace: {{ $.Values.auroraRdsCopyJob.targetNamespace }}
 spec:
   backoffLimit: 2
