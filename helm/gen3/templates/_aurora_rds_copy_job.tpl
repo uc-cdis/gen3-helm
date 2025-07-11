@@ -30,7 +30,6 @@ roleRef:
   name: aurora-db-copy-secret-reader
   apiGroup: rbac.authorization.k8s.io
 
-# aurora-db-copy-job.yaml
 {{- if .Values.auroraRdsCopyJob.enabled }}
 {{- range .Values.auroraRdsCopyJob.services }}
 ---
@@ -52,9 +51,9 @@ spec:
         - name: aurora-db-copy-container
           image: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/awshelper:master
           command:
-            - "/bin/bash"
-            - "-c"
-            - |
+            - /bin/bash
+            - -c
+            - |-
               set -euo pipefail
 
               get_secret() {
@@ -94,14 +93,10 @@ spec:
               TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
               echo "DEBUG: TARGET_DB=$TARGET_DB"
 
-              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
-UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$SOURCE_DB';
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();
-EOF
+              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$SOURCE_DB';"
+              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
 
-              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
-CREATE DATABASE "$TARGET_DB" WITH TEMPLATE "$SOURCE_DB" OWNER "$TARGET_USER";
-EOF
+              psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\";"
 
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "UPDATE pg_database SET datallowconn = TRUE WHERE datname = '$SOURCE_DB';"
 

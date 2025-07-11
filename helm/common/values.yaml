@@ -55,4 +55,3 @@ global:
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
-
