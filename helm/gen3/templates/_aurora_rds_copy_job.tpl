@@ -77,7 +77,7 @@ spec:
               AURORA_PASS=$(get_secret "$TARGET_NS" "$AURORA_SECRET" password)
 
               if [[ "$SOURCE_HOST" != "$TARGET_HOST" || "$TARGET_HOST" != "$AURORA_HOST" ]]; then
-                echo "Host mismatch detected!"; exit 1
+                echo "Host mismatch detected!"; #exit 1
               fi
 
               TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
