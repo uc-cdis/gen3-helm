@@ -118,14 +118,8 @@ EOF
                 fi
               fi
 
-              if {{ $.Values.auroraRdsCopyJob.writeToAwsSecret | quote }} == "true"; then
-                aws secretsmanager update-secret --secret-id "$TARGET_SECRET" \
-                  --secret-string "$(aws secretsmanager get-secret-value --secret-id $TARGET_SECRET | jq '.SecretString' | jq --arg db \"$TARGET_DB\" '.database = $db')"
-              fi
-
               echo "Database copied successfully: $SOURCE_DB -> $TARGET_DB"
 {{- end }}
 {{- end }}
 
 {{- end }}
-
