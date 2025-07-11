@@ -2,7 +2,7 @@ name: Sync upstream master to pcdc_dev
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # every day at midnight UTC
+    - cron: '*/10 * * * *'  # every day at midnight UTC
   workflow_dispatch:
 
 jobs:
