@@ -79,7 +79,7 @@ spec:
               echo "DEBUG: SOURCE_DB=$SOURCE_DB, SOURCE_HOST=$SOURCE_HOST, TARGET_USER=$TARGET_USER"
               echo "DEBUG: AURORA_HOST=$AURORA_HOST, AURORA_USER=$AURORA_USER"
 
-              if [[ "$SOURCE_HOST" != "$TARGET_HOST" || "$TARGET_HOST" != "$AURORA_HOST" ]]; then
+              if [[ "$SOURCE_HOST" != "$TARGET_HOST" ]] || [[ "$TARGET_HOST" != "$AURORA_HOST" ]]; then
                 echo "WARNING: Host mismatch detected! Proceeding anyway."
               fi
 
@@ -123,3 +123,4 @@ EOF
 {{- end }}
 
 {{- end }}
+
