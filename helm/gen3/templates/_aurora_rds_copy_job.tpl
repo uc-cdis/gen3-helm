@@ -93,19 +93,18 @@ spec:
 
               TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
 
-              # Block new connections to source DB and terminate existing
+              echo "DEBUG: TARGET_DB=$TARGET_DB"
+
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
-              UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$SOURCE_DB';
-              SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();
+UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$SOURCE_DB';
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();
 EOF
 
-              # Clone DB
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres <<EOF
-              GRANT "$TARGET_USER" TO "$AURORA_USER";
-              CREATE DATABASE "$TARGET_DB" WITH TEMPLATE "$SOURCE_DB" OWNER "$TARGET_USER";
+GRANT "$TARGET_USER" TO "$AURORA_USER";
+CREATE DATABASE "$TARGET_DB" WITH TEMPLATE "$SOURCE_DB" OWNER "$TARGET_USER";
 EOF
 
-              # Re-enable connections to source DB
               psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "UPDATE pg_database SET datallowconn = TRUE WHERE datname = '$SOURCE_DB';"
 
               echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
