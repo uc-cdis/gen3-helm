@@ -71,9 +71,9 @@ spec:
               TARGET_HOST=$(get_secret "$TARGET_NS" "$TARGET_SECRET" host)
               TARGET_USER=$(get_secret "$TARGET_NS" "$TARGET_SECRET" username)
 
-              AURORA_HOST=$(get_secret "$TARGET_NS" "$AURORA_SECRET" host)
-              AURORA_USER=$(get_secret "$TARGET_NS" "$AURORA_SECRET" username)
-              AURORA_PASS=$(get_secret "$TARGET_NS" "$AURORA_SECRET" password)
+              AURORA_HOST=$(get_secret "$TARGET_NS" "$AURORA_SECRET" db_host)
+              AURORA_USER=$(get_secret "$TARGET_NS" "$AURORA_SECRET" db_username)
+              AURORA_PASS=$(get_secret "$TARGET_NS" "$AURORA_SECRET" db_password)
 
               echo "DEBUG: SOURCE_DB=$SOURCE_DB, SOURCE_HOST=$SOURCE_HOST, TARGET_USER=$TARGET_USER"
               echo "DEBUG: AURORA_HOST=$AURORA_HOST, AURORA_USER=$AURORA_USER"
