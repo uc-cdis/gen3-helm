@@ -85,16 +85,16 @@ global:
   logoutInactiveUsers: true
   workspaceTimeoutInMinutes: 480
   maintenanceMode: off
-  fenceURL:
-  arboristURL:
-  indexdURL:
-  workspaceURL:
-  manifestServiceURL:
-  wtsURL:
-  privacyPolicyURL:
-  mapboxToken:
-  cookieDomain:
-  desNamespace:
+  # fenceURL:
+  # arboristURL:
+  # indexdURL:
+  # workspaceURL:
+  # manifestServiceURL:
+  # wtsURL:
+  # privacyPolicyURL:
+  # mapboxToken:
+  # cookieDomain:
+  # desNamespace:
   # -- (bool) Global flags to control and manage network policies for a Gen3 installation
   # NOTE: Network policies are currently a beta feature. Use with caution!
   netPolicy:
