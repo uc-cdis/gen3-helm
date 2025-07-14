@@ -56,42 +56,6 @@ spec:
       - name: extra-images
         emptyDir: {}
       initContainers:
-      {{- if .Values.gitops.customConfig.enabled }}
-        - name: config-puller
-          image: alpine/git
-          env:
-            - name: CONFIG_DIR
-              value: {{ .Values.customConfig.dir }}
-            - name: GIT_REPO
-              value: {{ .Values.customConfig.repo  }}
-            - name: GIT_BRANCH
-              value: {{ .Values.customConfig.branch }}
-          command:
-            - /bin/sh
-            - -c
-            - |
-              mkdir -p /tmp/repo
-              cd /tmp/repo
-              # Clone with sparse checkout and filter
-              git clone --depth 1 ${GIT_REPO} siteconfig
-              cd siteconfig
-
-              # Fetch the branch
-              git fetch origin ${GIT_BRANCH}:config_branch
-              git switch config_branch
-              {{- if .Values.configDir }}
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/public/* /gen3/public
-              {{- else }}
-              cp -r /tmp/repo/siteconfig/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/public/* /gen3/public
-              {{- end }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /gen3/config
-            - name: public-volume
-              mountPath: /gen3/public
-          {{- end }}
         - name: init
           # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           image: "quay.io/prometheus/busybox:latest"
