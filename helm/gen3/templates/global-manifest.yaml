@@ -18,34 +18,34 @@ data:
   "logout_inactive_users": {{ .Values.global.logoutInactiveUsers | quote }}
   "workspace_timeout_in_minutes": {{ .Values.global.workspaceTimeoutInMinutes | quote }}
   "maintenance_mode": {{ .Values.global.maintenanceMode | quote }}
-  {{- with .Values.global.fenceURL }}
+  {{- if .Values.global.fenceURL }}
   "fence_url":  {{ .Values.global.fenceURL | quote }}
   {{- end -}}
-  {{- with .Values.global.indexdURL }}
+  {{- if .Values.global.indexdURL }}
   "indexd_url": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.workspaceURL }}
+  {{- if .Values.global.workspaceURL }}
   "workspace_url": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.wtsURL }}
+  {{- if .Values.global.wtsURL }}
   "wts_url":  {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.arboristURL }}
+  {{- if .Values.global.arboristURL }}
   "arborist_url":  {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.manifestServiceURL }}
+  {{- if .Values.global.manifestServiceURL }}
   "manifest_service_url": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.privacyPolicyURL }}
+  {{- if .Values.global.privacyPolicyURL }}
   "privacy_policy_url": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.mapboxToken }}
+  {{- if .Values.global.mapboxToken }}
   "mapbox_token": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.cookieDomain }}
+  {{- if .Values.global.cookieDomain }}
   "cookie_domain": {{ . | quote }}
   {{- end -}}
-  {{- with .Values.global.desNamespace }}
+  {{- if .Values.global.desNamespace }}
   "des_namespace":  {{ . | quote }}
   {{- end -}}
   {{- with .Values.global.origins_allow_credentials }}
