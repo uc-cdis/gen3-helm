@@ -41,7 +41,7 @@ metadata:
   annotations:
     "cronjob.kubernetes.io/disabled": "true"
 spec:
-  schedule: "0 0 30 2 *"  # set to never run
+  schedule: "0 0 31 3 *" 
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -65,6 +65,11 @@ spec:
 
                   get_secret() {
                     kubectl -n "$1" get secret "$2" -o jsonpath="{.data.$3}" | base64 --decode
+                  }
+
+                  truncate_identifier() {
+                    local name="$1"
+                    echo "$name" | cut -c1-63
                   }
 
                   SOURCE_NS="{{ $.Values.auroraRdsCopyJob.sourceNamespace }}"
@@ -97,7 +102,9 @@ spec:
                     exit 1
                   fi
 
-                  TARGET_DB="{{ .serviceName }}_$(date '+%y%m%d_%H%M%S')"
+                  date_str=$(date '+%y%m%d_%H%M%S')
+                  target_db_name="{{ .serviceName }}_{{ $.Values.auroraRdsCopyJob.targetNamespace | replace "-" "_" }}_${date_str}"
+                  TARGET_DB=$(truncate_identifier "$target_db_name")
                   echo "DEBUG: TARGET_DB=$TARGET_DB"
 
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "GRANT \"$TARGET_USER\" TO \"$AURORA_USER\";"
@@ -123,4 +130,3 @@ spec:
 {{- end }}
 
 {{- end }}
-
