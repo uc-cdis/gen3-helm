@@ -95,12 +95,16 @@ spec:
           - name: ORIGINS_ALLOW_CREDENTIALS
             value: {{ .Values.global.origins_allow_credentials | quote }}
             optional: true
+          {{- if .Values.global.cookieDomain }}
           - name: COOKIE_DOMAIN
             value: {{ .Values.global.cookieDomain | quote }}
             optional: true
+          {{- end -}}
+          {{- if .Values.global.desNamespace }}
           - name: DES_NAMESPACE
             value: {{ .Values.global.desNamespace | quote }}
             optional: true
+          {{- end -}}
           - name: INDEXD_AUTHZ
             valueFrom:
               secretKeyRef:
