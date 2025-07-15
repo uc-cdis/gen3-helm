@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}  # Use PAT for checkout in forks
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up Git
         run: |
@@ -30,18 +30,53 @@ jobs:
         run: |
           git remote add upstream https://github.com/uc-cdis/gen3-helm.git
           git fetch upstream master
+          git fetch origin  # Ensure we have latest origin refs
+
+      - name: Check if sync is needed
+        id: check_sync
+        run: |
+          # Get the latest commit hashes
+          UPSTREAM_SHA=$(git rev-parse upstream/master)
+          PCDC_SHA=$(git rev-parse origin/pcdc_dev)
+          
+          echo "Upstream SHA: $UPSTREAM_SHA"
+          echo "PCDC SHA: $PCDC_SHA"
+          
+          if [ "$UPSTREAM_SHA" = "$PCDC_SHA" ]; then
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+            echo "✅ No sync needed - branches are identical"
+          else
+            echo "sync_needed=true" >> $GITHUB_OUTPUT
+            echo "🔄 Sync needed - differences detected"
+            
+            # Check if there are commits ahead
+            COMMITS_AHEAD=$(git rev-list --count origin/pcdc_dev..upstream/master)
+            echo "Commits ahead: $COMMITS_AHEAD"
+            echo "commits_ahead=$COMMITS_AHEAD" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create and push sync branch
+        if: steps.check_sync.outputs.sync_needed == 'true'
         run: |
+          # Delete existing sync branch if it exists
           git push origin --delete sync-cdis-pcdc || true
+          
+          # Create sync branch from pcdc_dev
           git checkout -b sync-cdis-pcdc origin/pcdc_dev
+          echo "Created sync-cdis-pcdc branch from pcdc_dev"
 
       - name: Attempt merge
+        if: steps.check_sync.outputs.sync_needed == 'true'
         id: merge
         run: |
           if git merge upstream/master --no-edit; then
             echo "merge_success=true" >> $GITHUB_OUTPUT
             echo "✅ Merge successful"
+            
+            # Verify the merge created changes
+            CHANGES=$(git diff --name-only HEAD~1 HEAD | wc -l)
+            echo "Files changed: $CHANGES"
+            echo "files_changed=$CHANGES" >> $GITHUB_OUTPUT
           else
             echo "merge_success=false" >> $GITHUB_OUTPUT
             echo "❌ Merge conflicts detected"
@@ -54,23 +89,62 @@ jobs:
           fi
 
       - name: Push successful merge
-        if: steps.merge.outputs.merge_success == 'true'
+        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
         run: |
           git push -u origin sync-cdis-pcdc
+          echo "✅ Pushed sync-cdis-pcdc branch"
+
+      - name: Wait for branch to be available
+        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
+        run: |
+          echo "Waiting for branch to be available on GitHub..."
+          sleep 10
+          
+          # Verify branches exist on GitHub
+          echo "Checking if branches exist on GitHub..."
+          gh api repos/chicagopcdc/gen3-helm/branches/pcdc_dev --jq .name
+          gh api repos/chicagopcdc/gen3-helm/branches/sync-cdis-pcdc --jq .name
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Check if PR already exists
+        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
+        id: check_pr
+        run: |
+          # Check if PR already exists
+          PR_COUNT=$(gh pr list --head sync-cdis-pcdc --base pcdc_dev --json number --jq length)
+          echo "Existing PRs: $PR_COUNT"
+          echo "pr_exists=$PR_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ "$PR_COUNT" = "0" ]; then
+            echo "✅ No existing PR found - will create new one"
+          else
+            echo "⚠️  PR already exists - skipping creation"
+            gh pr list --head sync-cdis-pcdc --base pcdc_dev --json number,title,url --jq '.[] | "PR #\(.number): \(.title) - \(.url)"'
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create Pull Request for successful merge
-        if: steps.merge.outputs.merge_success == 'true'
+        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true' && steps.check_pr.outputs.pr_exists == '0'
         run: |
+          echo "Creating PR with the following details:"
+          echo "Base: pcdc_dev"
+          echo "Head: sync-cdis-pcdc"
+          echo "Files changed: ${{ steps.merge.outputs.files_changed }}"
+          
+          # Create the PR with explicit repository context
           gh pr create \
+            --repo chicagopcdc/gen3-helm \
             --base pcdc_dev \
             --head sync-cdis-pcdc \
             --title "Sync: Upstream Master into pcdc_dev" \
-            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch."
+            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch.
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Use PAT instead of GITHUB_TOKEN
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create conflict resolution branch
-        if: steps.merge.outputs.merge_success == 'false'
+        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'false'
         run: |
           # Create timestamped branch name
           TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
@@ -82,3 +156,9 @@ jobs:
           
           echo "CONFLICT_BRANCH=${CONFLICT_BRANCH}" >> $GITHUB_ENV
           echo "Created conflict resolution branch: $CONFLICT_BRANCH"
+
+      - name: No sync needed notification
+        if: steps.check_sync.outputs.sync_needed == 'false'
+        run: |
+          echo "✅ No sync needed - pcdc_dev is already up to date with upstream/master"
+          echo "Upstream and pcdc_dev branches are identical"
