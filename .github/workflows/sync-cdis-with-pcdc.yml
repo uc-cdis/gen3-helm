@@ -11,11 +11,11 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          # Fetch all history for all branches and tags
           fetch-depth: 0
 
       - name: Set up Git
@@ -23,30 +23,59 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Add upstream remote
+      - name: Add upstream remote and fetch
         run: |
-          # Replace with your actual upstream repository URL
           git remote add upstream https://github.com/uc-cdis/gen3-helm.git
+          git fetch upstream master
 
-      - name: Fetch from all remotes
-        run: git fetch --all
-
-      - name: Create sync branch from pcdc_dev
+      - name: Create and push sync branch
         run: |
-          # In case the branch exists from a previous run, delete it first
           git push origin --delete sync-cdis-pcdc || true
-          # Create the new branch from the latest pcdc_dev
           git checkout -b sync-cdis-pcdc origin/pcdc_dev
-          # Push the new branch to origin
+
+      - name: Attempt merge
+        id: merge
+        run: |
+          if git merge upstream/master --no-edit; then
+            echo "merge_success=true" >> $GITHUB_OUTPUT
+            echo "✅ Merge successful"
+          else
+            echo "merge_success=false" >> $GITHUB_OUTPUT
+            echo "❌ Merge conflicts detected"
+            
+            # Get list of conflicted files
+            CONFLICTED_FILES=$(git diff --name-only --diff-filter=U)
+            echo "conflicted_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$CONFLICTED_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push successful merge
+        if: steps.merge.outputs.merge_success == 'true'
+        run: |
           git push -u origin sync-cdis-pcdc
 
-      - name: Create Pull Request
+      - name: Create Pull Request for successful merge
+        if: steps.merge.outputs.merge_success == 'true'
         run: |
           gh pr create \
-            --base sync-cdis-pcdc \
-            --head upstream/master \
-            --title "Sync: Upstream Master into sync-cdis-pcdc" \
-            --body "This PR automatically syncs changes from upstream/master into the sync-cdis-pcdc branch."
+            --base pcdc_dev \
+            --head sync-cdis-pcdc \
+            --title "Sync: Upstream Master into pcdc_dev" \
+            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch."
         env:
-          # Use the PAT secret instead of the default token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create conflict resolution branch
+        if: steps.merge.outputs.merge_success == 'false'
+        run: |
+          # Create timestamped branch name
+          TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
+          CONFLICT_BRANCH="conflict-resolution-${TIMESTAMP}"
+          
+          # Create and push conflict resolution branch with unresolved conflicts
+          git checkout -b "$CONFLICT_BRANCH"
+          git push -u origin "$CONFLICT_BRANCH"
+          
+          echo "CONFLICT_BRANCH=${CONFLICT_BRANCH}" >> $GITHUB_ENV
+          echo "Created conflict resolution branch: $CONFLICT_BRANCH"
