@@ -8,6 +8,9 @@ on:
 jobs:
   sync-and-create-pr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -45,5 +48,4 @@ jobs:
             --title "Sync: Upstream Master into sync-cdis-pcdc" \
             --body "This PR automatically syncs changes from upstream/master into the sync-cdis-pcdc branch."
         env:
-          # The GITHUB_TOKEN is automatically created and provided by GitHub Actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
