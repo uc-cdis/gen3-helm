@@ -88,14 +88,14 @@ jobs:
           echo "Creating PR with the following details:"
           echo "Base: pcdc_dev"
           echo "Head: sync-cdis-pcdc"
-  
+          
           # Create the PR with explicit repository context
           gh pr create \
             --repo chicagopcdc/gen3-helm \
             --base pcdc_dev \
             --head sync-cdis-pcdc \
             --title "Sync: Upstream Master into pcdc_dev" \
-            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch.
+            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch."
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
