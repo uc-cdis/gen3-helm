@@ -49,13 +49,25 @@ jobs:
             echo "sync_needed=true" >> $GITHUB_OUTPUT
             echo "🔄 Sync needed - differences detected"
             
-            # Check if there are commits ahead
+            # Check if there are commits ahead (both directions)
             COMMITS_AHEAD=$(git rev-list --count origin/pcdc_dev..upstream/master)
+            COMMITS_BEHIND=$(git rev-list --count upstream/master..origin/pcdc_dev)
+            
             echo "Commits ahead: $COMMITS_AHEAD"
+            echo "Commits behind: $COMMITS_BEHIND"
             echo "commits_ahead=$COMMITS_AHEAD" >> $GITHUB_OUTPUT
+            echo "commits_behind=$COMMITS_BEHIND" >> $GITHUB_OUTPUT
+            
+            # Only proceed if there are actual commits to merge
+            if [ "$COMMITS_AHEAD" -eq 0 ] && [ "$COMMITS_BEHIND" -eq 0 ]; then
+              echo "No commits to merge - branches may have diverged"
+              echo "sync_needed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
           fi
 
       - name: Create and push sync branch
+        if: steps.check_sync.outputs.sync_needed == 'true'
         run: |
           # Delete existing sync branch if it exists
           git push origin --delete sync-cdis-pcdc || true
@@ -65,9 +77,17 @@ jobs:
           echo "Created sync-cdis-pcdc branch from pcdc_dev"
 
       - name: Attempt merge
+        if: steps.check_sync.outputs.sync_needed == 'true'
         id: merge
         run: |
           if git merge upstream/master --no-edit; then
+            # Check if the merge actually created any changes
+            if git diff --quiet HEAD~1 HEAD; then
+              echo "merge_success=false" >> $GITHUB_OUTPUT
+              echo "❌ No changes after merge - branches are equivalent"
+              exit 0
+            fi
+            
             echo "merge_success=true" >> $GITHUB_OUTPUT
             echo "✅ Merge successful"
             
@@ -111,6 +131,13 @@ jobs:
           echo "Creating PR with the following details:"
           echo "Base: pcdc_dev"
           echo "Head: sync-cdis-pcdc"
+          echo "Files changed: ${{ steps.merge.outputs.files_changed }}"
+          
+          # Check if PR already exists
+          if gh pr list --base pcdc_dev --head sync-cdis-pcdc --json number | jq -e '.[0]' > /dev/null; then
+            echo "PR already exists, skipping creation"
+            exit 0
+          fi
           
           # Create the PR with explicit repository context
           gh pr create \
@@ -118,7 +145,7 @@ jobs:
             --base pcdc_dev \
             --head sync-cdis-pcdc \
             --title "Sync: Upstream Master into pcdc_dev" \
-            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch."
+            --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch. Files changed: ${{ steps.merge.outputs.files_changed }}"
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
