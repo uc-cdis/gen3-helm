@@ -46,13 +46,13 @@ A Helm chart for Kubernetes
 | funnel.Kubernetes | map | `{"JobsNamespace":"","Namespace":""}` | Kubernetes configuration for Funnel. |
 | funnel.Kubernetes.JobsNamespace | string | `""` | Namespace where Funnel jobs will be created. |
 | funnel.Kubernetes.Namespace | string | `""` | Namespace where Funnel server will be created. |
-| funnel.Logger.level | string | `"info"` |  |
-| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"","S3Url":""},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
-| funnel.Plugins.Params | map | `{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"","S3Url":""}` | Parameters to send to the Funnel plugin. |
+| funnel.Logger.level | string | `"debug"` |  |
+| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
+| funnel.Plugins.Params | map | `{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"}` | Parameters to send to the Funnel plugin. |
 | funnel.Plugins.Params.OidcClientId | string | `""` | OIDC client ID for Funnel plugin. |
 | funnel.Plugins.Params.OidcClientSecret | string | `""` | OIDC client secret for Funnel plugin. |
-| funnel.Plugins.Params.OidcTokenUrl | string | `""` | OIDC token URL for Funnel plugin. |
-| funnel.Plugins.Params.S3Url | string | `""` | S3 URL for Funnel plugin. |
+| funnel.Plugins.Params.OidcTokenUrl | string | `"gen3-workflow-service.jenkins-blood.svc.cluster.local"` | OIDC token URL for Funnel plugin. |
+| funnel.Plugins.Params.S3Url | string | `"https://jenkins-blood.planx-pla.net/user"` | S3 URL for Funnel plugin. |
 | funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` | Path to the directory where Funnel plugins are stored. |
 | funnel.image | map | `{"initContainer":{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"},"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"feature-plugins"}` | Configuration for the Funnel container image. |
 | funnel.image.initContainer | map | `{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"}` | Configuration for the Funnel init container. |

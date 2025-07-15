@@ -34,6 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.11 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.3 |
+| file://../gen3-workflow | gen3-workflow | 0.1.10 |
 | file://../guppy | guppy | 0.1.23 |
 | file://../hatchery | hatchery | 0.1.21 |
 | file://../indexd | indexd | 0.1.29 |
@@ -83,6 +84,7 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
+| fence.FENCE_CONFIG.MOCK_AUTH | bool | `true` |  |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
@@ -98,8 +100,10 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
-| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
-| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
+| gen3-workflow | map | `{"enabled":true}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `true` | Whether to deploy the gen3-workflow subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

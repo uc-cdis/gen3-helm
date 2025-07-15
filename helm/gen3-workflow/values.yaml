@@ -338,9 +338,9 @@ funnel:
     # -- (map) Parameters to send to the Funnel plugin.
     Params: 
       # -- (string) S3 URL for Funnel plugin.
-      S3Url: ""
+      S3Url: "https://jenkins-blood.planx-pla.net/user"
       # -- (string) OIDC token URL for Funnel plugin.
-      OidcTokenUrl: "" 
+      OidcTokenUrl: "gen3-workflow-service.jenkins-blood.svc.cluster.local"
       # -- (string) OIDC client ID for Funnel plugin.
       OidcClientId: "" 
       # -- (string) OIDC client secret for Funnel plugin.
@@ -355,4 +355,4 @@ funnel:
 
   Logger:
     # Logging levels: debug, info, error
-    level: info
+    level: debug
