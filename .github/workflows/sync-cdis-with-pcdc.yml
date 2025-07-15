@@ -1,11 +1,9 @@
 name: Sync from Upstream
 
 on:
-  schedule:
-    # Temporarily trigger on push to your feature branch for testing
-    push:
-      branches:
-        - update-sync-github-action
+  push:
+    branches:
+      - update-sync-github-action
 
 jobs:
   sync-and-create-pr:
