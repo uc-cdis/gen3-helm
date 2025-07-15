@@ -144,7 +144,11 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
+<<<<<<< HEAD
     version: 0.1.18
+=======
+    version: 0.1.10
+>>>>>>> 5ba4b84a (Update secrets.yaml and add gen3-workflow to umbrella chart)
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy

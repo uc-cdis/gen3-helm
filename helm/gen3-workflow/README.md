@@ -44,6 +44,7 @@ A Helm chart for Kubernetes
 | externalSecrets.gen3workflowG3auto | string | `""` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
+<<<<<<< HEAD
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
@@ -62,6 +63,34 @@ A Helm chart for Kubernetes
 | gen3WorkflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
 | gen3WorkflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1"}` | AWS configuration |
+=======
+| funnel.Kubernetes | map | `{"JobsNamespace":"","Namespace":""}` | Kubernetes configuration for Funnel. |
+| funnel.Kubernetes.JobsNamespace | string | `""` | Namespace where Funnel jobs will be created. |
+| funnel.Kubernetes.Namespace | string | `""` | Namespace where Funnel server will be created. |
+| funnel.Logger.level | string | `"debug"` |  |
+| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
+| funnel.Plugins.Params | map | `{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"}` | Parameters to send to the Funnel plugin. |
+| funnel.Plugins.Params.OidcClientId | string | `""` | OIDC client ID for Funnel plugin. |
+| funnel.Plugins.Params.OidcClientSecret | string | `""` | OIDC client secret for Funnel plugin. |
+| funnel.Plugins.Params.OidcTokenUrl | string | `"gen3-workflow-service.jenkins-blood.svc.cluster.local"` | OIDC token URL for Funnel plugin. |
+| funnel.Plugins.Params.S3Url | string | `"https://jenkins-blood.planx-pla.net/user"` | S3 URL for Funnel plugin. |
+| funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` | Path to the directory where Funnel plugins are stored. |
+| funnel.image | map | `{"initContainer":{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"},"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"feature-plugins"}` | Configuration for the Funnel container image. |
+| funnel.image.initContainer | map | `{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"}` | Configuration for the Funnel init container. |
+| funnel.image.initContainer.command | list | `["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
+| funnel.image.initContainer.image | string | `"quay.io/cdis/funnel-gen3-plugin"` | The Docker image repository for the Funnel init/plugin container. |
+| funnel.image.initContainer.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| funnel.image.initContainer.tag | string | `"gen3-plugin"` | The Docker image tag for the Funnel init/plugin container. |
+| funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
+| funnel.image.tag | string | `"feature-plugins"` | The Docker image tag for the Funnel service. |
+| funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
+| funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
+| funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
+| funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
+| funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
+>>>>>>> 5ba4b84a (Update secrets.yaml and add gen3-workflow to umbrella chart)
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
