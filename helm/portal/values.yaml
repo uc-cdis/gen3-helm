@@ -213,8 +213,8 @@ extraImages:
 
 # -- (bool) Whether to enable the v2 portal where it is built in s3 using mountpoint.
 # Requires mountpoint to be enabled in the cluster.
-v2Enabled: false
-
+mountpointCacheEnabled: false
+mountpointCacheBucketName: "" # <vpc name>-<namespace>-portal-build-bucket is the standard
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string)

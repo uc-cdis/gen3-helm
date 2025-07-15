@@ -76,6 +76,8 @@ A Helm chart for gen3 data-portal
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| mountpointCacheBucketName | string | `""` |  |
+| mountpointCacheEnabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -100,4 +102,3 @@ A Helm chart for gen3 data-portal
 | strategy.rollingUpdate.maxSurge | int | `2` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `"25%"` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
-| v2Enabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |

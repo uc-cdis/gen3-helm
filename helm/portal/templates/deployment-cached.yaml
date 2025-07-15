@@ -1,4 +1,4 @@
-{{- if not .Values.mountpointCacheEnabled }}
+{{- if .Values.mountpointCacheEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,6 +41,9 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
+      - name: cache-mountpoint
+        persistentVolumeClaim:
+          claimName: portal-pvc-{{ .Release.Name }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -80,14 +83,6 @@ spec:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 30
-          #   timeoutSeconds: 30
-          #   failureThreshold: 30
           readinessProbe:
             httpGet:
               {{- if eq "gen3ff" .Values.global.frontendRoot }}
@@ -196,6 +191,8 @@ spec:
             - name: extra-images
               mountPath: /data-portal/custom/images
             {{- end }}
+            - name: cache-mountpoint
+              mountPath: /data-portal/cache
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
