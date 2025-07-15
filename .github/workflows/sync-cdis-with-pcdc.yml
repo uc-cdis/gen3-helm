@@ -1,41 +1,51 @@
-name: Sync upstream master to pcdc_dev
+name: Sync from Upstream
 
 on:
-  workflow_dispatch:
+  schedule:
+    # Temporarily trigger on push to your feature branch for testing
+    push:
+      branches:
+        - update-sync-github-action
 
 jobs:
-  sync-upstream:
+  sync-and-create-pr:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout your repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: pcdc_dev
+          # Fetch all history for all branches and tags
           fetch-depth: 0
 
-      - name: Add upstream remote and fetch
+      - name: Set up Git
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          # Replace with your actual upstream repository URL
           git remote add upstream https://github.com/uc-cdis/gen3-helm.git
-          git fetch upstream master
 
-      - name: Create sync branch
+      - name: Fetch from all remotes
+        run: git fetch --all
+
+      - name: Create sync branch from pcdc_dev
         run: |
-          git checkout -B sync-upstream-master
-          git merge upstream/master --no-edit
+          # In case the branch exists from a previous run, delete it first
+          git push origin --delete sync-cdis-pcdc || true
+          # Create the new branch from the latest pcdc_dev
+          git checkout -b sync-cdis-pcdc origin/pcdc_dev
+          # Push the new branch to origin
+          git push -u origin sync-cdis-pcdc
 
-      - name: Push sync branch
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: sync-upstream-master
-
-      - name: Create or update PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: sync-upstream-master
-          target_branch: pcdc_dev
-          title: "Sync upstream master to pcdc_dev"
-          body: "Automatic PR to sync latest changes from upstream master."
-          draft: false
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --base sync-cdis-pcdc \
+            --head upstream/master \
+            --title "Sync: Upstream Master into sync-cdis-pcdc" \
+            --body "This PR automatically syncs changes from upstream/master into the sync-cdis-pcdc branch."
+        env:
+          # The GITHUB_TOKEN is automatically created and provided by GitHub Actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
