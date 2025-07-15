@@ -40,14 +40,13 @@ jobs:
           # Push the new branch to origin
           git push -u origin sync-cdis-pcdc
 
-      - name: Create or update PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: upstream/master
-          target_branch: sync-cdis-pcdc
-          title: "Sync upstream master to pcdc_dev"
-          body: "Automatic PR to sync latest changes from upstream master."
-          draft: false
-      # env:
-      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --base sync-cdis-pcdc \
+            --head upstream/master \
+            --title "Sync: Upstream Master into sync-cdis-pcdc" \
+            --body "This PR automatically syncs changes from upstream/master into the sync-cdis-pcdc branch."
+        env:
+          # Use the PAT secret instead of the default token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
