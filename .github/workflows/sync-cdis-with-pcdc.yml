@@ -12,6 +12,8 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      actions: read
+      metadata: read  # Add this line
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
