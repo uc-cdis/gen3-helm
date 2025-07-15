@@ -32,31 +32,7 @@ jobs:
           git fetch upstream master
           git fetch origin  # Ensure we have latest origin refs
 
-      - name: Check if sync is needed
-        id: check_sync
-        run: |
-          # Get the latest commit hashes
-          UPSTREAM_SHA=$(git rev-parse upstream/master)
-          PCDC_SHA=$(git rev-parse origin/pcdc_dev)
-          
-          echo "Upstream SHA: $UPSTREAM_SHA"
-          echo "PCDC SHA: $PCDC_SHA"
-          
-          if [ "$UPSTREAM_SHA" = "$PCDC_SHA" ]; then
-            echo "sync_needed=false" >> $GITHUB_OUTPUT
-            echo "✅ No sync needed - branches are identical"
-          else
-            echo "sync_needed=true" >> $GITHUB_OUTPUT
-            echo "🔄 Sync needed - differences detected"
-            
-            # Check if there are commits ahead
-            COMMITS_AHEAD=$(git rev-list --count origin/pcdc_dev..upstream/master)
-            echo "Commits ahead: $COMMITS_AHEAD"
-            echo "commits_ahead=$COMMITS_AHEAD" >> $GITHUB_OUTPUT
-          fi
-
       - name: Create and push sync branch
-        if: steps.check_sync.outputs.sync_needed == 'true'
         run: |
           # Delete existing sync branch if it exists
           git push origin --delete sync-cdis-pcdc || true
@@ -66,7 +42,6 @@ jobs:
           echo "Created sync-cdis-pcdc branch from pcdc_dev"
 
       - name: Attempt merge
-        if: steps.check_sync.outputs.sync_needed == 'true'
         id: merge
         run: |
           if git merge upstream/master --no-edit; then
@@ -89,13 +64,13 @@ jobs:
           fi
 
       - name: Push successful merge
-        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
+        if: steps.merge.outputs.merge_success == 'true'
         run: |
           git push -u origin sync-cdis-pcdc
           echo "✅ Pushed sync-cdis-pcdc branch"
 
       - name: Wait for branch to be available
-        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
+        if: steps.merge.outputs.merge_success == 'true'
         run: |
           echo "Waiting for branch to be available on GitHub..."
           sleep 10
@@ -107,26 +82,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      - name: Check if PR already exists
-        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true'
-        id: check_pr
-        run: |
-          # Check if PR already exists
-          PR_COUNT=$(gh pr list --head sync-cdis-pcdc --base pcdc_dev --json number --jq length)
-          echo "Existing PRs: $PR_COUNT"
-          echo "pr_exists=$PR_COUNT" >> $GITHUB_OUTPUT
-          
-          if [ "$PR_COUNT" = "0" ]; then
-            echo "✅ No existing PR found - will create new one"
-          else
-            echo "⚠️  PR already exists - skipping creation"
-            gh pr list --head sync-cdis-pcdc --base pcdc_dev --json number,title,url --jq '.[] | "PR #\(.number): \(.title) - \(.url)"'
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-
       - name: Create Pull Request for successful merge
-        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'true' && steps.check_pr.outputs.pr_exists == '0'
+        if: steps.merge.outputs.merge_success == 'true'
         run: |
           echo "Creating PR with the following details:"
           echo "Base: pcdc_dev"
@@ -144,7 +101,7 @@ jobs:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create conflict resolution branch
-        if: steps.check_sync.outputs.sync_needed == 'true' && steps.merge.outputs.merge_success == 'false'
+        if: steps.merge.outputs.merge_success == 'false'
         run: |
           # Create timestamped branch name
           TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
@@ -156,9 +113,3 @@ jobs:
           
           echo "CONFLICT_BRANCH=${CONFLICT_BRANCH}" >> $GITHUB_ENV
           echo "Created conflict resolution branch: $CONFLICT_BRANCH"
-
-      - name: No sync needed notification
-        if: steps.check_sync.outputs.sync_needed == 'false'
-        run: |
-          echo "✅ No sync needed - pcdc_dev is already up to date with upstream/master"
-          echo "Upstream and pcdc_dev branches are identical"
