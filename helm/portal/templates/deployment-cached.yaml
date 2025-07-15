@@ -62,10 +62,11 @@ spec:
         emptyDir: {}
       initContainers:
         - name: init
-          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          image: "quay.io/prometheus/busybox:latest"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+          - name: cache-mountpoint
+            mountPath: /data-portal/cache
           - name: extra-images-config
             mountPath: /data-portal/custom/config.txt
             subPath: config.txt
@@ -75,9 +76,15 @@ spec:
           - sh
           - -c
           - | 
-            cd /data-portal/custom/images/;
-            cat /data-portal/custom/config.txt;
-            xargs -a /data-portal/custom/config.txt -I {} wget {}
+            if [ ! -f /data-portal/cache/index.html ]; then
+              echo "Cache not found. Building..."
+              cd /data-portal
+              npm install
+              bash runWebpack.sh
+              echo "Copying build output to cache..."
+              cp -r *.js *.html static/ /data-portal/cache/
+            else
+              echo "Cache already exists. Skipping build."
       {{- end }}
       containers:
         - name: portal
@@ -99,9 +106,13 @@ spec:
           ports:
             - containerPort: 80
             - containerPort: 443
-          # command:
-          #   - /bin/bash
-          #   - ./dockerStart.sh
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting NGINX with cached assets."
+              cp -r /data-portal/cache/* /usr/share/nginx/html/
+              exec /usr/sbin/nginx -g 'daemon off;'
           env:
             - name: HOSTNAME
               value: revproxy-service
