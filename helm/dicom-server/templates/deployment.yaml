@@ -53,6 +53,36 @@ spec:
           ports:
             - containerPort: 8042
           env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: dicom-server-dbcreds
+                  key: host
+                  optional: true
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: dicom-server-dbcreds
+                  key: username
+                  optional: true 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dicom-server-dbcreds
+                  key: password
+                  optional: true
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: dicom-server-dbcreds
+                  key: database
+                  optional: true
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: dicom-server-dbcreds
+                  key: dbcreated
+                  optional: true
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: amanuensis-validate-filter-sets
+  labels:
+    redeploy-hash: "{{ .Release.Revision }}"
+spec:
+  # Job spec starts here directly (no schedule or jobTemplate needed)
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "amanuensis-config"
+        - name: es-dd-config-volume
+          emptyDir: {}
+        - name: portal-config
+          secret:
+            secretName: "portal-config"
+        - name: invalid-filter-set-volume
+          emptyDir: {}
+      initContainers:
+        - name: amanuensis-db-filter-set-filler
+          image: "quay.io/pcdc/amanuensis-db-filter-set-filler:0.1.0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: invalid_filters_list_path
+              value: "/var/www/amanuensis/invalid-filters/invalid-filters.json"
+          volumeMounts:
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
+              subPath: amanuensis-config.yaml
+            - name: "invalid-filter-set-volume"
+              mountPath: "/var/www/amanuensis/invalid-filters/"
+        - name: create-es-dd-config
+          image: "quay.io/cdis/awshelper:stable"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: "https://portal.pedscommons.org/"
+            - name: OUTPUT_FILE
+              value: "/tmp/es-dd-config/es_to_dd_map.json"
+            - name: DICTIONARY_URL
+              value: "https://portal.pedscommons.org/api/v0/submission/_dictionary/_all"
+          volumeMounts:
+            - name: "es-dd-config-volume"
+              mountPath: "/tmp/es-dd-config"
+          args:
+            - /bin/bash
+            - -c
+            - |
+              cd /tmp
+              export PATH="/home/ubuntu/.local/bin:$PATH"
+              git clone https://github.com/chicagopcdc/gen3_etl.git
+              echo "Repository cloned successfully."
+              cd gen3_etl/elasticsearch 
+              pip install -r requirements-ES-DD.txt
+              cd etl
+              python create_es_dd_mapping.py add-manual-fields
+              echo "ES-DD config created successfully."
+      containers:
+        - name: validate-filter-sets
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          volumeMounts:
+            - name: "es-dd-config-volume"
+              mountPath: "/var/www/amanuensis/es_to_dd_map.json"
+              subPath: es_to_dd_map.json
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
+              subPath: amanuensis-config.yaml
+            - name: "portal-config"
+              readOnly: true
+              mountPath: "/var/www/amanuensis/gitops.json"
+              subPath: gitops.json
+            - name: "invalid-filter-set-volume"
+              mountPath: "/var/www/amanuensis/invalid-filters.json"
+              subPath: invalid-filters.json
+          args:
+            - /bin/bash
+            - -c
+            - |
+              validate-filter-sets
+      restartPolicy: Never
+  # Optional: add a backoff limit to control retries
+  backoffLimit: 3

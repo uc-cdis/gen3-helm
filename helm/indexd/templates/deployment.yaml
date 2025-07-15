@@ -75,6 +75,8 @@ spec:
                   optional: false
             - name: DEFAULT_PREFIX
               value: {{ .Values.defaultPrefix }}
+            - name: USE_SINGLE_TABLE
+              value: {{ .Values.useSingleTable | quote }}
             {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
             - name: "uwsgi-config"

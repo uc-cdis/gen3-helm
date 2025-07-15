@@ -97,11 +97,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: nginx
+  repository: "quay.io/cdis/nginx"
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "stable-perl"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -161,6 +161,9 @@ netPolicy:
 
 # -- (map) Configuration for revproxy ingress.
 ingress:
+  aws:
+    group: ""
+    sslPolicy: "ELBSecurityPolicy-TLS13-1-2-Res-FIPS-2023-04"
   # -- (bool) Whether to create the ingress
   enabled: false
   # -- (string) The ingress class name.
@@ -186,14 +189,10 @@ ingress:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of cpu the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 

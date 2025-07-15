@@ -36,12 +36,12 @@ spec:
           items:
             - key: jwt_private_key.pem
               path: jwt_private_key.pem
-      # - name: config-helper
-      #   secret:
-      #     secretName: "pcdcanalysistools-secret"
-      # - name: creds-volume
-      #   secret:
-      #       secretName: "sheepdog-creds"
+      - name: config-helper
+        secret:
+          secretName: "pcdcanalysistools-secret"
+      - name: creds-volume
+        secret:
+            secretName: "sheepdog-creds"
 
       
       {{- with .Values.imagePullSecrets }}
@@ -141,23 +141,31 @@ spec:
               value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
               value: "False"
+            - name: FLASK_ENV
+              value: development
+            - name: FLASK_APP
+              value: PcdcAnalysisTools.wsgi
           volumeMounts:
             - name: "config-volume"
               readOnly: true
               mountPath: "/var/www/PcdcAnalysisTools/wsgi.py"
               subPath: "settings.py"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/PcdcAnalysisTools/bin/settings.py"
+              subPath: "settings.py" 
             - name: "pcdcanalysistools-jwt-keys"
               readOnly: true
               mountPath: "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
               subPath: "jwt_private_key.pem"
-            # - name: "creds-volume"
-            #   readOnly: true
-            #   mountPath: "/var/www/PcdcAnalysisTools/creds.json"
-            #   subPath: creds.json
-            # - name: "config-helper"
-            #   readOnly: true
-            #   mountPath: "/var/www/PcdcAnalysisTools/config_helper.py"
-            #   subPath: confighelper.py
+            - name: "creds-volume"
+              readOnly: true
+              mountPath: "/var/www/PcdcAnalysisTools/creds.json"
+              subPath: creds.json
+            - name: "config-helper"
+              readOnly: true
+              mountPath: "/PcdcAnalysisTools/bin/config_helper.py"
+              subPath: confighelper.py
           ports:
             - name: http
               containerPort: 80

@@ -1,6 +1,6 @@
 # argo-wrapper
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Argo Wrapper Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Argo Wrapper Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.20 |
 
 ## Values
 
@@ -50,9 +50,8 @@ A Helm chart for gen3 Argo Wrapper Service
 | pvc | string | `"test-pvc"` | PVC for Argo. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"limits":{"cpu":"100m","memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":"100m","memory":"128Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `"100m"` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"128Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"128Mi"` | The maximum amount of memory the container can use |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | s3Bucket | string | `"argo-artifact-downloadable"` | S3 bucket name for Argo artifacts (allows pre-signed URLs). |

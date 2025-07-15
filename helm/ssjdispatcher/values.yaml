@@ -177,14 +177,10 @@ indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.0
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 128Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 2400Mi
 
@@ -235,6 +231,11 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "ssjdispatcher-service-account"
 
+# -- (map) Service account to use for ssj jobs.
+jobServiceAccount:
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"
@@ -250,5 +251,9 @@ commonLabels:
 
 # -- (map) External secrets configuration
 externalSecrets:
+  # -- (string) Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sSsjdispatcherSecret: false
+  # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sJwtKeysSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
   credsFile:

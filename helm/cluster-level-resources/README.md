@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.13](https://img.shields.io/badge/Version-0.6.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -19,16 +19,33 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | calico.configuration.enabled | bool | `false` |  |
 | calico.enabled | bool | `false` |  |
 | calico.targetRevision | string | `"v3.29.1"` |  |
+| cert-manager.configuration.enabled | bool | `false` |  |
+| cert-manager.enabled | bool | `false` |  |
+| cert-manager.targetRevision | string | `"v1.17.2"` |  |
 | cluster | string | `"unfunded"` |  |
 | configuration.configurationRepo | string | `"https://github.com/uc-cdis/gen3-gitops"` |  |
 | configuration.configurationRevision | string | `"master"` |  |
 | coreDNS.configuration.enabled | bool | `false` |  |
 | coreDNS.enabled | bool | `false` |  |
 | coreDNS.targetRevision | string | `"v1.37.0"` |  |
+| crossplane-crds.awsAccessKeyID | string | `"YOUR_ACCESS_KEY_ID"` |  |
+| crossplane-crds.awsSecretAccessKey | string | `"YOUR_SECRET_ACCESS_KEY"` |  |
+| crossplane-crds.configuration.enabled | bool | `false` |  |
+| crossplane-crds.enabled | bool | `false` |  |
+| crossplane-crds.iamRoleName | string | `"crossplane-role"` |  |
+| crossplane-crds.region | string | `"us-east-1"` |  |
+| crossplane-crds.targetRevision | string | `"v0.52.5"` |  |
+| crossplane-crds.useIRSA | bool | `true` |  |
+| crossplane.configuration.enabled | bool | `false` |  |
+| crossplane.enabled | bool | `false` |  |
+| crossplane.targetRevision | string | `"1.19.2"` |  |
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.38.1"` |  |
 | eksClusterEndpoint | string | `""` |  |
+| external-secrets.configuration.enabled | bool | `false` |  |
+| external-secrets.enabled | bool | `false` |  |
+| external-secrets.targetRevision | string | `"0.9.13"` |  |
 | fluentd-configmap-data | string | `"<label @FLUENT_LOG>\n  <match fluent.**>\n    @type null\n  </match>\n</label>\n\n\n<source>\n  @type tail\n  @id in_tail_container_logs\n  path /var/log/containers/*.log\n  pos_file /var/log/fluentd-containers.log.pos\n  tag \"#{ENV['FLUENT_CONTAINER_TAIL_TAG'] || 'kubernetes.*'}\"\n  exclude_path \"#{ENV['FLUENT_CONTAINER_TAIL_EXCLUDE_PATH'] || use_default}\"\n  read_from_head true\n  <parse>\n    @type \"#{ENV['FLUENT_CONTAINER_TAIL_PARSER_TYPE'] || 'json'}\"\n    time_format %Y-%m-%dT%H:%M:%S.%NZ\n  </parse>\n</source>\n\n<source>\n  @type tail\n  path /var/log/messages\n  pos_file /var/log/host-messages.log.pos\n  <parse>\n    @type syslog\n  </parse>\n  tag host.messages\n</source>\n\n\n<source>\n  @type tail\n  path /var/log/secure\n  pos_file /var/log/host-secure.log.pos\n  <parse>\n    @type syslog\n  </parse>\n  tag host.secure\n</source>\n\n<source>\n  @type tail\n  @id in_tail_docker\n  path /var/log/docker.log\n  pos_file /var/log/fluentd-docker.log.pos\n  tag docker\n  <parse>\n    @type regexp\n    expression /^time=\"(?<time>[^)]*)\" level=(?<severity>[^ ]*) msg=\"(?<message>[^\"]*)\"( err=\"(?<error>[^\"]*)\")?( statusCode=($<status_code>\\d+))?/\n  </parse>\n</source>\n\n\n<source>\n  @type tail\n  @id in_tail_kubelet\n  multiline_flush_interval 5s\n  path /var/log/kubelet.log\n  pos_file /var/log/fluentd-kubelet.log.pos\n  tag kubelet\n  <parse>\n    @type kubernetes\n  </parse>\n</source>\n\n<filter kubernetes.**>\n  @type kubernetes_metadata\n  @id filter_kube_metadata\n  kubernetes_url \"#{ENV['FLUENT_FILTER_KUBERNETES_URL'] || 'https://' + ENV.fetch('KUBERNETES_SERVICE_HOST') + ':' + ENV.fetch('KUBERNETES_SERVICE_PORT') + '/api'}\"\n  verify_ssl \"#{ENV['KUBERNETES_VERIFY_SSL'] || true}\"\n  ca_file \"#{ENV['KUBERNETES_CA_FILE']}\"\n  skip_labels \"#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_LABELS'] || 'false'}\"\n  skip_container_metadata \"#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_CONTAINER_METADATA'] || 'false'}\"\n  skip_master_url \"#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_MASTER_URL'] || 'false'}\"\n  skip_namespace_metadata \"#{ENV['FLUENT_KUBERNETES_METADATA_SKIP_NAMESPACE_METADATA'] || 'false'}\"\n</filter>\n\n<match kubernetes.var.log.containers.**_kube-system_**>\n  @type null\n</match>\n\n<match kubernetes.var.log.containers.**_logging_**>\n  @type null\n</match>\n\n<match docker>\n  @type rewrite_tag_filter\n  <rule>\n    key $._HOSTNAME\n    pattern ^(.+)$\n    tag $1.docker\n  </rule>\n</match>\n\n<match kubelet>\n  @type rewrite_tag_filter\n  <rule>\n    key $._HOSTNAME\n    pattern ^(.+)$\n    tag $1.kubelet\n  </rule>\n</match>\n\n<match host.messages>\n  @type rewrite_tag_filter\n  <rule>\n    key $.host\n    pattern ^(.+)$\n    tag $1.messages\n  </rule>\n</match>\n\n<match host.secure>\n  @type rewrite_tag_filter\n  <rule>\n    key $.host\n    pattern ^(.+)$\n    tag $1.secure\n  </rule>\n</match>\n\n<match kubernetes.var.**>\n  @type rewrite_tag_filter\n  <rule>\n    # json structured log - consider adoption a standard json schema:\n    #    https://github.com/timberio/log-event-json-schema\n    key message\n    pattern /^\\{\\s*\"gen3log\":/\n    tag kubernetes.gen3.json.${tag}\n  </rule>\n  <rule>\n    # combined log format - default Apache and nginx structure\n    #    https://httpd.apache.org/docs/1.3/logs.html#combined\n    key message\n    pattern /^(((\\d+\\.\\d+\\.\\d+\\.\\d+)|-)\\s+){2}\\S+\\s+\\[\\d\\d?\\//\n    tag kubernetes.gen3.combined.${tag}\n  </rule>\n  <rule>\n    # unstructured log line\n    key message\n    pattern /\\S/\n    tag kubernetes.gen3.raw.${tag}\n  </rule>\n\n</match>\n\n<filter kubernetes.gen3.json.**>\n  @type record_transformer\n  <record>\n    log_type json\n    # This one doesn't work for whatever reason, if you do ${record[\"kubernetes\"]} the whole blob would be added, but can't access subobjects\n    #container_name ${record[\"kubernetes\"][\"container_name\"]}\n  </record>\n</filter>\n\n<filter kubernetes.gen3.combined.**>\n  @type record_transformer\n  <record>\n    log_type combined\n  </record>\n</filter>\n\n<filter kubernetes.gen3.raw.**>\n  @type record_transformer\n  <record>\n    log_type raw\n  </record>\n</filter>\n\n<match kubernetes.gen3.**>\n  @type rewrite_tag_filter\n  <rule>\n    key $.kubernetes.pod_name\n    pattern ^(.+)$\n    tag \"#{Time.now.strftime('%Y-%m-%d')}.$1\"\n  </rule>\n#  <rule>\n#    key $.kubernetes\n#    pattern ^(.+)$\n#    tag $1.container_name\n#  </rule>\n</match>\n\n#<match \"#{Time.now.strftime('%Y-%m-%d')}.**\">\n#  @type rewrite_tag_filter\n#  <rule>\n#    key $.kubernetes.container_name\n#    pattern ^(.+)$\n    #tag $1.${tag}\n#    tag ${tag}.$1\n#  </rule>\n#</match>\n\n# TODO:\n# * python stack traces: \"Traceback (most recent call last):\"\"\n#     https://docs.fluentd.org/v0.12/articles/parser_multiline#formatn\n#\n# Idea: add `visitor` cookie to revproxy ...\n\n\n<match **>\n  @type cloudwatch_logs\n  @id out_cloudwatch_logs\n  log_group_name \"#{ENV['LOG_GROUP_NAME']}\"\n  auto_create_stream true\n  use_tag_as_stream true\n  retention_in_days \"#{ENV['RETENTION_IN_DAYS'] || 'nil'}\"\n  json_handler yajl # To avoid UndefinedConversionError\n  log_rejected_request \"#{ENV['LOG_REJECTED_REQUEST']}\" # Log rejected request for missing parts\n</match>\n"` |  |
 | fluentd.configuration.enabled | bool | `false` |  |
 | fluentd.enabled | bool | `false` |  |
@@ -43,6 +60,20 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
+| karpenter-crds.default.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.default.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.default.requirements[0].values[1] | string | `"spot"` |  |
+| karpenter-crds.default.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.default.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.default.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.default.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.default.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.default.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.default.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.default.requirements[2].values[3] | string | `"t"` |  |
+| karpenter-crds.default.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.enabled | bool | `false` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
@@ -50,6 +81,19 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.jupyter.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.jupyter.enabled | bool | `true` |  |
 | karpenter-crds.jupyter.expireAfter | string | `"168h"` |  |
+| karpenter-crds.jupyter.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.jupyter.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.jupyter.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.jupyter.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.jupyter.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.jupyter.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.jupyter.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.jupyter.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.jupyter.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.jupyter.requirements[2].values[3] | string | `"t"` |  |
+| karpenter-crds.jupyter.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.migration | bool | `false` |  |
 | karpenter-crds.selectorTag | string | `""` |  |
 | karpenter-crds.targetRevision | string | `"master"` |  |
@@ -59,7 +103,20 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.workflow.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.workflow.enabled | bool | `true` |  |
 | karpenter-crds.workflow.expireAfter | string | `"168h"` |  |
+| karpenter-crds.workflow.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
+| karpenter-crds.workflow.requirements[0].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[0].values[0] | string | `"on-demand"` |  |
+| karpenter-crds.workflow.requirements[1].key | string | `"kubernetes.io/arch"` |  |
+| karpenter-crds.workflow.requirements[1].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[1].values[0] | string | `"amd64"` |  |
+| karpenter-crds.workflow.requirements[2].key | string | `"karpenter.k8s.aws/instance-category"` |  |
+| karpenter-crds.workflow.requirements[2].operator | string | `"In"` |  |
+| karpenter-crds.workflow.requirements[2].values[0] | string | `"c"` |  |
+| karpenter-crds.workflow.requirements[2].values[1] | string | `"m"` |  |
+| karpenter-crds.workflow.requirements[2].values[2] | string | `"r"` |  |
+| karpenter-crds.workflow.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.workflow.sgSelector | string | `""` |  |
+| karpenter-crds.workflow.volumeSize | string | `"50Gi"` |  |
 | karpenter.awsRegion | string | `"us-east-1"` |  |
 | karpenter.configuration.enabled | bool | `false` |  |
 | karpenter.controller.image.digest | string | `"sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"` |  |
@@ -70,6 +127,10 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter.resources.requests.cpu | string | `"1"` |  |
 | karpenter.resources.requests.memory | string | `"1Gi"` |  |
 | karpenter.targetRevision | string | `"v0.32.9"` |  |
+| kube-proxy.configuration.enabled | bool | `false` |  |
+| kube-proxy.enabled | bool | `false` |  |
+| kube-proxy.image.repo | string | `"602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"` |  |
+| kube-proxy.image.tag | string | `"v1.31.2-minimal-eksbuild.3"` |  |
 | kube-state-metrics.configuration.enabled | bool | `false` |  |
 | kube-state-metrics.enabled | bool | `false` |  |
 | kube-state-metrics.targetRevision | string | `"5.28.0"` |  |

@@ -41,8 +41,6 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
   # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/test/user.yaml
   # -- (bool) Whether public datasets are enabled.
@@ -64,11 +62,11 @@ replicaCount: 1
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: quay.io/cdis/frontend-framework
+  repository: quay.io/cdis/commons-frontend-app
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "develop"
+  tag: "main"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -128,6 +126,16 @@ autoscaling:
 
 port: 3000
 
+
+customConfig:
+  enabled: false
+  # -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
+  dir: ""
+  # -- (string) Repository for the config for CDIS this is cdis-manifest
+  repo: https://github.com/uc-cdis/commons-frontend-app.git
+  # -- (string) Branch name to set config from
+  branch: main
+
 # -- (list) List of environment variables to add to the deployment.
 env: []
 
@@ -176,14 +184,10 @@ automountServiceAccountToken: false
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.6
     # -- (string) The amount of memory requested
     memory: 512Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of memory the container can use
-    cpu: 0.6
     memory: 4096Mi
 
 # Values to determine the labels that are used for the deployment, pod, etc.

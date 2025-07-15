@@ -163,6 +163,31 @@ fence:
       mountPath: "/var/www/fence/fence-config-public.yaml"
       subPath: fence-config-public.yaml
   
+    # -- (list) Volumes to mount to the init container.
+  
+  initVolumeMounts:
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config.yaml"
+      subPath: fence-config.yaml
+    - name: "config-volume-public"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-public.yaml"
+      subPath: fence-config-public.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+
+
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000

@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -44,12 +49,6 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
-  # -- (bool) Force attempting a dbgap sync if "true", falls back on user.yaml
-  addDbgap: false
-  # -- (bool) Forces ONLY a dbgap sync if "true", IGNORING user.yaml
-  onlyDbgap: false
   # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
   # -- (bool) Whether to run Fence usersync or not.
@@ -200,14 +199,10 @@ volumeMounts:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
@@ -217,11 +212,11 @@ initContainerName: requestor-db-migrate
 # -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
+  requests:
     # -- (string) The maximum amount of CPU the container can use
-    cpu: 0.8
+    cpu: 0.2
     # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
+    memory: 100Mi
 # -- (list) Command to run for the init container.
 command: ["/bin/sh"]
 # -- (list) Arguments to pass to the init container.
