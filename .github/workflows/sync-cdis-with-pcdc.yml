@@ -80,21 +80,35 @@ jobs:
         if: steps.check_sync.outputs.sync_needed == 'true'
         id: merge
         run: |
+          # Store the current HEAD before merge
+          BEFORE_MERGE=$(git rev-parse HEAD)
+          
           if git merge upstream/master --no-edit; then
+            # Get the HEAD after merge
+            AFTER_MERGE=$(git rev-parse HEAD)
+            
             # Check if the merge actually created any changes
-            if git diff --quiet HEAD~1 HEAD; then
+            if [ "$BEFORE_MERGE" = "$AFTER_MERGE" ]; then
               echo "merge_success=false" >> $GITHUB_OUTPUT
-              echo "❌ No changes after merge - branches are equivalent"
+              echo "❌ No changes after merge - branches are already up to date"
+              echo "files_changed=0" >> $GITHUB_OUTPUT
               exit 0
             fi
             
             echo "merge_success=true" >> $GITHUB_OUTPUT
-            echo "✅ Merge successful"
+            echo "✅ Merge successful with changes"
             
-            # Verify the merge created changes
-            CHANGES=$(git diff --name-only HEAD~1 HEAD | wc -l)
+            # Count actual changes from the merge
+            CHANGES=$(git diff --name-only $BEFORE_MERGE $AFTER_MERGE | wc -l)
             echo "Files changed: $CHANGES"
             echo "files_changed=$CHANGES" >> $GITHUB_OUTPUT
+            
+            # Verify we have actual changes before proceeding
+            if [ "$CHANGES" -eq 0 ]; then
+              echo "merge_success=false" >> $GITHUB_OUTPUT
+              echo "❌ No file changes detected after merge"
+              exit 0
+            fi
           else
             echo "merge_success=false" >> $GITHUB_OUTPUT
             echo "❌ Merge conflicts detected"
