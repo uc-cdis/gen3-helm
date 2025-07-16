@@ -228,4 +228,3 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
 {{- end }}
-              
