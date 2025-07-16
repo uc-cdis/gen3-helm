@@ -24,16 +24,16 @@ A Helm chart for gen3 Sheepdog Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | authNamespace | string | `""` |  |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | dataDog | bool | `{"enabled":false,"env":"dev"}` | Whether Datadog is enabled. |
 | externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

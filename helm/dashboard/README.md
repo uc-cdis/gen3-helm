@@ -9,14 +9,15 @@ A Helm chart for Kubernetes
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboardConfig.gitopsRepo | string | `"https://github.com/uc-cdis/cdis-manifest"` |  |
 | dashboardConfig.prefix | string | `"hostname.com"` |  |
 | fullnameOverride | string | `""` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/cdis/gen3-statics"` |  |
 | image.tag | string | `"2025.04"` |  |

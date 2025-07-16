@@ -17,10 +17,6 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
 | automountServiceAccountToken | bool | `false` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
@@ -30,6 +26,11 @@ A Helm chart for Kubernetes
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.gen3UserDataLibraryG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto" |
 | fullnameOverride | string | `""` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

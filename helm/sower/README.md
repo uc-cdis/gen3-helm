@@ -22,11 +22,6 @@ A Helm chart for gen3 sower
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["sower"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | automountServiceAccountToken | bool | `true` | Automount the default service account token |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
 | awsRegion | string | `"us-east-1"` | AWS region to be used. |
 | awsStsRegionalEndpoints | string | `"regional"` | AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
@@ -39,6 +34,11 @@ A Helm chart for gen3 sower
 | externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

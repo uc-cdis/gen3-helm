@@ -39,6 +39,13 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
@@ -112,14 +119,6 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:

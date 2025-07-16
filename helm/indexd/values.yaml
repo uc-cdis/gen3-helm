@@ -70,6 +70,13 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
@@ -213,17 +220,6 @@ resources:
   limits:
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
-
-# -- (map) Autoscaling options.
-autoscaling:
-  enabled: false
-  # -- (int) Minimum number of replicas
-  minReplicas: 1
-  # -- (int) Maximum number of replicas
-  maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # -- (map) Node Selector for the pods
 nodeSelector: {}

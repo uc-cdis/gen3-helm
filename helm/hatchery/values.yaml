@@ -72,6 +72,13 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
@@ -114,18 +121,6 @@ resources:
   limits:
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
-
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled or not
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 100
-  # -- (int) The target CPU utilization percentage for autoscaling
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # -- (map) Node selector labels.
 nodeSelector: {}

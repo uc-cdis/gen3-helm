@@ -28,11 +28,6 @@ A Helm chart for gen3 Metadata Service
 | aggMdsNamespace | string | `"default"` | Namespae to use if AggMds is enabled. |
 | args | list | `["-c","# Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility\npoetry run alembic upgrade head || /env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | command | list | `["/bin/sh"]` | Command to run for the init container. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
@@ -48,6 +43,11 @@ A Helm chart for gen3 Metadata Service
 | externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

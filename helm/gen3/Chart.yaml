@@ -17,7 +17,7 @@ dependencies:
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
@@ -48,11 +48,11 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.11
+    version: 0.1.12
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.47
+    version: 0.1.48
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -60,19 +60,19 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: guppy
-    version: 0.1.23
+    version: 0.1.24
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -88,7 +88,7 @@ dependencies:
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy

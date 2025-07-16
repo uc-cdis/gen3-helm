@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.47](https://img.shields.io/badge/Version-0.1.47-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.48](https://img.shields.io/badge/Version-0.1.48-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -78,12 +78,6 @@ A Helm chart for gen3 Fence
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["fence"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
-| autoscaling | map | `{"enabled":false,"maxReplicas":4,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `4` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
-| autoscaling.targetMemoryUtilizationPercentage | int | `80` | Target Memory utilization percentage |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"INDEXD_PASSWORD","valueFrom":{"secretKeyRef":{"key":"fence","name":"indexd-service-creds"}}},{"name":"gen3Env","valueFrom":{"configMapKeyRef":{"key":"hostname","name":"manifest-global"}}}]` | Environment variables to pass to the container |
