@@ -172,6 +172,7 @@ spec:
                   name: global
                   key: mapbox_token
                   optional: true
+            {{- end }}
             {{- if .Values.datadogApplicationId }}
             - name: DATADOG_APPLICATION_ID
               value: {{ .Values.datadogApplicationId | quote }}
@@ -228,4 +229,3 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
 {{- end }}
-              
