@@ -116,7 +116,7 @@ jobs:
             --repo chicagopcdc/gen3-helm \
             --base pcdc_dev \
             --head sync-cdis-pcdc \
-            --title "Sync: Upstream Master into pcdc_dev" \
+            --title "Sync: Upstream Master into pcdc_dev ($(date -u +%Y-%m-%d))" \
             --body "This PR automatically syncs changes from upstream/master into the pcdc_dev branch. Files changed: ${{ steps.merge.outputs.files_changed }}"
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
