@@ -1,9 +1,8 @@
 name: Sync from Upstream
 
 on:
-  push:
-    branches:
-      - update-sync-github-action
+  schedule:
+    - cron: '0 6 * * 1'  # Runs at 06:00 UTC every Monday
   workflow_dispatch:
 
 jobs:
