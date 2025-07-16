@@ -20,6 +20,7 @@ A Helm chart for gen3 Dicom Server
 | IndexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database. |
 | Lock | bool | `false` | Whether to lock the database. |
 | Port | string | `"5432"` | Port for Postgres. |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | externalSecrets | map | `{"createK8sOrthancG3auto":false,"orthancG3Auto":null}` | External Secrets settings. |

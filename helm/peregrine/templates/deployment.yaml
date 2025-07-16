@@ -128,7 +128,7 @@ spec:
             - name: INDEX_CLIENT_HOST
               value: {{ .Values.global.indexdURL | quote }}
               optional: true
-            {{- end -}}
+            {{- end }}
             - name: GRAPHQL_TIMEOUT
               valueFrom:
                 configMapKeyRef:

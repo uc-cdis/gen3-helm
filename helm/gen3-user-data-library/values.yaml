@@ -47,6 +47,9 @@ global:
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
 
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
+
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 debug: false

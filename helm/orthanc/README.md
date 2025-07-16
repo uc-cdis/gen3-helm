@@ -27,6 +27,7 @@ A Helm chart for gen3 Dicom Server
 | S3Storage.BucketName | string | `nil` |  |
 | S3Storage.Region | string | `"us-east-1"` |  |
 | S3Storage.SecretKey | string | `nil` |  |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null}` | External Secrets settings. |

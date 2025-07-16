@@ -17,6 +17,7 @@ A Helm chart for gen3 Peregrine service
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | arboristUrl | string | `nil` | URL for the arborist service |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `nil` | Environment variables to pass to the container |

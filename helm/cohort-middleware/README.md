@@ -28,6 +28,7 @@ A Helm chart for gen3 cohort-middleware
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"cohort-middleware"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `25` |  |
+| autoscaling | object | `{}` |  |
 | config.arboristEndpoint | string | `"http://arborist-service"` |  |
 | config.atlasDbHost | string | `""` |  |
 | config.atlasDbPassword | string | `""` |  |

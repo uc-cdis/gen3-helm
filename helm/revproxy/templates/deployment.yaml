@@ -99,12 +99,12 @@ spec:
           - name: COOKIE_DOMAIN
             value: {{ .Values.global.cookieDomain | quote }}
             optional: true
-          {{- end -}}
+          {{- end }}
           {{- if .Values.global.desNamespace }}
           - name: DES_NAMESPACE
             value: {{ .Values.global.desNamespace | quote }}
             optional: true
-          {{- end -}}
+          {{- end }}
           - name: INDEXD_AUTHZ
             valueFrom:
               secretKeyRef:

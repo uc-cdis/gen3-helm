@@ -71,6 +71,10 @@ global:
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
 
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
+
+
 # Arguments to pass to the boto3 client in access_backend
 extraArgs: '{"endpoint_url": "http://dynamodb:8000", "region_name": "us-east-1"}'
 # Common delimited string of usernames for the super admins

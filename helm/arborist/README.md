@@ -16,6 +16,7 @@ A Helm chart for gen3 arborist
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity rules to apply to the pod |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | cronjob | bool | `{"enabled":true}` | Whether the arborist rm exipred access cronjob is enabled. |

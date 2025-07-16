@@ -47,6 +47,9 @@ global:
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
 
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
+
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: false
 

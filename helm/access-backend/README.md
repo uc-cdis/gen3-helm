@@ -31,6 +31,7 @@ A Helm chart for Kubernetes
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `25` |  |
 | allow_origins | string | `""` |  |
+| autoscaling | object | `{}` |  |
 | base_user_yaml_path | string | `"/src/user.yaml"` |  |
 | cascade_new_access_to_users_under_this_admin | string | `""` |  |
 | db_namespace | string | `""` |  |

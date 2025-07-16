@@ -9,6 +9,7 @@ A Helm chart for Kubernetes
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| autoscaling | object | `{}` |  |
 | dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboardConfig.gitopsRepo | string | `"https://github.com/uc-cdis/cdis-manifest"` |  |
 | dashboardConfig.prefix | string | `"hostname.com"` |  |

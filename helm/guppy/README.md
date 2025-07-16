@@ -24,6 +24,7 @@ A Helm chart for gen3 Guppy Service
 | arboristUrl | string | `"http://arborist-service"` | Arborist service URL. |
 | authFilterField | string | `"auth_resource_path"` | The field used for access control and authorization filters |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | configIndex | string | `"dev_array-config"` | The Elasticsearch configuration index |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
