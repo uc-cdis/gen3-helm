@@ -203,3 +203,7 @@ partOf: "Explorer-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) Whether or not to deploy the cedar ingestion job.
+cedarIngestion:
+  enabled: true

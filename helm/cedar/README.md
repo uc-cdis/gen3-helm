@@ -20,6 +20,7 @@ A Helm chart for gen3 cedar wrapper
 | autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| cedarIngestion | map | `{"enabled":true}` | Whether or not to deploy the cedar ingestion job. |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
