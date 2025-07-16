@@ -41,6 +41,12 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
+      {{- if .Values.customConfig.enabled }}
+      - name: config-volume
+        emptyDir: {}
+      - name: public-volume
+        emptyDir: {}
+      {{- else }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -51,6 +57,7 @@ spec:
         configMap:
           name: "privacy-policy"
           optional: true
+      {{- end }}
       - name: extra-images-config
         configMap:
           name: portal-extra-images
@@ -78,7 +85,6 @@ spec:
             xargs -a /data-portal/custom/config.txt -I {} wget {}
       {{- end }}
       {{- if .Values.customConfig.enabled }}
-      initContainers:
         - name: config-puller
           image: alpine/git
           env:
@@ -94,19 +100,23 @@ spec:
             - |
               mkdir -p /tmp/repo
               cd /tmp/repo
-              # Clone with sparse checkout and filter
-              git clone --depth 1 ${GIT_REPO} siteconfig
-              cd siteconfig
+              # Clone only the specific branch with minimal history and sparse checkout
+              git clone \
+                --depth 1 \
+                --single-branch \
+                --branch ${GIT_BRANCH} \
+                --filter=blob:none \
+                --sparse \
+                ${GIT_REPO} custom
+              cd custom
 
-              # Fetch the branch
-              git fetch origin ${GIT_BRANCH}:config_branch
-              git switch config_branch
-              {{- if .Values.configDir }}
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/public/* /gen3/public
+              {{- if .Values.customConfig.dir }}
+              git sparse-checkout set {{ .Values.customConfig.dir }}
+              cd {{ .Values.customConfig.dir }}
+              ls
               {{- else }}
-              cp -r /tmp/repo/siteconfig/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/public/* /gen3/public
+              cp -r config/* /gen3/config
+              cp -r public/* /gen3/public
               {{- end }}
           volumeMounts:
             - name: config-volume
@@ -235,6 +245,12 @@ spec:
             - name: extra-images
               mountPath: /data-portal/custom/images
             {{- end }}
+            {{- if .Values.customConfig.enabled }}
+            - name: config-volume
+              mountPath: /gen3/config
+            - name: public-volume
+              mountPath: /gen3/public
+            {{-  else }}
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -256,4 +272,5 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
+            {{- end }}
 {{- end }}

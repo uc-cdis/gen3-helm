@@ -511,8 +511,8 @@ gitops:
 customConfig:
   enabled: false
   # -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
-  dir: ""
+  dir: "brh.data-commons.org/portal/"
   # -- (string) Repository for the config for CDIS this is cdis-manifest
-  repo: https://github.com/uc-cdis/commons-frontend-app.git
+  repo: https://github.com/uc-cdis/cdis-manifest.git
   # -- (string) Branch name to set config from
-  branch: main
+  branch: master
