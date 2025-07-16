@@ -30,44 +30,8 @@ jobs:
           git remote add upstream https://github.com/uc-cdis/gen3-helm.git
           git fetch upstream master
           git fetch origin  # Ensure we have latest origin refs
-      
-      - name: Check if sync is needed
-        id: check_sync
-        run: |
-          # Get the latest commit hashes
-          UPSTREAM_SHA=$(git rev-parse upstream/master)
-          PCDC_SHA=$(git rev-parse origin/pcdc_dev)
-          
-          echo "Upstream SHA: $UPSTREAM_SHA"
-          echo "PCDC SHA: $PCDC_SHA"
-          
-          if [ "$UPSTREAM_SHA" = "$PCDC_SHA" ]; then
-            echo "sync_needed=false" >> $GITHUB_OUTPUT
-            echo "✅ No sync needed - branches are identical"
-            exit 0
-          else
-            echo "sync_needed=true" >> $GITHUB_OUTPUT
-            echo "🔄 Sync needed - differences detected"
-            
-            # Check if there are commits ahead (both directions)
-            COMMITS_AHEAD=$(git rev-list --count origin/pcdc_dev..upstream/master)
-            COMMITS_BEHIND=$(git rev-list --count upstream/master..origin/pcdc_dev)
-            
-            echo "Commits ahead: $COMMITS_AHEAD"
-            echo "Commits behind: $COMMITS_BEHIND"
-            echo "commits_ahead=$COMMITS_AHEAD" >> $GITHUB_OUTPUT
-            echo "commits_behind=$COMMITS_BEHIND" >> $GITHUB_OUTPUT
-            
-            # Only proceed if there are actual commits to merge
-            if [ "$COMMITS_AHEAD" -eq 0 ] && [ "$COMMITS_BEHIND" -eq 0 ]; then
-              echo "No commits to merge - branches may have diverged"
-              echo "sync_needed=false" >> $GITHUB_OUTPUT
-              exit 0
-            fi
-          fi
 
       - name: Create and push sync branch
-        if: steps.check_sync.outputs.sync_needed == 'true'
         run: |
           # Delete existing sync branch if it exists
           git push origin --delete sync-cdis-pcdc || true
@@ -77,12 +41,12 @@ jobs:
           echo "Created sync-cdis-pcdc branch from pcdc_dev"
 
       - name: Attempt merge
-        if: steps.check_sync.outputs.sync_needed == 'true'
         id: merge
         run: |
           # Store the current HEAD before merge
           BEFORE_MERGE=$(git rev-parse HEAD)
-          
+          echo "conflict_branch=false" >> $GITHUB_OUTPUT
+
           if git merge upstream/master --no-edit; then
             # Get the HEAD after merge
             AFTER_MERGE=$(git rev-parse HEAD)
@@ -91,17 +55,12 @@ jobs:
             if [ "$BEFORE_MERGE" = "$AFTER_MERGE" ]; then
               echo "merge_success=false" >> $GITHUB_OUTPUT
               echo "❌ No changes after merge - branches are already up to date"
-              echo "files_changed=0" >> $GITHUB_OUTPUT
               exit 0
             fi
-            
-            echo "merge_success=true" >> $GITHUB_OUTPUT
-            echo "✅ Merge successful with changes"
-            
+
             # Count actual changes from the merge
             CHANGES=$(git diff --name-only $BEFORE_MERGE $AFTER_MERGE | wc -l)
-            echo "Files changed: $CHANGES"
-            echo "files_changed=$CHANGES" >> $GITHUB_OUTPUT
+
             
             # Verify we have actual changes before proceeding
             if [ "$CHANGES" -eq 0 ]; then
@@ -109,15 +68,14 @@ jobs:
               echo "❌ No file changes detected after merge"
               exit 0
             fi
+            
+            echo "merge_success=true" >> $GITHUB_OUTPUT
+            echo "✅ Merge successful with changes"
+          
           else
             echo "merge_success=false" >> $GITHUB_OUTPUT
+            echo "conflict_branch=true" >> $GITHUB_OUTPUT
             echo "❌ Merge conflicts detected"
-            
-            # Get list of conflicted files
-            CONFLICTED_FILES=$(git diff --name-only --diff-filter=U)
-            echo "conflicted_files<<EOF" >> $GITHUB_OUTPUT
-            echo "$CONFLICTED_FILES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
           fi
 
       - name: Push successful merge
@@ -164,7 +122,7 @@ jobs:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create conflict resolution branch
-        if: steps.merge.outputs.merge_success == 'false'
+        if: steps.merge.outputs.merge_success == 'false' && steps.merge.outputs.conflict_branch == 'true'
         run: |
           # Create timestamped branch name
           TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
