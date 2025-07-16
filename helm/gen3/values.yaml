@@ -84,7 +84,7 @@ global:
   tierAccessLimit: "1000"
   logoutInactiveUsers: true
   workspaceTimeoutInMinutes: 480
-  maintenanceMode: off
+  maintenanceMode: "off"
   # fenceURL:
   # arboristURL:
   # indexdURL:
