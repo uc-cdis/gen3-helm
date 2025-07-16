@@ -30,7 +30,7 @@ global:
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled: true
 
 # Deployment
 # -- (map) Annotations to add to the pod.

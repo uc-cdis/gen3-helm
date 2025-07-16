@@ -96,7 +96,7 @@ A Helm chart for Kubernetes
 | jwt_signing_keys | string | `""` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | string | `"http"` |  |
-| metricsEnabled | bool | `false` |  |
+| metricsEnabled | bool | `true` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |

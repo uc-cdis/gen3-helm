@@ -22,7 +22,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.24 |
 | file://../arborist | arborist | 0.1.23 |
 | file://../argo-wrapper | argo-wrapper | 0.1.17 |
-| file://../audit | audit | 0.1.23 |
+| file://../audit | audit | 0.1.24 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.24 |
 | file://../cedar | cedar | 0.1.11 |
 | file://../cohort-middleware | cohort-middleware | 0.1.8 |
@@ -136,6 +136,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
+| global.metricsEnabled | bool | `true` |  |
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |

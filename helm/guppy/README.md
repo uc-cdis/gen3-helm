@@ -71,7 +71,7 @@ A Helm chart for gen3 Guppy Service
 | image.repository | string | `"quay.io/cdis/guppy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indices | list | `[{"index":"dev_case","type":"case"},{"index":"dev_file","type":"file"}]` | Elasticsearch index configurations |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
 | partOf | string | `"Explorer-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

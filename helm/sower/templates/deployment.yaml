@@ -22,7 +22,7 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}        
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/manifest-sower.yaml") . | sha256sum }}
-        {{- if .Values.metricsEnabled }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:

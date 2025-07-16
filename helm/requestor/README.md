@@ -79,7 +79,7 @@ A Helm chart for gen3 Requestor Service
 | initResources.requests | map | `{"cpu":0.2,"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
 | initResources.requests.cpu | string | `0.2` | The maximum amount of CPU the container can use |
 | initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |

@@ -72,7 +72,7 @@ global:
     targetMemoryUtilizationPercentage: 80
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled: true
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1

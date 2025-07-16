@@ -25,7 +25,7 @@ autoscaling: {}
 replicaCount: 1
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled: true
 
 # -- (map) Docker image information.
 image:

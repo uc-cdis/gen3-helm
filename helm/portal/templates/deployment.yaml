@@ -22,7 +22,7 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
@@ -51,13 +51,14 @@ spec:
         configMap:
           name: "privacy-policy"
           optional: true
-      {{- if .Values.extraImages }}
       - name: extra-images-config
         configMap:
           name: portal-extra-images
+          optional: true
       - name: extra-images
         emptyDir: {}
       initContainers:
+      {{- if .Values.extraImages }}
         - name: init
           # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           image: "quay.io/prometheus/busybox:latest"
@@ -76,6 +77,43 @@ spec:
             cat /data-portal/custom/config.txt;
             xargs -a /data-portal/custom/config.txt -I {} wget {}
       {{- end }}
+      {{- if .Values.customConfig.enabled }}
+      initContainers:
+        - name: config-puller
+          image: alpine/git
+          env:
+            - name: CONFIG_DIR
+              value: {{ .Values.customConfig.dir }}
+            - name: GIT_REPO
+              value: {{ .Values.customConfig.repo  }}
+            - name: GIT_BRANCH
+              value: {{ .Values.customConfig.branch }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              mkdir -p /tmp/repo
+              cd /tmp/repo
+              # Clone with sparse checkout and filter
+              git clone --depth 1 ${GIT_REPO} siteconfig
+              cd siteconfig
+
+              # Fetch the branch
+              git fetch origin ${GIT_BRANCH}:config_branch
+              git switch config_branch
+              {{- if .Values.configDir }}
+              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/public/* /gen3/public
+              {{- else }}
+              cp -r /tmp/repo/siteconfig/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/public/* /gen3/public
+              {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gen3/config
+            - name: public-volume
+              mountPath: /gen3/public
+          {{- end }}
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -124,45 +162,35 @@ spec:
             {{- end }}
             - name: LOGOUT_INACTIVE_USERS
               value: {{ .Values.global.logoutInactiveUsers | quote }}
-              optional: true
             - name: WORKSPACE_TIMEOUT_IN_MINUTES
               value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
-              optional: true
             - name: TIER_ACCESS_LEVEL
               value: {{ .Values.global.tierAccessLevel | quote }}
-              optional: true
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
-              optional: true
             {{- if .Values.global.fenceURL }}
             - name: FENCE_URL
               value: {{ .Values.global.fenceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.indexdURL }}
             - name: INDEXD_URL
               value: {{ .Values.global.indexdURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.workspaceURL }}
             - name: WORKSPACE_URL
               value: {{ .Values.global.workspaceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.manifestServiceURL }}
             - name: MANIFEST_SERVICE_URL
               value: {{ .Values.global.manifestServiceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.wtsURL }}
             - name: WTS_URL
               value: {{ .Values.global.wtsURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.privacyPolicyURL }}
             - name: PRIVACY_POLICY_URL
               value: {{ .Values.global.privacyPolicyURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN

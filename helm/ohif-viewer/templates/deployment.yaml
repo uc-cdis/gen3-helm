@@ -24,7 +24,7 @@ spec:
         public: "yes"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/app-config.yaml") . | sha256sum }}
-        {{- if .Values.metricsEnabled }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
