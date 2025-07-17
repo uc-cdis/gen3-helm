@@ -44,8 +44,6 @@ spec:
       {{- if .Values.customConfig.enabled }}
       - name: config-volume
         emptyDir: {}
-      - name: public-volume
-        emptyDir: {}
       {{- else }}
       - name: config-volume
         secret:
@@ -110,19 +108,16 @@ spec:
                 ${GIT_REPO} custom
               cd custom
 
-              {{- if .Values.customConfig.dir }}
               git sparse-checkout set {{ .Values.customConfig.dir }}
               cd {{ .Values.customConfig.dir }}
               ls
-              {{- else }}
-              cp -r config/* /gen3/config
-              cp -r public/* /gen3/public
-              {{- end }}
+              echo 'cp -r * /gen3/config'
+              cp -r * /gen3/config
+              echo 'ls /gen3/config'
+              ls /gen3/config
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
-            - name: public-volume
-              mountPath: /gen3/public
           {{- end }}
       containers:
         - name: portal
@@ -247,9 +242,10 @@ spec:
             {{- end }}
             {{- if .Values.customConfig.enabled }}
             - name: config-volume
-              mountPath: /gen3/config
-            - name: public-volume
-              mountPath: /gen3/public
+              mountPath: /gen3/config/gitops.json
+              subPath: gitops.json
+            - name: config-volume
+              mountPath: /data-portal/custom/
             {{-  else }}
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
