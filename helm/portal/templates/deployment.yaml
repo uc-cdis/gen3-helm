@@ -1,3 +1,4 @@
+{{- if not .Values.mountpointCacheEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +22,7 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
@@ -29,6 +30,7 @@ spec:
         {{- include "portal.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "portal.serviceAccountName" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -39,6 +41,10 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
+      {{- if .Values.customConfig.enabled }}
+      - name: config-volume
+        emptyDir: {}
+      {{- else }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -49,13 +55,15 @@ spec:
         configMap:
           name: "privacy-policy"
           optional: true
-      {{- if .Values.extraImages }}
+      {{- end }}
       - name: extra-images-config
         configMap:
           name: portal-extra-images
+          optional: true
       - name: extra-images
         emptyDir: {}
       initContainers:
+      {{- if .Values.extraImages }}
         - name: init
           # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           image: "quay.io/prometheus/busybox:latest"
@@ -74,6 +82,43 @@ spec:
             cat /data-portal/custom/config.txt;
             xargs -a /data-portal/custom/config.txt -I {} wget {}
       {{- end }}
+      {{- if .Values.customConfig.enabled }}
+        - name: config-puller
+          image: alpine/git
+          env:
+            - name: CONFIG_DIR
+              value: {{ .Values.customConfig.dir }}
+            - name: GIT_REPO
+              value: {{ .Values.customConfig.repo  }}
+            - name: GIT_BRANCH
+              value: {{ .Values.customConfig.branch }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              mkdir -p /tmp/repo
+              cd /tmp/repo
+              # Clone only the specific branch with minimal history and sparse checkout
+              git clone \
+                --depth 1 \
+                --single-branch \
+                --branch ${GIT_BRANCH} \
+                --filter=blob:none \
+                --sparse \
+                ${GIT_REPO} custom
+              cd custom
+
+              git sparse-checkout set {{ .Values.customConfig.dir }}
+              cd {{ .Values.customConfig.dir }}
+              ls
+              echo 'cp -r * /gen3/config'
+              cp -r * /gen3/config
+              echo 'ls /gen3/config'
+              ls /gen3/config
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gen3/config
+          {{- end }}
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -121,65 +166,38 @@ spec:
               value: {{ .Values.gitops.gen3Bundle | quote }}
             {{- end }}
             - name: LOGOUT_INACTIVE_USERS
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: logout_inactive_users
-                  optional: true
+              value: {{ .Values.global.logoutInactiveUsers | quote }}
             - name: WORKSPACE_TIMEOUT_IN_MINUTES
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: workspace_timeout_in_minutes
-                  optional: true
+              value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
             - name: TIER_ACCESS_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: tier_access_level
-                  optional: true
+              value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: tier_access_limit
-                  optional: true
+              value: {{ .Values.global.tierAccessLimit | quote }}
+            {{- if .Values.global.fenceURL }}
             - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+              value: {{ .Values.global.fenceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.indexdURL }}
             - name: INDEXD_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
+              value: {{ .Values.global.indexdURL | quote }}
+            {{- end }}
+            {{- if .Values.global.workspaceURL }}
             - name: WORKSPACE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: workspace_url
-                  optional: true
+              value: {{ .Values.global.workspaceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.manifestServiceURL }}
             - name: MANIFEST_SERVICE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: manifest_service_url
-                  optional: true
+              value: {{ .Values.global.manifestServiceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.wtsURL }}
             - name: WTS_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: wts_url
-                  optional: true
+              value: {{ .Values.global.wtsURL | quote }}
+            {{- end }}
+            {{- if .Values.global.privacyPolicyURL }}
             - name: PRIVACY_POLICY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: privacy_policy_url
-                  optional: true
+              value: {{ .Values.global.privacyPolicyURL | quote }}
+            {{- end }}
+            {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN
               # Optional token for mapbox api
               valueFrom:
@@ -187,6 +205,7 @@ spec:
                   name: global
                   key: mapbox_token
                   optional: true
+            {{- end }}
             {{- if .Values.datadogApplicationId }}
             - name: DATADOG_APPLICATION_ID
               value: {{ .Values.datadogApplicationId | quote }}
@@ -221,6 +240,13 @@ spec:
             - name: extra-images
               mountPath: /data-portal/custom/images
             {{- end }}
+            {{- if .Values.customConfig.enabled }}
+            - name: config-volume
+              mountPath: /gen3/config/gitops.json
+              subPath: gitops.json
+            - name: config-volume
+              mountPath: /data-portal/custom/
+            {{-  else }}
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -242,4 +268,5 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
-              
+            {{- end }}
+{{- end }}

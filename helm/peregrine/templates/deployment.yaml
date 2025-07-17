@@ -14,11 +14,12 @@ spec:
   template:
     metadata:
       annotations:
+      checksum/config: {{ include (print $.Template.BasePath "/peregrine-secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
-        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 6 }}
         {{- end }}
       labels:
         public: "yes"
@@ -118,23 +119,16 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: dictionary_url
-                  optional: true
+              value: {{ .Values.global.dictionaryUrl | quote }}
+              optional: true
             - name: PUBLIC_DATASETS
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: public_datasets
-                  optional: true
+              value: {{ .Values.global.publicDataSets | quote }}
+              optional: true
+            {{- if .Values.global.indexdURL }}
             - name: INDEX_CLIENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
+              value: {{ .Values.global.indexdURL | quote }}
+              optional: true
+            {{- end }}
             - name: GRAPHQL_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -146,11 +140,8 @@ spec:
               value: https://{{ .Values.global.hostname }}/user
             {{- else }}
             - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+              value: {{ .Values.global.fenceURL | quote }}
+              optional: true
             {{- end }}
             - name: ARBORIST_URL
               value: {{ .Values.arborist_url }}

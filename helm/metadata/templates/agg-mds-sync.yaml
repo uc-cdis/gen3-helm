@@ -145,7 +145,7 @@ spec:
                     echo "Waiting for status file..."
                     sleep 5
                   done
-                  if ! [[ $(cat /mnt/shared/status) =~ "Success" ]]; then
+                  if [[ $(cat /mnt/shared/status) = "Success" ]]; then
                     success="SUCCESS"
                     color="2EB67D"
                   else

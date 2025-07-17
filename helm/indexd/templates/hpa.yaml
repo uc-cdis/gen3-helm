@@ -1,4 +1,4 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if default .Values.global.autoscaling.enabled .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,23 +10,23 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: indexd-deployment
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ default .Values.global.autoscaling.minReplicas .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ default .Values.global.autoscaling.maxReplicas .Values.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if default .Values.global.autoscaling.targetCPUUtilizationPercentage .Values.autoscaling.targetCPUUtilizationPercentage }}
   - type: Resource
     resource:
       name: cpu
       target:
-        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
         type: Utilization
+        averageUtilization: {{ default .Values.global.autoscaling.targetCPUUtilizationPercentage .Values.autoscaling.targetCPUUtilizationPercentage}}
     {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if default .Values.global.autoscaling.targetMemoryUtilizationPercentage .Values.autoscaling.targetMemoryUtilizationPercentage }}
   - type: Resource
     resource:
       name: memory
       target:
-        averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+        averageUtilization: {{ default .Values.global.autoscaling.targetMemoryUtilizationPercentage .Values.autoscaling.targetMemoryUtilizationPercentage }}
         type: Utilization
     {{- end }}
 {{- end }}

@@ -26,7 +26,7 @@ spec:
         {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
-      {{- if .Values.metricsEnabled }}
+      {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
       annotations:
       {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
