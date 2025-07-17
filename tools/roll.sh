@@ -80,4 +80,4 @@ else
 fi
 
 # Run helm upgrade --install command
-helm upgrade --install $project . -f ../../values.yaml
+helm upgrade --install $project . -f ../../values.yaml --timeout 15m0s

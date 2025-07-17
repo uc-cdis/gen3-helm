@@ -63,7 +63,7 @@ amanuensis:
   enabled: true
   image:
     repository: "quay.io/pcdc/amanuensis"
-    tag: "2.24.0"
+    tag: "2.26.2"
     pullPolicy: IfNotPresent
 
 fence: 
@@ -335,7 +335,7 @@ portal:
 revproxy:
   image:
     repository: quay.io/cdis/nginx
-    tag: "1.17.6-ctds-1.0.1"
+    tag: "2025.07"
 
 sheepdog:
   image:
