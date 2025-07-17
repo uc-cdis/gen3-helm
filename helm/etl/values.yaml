@@ -5,16 +5,17 @@ image:
     # -- (string) The Docker image repository for the fence service
     repository: quay.io/cdis/tube
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "master"
   spark:
     # -- (string) The Docker image repository for the spark service
     repository: quay.io/cdis/gen3-spark
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "2024.11"
+    tag: "master"
+
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -22,22 +23,20 @@ imagePullSecrets: []
 # -- (map) Annotations to add to the pod
 podAnnotations: {}
 
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   tube:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
+
 
 esEndpoint: gen3-elasticsearch-master
 
@@ -131,14 +130,6 @@ etlMapping:
       target_nodes:
         - name: slide_image
           path: slides.samples.cases
-    - name: subject
-      doc_type: subject
-      type: aggregator
-      root: subject
-      props:
-        - name: submitter_id
-        - name: project_id
-        - name: external_references
 
 # -- (map) Configuration options for es garbage cronjob.
 esGarbageCollect:
