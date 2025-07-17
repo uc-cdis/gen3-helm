@@ -9,7 +9,7 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.20 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.47 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.50 |
 
 ## Values
 
@@ -47,10 +47,10 @@ A Helm chart for Kubernetes
 | funnel.Kubernetes.JobsNamespace | string | `""` | Namespace where Funnel jobs will be created. |
 | funnel.Kubernetes.Namespace | string | `""` | Namespace where Funnel server will be created. |
 | funnel.Logger.level | string | `"debug"` |  |
-| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
-| funnel.Plugins.Params | map | `{"OidcClientId":"","OidcClientSecret":"","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"}` | Parameters to send to the Funnel plugin. |
-| funnel.Plugins.Params.OidcClientId | string | `""` | OIDC client ID for Funnel plugin. |
-| funnel.Plugins.Params.OidcClientSecret | string | `""` | OIDC client secret for Funnel plugin. |
+| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"<redacted>","OidcClientSecret":"<redacted>","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
+| funnel.Plugins.Params | map | `{"OidcClientId":"<redacted>","OidcClientSecret":"<redacted>","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"}` | Parameters to send to the Funnel plugin. |
+| funnel.Plugins.Params.OidcClientId | string | `"<redacted>"` | OIDC client ID for Funnel plugin. |
+| funnel.Plugins.Params.OidcClientSecret | string | `"<redacted>"` | OIDC client secret for Funnel plugin. |
 | funnel.Plugins.Params.OidcTokenUrl | string | `"gen3-workflow-service.jenkins-blood.svc.cluster.local"` | OIDC token URL for Funnel plugin. |
 | funnel.Plugins.Params.S3Url | string | `"https://jenkins-blood.planx-pla.net/user"` | S3 URL for Funnel plugin. |
 | funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` | Path to the directory where Funnel plugins are stored. |
@@ -63,6 +63,9 @@ A Helm chart for Kubernetes
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
 | funnel.image.tag | string | `"feature-plugins"` | The Docker image tag for the Funnel service. |
+| funnel.mongodb.image.registry | string | `"docker.io"` |  |
+| funnel.mongodb.image.repository | string | `"dlavrenuek/bitnami-mongodb-arm"` |  |
+| funnel.mongodb.image.tag | string | `"6.0.13"` |  |
 | funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
 | funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
 | funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
@@ -119,10 +122,26 @@ A Helm chart for Kubernetes
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | tolerations | list | `[]` | Tolerations for the pods |
-| volumeMounts | list | `[]` | Volumes to mount to the container. |
-| volumes | list | `[]` | Volumes to attach to the container. |
-| workflowConfig.debug | bool | `true` | Whether to enable debug mode for the workflow service. |
-| workflowConfig.enablePrometheusMetrics | bool | `true` | Whether to enable Prometheus metrics for the workflow service. |
-| workflowConfig.kmsEncryptionEnabled | bool | `false` | Whether to enable KMS encryption for the workflow service. |
-| workflowConfig.taskImageWhitelist | list | `["*"]` | Whitelist of task images that can be used in the workflow service. |
-| workflowConfig.tesServerUrl | string | `"http://funnel:8000"` | The URL of the TES server. |
+| volumeMounts | list | `[{"mountPath":"/src/gen3-workflow-config.yaml","name":"config-volume","readOnly":true,"subPath":"gen3-workflow-config.yaml"},{"mountPath":"/gen3-workflow/gen3-workflow-config.yaml","name":"config-volume","readOnly":true,"subPath":"gen3-workflow-config.yaml"}]` | Volumes to mount to the container. |
+| volumes | list | `[{"name":"config-volume","secret":{"secretName":"gen3workflow-g3auto"}}]` | Volumes to attach to the container. |
+| workflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
+| workflowConfig.db.database | string | `"gen3workflow_test"` | Name of the database to connect to. |
+| workflowConfig.db.driver | string | `"postgresql+asyncpg"` | SQLAlchemy-compatible database driver. |
+| workflowConfig.db.host | string | `"localhost"` | Hostname of the database server. |
+| workflowConfig.db.password | string | `"postgres"` | Password used to authenticate with the database. |
+| workflowConfig.db.port | int | `5432` | Port number on which the database listens. |
+| workflowConfig.db.user | string | `"postgres"` | Username used to authenticate with the database. |
+| workflowConfig.debug | bool | `false` | Enables debug mode for the application. |
+| workflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
+| workflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
+| workflowConfig.hostname | string | `"localhost"` | Hostname where the workflow service runs. |
+| workflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
+| workflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
+| workflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
+| workflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
+| workflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.      Leave empty to use credentials from an existing STS session. |
+| workflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
+| workflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
+| workflowConfig.taskImageWhitelist | list | `["*"]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
+| workflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
+| workflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |

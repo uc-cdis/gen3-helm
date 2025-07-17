@@ -33,9 +33,6 @@ spec:
     spec:
       serviceAccountName: {{ include "gen3workflow.serviceAccountName" . }}
       volumes:
-        - name: config-volume
-          secret:
-            secretName: "gen3workflow-g3auto"
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -63,15 +60,6 @@ spec:
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
-              - name: "config-volume"
-                readOnly: true
-                mountPath: "/src/gen3-workflow-config.yaml"
-                subPath: "gen3-workflow-config.yaml"
-              # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
-              - name: "config-volume"
-                readOnly: true
-                mountPath: "/gen3-workflow/gen3-workflow-config.yaml"
-                subPath: "gen3-workflow-config.yaml"
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

@@ -254,10 +254,22 @@ env:
         optional: true
 
 # -- (list) Volumes to attach to the container.
-volumes: []
+volumes: 
+  - name: config-volume
+    secret:
+      secretName: "gen3workflow-g3auto"
 
 # -- (list) Volumes to mount to the container.
-volumeMounts: []
+volumeMounts: 
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/src/gen3-workflow-config.yaml"
+    subPath: "gen3-workflow-config.yaml"
+  # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/gen3-workflow/gen3-workflow-config.yaml"
+    subPath: "gen3-workflow-config.yaml"
 
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts: []
@@ -286,16 +298,52 @@ extraLabels:
     netnolimit: "yes"
 
 workflowConfig:
-  # -- (bool) Whether to enable debug mode for the workflow service.
-  debug: true
-  # -- (string) The URL of the TES server.
+  # -- (string) Hostname where the workflow service runs.
+  hostname: localhost
+  # -- (bool) Enables debug mode for the application.
+  debug: false
+  # -- (bool) Enables verbose logging specifically for httpx requests.
+  httpxDebug: false
+  # -- (string) URL prefix used for serving OpenAPI documentation.
+  docsUrlPrefix: /gen3workflow
+  # -- (string) Custom Arborist URL. Ignored if already set via environment variable.
+  arboristUrl: ""
+  # -- (bool) Enables mock authentication, bypassing Arborist. Use only for development.
+  mockAuth: false
+  # -- (string) AWS region used for creating user S3 buckets.
+  userBucketsRegion: us-east-1
+  # -- (int) Number of days after which workflow-generated S3 objects are deleted.
+  s3ObjectsExpirationDays: 30
+  # -- (string) AWS Access Key ID used to make S3 requests on behalf of users.  
+  #    Leave empty to use credentials from an existing STS session.
+  s3AccessKeyId: ""
+  # -- (string) AWS Secret Access Key used to make S3 requests on behalf of users.
+  #    Leave empty to use credentials from an existing STS session.
+  s3SecretAccessKey: ""
+  # -- (bool) Enables KMS encryption for S3 uploads.
+  kmsEncryptionEnabled: true
+  db:
+    # -- (string) SQLAlchemy-compatible database driver.
+    driver: postgresql+asyncpg
+    # -- (string) Hostname of the database server.
+    host: localhost
+    # -- (int) Port number on which the database listens.
+    port: 5432
+    # -- (string) Username used to authenticate with the database.
+    user: postgres
+    # -- (string) Password used to authenticate with the database.
+    password: postgres
+    # -- (string) Name of the database to connect to.
+    database: gen3workflow_test
+  # -- (string) TES server URL to which workflow tasks are forwarded.
   tesServerUrl: http://funnel:8000
-  # -- (list) Whitelist of task images that can be used in the workflow service.
-  taskImageWhitelist: ["*"]
-  # -- (bool) Whether to enable Prometheus metrics for the workflow service.
-  enablePrometheusMetrics: true
-  # -- (bool) Whether to enable KMS encryption for the workflow service.
-  kmsEncryptionEnabled: false
+  # -- (list) Whitelist of container image patterns allowed for workflow tasks.
+  #    Supports wildcards `*` and `{username}` placeholders.
+  taskImageWhitelist: ["*"] #TODO: Change this to a more restrictive value
+  # -- (bool) Enables Prometheus metrics for the workflow service.
+  enablePrometheusMetrics: false
+  # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
+  prometheusMultiprocDir: /var/tmp/prometheus_metrics
 
 funnel:
   # -- (map) Configuration for the Funnel container image.
@@ -321,6 +369,10 @@ funnel:
       - /app/build/plugins-go/authorizer
       - /opt/funnel/plugin-binaries/auth-plugin
   mongodb:
+    image: #This overrides the default mongodb image used by Funnel which doesn't support ARM architecture
+      registry: docker.io
+      repository: dlavrenuek/bitnami-mongodb-arm
+      tag: 6.0.13
     readinessProbe:
       enabled: true
       initialDelaySeconds: 20
@@ -330,7 +382,7 @@ funnel:
 
 
   # -- (map) Configuration for the Funnel plugin.
-  Plugins:
+  Plugins: #WIP
     Disabled: false
     # -- (string) Path to the directory where Funnel plugins are stored.
     Path: plugin-binaries/auth-plugin
@@ -342,9 +394,9 @@ funnel:
       # -- (string) OIDC token URL for Funnel plugin.
       OidcTokenUrl: "gen3-workflow-service.jenkins-blood.svc.cluster.local"
       # -- (string) OIDC client ID for Funnel plugin.
-      OidcClientId: "" 
+      OidcClientId: "<redacted>" 
       # -- (string) OIDC client secret for Funnel plugin.
-      OidcClientSecret: ""
+      OidcClientSecret: "<redacted>"
   
   # -- (map) Kubernetes configuration for Funnel.
   Kubernetes:
