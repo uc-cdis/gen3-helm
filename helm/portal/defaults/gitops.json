@@ -127,31 +127,13 @@
         "consortium": {
           "chartType": "bar",
           "title": "Consortium"
-        },
-        "external_references.external_resource_name": {
-          "chartType": "bar",
-          "title": "External Resource Name",
-          "show": false
         }
       },
       "filters": {
         "anchor": {
           "field": "disease_phase",
-          "options": [
-            "Initial Diagnosis",
-            "Relapse"
-          ],
-          "tabs": [
-            "Disease",
-            "Molecular",
-            "Surgery",
-            "Radiation",
-            "Response",
-            "SMN",
-            "Imaging",
-            "Labs",
-            "SCT"
-          ]
+          "options": ["Initial Diagnosis", "Relapse"],
+          "tabs": ["Disease", "Molecular", "Surgery", "Radiation", "Response", "SMN", "Imaging", "Labs", "SCT"]
         },
         "tabs": [
           {
@@ -448,7 +430,7 @@
           {
             "field": "tumor_assessments.tumor_laterality",
             "name": "Tumor Laterality"
-          },
+          }, 
           {
             "field": "stagings.irs_group",
             "name": "IRS Group"
