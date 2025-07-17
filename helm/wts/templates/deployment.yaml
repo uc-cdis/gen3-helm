@@ -29,7 +29,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
         {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
-        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- include "common.grafanaAnnotations" . | nindent 6 }}
         {{- end }}
       labels:
         netnolimit: "yes"
