@@ -26,7 +26,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 rules:
 - apiGroups: ["batch"]
-  resources: ["jobs"]
+  resources: ["jobs", "cronjobs"]
   verbs: ["get", "list", "delete"]
 - apiGroups: [""]
   resources: ["pods"]
@@ -80,8 +80,11 @@ spec:
           echo "Cleaning up hook resources for release: {{ .Release.Name }}"
           
           # Clean up jobs created by hooks
-          kubectl delete jobs -l app=gen3-created-by-hook    
+          kubectl delete jobs -l app=gen3-created-by-hook   
           
+          # Clean up cronjobs created by hooks
+          kubectl delete cronjobs -l app=gen3-created-by-hook
+
           # Clean up secrets created by hooks (if any)
           kubectl delete secrets -l app=gen3-created-by-hook   
           echo "Cleanup completed"
