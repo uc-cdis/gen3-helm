@@ -5,7 +5,7 @@ metadata:
 data:
   argo.json: |
 {{- if .Values.argoJson }}
-{{ .Values.argoJson | toJson }}
+{{ .Values.argoJson }}
 {{- else }}
     {
       "scaling_groups": {{.Values.scalingGroups | toJson}},
