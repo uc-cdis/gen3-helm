@@ -24,7 +24,7 @@ metricsEnabled: false
 
 # Deployment
 # -- (map) Annotations to add to the pod.
-podAnnotations: {"gen3.io/network-ingress": "argo-wrapper"}
+podAnnotations: { "gen3.io/network-ingress": "argo-wrapper" }
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -139,6 +139,9 @@ indexdAdminUser: "fence"
 environment: "default"
 # -- (string) PVC for Argo.
 pvc: "test-pvc"
+
+# -- (string) A JSON-formatted string that will replace the pre-generated argo-wrapper configuration
+argoJson: ""
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
