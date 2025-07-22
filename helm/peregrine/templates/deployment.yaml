@@ -14,12 +14,12 @@ spec:
   template:
     metadata:
       annotations:
-      checksum/config: {{ include (print $.Template.BasePath "/peregrine-secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/peregrine-secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
         {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
-        {{- include "common.grafanaAnnotations" . | nindent 6 }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:
         public: "yes"
@@ -120,14 +120,11 @@ spec:
               value: "600"
             - name: DICTIONARY_URL
               value: {{ .Values.global.dictionaryUrl | quote }}
-              optional: true
             - name: PUBLIC_DATASETS
               value: {{ .Values.global.publicDataSets | quote }}
-              optional: true
             {{- if .Values.global.indexdURL }}
             - name: INDEX_CLIENT_HOST
               value: {{ .Values.global.indexdURL | quote }}
-              optional: true
             {{- end }}
             - name: GRAPHQL_TIMEOUT
               valueFrom:
@@ -141,7 +138,6 @@ spec:
             {{- else }}
             - name: FENCE_URL
               value: {{ .Values.global.fenceURL | quote }}
-              optional: true
             {{- end }}
             - name: ARBORIST_URL
               value: {{ .Values.arborist_url }}
