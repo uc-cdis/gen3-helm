@@ -28,10 +28,7 @@ A Helm chart for gen3 cohort-middleware
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"cohort-middleware"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `25` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| autoscaling | object | `{}` |  |
 | config.arboristEndpoint | string | `"http://arborist-service"` |  |
 | config.atlasDbHost | string | `""` |  |
 | config.atlasDbPassword | string | `""` |  |
@@ -44,6 +41,11 @@ A Helm chart for gen3 cohort-middleware
 | externalSecrets.cohortMiddlewareG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto" |
 | externalSecrets.createK8sCohortMiddlewareSecret | string | `false` | Will create the Helm "cohort-middleware-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | fullnameOverride | string | `""` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

@@ -24,8 +24,9 @@ spec:
         userhelper: "yes"
         {{- include "metadata.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-      annotations: 
-        {{- if .Values.metricsEnabled }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:

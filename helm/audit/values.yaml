@@ -85,7 +85,7 @@ global:
       versioningEnabled: false
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled: true
 
 # -- (map) External Secrets settings.
 externalSecrets:

@@ -1,0 +1,43 @@
+{{- if .Values.mountpointCacheEnabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: portal-cache-rebuild
+  labels:
+    {{- include "portal.labels" . | nindent 4 }}
+spec:
+  schedule: "0 3 * * *" # Daily at 3 AM — irrelevant while suspended
+  suspend: true
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: portal-cache-rebuild
+        spec:
+          serviceAccountName: {{ include "portal.serviceAccountName" . }}
+          restartPolicy: Never
+          volumes:
+            - name: cache-mountpoint
+              persistentVolumeClaim:
+                claimName: portal-pvc-{{ .Release.Name }}
+          containers:
+            - name: builder
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              volumeMounts:
+                - name: cache-mountpoint
+                  mountPath: /data-portal/cache
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  echo "Installing dependencies..."
+                  cd /data-portal
+                  npm install
+                  echo "Running webpack build..."
+                  bash runWebpack.sh
+                  echo "Copying build to cache..."
+                  cp -r *.js *.html static/ /data-portal/cache/
+{{- end }}

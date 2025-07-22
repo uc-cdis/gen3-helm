@@ -1,6 +1,6 @@
 # guppy
 
-![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Guppy Service
 
@@ -24,11 +24,7 @@ A Helm chart for gen3 Guppy Service
 | arboristUrl | string | `"http://arborist-service"` | Arborist service URL. |
 | authFilterField | string | `"auth_resource_path"` | The field used for access control and authorization filters |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | configIndex | string | `"dev_array-config"` | The Elasticsearch configuration index |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
@@ -37,6 +33,11 @@ A Helm chart for gen3 Guppy Service
 | enableEncryptWhitelist | bool | `true` | Whether or not to enable encryption for specified fields |
 | encryptWhitelist | string | `"test1"` | A comma-separated list of fields to encrypt |
 | esEndpoint | string | `"gen3-elasticsearch-master:9200"` | Elasticsearch endpoint. |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -70,7 +71,7 @@ A Helm chart for gen3 Guppy Service
 | image.repository | string | `"quay.io/cdis/guppy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indices | list | `[{"index":"dev_case","type":"case"},{"index":"dev_file","type":"file"}]` | Elasticsearch index configurations |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
 | partOf | string | `"Explorer-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
