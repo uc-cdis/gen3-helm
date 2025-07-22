@@ -80,11 +80,11 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.38
+    version: 0.1.39
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
@@ -92,7 +92,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.36
+    version: 0.1.37
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -104,11 +104,11 @@ dependencies:
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.28
+    version: 0.1.29
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -160,7 +160,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.8
+version: 0.2.9
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

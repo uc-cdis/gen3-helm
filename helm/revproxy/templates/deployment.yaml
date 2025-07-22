@@ -88,22 +88,19 @@ spec:
                 fieldPath: metadata.namespace
           - name: MAINTENANCE_MODE
             value: {{ .Values.global.maintenanceMode | quote }}
-            optional: true
           - name: FRONTEND_ROOT
             value: {{ .Values.global.frontendRoot | quote }}
-            optional: true
+          {{- if .Values.global.origins_allow_credentials }}
           - name: ORIGINS_ALLOW_CREDENTIALS
             value: {{ .Values.global.origins_allow_credentials | quote }}
-            optional: true
+          {{- end }}
           {{- if .Values.global.cookieDomain }}
           - name: COOKIE_DOMAIN
             value: {{ .Values.global.cookieDomain | quote }}
-            optional: true
           {{- end }}
           {{- if .Values.global.desNamespace }}
           - name: DES_NAMESPACE
             value: {{ .Values.global.desNamespace | quote }}
-            optional: true
           {{- end }}
           - name: INDEXD_AUTHZ
             valueFrom:

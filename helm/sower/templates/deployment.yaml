@@ -49,7 +49,6 @@ spec:
                   fieldPath: metadata.namespace
             - name: DICTIONARY_URL
               value: {{ .Values.global.dictionaryUrl | quote }}
-              optional: true
             - name: GEN3_HOSTNAME
               value: {{ .Values.global.hostname }}
           ports:
