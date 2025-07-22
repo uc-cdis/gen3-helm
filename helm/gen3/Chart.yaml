@@ -33,7 +33,7 @@ dependencies:
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
