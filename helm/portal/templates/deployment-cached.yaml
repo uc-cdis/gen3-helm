@@ -1,4 +1,4 @@
-{{- if and (.Values.global.crossplane.enabled) (.Values.mountpointCacheEnabled) }}
+{{- if .Values.mountpointCacheEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +30,7 @@ spec:
         {{- include "portal.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "portal.serviceAccountName" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -40,6 +41,9 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
+      - name: cache-mountpoint
+        persistentVolumeClaim:
+          claimName: portal-pvc-{{ .Release.Name }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -58,10 +62,11 @@ spec:
         emptyDir: {}
       initContainers:
         - name: init
-          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          image: "quay.io/prometheus/busybox:latest"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+          - name: cache-mountpoint
+            mountPath: /data-portal/cache
           - name: extra-images-config
             mountPath: /data-portal/custom/config.txt
             subPath: config.txt
@@ -71,22 +76,20 @@ spec:
           - sh
           - -c
           - | 
-            cd /data-portal/custom/images/;
-            cat /data-portal/custom/config.txt;
-            xargs -a /data-portal/custom/config.txt -I {} wget {}
+            if [ ! -f /data-portal/cache/index.html ]; then
+              echo "Cache not found. Building..."
+              cd /data-portal
+              npm install
+              bash runWebpack.sh
+              echo "Copying build output to cache..."
+              cp -r *.js *.html static/ /data-portal/cache/
+            else
+              echo "Cache already exists. Skipping build."
       {{- end }}
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 30
-          #   timeoutSeconds: 30
-          #   failureThreshold: 30
           readinessProbe:
             httpGet:
               {{- if eq "gen3ff" .Values.global.frontendRoot }}
@@ -104,11 +107,12 @@ spec:
             - containerPort: 80
             - containerPort: 443
           command:
-            - /bin/bash
-          args:
+            - /bin/sh
             - -c
             - |
-              ./dockerStart.sh
+              echo "Starting NGINX with cached assets."
+              cp -r /data-portal/cache/* /usr/share/nginx/html/
+              exec /usr/sbin/nginx -g 'daemon off;'
           env:
             - name: HOSTNAME
               value: revproxy-service
@@ -125,72 +129,53 @@ spec:
               value: {{ .Values.gitops.gen3Bundle | quote }}
             {{- end }}
             - name: LOGOUT_INACTIVE_USERS
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: logout_inactive_users
-                  optional: true
+              value: {{ .Values.global.logoutInactiveUsers | quote }}
+              optional: true
             - name: WORKSPACE_TIMEOUT_IN_MINUTES
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: workspace_timeout_in_minutes
-                  optional: true
+              value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
+              optional: true
             - name: TIER_ACCESS_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: tier_access_level
-                  optional: true
+              value: {{ .Values.global.tierAccessLevel | quote }}
+              optional: true
             - name: TIER_ACCESS_LIMIT
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: tier_access_limit
-                  optional: true
+              value: {{ .Values.global.tierAccessLimit | quote }}
+              optional: true
+            {{- if .Values.global.fenceURL }}
             - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+              value: {{ .Values.global.fenceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.indexdURL }}
             - name: INDEXD_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
+              value: {{ .Values.global.indexdURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.workspaceURL }}
             - name: WORKSPACE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: workspace_url
-                  optional: true
+              value: {{ .Values.global.workspaceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.manifestServiceURL }}
             - name: MANIFEST_SERVICE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: manifest_service_url
-                  optional: true
+              value: {{ .Values.global.manifestServiceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.wtsURL }}
             - name: WTS_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: wts_url
-                  optional: true
+              value: {{ .Values.global.wtsURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.privacyPolicyURL }}
             - name: PRIVACY_POLICY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: privacy_policy_url
-                  optional: true
+              value: {{ .Values.global.privacyPolicyURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN
               # Optional token for mapbox api
-              valueFrom:
-                configMapKeyRef:
-                  name: global
-                  key: mapbox_token
-                  optional: true
+              value: {{ .Values.global.mapboxToken | quote }}
+              optional: true
+            {{- end }}
             {{- with .Values.datadogApplicationId  }}      
             - name: DATADOG_APPLICATION_ID
               # Optional client token for Datadog
@@ -217,6 +202,8 @@ spec:
             - name: extra-images
               mountPath: /data-portal/custom/images
             {{- end }}
+            - name: cache-mountpoint
+              mountPath: /data-portal/cache
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -238,4 +225,5 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
-{{- end }}              
+{{- end }}
+              

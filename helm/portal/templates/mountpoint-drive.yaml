@@ -1,0 +1,36 @@
+{{- if .Values.mountpointCacheEnabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: portal-pv-{{ .Release.Name }}
+spec:
+  capacity:
+    storage: 1200Gi # ignored, required
+  accessModes:
+    - ReadWriteMany # supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  claimRef: # To ensure no other PVCs can claim this PV
+    namespace: {{ .Release.Namespace }}
+    name: portal-pvc-{{ .Release.Name }} # Name of your PVC
+  mountOptions:
+    - allow-delete
+    - region us-east-1
+  csi:
+    driver: s3.csi.aws.com # required
+    volumeHandle: s3-csi-driver-volume # Must be unique
+    volumeAttributes:
+      bucketName: {{ .Values.mountpointCacheBucketName }} # Name of your S3 bucket
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: portal-pvc-{{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  resources:
+    requests:
+      storage: 1200Gi # Ignored, required
+  volumeName: portal-pv-{{ .Release.Name }} # Name of your PV
+{{- end }}

@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: sower
+  name: wts-deployment
   labels:
-    {{- include "sower.labels" . | nindent 4 }}
+    {{- include "wts.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: sower
+    name: wts-deployment
   minReplicas: {{ default .Values.global.autoscaling.minReplicas .Values.autoscaling.minReplicas }}
   maxReplicas: {{ default .Values.global.autoscaling.maxReplicas .Values.autoscaling.maxReplicas }}
   metrics:

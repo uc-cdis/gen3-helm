@@ -49,6 +49,7 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
+
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -81,6 +82,19 @@ global:
   tierAccessLevel: private
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
+  logoutInactiveUsers: true
+  workspaceTimeoutInMinutes: 480
+  maintenanceMode: "off"
+  # fenceURL:
+  # arboristURL:
+  # indexdURL:
+  # workspaceURL:
+  # manifestServiceURL:
+  # wtsURL:
+  # privacyPolicyURL:
+  # mapboxToken:
+  # cookieDomain:
+  # desNamespace:
   # -- (bool) Global flags to control and manage network policies for a Gen3 installation
   # NOTE: Network policies are currently a beta feature. Use with caution!
   netPolicy:
@@ -99,6 +113,7 @@ global:
   createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
+  metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
