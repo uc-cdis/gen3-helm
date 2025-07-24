@@ -9,7 +9,7 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.20 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.50 |
+| file://../funnel | funnel | 0.1.50 |
 
 ## Values
 
@@ -54,15 +54,15 @@ A Helm chart for Kubernetes
 | funnel.Plugins.Params.OidcTokenUrl | string | `"gen3-workflow-service.jenkins-blood.svc.cluster.local"` | OIDC token URL for Funnel plugin. |
 | funnel.Plugins.Params.S3Url | string | `"https://jenkins-blood.planx-pla.net/user"` | S3 URL for Funnel plugin. |
 | funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` | Path to the directory where Funnel plugins are stored. |
-| funnel.image | map | `{"initContainer":{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"},"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"feature-plugins"}` | Configuration for the Funnel container image. |
-| funnel.image.initContainer | map | `{"command":["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"gen3-plugin"}` | Configuration for the Funnel init container. |
-| funnel.image.initContainer.command | list | `["cp","/app/build/plugins-go/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
+| funnel.image | map | `{"initContainer":{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"debug-logging"},"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"2025-07-09"}` | Configuration for the Funnel container image. |
+| funnel.image.initContainer | map | `{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"debug-logging"}` | Configuration for the Funnel init container. |
+| funnel.image.initContainer.command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
 | funnel.image.initContainer.image | string | `"quay.io/cdis/funnel-gen3-plugin"` | The Docker image repository for the Funnel init/plugin container. |
 | funnel.image.initContainer.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
-| funnel.image.initContainer.tag | string | `"gen3-plugin"` | The Docker image tag for the Funnel init/plugin container. |
+| funnel.image.initContainer.tag | string | `"debug-logging"` | The Docker image tag for the Funnel init/plugin container. |
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
-| funnel.image.tag | string | `"feature-plugins"` | The Docker image tag for the Funnel service. |
+| funnel.image.tag | string | `"2025-07-09"` | The Docker image tag for the Funnel service. |
 | funnel.mongodb.image.registry | string | `"docker.io"` |  |
 | funnel.mongodb.image.repository | string | `"dlavrenuek/bitnami-mongodb-arm"` |  |
 | funnel.mongodb.image.tag | string | `"6.0.13"` |  |
@@ -71,6 +71,21 @@ A Helm chart for Kubernetes
 | funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
 | funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
 | funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
+| funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
+| funnel.volumeMounts[0].name | string | `"config-volume"` |  |
+| funnel.volumeMounts[0].subPath | string | `"funnel-server.yaml"` |  |
+| funnel.volumeMounts[1].mountPath | string | `"/etc/funnel/templates"` |  |
+| funnel.volumeMounts[1].name | string | `"worker-templates-volume"` |  |
+| funnel.volumeMounts[2].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
+| funnel.volumeMounts[2].name | string | `"plugin-volume"` |  |
+| funnel.volumes[0].name | string | `"config-volume"` |  |
+| funnel.volumes[0].secret.items[0].key | string | `"funnel.conf"` |  |
+| funnel.volumes[0].secret.items[0].path | string | `"funnel-server.yaml"` |  |
+| funnel.volumes[0].secret.secretName | string | `"gen3workflow-g3auto"` |  |
+| funnel.volumes[1].configMap.name | string | `"funnel-worker-templates"` |  |
+| funnel.volumes[1].name | string | `"worker-templates-volume"` |  |
+| funnel.volumes[2].emptyDir | object | `{}` |  |
+| funnel.volumes[2].name | string | `"plugin-volume"` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -114,8 +129,8 @@ A Helm chart for Kubernetes
 | service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
-| serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
-| serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
+| serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa"},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
+| serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `"arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa"` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Whether to create a service account |
 | serviceAccount.name | string | `"gen3-workflow-sa"` | The name of the service account |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
