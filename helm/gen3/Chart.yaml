@@ -132,10 +132,10 @@ dependencies:
     repository: file://../orthanc
     condition: orthanc.enabled
 
-  - name: elasticsearch
-    version: 7.10.2
-    repository: "https://helm.elastic.co"
-    condition: global.dev
+  # - name: elasticsearch
+  #   version: 7.10.2
+  #   repository: "https://helm.elastic.co"
+  #   condition: global.dev
   - name: postgresql
     version: 11.9.13
     repository: "https://charts.bitnami.com/bitnami"

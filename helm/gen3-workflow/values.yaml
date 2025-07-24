@@ -122,7 +122,7 @@ serviceAccount:
   # Annotations to add to the service account
   annotations:
     # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
-    eks.amazonaws.com/role-arn:
+    eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   # -- (string) The name of the service account
@@ -351,7 +351,7 @@ funnel:
     # -- (string) The Docker image repository for the Funnel service.
     repository: quay.io/ohsu-comp-bio/funnel
     # -- (string) The Docker image tag for the Funnel service.
-    tag: feature-plugins
+    tag: '2025-07-09'
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
     
@@ -360,14 +360,41 @@ funnel:
       # -- (string) The Docker image repository for the Funnel init/plugin container.
       image: quay.io/cdis/funnel-gen3-plugin
       # -- (string) The Docker image tag for the Funnel init/plugin container.
-      tag: gen3-plugin  
+      tag: debug-logging
       # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
       pullPolicy: Always
       # -- (list) Arguments to pass to the init container.
       command:
       - cp
-      - /app/build/plugins-go/authorizer
+      - /app/build/plugins/authorizer
       - /opt/funnel/plugin-binaries/auth-plugin
+  volumes:
+  - name: config-volume
+    secret:
+      secretName: gen3workflow-g3auto
+      items:
+        - key: funnel.conf
+          path: funnel-server.yaml
+
+  - name: worker-templates-volume
+    configMap:
+      name: funnel-worker-templates
+
+  - name: plugin-volume
+    emptyDir: {}  # Shared volume
+
+  volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config/funnel-server.yaml
+      subPath: funnel-server.yaml
+
+    - name: worker-templates-volume
+      mountPath: /etc/funnel/templates
+
+    - name: plugin-volume
+      mountPath: /opt/funnel/plugin-binaries
+  
+  
   mongodb:
     image: #This overrides the default mongodb image used by Funnel which doesn't support ARM architecture
       registry: docker.io
@@ -382,7 +409,7 @@ funnel:
 
 
   # -- (map) Configuration for the Funnel plugin.
-  Plugins: #WIP
+  Plugins:
     Disabled: false
     # -- (string) Path to the directory where Funnel plugins are stored.
     Path: plugin-binaries/auth-plugin
