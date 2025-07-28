@@ -111,6 +111,28 @@ config['SURVIVAL'] = {
     }
 }
 
+config['TABLE_ONE'] = {
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'studies.treatment_arm',
+        }
+    ],
+
+    'result': {
+        "enabled": True
+    }
+}
+
 config['EXTERNAL'] = {
     'commons': [
         {
