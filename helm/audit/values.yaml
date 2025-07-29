@@ -274,12 +274,16 @@ server:
   pull_from_queue: false
   # -- (bool) Whether to enable or disable debug mode.
   debug: false
+  # -- (string) Whether audit should use the api or aws_sqs.
+  type: aws_sqs
   # -- (map) AWS SQS queue information.
   sqs:
     # -- (string) SQS queue AWS region.
     region: "us-east-1"
     # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
+    # -- (int) How often to check the queue for new audit logs after seeing an empty queue.
+    PULL_FREQUENCEY_SECONDS: 300
   # -- (map) AWS credentials to access SQS queue.
   AWS_CREDENTIALS:
     {}

@@ -1,6 +1,6 @@
 # audit
 
-![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.25](https://img.shields.io/badge/Version-0.1.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -116,9 +116,11 @@ A Helm chart for Kubernetes
 | server.AWS_CREDENTIALS | map | `{}` | AWS credentials to access SQS queue. |
 | server.debug | bool | `false` | Whether to enable or disable debug mode. |
 | server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
-| server.sqs | map | `{"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
+| server.sqs | map | `{"PULL_FREQUENCEY_SECONDS":300,"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
+| server.sqs.PULL_FREQUENCEY_SECONDS | int | `300` | How often to check the queue for new audit logs after seeing an empty queue. |
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
+| server.type | string | `"aws_sqs"` | Whether audit should use the api or aws_sqs. |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
