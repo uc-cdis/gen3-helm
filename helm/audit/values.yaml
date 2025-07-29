@@ -282,11 +282,12 @@ server:
     region: "us-east-1"
     # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
+    # -- (string) Name of the AWS credential defined in "AWS_CREDENTIALS" to use.
+    aws_creds:
     # -- (int) How often to check the queue for new audit logs after seeing an empty queue.
     PULL_FREQUENCEY_SECONDS: 300
   # -- (map) AWS credentials to access SQS queue.
   AWS_CREDENTIALS:
-    {}
     # cred1:
     #   aws_access_key_id:
     #   aws_secret_access_key:

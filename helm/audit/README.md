@@ -113,11 +113,12 @@ A Helm chart for Kubernetes
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| server.AWS_CREDENTIALS | map | `{}` | AWS credentials to access SQS queue. |
+| server.AWS_CREDENTIALS | map | `nil` | AWS credentials to access SQS queue. |
 | server.debug | bool | `false` | Whether to enable or disable debug mode. |
 | server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
-| server.sqs | map | `{"PULL_FREQUENCEY_SECONDS":300,"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
+| server.sqs | map | `{"PULL_FREQUENCEY_SECONDS":300,"aws_creds":null,"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
 | server.sqs.PULL_FREQUENCEY_SECONDS | int | `300` | How often to check the queue for new audit logs after seeing an empty queue. |
+| server.sqs.aws_creds | string | `nil` | Name of the AWS credential defined in "AWS_CREDENTIALS" to use. |
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
 | server.type | string | `"aws_sqs"` | Whether audit should use the api or aws_sqs. |
