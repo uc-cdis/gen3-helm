@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.10](https://img.shields.io/badge/Version-0.2.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -25,13 +25,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../audit | audit | 0.1.24 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.24 |
 | file://../cedar | cedar | 0.1.11 |
-| file://../cohort-middleware | cohort-middleware | 0.1.9 |
+| file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.4 |
 | file://../dicom-server | dicom-server | 0.1.18 |
 | file://../etl | etl | 0.1.14 |
 | file://../fence | fence | 0.1.48 |
 | file://../frontend-framework | frontend-framework | 0.1.12 |
+| file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.4 |
 | file://../guppy | guppy | 0.1.24 |
@@ -45,7 +46,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.30 |
 | file://../portal | portal | 0.1.39 |
 | file://../requestor | requestor | 0.1.23 |
-| file://../revproxy | revproxy | 0.1.37 |
+| file://../revproxy | revproxy | 0.1.38 |
 | file://../sheepdog | sheepdog | 0.1.28 |
 | file://../sower | sower | 0.1.29 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.27 |
@@ -98,6 +99,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
+| gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
@@ -142,6 +145,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
+| global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |
 | global.postgres.master.port | string | `"5432"` | global postgres master port |

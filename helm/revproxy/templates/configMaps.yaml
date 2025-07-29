@@ -18,6 +18,20 @@ data:
   {{ "portal-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
 {{- end }}
+{{- range .Values.arbitraryServices }}
+  {{ printf "%s-service.conf" .name }}: |
+    location {{ .path }}/ {
+        if ($csrf_check !~ ^ok-\S.+$) {
+          return 403 "failed csrf check";
+        }
+
+        set $proxy_service "{{ .name }}";
+        set $upstream http://{{ .serviceName }}$des_domain;
+        rewrite ^{{ .path }}/(.*) /$1 break;
+        proxy_pass $upstream;
+        proxy_redirect http://$host/ https://$host{{ .path }}/;
+    }
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap

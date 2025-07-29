@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen3-analysis-deployment
+  labels:
+    {{- include "gen3-analysis.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gen3-analysis.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "gen3-analysis.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      annotations:
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      volumes: 
+        - name: config-volume
+          secret:
+            secretName: "gen3-analysis-g3auto"
+      containers:
+        - name: gen3-analysis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: HOSTNAME
+              value: {{ .Values.global.hostname | quote }}
+            - name: GUNICORN_WORKERS
+              value: {{ .Values.gunicornWorkers | quote }}
+            - name: DEPLOYMENT_TYPE
+              value: {{ .Values.deploymentType | quote }}
+            {{- if .Values.urlPrefix }}
+            - name: URL_PREFIX
+              value: {{ .Values.urlPrefix | quote }}
+            {{- end }}
+            {{- with .Values.arboristUrl }}
+            - name: ARBORIST_URL
+              value: {{ . }}
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+          ports:
+            - containerPort: 8000
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
