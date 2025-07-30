@@ -55,3 +55,8 @@ global:
   dispatcherJobNum: "10"
   # -- (bool) Whether Datadog is enabled.
   ddEnabled: false
+
+  crossplane:
+    enabled: true
+    accountId: 123456789012
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
