@@ -40,12 +40,9 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
-        - name: sheepdog-volume
-          secret:
-            secretName: "sheepdog-creds"
         - name: config-volume
           secret:
-            secretName: sheepdog-secret
+            secretName: "sheepdog-secret"
         - name: config-helper
           configMap:
             name: config-helper
@@ -202,6 +199,12 @@ spec:
                   name: manifest-global
                   key: public_datasets
                   optional: true
+            - name: INDEXD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-service-creds
+                  key: sheepdog
+                  optional: true
             - name: AUTHZ_ENTITY_NAME
               valueFrom:
                 configMapKeyRef:
@@ -210,7 +213,7 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              value: {{ .Values.global.dictionaryUrl }}
+              value: {{ include "sheepdog.dictionaryUrl" .}}
             {{- with .Values.indexdUrl }}
             - name: INDEX_CLIENT_HOST
               value: {{ . }}

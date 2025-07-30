@@ -259,3 +259,12 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) Fence docker image information.
+fenceImage:
+  # -- (string) Docker repository.
+  repository: quay.io/pcdc/fence
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "master"

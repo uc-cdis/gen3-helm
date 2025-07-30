@@ -99,10 +99,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -114,7 +116,7 @@ service:
   type: ClusterIP
   port: 80
 
-resources: 
+resources:
   requests:
     cpu: 0.4
     memory: 512Mi
@@ -142,11 +144,55 @@ env:
     value: http://esproxy-service:9200
   - name: AWS_REGION
     value: "us-east-1"
-  - name: GB_SECRET_READY
+  - name: DEBUG
+    value: "0"
+  - name: FORCE_ISSUER
+    value: "True"
+  - name: USER_API
+    value: "http://fence-service/"
+  - name: ALLOWED_ISSUERS
+    value: "http://fence-service/,https://localhost/user"
+  - name: DUMMY_S3
+    value: "True"
+  - name: ENABLE_PHI
+    value: "True"
+  - name: TESTING
+    value: "False"
+  - name: DB_DATABASE
+    valueFrom:
+      secretKeyRef:
+        name: gearbox-dbcreds
+        key: database
+        optional: false
+  - name: DB_HOST
+    valueFrom:
+      secretKeyRef:
+        name: gearbox-dbcreds
+        key: host
+        optional: false
+  - name: DB_USER
+    valueFrom:
+      secretKeyRef:
+        name: gearbox-dbcreds
+        key: username
+        optional: false
+  - name: ADMIN_LOGINS
     valueFrom:
       secretKeyRef:
         name: gearbox-g3auto
-        key: secretready
+        key: base64Authz.txt
+        optional: true
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: gearbox-dbcreds
+        key: password
+        optional: false
+  - name: DBREADY
+    valueFrom:
+      secretKeyRef:
+        name: gearbox-dbcreds
+        key: dbcreated
         optional: false
 
 volumes:
@@ -156,47 +202,13 @@ volumes:
       items:
         - key: jwt_public_key.pem
           path: jwt_public_key.pem
-      
-  - name: config-volume-g3auto
-    secret:
-      secretName: gearbox-g3auto
-  # This volume may or may not be needed or available. See kube-setup-gearbox.sh and note that this
-  # is only available if a <manifest dir>/gearbox directory exists.
-  - name: config-volume
-    secret:
-      secretName: gearbox-config
       optional: true
-  # This volume may or may not be needed or available. See kube-setup-gearbox.sh and note that this
-  # may not exist if the commons does not have any gearbox manifest configuration.
-  - name: config-manifest
-    configMap:
-      name: manifest-gearbox
-      optional: true
-  
+
 volumeMounts:
   - name: "gearbox-middleware-jwt-keys"
     readOnly: true
     mountPath: "/src/src/gearbox/keys/jwt_public_key.pem"
     subPath: jwt_public_key.pem
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /src/.env
-    subPath: gearbox.env
-  - name: config-volume
-    readOnly: true
-    mountPath: /aggregate_config.json
-    subPath: aggregate_config.json
-  - name: config-manifest
-    readOnly: true
-    mountPath: /gearbox.json
-    subPath: json
-  
-initVolumeMounts:
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /src/.env
-    subPath: gearbox.env
-
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

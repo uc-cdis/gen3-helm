@@ -299,9 +299,9 @@ fence:
 guppy:
   enabled: true
   image:
-    repository: "guppy"
-    tag: "test"
-    pullPolicy: "Never"
+    repository: "quay.io/pcdc/guppy"
+    tag: "1.10.3"
+    pullPolicy: "IfNotPresent"
   authFilterField: "auth_resource_path"
 
 manifestservice:
@@ -339,9 +339,10 @@ revproxy:
     tag: "2025.07"
 
 sheepdog:
+  dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
   image:
     repository: quay.io/pcdc/sheepdog
-    tag: "1.5.10"
+    tag: "1.7.2"
 
 sower:
   enabled: false
