@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -62,7 +62,7 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
-| hatchery.sidecarContainer.env | map | `{"HOSTNAME":"{{ .Values.global.hostname }}","NAMESPACE":"{{ .Release.Namespace }}"}` | Environment variables to pass to the sidecar container |
+| hatchery.sidecarContainer.env | map | `[{"name":"NAMESPACE","value":"{{ .Release.Namespace }}"},{"name":"HOSTNAME","value":"{{ .Values.global.hostname }}"},{"name":"stata-workspace-gen3-license","valueFrom":{"secretKeyRef":{"key":"stata_license.txt","name":"stata-workspace-gen3-license"}}}]` | Environment variables to pass to the sidecar container |
 | hatchery.sidecarContainer.image | string | `"quay.io/cdis/ecs-ws-sidecar:master"` | The sidecar image. |
 | hatchery.sidecarContainer.lifecycle-pre-stop | list | `["su","-c","echo test","-s","/bin/sh","root"]` | Commands that are run before the container is stopped. |
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
