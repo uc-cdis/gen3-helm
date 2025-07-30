@@ -400,6 +400,10 @@ wts:
   image:
     repository: quay.io/cdis/workspace-token-service
     tag: 2025.01
+  fenceImage:
+    repository: "quay.io/pcdc/fence"
+    tag: "helm-test"
+    pullPolicy: Always
 
 postgresql:
   primary:
