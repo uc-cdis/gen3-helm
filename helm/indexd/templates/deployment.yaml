@@ -78,14 +78,10 @@ spec:
             - name: USE_SINGLE_TABLE
               value: {{ .Values.useSingleTable | quote }}
             {{- toYaml .Values.env | nindent 12  }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: "uwsgi-config"
-              mountPath: "/etc/uwsgi/uwsgi.ini"
-              subPath: uwsgi.ini
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/indexd/local_settings.py"
-              subPath: "local_settings.py"
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

@@ -37,8 +37,11 @@ spec:
                       key: fence-config-public.yaml
                       optional: true
                 - name: slackWebHook
-                  value: {{ .Values.fenceDeleteExpiredClients.slack_webhook | quote }}
-                {{- toYaml .Values.env | nindent 16 }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: slack-webhook
+                      key: slack_webhook
+                      optional: true
             volumeMounts:
               - name: "config-volume"
                 readOnly: true

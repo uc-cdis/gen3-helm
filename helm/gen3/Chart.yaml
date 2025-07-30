@@ -21,7 +21,7 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.24
+    version: 0.1.25
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -40,7 +40,7 @@ dependencies:
     version: 0.1.20
     repository: file://../common
   - name: dashboard
-    version: 0.1.4
+    version: 0.1.5
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: etl
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.48
+    version: 0.1.49
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
