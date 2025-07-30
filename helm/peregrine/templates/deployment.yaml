@@ -158,15 +158,10 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname | quote }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/peregrine/settings.py"
-              subPath: "settings.py"
-            - name: "peregrine-volume"
-              readOnly: true
-              mountPath: "/var/www/peregrine/creds.json"
-              subPath: "creds.json"
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

@@ -211,14 +211,11 @@ env:
 
 # -- (list) Volumes to attach to the container.
 volumes:
-- name: shared-data
-  emptyDir: {}
-- name: config-volume
-  secret:
-    secretName: "peregrine-secret"
-- name: peregrine-volume
-  secret:
-    secretName: "peregrine-creds"
+  - name: shared-data
+    emptyDir: {}
+  - name: config-volume
+    secret:
+      secretName: "peregrine-secret"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -230,6 +227,11 @@ volumeMounts:
     readOnly: true
     mountPath: "peregrine/bin/settings.py"
     subPath: "settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "peregrine/bin/confighelper.py"
+    subPath: "config_helper.py"
+
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
