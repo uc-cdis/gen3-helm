@@ -82,7 +82,7 @@ global:
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:

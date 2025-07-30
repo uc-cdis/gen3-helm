@@ -181,7 +181,7 @@ externalSecrets:
   dbcreds:
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) Secret information to access the db restore job S3 bucket.
 secrets:

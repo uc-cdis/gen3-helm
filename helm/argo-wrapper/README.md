@@ -1,6 +1,6 @@
 # argo-wrapper
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Argo Wrapper Service
 
@@ -42,7 +42,7 @@ A Helm chart for gen3 Argo Wrapper Service
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | indexdAdminUser | string | `"fence"` | Admin user for Indexd. |
 | internalS3Bucket | string | `"argo-internal-bucket"` | Name of the internal Argo bucket for Argo artifacts (does not allow pre-signed URLs). |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | netPolicy | map | `{"egressApps":["argo-wrapper"],"ingressApps":["argo-wrapper"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["argo-wrapper"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["argo-wrapper"]` | List of app labels that require ingress to this service |

@@ -21,9 +21,17 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/ssjdispatcher-secret.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/manifest-ssjdispatcher.yaml") . | sha256sum }}
-        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
