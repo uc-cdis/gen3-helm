@@ -40,6 +40,10 @@ def update_external_refs(subject_path, external_ref_path, output_path=None):
     with open(external_ref_path) as f:
         external_refs = json.load(f)
 
+    # Flatten outer list if needed
+    if isinstance(external_refs, list) and isinstance(external_refs[0], list):
+        external_refs = [item for sublist in external_refs for item in sublist]
+
     # Loop over each external reference
     for i, ref in enumerate(external_refs):
         # If there are more external references than subjects, warn and skip

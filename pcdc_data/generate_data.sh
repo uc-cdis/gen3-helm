@@ -22,14 +22,14 @@ mkdir ./fake_data
 ./generate.sh
 
 # run our update script
-SUBJECT_JSON="./pcdc_data/gen3_etl/graph/fake_data/data-simulator/subject.json"
-EXTERNAL_JSON="./pcdc_data/external/external_reference.json"
-UPDATE_SCRIPT="./pcdc_data/external/update_external_references.py"
+SUBJECT_JSON="./fake_data/data-simulator/subject.json"
+EXTERNAL_JSON="../../external/external_reference.json"
+UPDATE_SCRIPT="../../external/update_external_references.py"
 
 # Grab a version of the external_reference, as well as the subject, and connect them together via submitter_id
 python3 "$UPDATE_SCRIPT" "$SUBJECT_JSON" "$EXTERNAL_JSON"
 
 # copy our external_refernce.json to where it belongs
-cp ./pcdc_data/external/external_reference.json ./pcdc_data/gen3_etl/graph/fake_data/data-simulator/
+cp ../../external/external_reference.json ./fake_data/data-simulator/
 
 cd ../../

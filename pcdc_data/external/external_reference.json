@@ -1,68 +1,66 @@
 [
-    [
-        {
-            "external_links": "TARGET - GDC|https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg|https://portal.gdc.cancer.gov/cases/4e824cfb-d887-57b3-bff2-95e2e7b4d410",
-            "external_resource_icon_path": "https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg",
-            "external_resource_id": "1",
-            "external_resource_name": "TARGET - GDC",
-            "external_subject_id": "4e824cfb-d887-57b3-bff2-95e2e7b4d410",
-            "external_subject_submitter_id": "TARGET-30-PADLJN",
-            "external_subject_url": "https://portal.gdc.cancer.gov/cases/4e824cfb-d887-57b3-bff2-95e2e7b4d410",
-            "subjects": [
-                {
-                    "submitter_id": "COG_PADLJN"
-                }
-            ],
-            "submitter_id": "external_reference_gdc_COG_PADLJN",
-            "type": "external_reference"
-        },
-        {
-            "external_links": "TARGET - GDC|https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg|https://portal.gdc.cancer.gov/cases/448a7c70-73e8-5b2f-b226-83e4065dc6ef",
-            "external_resource_icon_path": "https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg",
-            "external_resource_id": "1",
-            "external_resource_name": "TARGET - GDC",
-            "external_subject_id": "448a7c70-73e8-5b2f-b226-83e4065dc6ef",
-            "external_subject_submitter_id": "TARGET-30-PAKPAL",
-            "external_subject_url": "https://portal.gdc.cancer.gov/cases/448a7c70-73e8-5b2f-b226-83e4065dc6ef",
-            "subjects": [
-                {
-                    "submitter_id": "COG_PAKPAL"
-                }
-            ],
-            "submitter_id": "external_reference_gdc_COG_PAKPAL",
-            "type": "external_reference"
-        },
-        {
-            "external_links": "GMKF|https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png|https://portal.kidsfirstdrc.org/participant/PT_72AZK0JR",
-            "external_resource_icon_path": "https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png",
-            "external_resource_id": "2",
-            "external_resource_name": "GMKF",
-            "external_subject_id": null,
-            "external_subject_submitter_id": "PT_72AZK0JR",
-            "external_subject_url": "https://portal.kidsfirstdrc.org/participant/PT_72AZK0JR",
-            "subjects": [
-                {
-                    "submitter_id": "COG_PAKVUY"
-                }
-            ],
-            "submitter_id": "external_reference_gmkf_COG_PAKVUY",
-            "type": "external_reference"
-        },
-        {
-            "external_links": "GMKF|https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png|https://portal.kidsfirstdrc.org/participant/PT_N5N59J9M",
-            "external_resource_icon_path": "https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png",
-            "external_resource_id": "2",
-            "external_resource_name": "GMKF",
-            "external_subject_id": null,
-            "external_subject_submitter_id": "PT_N5N59J9M",
-            "external_subject_url": "https://portal.kidsfirstdrc.org/participant/PT_N5N59J9M",
-            "subjects": [
-                {
-                    "submitter_id": "COG_PAKXDZ"
-                }
-            ],
-            "submitter_id": "external_reference_gmkf_COG_PAKXDZ",
-            "type": "external_reference"
-        }
-    ]
+    {
+        "external_links": "TARGET - GDC|https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg|https://portal.gdc.cancer.gov/cases/4e824cfb-d887-57b3-bff2-95e2e7b4d410",
+        "external_resource_icon_path": "https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg",
+        "external_resource_id": "1",
+        "external_resource_name": "TARGET - GDC",
+        "external_subject_id": "4e824cfb-d887-57b3-bff2-95e2e7b4d410",
+        "external_subject_submitter_id": "subject_regraduate_Tremandra",
+        "external_subject_url": "https://portal.gdc.cancer.gov/cases/4e824cfb-d887-57b3-bff2-95e2e7b4d410",
+        "subjects": [
+            {
+                "submitter_id": "subject_myogram_Yakala"
+            }
+        ],
+        "submitter_id": "external_reference_isomaltose_unmingling",
+        "type": "external_reference"
+    },
+    {
+        "external_links": "TARGET - GDC|https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg|https://portal.gdc.cancer.gov/cases/448a7c70-73e8-5b2f-b226-83e4065dc6ef",
+        "external_resource_icon_path": "https://pcdc-external-resource-files.s3.amazonaws.com/NHI_GDC_DataPortal-logo.23e6ca47.svg",
+        "external_resource_id": "1",
+        "external_resource_name": "TARGET - GDC",
+        "external_subject_id": "448a7c70-73e8-5b2f-b226-83e4065dc6ef",
+        "external_subject_submitter_id": "subject_amenable_thermotropism",
+        "external_subject_url": "https://portal.gdc.cancer.gov/cases/448a7c70-73e8-5b2f-b226-83e4065dc6ef",
+        "subjects": [
+            {
+                "submitter_id": "subject_euglobulin_unlacquered"
+            }
+        ],
+        "submitter_id": "external_reference_homemaking_antivibrator",
+        "type": "external_reference"
+    },
+    {
+        "external_links": "GMKF|https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png|https://portal.kidsfirstdrc.org/participant/PT_72AZK0JR",
+        "external_resource_icon_path": "https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png",
+        "external_resource_id": "2",
+        "external_resource_name": "GMKF",
+        "external_subject_id": "5554823-73e8-5b2f-b226-83e4065dc6ef",
+        "external_subject_submitter_id": "subject_Archidiskodon_somnambulance",
+        "external_subject_url": "https://portal.kidsfirstdrc.org/participant/PT_72AZK0JR",
+        "subjects": [
+            {
+                "submitter_id": "subject_pubiotomy_nonaction"
+            }
+        ],
+        "submitter_id": "external_reference_irreverendly_subtrifid",
+        "type": "external_reference"
+    },
+    {
+        "external_links": "GMKF|https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png|https://portal.kidsfirstdrc.org/participant/PT_N5N59J9M",
+        "external_resource_icon_path": "https://pcdc-external-resource-files.s3.us-east-1.amazonaws.com/Kids_First_Graphic_Horizontal_OL_FINAL.DRC-01-scaled.png",
+        "external_resource_id": "2",
+        "external_resource_name": "GMKF",
+        "external_subject_id": "5554823-73e8-5b2f-777b-83e4065dc6ef",
+        "external_subject_submitter_id": "subject_coincidence_strom",
+        "external_subject_url": "https://portal.kidsfirstdrc.org/participant/PT_N5N59J9M",
+        "subjects": [
+            {
+                "submitter_id": "subject_forerehearsed_subelongate"
+            }
+        ],
+        "submitter_id": "external_reference_communicative_syntactics",
+        "type": "external_reference"
+    }
 ]
