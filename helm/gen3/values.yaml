@@ -329,20 +329,6 @@ sheepdog:
 ssjdispatcher:
   # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
-  # -- (map) Docker image information.
-  image:
-    # -- (string) The Docker image repository for the ssjdispatcher service.
-    repository:
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag:
-
-pcdcanalysistools:
-  enabled: true
-
-
-amanuensis:
-  enabled: true
-
 
 wts:
   # -- (bool) Whether to deploy the wts subchart.
@@ -416,6 +402,15 @@ neuvector:
   DB_HOST: development-gen3-postgresql
   # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
   ES_HOST: gen3-elasticsearch-master
+
+pcdcanalysistools:
+  # -- (bool) Whether to deploy the pcdcanalysistools subchart.
+  enabled: true
+
+amanuensis:
+  # -- (bool) Whether to deploy the amanuensis subchart.
+  enabled: true
+
 
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
