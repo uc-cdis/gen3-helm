@@ -3,6 +3,12 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: amanuensis-db-migrate
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  labels:
+    app: gen3-created-by-hook
 spec:
   template:
     metadata:
@@ -18,9 +24,17 @@ spec:
         - name: config-volume
           secret:
             secretName: "amanuensis-config"
+            items:
+              - key: amanuensis-config.yaml
+                path: amanuensis-config.yaml
+            optional: false
         - name: amanuensis-volume
           secret:
             secretName: "amanuensis-creds"
+            items:
+              - key: creds.json
+                path: creds.json
+            optional: false
         - name: tmp-pod
           emptyDir: {}
       containers:

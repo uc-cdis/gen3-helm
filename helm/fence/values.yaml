@@ -428,7 +428,7 @@ volumes:
   - name: config-volume-public
     configMap:
       name: "manifest-fence"
-    optional: true
+      optional: true
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:

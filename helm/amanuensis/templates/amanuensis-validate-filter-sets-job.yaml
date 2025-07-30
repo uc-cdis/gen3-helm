@@ -4,6 +4,12 @@ metadata:
   name: amanuensis-validate-filter-sets
   labels:
     redeploy-hash: "{{ .Release.Revision }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  labels:
+    app: gen3-created-by-hook
 spec:
   # Job spec starts here directly (no schedule or jobTemplate needed)
   template:
@@ -16,6 +22,10 @@ spec:
         - name: config-volume
           secret:
             secretName: "amanuensis-config"
+            items:
+              - key: amanuensis-config.yaml
+                path: amanuensis-config.yaml
+            optional: false
         - name: es-dd-config-volume
           emptyDir: {}
         - name: portal-config

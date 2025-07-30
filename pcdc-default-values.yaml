@@ -4,6 +4,8 @@ global:
   portalApp: pcdc
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
   authz_entity_name: "subject"
+  tierAccessLevel: "granular"
+  tierAccessLimit: "5"
   tls:
     cert: |
       -----BEGIN CERTIFICATE-----
@@ -55,7 +57,7 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
-  image: 
+  image:
     repository: quay.io/pcdc/arborist
     tag: "2025.01"
 
@@ -63,20 +65,19 @@ amanuensis:
   enabled: true
   image:
     repository: "quay.io/pcdc/amanuensis"
-    tag: "2.24.0"
+    tag: "2.26.2"
     pullPolicy: IfNotPresent
 
-fence: 
+fence:
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
     #fill in
     #AMANUENSIS_PUBLIC_KEY_PATH: '/fence/keys/key/jwt_public_key.pem'
     MOCK_GOOGLE_AUTH: true
-    mock_default_user: 'test@example.com'
+    mock_default_user: "test@example.com"
     #LOGIN_REDIRECT_WHITELIST: ["https://localhost:9443/", "http://localhost:9443/"]
-    
-    
+
   image:
     repository: "quay.io/pcdc/fence"
     tag: "helm-test"
@@ -186,7 +187,7 @@ fence:
             - /programs
             - /programs/pcdc
           
-    
+
       roles:
         - id: 'file_uploader'
           description: 'can upload data files'
@@ -294,13 +295,13 @@ fence:
           - privacy_policy
           - login_no_access
           - sower
-      
 
 guppy:
   enabled: true
   image:
-    repository: quay.io/pcdc/guppy 
-    tag: 1.9.1
+    repository: "guppy"
+    tag: "test"
+    pullPolicy: "Never"
   authFilterField: "auth_resource_path"
 
 manifestservice:
@@ -313,7 +314,7 @@ pcdcanalysistools:
   enabled: true
   image:
     repository: quay.io/pcdc/pcdcanalysistools
-    tag: "1.8.9"
+    tag: "1.10.0"
 
 peregrine:
   image:
@@ -322,20 +323,20 @@ peregrine:
 
 portal:
   #enabled: false
-  image: 
+  image:
     repository: "quay.io/pcdc/windmill"
-    tag: "1.36.1"
+    tag: "1.41.0"
     pullPolicy: IfNotPresent
   resources:
     requests:
       cpu: 1.0
-  gitops: 
+  gitops:
     json: ""
 
 revproxy:
   image:
     repository: quay.io/cdis/nginx
-    tag: "1.17.6-ctds-1.0.1"
+    tag: "2025.07"
 
 sheepdog:
   image:
@@ -359,20 +360,20 @@ sower:
         image: quay.io/pcdc/pelican:1.3.3_export
         pull_policy: Always
         env:
-        - name: DICTIONARY_URL
-          valueFrom:
-            configMapKeyRef:
-              name: manifest-global
-              key: dictionary_url
-        - name: GEN3_HOSTNAME
-          valueFrom:
-            configMapKeyRef:
-              name: manifest-global
-              key: hostname
-        - name: ROOT_NODE
-          value: subject
-        - name: OUTPUT_FILE_FORMAT
-          value: ZIP
+          - name: DICTIONARY_URL
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: dictionary_url
+          - name: GEN3_HOSTNAME
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: hostname
+          - name: ROOT_NODE
+            value: subject
+          - name: OUTPUT_FILE_FORMAT
+            value: ZIP
         volumeMounts:
           - name: pelican-creds-volume
             readOnly: true
@@ -382,7 +383,7 @@ sower:
             readOnly: true
             mountPath: "/peregrine-creds.json"
             subPath: creds.json
-        cpu-limit: '1'
+        cpu-limit: "1"
         memory-limit: 2Gi
       volumes:
         - name: pelican-creds-volume
@@ -414,7 +415,7 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
-    
+
   resources:
     requests:
       cpu: 0.5
