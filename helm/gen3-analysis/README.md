@@ -95,4 +95,4 @@ A Helm chart for gen3 gen3-analysis Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | urlPrefix | string | `""` |  |
-| volumeMounts | list | `nil` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/gen3analysis/gen3analysis/config.py","name":"config-volume","readOnly":true,"subPath":"config.py"}]` | Volumes to mount to the container. |

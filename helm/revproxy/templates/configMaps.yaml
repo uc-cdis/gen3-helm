@@ -18,7 +18,7 @@ data:
   {{ "portal-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
 {{- end }}
-{{- range .Values.arbitraryServices }}
+{{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
         if ($csrf_check !~ ^ok-\S.+$) {

@@ -249,7 +249,8 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
-arbitraryServices:
+# -- (map) Configuration to add any extra service endpoints outside of gen3 to be served by revproxy
+extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint

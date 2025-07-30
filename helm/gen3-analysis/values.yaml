@@ -168,10 +168,10 @@ volumeMounts:
   #   mountPath: "/src/gen3-analysis-config.yaml"
   #   subPath: "gen3-analysis-config.yaml"
   # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
-  # - name: "config-volume"
-  #   readOnly: true
-  #   mountPath: "/gen3-analysis/gen3-analysis-config.yaml"
-  #   subPath: "gen3-analysis-config.yaml"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/gen3analysis/gen3analysis/config.py"
+    subPath: "config.py"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
