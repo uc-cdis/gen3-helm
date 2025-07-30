@@ -63,19 +63,6 @@ spec:
               }
           ]
       }
-
-
-
-      {
-        "Version":"2012-10-17",
-        "Statement":[
-          {
-            "Effect":"Allow",
-            "Action":["sqs:SendMessage"],
-            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue", "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
-          }
-        ]
-      }
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
