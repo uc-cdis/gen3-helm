@@ -23,10 +23,12 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/oidc: {{ include (print $.Template.BasePath "/wts-oidc.yaml") . | sha256sum }}
+        checksum/secretconfig: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
       labels:

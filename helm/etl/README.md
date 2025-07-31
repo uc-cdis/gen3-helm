@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -90,6 +90,7 @@ A Helm chart for gen3 etl
 | etlMapping.mappings[1].target_nodes[0].name | string | `"slide_image"` |  |
 | etlMapping.mappings[1].target_nodes[0].path | string | `"slides.samples.cases"` |  |
 | etlMapping.mappings[1].type | string | `"collector"` |  |
+| global.dictionaryUrl | string | `nil` |  |
 | image.spark.pullPolicy | string | `"IfNotPresent"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.spark.repository | string | `"quay.io/cdis/gen3-spark"` | The Docker image repository for the spark service |
 | image.spark.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |

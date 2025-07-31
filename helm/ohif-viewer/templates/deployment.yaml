@@ -23,7 +23,8 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
       annotations:
-        {{- if .Values.metricsEnabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/app-config.yaml") . | sha256sum }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
