@@ -1,0 +1,151 @@
+# populate with normal values from a regular chart created by helm create
+
+image:
+  tube:
+    # -- (string) The Docker image repository for the fence service
+    repository: quay.io/cdis/tube
+    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+    pullPolicy: IfNotPresent
+    # -- (string) Overrides the image tag whose default is the chart appVersion.
+    tag: "master"
+  spark:
+    # -- (string) The Docker image repository for the spark service
+    repository: quay.io/cdis/gen3-spark
+    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+    pullPolicy: IfNotPresent
+    # -- (string) Overrides the image tag whose default is the chart appVersion.
+    tag: "master"
+
+
+# -- (list) Docker image pull secrets.
+imagePullSecrets: []
+
+# -- (map) Annotations to add to the pod
+podAnnotations: {}
+
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  tube:
+    # -- (map) The amount of resources that the container requests
+    requests:
+      # -- (string) The amount of memory requested
+      memory: 128Mi
+  spark:
+    # -- (map) The amount of resources that the container requests
+    requests:
+      # -- (string) The amount of memory requested
+      memory: 128Mi
+
+
+esEndpoint: gen3-elasticsearch-master
+
+etlMapping:
+  mappings:
+    - name: dev_case
+      doc_type: case
+      type: aggregator
+      root: case
+      props:
+        - name: submitter_id
+        - name: project_id
+        - name: disease_type
+        - name: primary_site
+      flatten_props:
+        - path: demographics
+          props:
+            - name: gender
+              value_mappings:
+                - female: F
+                - male: M
+            - name: race
+              value_mappings:
+                - american indian or alaskan native: Indian
+            - name: ethnicity
+            - name: year_of_birth
+      aggregated_props:
+        - name: _samples_count
+          path: samples
+          fn: count
+        - name: _aliquots_count
+          path: samples.aliquots
+          fn: count
+        - name: _submitted_methylations_count
+          path: samples.aliquots.submitted_methylation_files
+          fn: count
+        - name: _submitted_copy_number_files_on_aliquots_count
+          path: samples.aliquots.submitted_copy_number_files
+          fn: count
+        - name: _read_groups_count
+          path: samples.aliquots.read_groups
+          fn: count
+        - name: _submitted_aligned_reads_count
+          path: samples.aliquots.read_groups.submitted_aligned_reads_files
+          fn: count
+        - name: _submitted_unaligned_reads_count
+          path: samples.aliquots.read_groups.submitted_unaligned_reads_files
+          fn: count
+        - name: _submitted_copy_number_files_on_read_groups_count
+          path: samples.aliquots.read_groups.submitted_copy_number_files
+          fn: count
+        - name: _submitted_somatic_mutations_count
+          path: samples.aliquots.read_groups.submitted_somatic_mutations
+          fn: count
+      joining_props:
+        - index: file
+          join_on: _case_id
+          props:
+            - name: data_format
+              src: data_format
+              fn: set
+            - name: data_type
+              src: data_type
+              fn: set
+            - name: _file_id
+              src: _file_id
+              fn: set
+            - name: object_id
+              src: object_id
+              fn: set
+    - name: dev_file
+      doc_type: file
+      type: collector
+      root: None
+      category: data_file
+      props:
+        - name: object_id
+        - name: md5sum
+        - name: file_name
+        - name: file_size
+        - name: data_format
+        - name: data_type
+        - name: state
+      injecting_props:
+        case:
+          props:
+            - name: _case_id
+              src: id
+              fn: set
+            - name: project_id
+      target_nodes:
+        - name: slide_image
+          path: slides.samples.cases
+
+# -- (map) Configuration options for es garbage cronjob.
+esGarbageCollect:
+  # -- (bool) Whether to create es garbage collect cronjob.
+  enabled: false
+  # -- (string) The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default.
+  schedule: "0 0 * * *"
+  # -- (string) To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image.
+  custom_image:
+  # -- (string) Slack webhook endpoint to use for cronjob.
+  slack_webhook: None
+
+schedule: "*/30 * * * *"
+
+suspendCronjob: true
+
+legacySupport: false
+
+etlForced: "TRUE"

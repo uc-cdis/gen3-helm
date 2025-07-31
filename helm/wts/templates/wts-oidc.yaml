@@ -1,3 +1,4 @@
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -19,12 +20,13 @@ spec:
       initContainers:
         - name: wait-for-fence
           image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
           command: ["/bin/sh","-c"]
           args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
       containers:
         - name: fence-client
           # TODO: Make this configurable
-          image: "quay.io/cdis/fence:master"
+          image: "quay.io/pcdc/fence:helm-test"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # TODO: ADD RESOURCES
           # resources:
@@ -100,12 +102,14 @@ spec:
           args: 
             - "-c"
             - |
+              echo "waiting for /shared/client_id"
               while [ ! -e /shared/client_id ]
               do
-                echo "waiting for /shared/client_id"
-                sleep 30
+                echo "..."
+                sleep 5
               done
               echo "Updating k8s secret wts-oidc-client"
               CLIENT_ID=$(cat /shared/client_id | base64)
               CLIENT_SECRET=$(cat /shared/client_secret | base64)
               kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
+{{- end }}

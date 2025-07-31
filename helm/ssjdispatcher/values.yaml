@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -14,10 +14,12 @@ global:
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -46,16 +48,24 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -79,7 +89,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -124,20 +135,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - ssjdispatcher
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - ssjdispatcher
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -166,14 +177,10 @@ indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.0
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 128Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 2400Mi
 
@@ -224,6 +231,11 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "ssjdispatcher-service-account"
 
+# -- (map) Service account to use for ssj jobs.
+jobServiceAccount:
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"
@@ -236,10 +248,12 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1
+
+# -- (map) External secrets configuration
+externalSecrets:
+  # -- (string) Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sSsjdispatcherSecret: false
+  # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sJwtKeysSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
+  credsFile:

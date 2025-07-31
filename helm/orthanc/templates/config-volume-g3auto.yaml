@@ -1,0 +1,33 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sOrthancS3G3auto) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: orthanc-s3-g3auto
+type: Opaque
+stringData:
+  orthanc_config_overwrites.json: |
+        {
+          "RemoteAccessAllowed": {{ .Values.RemoteAccessAllowed }},
+          "AuthenticationEnabled": {{ .Values.AuthenticationEnabled }},
+          "RegisteredUsers": {{ .Values.RegisteredUsers | toJson }},
+          "AwsS3Storage" : {
+            "BucketName": {{ .Values.S3Storage.BucketName | quote }},
+            "Region" : {{ .Values.S3Storage.Region | quote }},
+            "AccessKey" : {{ .Values.S3Storage.AccessKey | quote }},
+            "SecretKey" : {{ .Values.S3Storage.SecretKey | quote }}
+          }{{- if .Values.PostgreSQL.enabled }},
+          "PostgreSQL": {
+            "EnableIndex": {{ .Values.PostgreSQL.EnableIndex }},
+            "EnableStorage": {{ .Values.PostgreSQL.EnableStorage }},
+            "Port": {{ .Values.PostgreSQL.Port }},
+            "Host": "${PGHOST}",
+            "Database": "${PGDB}",
+            "Username": "${PGUSER}",
+            "Password": "${PGPASSWORD}",
+            "IndexConnectionsCount": {{ .Values.PostgreSQL.IndexConnectionsCount }},
+            "Lock":  {{ .Values.PostgreSQL.Lock }}
+          }
+          {{- end }}
+        }
+---
+{{- end }}

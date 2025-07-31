@@ -1,0 +1,109 @@
+# Global configuration
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
+    secretStoreServiceAccount:
+      # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
+      enabled: false
+      # -- (string) Name of the service account to create
+      name: secret-store-sa
+      # -- (string) AWS Role ARN for Secret Store to use
+      roleArn:
+    # -- (map) Local secret setting if using a pre-exising secret.
+    useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+      enabled: false
+      # -- (string) Name of the local secret.
+      localSecretName:
+  # -- (bool) Deploys postgres/elasticsearch for dev
+  dev: true
+  postgres:
+    # -- (bool) Whether the database create job should run.
+    dbCreate: true
+    master:
+      # -- global postgres master username
+      username: postgres
+      # -- global postgres master password
+      password:
+      # -- global postgres master host
+      host:
+      # -- global postgres master port
+      port: "5432"
+  # -- (string) Environment name.
+  # This should be the same as vpcname if you're doing an AWS deployment.
+  # Currently this is being used to share ALB's if you have multiple namespaces in same cluster.
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+  tierAccessLevel: libre
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: "1000"
+  # -- (bool) Global flags to control and manage network policies for a Gen3 installation
+  # NOTE: Network policies are currently a beta feature. Use with caution!
+  netPolicy:
+    # -- (bool) Whether network policies are enabled
+    enabled: false
+
+    # -- (array) A CIDR range representing a database subnet, that services with a database need access to
+    dbSubnet: ""
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: "10"
+  # -- (map) If you would like to add any extra values to the manifest-global configmap.
+  manifestGlobalExtraValues: {}
+  # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
+  frontendRoot: "portal"
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    dbCreate: false
+
+
+argo-workflows:
+  enabled: true
+
+argocd:
+  enabled: true
+
+# This is a list of CIDR ranges that may be used by AWS. This is needed
+# to allow egress to S3 for services that need it
+s3CidrRanges:
+  - ipBlock:
+      cidr: 18.34.0.0/19
+  - ipBlock:
+      cidr: 16.15.192.0/18
+  - ipBlock:
+      cidr: 54.231.0.0/16
+  - ipBlock:
+      cidr: 52.216.0.0/15
+  - ipBlock:
+      cidr: 18.34.232.0/21
+  - ipBlock:
+      cidr: 16.15.176.0/20
+  - ipBlock:
+      cidr: 16.182.0.0/16
+  - ipBlock:
+      cidr: 3.5.0.0/19
+  - ipBlock:
+      cidr: 44.192.134.240/28
+  - ipBlock:
+      cidr: 44.192.140.64/28

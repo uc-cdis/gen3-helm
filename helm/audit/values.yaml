@@ -1,14 +1,30 @@
 # Default values for audit.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-# -- (map) Global configuration options.
+
+# Global configuration
 global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -37,16 +53,54 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "audit-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sAuditSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "audit-g3auto"
+  auditG3auto:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
+# -- (map) Secret information for External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -115,7 +169,8 @@ podAnnotations: {}
 podSecurityContext: {}
 
 # -- (map) Security context for the containers in the pod
-securityContext: {}
+securityContext:
+  {}
 
   # capabilities:
   #   drop:
@@ -131,18 +186,25 @@ service:
   # -- (int) Port on which the service is exposed
   port: 80
 
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - fence
+    - presigned-url-fence
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - fence
+    - presigned-url-fence
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.2
     # -- (string) The amount of memory requested
     memory: 120Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
@@ -158,7 +220,6 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 
@@ -170,20 +231,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - audit
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - audit
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -220,7 +281,8 @@ server:
     # -- (string) The URL for the SQS queue.
     url: "http://sqs.com"
   # -- (map) AWS credentials to access SQS queue.
-  AWS_CREDENTIALS: {}
+  AWS_CREDENTIALS:
+    {}
     # cred1:
     #   aws_access_key_id:
     #   aws_secret_access_key:
@@ -246,11 +308,3 @@ partOf: "Logging"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

@@ -47,13 +47,6 @@
           "body": "The Exploration Page gives you insights and a clear overview under selected factors.",
           "link": "/explorer",
           "label": "Explore data"
-        },
-        {
-          "name": "Access Data",
-          "icon": "data-access",
-          "body": "Use our selected tool to filter out the data you need.",
-          "link": "/query",
-          "label": "Query data"
         }
       ],
       "barChart": {
@@ -73,12 +66,6 @@
           "link": "/explorer",
           "color": "#a2a2a2",
           "name": "Exploration"
-        },
-        {
-          "icon": "query",
-          "link": "/query",
-          "color": "#a2a2a2",
-          "name": "Query"
         }
       ]
     },
@@ -101,7 +88,7 @@
     "login": {
       "title": "Pediatric Cancer Data Commons",
       "subTitle": "Connect. Share. Cure.",
-      "text": "The Pediatric Cancer Data Commons (PCDC) harnesses pediatric cancer clinical data from around the globe into a single combined platform, connecting the data to other sources and making it available to clinicians and researchers everywhere. Headquartered at the University of Chicago, the PCDC team works with international leaders in pediatric cancers to develop and apply uniform data standards that facilitate the collection, combination, and analysis of data from many different sources. The PCDC currently houses the world's largest sets of clinical data for pediatric neuroblastoma and soft tissue sarcoma and is in the process of onboarding additional pediatric cancer disease groups.",
+      "text": "Welcome to the Pediatric Cancer Data Commons (PCDC), brought to you by Data for the Common Good (D4CG). Headquartered at the University of Chicago, D4CG works with international leaders to develop and apply uniform data standards that facilitate the collection, combination, and analysis of data from many different sources.\n\nThe PCDC harnesses pediatric, AYA, and adult cancer clinical data from around the world into a single unified platform, making it possible to explore and access data across multiple types of cancer. The PCDC Data Portal currently includes some of the world's largest sets of clinical data for pediatric neuroblastoma, soft tissue sarcoma, germ cell tumors, AML, and Hodgkin lymphoma, with the addition of more cancer types in progress.",
       "contact": "If you have any questions about access or the registration process, please contact ",
       "email": "pcdc_help@lists.uchicago.edu"
     },
@@ -165,7 +152,8 @@
               "age_at_censor_status",
               "medical_histories.medical_history",
               "medical_histories.medical_history_status",
-              "external_references.external_resource_name"
+              "external_references.external_resource_name",
+              "biospecimen_status"
             ]
           },
           {
@@ -198,7 +186,10 @@
               "disease_characteristics.mki",
               "disease_characteristics.bulk_disease",
               "disease_characteristics.BULK_MED_MASS",
-              "disease_characteristics.bulky_nodal_aggregate"
+              "disease_characteristics.bulky_nodal_aggregate",
+              "disease_characteristics.who_aml",
+              "disease_characteristics.CNS_disease_status",
+              "disease_characteristics.MLDS"
             ]
           },
           {
@@ -238,7 +229,9 @@
               "subject_responses.tx_prior_response",
               "subject_responses.response",
               "subject_responses.interim_response",
-              "subject_responses.response_method"
+              "subject_responses.response_method",
+              "minimal_residual_diseases.mrd_result",
+              "minimal_residual_diseases.mrd_result_numeric"
             ]
           },
           {
@@ -247,6 +240,7 @@
               "secondary_malignant_neoplasm.age_at_smn",
               "secondary_malignant_neoplasm.smn_site",
               "secondary_malignant_neoplasm.smn_type",
+              "secondary_malignant_neoplasm.smn_yn",
               "secondary_malignant_neoplasm.smn_morph_icdo"
             ]
           },
@@ -269,7 +263,9 @@
           {
             "title": "SCT",
             "fields": [
-              "stem_cell_transplants.sct_type"
+              "stem_cell_transplants.sct_type",
+              "stem_cell_transplants.sct_source",
+              "stem_cell_transplants.sct_donor_relationship"
             ]
           }
         ]
@@ -296,7 +292,7 @@
         }
       ],
       "table": {
-        "enabled": true,
+        "enabled": false,
         "fields": [
           "external_references.external_links",
           "consortium",
@@ -362,6 +358,10 @@
           {
             "field": "external_references.external_resource_name",
             "name": "External Resource Name"
+          },
+          {
+            "field": "biospecimen_status",
+            "name": "Biospecimen"
           },
           {
             "field": "histologies.histology",
@@ -476,6 +476,18 @@
             "name": "Bulky Nodal Aggregate"
           },
           {
+            "field": "disease_characteristics.who_aml",
+            "name": "WHO AML"
+          },
+          {
+            "field": "disease_characteristics.CNS_disease_status",
+            "name": "CNS Disease Status"
+          },
+          {
+            "field": "disease_characteristics.MLDS",
+            "name": "MLDS"
+          },
+          {
             "field": "molecular_analysis.anaplasia",
             "name": "Anaplasia"
           },
@@ -576,6 +588,14 @@
             "name": "Response Method"
           },
           {
+            "field": "minimal_residual_diseases.mrd_result",
+            "name": "MRD Result"
+          },
+          {
+            "field": "minimal_residual_diseases.mrd_result_numeric",
+            "name": "MRD Result Numeric"
+          },
+          {
             "field": "subject_responses.necrosis",
             "name": "Necrosis"
           },
@@ -590,6 +610,10 @@
           {
             "field": "secondary_malignant_neoplasm.smn_type",
             "name": "SMN Type"
+          },
+          {
+            "field": "secondary_malignant_neoplasm.smn_yn",
+            "name": "Secondary Malignancy"
           },
           {
             "field": "secondary_malignant_neoplasm.smn_morph_icdo",
@@ -622,230 +646,14 @@
           {
             "field": "stem_cell_transplants.sct_type",
             "name": "SCT Type"
-          }
-        ]
-      },
-      "dataRequests": {
-        "enabled": false
-      },
-      "getAccessButtonLink": "https://docs.pedscommons.org/PCDCProjectRequestForm/"
-    },
-    {
-      "id": 2,
-      "label": "data - survival",
-      "charts": {
-        "sex": {
-          "chartType": "bar",
-          "title": "Sex"
-        },
-        "race": {
-          "chartType": "bar",
-          "title": "Race"
-        },
-        "ethnicity": {
-          "chartType": "bar",
-          "title": "Ethnicity"
-        }
-      },
-      "adminAppliedPreFilters": {
-        "consortium": {
-          "selectedValues": ["INSTRuCT"]
-        }
-      },
-      "filters": {
-        "anchor": {
-          "field": "disease_phase",
-          "options": ["Initial Diagnosis", "Relapse"],
-          "tabs": ["Disease", "Molecular"],
-          "tooltip": "You can describe this filter here"
-        },
-        "tabs": [
-          {
-            "title": "Subject",
-            "fields": [
-              "consortium",
-              "sex",
-              "race",
-              "ethnicity",
-              "survival_characteristics.lkss",
-              "survival_characteristics.age_at_lkss"
-            ]
           },
           {
-            "title": "Disease",
-            "fields": [
-              "histologies.histology",
-              "tumor_assessments.age_at_tumor_assessment",
-              "tumor_assessments.tumor_classification",
-              "tumor_assessments.tumor_site",
-              "tumor_assessments.longest_diam_dim1",
-              "tumor_assessments.invasiveness",
-              "tumor_assessments.nodal_clinical",
-              "tumor_assessments.nodal_pathology",
-              "tumor_assessments.parameningeal_extension",
-              "stagings.irs_group",
-              "stagings.tnm_finding"
-            ]
+            "field": "stem_cell_transplants.sct_source",
+            "name": "SCT Source"
           },
           {
-            "title": "Molecular",
-            "fields": [
-              "molecular_analysis.anaplasia",
-              "molecular_analysis.anaplasia_extent",
-              "molecular_analysis.molecular_abnormality",
-              "molecular_analysis.molecular_abnormality_result",
-              "molecular_analysis.gene1",
-              "molecular_analysis.gene2"
-            ]
-          }
-        ]
-      },
-      "projectId": "search",
-      "graphqlField": "subject",
-      "index": "",
-      "buttons": [
-        {
-          "enabled": true,
-          "type": "export-to-pfb",
-          "title": "Export to PFB",
-          "leftIcon": "datafile",
-          "rightIcon": "download"
-        },
-        {
-          "enabled": false,
-          "type": "data",
-          "title": "Download Data",
-          "leftIcon": "user",
-          "rightIcon": "download",
-          "fileName": "data.json",
-          "tooltipText": "You can only download data accessible to you"
-        }
-      ],
-      "table": {
-        "enabled": true,
-        "fields": [
-          "external_references.external_links",
-          "consortium",
-          "data_contributor_id",
-          "subject_submitter_id",
-          "sex",
-          "race",
-          "ethnicity",
-          "survival_characteristics.lkss",
-          "survival_characteristics.age_at_lkss"
-        ]
-      },
-      "patientIds": {
-        "filter": false,
-        "export": true
-      },
-      "survivalAnalysis": {
-        "result": {
-          "pval": false,
-          "risktable": true,
-          "survival": true
-        }
-      },
-      "guppyConfig": {
-        "dataType": "subject",
-        "nodeCountTitle": "Subjects",
-        "fieldMapping": [
-          {
-            "field": "survival_characteristics.lkss",
-            "name": "Last Known Survival Status (LKSS)",
-            "tooltip": "test tooltip"
-          },
-          {
-            "field": "survival_characteristics.age_at_lkss",
-            "name": "Age at LKSS"
-          },
-          {
-            "field": "external_references.external_resource_name",
-            "name": "External Resource Name"
-          },
-          {
-            "field": "tumor_assessments.age_at_tumor_assessment",
-            "name": "Age at Tumor Assessment"
-          },
-          {
-            "field": "tumor_assessments.tumor_classification",
-            "name": "Tumor Classification"
-          },
-          {
-            "field": "tumor_assessments.tumor_site",
-            "name": "Tumor Site"
-          },
-          {
-            "field": "tumor_assessments.tumor_size",
-            "name": "Tumor Size"
-          },
-          {
-            "field": "tumor_assessments.longest_diam_dim1",
-            "name": "Longest Diameter Dimension 1"
-          },
-          {
-            "field": "tumor_assessments.invasiveness",
-            "name": "Invasiveness"
-          },
-          {
-            "field": "tumor_assessments.nodal_clinical",
-            "name": "Nodal Clinical"
-          },
-          {
-            "field": "tumor_assessments.nodal_pathology",
-            "name": "Nodal Pathology"
-          },
-          {
-            "field": "tumor_assessments.parameningeal_extension",
-            "name": "Parameningeal Extension"
-          },
-          {
-            "field": "histologies.histology",
-            "name": "Histology"
-          },
-          {
-            "field": "histologies.histology_grade",
-            "name": "Histology Grade"
-          },
-          {
-            "field": "histologies.histology_inpc",
-            "name": "Histology Inpc"
-          },
-          {
-            "field": "molecular_analysis.anaplasia",
-            "name": "Anaplasia"
-          },
-          {
-            "field": "molecular_analysis.anaplasia_extent",
-            "name": "Anaplasia Extent"
-          },
-          {
-            "field": "molecular_analysis.molecular_abnormality",
-            "name": "Molecular Abnormality"
-          },
-          {
-            "field": "molecular_analysis.molecular_abnormality_result",
-            "name": "Molecular Abnormality Result"
-          },
-          {
-            "field": "molecular_analysis.gene1",
-            "name": "Gene 1"
-          },
-          {
-            "field": "molecular_analysis.gene2",
-            "name": "Gene 2"
-          },
-          {
-            "field": "project_id",
-            "name": "Data Release Version"
-          },
-          {
-            "field": "stagings.irs_group",
-            "name": "IRS Group"
-          },
-          {
-            "field": "stagings.tnm_finding",
-            "name": "TNM Finding"
+            "field": "stem_cell_transplants.sct_donor_relationship",
+            "name": "SCT Donor Relationship"
           }
         ]
       },

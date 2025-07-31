@@ -1,0 +1,82 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: amanuensis-clear-unused-filter-sets
+  labels:
+    redeploy-hash: "{{ .Release.Revision }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  labels:
+    app: gen3-created-by-hook
+spec:
+  schedule: "0 0 1 * *"
+  concurrencyPolicy: Forbid
+  # This is defualt but do we want to keep long term record of deleted filter sets
+  # the original filter-sets will not be deleted unless manually done by the user
+  successfulJobsHistoryLimit: 3 
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          automountServiceAccountToken: false
+          volumes:
+            - name: yaml-merge
+              configMap:
+                name: "amanuensis-yaml-merge"
+                optional: true
+            - name: config-volume
+              secret:
+                secretName: "amanuensis-config"
+                items:
+                  - key: amanuensis-config.yaml
+                    path: amanuensis-config.yaml
+                optional: false
+            - name: amanuensis-volume
+              secret:
+                secretName: "amanuensis-creds"
+                items:
+                  - key: creds.json
+                    path: creds.json
+                optional: false
+            - name: tmp-pod
+              emptyDir: {}
+          containers:
+          - name: amanuensis
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            env:
+              - name: PYTHONPATH
+                value: /var/www/amanuensis
+              - name: AMANUENSIS_PUBLIC_CONFIG
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-amanuensis
+                    key: amanuensis-config-public.yaml
+                    optional: true
+            volumeMounts:
+              - name: "config-volume"
+                readOnly: true
+                mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
+                subPath: amanuensis-config.yaml
+              - name: "yaml-merge"
+                readOnly: true
+                mountPath: "/var/www/amanuensis/yaml_merge.py"
+                subPath: yaml_merge.py
+            command: ["/bin/bash"]
+            args:
+              - "-c"
+              - |
+                echo "${AMANUENSIS_PUBLIC_CONFIG:-""}" > "/var/www/amanuensis/amanuensis-config-public.yaml"
+                python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml > /var/www/amanuensis/amanuensis-config.yaml
+                cd /amanuensis
+                clear-old-filter-sets
+                if [[ $? != 0 ]]; then
+                  echo "WARNING: non zero exit code: $?"
+                  exit 1
+                fi
+          restartPolicy: Never

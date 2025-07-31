@@ -1,0 +1,315 @@
+# Default values for ohif-viewer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+  # -- (map) Settings for network policies
+  netPolicy:
+    enabled: false
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    dbCreate: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+    # -- (string) Will use a manually deployed clusterSecretStore if defined.
+    clusterSecretStoreRef: ""
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# Deployment
+
+# -- (map) Configuration for autoscaling the number of replicas
+autoscaling:
+  # -- (bool) Whether autoscaling is enabled
+  enabled: false
+  # -- (int) The minimum number of replicas to scale down to
+  minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
+  maxReplicas: 100
+  # -- (int) The target CPU utilization percentage for autoscaling
+  targetCPUUtilizationPercentage: 80
+
+# -- (int) Number of replicas for the deployment.
+replicaCount: 1
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/ohif-viewer
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "gen3-v3.8.0"
+
+# Service and Pod
+# -- (map) Kubernetes service information.
+service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
+  type: ClusterIP
+  # -- (int) The port number that the service exposes.
+  port: 80
+  targetPort: 8080
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Imaging"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+
+# -- (list) Volumes to attach to the pod.
+volumes:
+  - name: app-config
+    configMap:
+      name: ohif-viewer-app-config
+      optional: true
+
+# -- (list) Volumes to mount to the pod.
+volumeMounts:
+  - name: app-config
+    readOnly: true
+    mountPath: /usr/share/nginx/html/app-config.js
+    subPath: app-config.js
+
+APP_CONFIG: |
+  window.config = {
+      routerBasename: '/ohif-viewer/',
+      // whiteLabeling: {},
+      extensions: [],
+      modes: [],
+      customizationService: {
+          // Shows a custom route -access via http://localhost:3000/custom
+          // helloPage: '@ohif/extension-default.customizationModule.helloPage',
+      },
+      showStudyList: true,
+      // some windows systems have issues with more than 3 web workers
+      maxNumberOfWebWorkers: 3,
+      // below flag is for performance reasons, but it might not work for all servers
+      omitQuotationForMultipartRequest: true,
+      showWarningMessageForCrossOrigin: true,
+      showCPUFallbackMessage: true,
+      showLoadingIndicator: true,
+      strictZSpacingForVolumeViewport: true,
+      maxNumRequests: {
+          interaction: 100,
+          thumbnail: 75,
+          // Prefetch number is dependent on the http protocol. For http 2 or
+          // above, the number of requests can be go a lot higher.
+          prefetch: 25,
+      },
+      // filterQueryParam: false,
+      defaultDataSourceName: 'dicomweb',
+      /* Dynamic config allows user to pass "configUrl" query string this allows to load config without recompiling application. The regex will ensure valid configuration source */
+      // dangerouslyUseDynamicConfig: {
+      //   enabled: true,
+      //   // regex will ensure valid configuration source and default is /.*/ which matches any character. To use this, setup your own regex to choose a specific source of configuration only.
+      //   // Example 1, to allow numbers and letters in an absolute or sub-path only.
+      //   // regex: /(0-9A-Za-z.]+)(\/[0-9A-Za-z.]+)*/
+      //   // Example 2, to restricts to either hosptial.com or othersite.com.
+      //   // regex: /(https:\/\/hospital.com(\/[0-9A-Za-z.]+)*)|(https:\/\/othersite.com(\/[0-9A-Za-z.]+)*)/
+      //   regex: /.*/,
+      // },
+      dataSources: [
+          {
+              friendlyName: 'dcmjs DICOMWeb Server',
+              namespace: '@ohif/extension-default.dataSourcesModule.dicomweb',
+              sourceName: 'dicomweb',
+              configuration: {
+                  name: 'dicomweb',
+                  wadoUriRoot: '/orthanc/wado',
+                  qidoRoot: '/orthanc/dicom-web',
+                  wadoRoot: '/orthanc/dicom-web',
+
+                  qidoSupportsIncludeField: false,
+                  supportsReject: false,
+                  imageRendering: 'wadors',
+                  thumbnailRendering: 'wadors',
+                  enableStudyLazyLoad: true,
+                  supportsFuzzyMatching: false,
+                  supportsWildcard: true,
+                  staticWado: true,
+                  singlepart: 'bulkdata,video',
+                  // whether the data source should use retrieveBulkData to grab metadata,
+                  // and in case of relative path, what would it be relative to, options
+                  // are in the series level or study level (some servers like series some study)
+                  bulkDataURI: {
+                      enabled: true,
+                      relativeResolution: 'studies',
+                  },
+              },
+          },
+          {
+              friendlyName: 'dicomweb delegating proxy',
+              namespace: '@ohif/extension-default.dataSourcesModule.dicomwebproxy',
+              sourceName: 'dicomwebproxy',
+              configuration: {
+                  name: 'dicomwebproxy',
+              },
+          },
+          {
+              friendlyName: 'dicom json',
+              namespace: '@ohif/extension-default.dataSourcesModule.dicomjson',
+              sourceName: 'dicomjson',
+              configuration: {
+                  name: 'json',
+              },
+          },
+          {
+              friendlyName: 'dicom local',
+              namespace: '@ohif/extension-default.dataSourcesModule.dicomlocal',
+              sourceName: 'dicomlocal',
+              configuration: {},
+          },
+      ],
+      httpErrorHandler: error => {
+          // This is 429 when rejected from the public idc sandbox too often.
+          console.warn(error.status);
+
+          // Could use services manager here to bring up a dialog/modal if needed.
+          console.warn('test, navigate to https://ohif.org/');
+      },
+      // whiteLabeling: {
+      //   /* Optional: Should return a React component to be rendered in the "Logo" section of the application's Top Navigation bar */
+      //   createLogoComponentFn: function (React) {
+      //     return React.createElement(
+      //       'a',
+      //       {
+      //         target: '_self',
+      //         rel: 'noopener noreferrer',
+      //         className: 'text-purple-600 line-through',
+      //         href: '/',
+      //       },
+      //       React.createElement('img',
+      //         {
+      //           src: './assets/customLogo.svg',
+      //           className: 'w-8 h-8',
+      //         }
+      //       ))
+      //   },
+      // },
+      hotkeys: [
+          {
+              commandName: 'incrementActiveViewport',
+              label: 'Next Viewport',
+              keys: ['right'],
+          },
+          {
+              commandName: 'decrementActiveViewport',
+              label: 'Previous Viewport',
+              keys: ['left'],
+          },
+          { commandName: 'rotateViewportCW', label: 'Rotate Right', keys: ['r'] },
+          { commandName: 'rotateViewportCCW', label: 'Rotate Left', keys: ['l'] },
+          { commandName: 'invertViewport', label: 'Invert', keys: ['i'] },
+          {
+              commandName: 'flipViewportHorizontal',
+              label: 'Flip Horizontally',
+              keys: ['h'],
+          },
+          {
+              commandName: 'flipViewportVertical',
+              label: 'Flip Vertically',
+              keys: ['v'],
+          },
+          { commandName: 'scaleUpViewport', label: 'Zoom In', keys: ['+'] },
+          { commandName: 'scaleDownViewport', label: 'Zoom Out', keys: ['-'] },
+          { commandName: 'fitViewportToWindow', label: 'Zoom to Fit', keys: ['='] },
+          { commandName: 'resetViewport', label: 'Reset', keys: ['space'] },
+          { commandName: 'nextImage', label: 'Next Image', keys: ['down'] },
+          { commandName: 'previousImage', label: 'Previous Image', keys: ['up'] },
+          // {
+          //   commandName: 'previousViewportDisplaySet',
+          //   label: 'Previous Series',
+          //   keys: ['pagedown'],
+          // },
+          // {
+          //   commandName: 'nextViewportDisplaySet',
+          //   label: 'Next Series',
+          //   keys: ['pageup'],
+          // },
+          {
+              commandName: 'setToolActive',
+              commandOptions: { toolName: 'Zoom' },
+              label: 'Zoom',
+              keys: ['z'],
+          },
+          // ~ Window level presets
+          {
+              commandName: 'windowLevelPreset1',
+              label: 'W/L Preset 1',
+              keys: ['1'],
+          },
+          {
+              commandName: 'windowLevelPreset2',
+              label: 'W/L Preset 2',
+              keys: ['2'],
+          },
+          {
+              commandName: 'windowLevelPreset3',
+              label: 'W/L Preset 3',
+              keys: ['3'],
+          },
+          {
+              commandName: 'windowLevelPreset4',
+              label: 'W/L Preset 4',
+              keys: ['4'],
+          },
+          {
+              commandName: 'windowLevelPreset5',
+              label: 'W/L Preset 5',
+              keys: ['5'],
+          },
+          {
+              commandName: 'windowLevelPreset6',
+              label: 'W/L Preset 6',
+              keys: ['6'],
+          },
+          {
+              commandName: 'windowLevelPreset7',
+              label: 'W/L Preset 7',
+              keys: ['7'],
+          },
+          {
+              commandName: 'windowLevelPreset8',
+              label: 'W/L Preset 8',
+              keys: ['8'],
+          },
+          {
+              commandName: 'windowLevelPreset9',
+              label: 'W/L Preset 9',
+              keys: ['9'],
+          },
+      ],
+  };

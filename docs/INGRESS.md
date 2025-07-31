@@ -1,7 +1,7 @@
 # Ingress in Gen3
 
 # Dev
-if `global.dev` is set to true, a very basic ingress is created, that works out of the box with `traefik` service that is included in `Rancher-Desktop` 
+if `global.dev` is set to true, a very basic ingress is created.
 
 # AWS
 

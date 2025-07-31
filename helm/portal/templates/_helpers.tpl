@@ -61,7 +61,7 @@ Create the name of the service account to use
 */}}
 {{- define "portal.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "portal.fullname" .) .Values.serviceAccount.name }}
+{{- default "portal-sa" .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

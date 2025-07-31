@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -12,12 +12,19 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -47,17 +54,19 @@ global:
   # -- (string) Access level for tiers.
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  tierAccessLimit: "1000"
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (map) Configuration for autoscaling the number of replicas
 autoscaling:
@@ -70,11 +79,11 @@ autoscaling:
   # -- (int) The target CPU utilization percentage for autoscaling
   targetCPUUtilizationPercentage: 80
 
-# -- (map) AWS credentials to access the db restore job S3 bucket
+# -- (map) Secret information to access the db restore job S3 bucket.
 secrets:
-  # -- (string) AWS access key.
+  # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
-  # -- (string) AWS secret access key.
+  # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 
 # -- (int) Number of replicas for the deployment.
@@ -102,20 +111,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - guppy
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - guppy
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Volumes to attach to the pod.
 volumes:
@@ -125,6 +134,12 @@ volumes:
       items:
         - key: guppy_config.json
           path: guppy_config.json
+  - name: pcdcanalysistools-jwt-keys
+    secret:
+      secretName: "pcdcanalysistools-jwt-keys"
+      items:
+        - key: jwt_public_key.pem
+          path: jwt_public_key.pem
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
@@ -138,10 +153,9 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: ""
+esEndpoint: "gen3-elasticsearch-master:9200"
 # -- (string) Arborist service URL.
 arboristUrl: http://arborist-service
 
@@ -151,22 +165,21 @@ volumeMounts:
     readOnly: true
     mountPath: /guppy/guppy_config.json
     subPath: guppy_config.json
+  - name: "pcdcanalysistools-jwt-keys"
+    readOnly: true
+    mountPath: "/guppy/jwt_public_key.pem"
+    subPath: "jwt_public_key.pem"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 500Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
-
 
 # -- (map) Kubernetes service information.
 service:
@@ -182,12 +195,12 @@ service:
 # Configmap
 # -- (list) Elasticsearch index configurations
 indices:
-- index: dev_case
-  type: case
-- index: dev_file
-  type: file
+  - index: dev_case
+    type: case
+  - index: dev_file
+    type: file
 # -- (string) The Elasticsearch configuration index
-configIndex: dev_case-array-config
+configIndex: dev_array-config
 # -- (string) The field used for access control and authorization filters
 authFilterField: auth_resource_path
 # -- (bool) Whether or not to enable encryption for specified fields
@@ -196,7 +209,7 @@ enableEncryptWhitelist: true
 encryptWhitelist: test1
 
 # -- (bool) Whether or not to restore elasticsearch indices from a snapshot in s3
-dbRestore: true
+dbRestore: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -209,11 +222,3 @@ partOf: "Explorer-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

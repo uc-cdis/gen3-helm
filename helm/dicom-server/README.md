@@ -1,6 +1,6 @@
 # dicom-server
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -8,12 +8,18 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.7 |
+| file://../common | common | 0.1.20 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| AuthenticationEnabled | bool | `false` | Whether or not the password protection is enabled. |
+| EnableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
+| EnableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
+| IndexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database. |
+| Lock | bool | `false` | Whether to lock the database. |
+| Port | string | `"5432"` | Port for Postgres. |
 | autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
 | autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
@@ -21,38 +27,47 @@ A Helm chart for gen3 Dicom Server
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| datadogLogsInjection | bool | `true` | If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs. |
-| datadogProfilingEnabled | bool | `true` | If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application. |
-| datadogTraceSampleRate | int | `1` | A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced. |
-| global | map | `{"ddEnabled":false,"environment":"default","minAvialable":1,"pdb":false}` | Global configuration options. |
-| global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
+| externalSecrets | map | `{"createK8sOrthancG3auto":false,"orthancG3Auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sOrthancG3auto | string | `false` | Will create the Helm "orthanc-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.orthancG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
+| global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.clusterSecretStoreRef | string | `""` | Will use a manually deployed clusterSecretStore if defined. |
+| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.netPolicy | map | `{"enabled":false}` | Settings for network policies |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"master"}` | Docker image information. |
+| global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
+| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `nil` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"gen3-orthanc:gen3-0.1.2"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |
-| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"gen3-orthanc:gen3-0.1.2"` | Overrides the image tag whose default is the chart appVersion. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Imaging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
+| postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
+| postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
+| postgres.port | string | `"5432"` | Port for Postgres. |
+| postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
+| postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| secrets | map | `{"authenticationEnabled":false,"dataBase":"postgres","enableIndex":true,"enableStorage":true,"host":"postgres-postgresql.postgres.svc.cluster.local","indexConnectionsCount":5,"lock":false,"password":"postgres","port":"5432","userName":"postgres"}` | Secret information |
-| secrets.authenticationEnabled | bool | `false` | Whether or not the password protection is enabled. |
-| secrets.dataBase | string | `"postgres"` | Database name for postgres. |
-| secrets.enableIndex | bool | `true` | Whether to enable index. If set to "false", Orthanc will continue to use its default SQLite back-end. |
-| secrets.enableStorage | bool | `true` | Whether to enable storage. If set to "false", Orthanc will continue to use its default filesystem storage area. |
-| secrets.host | string | `"postgres-postgresql.postgres.svc.cluster.local"` | Hostname for postgres server. |
-| secrets.indexConnectionsCount | int | `5` | The number of connections from the index plugin to the PostgreSQL database. |
-| secrets.lock | bool | `false` | Whether to lock the database. |
-| secrets.password | string | `"postgres"` | Password for Postgres. |
-| secrets.port | string | `"5432"` | Port for Postgres. |
-| secrets.userName | string | `"postgres"` | Username for postgres. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":80,"targetport":8042}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.targetport | int | `8042` | The port on the host machine that traffic is directed to. |
 | volumeMounts | list | `[{"mountPath":"/etc/orthanc/orthanc_config_overwrites.json","name":"config-volume-g3auto","readOnly":true,"subPath":"orthanc_config_overwrites.json"}]` | Volumes to mount to the pod. |
 | volumes | list | `[{"name":"config-volume-g3auto","secret":{"secretName":"orthanc-g3auto"}}]` | Volumes to attach to the pod. |
-
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)

@@ -1,0 +1,60 @@
+{{- if .Values.FENCE_CONFIG.ENABLE_VISA_UPDATE_CRON -}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: fence-cleanup-expired-ga4gh-info
+spec:
+  schedule: {{ .Values.fenceCleanupExpiredGa4ghInfo.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          serviceAccountName: fence-visa-update-job
+          volumes:
+            - name: yaml-merge
+              configMap:
+                name: "fence-yaml-merge"
+            - name: config-volume
+              secret:
+                secretName: "fence-config"
+          containers:
+          - name: fence
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: Always
+            env:
+                - name: FENCE_PUBLIC_CONFIG
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-fence
+                      key: fence-config-public.yaml
+                      optional: true
+                {{- toYaml .Values.env | nindent 16 }}
+            volumeMounts:
+              - name: "config-volume"
+                readOnly: true
+                mountPath: "/var/www/fence/fence-config-secret.yaml"
+                subPath: fence-config.yaml
+              - name: "yaml-merge"
+                readOnly: true
+                mountPath: "/var/www/fence/yaml_merge.py"
+                subPath: yaml_merge.py
+            command: ["/bin/bash"]
+            args:
+              - "-c"
+              - |
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
+                fence-create cleanup-expired-ga4gh-information
+                if [[ $? != 0 ]]; then
+                  echo "WARNING: non zero exit code: $?"
+                fi
+          restartPolicy: Never
+
+{{- end }}

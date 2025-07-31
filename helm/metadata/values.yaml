@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -12,12 +12,19 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -46,16 +53,39 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sMetadataSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "metadata-g3auto"
+  metadataG3auto:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
+# -- (map) Secret information to access the db restore job S3 bucket.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -115,20 +145,20 @@ affinity:
   podAntiAffinity:
     # -- (map) Option for scheduling to be required or preferred.
     preferredDuringSchedulingIgnoredDuringExecution:
-    # -- (int) Weight value for preferred scheduling.
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          # -- (list) Label key for match expression.
-          - key: app
-            # -- (string) Operation type for the match expression.
-            operator: In
-            # -- (list) Value for the match expression key.
-            values:
-            - metadata
-        # -- (string) Value for topology key label.
-        topologyKey: "kubernetes.io/hostname"
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - metadata
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
@@ -140,17 +170,88 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: "feat_es-7"
 
 debug: false
 
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
-esEndpoint: elasticsearch:9200
+esEndpoint: http://gen3-elasticsearch-master:9200
 # -- (bool) Set to true to aggregate metadata from multiple other Metadata Service instances.
-useAggMds:
+useAggMds: "False"
 # -- (string) Namespae to use if AggMds is enabled.
-aggMdsNamespace:
+aggMdsNamespace: default
+# -- (string)
+aggMdsDefaultDataDictField:
+
+aggMdsConfig: |
+  {
+    "configuration": {
+      "schema": {
+        "_subjects_count": {
+          "type": "integer"
+        },
+        "__manifest": {
+          "description": "an array of filename (usually DRS ids and its size",
+          "type": "array",
+          "properties": {
+            "file_name": {
+              "type": "string"
+            },
+            "file_size": {
+              "type": "integer"
+            }
+          }
+        },
+        "tags": {
+          "type": "array"
+        },
+        "_unique_id": {},
+        "study_description": {},
+        "study_id": {},
+        "study_url": {},
+        "project_id": {},
+        "short_name": {
+          "default": "not_set"
+        },
+        "year": {
+          "default": "not_set"
+        },
+        "full_name": {},
+        "commons_url": {},
+        "commons": {}
+      },
+      "settings": {
+        "cache_drs": true
+      }
+    },
+    "adapter_commons": {
+      "Gen3": {
+        "mds_url": "https://gen3.datacommons.io/",
+        "commons_url": "gen3.datacommons.io/",
+        "adapter": "gen3",
+        "config": {
+          "guid_type": "discovery_metadata",
+          "study_field": "gen3_discovery"
+        },
+        "keep_original_fields": false,
+        "field_mappings": {
+          "tags": "path:tags",
+          "_unique_id": "path:_unique_id",
+          "study_description": "path:summary",
+          "full_name": "path:study_title",
+          "short_name": "path:short_name",
+          "year": "path:year",
+          "accession_number": "path:accession_number",
+          "commons": "Gen3 Data Commons",
+          "study_url": {
+            "path": "link",
+            "default": "unknown"
+          }
+        }
+      }
+    }
+  }
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
@@ -158,27 +259,24 @@ volumeMounts:
     readOnly: true
     mountPath: /src/.env
     subPath: metadata.env
+  # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: /mds/.env
+    subPath: metadata.env
   - name: config-volume
     readOnly: true
     mountPath: /aggregate_config.json
     subPath: aggregate_config.json
-  - name: config-manifest
-    readOnly: true
-    mountPath: /metadata.json
-    subPath: json
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
@@ -191,21 +289,25 @@ initVolumeMounts:
     readOnly: true
     mountPath: /src/.env
     subPath: metadata.env
+  # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  - name: config-volume-g3auto
+    readOnly: true
+    mountPath: /mds/.env
+    subPath: metadata.env
 # -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 0.8
+  requests:
     # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
+    memory: 100Mi
 # -- (list) Command to run for the init container.
 command: ["/bin/sh"]
 # -- (list) Arguments to pass to the init container.
 args:
   - "-c"
   - |
-    /env/bin/alembic upgrade head
+    # Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility
+    poetry run alembic upgrade head || /env/bin/alembic upgrade head
 
 # Service and Pod
 serviceAnnotations:
@@ -241,10 +343,12 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1
+elasticsearch:
+  separate: false
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  esConfig:
+    elasticsearch.yml: |
+      # Here we can add elasticsearch config

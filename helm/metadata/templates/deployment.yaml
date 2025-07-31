@@ -4,9 +4,6 @@ metadata:
   name: metadata-deployment
   labels:
     {{- include "metadata.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -22,13 +19,14 @@ spec:
   template:
     metadata:
       labels:
+        netnolimit: "yes"
+        public: "yes"
+        userhelper: "yes"
         {{- include "metadata.selectorLabels" . | nindent 8 }}
-        # gen3 networkpolicy labels
-        netnolimit: 'yes'
-        public: 'yes'
-        userhelper: 'yes'
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations: 
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -41,20 +39,13 @@ spec:
           secret:
             secretName: metadata-g3auto
         - name: config-volume
-          secret:
-            secretName: metadata-config
-            optional: true
-        - name: config-manifest
           configMap:
-            name: manifest-metadata
+            name: agg-mds-config
             optional: true
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env: 
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: GEN3_DEBUG
               value: "False"
             - name: GEN3_ES_ENDPOINT
@@ -91,12 +82,14 @@ spec:
                   optional: false
             {{- with .Values.useAggMds }}
             - name: USE_AGG_MDS
-              value: {{ . }}
+              value: {{ . | quote }}
             {{- end }}
             {{- with .Values.aggMdsNamespace}}
             - name: AGG_MDS_NAMESPACE
               value: {{ . }}
             {{- end }}
+            - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
+              value: {{ .Values.aggMdsDefaultDataDictField}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:

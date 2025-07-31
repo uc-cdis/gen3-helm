@@ -66,3 +66,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+  ssjdispatcher credentials.json Secrets Manager Name
+*/}}
+{{- define "creds-file" -}}
+{{- default "credentials.json" .Values.externalSecrets.credsFile }}
+{{- end }}

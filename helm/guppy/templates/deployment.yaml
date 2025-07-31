@@ -4,9 +4,6 @@ metadata:
   name: guppy-deployment
   labels:
     {{- include "guppy.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -23,11 +20,14 @@ spec:
     metadata:
       labels:
       {{- include "guppy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
         # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/guppy_config.yaml") . | sha256sum }}
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.affinity }}
@@ -57,25 +57,22 @@ spec:
           ports:
             - containerPort: 8000
           env: 
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             - name: GUPPY_PORT
               value: "8000"
             - name: GUPPY_CONFIG_FILEPATH
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
-              value: {{ default "elasticsearch:9200"  .Values.esEndpoint }}
+              value: {{ default "gen3-elasticsearch-master:9200"  .Values.esEndpoint }}
             {{- with .Values.arboristUrl }}
             - name: GEN3_ARBORIST_ENDPOINT
               value: {{ . }}
             {{- end }}
             - name: TIER_ACCESS_LEVEL
-              value: {{ .Values.global.tierAccessLevel }}
+              value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
-              value: {{ .Values.global.tierAccessLimit }}
-
-
+              value: {{ .Values.global.tierAccessLimit | quote }}
+            - name: PUBLIC_KEY_PATH
+              value: /guppy/jwt_public_key.pem
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

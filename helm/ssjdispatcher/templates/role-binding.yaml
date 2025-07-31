@@ -1,0 +1,12 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ssjdispatcher-binding
+subjects:
+- kind: ServiceAccount
+  name: {{ include "ssjdispatcher.serviceAccountName" . }}
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: admin
+  apiGroup: rbac.authorization.k8s.io

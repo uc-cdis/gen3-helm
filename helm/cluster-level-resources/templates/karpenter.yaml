@@ -1,0 +1,120 @@
+{{- if index .Values "karpenter" "enabled" }}
+{{- if eq (index .Values "karpenter" "targetRevision") "1.0.8" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: public.ecr.aws/karpenter
+      targetRevision: {{ .Values.karpenter.targetRevision }}
+      chart: karpenter
+      helm:
+        releaseName: karpenter
+        skipCrds: true
+      {{- if index .Values "karpenter" "configuration" "enabled" }}
+        valueFiles:
+          - "$values/{{ .Values.cluster }}/cluster-values/karpenter.yaml"
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          podAnnotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "8080"
+            prometheus.io/path: "/metrics"
+            prometheus.io/scheme: "http"
+          dnsPolicy: Default
+          webhook:
+            enabled: false
+          serviceAccount:
+            name: karpenter
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.eksClusterName | default .Values.cluster }}-karpenter-sa"
+          settings:
+            clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
+            clusterEndpoint: {{ .Values.eksClusterEndpoint }}
+          controller:
+            env:
+              - name: AWS_REGION
+                value: {{ .Values.karpenter.awsRegion }}
+            resources:
+              requests:
+                memory: {{ .Values.karpenter.resources.requests.memory }}
+                cpu: {{ .Values.karpenter.resources.requests.cpu }}
+              limits:
+                memory: {{ .Values.karpenter.resources.limits.memory }}
+                cpu: {{ .Values.karpenter.resources.limits.cpu }}
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: karpenter
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+{{- else }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: 'https://github.com/aws/karpenter-provider-aws'
+      targetRevision: {{ .Values.karpenter.targetRevision }}
+      path: charts/karpenter
+      helm:
+        releaseName: karpenter
+      {{- if index .Values "karpenter" "configuration" "enabled" }}
+        valueFiles:
+          - "$values/{{ .Values.cluster }}/cluster-values/karpenter.yaml"
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          podAnnotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "8000"
+            prometheus.io/path: "/metrics"
+            prometheus.io/scheme: "http"
+          serviceAccount:
+            name: karpenter
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/karpenter-controller-role-{{ .Values.eksClusterName | default .Values.cluster }}"
+          settings:
+            clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
+            clusterEndpoint: {{ .Values.eksClusterEndpoint }}
+          controller:
+            image:
+              tag: {{ .Values.karpenter.controller.image.tag | default .Values.karpenter.targetRevision }}
+              digest: {{ .Values.karpenter.controller.image.digest }}
+            env:
+              - name: AWS_REGION
+                value: us-east-1
+            resources:
+              requests:
+                memory: {{ .Values.karpenter.resources.requests.memory }}
+                cpu: {{ .Values.karpenter.resources.requests.cpu }}
+              limits:
+                memory: {{ .Values.karpenter.resources.limits.memory }}
+                cpu: {{ .Values.karpenter.resources.limits.cpu }}
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: karpenter
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+{{- end }}
+{{- end }}

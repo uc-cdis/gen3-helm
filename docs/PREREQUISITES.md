@@ -14,9 +14,8 @@ Before deploying the Gen3 application using Helm, ensure that the following prer
 
 
 
-- Elasticsearch version 6.8
+- Elasticsearch version 7.10 
   - **Note:** Managing elasticsearch on Kubernetes can be a complex topic, and may result in data loss. We recommend using a managed elasticsearch service outside of Kubernetes. In production, we use Amazon Opensearch service for Elasticsearch. 
-  - We are working on supporting newer versions of elasticsearch in gen3, and should soon support ES7/8, but as of now we require version 6.8
 
 
 
@@ -24,9 +23,7 @@ Before deploying the Gen3 application using Helm, ensure that the following prer
 ## Prerequisites
 
 ### Kubernetes cluster
-Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE and Rancher Desktop. 
-
-It is suggested to use [Rancher Desktop](https://rancherdesktop.io/) as Kubernetes on your laptop, especially on M1 Mac's. You also get ingress and other benefits out of the box. 
+Any kubernetes cluster _should_ work. We are testing with EKS, AKS, GKE.
 
 
 ### Postgres 

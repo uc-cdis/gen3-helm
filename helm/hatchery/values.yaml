@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- (map) Global configuration options.
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
@@ -14,10 +14,12 @@ global:
     awsSecretAccessKey:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -29,7 +31,7 @@ global:
       # -- (string) Port for Postgres.
       port: "5432"
   # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
-  environment: default
+  vpcId:
   # -- (string) Hostname for the deployment.
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
@@ -46,16 +48,33 @@ global:
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
-  # -- (bool) Whether network policies are enabled.
-  netPolicy: true
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -89,14 +108,10 @@ service:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of cpu the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
@@ -123,31 +138,31 @@ affinity: {}
 
 # -- (list) Environment variables to pass to the container
 env:
-- name: HTTP_PORT
-  value: "8000"
-- name: POD_NAMESPACE
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.namespace
+  - name: HTTP_PORT
+    value: "8000"
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
 
 # -- (list) Volumes to attach to the container.
 volumes:
-- name: hatchery-config
-  configMap:
-    name: manifest-hatchery
+  - name: hatchery-config
+    configMap:
+      name: manifest-hatchery
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-- name: hatchery-config
-  readOnly: true
-  mountPath: /hatchery.json
-  subPath: json
+  - name: hatchery-config
+    readOnly: true
+    mountPath: /hatchery.json
+    subPath: json
 
-# -- (map) Hatchery sidcar container configuration.
 hatchery:
+  json: ""
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
-    cpu-limit: '0.1'
+    cpu-limit: "0.1"
     # -- (string) The maximum amount of memory the sidecar container can use
     memory-limit: 256Mi
     # -- (string) The sidecar image.
@@ -160,47 +175,52 @@ hatchery:
     args: []
     # -- (list) Commands to run for the sidecar container.
     command:
-    - "/bin/bash"
-    - "./sidecar.sh"
+      - "/bin/bash"
+      - "./sidecar.sh"
     # -- (list) Commands that are run before the container is stopped.
     lifecycle-pre-stop:
-    - su
-    - "-c"
-    - echo test
-    - "-s"
-    - "/bin/sh"
-    - root
+      - su
+      - "-c"
+      - echo test
+      - "-s"
+      - "/bin/sh"
+      - root
 
-# -- (list) Notebook configuration.
+  # -- (list) Notebook configuration.
   containers:
     - target-port: 8888
-      cpu-limit: '1.0'
+      cpu-limit: "1.0"
       memory-limit: 2Gi
       name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
       image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
       env:
         FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
       args:
-      - "--NotebookApp.base_url=/lw-workspace/proxy/"
-      - "--NotebookApp.default_url=/lab"
-      - "--NotebookApp.password=''"
-      - "--NotebookApp.token=''"
-      - "--NotebookApp.shutdown_no_activity_timeout=5400"
-      - "--NotebookApp.quit_button=False"
+        - "--NotebookApp.base_url=/lw-workspace/proxy/"
+        - "--NotebookApp.default_url=/lab"
+        - "--NotebookApp.password=''"
+        - "--NotebookApp.token=''"
+        - "--NotebookApp.shutdown_no_activity_timeout=5400"
+        - "--NotebookApp.quit_button=False"
       command:
-      - start-notebook.sh
+        - start-notebook.sh
       path-rewrite: "/lw-workspace/proxy/"
-      use-tls: 'false'
+      use-tls: "false"
       ready-probe: "/lw-workspace/proxy/"
       lifecycle-post-start:
-      - "/bin/sh"
-      - "-c"
-      - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
-        ln -s /data /home/$IAM/pd/; true
+        - "/bin/sh"
+        - "-c"
+        - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
+          ln -s /data /home/$IAM/pd/; true
       user-uid: 1000
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
+
+  # -- (bool) Whether to skip node selector for . Defaults to `global.dev`.
+  skipNodeSelector: false
+  # -- (bool) Whether to use internal services url. Defaults to `global.dev`.
+  useInternalServicesUrl: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -213,11 +233,3 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1

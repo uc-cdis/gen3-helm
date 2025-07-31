@@ -4,9 +4,6 @@ metadata:
   name: ssjdispatcher
   labels:
     {{- include "ssjdispatcher.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   selector:
       matchLabels:
@@ -17,11 +14,13 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
         netnolimit: "yes"
         public: "yes"
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
       securityContext:
@@ -41,9 +40,6 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             {{- with .Values.awsRegion  }}
             - name: AWS_REGION
               value: {{ . }}

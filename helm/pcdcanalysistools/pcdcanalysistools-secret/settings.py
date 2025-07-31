@@ -74,7 +74,9 @@ config["OAUTH2"] = {
 # trailing slash intentionally omitted
 config['GUPPY_API'] = 'http://guppy-service'
 
-config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
+config["USER_API"] = 'http://fence-service/'  # for use by authutils
+config["FENCE"] = 'http://fence-service'
+
 # config['USER_API'] = 'http://fence-service/'
 # option to force authutils to prioritize USER_API setting over the issuer from
 # token when redirecting, used during local docker compose setup when the
@@ -106,6 +108,28 @@ config['SURVIVAL'] = {
     'result': {
         'risktable': True,
         'survival': True
+    }
+}
+
+config['TABLE_ONE'] = {
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'studies.treatment_arm',
+        }
+    ],
+
+    'result': {
+        "enabled": True
     }
 }
 

@@ -1,0 +1,61 @@
+{{ if index .Values "coreDNS" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coredns
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: coredns
+      repoURL: https://coredns.github.io/helm
+      targetRevision: {{ index .Values "coreDNS" "targetRevision" }}
+      helm:
+        releaseName: coredns
+      {{- if index .Values "coreDNS" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/coreDNS.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          service:
+            clusterIP: "10.100.0.10"
+            name: "kube-dns"
+
+          autoscaler:
+            enabled: true
+            replicas: 2
+
+          k8sAppLabelOverride: "kube-dns"
+
+          deployment:
+            name: "coredns-argo"
+
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: k8s-app
+                      operator: In
+                      values:
+                      - kube-dns
+                  topologyKey: kubernetes.io/hostname
+
+          prometheus:
+            service:
+              enabled: true
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: false
+{{ end }}

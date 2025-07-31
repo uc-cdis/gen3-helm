@@ -31,6 +31,7 @@ roleRef:
 
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
+{{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -58,16 +59,44 @@ spec:
                 name: {{ .Release.Name }}-postgresql
                 key: postgres-password
                 optional: false
+            {{- else if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: password
+                optional: false
             {{- else }}
             value:  {{ .Values.global.postgres.master.password | quote}}
             {{- end }}
           - name: PGUSER
+          {{- if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: username
+                optional: false
+          {{- else }}
             value: {{ .Values.global.postgres.master.username | quote }}
+          {{- end }}
           - name: PGPORT
+          {{- if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: port
+                optional: false
+          {{- else }}
             value: {{ .Values.global.postgres.master.port | quote }}
+          {{- end }}
           - name: PGHOST
             {{- if $.Values.global.dev }}
             value: "{{ .Release.Name }}-postgresql"
+            {{- else if $.Values.global.postgres.externalSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.global.postgres.externalSecret }}
+                key: host
+                optional: false
             {{- else }}
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
@@ -102,7 +131,7 @@ spec:
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
             echo "PGUSER=$PGUSER"
-            
+
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
@@ -112,7 +141,6 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
-
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
@@ -132,26 +160,46 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
+{{- end}}
 {{- end }}
 
 
-{{/* 
-Create k8s secrets for connecting to postgres 
+{{/*
+Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+  labels:
+    app: gen3-created-by-hook
 data:
-  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-dbcreds" .Chart.Name)) }}
+  {{- if $existingSecret }}
+    database: {{ index $existingSecret.data "database" | quote }}
+    username: {{ index $existingSecret.data "username" | quote }}
+    port: {{ index $existingSecret.data "port" | quote }}
+    password: {{ index $existingSecret.data "password" | quote }}
+    host: {{ index $existingSecret.data "host" | quote }}
+    {{- if index $existingSecret.data "dbcreated" }}
+    dbcreated: {{ index $existingSecret.data "dbcreated" | quote }}
+    {{- end }}
   {{- else }}
-  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    port: {{ $.Values.postgres.port | b64enc | quote }}
+    password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+    {{- if $.Values.global.dev }}
+    host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+    {{- else }}
+    host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
