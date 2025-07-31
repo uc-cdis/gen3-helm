@@ -66,3 +66,39 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+ Postgres Password lookup
+*/}}
+{{- define "amanuensis.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.postgres.password }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+  amanuensis Config Secrets Manager Name
+*/}}
+{{- define "amanuensis-config" -}}
+{{- default "amanuensis-config" .Values.externalSecrets.amanuensisConfig }}
+{{- end }}
+
+{{/*
+  amanuensis should config job run
+*/}}
+{{- define "amanuensis.shouldRunJob" -}}
+{{- $existingSecretConfig := lookup "v1" "Secret" .Release.Namespace (printf "amanuensis-config") }}
+{{- $existingSecretCreds := lookup "v1" "Secret" .Release.Namespace (printf "amanuensis-creds") }}
+{{- if and 
+  (and $existingSecretConfig $existingSecretConfig.data (hasKey $existingSecretConfig.data "amanuensis-config.yaml"))
+  (and $existingSecretCreds $existingSecretCreds.data (hasKey $existingSecretCreds.data "creds.json")) 
+}}
+  false
+{{- else }}
+  true
+{{- end }}
+{{- end }}

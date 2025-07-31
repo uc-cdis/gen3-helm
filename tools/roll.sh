@@ -65,9 +65,6 @@ if [ $# -gt 0 ]; then
 
     # Delete the deployment corresponding to the service name
     kubectl delete deployment ${service_name}-deployment
-    if [ "$service_name" = "gearbox" ]; then
-      kubectl delete job gearbox-g3auto-patch
-    fi
   done
 fi
 

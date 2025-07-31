@@ -30,7 +30,8 @@ spec:
         {{- include "sheepdog.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
       annotations:
-        {{- if .Values.metricsEnabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/sheepdog-secret.yaml") . | sha256sum }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
@@ -40,12 +41,9 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
-        - name: sheepdog-volume
-          secret:
-            secretName: "sheepdog-creds"
         - name: config-volume
           secret:
-            secretName: sheepdog-secret
+            secretName: "sheepdog-secret"
         - name: config-helper
           configMap:
             name: config-helper
@@ -55,7 +53,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: DICTIONARY_URL
-            value: {{ .Values.dictionaryUrl }}
+            value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
           - name: PGHOST
             valueFrom:
               secretKeyRef:
@@ -127,10 +125,6 @@ spec:
             httpGet:
               path: /_status?timeout=2
               port: 80
-          # command: ["/bin/bash" ]
-          # args: 
-          #   - "-c"
-          #   - "sleep infinity"
           env:
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
@@ -202,6 +196,12 @@ spec:
                   name: manifest-global
                   key: public_datasets
                   optional: true
+            - name: INDEXD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: indexd-service-creds
+                  key: sheepdog
+                  optional: true
             - name: AUTHZ_ENTITY_NAME
               valueFrom:
                 configMapKeyRef:
@@ -210,24 +210,18 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              value: {{ .Values.global.dictionaryUrl }}
-            {{- with .Values.indexdUrl }}
+              value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
             - name: INDEX_CLIENT_HOST
-              value: {{ . }}
-            {{- end }}
+              value: {{ default "http://indexd-service" .Values.global.indexdURL | quote }}
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
               value: https://{{ .Values.global.hostname }}/user
             {{- else }}
-            {{- with .Values.fenceUrl }}
             - name: FENCE_URL
-              value: {{ . }}
+              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
             {{- end }}
-            {{- end }}
-            {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
-              value: {{ . }}
-            {{- end }}
+              value: {{ default "http://arborist-service" .Values.global.arboristURL | quote }}
             {{- with .Values.authNamespace }}
             - name: AUTH_NAMESPACE
               value: {{ . }}

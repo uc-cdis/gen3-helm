@@ -98,9 +98,19 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled: true
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -274,19 +284,6 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 4
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # -- (int) Target Memory utilization percentage
-  targetMemoryUtilizationPercentage: 80
-
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 
@@ -374,6 +371,12 @@ env:
         optional: false
   - name: DB
     value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+  - name: INDEXD_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: indexd-service-creds
+        key: fence
+        optional: true
   - name: gen3Env
     valueFrom:
       configMapKeyRef:
@@ -417,7 +420,6 @@ volumes:
   - name: yaml-merge
     configMap:
       name: "fence-yaml-merge"
-      optional: true
   - name: amanuensis-jwt-keys
     secret:
       secretName: "amanuensis-jwt-keys"
@@ -801,8 +803,6 @@ FENCE_CONFIG:
   #     print(key)
   ENCRYPTION_KEY: REPLACEME
 
-  AMANUENSIS_PUBLIC_KEY_PATH: "/amanuensis/jwt_public_key.pem"
-
   # -- (map) Debug and security settings
   # Modify based on whether you're in a dev environment or in production
   DEBUG: false
@@ -858,7 +858,7 @@ FENCE_CONFIG:
   OPENID_CONNECT:
     # any OIDC IDP that does not differ from the generic implementation can be
     # configured without code changes
-    generic_oidc_idp: # choose a unique ID and replace this key
+    generic_oidc_idp:  # choose a unique ID and replace this key
       # -- (str) Optional; display name for this IDP
       name: "some_idp"
       # -- (str) Client ID
@@ -866,7 +866,7 @@ FENCE_CONFIG:
       # -- (str) Client secret
       client_secret: ""
       # -- (str) Redirect URL for this IDP
-      redirect_url: "{{BASE_URL}}/login/some_idp/login" # replace IDP name
+      redirect_url: "{{BASE_URL}}/login/some_idp/login"  # replace IDP name
       # use `discovery` to configure IDPs that do not expose a discovery
       # endpoint. One of `discovery_url` or `discovery` should be configured
       # -- (str) URL of the OIDC discovery endpoint for the IDP

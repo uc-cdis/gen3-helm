@@ -1,13 +1,49 @@
-# Default values for amanuensis.
+# Default values for audit.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# Global configuration
 global:
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    dbCreate: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+    # -- (string) Will use a manually deployed clusterSecretStore if defined.
+    clusterSecretStoreRef: ""
+
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    # -- (map) Local secret setting if using a pre-exising secret.
+    useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+      enabled: false
+      # -- (string) Name of the local secret.
+      localSecretName:
+      # -- (string) Namespace of the local secret.
+      localSecretNamespace:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -32,26 +68,67 @@ global:
   kubeBucket: kube-gen3
   # -- (string) S3 bucket name for log files.
   logsBucket: logs-gen3
-  # -- (bool) Whether to sync data from dbGaP.
-  syncFromDbgap: false
   # -- (bool) Whether public datasets are enabled.
   publicDataSets: true
   # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
   tierAccessLevel: libre
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
-  tierAccessLimit: 1000
-  # -- (bool) Whether network policies are enabled.
+  tierAccessLimit: "1000"
+  # -- (map) Controls network policy settings
   netPolicy:
     enabled: false
   # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: 10
-  # -- (bool) Whether Datadog is enabled.
-  ddEnabled: false
+  dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: true
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "amanuensis-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sAmanuensisConfigSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "amanuensis-config"
+  amanuensisConfig:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
+
+# -- (map) Secret information for Usersync and External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsSecretAccessKey:
+
+# -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
   # (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore
   dbRestore: false
@@ -70,42 +147,57 @@ postgres:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
 
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
+# Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
-arboristUrl:
-
+# -- (int) Number of desired replicas
 replicaCount: 1
 
-image:
-  repository: quay.io/pcdc/amanuensis
-  pullPolicy: IfNotPresent
-  tag: "pcdc_dev_2023-09-06T16_36_49-05_00"
 
+image:
+  # -- (string) The Docker image repository for the amanuensis service
+  repository: quay.io/pcdc/amanuensis
+  # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
+
+# -- (list) Docker image pull secrets.
 imagePullSecrets: []
 
+# -- (string) Override the name of the chart.
 nameOverride: ""
 
+# -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
+# -- (map) Service account to use or create.
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created.
   create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
+  # -- (map) Annotations to add to the service account.
+  annotations:
+    # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
+    eks.amazonaws.com/role-arn:
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  # -- (string) The name of the service account
+  name: "amanuensis-sa"
 
+# -- (map) Annotations to add to the pod
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+# -- (map) Security context for the pod
+podSecurityContext:
+  fsGroup: 101
 
-securityContext: {}
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -113,37 +205,60 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (map) Kubernetes service information.
 service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  # -- (int) The port number that the service exposes.
   port: 80
 
-resources: 
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
-    memory: 12Mi
+    memory: 128Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
+    memory: 2Gi
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
+# -- (map) Node Selector for the pods
 nodeSelector: {}
 
+# -- (list) Tolerations for the pods
 tolerations: []
 
-affinity: {}
+# -- (map) Labels to add to the pod.
+labels:
+  # -- (string) Grants egress from all pods to pods labeled with authrpovider=yes. For network policy selectors.
+  authprovider: "yes"
+  # -- (string) Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs
+  netnolimit: "yes"
+  # -- (string) Grants ingress from the revproxy service for pods labeled with public=yes
+  public: "yes"
+  # -- (string) Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes
+  userhelper: "yes"
 
-logo:
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - amanuensis
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -203,15 +318,14 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/amanuensis/yaml_merge.py"
     subPath: yaml_merge.py
-  - name: "amanuensis-volume"
-    readOnly: true
-    mountPath: "/var/www/amanuensis/creds.json"
-    subPath: creds.json
+  # - name: "amanuensis-volume"
+  #   readOnly: true
+  #   mountPath: "/var/www/amanuensis/creds.json"
+  #   subPath: creds.json
   - name: "amanuensis-jwt-keys"
     readOnly: true
     mountPath: "/var/www/amanuensis/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
-
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -219,31 +333,39 @@ release: "production"
 # -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
 criticalService: "true"
 # -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
-partOf: "Core-Service"
+partOf: "ProjectRequest"
 # -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
-# Values to configure datadog if ddEnabled is set to "true".
-# -- (bool) If enabled, the Datadog Agent will automatically inject Datadog-specific metadata into your application logs.
-datadogLogsInjection: true
-# -- (bool) If enabled, the Datadog Agent will collect profiling data for your application using the Continuous Profiler. This data can be used to identify performance bottlenecks and optimize your application.
-datadogProfilingEnabled: true
-# -- (int) A value between 0 and 1, that represents the percentage of requests that will be traced. For example, a value of 0.5 means that 50% of requests will be traced.
-datadogTraceSampleRate: 1
+# -- (map) Public configuration settings for Amanuensis app
+AMANUENSIS_CONFIG_PUBLIC: {}
 
+# -- (map) AWS credentials for Amanuensis app 
 AWS_CREDENTIALS:
+  # -- (map) AWS SES settings for Amanuensis app
   AWS_SES:
+    # -- (string) Sender email address for Amanuensis app
     SENDER: ""
+    # -- (string) Recipient email address for Amanuensis app
     RECIPIENT: ""
+    # -- (map) AWS S3 bucket settings for Amanuensis app
     AWS_REGION: "us-east-1"
-    aws_access_key_id: ""
-    aws_secret_access_key: ""
+  # -- (map) Data delivery S3 bucket settings for Amanuensis app
   DATA_DELIVERY_S3_BUCKET:
+    # -- (string) Name of the S3 bucket for data delivery
     bucket_name: ""
+    # -- (string) AWS access key ID for accessing the S3 bucket
     aws_access_key_id: ""
+    # -- (string) AWS secret access key for accessing the S3 bucket
     aws_secret_access_key: ""
 
-
+# -- (string) CSL key for Amanuensis app
 CSL_KEY: ""
+
+# -- (map) which amanuensis jobs to run
+amanuensisJobs:
+  clearFilterSetCronjob: false
+  dbMigrateJob: true
+  validateFilterSetsJob: false

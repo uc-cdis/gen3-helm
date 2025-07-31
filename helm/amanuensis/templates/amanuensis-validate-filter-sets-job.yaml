@@ -1,3 +1,5 @@
+{{- if .Values.amanuensisJobs.validateFilterSetsJob }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -100,3 +102,4 @@ spec:
       restartPolicy: Never
   # Optional: add a backoff limit to control retries
   backoffLimit: 3
+{{- end }}

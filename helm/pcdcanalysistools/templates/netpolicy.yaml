@@ -1,0 +1,2 @@
+#I believe this allows a service to connect to a DB but not sure if pcdcanalysistools needs to be able to connect to the DB
+{{ include "common.db_netpolicy" . }}

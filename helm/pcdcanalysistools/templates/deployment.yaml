@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pcdcanalysistools-deployment
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "pcdcanalysistools.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -14,156 +15,42 @@ spec:
   selector:
     matchLabels:
       {{- include "pcdcanalysistools.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
+        # gen3 networkpolicy labels
+        public: "yes"
+        netnolimit: "yes"
+        s3: "yes"
         {{- include "pcdcanalysistools.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pcdcanalysistools-secret.yaml") . | sha256sum }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
-      volumes:
-      - name: config-volume
-        secret:
-          secretName: "pcdcanalysistools-secret"
-      - name: pcdcanalysistools-jwt-keys
-        secret:
-          secretName: "pcdcanalysistools-jwt-keys"
-          items:
-            - key: jwt_private_key.pem
-              path: jwt_private_key.pem
-      - name: config-helper
-        secret:
-          secretName: "pcdcanalysistools-secret"
-      - name: creds-volume
-        secret:
-            secretName: "sheepdog-creds"
-
-      
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
+      {{- with .Values.affinity }}
+      affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "pcdcanalysistools.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+        - name: pcdcanalysistools
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: CONF_HOSTNAME
-              value: {{ .Values.global.hostname }}
-            - name: FENCE_DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: username
-                  optional: false
-            - name: FENCE_DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: password
-                  optional: false
-            - name: FENCE_DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: host
-                  optional: false
-            - name: FENCE_DB_DBNAME
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: database
-                  optional: false
-            - name: DICTIONARY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: dictionary_url
-            - name: SIGNPOST_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: sheepdog-dbcreds
-                  key: password
-                  optional: false
-            - name: PGDB
-              valueFrom:
-                secretKeyRef:
-                  name: sheepdog-dbcreds
-                  key: database
-                  optional: false
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: sheepdog-dbcreds
-                  key: username
-                  optional: false 
-            - name: PGHOST
-              valueFrom:
-                secretKeyRef:
-                  name: sheepdog-dbcreds
-                  key: host
-                  optional: false  
-            - name: INDEX_CLIENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
-            - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
-            - name: ARBORIST_URL
-              value: http://arborist-service
-            - name: AUTH_NAMESPACE
-              value: default
-            - name: REQUESTS_CA_BUNDLE
-              value: /etc/ssl/certs/ca-certificates.crt
-            - name: GEN3_DEBUG
-              value: "False"
-          volumeMounts:
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/PcdcAnalysisTools/wsgi.py"
-              subPath: "settings.py"
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/PcdcAnalysisTools/bin/settings.py"
-              subPath: "settings.py" 
-            - name: "pcdcanalysistools-jwt-keys"
-              readOnly: true
-              mountPath: "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
-              subPath: "jwt_private_key.pem"
-            - name: "creds-volume"
-              readOnly: true
-              mountPath: "/var/www/PcdcAnalysisTools/creds.json"
-              subPath: creds.json
-            - name: "config-helper"
-              readOnly: true
-              mountPath: "/PcdcAnalysisTools/bin/config_helper.py"
-              subPath: confighelper.py
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+            - containerPort: 80
+            - containerPort: 443
           livenessProbe:
             httpGet:
               path: /_status?timeout=20
@@ -172,20 +59,46 @@ spec:
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
+            initialDelaySeconds: 30
             httpGet:
               path: /_status?timeout=2
-              port: http
+              port: 80
+          env:
+            - name: CONF_HOSTNAME
+              value: {{ .Values.global.hostname }}
+            - name: DICTIONARY_URL
+              value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
+            - name: INDEX_CLIENT_HOST
+              value: {{ default "http://indexd-service" .Values.global.indexdURL | quote }}
+            {{- if eq .Values.global.dev false }}
+            - name: FENCE_URL
+              value: https://{{ .Values.global.hostname }}/user
+            {{- else }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
+            {{- end }}
+            - name: ARBORIST_URL
+              value: {{ default "http://arborist-service" .Values.global.arboristURL | quote }}
+            {{- with .Values.authNamespace }}
+            - name: AUTH_NAMESPACE
+              value: {{ . }}
+            {{- end }}
+            # - name: REQUESTS_CA_BUNDLE
+            #   #
+            #   # override python 'requests' SSL certificate bundle
+            #   # to use system trusted certs
+            #   # which includes our private certificate authority
+            #   #
+            #   value: /etc/ssl/certs/ca-certificates.crt
+            - name: GEN3_DEBUG
+              value: "True"
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+          # command: ["/bin/bash" ]
+          # args: 
+          #   - "-c"
+          #   - "sleep infinity"

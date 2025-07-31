@@ -1,21 +1,31 @@
 # Default values for pcdcanalysistools.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+
+# Global configuration
 global:
   # -- (map) AWS configuration
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
     # -- (string) Credentials for AWS stuff.
-    awsAccessKeyId: 
+    awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
-    awsSecretAccessKey: 
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  # -- (map) Postgres database configuration.
+
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -26,109 +36,215 @@ global:
       password:
       # -- (string) Port for Postgres.
       port: "5432"
+  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
+  environment: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (string) S3 bucket name for Kubernetes manifest files.
+  kubeBucket: kube-gen3
+  # -- (string) S3 bucket name for log files.
+  logsBucket: logs-gen3
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+  tierAccessLevel: libre
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: "10"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any pcdcanalysistools secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
-replicaCount: 1
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
-# -- (string) URL for the arborist service
-arboristUrl: http://arborist-service
-authNamespace: default
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: true
 
-image:
-  repository: quay.io/pcdc/pcdcanalysistools
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: 1.8.4
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
 
-# -- (list) Docker image pull secrets.
-imagePullSecrets: []
+# -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
+postgres:
+  # -- (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore
+  dbRestore: false
+  # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
+  dbCreate:
+  # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
+  host:
+  # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  database:
+  # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  username:
+  # -- (string) Port for Postgres.
+  port: "5432"
+  # -- (string) Password for Postgres. Will be autogenerated if left empty.
+  password:
+  # -- (string) Will create a Database for the individual service to help with developing it.
+  separate: false
 
-# -- (string) Override the name of the chart.
-nameOverride: ""
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
+# Disable persistence by default so we can spin up and down ephemeral environments
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: false
 
-# -- (string) Override the full name of the deployment.
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+# Deployment
+releaseLabel: production
 
 # -- (map) Annotations to add to the pod
-podAnnotations: {}
+podAnnotations: {"gen3.io/network-ingress": "pcdcanalysistools"}
 
-# -- (map) Security context to apply to the pod
-podSecurityContext: {}
-  # fsGroup: 2000
+# -- (int) Number of replicas for the deployment.
+replicaCount: 1
 
-# -- (map) Security context to apply to the container
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+# -- (int) Number of old revisions to retain
+revisionHistoryLimit: 2
 
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0
+
+# -- (bool) Whether Datadog is enabled.
+dataDog:
+  enabled: false
+  env: dev
+
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - pcdcanalysistools
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
+
+# -- (bool) Automount the default service account token
+automountServiceAccountToken: false
+
+# -- (int) pcdcanalysistools transactions take forever - try to let the complete before termination
+terminationGracePeriodSeconds: 50
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/pcdc/pcdcanalysistools
+  # -- (string) Docker pull policy.
+  pullPolicy: IfNotPresent
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: 1.8.4
+
+# Environment Variables
+authNamespace: ""
+
+# -- (list) of files to become volumes in the container
+volumes:
+  - name: config-volume
+    secret:
+      secretName: "pcdcanalysistools-secret"
+  - name: pcdcanalysistools-jwt-keys
+    secret:
+      secretName: "pcdcanalysistools-jwt-keys"
+      items:
+        - key: jwt_private_key.pem
+          path: jwt_private_key.pem
+
+# -- (list) Volumes to mount to the container.
+volumeMounts:
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/var/www/PcdcAnalysisTools/wsgi.py"
+    subPath: "settings.py"
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "PcdcAnalysisTools/bin/settings.py"
+    subPath: "settings.py" 
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "PcdcAnalysisTools/bin/confighelper.py"
+    subPath: "confighelper.py"
+  - name: "pcdcanalysistools-jwt-keys"
+    readOnly: true
+    mountPath: "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
+    subPath: "jwt_private_key.pem"
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
+  requests:
+    # -- (string) The amount of memory requested
+    memory: 12Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of memory the container can use
+    memory: 512Mi
+
+# Service and Pod
+# -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
 
+# Secrets
+# -- (map) Values for pcdcanalysistools secret.
+secrets:
+  # -- (str) AWS access key ID to access the db restore job S3 bucket. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID to access the db restore job S3 bucket. Overrides global key.
+  awsSecretAccessKey:
 
-
-resources:
-  # -- (map) The amount of resources that the container requests
-  requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
-    # -- (string) The amount of memory requested
-    memory: 12Mi
-  # -- (map) The maximum amount of resources that the container is allowed to use
-  limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
-    # -- (string) The maximum amount of memory the container can use
-    memory: 512Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-volumes:
-- name: config-volume
-  secret:
-    secretName: "pcdcanalysistools-secret"
-
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "true"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Core-Service"
 # -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
-selectorLabels: 
-
-
-# ingress:
-#   enabled: false
-#   className: ""
-#   annotations: {}
-#     # kubernetes.io/ingress.class: nginx
-#     # kubernetes.io/tls-acme: "true"
-#   hosts:
-#     - host: chart-example.local
-#       paths:
-#         - path: /
-#           pathType: ImplementationSpecific
-#   tls: []
-#   #  - secretName: chart-example-tls
-#   #    hosts:
-#   #      - chart-example.local
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:

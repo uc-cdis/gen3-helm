@@ -8,11 +8,16 @@ _sample-*/
 
 # --- Files ---
 Chart.lock
-.DS_Store                                   # macOS system file (usually ignored)
-secret-values.yaml                          # Helm secrets/values file
-.env                                        # Environment variables
-credentials.json                            # Instance generated service account or credentials
+# macOS system file (usually ignored)
+.DS_Store  
+# Helm secrets/values file                                 
+secret-values.yaml                          
+# Environment variables
+.env                                        
+# Instance generated service account or credentials
+credentials.json                            
 temp.yaml
-/values.yaml                                # Main Helm values file
+# Main Helm values file
+/values.yaml                               
 postgres.txt
 pcdc_data/external/external_reference.json  # External reference data file for PCDC

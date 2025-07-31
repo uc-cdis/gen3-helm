@@ -55,18 +55,18 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
-  image: 
+  image:
     repository: quay.io/cdis/arborist
     tag: 2024.03
 
-fence: 
+fence:
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
     #fill in
-    AMANUENSIS_PUBLIC_KEY_PATH: '/fence/keys/key/jwt_public_key.pem'
+    AMANUENSIS_PUBLIC_KEY_PATH: "/fence/keys/key/jwt_public_key.pem"
     MOCK_GOOGLE_AUTH: true
-    mock_default_user: 'test@example.com'
+    mock_default_user: "test@example.com"
   volumes:
     - name: old-config-volume
       secret:
@@ -162,9 +162,9 @@ fence:
       readOnly: true
       mountPath: "/var/www/fence/fence-config-public.yaml"
       subPath: fence-config-public.yaml
-  
+
     # -- (list) Volumes to mount to the init container.
-  
+
   initVolumeMounts:
     - name: "config-volume"
       readOnly: true
@@ -186,7 +186,6 @@ fence:
       readOnly: true
       mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
       subPath: fence_google_storage_creds_secret.json
-
 
   podSecurityContext:
     runAsNonRoot: true
@@ -308,7 +307,7 @@ fence:
             - /programs
             - /programs/pcdc
           
-    
+
       roles:
         - id: 'gearbox_user'
           permissions:
@@ -424,21 +423,20 @@ fence:
           - login_no_access
           - sower
 
-
 portal:
-  enabled: true
-  image: 
+  enabled: false
+  image:
     repository: quay.io/pcdc/gearbox_fe
     tag: "dev"
   resources:
     requests:
       cpu: 1.0
-  gitops: 
+  gitops:
     json: |
       {
         "s3_bucket": "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
       }
-  
+
   gearboxS3Bucket: "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
 
 revproxy:
@@ -450,12 +448,16 @@ revproxy:
 gearbox:
   enabled: true
   image:
-    repository: quay.io/pcdc/gearbox_be
-    tag: 1.3.0
-    pullPolicy: Always
+    repository: gearbox-be
+    tag: "GEAR-488"
+    pullPolicy: Never
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
 
 gearbox-middleware:
-  enabled: true
+  enabled: false
   image:
     repository: quay.io/pcdc/gearbox-middleware
     tag: "helm-test"
