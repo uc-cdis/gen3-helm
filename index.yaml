@@ -4253,6 +4253,167 @@ entries:
   gen3:
   - apiVersion: v2
     appVersion: master
+    created: "2025-07-31T21:23:38.735830385Z"
+    dependencies:
+    - condition: access-backend.enabled
+      name: access-backend
+      repository: file://../access-backend
+      version: 0.1.7
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.24
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.23
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.17
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.24
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.24
+    - condition: cedar.enabled
+      name: cedar
+      repository: file://../cedar
+      version: 0.1.11
+    - condition: cohort-middleware.enabled
+      name: cohort-middleware
+      repository: file://../cohort-middleware
+      version: 0.1.11
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    - condition: dashboard.enabled
+      name: dashboard
+      repository: file://../dashboard
+      version: 0.1.4
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.14
+    - condition: frontend-framework.enabled
+      name: frontend-framework
+      repository: file://../frontend-framework
+      version: 0.1.12
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.48
+    - condition: gen3-user-data-library.enabled
+      name: gen3-user-data-library
+      repository: file://../gen3-user-data-library
+      version: 0.1.4
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.24
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.22
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.30
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.28
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.28
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.30
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.40
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.23
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.38
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.28
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.27
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.29
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.26
+    - condition: global.netPolicy.enabled
+      name: gen3-network-policies
+      repository: file://../gen3-network-policies
+      version: 0.1.2
+    - condition: dicom-server.enabled
+      name: dicom-server
+      repository: file://../dicom-server
+      version: 0.1.18
+    - condition: ohif-viewer.enabled
+      name: ohif-viewer
+      repository: file://../ohif-viewer
+      version: 0.1.2
+    - condition: orthanc.enabled
+      name: orthanc
+      repository: file://../orthanc
+      version: 0.1.3
+    - condition: gen3-analysis.enabled
+      name: gen3-analysis
+      repository: file://../gen3-analysis
+      version: 0.1.1
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: neuvector.enabled
+      name: neuvector
+      repository: file://../neuvector
+      version: 0.1.2
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 7d4cdbce398bb7ba2b3d4f6af8414cbc3032b1c3c286e27d877be7683ee39d8e
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.2.13/gen3-0.2.13.tgz
+    version: 0.2.13
+  - apiVersion: v2
+    appVersion: master
     created: "2025-07-30T14:54:30.924799903Z"
     dependencies:
     - condition: access-backend.enabled
@@ -23005,6 +23166,20 @@ entries:
   portal:
   - apiVersion: v2
     appVersion: master
+    created: "2025-07-31T21:23:38.891010172Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    description: A Helm chart for gen3 data-portal
+    digest: 04656914e1370eba772eafe0948783605d31968de5807af7009ea4b9578d89a4
+    name: portal
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/portal-0.1.40/portal-0.1.40.tgz
+    version: 0.1.40
+  - apiVersion: v2
+    appVersion: master
     created: "2025-07-22T19:17:14.04726674Z"
     dependencies:
     - name: common
@@ -26260,4 +26435,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-07-30T14:54:31.250271455Z"
+generated: "2025-07-31T21:23:38.892338037Z"
