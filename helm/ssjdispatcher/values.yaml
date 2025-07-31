@@ -70,7 +70,7 @@ global:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
-  
+
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
     enabled: false
