@@ -9,7 +9,6 @@ spec:
   forProvider:
     name: "{{ .Values.global.environment }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
     description: "Role for aws-es-proxy service account for {{ .Values.global.environment }}"
-    path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
         "Version":"2012-10-17",
