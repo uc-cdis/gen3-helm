@@ -83,6 +83,13 @@ global:
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "stata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sStataSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "stata-g3auto"
+  stataG3auto:
+
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled: true
 
@@ -142,11 +149,6 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.namespace
-  - name: stata-workspace-gen3-license
-    valueFrom:
-      secretKeyRef:
-        name: stata-workspace-gen3-license
-        key: stata_license.txt
 
 # -- (list) Volumes to attach to the container.
 volumes:
