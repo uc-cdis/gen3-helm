@@ -1,0 +1,3 @@
+{{- if and .Values.global.crossplane.enabled .Values.global.externalSecrets.deploy}}
+{{ include "common.crossplanExternalSecretsRole" . }}
+{{- end }}
