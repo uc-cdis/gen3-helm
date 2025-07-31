@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
+  name: "{{ .Values.global.environment }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}--{{ .Release.Namespace }}--{{ .Chart.Name }}-sa"
+    name: "{{ .Values.global.environment }}-{{ .Chart.Name }}-sa"
     description: "Role for ES proxy service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -39,12 +39,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+  name: "{{ .Values.global.environment }}-audit-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+    name: "{{ .Values.global.environment }}-audit-role-policy"
     document: |
       {
         "Version": "2012-10-17",
@@ -69,8 +69,8 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    roleName: "{{ .Values.global.environment }}-audit-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+      name: "{{ .Values.global.environment }}-audit-role-policy"
 ---
 {{- end }}

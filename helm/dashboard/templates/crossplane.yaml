@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-access"
+  name: "{{ .Values.global.environment }}-dashboard-access"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}--{{ .Release.Namespace }}--dashboard-access"
+    name: "{{ .Values.global.environment }}---dashboard-access"
     description: "Role for dashboard service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -33,12 +33,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-account-policy"
+  name: "{{ .Values.global.environment }}-dashboard-service-account-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-account-policy"
+    name: "{{ .Values.global.environment }}-dashboard-service-account-policy"
     document: |
       {
           "Version": "2012-10-17",
@@ -72,9 +72,9 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-account"
+    roleName: "{{ .Values.global.environment }}-dashboard-service-account"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-account-policy"
+      name: "{{ .Values.global.environment }}-dashboard-service-account-policy"
 ---
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket

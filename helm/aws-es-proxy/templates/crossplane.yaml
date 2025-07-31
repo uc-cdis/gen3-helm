@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+  name: "{{ .Values.global.environment }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+    name: "{{ .Values.global.environment }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
     description: "Role for aws-es-proxy service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -33,12 +33,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+  name: "{{ .Values.global.environment }}-aws-es-proxy-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+    name: "{{ .Values.global.environment }}-aws-es-proxy-role-policy"
     document: |
       {
         "Version":"2012-10-17",
@@ -62,7 +62,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+    roleName: "{{ .Values.global.environment }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+      name: "{{ .Values.global.environment }}-aws-es-proxy-role-policy"
 {{- end}}

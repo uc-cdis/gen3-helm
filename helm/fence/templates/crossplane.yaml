@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+  name: "{{ .Values.global.environment }}-fence-sa"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    name: "{{ .Values.global.environment }}-fence-sa"
     description: "Role for fence service account for {{ .Values.global.environment }}"
     path: "/gen3-service/"
     assumeRolePolicyDocument: |
@@ -33,12 +33,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
+  name: "{{ .Values.global.environment }}-fence-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
+    name: "{{ .Values.global.environment }}-fence-role-policy"
     document: |
       {
         "Version":"2012-10-17",
@@ -59,9 +59,9 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
+    roleName: "{{ .Values.global.environment }}-fence-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
+      name: "{{ .Values.global.environment }}-fence-role-policy"
 ---
 # SSJ dispatcher Queue 
 # 
