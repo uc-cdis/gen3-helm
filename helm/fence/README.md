@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.21 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
