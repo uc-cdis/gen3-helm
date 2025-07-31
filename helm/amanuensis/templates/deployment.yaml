@@ -4,9 +4,6 @@ metadata:
   name: amanuensis-deployment
   labels:
     {{- include "amanuensis.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -16,64 +13,60 @@ spec:
       {{- include "amanuensis.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "amanuensis.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
         {{- end }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      labels:
+        authprovider: "yes"
+        netnolimit: "yes"
+        userhelper: "yes"
+        {{- include "amanuensis.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
     spec:
-      volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "amanuensis.serviceAccountName" . }}
+      enableServiceLinks: false
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "amanuensis.serviceAccountName" . }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+        - name: amanuensis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
-            initialDelaySeconds: 30
+              port: http
+            initialDelaySeconds: 60
             periodSeconds: 60
-            timeoutSeconds: 60
+            timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
           args:
             - "-c"
             - |
-              echo "${AMANUENSIS_PUBLIC_CONFIG:-""}" > "/var/www/amanuensis/amanuensis-config-public.yaml"
               python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml > /var/www/amanuensis/amanuensis-config.yaml
               if [[ -f /amanuensis/dockerrun.bash ]]; then bash /amanuensis/dockerrun.bash; elif [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; else echo 'Error: Neither /amanuensis/dockerrun.bash nor /dockerrun.sh exists.' >&2; exit 1; fi
           env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
-          
-          
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
