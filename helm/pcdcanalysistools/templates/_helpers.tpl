@@ -66,3 +66,27 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+ Postgres Password lookup Fence
+*/}}
+{{- define "fence.postgres.password" -}}
+{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
+{{- if $localpass }}
+{{- default (index $localpass.data "postgres-password" | b64dec) }}
+{{- else }}
+{{- default .Values.secrets.fence.password }}
+{{- end }}
+{{- end }}
+
+# {{/*
+# Define dictionaryUrl
+# */}}
+# {{- define "pcdcanalysistools.dictionaryUrl" -}}
+# {{- if .Values.global }}
+# {{- .Values.global.dictionaryUrl }}
+# {{- else}}
+# {{- .Values.dictionaryUrl }}
+# {{- end }}
+# {{- end }}

@@ -315,7 +315,7 @@ pcdcanalysistools:
   enabled: true
   image:
     repository: quay.io/pcdc/pcdcanalysistools
-    tag: "1.10.0"
+    tag: "1.10.1"
 
 peregrine:
   image:

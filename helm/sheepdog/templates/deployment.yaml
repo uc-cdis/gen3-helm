@@ -125,10 +125,6 @@ spec:
             httpGet:
               path: /_status?timeout=2
               port: 80
-          # command: ["/bin/bash" ]
-          # args: 
-          #   - "-c"
-          #   - "sleep infinity"
           env:
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}

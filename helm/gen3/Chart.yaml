@@ -112,7 +112,7 @@ dependencies:
     repository: "file://../wts"
     condition: wts.enabled
   - name: pcdcanalysistools
-    version: "0.1.0"
+    version: "1.0.0"
     repository: "file://../pcdcanalysistools"
     condition: pcdcanalysistools.enabled
   - name: amanuensis
