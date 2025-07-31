@@ -73,11 +73,12 @@ fence:
     DEBUG: true
     MOCK_STORAGE: true
     #fill in
-    #AMANUENSIS_PUBLIC_KEY_PATH: '/fence/keys/key/jwt_public_key.pem'
+    AMANUENSIS_PUBLIC_KEY_PATH: "/amanuensis/jwt_public_key.pem"
     MOCK_GOOGLE_AUTH: true
     mock_default_user: "test@example.com"
     #LOGIN_REDIRECT_WHITELIST: ["https://localhost:9443/", "http://localhost:9443/"]
-
+  podSecurityContext:
+    {}
   image:
     repository: "quay.io/pcdc/fence"
     tag: "helm-test"
