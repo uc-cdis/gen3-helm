@@ -142,6 +142,11 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.namespace
+  - name: stata-workspace-gen3-license
+    valueFrom:
+      secretKeyRef:
+        name: stata-workspace-gen3-license
+        key: stata_license.txt
 
 # -- (list) Volumes to attach to the container.
 volumes:
@@ -167,15 +172,8 @@ hatchery:
     image: quay.io/cdis/ecs-ws-sidecar:master
     # -- (map) Environment variables to pass to the sidecar container
     env:
-      - name: NAMESPACE
-        value: "{{ .Release.Namespace }}"
-      - name: HOSTNAME
-        value: "{{ .Values.global.hostname }}"
-      - name: stata-workspace-gen3-license
-        valueFrom:
-          secretKeyRef:
-            name: stata-workspace-gen3-license
-            key: stata_license.txt
+      NAMESPACE: "{{ .Release.Namespace }}"
+      HOSTNAME: "{{ .Values.global.hostname }}"
     # -- (list) Arguments to pass to the sidecare container.
     args: []
     # -- (list) Commands to run for the sidecar container.
