@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for provisioning databases in gen3
 
@@ -10,6 +10,9 @@ A Helm chart for provisioning databases in gen3
 |-----|------|---------|-------------|
 | global.aws | map | `{"region":"us-east-1"}` | AWS configuration |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
+| global.crossplane.accountId | int | `123456789012` |  |
+| global.crossplane.enabled | bool | `true` |  |
+| global.crossplane.oidcProviderUrl | string | `"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"` |  |
 | global.ddEnabled | bool | `false` | Whether Datadog is enabled. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
