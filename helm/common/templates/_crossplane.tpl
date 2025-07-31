@@ -1,4 +1,4 @@
-{{- if .Values.global.crossplane.enabled }}
+{{ define "common.crossplanExternalSecretsRole" -}}
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
