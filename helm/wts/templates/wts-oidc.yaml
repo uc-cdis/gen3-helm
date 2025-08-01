@@ -1,4 +1,3 @@
-{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -37,19 +36,24 @@ spec:
               export WTS_HOSTNAME={{ .Values.global.hostname }}
               echo "Trying to generate WTS client for hostname : $WTS_HOSTNAME..."
 
-
-
-              secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
-              if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
-                echo "Failed generating oidc client for workspace token service: $secrets"
-                exit 1
+              if fence-create client-list 2>/dev/null | grep -q "'client_id': '${CLIENT_ID}'"; then
+                echo "Client ${CLIENT_ID} exists"
+                echo "Client exists- die happy" > /shared/client_id
+              else
+                echo "Client ${CLIENT_ID} does not exist"
+                secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
+                if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                  echo "Failed generating oidc client for workspace token service: $secrets"
+                  exit 1
+                fi
+                  client_id="${BASH_REMATCH[2]}"
+                  client_secret="${BASH_REMATCH[3]}"
+                  echo client_id: $client_id
+                  echo client_secret: $client_secret
+                  echo -n $client_id > /shared/client_id
+                  echo -n $client_secret > /shared/client_secret
               fi
-              client_id="${BASH_REMATCH[2]}"
-              client_secret="${BASH_REMATCH[3]}"
-              echo client_id: $client_id
-              echo client_secret: $client_secret
-              echo -n $client_id > /shared/client_id
-              echo -n $client_secret > /shared/client_secret
+
           env:
             - name: PGHOST
               valueFrom:
@@ -85,6 +89,12 @@ spec:
                   name: manifest-fence
                   key: fence-config-public.yaml
                   optional: true
+             - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: wts-oidc-client
+                  key: client_id
+                  optional: true
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"
@@ -108,8 +118,12 @@ spec:
                 echo "..."
                 sleep 5
               done
-              echo "Updating k8s secret wts-oidc-client"
-              CLIENT_ID=$(cat /shared/client_id | base64)
-              CLIENT_SECRET=$(cat /shared/client_secret | base64)
-              kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
-{{- end }}
+              if grep -q "happy" /shared/client_id; then
+                echo "Client already exists- do nothing."
+                exit 0
+              else              
+                echo "Updating k8s secret wts-oidc-client"
+                CLIENT_ID=$(cat /shared/client_id | base64)
+                CLIENT_SECRET=$(cat /shared/client_secret | base64)
+                kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
+              fi

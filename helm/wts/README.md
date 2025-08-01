@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.26](https://img.shields.io/badge/Version-0.1.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -19,12 +19,10 @@ A Helm chart for gen3 workspace token service
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sWtsSecret":false,"dbcreds":null,"wtsG3auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sWtsSecret | bool | `false` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is false. |
-| externalSecrets.createWtsOidcClientSecret | bool | `true` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is true. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.wtsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-g3auto". |
-| externalSecrets.wtsOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-oidc-client". |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `100` |  |
