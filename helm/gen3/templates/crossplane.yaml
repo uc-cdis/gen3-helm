@@ -42,12 +42,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-role-policy"
     document: |
       {
         "Version": "2012-10-17",
@@ -74,5 +74,5 @@ spec:
   forProvider:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-role-policy"
 {{- end }}
