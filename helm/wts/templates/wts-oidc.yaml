@@ -39,8 +39,40 @@ spec:
             - |
               export WTS_HOSTNAME={{ .Values.global.hostname }}
               echo "Trying to generate WTS client for hostname : $WTS_HOSTNAME..."
-              # if grep -q "" /shared/appcreds.json
-              sleep infinity
+
+              # support migration from cloud-automation
+              if [ -f /shared/appcreds.json ]; then
+                eval $(awk '
+                /fence_base_url/ { fence_found = 1; next }
+                fence_found && /oidc_client_id/ { 
+                    gsub(/[",]/, "", $2); 
+                    print "OIDC_CLIENT_ID=" $2; 
+                    next 
+                }
+                fence_found && /oidc_client_secret/ { 
+                    gsub(/[",]/, "", $2); 
+                    print "OIDC_CLIENT_SECRET=" $2; 
+                    fence_found = 0; 
+                    next 
+                }
+                fence_found && /^[[:space:]]*$/ { next }
+                fence_found && !/oidc_/ { fence_found = 0 }
+                ' /shared/appcreds.json)
+
+                echo "OIDC_CLIENT_ID: $OIDC_CLIENT_ID"
+
+                # Only write to files if we found the values
+                if [ -n "$OIDC_CLIENT_ID" ] && [ -n "$OIDC_CLIENT_SECRET" ]; then
+                    echo "client_id: $OIDC_CLIENT_ID"
+                    echo -n "$OIDC_CLIENT_ID" > /shared/client_id
+                    echo -n "$OIDC_CLIENT_SECRET" > /shared/client_secret
+                    echo "Successfully wrote credentials to /shared/client_id and /shared/client_secret"
+                    exit 0
+                else
+                    echo "No OIDC credentials found after fence_base_url "
+                fi
+              fi
+
               if fence-create client-list 2>/dev/null | grep -q "'client_id': '${CLIENT_ID}'"; then
                 echo "Client ${CLIENT_ID} exists"
                 echo "Client exists- die happy" > /shared/client_id
