@@ -81,14 +81,24 @@ spec:
                 secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
                 if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
                   echo "Failed generating oidc client for workspace token service: $secrets"
-                  exit 1
+                  echo "Attempting to delete existing client and recreate..."
+                  
+                  # Delete existing client (assuming client name is 'wts')
+                  fence-create client-delete --client wts 2>/dev/null || echo "No existing client to delete or deletion failed"
+                  secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
+                  if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                    echo "Failed generating oidc client for workspace token service even after deletion: $secrets"
+                    exit 1
+                  else
+                      echo "Successfully recreated client after deletion"
+                  fi
                 fi
-                  client_id="${BASH_REMATCH[2]}"
-                  client_secret="${BASH_REMATCH[3]}"
-                  echo client_id: $client_id
-                  echo client_secret: $client_secret
-                  echo -n $client_id > /shared/client_id
-                  echo -n $client_secret > /shared/client_secret
+                client_id="${BASH_REMATCH[2]}"
+                client_secret="${BASH_REMATCH[3]}"
+                echo client_id: $client_id
+                echo client_secret: $client_secret
+                echo -n $client_id > /shared/client_id
+                echo -n $client_secret > /shared/client_secret
               fi
 
           env:
