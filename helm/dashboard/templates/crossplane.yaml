@@ -73,7 +73,7 @@ spec:
   forProvider:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-sa"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
 ---
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
