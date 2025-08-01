@@ -3,12 +3,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-external-secrets-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-external-secrets-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
     description: "IAM Role for external secrets service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
@@ -42,12 +42,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-external-secrets-access"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-external-secrets-access"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
     document: |
       {
         "Version": "2012-10-17",
@@ -67,23 +67,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: "{{ .Values.global.environment }}-external-secrets-attachment"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-external-secrets-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-external-secrets-access"
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: secret-store-sa
-  namespace: {{ .Release.Namespace }}
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.global.crossplane.accountId }}:role/{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-sa
-  labels:
-    argocd.argoproj.io/instance: gen3-{{ .Release.Name }}
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-external-secrets-access"
 {{- end }}

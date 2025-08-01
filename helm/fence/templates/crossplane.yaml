@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-fence-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "fence.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-fence-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "fence.serviceAccountName" . }}"
     description: "Role for fence service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
@@ -21,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:fence-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{ include "fence.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -32,12 +32,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-fence-role-policy"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-fence-role-policy"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
     document: |
       {
         "Version":"2012-10-17",
@@ -45,7 +45,7 @@ spec:
           {
             "Effect":"Allow",
             "Action":["sqs:SendMessage"],
-            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue", "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
+            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue", "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
           }
         ]
       }
@@ -58,21 +58,21 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-fence-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-fence-role-policy"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
 ---
 # SSJ dispatcher Queue 
 # 
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
-  name: "{{ .Values.global.environment }}-audit-sqs-queue"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    queueName: "{{ .Values.global.environment }}-audit-sqs-queue"
+    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
     region: "{{ .Values.global.aws.region }}"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600

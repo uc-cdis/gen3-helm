@@ -2,18 +2,22 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "hatchery.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
-    description: "Role for ES proxy service account for {{ .Values.global.environment }}"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "hatchery.serviceAccountName" . }}"
+    description: "Role for hatchery account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
         "Version":"2012-10-17",
         "Statement":[
-          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          { 
+            "Effect":"Allow",
+            "Principal":{"Service":"ec2.amazonaws.com"},
+            "Action":"sts:AssumeRole" 
+          },
           {
             "Sid":"",
             "Effect":"Allow",
@@ -21,7 +25,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:hatchery-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "hatchery.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -63,7 +67,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "hatchery.serviceAccountName" . }}"
     policyArnRef: 
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-hatchery-role-policy"
 {{- end }}

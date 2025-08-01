@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-sower-service-account"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "sower.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-sower-service-account"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "sower.serviceAccountName" . }}"
     description: "Role for sower service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
@@ -21,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:sower-service-account",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "sower.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -32,12 +32,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-sower-service-account-policy"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-sower-service-account-policy"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-role-policy"
     document: |
       {
           "Version": "2012-10-17",
@@ -48,7 +48,7 @@ spec:
                   "Action": [
                       "s3:ListBucket"
                   ],
-                  "Resource": "arn:aws:s3:::{{ .Values.global.environment }}-sower-service-bucket"
+                  "Resource": "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-service-bucket"
               },
               {
                   "Sid": "AllowAllObjectActions",
@@ -58,7 +58,7 @@ spec:
                       "s3:PutObject",
                       "s3:DeleteObject"
                   ],
-                  "Resource": "arn:aws:s3:::{{ .Values.global.environment }}-sower-service-bucket/*"
+                  "Resource": "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-service-bucket/*"
               }
           ]
       }
@@ -71,19 +71,19 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-sower-service-account"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-service-account"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-sower-service-account-policy"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-role-policy"
 ---
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
 metadata:
-  name: "{{ .Values.global.environment }}-sower-service-bucket"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-service-bucket"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    bucketName: "{{ .Values.global.environment }}-sower-service-bucket"
+    bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-sower-service-bucket"
     acl: private
     forceDestroy: false
     locationConstraint: {{ .Values.global.aws.region }}

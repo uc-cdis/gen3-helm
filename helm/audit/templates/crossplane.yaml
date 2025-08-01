@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
     description: "Role for ES proxy service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
@@ -27,7 +27,7 @@ spec:
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
               "StringEquals": {
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:audit-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "audit.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com"
               }
             }
@@ -55,7 +55,7 @@ spec:
               "sqs:GetQueueAttributes",
               "sqs:DeleteMessage"
             ],
-            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue"]
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"]
           }
         ]
       }
@@ -63,24 +63,24 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: audit-sa-managed-policy-attachment
+  name: {{ include "audit.serviceAccountName" . }}-managed-policy-attachment
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
 ---
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
-  name: "{{ .Values.global.environment }}-audit-sqs-queue"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    queueName: "{{ .Values.global.environment }}-audit-sqs-queue"
+    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
     region: "{{ .Values.global.aws.region }}"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600

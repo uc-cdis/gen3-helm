@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "portal.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "portal.serviceAccountName" . }}"
     description: "Role for portal service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
@@ -21,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:portal-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "portal.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -37,7 +37,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "portal.serviceAccountName" . }}"
     name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-role-policy"
     document: |
       {
@@ -68,7 +68,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "portal.serviceAccountName" . }}"
     policyArnRef: 
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-role-policy"
 ---
