@@ -17,6 +17,9 @@ spec:
             secretName: "fence-config"
         - name: shared-volume
           emptyDir: {}
+        - name: wts-g3auto
+          secret:
+            secretName: "wts-g3auto"
       initContainers:
         - name: wait-for-fence
           image: curlimages/curl:latest
@@ -36,7 +39,8 @@ spec:
             - |
               export WTS_HOSTNAME={{ .Values.global.hostname }}
               echo "Trying to generate WTS client for hostname : $WTS_HOSTNAME..."
-
+              # if grep -q "" /shared/appcreds.json
+              sleep infinity
               if fence-create client-list 2>/dev/null | grep -q "'client_id': '${CLIENT_ID}'"; then
                 echo "Client ${CLIENT_ID} exists"
                 echo "Client exists- die happy" > /shared/client_id
@@ -103,6 +107,10 @@ spec:
               readOnly: true
               mountPath: "/var/www/fence/fence-config.yaml"
               subPath: fence-config.yaml
+            - name: "wts-g3auto"
+              readOnly: true
+              mountPath: "/shared/appcreds.json"
+              subPath: appcreds.json
         - name: kubectl
           #TODO: Make this configurable?  
           image: bitnami/kubectl:latest
