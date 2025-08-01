@@ -50,16 +50,20 @@ spec:
                       key: hostname
                 - name: JENKINS_HOME
                   value: "whatever"
+              volumeMounts:
+                - name: hatchery-config
+                  mountPath: /hatchery.json
+                  subPath: json
+                  readOnly: true
               command: ["/bin/bash"]
               args:
                 - "-c"
                 - |
                   set -e
-                  export GEN3_HOME="$HOME/cloud-automation"
-                  source "$GEN3_HOME/gen3/gen3setup.sh"
                   limit=3600
-                  namespace=$(gen3 jupyter j-namespace)
-                  remote_users=$(kubectl get svc -n $namespace -o json | jq -r '.items[].metadata.annotations."getambassador.io/config"' | yq -r .headers.remote_user)
+                  namespace=$(jq -r '."user-namespace"' /hatchery.json)
+
+                  remote_users=$(kubectl get svc -n "$namespace" -o json | jq -r '.items[].metadata.annotations."getambassador.io/config"' | yq -r .headers.remote_user)
 
                   function escape() {
                       local string="$1"
@@ -104,17 +108,9 @@ spec:
                   done
 
                   echo "Finished hatchery-based reaping."
-
-                  # Legacy Jupyter idle reaper logic
-                  echo "Running legacy jupyter idle reaper (gen3 jupyter idle)"
-                  appList="$(gen3 jupyter idle none "$(gen3 db namespace)" kill)"
-
-                  if [[ -n "$appList" ]]; then
-                    echo "Legacy reaper terminated the following Jupyter workspaces:"
-                    echo "$appList"
-                  else
-                    echo "Legacy reaper found no idle Jupyter workspaces to terminate."
-                  fi
-
                   echo "Hatchery reaper job completed"
+          volumes:
+            - name: hatchery-config
+              configMap:
+                name: manifest-hatchery
 {{- end }}
