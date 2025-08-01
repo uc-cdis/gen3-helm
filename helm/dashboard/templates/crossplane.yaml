@@ -32,12 +32,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}--dashboard-role-policy"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}--dashboard-role-policy"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
     document: |
       {
           "Version": "2012-10-17",
@@ -71,9 +71,9 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}--dashboard-service-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-sa"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}--dashboard-service-sa"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-sa"
 ---
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
