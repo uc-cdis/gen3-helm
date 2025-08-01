@@ -9,7 +9,6 @@ spec:
   forProvider:
     name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-sa"
     description: "Role for manifestservice service account for {{ .Values.global.environment }}"
-    path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
         "Version":"2012-10-17",

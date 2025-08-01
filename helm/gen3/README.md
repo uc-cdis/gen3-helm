@@ -22,7 +22,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.24 |
 | file://../arborist | arborist | 0.1.23 |
 | file://../argo-wrapper | argo-wrapper | 0.1.17 |
-| file://../audit | audit | 0.1.24 |
+| file://../audit | audit | 0.1.25 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.25 |
 | file://../cedar | cedar | 0.1.11 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
@@ -36,15 +36,15 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.4 |
 | file://../guppy | guppy | 0.1.24 |
-| file://../hatchery | hatchery | 0.1.22 |
+| file://../hatchery | hatchery | 0.1.23 |
 | file://../indexd | indexd | 0.1.30 |
-| file://../manifestservice | manifestservice | 0.1.28 |
+| file://../manifestservice | manifestservice | 0.1.29 |
 | file://../metadata | metadata | 0.1.28 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.2 |
 | file://../orthanc | orthanc | 0.1.3 |
 | file://../peregrine | peregrine | 0.1.30 |
-| file://../portal | portal | 0.1.39 |
+| file://../portal | portal | 0.1.40 |
 | file://../requestor | requestor | 0.1.23 |
 | file://../revproxy | revproxy | 0.1.38 |
 | file://../sheepdog | sheepdog | 0.1.28 |
