@@ -71,7 +71,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-service-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "dashboard.serviceAccountName" . }}"
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
 ---
