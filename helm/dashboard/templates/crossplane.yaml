@@ -2,12 +2,12 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-dashboard-access"
+  name: "{{ .Values.global.environment }}-dashboard-sa"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}---dashboard-access"
+    name: "{{ .Values.global.environment }}-dashboard-sa"
     description: "Role for dashboard service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
