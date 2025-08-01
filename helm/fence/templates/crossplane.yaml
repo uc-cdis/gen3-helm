@@ -61,23 +61,5 @@ spec:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-sa"
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-fence-role-policy"
----
-# SSJ dispatcher Queue 
-# 
-apiVersion: sqs.aws.crossplane.io/v1beta1
-kind: Queue
-metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
-spec:
-  providerConfigRef:
-    name: provider-aws
-  forProvider:
-    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
-    region: "{{ .Values.global.aws.region }}"
-    visibilityTimeoutSeconds: 300
-    messageRetentionSeconds: 1209600
-    tags:
-      Organization: "gen3"
-      description: "Created by Crossplane"
 {{- end}}
 
