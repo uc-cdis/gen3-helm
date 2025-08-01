@@ -44,7 +44,7 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: etl
-    version: 0.1.14
+    version: 0.1.15
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
