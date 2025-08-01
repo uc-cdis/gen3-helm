@@ -158,6 +158,10 @@ volumeMounts:
 
 hatchery:
   json: ""
+  reaper:
+    enabled: true
+    suspendCronjob: true
+    schedule: "0 * * * *"  
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
     cpu-limit: "0.1"

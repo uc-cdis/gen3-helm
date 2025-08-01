@@ -1,4 +1,4 @@
-{{- if and .Values.hatchery.enabled .Values.hatchery.reaper.enabled }}
+{{- if .Values.hatchery.reaper.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
