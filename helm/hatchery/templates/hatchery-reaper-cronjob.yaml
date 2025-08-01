@@ -48,6 +48,8 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
+                - name: JUPYTER_NAMESPACE
+                  value: "{{ include "hatchery.jupyterNamespace" . }}"
                 - name: JENKINS_HOME
                   value: "whatever"
               volumeMounts:
@@ -61,7 +63,16 @@ spec:
                 - |
                   set -e
                   limit=3600
-                  namespace=$(jq -r '."user-namespace"' /hatchery.json)
+
+                  if [[ -f "/hatchery.json" ]]; then
+                    namespace=$(jq -r '."user-namespace" // empty' /hatchery.json)
+                  fi
+
+                  if [[ -z "$namespace" ]]; then
+                    namespace="${JUPYTER_NAMESPACE:-jupyter-pods}"
+                  fi
+
+                  echo "Using Jupyter namespace: $namespace"
 
                   remote_users=$(kubectl get svc -n "$namespace" -o json | jq -r '.items[].metadata.annotations."getambassador.io/config"' | yq -r .headers.remote_user)
 
@@ -108,9 +119,9 @@ spec:
                   done
 
                   echo "Finished hatchery-based reaping."
-                  echo "Hatchery reaper job completed"
           volumes:
             - name: hatchery-config
               configMap:
                 name: manifest-hatchery
 {{- end }}
+

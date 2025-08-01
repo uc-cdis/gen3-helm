@@ -161,7 +161,7 @@ hatchery:
   reaper:
     enabled: true
     suspendCronjob: true
-    schedule: "0 * * * *"  
+    schedule: "0 * * * *" 
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
     cpu-limit: "0.1"
