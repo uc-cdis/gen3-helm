@@ -55,7 +55,7 @@ spec:
               "sqs:GetQueueAttributes",
               "sqs:DeleteMessage"
             ],
-            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-data_upload"]
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"]
           }
         ]
       }
@@ -75,12 +75,12 @@ spec:
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data_upload"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data_upload"
+    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
     region: "{{ .Values.global.aws.region }}"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600
