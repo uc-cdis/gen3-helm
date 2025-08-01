@@ -10,7 +10,6 @@ spec:
   forProvider:
     name: "{{ .Values.global.environment }}-external-secrets-sa"
     description: "IAM Role for external secrets service account for {{ .Values.global.environment }}"
-    path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
         "Version": "2012-10-17",
