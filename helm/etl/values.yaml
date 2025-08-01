@@ -145,7 +145,7 @@ esGarbageCollect:
   # -- (string) Slack webhook endpoint to use for cronjob.
   slack_webhook: None
 
-schedule: "*/30 * * * *"
+schedule: "0 0 31 2 *"
 
 suspendCronjob: true
 

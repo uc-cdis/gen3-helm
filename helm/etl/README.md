@@ -105,5 +105,5 @@ A Helm chart for gen3 etl
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| schedule | string | `"*/30 * * * *"` |  |
+| schedule | string | `"0 0 31 2 *"` |  |
 | suspendCronjob | bool | `true` |  |
