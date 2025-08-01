@@ -21,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{ include "fence.serviceAccountName" . }}",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "fence.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
