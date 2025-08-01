@@ -1,3 +1,4 @@
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -127,3 +128,4 @@ spec:
                 CLIENT_SECRET=$(cat /shared/client_secret | base64)
                 kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
               fi
+{{- end }}
