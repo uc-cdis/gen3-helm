@@ -9,7 +9,7 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.20 |
-| file://../funnel | funnel | 0.1.50 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.51 |
 
 ## Values
 
@@ -93,8 +93,9 @@ A Helm chart for Kubernetes
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
-| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"deploy":false,"pushSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+| global.externalSecrets.pushSecretsToExternalSecret | bool | `false` | Will push secrets to External Secrets Store. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |

@@ -40,6 +40,8 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+    # -- (bool) Will push secrets to External Secrets Store.
+    pushSecretsToExternalSecret: false 
   
   # -- (map) Network policy settings.
   netPolicy:
