@@ -397,7 +397,10 @@ fence:
         policies:
         - all_programs_reader
         - open_data_reader
-
+      funnel-plugin-test:
+        policies:
+        - workflow_user
+    
     users:
       username1@gmail.com: {}
       username2:
