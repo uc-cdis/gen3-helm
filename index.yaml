@@ -3229,6 +3229,24 @@ entries:
   fence:
   - apiVersion: v2
     appVersion: master
+    created: "2025-08-05T15:02:17.557005407Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Fence
+    digest: 0bcda2196f3be7d5fda20f2a8f494b5bf730745690f6bfa37b131323ea0c159e
+    name: fence
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/fence-0.1.49/fence-0.1.49.tgz
+    version: 0.1.49
+  - apiVersion: v2
+    appVersion: master
     created: "2025-07-22T15:56:18.475727533Z"
     dependencies:
     - name: common
@@ -4251,6 +4269,167 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/frontend-framework-0.1.1/frontend-framework-0.1.1.tgz
     version: 0.1.1
   gen3:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-08-05T15:02:17.852897867Z"
+    dependencies:
+    - condition: access-backend.enabled
+      name: access-backend
+      repository: file://../access-backend
+      version: 0.1.7
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.24
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.23
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.17
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.24
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.24
+    - condition: cedar.enabled
+      name: cedar
+      repository: file://../cedar
+      version: 0.1.11
+    - condition: cohort-middleware.enabled
+      name: cohort-middleware
+      repository: file://../cohort-middleware
+      version: 0.1.11
+    - name: common
+      repository: file://../common
+      version: 0.1.20
+    - condition: dashboard.enabled
+      name: dashboard
+      repository: file://../dashboard
+      version: 0.1.4
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.14
+    - condition: frontend-framework.enabled
+      name: frontend-framework
+      repository: file://../frontend-framework
+      version: 0.1.12
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.49
+    - condition: gen3-user-data-library.enabled
+      name: gen3-user-data-library
+      repository: file://../gen3-user-data-library
+      version: 0.1.4
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.24
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.22
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.30
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.28
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.28
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.30
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.41
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.23
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.38
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.28
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.27
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.29
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.26
+    - condition: global.netPolicy.enabled
+      name: gen3-network-policies
+      repository: file://../gen3-network-policies
+      version: 0.1.2
+    - condition: dicom-server.enabled
+      name: dicom-server
+      repository: file://../dicom-server
+      version: 0.1.18
+    - condition: ohif-viewer.enabled
+      name: ohif-viewer
+      repository: file://../ohif-viewer
+      version: 0.1.2
+    - condition: orthanc.enabled
+      name: orthanc
+      repository: file://../orthanc
+      version: 0.1.3
+    - condition: gen3-analysis.enabled
+      name: gen3-analysis
+      repository: file://../gen3-analysis
+      version: 0.1.1
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: neuvector.enabled
+      name: neuvector
+      repository: file://../neuvector
+      version: 0.1.2
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: 3693a8028c9f568f27394dbea447b980188b198d1eb5ef7d8af5dbcca291030c
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.2.15/gen3-0.2.15.tgz
+    version: 0.2.15
   - apiVersion: v2
     appVersion: master
     created: "2025-08-01T15:51:30.364292747Z"
@@ -26610,4 +26789,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-08-01T15:51:30.51538505Z"
+generated: "2025-08-05T15:02:17.854259483Z"
