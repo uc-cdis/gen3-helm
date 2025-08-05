@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.15](https://img.shields.io/badge/Version-0.2.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,13 +18,13 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.8 |
-| file://../ambassador | ambassador | 0.1.25 |
-| file://../arborist | arborist | 0.1.24 |
-| file://../argo-wrapper | argo-wrapper | 0.1.18 |
-| file://../audit | audit | 0.1.25 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.25 |
-| file://../cedar | cedar | 0.1.12 |
+| file://../access-backend | access-backend | 0.1.7 |
+| file://../ambassador | ambassador | 0.1.24 |
+| file://../arborist | arborist | 0.1.23 |
+| file://../argo-wrapper | argo-wrapper | 0.1.17 |
+| file://../audit | audit | 0.1.24 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.24 |
+| file://../cedar | cedar | 0.1.11 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.20 |
 | file://../dashboard | dashboard | 0.1.4 |
@@ -98,6 +98,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
+| gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
@@ -122,6 +124,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
 | global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
 | global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
+| global.dataUploadBucket | string | `nil` |  |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -142,6 +145,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
+| global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |
 | global.postgres.master.port | string | `"5432"` | global postgres master port |

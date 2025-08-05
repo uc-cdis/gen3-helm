@@ -240,9 +240,11 @@ spec:
             - name: BASENAME
               value: /portal
             {{- end }}
+            {{- if .Values.global.dataUploadBucket }}
               # S3 bucket name for data upload, for setting up CSP
-              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
-            # - name: BASENAME
+            - name: DATA_UPLOAD_BUCKET
+              value: {{ .Values.global.dataUploadBucket }}
+            {{- end }}
           volumeMounts:
             {{- if .Values.extraImages  }}
             - name: extra-images

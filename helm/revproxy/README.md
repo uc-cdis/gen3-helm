@@ -18,6 +18,7 @@ A Helm chart for gen3 revproxy
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| extraServices | map | `nil` | Configuration to add any extra service endpoints outside of gen3 to be served by revproxy |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `100` |  |
