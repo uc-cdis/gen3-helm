@@ -96,6 +96,10 @@ A Helm chart for gen3 Hatchery
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount | map | `{"annotations":{},"create":true,"name":"hatchery-sa"}` | Service account to use or create. |
+| serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
+| serviceAccount.name | string | `"hatchery-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
