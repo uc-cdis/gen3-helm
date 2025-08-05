@@ -45,8 +45,8 @@ spec:
               client_secret="${BASH_REMATCH[3]}"
               echo client_id: $client_id
               echo client_secret: $client_secret
-              echo -n $client_id > /shared/client_id
-              echo -n $client_secret > /shared/client_secret
+              echo -n $client_id > /shared/funnel_oidc_client_id
+              echo -n $client_secret > /shared/funnel_oidc_client_secret
           env:
             - name: PGHOST
               valueFrom:
@@ -99,20 +99,26 @@ spec:
           args: 
             - "-c"
             - |
-              echo "waiting for /shared/client_id"
-              while [ ! -e /shared/client_id ]
+              echo "waiting for /shared/funnel_oidc_client_id"
+              while [ ! -e /shared/funnel_oidc_client_id ]
               do
                 echo "..."
                 sleep 5
               done
               echo "Updating k8s secret funnel-oidc-client"
-              CLIENT_ID=$(cat /shared/client_id | base64)
-              CLIENT_SECRET=$(cat /shared/client_secret | base64)
+              export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
+              export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
 
+              echo "Fetching current CLIENT ID = ${CLIENT_ID} and SECRET= ${CLIENT_SECRET}"
               kubectl get secret gen3workflow-g3auto -o jsonpath="{.data.funnel\.conf}" | base64 -d > /tmp/funnel.conf
 
               echo "Patching values..."
-              yq eval ".Plugin.Params.OidcClientID = ${CLIENT_ID} | .Plugin.Params.OidcClientSecret = ${CLIENT_SECRET}" /tmp/funnel.conf > /tmp/funnel-patched.conf
+              yq eval '.Plugins.Params.OidcClientId = strenv(CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf
+
+              if [[ ! -s /tmp/funnel-patched.conf ]]; then
+                echo "ERROR: Patched config is empty. Aborting."
+                exit 1
+              fi
 
               echo "Updating Kubernetes Secret..."
               PATCH=$(base64 -w 0 /tmp/funnel-patched.conf)
