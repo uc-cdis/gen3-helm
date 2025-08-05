@@ -87,6 +87,7 @@ global:
   logoutInactiveUsers: true
   workspaceTimeoutInMinutes: 480
   maintenanceMode: "off"
+  dataUploadBucket:
   # fenceURL:
   # arboristURL:
   # indexdURL:
