@@ -41,7 +41,7 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     # -- (bool) Will push secrets to External Secrets Store.
-    pushSecretsToExternalSecret: false 
+    pushGen3WorkflowSecretsToExternalSecret: false 
   
   # -- (map) Network policy settings.
   netPolicy:
@@ -56,6 +56,7 @@ externalSecrets:
   gen3workflowG3auto: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
   dbcreds: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   createFunnelOidcClientSecret: true # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
+  funnelOidcClient: # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
 
 # -- (map) Secret information for External Secrets.
 secrets:
@@ -116,6 +117,9 @@ nameOverride: ""
 
 # -- (string) Override the full name of the chart, which is used as the name of resources created by the chart
 fullnameOverride: ""
+
+# -- (bool) Whether to create a job to generate the OIDC client for Funnel.
+oidc_job_enabled: true
 
 # -- (map) Service account to use or create.
 serviceAccount:
@@ -379,6 +383,15 @@ funnel:
         - key: funnel.conf
           path: funnel-server.yaml
 
+  - name: funnel-oidc-volume
+    secret:
+      secretName: "funnel-oidc-client"
+      items:
+        - key: client_id
+          path: client_id
+        - key: client_secret
+          path: client_secret
+
   - name: worker-templates-volume
     configMap:
       name: funnel-worker-templates
@@ -390,6 +403,10 @@ funnel:
     - name: config-volume
       mountPath: /etc/config/funnel-server.yaml
       subPath: funnel-server.yaml
+
+    - name: "funnel-oidc-volume"
+      readOnly: true
+      mountPath: "/etc/config/oidc"
 
     - name: worker-templates-volume
       mountPath: /etc/funnel/templates

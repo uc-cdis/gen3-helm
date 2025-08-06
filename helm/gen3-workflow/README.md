@@ -40,7 +40,7 @@ A Helm chart for Kubernetes
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"createK8sGen3WorkflowSecret":false,"dbcreds":"","gen3workflowG3auto":""}` | External Secrets settings. |
+| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"createK8sGen3WorkflowSecret":false,"dbcreds":"","funnelOidcClient":null,"gen3workflowG3auto":""}` | External Secrets settings. |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | funnel.Kubernetes | map | `{"JobsNamespace":"","Namespace":""}` | Kubernetes configuration for Funnel. |
@@ -74,18 +74,27 @@ A Helm chart for Kubernetes
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | funnel.volumeMounts[0].name | string | `"config-volume"` |  |
 | funnel.volumeMounts[0].subPath | string | `"funnel-server.yaml"` |  |
-| funnel.volumeMounts[1].mountPath | string | `"/etc/funnel/templates"` |  |
-| funnel.volumeMounts[1].name | string | `"worker-templates-volume"` |  |
-| funnel.volumeMounts[2].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
-| funnel.volumeMounts[2].name | string | `"plugin-volume"` |  |
+| funnel.volumeMounts[1].mountPath | string | `"/etc/config/oidc"` |  |
+| funnel.volumeMounts[1].name | string | `"funnel-oidc-volume"` |  |
+| funnel.volumeMounts[1].readOnly | bool | `true` |  |
+| funnel.volumeMounts[2].mountPath | string | `"/etc/funnel/templates"` |  |
+| funnel.volumeMounts[2].name | string | `"worker-templates-volume"` |  |
+| funnel.volumeMounts[3].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
+| funnel.volumeMounts[3].name | string | `"plugin-volume"` |  |
 | funnel.volumes[0].name | string | `"config-volume"` |  |
 | funnel.volumes[0].secret.items[0].key | string | `"funnel.conf"` |  |
 | funnel.volumes[0].secret.items[0].path | string | `"funnel-server.yaml"` |  |
 | funnel.volumes[0].secret.secretName | string | `"gen3workflow-g3auto"` |  |
-| funnel.volumes[1].configMap.name | string | `"funnel-worker-templates"` |  |
-| funnel.volumes[1].name | string | `"worker-templates-volume"` |  |
-| funnel.volumes[2].emptyDir | object | `{}` |  |
-| funnel.volumes[2].name | string | `"plugin-volume"` |  |
+| funnel.volumes[1].name | string | `"funnel-oidc-volume"` |  |
+| funnel.volumes[1].secret.items[0].key | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[0].path | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[1].key | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.items[1].path | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.secretName | string | `"funnel-oidc-client"` |  |
+| funnel.volumes[2].configMap.name | string | `"funnel-worker-templates"` |  |
+| funnel.volumes[2].name | string | `"worker-templates-volume"` |  |
+| funnel.volumes[3].emptyDir | object | `{}` |  |
+| funnel.volumes[3].name | string | `"plugin-volume"` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -93,9 +102,9 @@ A Helm chart for Kubernetes
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
-| global.externalSecrets | map | `{"deploy":false,"pushSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
-| global.externalSecrets.pushSecretsToExternalSecret | bool | `false` | Will push secrets to External Secrets Store. |
+| global.externalSecrets.pushGen3WorkflowSecretsToExternalSecret | bool | `false` | Will push secrets to External Secrets Store. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
@@ -116,6 +125,7 @@ A Helm chart for Kubernetes
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. This can be used to provide a unique name for a chart |
 | nodeSelector | map | `{}` | Node Selector for the pods |
+| oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
 | partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{}` | Security context for the pod |
