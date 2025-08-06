@@ -121,8 +121,12 @@ spec:
               fi
 
               echo "Updating Kubernetes Secret..."
+              echo "Patching funnel.conf in gen3workflow secret with new OIDC client credentials"
               PATCH=$(base64 -w 0 /tmp/funnel-patched.conf)
               kubectl patch secret gen3workflow-g3auto \
                 --type merge \
                 -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
+
+              echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
+              kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
 {{- end }}
