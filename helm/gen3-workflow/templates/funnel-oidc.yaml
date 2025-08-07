@@ -99,6 +99,8 @@ spec:
           args: 
             - "-c"
             - |
+              #!/bin/bash
+              set -eo pipefail
               echo "waiting for /shared/funnel_oidc_client_id"
               while [ ! -e /shared/funnel_oidc_client_id ]
               do
@@ -108,8 +110,6 @@ spec:
               echo "Updating k8s secret funnel-oidc-client"
               export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
               export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
-
-              echo "Fetching current CLIENT ID = ${CLIENT_ID} and SECRET= ${CLIENT_SECRET}"
               kubectl get secret gen3workflow-g3auto -o jsonpath="{.data.funnel\.conf}" | base64 -d > /tmp/funnel.conf
 
               echo "Patching values..."
@@ -128,5 +128,5 @@ spec:
                 -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
 
               echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
-              kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
+              kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
 {{- end }}
