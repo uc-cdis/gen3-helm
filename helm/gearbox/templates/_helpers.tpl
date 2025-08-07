@@ -30,7 +30,6 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
 Common labels
 */}}
 {{- define "gearbox.labels" -}}
@@ -61,7 +60,7 @@ Create the name of the service account to use
 */}}
 {{- define "gearbox.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "gearbox.fullname" .) .Values.serviceAccount.name }}
+{{- default "gearbox-sa" .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

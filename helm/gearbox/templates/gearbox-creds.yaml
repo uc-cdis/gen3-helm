@@ -1,0 +1,31 @@
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.externalSecrets.createK8sgearboxSecret) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gearbox-g3auto
+type: Opaque
+stringData:
+  {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "gearbox-g3auto" }}
+  {{- $randomPass := printf "%s%s" "gateway:" (randAlphaNum 32) }}
+  base64Authz.txt: {{ if and $existingSecret (index $existingSecret.data "base64Authz.txt") }}{{ index $existingSecret.data "base64Authz.txt" | b64dec | quote }}{{ else }}{{ $randomPass | quote | b64enc }}{{ end }}
+  gearbox.env: |
+    HOSTNAME={{ .Values.global.hostname }}
+    {{ if and .Values.gearboxG3auto.awsaccesskey .Values.gearboxG3auto.awssecretkey }}
+    S3_AWS_ACCESS_KEY_ID={{ .Values.gearboxG3auto.awsaccesskey }}
+    S3_AWS_SECRET_ACCESS_KEY={{ .Values.gearboxG3auto.awssecretkey }}
+    {{ end }}
+    AWS_REGION={{ .Values.gearboxG3auto.awsRegion }}
+    TESTING={{ .Values.gearboxG3auto.testing }}
+    DEBUG={{ .Values.gearboxG3auto.debug }}
+    ENABLE_PHI={{ .Values.gearboxG3auto.enablePHI }}
+    DUMMY_S3={{ .Values.gearboxG3auto.dummyS3 }}
+    ALLOWED_ISSUERS={{ .Values.gearboxG3auto.allowedIssuers }}
+    USER_API={{ .Values.gearboxG3auto.userApi }}
+    FORCE_ISSUER={{ .Values.gearboxG3auto.forceIssuer }}
+    GEARBOX_MIDDLEWARE_PUBLIC_KEY_PATH={{ .Values.gearboxG3auto.gearboxMiddlewarePublicKeyPath }}
+data:
+  {{- if and .Values.gearboxG3auto.awsaccesskey .Values.gearboxG3auto.awssecretkey }}
+  aws_access_key_id: {{ .Values.gearboxG3auto.awsaccesskey | b64enc | quote }}
+  aws_secret_access_key: {{ .Values.gearboxG3auto.awssecretkey | b64enc | quote }}
+  {{- end }}
+{{- end }}
