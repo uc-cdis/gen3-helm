@@ -236,7 +236,7 @@ spec:
             {{- end }}
             {{- if .Values.global.dataUploadBucket }}
               # S3 bucket name for data upload, for setting up CSP
-            - name: GEN3_DATA_UPLOAD_BUCKET
+            - name: DATA_UPLOAD_BUCKET
               value: {{ .Values.global.dataUploadBucket }}
             {{- end }}
             {{- with .Values.gearboxS3Bucket  }}
