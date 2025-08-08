@@ -1,0 +1,67 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+    description: "Role for aws-es-proxy service account for {{ .Values.global.environment }}-{{ .Release.Namespace }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "aws-es-proxy.serviceAccountName" . }}",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+    document: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action": "es:*",
+            "Resource":[
+                "arn:aws:es:us-east-1:{{ .Values.global.crossplane.accountId }}:domain/{{ include "aws-es-proxy.esEndpointName" . }},
+                "arn:aws:es:us-east-1:{{ .Values.global.crossplane.accountId }}:domain/{{ include "aws-es-proxy.esEndpointName" . }}/*"
+            ]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: {{ include "aws-es-proxy.serviceAccountName" . }}-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "aws-es-proxy.serviceAccountName" . }}"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-aws-es-proxy-role-policy"
+{{- end}}

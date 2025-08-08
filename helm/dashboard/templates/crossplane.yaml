@@ -1,0 +1,104 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "dashboard.serviceAccountName" . }}"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "dashboard.serviceAccountName" . }}"
+    description: "Role for dashboard service account for {{ .Values.global.environment }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "dashboard.serviceAccountName" . }}",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
+    document: |
+      {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Sid": "AllowListBucket",
+                  "Effect": "Allow",
+                  "Action": [
+                      "s3:ListBucket"
+                  ],
+                  "Resource": "arn:aws:s3:::{{ .Values.dashboardConfig.bucket }}"
+              },
+              {
+                  "Sid": "AllowAllObjectActions",
+                  "Effect": "Allow",
+                  "Action": [
+                      "s3:GetObject",
+                      "s3:PutObject",
+                      "s3:DeleteObject"
+                  ],
+                  "Resource": "arn:aws:s3:::{{ .Values.dashboardConfig.bucket }}/*"
+              }
+          ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: dashboard-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "dashboard.serviceAccountName" . }}"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-dashboard-role-policy"
+---
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: "{{ .Values.dashboardConfig.bucket }}"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    bucketName: "{{ .Values.dashboardConfig.bucket }}"
+    acl: private
+    forceDestroy: false
+    locationConstraint: {{ .Values.global.aws.region }}
+    tags:
+      Organization: gen3
+      description: Created by crossplane
+    versioningConfiguration:
+      {{- if .Values.global.crossplane.s3.versioningEnabled }}
+      status: "Enabled"
+      {{- end }}
+    serverSideEncryptionConfiguration:
+      rules:
+        - applyServerSideEncryptionByDefault:
+            sseAlgorithm: aws:kms
+            {{- if .Values.global.crossplane.s3.kmsKeyId }}
+            kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
+            {{- end }}
+{{- end}}

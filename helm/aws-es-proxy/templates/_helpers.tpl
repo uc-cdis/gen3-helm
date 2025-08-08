@@ -66,3 +66,17 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Gets the domain name of the Elasticsearch cluster for Crossplane policy.
+*/}}
+{{- define "aws-es-proxy.esEndpointName" -}}
+{{- $endpoint := .Values.esEndpoint }}
+{{- $trimmed := trimPrefix "vpc-" $endpoint }}
+{{- $firstPart := index (splitList "." $trimmed) 0 }}
+{{- $parts := splitList "-" $firstPart }}
+{{- $domainParts := slice $parts 0 (sub (len $parts) 1) }}
+{{- $domainName := join "-" $domainParts }}
+{{- $domainName -}}
+{{- end }}

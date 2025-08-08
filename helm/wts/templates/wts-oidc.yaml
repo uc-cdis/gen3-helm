@@ -17,6 +17,9 @@ spec:
             secretName: "fence-config"
         - name: shared-volume
           emptyDir: {}
+        - name: wts-g3auto
+          secret:
+            secretName: "wts-g3auto"
       initContainers:
         - name: wait-for-fence
           image: curlimages/curl:latest
@@ -37,19 +40,67 @@ spec:
               export WTS_HOSTNAME={{ .Values.global.hostname }}
               echo "Trying to generate WTS client for hostname : $WTS_HOSTNAME..."
 
+              # support migration from cloud-automation
+              if [ -f /shared/appcreds.json ]; then
+                eval $(awk '
+                /fence_base_url/ { fence_found = 1; next }
+                fence_found && /oidc_client_id/ { 
+                    gsub(/[",]/, "", $2); 
+                    print "OIDC_CLIENT_ID=" $2; 
+                    next 
+                }
+                fence_found && /oidc_client_secret/ { 
+                    gsub(/[",]/, "", $2); 
+                    print "OIDC_CLIENT_SECRET=" $2; 
+                    fence_found = 0; 
+                    next 
+                }
+                fence_found && /^[[:space:]]*$/ { next }
+                fence_found && !/oidc_/ { fence_found = 0 }
+                ' /shared/appcreds.json)
 
+                echo "OIDC_CLIENT_ID: $OIDC_CLIENT_ID"
 
-              secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
-              if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
-                echo "Failed generating oidc client for workspace token service: $secrets"
-                exit 1
+                # Only write to files if we found the values
+                if [ -n "$OIDC_CLIENT_ID" ] && [ -n "$OIDC_CLIENT_SECRET" ]; then
+                    echo "client_id: $OIDC_CLIENT_ID"
+                    echo -n "$OIDC_CLIENT_ID" > /shared/client_id
+                    echo -n "$OIDC_CLIENT_SECRET" > /shared/client_secret
+                    echo "Successfully wrote credentials to /shared/client_id and /shared/client_secret"
+                    exit 0
+                else
+                    echo "No OIDC credentials found after fence_base_url "
+                fi
               fi
-              client_id="${BASH_REMATCH[2]}"
-              client_secret="${BASH_REMATCH[3]}"
-              echo client_id: $client_id
-              echo client_secret: $client_secret
-              echo -n $client_id > /shared/client_id
-              echo -n $client_secret > /shared/client_secret
+
+              if fence-create client-list 2>/dev/null | grep -q "'client_id': '${CLIENT_ID}'"; then
+                echo "Client ${CLIENT_ID} exists"
+                echo "Client exists- die happy" > /shared/client_id
+              else
+                echo "Client ${CLIENT_ID} does not exist"
+                secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
+                if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                  echo "Failed generating oidc client for workspace token service: $secrets"
+                  echo "Attempting to delete existing client and recreate..."
+                  
+                  # Delete existing client (assuming client name is 'wts')
+                  fence-create client-delete --client wts 2>/dev/null || echo "No existing client to delete or deletion failed"
+                  secrets=$(fence-create client-create --client wts --urls "https://${WTS_HOSTNAME}/wts/oauth2/authorize" --username wts --auto-approve | tail -1)
+                  if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                    echo "Failed generating oidc client for workspace token service even after deletion: $secrets"
+                    exit 1
+                  else
+                      echo "Successfully recreated client after deletion"
+                  fi
+                fi
+                client_id="${BASH_REMATCH[2]}"
+                client_secret="${BASH_REMATCH[3]}"
+                echo client_id: $client_id
+                echo client_secret: $client_secret
+                echo -n $client_id > /shared/client_id
+                echo -n $client_secret > /shared/client_secret
+              fi
+
           env:
             - name: PGHOST
               valueFrom:
@@ -85,6 +136,12 @@ spec:
                   name: manifest-fence
                   key: fence-config-public.yaml
                   optional: true
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: wts-oidc-client
+                  key: client_id
+                  optional: true
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"
@@ -92,6 +149,10 @@ spec:
               readOnly: true
               mountPath: "/var/www/fence/fence-config.yaml"
               subPath: fence-config.yaml
+            - name: "wts-g3auto"
+              readOnly: true
+              mountPath: "/shared/appcreds.json"
+              subPath: appcreds.json
         - name: kubectl
           #TODO: Make this configurable?  
           image: bitnami/kubectl:latest
@@ -108,8 +169,13 @@ spec:
                 echo "..."
                 sleep 5
               done
-              echo "Updating k8s secret wts-oidc-client"
-              CLIENT_ID=$(cat /shared/client_id | base64)
-              CLIENT_SECRET=$(cat /shared/client_secret | base64)
-              kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
+              if grep -q "happy" /shared/client_id; then
+                echo "Client already exists- do nothing."
+                exit 0
+              else              
+                echo "Updating k8s secret wts-oidc-client"
+                CLIENT_ID=$(cat /shared/client_id | base64)
+                CLIENT_SECRET=$(cat /shared/client_secret | base64)
+                kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
+              fi
 {{- end }}
