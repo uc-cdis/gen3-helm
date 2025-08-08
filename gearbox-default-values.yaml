@@ -57,7 +57,7 @@ global:
 arborist:
   image:
     repository: quay.io/cdis/arborist
-    tag: 2024.03
+    tag: 	2025.07
 
 fence:
   FENCE_CONFIG:
@@ -154,10 +154,10 @@ fence:
       readOnly: true
       mountPath: "/fence/keys/key/jwt_private_key.pem"
       subPath: "jwt_private_key.pem"
-    - name: "fence-jwt-keys"
-      readOnly: true
-      mountPath: "/fence/keys/key/jwt_public_key.pem"
-      subPath: "jwt_public_key.pem"
+    # - name: "fence-jwt-keys"
+    #   readOnly: true
+    #   mountPath: "/fence/keys/key/jwt_public_key.pem"
+    #   subPath: "jwt_public_key.pem"
     - name: "config-volume-public"
       readOnly: true
       mountPath: "/var/www/fence/fence-config-public.yaml"
@@ -188,9 +188,10 @@ fence:
       subPath: fence_google_storage_creds_secret.json
 
   podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
+    {}
   # securityContext:
   #   allowPrivilegeEscalation: false
   #   runAsNonRoot: true
@@ -424,10 +425,11 @@ fence:
           - sower
 
 portal:
-  enabled: false
+  enabled: true
   image:
-    repository: quay.io/pcdc/gearbox_fe
-    tag: "dev"
+    repository: gearbox-frontend
+    tag: "GEAR-488"
+    pullPolicy: Never
   resources:
     requests:
       cpu: 1.0
@@ -443,7 +445,7 @@ revproxy:
   enabled: true
   image:
     repository: quay.io/cdis/nginx
-    tag: 2023.09
+    tag: 2025.08
 
 gearbox:
   enabled: true
@@ -455,13 +457,28 @@ gearbox:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
+  volumes:
+    - name: config-volume
+      secret:
+        secretName: "gearbox-g3auto"
+    - name: gearbox-middleware-jwt-keys
+      secret:
+        secretName: "gearbox-middleware-jwt-keys"
+        items:
+          - key: jwt_public_key.pem
+            path: jwt_public_key.pem
+        optional: false
 
 gearbox-middleware:
-  enabled: false
+  enabled: true
   image:
-    repository: quay.io/pcdc/gearbox-middleware
-    tag: "helm-test"
-    pullPolicy: Always
+    repository: gearbox-middleware
+    tag: "GEAR-488"
+    pullPolicy: Never
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
 
 ########################################################################################
 #                               DISABLED SERVICES                                      #

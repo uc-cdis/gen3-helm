@@ -1,0 +1,102 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    description: "Role for gearbox service account for {{ .Values.global.environment }}"
+    path: "/gen3-service/"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          { "Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole" },
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:gearbox-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-role-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-role-policy"
+    document: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:List*","s3:Get*"],
+            "Resource":[
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-bucket/*",
+              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-bucket"
+            ]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
+            "Resource":"arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-bucket/*"
+          }
+        ]
+      }
+
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: gearbox-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    policyArnRef: 
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-role-policy"
+---
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-bucket"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-bucket"
+    acl: private
+    forceDestroy: false
+    locationConstraint: {{ .Values.global.aws.region }}
+    tags:
+      Organization: gen3
+      description: Created by crossplane
+    versioningConfiguration:
+      {{- if .Values.global.crossplane.s3.versioningEnabled }}
+      status: "Enabled"
+      {{- end }}
+    serverSideEncryptionConfiguration:
+      rules:
+        - applyServerSideEncryptionByDefault:
+            sseAlgorithm: aws:kms
+            {{- if .Values.global.crossplane.s3.kmsKeyId }}
+            kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
+            {{- end }}
+{{- end}}            

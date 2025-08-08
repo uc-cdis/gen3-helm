@@ -4,9 +4,6 @@ metadata:
   name: gearbox-middleware-deployment
   labels:
     {{- include "gearbox-middleware.labels" . | nindent 4 }}
-    {{- if .Values.global.ddEnabled }}
-    {{- include "common.datadogLabels" . | nindent 4 }}
-    {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -14,71 +11,88 @@ spec:
   selector:
     matchLabels:
       {{- include "gearbox-middleware.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
+        public: "yes"
+        s3: "yes"
+        userhelper: "yes"
         {{- include "gearbox-middleware.selectorLabels" . | nindent 8 }}
-        {{- if .Values.global.ddEnabled }}
-        {{- include "common.datadogLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/gearbox-middleware-creds.yaml") . | sha256sum }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
     spec:
-      volumes:
-        {{- toYaml .Values.volumes | nindent 8 }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
+      serviceAccountName: {{ include "gearbox-middleware.serviceAccountName" . }}
+      {{- with .Values.affinity }}
+      affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "gearbox-middleware.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }} 
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+        - name: gearbox-middleware
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- if and .Values.gearboxMiddlewareG3auto.awsaccesskey .Values.gearboxMiddlewareG3auto.awssecretkey }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gearbox-middleware-g3auto
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gearbox-middleware-g3auto
+                  key: aws_secret_access_key
+            {{- else if or (.Values.secrets.awsSecretAccessKey) (.Values.global.aws.awsSecretAccessKey) (.Values.global.aws.externalSecrets.enabled) (.Values.global.aws.useLocalSecret.enabled) }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                {{- if .Values.global.aws.useLocalSecret.enabled }}
+                  name: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+                {{- else }}
+                  name: {{.Chart.Name}}-aws-config
+                {{- end }}
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                {{- if .Values.global.aws.useLocalSecret.enabled }}
+                  name: {{ .Values.global.aws.useLocalSecret.localSecretName }}
+                {{- else }}
+                  name: {{.Chart.Name}}-aws-config
+                {{- end }}
+                  key: secret-access-key
+            {{- end }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+            - containerPort: 80
           livenessProbe:
             httpGet:
               path: /_status
               port: 80
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
-          env:
-            {{- if .Values.global.ddEnabled }}
-            {{- include "common.datadogEnvVar" . | nindent 12 }}
-            {{- end }}
-            {{- toYaml .Values.env | nindent 12 }}
+              port: 80
       initContainers:
         - name: wait-for-gearbox
           image: curlimages/curl:latest
           command: ["/bin/sh","-c"]
-          args: ["while [ $(curl -sw '%{http_code}' http://gearbox-service/_status -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for gearbox...'; done"]      
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+          args: ["while [ $(curl -sw '%{http_code}' http://gearbox-service/_status -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for gearbox...'; done"]
