@@ -19,6 +19,7 @@ A Helm chart for Kubernetes
 | global.autoscaling.minReplicas | int | `1` |  |
 | global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
+| global.aws.enabled | bool | `false` |  |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
 | global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
