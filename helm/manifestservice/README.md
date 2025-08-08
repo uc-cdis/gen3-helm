@@ -65,7 +65,7 @@ A Helm chart for Kubernetes
 | manifestserviceG3auto.awssecretkey | string | `""` | AWS secret access key. |
 | manifestserviceG3auto.bucketName | string | `"testbucket"` | Bucket for the manifestservice to read and write to. |
 | manifestserviceG3auto.prefix | string | `"test"` | Directory name to use within the s3 bucket. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | partOf | string | `"Workspace-tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

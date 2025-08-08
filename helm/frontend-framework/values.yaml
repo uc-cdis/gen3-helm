@@ -64,7 +64,7 @@ global:
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1

@@ -67,7 +67,7 @@ A Helm chart for gen3 workspace token service
 | image.repository | string | `"quay.io/cdis/workspace-token-service"` | Docker repository. |
 | image.tag | string | `"feat_wts_internalfence"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
