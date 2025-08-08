@@ -25,6 +25,8 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
+  aws:
+    enabled: false
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
