@@ -92,7 +92,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create bucket-access-group-verify
                 if [[ $? != 0 ]]; then
@@ -227,7 +227,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create google-manage-keys
                 if [[ $? != 0 ]]; then
@@ -362,7 +362,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create google-manage-account-access
                 if [[ $? != 0 ]]; then
@@ -503,7 +503,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create google-init
                 if [[ $? != 0 ]]; then
@@ -638,7 +638,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create expired-service-account-delete
                 if [[ $? != 0 ]]; then
@@ -772,7 +772,7 @@ spec:
               - "-c"
               - |
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 echo 'options use-vc' >> /etc/resolv.conf
                 fence-create delete-expired-google-access
                 if [[ $? != 0 ]]; then

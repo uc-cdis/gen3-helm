@@ -70,7 +70,7 @@ global:
     separateSecretStore: false
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
