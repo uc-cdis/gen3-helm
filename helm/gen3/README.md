@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.24 |
+| file://../hatchery | hatchery | 0.1.25 |
 | file://../indexd | indexd | 0.1.31 |
 | file://../manifestservice | manifestservice | 0.1.30 |
 | file://../metadata | metadata | 0.1.29 |
