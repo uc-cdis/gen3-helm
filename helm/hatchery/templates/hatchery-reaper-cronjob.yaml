@@ -61,7 +61,6 @@ spec:
               args:
                 - "-c"
                 - |
-                  set -e
                   limit={{ .Values.hatchery.reaper.idleTimeoutSeconds | default 3600 }}
 
                   if [[ -f "/hatchery.json" ]]; then
@@ -94,10 +93,12 @@ spec:
                   for user in $remote_users; do 
                       echo "Checking workspace for $user"
                       status=$(curl -s -H "REMOTE_USER: $user" hatchery-service/status | jq -r .status)
+                      echo "Workspace status for $user - $status"
                       if [[ "$status" == "Running" || "$status" == "Launching" ]]; then
                           serviceName=h-$(escape $user)-s
                           service="ambassador-service"
                           status_code=$(curl -s -w '%{http_code}' -o status.json -H "REMOTE_USER: $user" $service/api/status)
+                          echo "Workspace status code for $user - $status_code"
                           if [ "$status_code" == "200" ]; then
                               last_activity=$(jq -r .last_activity < status.json)
                               now=$(date +%s)
