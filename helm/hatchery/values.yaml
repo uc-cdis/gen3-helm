@@ -233,3 +233,16 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+# -- (map) Configuration for workspace launch test crobjob
+workspace_launch_test:
+  # -- (bool) Whether the workspace launch test cron job is enabled.
+  workspace_launch_test: false
+  # -- (string) The schedule for the workspace launch test cron job.
+  schedule: "0 * * * *" # Runs every hour (adjust as needed)
+  # -- (string) Images to test in the workspace launch test cron job. 
+  # Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks"
+  workspaceImages: "(Generic) Jupyter Lab Notebook with R Kernel"
+  # -- (string) The name of the workspace launch test operator.
+  operatorName: "username"
+  # -- (string) Hostname for the workspace launch test operator.
+  hostname: "https://example.com"
