@@ -27,7 +27,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.21 |
-| file://../dashboard | dashboard | 0.1.5 |
+| file://../dashboard | dashboard | 0.1.6 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
 | file://../fence | fence | 0.1.51 |
@@ -48,8 +48,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../requestor | requestor | 0.1.24 |
 | file://../revproxy | revproxy | 0.1.41 |
 | file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.31 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.29 |
+| file://../sower | sower | 0.1.32 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.30 |
 | file://../wts | wts | 0.1.28 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |

@@ -40,7 +40,7 @@ dependencies:
     version: 0.1.21
     repository: file://../common
   - name: dashboard
-    version: 0.1.5
+    version: 0.1.6
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: etl
@@ -100,11 +100,11 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.31
+    version: 0.1.32
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
