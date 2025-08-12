@@ -232,6 +232,11 @@ hatchery:
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
+  reaper:
+    enabled: true
+    suspendCronjob: false
+    schedule: "0 * * * *"
+    idleTimeoutSeconds: 3600
 
   # -- (bool) Whether to skip node selector for . Defaults to `global.dev`.
   skipNodeSelector: false

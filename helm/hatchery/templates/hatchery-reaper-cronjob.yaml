@@ -1,0 +1,126 @@
+{{- if .Values.hatchery.reaper.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hatchery-reaper
+  labels:
+    app: hatchery-reaper
+spec:
+  schedule: "{{ .Values.hatchery.reaper.schedule }}"
+  suspend: {{ .Values.hatchery.reaper.suspendCronjob }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: hatchery-reaper
+        spec:
+          restartPolicy: Never
+          serviceAccountName: hatchery-service-account
+          securityContext:
+            fsGroup: 1000
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  preference:
+                    matchExpressions:
+                      - key: karpenter.sh/capacity-type
+                        operator: In
+                        values: ["on-demand"]
+                - weight: 99
+                  preference:
+                    matchExpressions:
+                      - key: eks.amazonaws.com/capacityType
+                        operator: In
+                        values: ["ONDEMAND"]
+          containers:
+            - name: awshelper
+              image: quay.io/cdis/awshelper:master
+              imagePullPolicy: Always
+              env:
+                - name: KUBECTL_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: gen3Hostname
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname
+                - name: JUPYTER_NAMESPACE
+                  value: "{{ include "hatchery.jupyterNamespace" . }}"
+                - name: JENKINS_HOME
+                  value: "whatever"
+              volumeMounts:
+                - name: hatchery-config
+                  mountPath: /hatchery.json
+                  subPath: json
+                  readOnly: true
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  set -e
+                  limit={{ .Values.hatchery.reaper.idleTimeoutSeconds | default 3600 }}
+
+                  if [[ -f "/hatchery.json" ]]; then
+                    namespace=$(jq -r '."user-namespace" // empty' /hatchery.json)
+                  fi
+
+                  if [[ -z "$namespace" ]]; then
+                    namespace="${JUPYTER_NAMESPACE:-jupyter-pods}"
+                  fi
+
+                  echo "Using Jupyter namespace: $namespace"
+
+                  remote_users=$(kubectl get svc -n "$namespace" -o json | jq -r '.items[].metadata.annotations."getambassador.io/config"' | yq -r .headers.remote_user)
+
+                  function escape() {
+                      local string="$1"
+                      local safeBytes="abcdefghijklmnopqrstuvwxyz0123456789"
+                      local retString=""
+                      while read -n 1 char ; do
+                          if [[ $safeBytes == *"$char"* ]]; then
+                              retString+=$char
+                          else
+                              hex=$(printf "%02x" "'${char}'")
+                              retString+="-"$hex
+                          fi
+                      done <<< "$string"
+                      echo $retString
+                  }
+
+                  for user in $remote_users; do 
+                      echo "Checking workspace for $user"
+                      status=$(curl -s -H "REMOTE_USER: $user" hatchery-service/status | jq -r .status)
+                      if [[ "$status" == "Running" || "$status" == "Launching" ]]; then
+                          serviceName=h-$(escape $user)-s
+                          service="ambassador-service"
+                          status_code=$(curl -s -w '%{http_code}' -o status.json -H "REMOTE_USER: $user" $service/api/status)
+                          if [ "$status_code" == "200" ]; then
+                              last_activity=$(jq -r .last_activity < status.json)
+                              now=$(date +%s)
+                              delta=$(expr $now - $(date -d "$last_activity" +%s))
+                              if [ "$delta" -gt "$limit" ]; then
+                                  echo "$user idle $delta secs. Terminating."
+                                  curl -XPOST -s -H "REMOTE_USER: $user" hatchery-service/terminate
+                              fi
+                          else
+                              echo "Error: status code $status_code for $user"
+                          fi
+
+                          pm_status=$(curl -s -H "REMOTE_USER: $user" hatchery-service/paymodels | jq -r .request_status)
+                          if [ "$pm_status" == "above limit" ]; then
+                              echo "Paymodel above limit. Terminating $user"
+                              curl -XPOST -s -H "REMOTE_USER: $user" hatchery-service/terminate
+                          fi
+                      fi
+                  done
+
+                  echo "Finished hatchery-based reaping."
+          volumes:
+            - name: hatchery-config
+              configMap:
+                name: manifest-hatchery
+{{- end }}

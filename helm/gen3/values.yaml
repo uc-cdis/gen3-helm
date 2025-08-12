@@ -292,7 +292,11 @@ hatchery:
         fs-gid: 100
         user-volume-location: "/home/jovyan/pd"
         gen3-volume-location: "/home/jovyan/.gen3"
-
+    reaper:
+      enabled: true
+      suspendCronjob: false
+      schedule: "0 * * * *"
+      idleTimeoutSeconds: 3600
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
