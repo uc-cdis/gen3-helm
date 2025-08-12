@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
+![Version: 0.1.25](https://img.shields.io/badge/Version-0.1.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)
 
 A Helm chart for deploying ambassador for gen3
 
@@ -33,7 +33,7 @@ A Helm chart for deploying ambassador for gen3
 | image.tag | string | `"1.4.2"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | jupyterNamespace | string | `""` | Namespace override to use for Jupyter resources. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |

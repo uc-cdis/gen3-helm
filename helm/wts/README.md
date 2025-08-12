@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.26](https://img.shields.io/badge/Version-0.1.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.21 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -67,7 +67,7 @@ A Helm chart for gen3 workspace token service
 | image.repository | string | `"quay.io/cdis/workspace-token-service"` | Docker repository. |
 | image.tag | string | `"feat_wts_internalfence"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | oidc_client_id | string | `nil` | Id for the OIDC client. |

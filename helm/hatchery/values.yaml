@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -57,6 +62,12 @@ global:
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
   minAvialable: 1
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
@@ -83,8 +94,15 @@ global:
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "stata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sStataSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "stata-g3auto"
+  stataG3auto:
+
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -231,3 +249,13 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) Service account to use or create.
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
+  # -- (string) The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "hatchery-sa"

@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 data-portal
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.21 |
 
 ## Values
 
@@ -80,7 +80,7 @@ A Helm chart for gen3 data-portal
 | image.repository | string | `"quay.io/cdis/data-portal"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | mountpointCacheBucketName | string | `""` |  |
 | mountpointCacheEnabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |
 | nameOverride | string | `""` | Override the name of the chart. |

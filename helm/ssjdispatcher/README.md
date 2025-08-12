@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.21 |
 
 ## Values
 
@@ -43,6 +43,12 @@ A Helm chart for gen3 ssjdispatcher
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.crossplane.accountId | string | `"123456789012"` | The account ID of the AWS account. |
+| global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
+| global.crossplane.oidcProviderUrl | string | `"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"` | OIDC provider URL. This is used for authentication of roles/service accounts. |
+| global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
+| global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
+| global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -75,7 +81,7 @@ A Helm chart for gen3 ssjdispatcher
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
 | jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
 | jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
-| metricsEnabled | bool | `true` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | partOf | string | `"Workspace-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -94,10 +100,10 @@ A Helm chart for gen3 ssjdispatcher
 | service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
-| serviceAccount | map | `{"annotations":{},"create":true,"name":"ssjdispatcher-service-account"}` | Service account to use or create. |
+| serviceAccount | map | `{"annotations":{},"create":true,"name":"ssjdispatcher-sa"}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
-| serviceAccount.name | string | `"ssjdispatcher-service-account"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceAccount.name | string | `"ssjdispatcher-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | ssjcreds | map | `{"jobName":"indexing","jobPassword":"replace_with_password","jobPattern":"s3://test-12345678901234-upload/*","jobRequestCpu":"500m","jobRequestMem":"0.5Gi","jobUrl":"http://indexd-service/index","jobUser":"ssj","metadataservicePassword":"replace_with_password","metadataserviceUrl":"http://revproxy-service/mds","metadataserviceUsername":"gateway","sqsUrl":"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"}` | Values for ssjdispatcher secret. |
 | ssjcreds.jobName | string | `"indexing"` | Name of the ssj job. |
 | ssjcreds.jobPassword | string | `"replace_with_password"` | Password for the job. |

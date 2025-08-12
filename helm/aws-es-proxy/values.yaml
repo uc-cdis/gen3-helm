@@ -37,12 +37,27 @@ global:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) Annotations to add to the pod
 podAnnotations:

@@ -74,3 +74,11 @@ Create the name of the jupyter namespace
 {{- $defaultVal := printf "jupyter-pods-%s" .Release.Namespace }}
 {{- default $defaultVal .Values.jupyterNamespace}}
 {{- end }}
+
+
+{{/*
+  Stata g3 Auto Secrets Manager Name
+*/}}
+{{- define "stata-workspace-gen3-license" -}}
+{{- default "stata-workspace-gen3-license" .Values.externalSecrets.stataG3auto }}
+{{- end }}

@@ -55,6 +55,8 @@ global:
   postgres:
     # -- (bool) Whether the database create job should run.
     dbCreate: true
+    # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
+    externalSecret: ""
     master:
       # -- global postgres master username
       username: postgres
@@ -85,6 +87,7 @@ global:
   logoutInactiveUsers: true
   workspaceTimeoutInMinutes: 480
   maintenanceMode: "off"
+  dataUploadBucket:
   # fenceURL:
   # arboristURL:
   # indexdURL:
@@ -209,6 +212,11 @@ dashboard:
   dashboardConfig:
     bucket: generic-dashboard-bucket
     prefix: hostname.com
+
+# -- (map) Configurations for gen3-analysis chart.
+gen3-analysis:
+  # -- (bool) Whether to deploy the gen3-analysis subchart.
+  enabled: false
 
 # -- (map) Configurations for guppy chart.
 gen3-user-data-library:
