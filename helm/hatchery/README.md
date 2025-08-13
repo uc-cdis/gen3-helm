@@ -107,5 +107,5 @@ A Helm chart for gen3 Hatchery
 | workspace_launch_test.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
 | workspace_launch_test.operatorName | string | `"username"` | The name of the workspace launch test operator. |
 | workspace_launch_test.schedule | string | `"0 * * * *"` | The schedule for the workspace launch test cron job. |
-| workspace_launch_test.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job.  Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |
+| workspace_launch_test.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job. Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |
 | workspace_launch_test.workspace_launch_test | bool | `false` | Whether the workspace launch test cron job is enabled. |
