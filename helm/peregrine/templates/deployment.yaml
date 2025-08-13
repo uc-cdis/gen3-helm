@@ -14,12 +14,21 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/peregrine-secret.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         public: "yes"
         s3: "yes"
@@ -118,23 +127,13 @@ spec:
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: dictionary_url
-                  optional: true
+              value: {{ .Values.global.dictionaryUrl | quote }}
             - name: PUBLIC_DATASETS
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: public_datasets
-                  optional: true
+              value: {{ .Values.global.publicDataSets | quote }}
+            {{- if .Values.global.indexdURL }}
             - name: INDEX_CLIENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: indexd_url
-                  optional: true
+              value: {{ .Values.global.indexdURL | quote }}
+            {{- end }}
             - name: GRAPHQL_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -146,11 +145,7 @@ spec:
               value: https://{{ .Values.global.hostname }}/user
             {{- else }}
             - name: FENCE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-global
-                  key: fence_url
-                  optional: true
+              value: {{ .Values.global.fenceURL | quote }}
             {{- end }}
             - name: ARBORIST_URL
               value: {{ .Values.arborist_url }}

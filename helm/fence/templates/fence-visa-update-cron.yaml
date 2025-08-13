@@ -50,7 +50,11 @@ spec:
                 - name: BUFFER_SIZE
                   value: {{ .Values.fenceVisaUpdate.bufferSize}}
                 - name: slackWebHook
-                  value: {{ .Values.fenceVisaUpdate.slack_webhook | quote }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: slack-webhook
+                      key: slack_webhook
+                      optional: true
                 - name: FENCE_PUBLIC_CONFIG
                   valueFrom:
                     configMapKeyRef:

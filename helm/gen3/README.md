@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.21](https://img.shields.io/badge/Version-0.2.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,38 +18,39 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.6 |
-| file://../ambassador | ambassador | 0.1.23 |
-| file://../arborist | arborist | 0.1.22 |
-| file://../argo-wrapper | argo-wrapper | 0.1.16 |
-| file://../audit | audit | 0.1.23 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.23 |
-| file://../cedar | cedar | 0.1.9 |
-| file://../cohort-middleware | cohort-middleware | 0.1.7 |
-| file://../common | common | 0.1.20 |
-| file://../dashboard | dashboard | 0.1.3 |
-| file://../dicom-server | dicom-server | 0.1.17 |
-| file://../etl | etl | 0.1.13 |
-| file://../fence | fence | 0.1.47 |
-| file://../frontend-framework | frontend-framework | 0.1.11 |
+| file://../access-backend | access-backend | 0.1.8 |
+| file://../ambassador | ambassador | 0.1.25 |
+| file://../arborist | arborist | 0.1.24 |
+| file://../argo-wrapper | argo-wrapper | 0.1.18 |
+| file://../audit | audit | 0.1.27 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.27 |
+| file://../cedar | cedar | 0.1.12 |
+| file://../cohort-middleware | cohort-middleware | 0.1.11 |
+| file://../common | common | 0.1.21 |
+| file://../dashboard | dashboard | 0.1.7 |
+| file://../dicom-server | dicom-server | 0.1.19 |
+| file://../etl | etl | 0.1.15 |
+| file://../fence | fence | 0.1.52 |
+| file://../frontend-framework | frontend-framework | 0.1.13 |
+| file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.3 |
-| file://../guppy | guppy | 0.1.23 |
-| file://../hatchery | hatchery | 0.1.21 |
-| file://../indexd | indexd | 0.1.29 |
-| file://../manifestservice | manifestservice | 0.1.27 |
-| file://../metadata | metadata | 0.1.27 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
+| file://../guppy | guppy | 0.1.25 |
+| file://../hatchery | hatchery | 0.1.24 |
+| file://../indexd | indexd | 0.1.32 |
+| file://../manifestservice | manifestservice | 0.1.30 |
+| file://../metadata | metadata | 0.1.29 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohif-viewer | ohif-viewer | 0.1.1 |
-| file://../orthanc | orthanc | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.28 |
-| file://../portal | portal | 0.1.37 |
-| file://../requestor | requestor | 0.1.22 |
-| file://../revproxy | revproxy | 0.1.35 |
-| file://../sheepdog | sheepdog | 0.1.27 |
-| file://../sower | sower | 0.1.27 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.26 |
-| file://../wts | wts | 0.1.24 |
+| file://../ohif-viewer | ohif-viewer | 0.1.3 |
+| file://../orthanc | orthanc | 0.1.4 |
+| file://../peregrine | peregrine | 0.1.31 |
+| file://../portal | portal | 0.1.43 |
+| file://../requestor | requestor | 0.1.24 |
+| file://../revproxy | revproxy | 0.1.40 |
+| file://../sheepdog | sheepdog | 0.1.29 |
+| file://../sower | sower | 0.1.32 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.30 |
+| file://../wts | wts | 0.1.28 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -98,6 +99,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
+| gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
@@ -122,6 +125,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
 | global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
 | global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
+| global.dataUploadBucket | string | `nil` |  |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -133,12 +137,16 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.logoutInactiveUsers | bool | `true` |  |
+| global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
+| global.metricsEnabled | bool | `true` |  |
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
+| global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |
 | global.postgres.master.port | string | `"5432"` | global postgres master port |
@@ -148,6 +156,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.slackWebhook | string | `""` | slack webhook for notifications |
 | global.tierAccessLevel | string | `"private"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.workspaceTimeoutInMinutes | int | `480` |  |
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |

@@ -70,8 +70,19 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
+# indexd doesn't expose metrics yet.
 metricsEnabled: false
 
 # -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
@@ -214,17 +225,6 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
-# -- (map) Autoscaling options.
-autoscaling:
-  enabled: false
-  # -- (int) Minimum number of replicas
-  minReplicas: 1
-  # -- (int) Maximum number of replicas
-  maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 
@@ -242,13 +242,23 @@ volumes:
   - name: config-volume
     secret:
       secretName: "indexd-settings"
+  - name: gunicorn-conf
+    configMap:
+      name: "gunicorn-conf"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
+  - name: "uwsgi-config"
+    mountPath: "/etc/uwsgi/uwsgi.ini"
+    subPath: uwsgi.ini
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/indexd/local_settings.py"
     subPath: "local_settings.py"
+  - name: "gunicorn-conf"
+    readOnly: true
+    mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
+    subPath: "gunicorn.conf.py"
 
 # -- (list) Environment variables to pass to the container
 env:
