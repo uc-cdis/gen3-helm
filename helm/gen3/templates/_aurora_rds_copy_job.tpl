@@ -115,7 +115,7 @@ spec:
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
                   echo "Creating new secret with updated database name..."
-                  NEW_SECRET_NAME="$TARGET_SECRET-$date_str"
+                  NEW_SECRET_NAME="$(echo "${TARGET_SECRET}-${date_str}" | tr '_' '-')"
                   kubectl -n "$TARGET_NS" get secret "$TARGET_SECRET" -o json \
                     | jq --arg newdb "$TARGET_DB" \
                           --arg name "$NEW_SECRET_NAME" \
