@@ -114,18 +114,21 @@ spec:
 
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
-                  if [[ "{{ $.Values.auroraRdsCopyJob.writeToK8sSecret }}" == "true" ]]; then
-                    ENCODED_VALUE=$(echo -n "$TARGET_DB" | base64)
-                    PATCH="{\"data\":{\"{{ .serviceName }}\":\"$ENCODED_VALUE\"}}"
-                    if kubectl -n "$TARGET_NS" get secret cloned-db-names >/dev/null 2>&1; then
-                      kubectl -n "$TARGET_NS" patch secret cloned-db-names --type merge -p "$PATCH"
-                    else
-                      kubectl -n "$TARGET_NS" create secret generic cloned-db-names \
-                        --from-literal={{ .serviceName }}="$TARGET_DB"
-                    fi
-                  fi
+                  echo "Creating new secret with updated database name..."
+                  NEW_SECRET_NAME="$TARGET_SECRET-$date_str"
+                  kubectl -n "$TARGET_NS" get secret "$TARGET_SECRET" -o json \
+                    | jq --arg newdb "$TARGET_DB" \
+                          --arg name "$NEW_SECRET_NAME" \
+                          '.metadata.name = $name | .data.database = ($newdb | @base64) | del(.metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.annotations, .metadata.managedFields)' \
+                    | kubectl apply -f -
 
-                  echo "Database copied successfully: $SOURCE_DB -> $TARGET_DB"
+                  echo "Applying ESO PushSecret annotation..."
+                  kubectl -n "$TARGET_NS" annotate secret "$NEW_SECRET_NAME" \
+                    "external-secrets.io/push-to-secret-store=true" \
+                    "external-secrets.io/push-secret-store=gen3-secret-store" \
+                    "external-secrets.io/push-secret-name=${TARGET_NS}-${NEW_SECRET_NAME}" --overwrite
+
+                  echo "Database copied and secret $NEW_SECRET_NAME created and marked for push to AWS Secrets Manager"
 {{- end }}
 {{- end }}
 
