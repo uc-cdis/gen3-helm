@@ -1,6 +1,6 @@
 # orthanc
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -27,16 +27,17 @@ A Helm chart for gen3 Dicom Server
 | S3Storage.BucketName | string | `nil` |  |
 | S3Storage.Region | string | `"us-east-1"` |  |
 | S3Storage.SecretKey | string | `nil` |  |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
-| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
-| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
-| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sOrthancS3G3auto | string | `false` | Will create the Helm "orthanc-s3-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.orthancS3G3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
@@ -58,7 +59,7 @@ A Helm chart for gen3 Dicom Server
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |
 | image.tag | string | `"orthancteam-master-gen3-24.3.5"` | Overrides the image tag whose default is the chart appVersion. |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | partOf | string | `"Imaging"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |

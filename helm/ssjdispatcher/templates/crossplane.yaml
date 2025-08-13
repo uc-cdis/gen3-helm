@@ -1,0 +1,90 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
+    description: "Role for ssjdispatcher service account for {{ .Values.global.environment }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": { "Service": "ec2.amazonaws.com" },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "ssjdispatcher.serviceAccountName" .}}",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
+    document: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "sqs:ReceiveMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:DeleteMessage"
+            ],
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: ssjdispatcher-sa-managed-policy-attachment
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
+---
+apiVersion: sqs.aws.crossplane.io/v1beta1
+kind: Queue
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
+    region: "{{ .Values.global.aws.region }}"
+    visibilityTimeoutSeconds: 300
+    messageRetentionSeconds: 1209600
+    tags:
+      Organization: "gen3"
+      description: "Created by Crossplane"
+{{- end }}

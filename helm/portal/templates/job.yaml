@@ -1,4 +1,4 @@
-{{- if and (.Values.global.crossplane.enabled) (.Values.v2Enabled) }}
+{{- if and (.Values.global.crossplane.enabled) (.Values.mountpointCacheEnabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,9 +22,17 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         public: "yes"
         {{- include "portal.selectorLabels" . | nindent 8 }}

@@ -65,6 +65,8 @@ apiVersion: pkg.crossplane.io/v1alpha1
 kind: ControllerConfig
 metadata:
   name: aws-config
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ index .Values "crossplane-crds" "iamRoleName" }}
 spec:
   env:
   # AWS region required to resolve service endpoints
