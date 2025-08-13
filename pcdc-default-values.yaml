@@ -60,18 +60,6 @@ arborist:
   image:
     repository: quay.io/pcdc/arborist
     tag: "2025.07"
-  resources:
-    requests:
-      memory: "128Mi"
-  # env:
-  #   # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
-  #   # - name: JWKS_ENDPOINT
-  #   #   value: "http://fence-service/.well-known/jwks"
-  #   # - name: GODEBUG
-  #   #   value: "asyncpreemptoff=1"
-  #   # - name: GOMAXPROCS
-  #   #   value: "2"  
-    
 
 amanuensis:
   enabled: true
@@ -89,8 +77,7 @@ fence:
     MOCK_GOOGLE_AUTH: true
     mock_default_user: "test@example.com"
     #LOGIN_REDIRECT_WHITELIST: ["https://localhost:9443/", "http://localhost:9443/"]
-  podSecurityContext:
-    {}
+  podSecurityContext: {}
   image:
     repository: "quay.io/pcdc/fence"
     tag: "helm-test"
