@@ -59,7 +59,19 @@ global:
 arborist:
   image:
     repository: quay.io/pcdc/arborist
-    tag: "2025.01"
+    tag: "2025.07"
+  resources:
+    requests:
+      memory: "128Mi"
+  # env:
+  #   # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
+  #   # - name: JWKS_ENDPOINT
+  #   #   value: "http://fence-service/.well-known/jwks"
+  #   # - name: GODEBUG
+  #   #   value: "asyncpreemptoff=1"
+  #   # - name: GOMAXPROCS
+  #   #   value: "2"  
+    
 
 amanuensis:
   enabled: true
@@ -1003,7 +1015,7 @@ portal:
 revproxy:
   image:
     repository: quay.io/cdis/nginx
-    tag: "2025.07"
+    tag: "2025.08"
 
 sheepdog:
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
@@ -1075,8 +1087,8 @@ wts:
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: false
+      enabled: true
+      size: 5Gi
 
 elasticsearch:
   clusterName: gen3-elasticsearch
@@ -1087,6 +1099,10 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 5Gi
 
   resources:
     requests:

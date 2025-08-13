@@ -55,9 +55,14 @@ config["PSQL_USER_DB_CONNECTION"] = "postgresql://%s:%s@%s:5432/%s" % (
     fence_database,
 )
 
-config["USER_API"] = "https://%s/user" % conf_data.get(
+hostname = conf_data.get(
     "hostname", os.environ.get("CONF_HOSTNAME", "localhost")
 )  # for use by authutils
+config["OIDC_ISSUER"] = "https://%s/user" % hostname
+if hostname == "localhost":
+    config["USER_API"] = "http://fence-service/"
+else:
+    config["USER_API"] = "https://%s/user" % hostname  # for use by authutils
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config["FORCE_ISSUER"] = True
 config["DICTIONARY_URL"] = os.environ.get(

@@ -64,10 +64,15 @@ config["DICTIONARY_URL"] = environ.get(
     "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json",
 )
 
-hostname = environ.get("CONF_HOSTNAME") or conf_data["hostname"]
+hostname = conf_data.get(
+    "hostname", environ.get("CONF_HOSTNAME", "localhost")
+)  # for use by authutils
 config["OIDC_ISSUER"] = "https://%s/user" % hostname
+if hostname == "localhost":
+    config["USER_API"] = "http://fence-service/"
+else:
+    config["USER_API"] = "https://%s/user" % hostname  # for use by authutils
 
-config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config["FORCE_ISSUER"] = True
 app_init(app)
