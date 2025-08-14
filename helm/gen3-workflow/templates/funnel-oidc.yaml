@@ -3,6 +3,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: funnel-oidc-job
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     metadata:
@@ -34,20 +37,75 @@ spec:
           args:
             - "-c"
             - |
-              echo "Trying to generate Fence client for funnel..."
+              #!/bin/bash
+              set -euo pipefail
+
+              funnel_client_name="funnel-plugin-test"
+              
+              echo "Verifying if Fence client for funnel exists..."
+              
+              echo "Fetching current oidc clients.."
+              client_list_result=$(fence-create client-list)
+              echo "Finished fetching clients, iterating over them to find $funnel_client_name"
+
+              echo $client_list_result | sed "s/{'_client_metadata'/\n{'_client_metadata'/g" |  while read -r block; do
+                name=$(echo "$block" | grep -oP "'name':\s*'\K[^']+" || true)
+                echo "Client name :  $name"
+
+                client_id=$(echo "$block" | grep -oP "'client_id':\s*'\K[^']+" || true)
+                echo "Client id : $client_id"
+                
+                if [[ -z "$name" ]]; then
+                  echo "Skipping this client since client_name is empty"  
+                  continue
+                fi
+                
+                if [[ "$name" == "$funnel_client_name" ]]; then
+                  if [[ -n "$FUNNEL_OIDC_CLIENT_ID" && "$client_id" == "$FUNNEL_OIDC_CLIENT_ID" ]]; then
+                    echo "Client for funnel already exists, skipping creation."
+                    echo -n "$FUNNEL_OIDC_CLIENT_ID" > /shared/funnel_oidc_client_id
+                    echo -n "$FUNNEL_OIDC_CLIENT_SECRET" > /shared/funnel_oidc_client_secret
+                  else
+                    echo "No Client_ID exists in secrets or Name matches but Client ID differs. Deleting client: $funnel_client_name"
+                      fence-create client-delete --client="$funnel_client_name"
+                  fi
+                  break
+                fi
+
+              done
+
+              if [[ -s /shared/funnel_oidc_client_id ]]; then
+                echo "funnel_oidc_client_id is already set. Exiting."
+                exit 0
+              fi
+
+              # If we reach here, it means the client was not found or was deleted
+              echo "Client for funnel does not exist, creating..."
 
               secrets=$(fence-create client-create --client funnel-plugin-test --grant-types client_credentials | tail -1)
               if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
                 echo "Failed generating oidc client for workspace token service: $secrets"
                 exit 1
               fi
+
               client_id="${BASH_REMATCH[2]}"
               client_secret="${BASH_REMATCH[3]}"
-              echo client_id: $client_id
-              echo client_secret: $client_secret
+              echo "client_id: $client_id"
               echo -n $client_id > /shared/funnel_oidc_client_id
               echo -n $client_secret > /shared/funnel_oidc_client_secret
           env:
+            - name: FUNNEL_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_id
+                  optional: true
+            - name: FUNNEL_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_secret
+                  optional: true
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
@@ -92,6 +150,13 @@ spec:
         - name: kubectl
           #TODO: Make this configurable?  
           image: bitnami/kubectl:latest
+          env:
+            - name: FUNNEL_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_id
+                  optional: true
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"
@@ -127,6 +192,15 @@ spec:
                 --type merge \
                 -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
 
-              echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
-              kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
+              echo "funnel env var : $FUNNEL_OIDC_CLIENT_ID ; clien_id : $CLIENT_ID"
+              if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
+                namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+                DEPLOYMENT_NAME="funnel-server"
+                
+                echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
+                kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
+                
+                echo "Rolling out funnel-server in namespace $namespace..."
+                kubectl rollout restart deployment/"$DEPLOYMENT_NAME" -n $namespace
+              fi
 {{- end }}
