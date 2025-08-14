@@ -235,7 +235,7 @@ hatchery:
   reaper:
     enabled: true
     suspendCronjob: false
-    schedule: "0 * * * *"
+    schedule: "*/15 * * * *"
     idleTimeoutSeconds: 3600
 
   # -- (bool) Whether to skip node selector for . Defaults to `global.dev`.

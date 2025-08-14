@@ -69,7 +69,7 @@ A Helm chart for gen3 Hatchery
 | hatchery.json | string | `""` |  |
 | hatchery.reaper.enabled | bool | `true` |  |
 | hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
-| hatchery.reaper.schedule | string | `"0 * * * *"` |  |
+| hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
 | hatchery.reaper.suspendCronjob | bool | `false` |  |
 | hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |

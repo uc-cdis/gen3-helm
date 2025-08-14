@@ -295,7 +295,7 @@ hatchery:
     reaper:
       enabled: true
       suspendCronjob: false
-      schedule: "0 * * * *"
+      schedule: "*/15 * * * *"
       idleTimeoutSeconds: 3600
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
