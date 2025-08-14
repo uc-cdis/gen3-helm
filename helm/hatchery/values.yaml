@@ -160,6 +160,7 @@ hatchery:
   json: ""
   reaper:
     enabled: true
+    idleTimeoutSeconds: 3600
     suspendCronjob: true
     schedule: "0 * * * *"
   sidecarContainer:

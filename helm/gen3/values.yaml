@@ -294,6 +294,7 @@ hatchery:
         gen3-volume-location: "/home/jovyan/.gen3"
     reaper:
       enabled: true
+      idleTimeoutSeconds: 3600
       suspendCronjob: true
       schedule: "0 * * * *"
 indexd:

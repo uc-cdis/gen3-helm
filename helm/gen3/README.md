@@ -167,6 +167,7 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
 | hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
 | hatchery.hatchery.reaper.enabled | bool | `true` |  |
+| hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
 | hatchery.hatchery.reaper.schedule | string | `"0 * * * *"` |  |
 | hatchery.hatchery.reaper.suspendCronjob | bool | `true` |  |
 | hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
