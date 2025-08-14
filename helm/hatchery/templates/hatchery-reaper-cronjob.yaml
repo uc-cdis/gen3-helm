@@ -61,7 +61,7 @@ spec:
               args:
                 - "-c"
                 - |
-                  limit={{ .Values.hatchery.reaper.idleTimeoutSeconds | default 180 }}
+                  limit={{ .Values.hatchery.reaper.idleTimeoutSeconds | default 3600 }}
 
                   if [[ -f "/hatchery.json" ]]; then
                     namespace=$(jq -r '."user-namespace" // empty' /hatchery.json)
