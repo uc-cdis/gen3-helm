@@ -1,12 +1,11 @@
 
 {{- if .Values.workspace_launch_test.workspace_launch_test -}}
-# To run: gen3 job run workspace-launch-test-cronjob [WORKSPACE_LAUNCH_TEST_OPERATOR $workspace_launch_operator_direcrtory] [WORKSPACE_LAUNCH_IMAGES $workspace_launch_images_directory] 
 # WORKSPACE_LAUNCH_TEST_OPERATOR
-#   The workspace launch test operator will be read from 'workspace_launch_test_operator.txt' in the /g3auto/workspace-launch-test/ directory. Add user id without any quotes.
+#   The workspace launch test operator will be read from values.yaml under .Values.workspace_launch_test.operatorName.
 #   You can override the secret value with an optional command line argument.
 #
 # WORKSPACE_LAUNCH_IMAGES
-#   The workspace launch images will be read from 'workspace_launch_images.txt' in the /g3auto/workspace-launch-test/ directory. Add image names without any quotes.
+#   The workspace launch images will be read from values.yaml under .Values.workspace_launch_test.workspaceImages.
 #   Separate multiple images with plus '+' sign. For example: image1+image2+image3
 #   You can override the secret value with an optional command line argument.
 #   If images aren't provided, it defaults to '(Generic) Jupyter Lab Image with R Kernel'
@@ -49,7 +48,7 @@ spec:
               - name: PYTHONPATH
                 value: /var/www/fence
               - name: WORKSPACE_LAUNCH_TEST_OPERATOR
-                value: {{ .Values.workspace_launch_test.workspace_launch_test_operator | default "" }}
+                value: {{ .Values.workspace_launch_test.operatorName | default "" }}
               - name: TOKEN_EXPIRATION
                 GEN3_TOKEN_EXPIRATION|-value: "3600"-|
               - name: FENCE_PUBLIC_CONFIG
