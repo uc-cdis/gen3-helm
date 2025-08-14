@@ -250,9 +250,9 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 # -- (map) Configuration for workspace launch test crobjob
-workspace_launch_test:
+workspaceLaunchTest:
   # -- (bool) Whether the workspace launch test cron job is enabled.
-  workspace_launch_test: false
+  workspaceLaunchTest: false
   # -- (string) The schedule for the workspace launch test cron job.
   schedule: "0 * * * *"
   # -- (string) Images to test in the workspace launch test cron job.

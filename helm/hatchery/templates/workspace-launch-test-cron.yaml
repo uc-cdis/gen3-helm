@@ -1,11 +1,11 @@
 
-{{- if .Values.workspace_launch_test.workspace_launch_test -}}
+{{- if .Values.workspaceLaunchTest.workspaceLaunchTest -}}
 # WORKSPACE_LAUNCH_TEST_OPERATOR
-#   The workspace launch test operator will be read from values.yaml under .Values.workspace_launch_test.operatorName.
+#   The workspace launch test operator will be read from values.yaml under .Values.workspaceLaunchTest.operatorName.
 #   You can override the secret value with an optional command line argument.
 #
 # WORKSPACE_LAUNCH_IMAGES
-#   The workspace launch images will be read from values.yaml under .Values.workspace_launch_test.workspaceImages.
+#   The workspace launch images will be read from values.yaml under .Values.workspaceLaunchTest.workspaceImages.
 #   Separate multiple images with plus '+' sign. For example: image1+image2+image3
 #   You can override the secret value with an optional command line argument.
 #   If images aren't provided, it defaults to '(Generic) Jupyter Lab Image with R Kernel'
@@ -15,7 +15,7 @@ kind: CronJob
 metadata:
   name: workspace-launch-test
 spec:
-  schedule: {{ .Values.workspace_launch_test.schedule | quote }} # Schedule: Runs daily at 3 AM (adjust as needed)
+  schedule: {{ .Values.workspaceLaunchTest.schedule | quote }} # Schedule: Runs daily at 3 AM (adjust as needed)
   jobTemplate:
     spec:
       template:
@@ -48,7 +48,7 @@ spec:
               - name: PYTHONPATH
                 value: /var/www/fence
               - name: WORKSPACE_LAUNCH_TEST_OPERATOR
-                value: {{ .Values.workspace_launch_test.operatorName | default "" }}
+                value: {{ .Values.workspaceLaunchTest.operatorName }}
               - name: TOKEN_EXPIRATION
                 GEN3_TOKEN_EXPIRATION|-value: "3600"-|
               - name: FENCE_PUBLIC_CONFIG
@@ -146,9 +146,9 @@ spec:
           - name: workspace-launch-test
             env:
               - name: GEN3_HOSTNAME
-                value: {{ .Values.workspace_launch_test.hostname | quote}}
+                value: {{ .Values.workspaceLaunchTest.hostname | quote}}
               - name: WORKSPACE_LAUNCH_IMAGES
-                value: {{ .Values.workspace_launch_test.workspaceImages | default "(Generic) Jupyter Lab Image with R Kernel" | quote }}
+                value: {{ .Values.workspaceLaunchTest.workspaceImages | default "(Generic) Jupyter Lab Image with R Kernel" | quote }}
             image: quay.io/cdis/awshelper:master
             imagePullPolicy: Always
             volumeMounts:

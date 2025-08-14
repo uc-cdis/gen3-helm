@@ -1,4 +1,4 @@
-{{- if .Values.workspace_launch_test.workspace_launch_test -}}
+{{- if .Values.workspaceLaunchTest.workspaceLaunchTest -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
