@@ -67,7 +67,7 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: "external-secrets-sa-managed-policy-attachment"
+  name: "external-secrets-sa-{{ .Release.Namespace }}-managed-policy-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
