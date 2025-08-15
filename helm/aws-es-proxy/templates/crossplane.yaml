@@ -56,7 +56,7 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: {{ include "aws-es-proxy.serviceAccountName" . }}-managed-policy-attachment
+  name: "{{ include "aws-es-proxy.serviceAccountName" . }}-{{ .Release.Namespace }}-managed-policy-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
