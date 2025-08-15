@@ -13,7 +13,7 @@ spec:
       template:
         metadata:
           labels:
-            app: hatchery-reaper
+            app: gen3job
         spec:
           restartPolicy: Never
           serviceAccountName: hatchery-service-account
