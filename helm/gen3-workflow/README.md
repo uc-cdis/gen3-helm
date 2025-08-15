@@ -124,6 +124,9 @@ A Helm chart for Kubernetes
 | initVolumeMounts | list | `[]` | Volumes to mount to the init container. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. This can be used to provide a unique name for a chart |
+| netPolicy | map | `{"egressApps":["fence","presigned-url-fence","funnel"],"ingressApps":["fence","presigned-url-fence","funnel"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["fence","presigned-url-fence","funnel"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["fence","presigned-url-fence","funnel"]` | List of app labels that require ingress to this service |
 | nodeSelector | map | `{}` | Node Selector for the pods |
 | oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
 | partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
