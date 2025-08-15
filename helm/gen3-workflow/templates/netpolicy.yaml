@@ -54,4 +54,24 @@ spec:
             app: funnel
   policyTypes:
     - Egress
+
+---
+# mongodb egress to funnel, this is temporary until funnel 
+# adds a label gen3-mongodb for their mongodb service,
+# then we can combine this with funnel egress netpolicy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mongodb-egress-to-funnel
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mongodb
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: funnel
+  policyTypes:
+    - Egress
 {{- end }}
