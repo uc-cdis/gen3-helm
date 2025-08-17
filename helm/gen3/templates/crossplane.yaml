@@ -56,7 +56,13 @@ spec:
             "Effect": "Allow",
             "Action": [
               "secretsmanager:ListSecrets",
-              "secretsmanager:GetSecretValue"
+              "secretsmanager:GetSecretValue",
+                "secretsmanager:CreateSecret",
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:TagResource",
+                "secretsmanager:DeleteSecret"
             ],
             "Resource": "*"
           }
