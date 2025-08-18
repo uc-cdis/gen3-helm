@@ -186,14 +186,6 @@ EOF
                   echo " Secret keys mapped: $(echo $SECRET_KEYS | tr '\n' ' ')"
                   echo " Database timestamp: $date_str"
                   echo ""
-                  echo " Push to AWS enabled: Kubernetes secret will be synced to AWS Secrets Manager"
-                  echo " AWS Console: All $KEY_COUNT keys will be displayed in readable format"
-                  {{- else }}
-                  echo " Database copied successfully: $TARGET_DB"
-                  echo " Kubernetes secret created: $NEW_SECRET_NAME"
-                  echo " writeToAwsSecret is disabled. Secret will remain in Kubernetes only."
-                  {{- end }}
-
                   echo "Database copied and secret $NEW_SECRET_NAME created"
 {{- end }}
 {{- end }}
