@@ -59,7 +59,7 @@ global:
 arborist:
   image:
     repository: quay.io/pcdc/arborist
-    tag: "2025.01"
+    tag: "2025.07"
 
 amanuensis:
   enabled: true
@@ -77,8 +77,7 @@ fence:
     MOCK_GOOGLE_AUTH: true
     mock_default_user: "test@example.com"
     #LOGIN_REDIRECT_WHITELIST: ["https://localhost:9443/", "http://localhost:9443/"]
-  podSecurityContext:
-    {}
+  podSecurityContext: {}
   image:
     repository: "quay.io/pcdc/fence"
     tag: "helm-test"
@@ -1003,7 +1002,7 @@ portal:
 revproxy:
   image:
     repository: quay.io/cdis/nginx
-    tag: "2025.07"
+    tag: "2025.08"
 
 sheepdog:
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
@@ -1075,8 +1074,8 @@ wts:
 postgresql:
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: false
+      enabled: true
+      size: 5Gi
 
 elasticsearch:
   clusterName: gen3-elasticsearch
@@ -1087,6 +1086,10 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 5Gi
 
   resources:
     requests:
