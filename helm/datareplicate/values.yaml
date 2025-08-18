@@ -1,0 +1,29 @@
+# Default values for datareplicate.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  # -- (map) AWS configuration
+
+
+# -- (map) Docker image information.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/datareplicate
+  # -- (string) Docker pull policy.
+  pullPolicy: IfNotPresent
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  # -- (map) The amount of resources that the container requests
+  requests:
+    # -- (string) The amount of memory requested
+    memory: 512Mi
+  # -- (map) The maximum amount of resources that the container is allowed to use
+  limits:
+    # -- (string) The maximum amount of memory the container can use
+    memory: 2Gi

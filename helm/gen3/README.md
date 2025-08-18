@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.23](https://img.shields.io/badge/Version-0.2.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.24](https://img.shields.io/badge/Version-0.2.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -28,6 +28,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.21 |
 | file://../dashboard | dashboard | 0.1.8 |
+| file://../datareplicate | datareplicate | 0.0.1 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
 | file://../fence | fence | 0.1.53 |
@@ -75,6 +76,7 @@ Helm chart to deploy Gen3 Data Commons
 | dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
+| datareplicate.enabled | bool | `false` | Whether to deploy the datareplicate subchart. |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
