@@ -37,7 +37,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.22
+    version: 0.1.23
     repository: file://../common
   - name: dashboard
     version: 0.1.8
