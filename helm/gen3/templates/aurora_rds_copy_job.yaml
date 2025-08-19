@@ -1,0 +1,3 @@
+{{- if .Values.auroraRdsCopyJob.enabled }}
+{{ include "gen3.auroraRdsCopyJob" . }}
+{{- end }}

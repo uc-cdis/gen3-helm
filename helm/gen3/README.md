@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.26](https://img.shields.io/badge/Version-0.2.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.27](https://img.shields.io/badge/Version-0.2.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -63,6 +63,13 @@ Helm chart to deploy Gen3 Data Commons
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
+| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
+| auroraRdsCopyJob.enabled | bool | `false` |  |
+| auroraRdsCopyJob.services | list | `[]` |  |
+| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
+| auroraRdsCopyJob.targetNamespace | string | `""` |  |
+| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
+| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
