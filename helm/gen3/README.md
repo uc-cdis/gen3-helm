@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.22](https://img.shields.io/badge/Version-0.2.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.24](https://img.shields.io/badge/Version-0.2.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.25 |
+| file://../hatchery | hatchery | 0.1.26 |
 | file://../indexd | indexd | 0.1.32 |
 | file://../manifestservice | manifestservice | 0.1.31 |
 | file://../metadata | metadata | 0.1.29 |
@@ -166,6 +166,10 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/heal-notebooks:combined_tutorials__latest"` | docker image for workspace |
 | hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
 | hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
+| hatchery.hatchery.reaper.enabled | bool | `true` |  |
+| hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
+| hatchery.hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
+| hatchery.hatchery.reaper.suspendCronjob | bool | `false` |  |
 | hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
