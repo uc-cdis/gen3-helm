@@ -159,7 +159,6 @@ spec:
                   spec:
                     deletionPolicy: Delete
                     refreshInterval: 30s
-                    conversionStrategy: Default
                     secretStoreRefs:
                       - name: gen3-secret-store
                         kind: SecretStore
@@ -174,6 +173,7 @@ spec:
                     cat >> /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << MAPPING_EOF
                       - match:
                           secretKey: $key
+                          conversionStrategy: Default
                           remoteRef:
                             remoteKey: "$AWS_SECRET_KEY"
                             property: $key
