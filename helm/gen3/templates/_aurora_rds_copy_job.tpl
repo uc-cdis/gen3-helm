@@ -129,8 +129,9 @@ spec:
                     | kubectl apply -f -
 
                   echo "Creating PushSecret for AWS Secrets Manager..."
-                  # Create AWS secret key with timestamp
-                  AWS_SECRET_KEY="${TARGET_NS}-{{ .serviceName }}-creds-${date_str}"
+                  
+                  # Create AWS secret key with timestamp (convert underscores to hyphens for AWS)
+                  AWS_SECRET_KEY="${TARGET_NS}-{{ .serviceName }}-creds-$(echo $date_str | tr '_' '-')"
                   
                   echo "Database name: $TARGET_DB"
                   echo "Local secret name: $NEW_SECRET_NAME"  
@@ -142,36 +143,36 @@ spec:
                   echo "Found $KEY_COUNT keys: $(echo $SECRET_KEYS | tr '\n' ' ')"
                   
                   # Generate PushSecret with dynamic key mappings
-                  cat <<EOF > /tmp/pushsecret-${date_str}.yaml
-apiVersion: external-secrets.io/v1alpha1
-kind: PushSecret
-metadata:
-  name: aurora-pushsecret-{{ .serviceName }}-${date_str}
-  namespace: $TARGET_NS
-  labels:
-    service: {{ .serviceName }}
-    aurora-copy-timestamp: "${date_str}"
-spec:
-  deletionPolicy: Delete
-  refreshInterval: 30s
-  secretStoreRefs:
-    - name: gen3-secret-store
-      kind: SecretStore
-  selector:
-    secret:
-      name: $NEW_SECRET_NAME
-  data:
-EOF
+                  cat > /tmp/pushsecret-${date_str}.yaml << 'PUSHSECRET_EOF'
+                  apiVersion: external-secrets.io/v1alpha1
+                  kind: PushSecret
+                  metadata:
+                    name: aurora-pushsecret-{{ .serviceName }}-${date_str}
+                    namespace: ${TARGET_NS}
+                    labels:
+                      service: {{ .serviceName }}
+                      aurora-copy-timestamp: "${date_str}"
+                  spec:
+                    deletionPolicy: Delete
+                    refreshInterval: 30s
+                    secretStoreRefs:
+                      - name: gen3-secret-store
+                        kind: SecretStore
+                    selector:
+                      secret:
+                        name: ${NEW_SECRET_NAME}
+                    data:
+                  PUSHSECRET_EOF
                   
                   # Dynamically add each key as individual property mapping
                   for key in $SECRET_KEYS; do
-                    cat <<EOF >> /tmp/pushsecret-${date_str}.yaml
-    - match:
-        secretKey: $key
-        remoteRef:
-          remoteKey: "$AWS_SECRET_KEY"
-          property: $key
-EOF
+                    cat >> /tmp/pushsecret-${date_str}.yaml << MAPPING_EOF
+                      - match:
+                          secretKey: $key
+                          remoteRef:
+                            remoteKey: "$AWS_SECRET_KEY"
+                            property: $key
+                  MAPPING_EOF
                   done
                   
                   # Apply the dynamically generated PushSecret
