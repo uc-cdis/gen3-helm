@@ -17,15 +17,15 @@ dependencies:
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
@@ -40,7 +40,7 @@ dependencies:
     version: 0.1.22
     repository: file://../common
   - name: dashboard
-    version: 0.1.7
+    version: 0.1.8
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: etl
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.52
+    version: 0.1.53
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.24
+    version: 0.1.26
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
@@ -104,7 +104,7 @@ dependencies:
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.32
+    version: 0.1.33
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts

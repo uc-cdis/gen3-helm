@@ -21,24 +21,24 @@ Helm chart to deploy Gen3 Data Commons
 | file://../access-backend | access-backend | 0.1.8 |
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
-| file://../argo-wrapper | argo-wrapper | 0.1.18 |
-| file://../audit | audit | 0.1.27 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.27 |
+| file://../argo-wrapper | argo-wrapper | 0.1.19 |
+| file://../audit | audit | 0.1.28 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.28 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.22 |
-| file://../dashboard | dashboard | 0.1.7 |
+| file://../dashboard | dashboard | 0.1.8 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.52 |
+| file://../fence | fence | 0.1.53 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.24 |
+| file://../hatchery | hatchery | 0.1.26 |
 | file://../indexd | indexd | 0.1.32 |
-| file://../manifestservice | manifestservice | 0.1.30 |
+| file://../manifestservice | manifestservice | 0.1.31 |
 | file://../metadata | metadata | 0.1.29 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
@@ -48,7 +48,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../requestor | requestor | 0.1.24 |
 | file://../revproxy | revproxy | 0.1.40 |
 | file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.32 |
+| file://../sower | sower | 0.1.33 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.30 |
 | file://../wts | wts | 0.1.28 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
@@ -173,6 +173,10 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/heal-notebooks:combined_tutorials__latest"` | docker image for workspace |
 | hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
 | hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
+| hatchery.hatchery.reaper.enabled | bool | `true` |  |
+| hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
+| hatchery.hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
+| hatchery.hatchery.reaper.suspendCronjob | bool | `false` |  |
 | hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |
