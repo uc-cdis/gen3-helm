@@ -188,9 +188,10 @@ spec:
                       secret:
                         name: ${NEW_SECRET_NAME}-json
                     data:
-                      - secretKey: secretString
-                        remoteRef:
-                          remoteKey: "$AWS_SECRET_KEY"
+                      - match:
+                          secretKey: secretString
+                          remoteRef:
+                            remoteKey: "$AWS_SECRET_KEY"
                   PUSHSECRET_EOF
 
                   # Apply the dynamically generated PushSecret
