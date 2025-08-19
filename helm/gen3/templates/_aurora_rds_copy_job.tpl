@@ -52,7 +52,7 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      backoffLimit: 2
+      backoffLimit: 0
       template:
         metadata:
           labels:
@@ -143,7 +143,7 @@ spec:
                   echo "Found $KEY_COUNT keys: $(echo $SECRET_KEYS | tr '\n' ' ')"
                   
                   # Generate PushSecret with dynamic key mappings
-                  cat > /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << 'PUSHSECRET_EOF'
+                  cat > /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << PUSHSECRET_EOF
                   apiVersion: external-secrets.io/v1alpha1
                   kind: PushSecret
                   metadata:
@@ -166,7 +166,7 @@ spec:
                   
                   # Dynamically add each key as individual property mapping
                   for key in $SECRET_KEYS; do
-                    cat >> /tmp/pushsecret-${date_str}.yaml << MAPPING_EOF
+                    cat >> /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << MAPPING_EOF
                       - match:
                           secretKey: $key
                           remoteRef:
