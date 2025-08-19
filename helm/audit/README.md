@@ -1,6 +1,6 @@
 # audit
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -115,6 +115,7 @@ A Helm chart for Kubernetes
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | server.AWS_CREDENTIALS | map | `nil` | AWS credentials to access SQS queue. |
 | server.debug | bool | `false` | Whether to enable or disable debug mode. |
+| server.pull_frequency_seconds | int | `300` |  |
 | server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
 | server.sqs | map | `{"aws_creds":null,"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
 | server.sqs.aws_creds | string | `nil` | Name of the AWS credential defined in "AWS_CREDENTIALS" to use. |
