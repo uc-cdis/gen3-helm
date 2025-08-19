@@ -172,6 +172,7 @@ spec:
                 echo "..."
                 sleep 5
               done
+
               echo "Updating k8s secret funnel-oidc-client"
               export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
               export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
@@ -192,7 +193,7 @@ spec:
                 --type merge \
                 -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
 
-              echo "funnel env var : $FUNNEL_OIDC_CLIENT_ID ; clien_id : $CLIENT_ID"
+              echo "funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
                 namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
                 DEPLOYMENT_NAME="funnel-server"
