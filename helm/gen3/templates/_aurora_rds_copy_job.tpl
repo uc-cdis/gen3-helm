@@ -148,7 +148,7 @@ spec:
                   KEY_COUNT=$(echo $SECRET_KEYS | wc -w)
                   echo "Found $KEY_COUNT keys: $(echo $SECRET_KEYS | tr '\n' ' ')"
 
-                  # Build JSON string from secret data for AWS console readability
+                  # Build JSON string from secret data for AWS
                   echo "Building JSON secret string for AWS..."
                   JSON_STRING="{"
                   FIRST=true
@@ -168,7 +168,7 @@ spec:
                   kubectl -n "$TARGET_NS" create secret generic "${NEW_SECRET_NAME}-json" \
                     --from-literal=secretString="$JSON_STRING"
 
-                  # Generate PushSecret for JSON format (readable in AWS console)
+                  # Generate PushSecret for JSON format
                   cat > /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << PUSHSECRET_EOF
                   apiVersion: external-secrets.io/v1alpha1
                   kind: PushSecret
@@ -192,8 +192,6 @@ spec:
                           secretKey: secretString
                           remoteRef:
                             remoteKey: "$AWS_SECRET_KEY"
-                        metadata:
-                          secretPushFormat: string
                   PUSHSECRET_EOF
 
                   # Apply the dynamically generated PushSecret
@@ -203,9 +201,12 @@ spec:
                   echo "Database copied successfully: $TARGET_DB"
                   echo "Kubernetes secret created: $NEW_SECRET_NAME"
                   echo "JSON secret created: ${NEW_SECRET_NAME}-json"
-                  echo "PushSecret created with string format for AWS console readability"
+                  echo "PushSecret created and synced to AWS Secrets Manager"
                   echo "AWS Secrets Manager key: $AWS_SECRET_KEY"
                   echo "Database timestamp: $date_str"
+                  echo "Note: Secret stored as binary in AWS but contains valid JSON"
+                  echo ""
+                  echo "To decode secret: aws secretsmanager get-secret-value --secret-id \"$AWS_SECRET_KEY\" | jq -r .SecretBinary | base64 -d"
 {{- end }}
 {{- end }}
 
