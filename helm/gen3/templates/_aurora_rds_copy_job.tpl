@@ -121,7 +121,7 @@ spec:
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
                   echo "Creating new secret with updated database name..."
-                  NEW_SECRET_NAME="{{ .serviceName }}-dbcreds-${date_str}"
+                  NEW_SECRET_NAME="{{ .serviceName }}-dbcreds-$(echo $date_str | tr '_' '-')"
                   kubectl -n "$TARGET_NS" get secret "$TARGET_SECRET" -o json \
                     | jq --arg newdb "$TARGET_DB" \
                           --arg name "$NEW_SECRET_NAME" \
@@ -143,15 +143,15 @@ spec:
                   echo "Found $KEY_COUNT keys: $(echo $SECRET_KEYS | tr '\n' ' ')"
                   
                   # Generate PushSecret with dynamic key mappings
-                  cat > /tmp/pushsecret-${date_str}.yaml << 'PUSHSECRET_EOF'
+                  cat > /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << 'PUSHSECRET_EOF'
                   apiVersion: external-secrets.io/v1alpha1
                   kind: PushSecret
                   metadata:
-                    name: aurora-pushsecret-{{ .serviceName }}-${date_str}
+                    name: aurora-pushsecret-{{ .serviceName }}-$(echo $date_str | tr '_' '-')
                     namespace: ${TARGET_NS}
                     labels:
                       service: {{ .serviceName }}
-                      aurora-copy-timestamp: "${date_str}"
+                      aurora-copy-timestamp: "$(echo $date_str | tr '_' '-')"
                   spec:
                     deletionPolicy: Delete
                     refreshInterval: 30s
@@ -176,16 +176,16 @@ spec:
                   done
                   
                   # Apply the dynamically generated PushSecret
-                  kubectl apply -f /tmp/pushsecret-${date_str}.yaml
-                  rm /tmp/pushsecret-${date_str}.yaml
+                  kubectl apply -f /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml
+                  rm /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml
                   
-                  echo " Database copied successfully: $TARGET_DB"
-                  echo " Kubernetes secret created: $NEW_SECRET_NAME"
-                  echo " PushSecret created with $KEY_COUNT key mappings"
+                  echo "Database copied successfully: $TARGET_DB"
+                  echo "Kubernetes secret created: $NEW_SECRET_NAME"
+                  echo "PushSecret created with $KEY_COUNT key mappings"
                   echo ""
-                  echo " AWS Secrets Manager key: $AWS_SECRET_KEY"
-                  echo " Secret keys mapped: $(echo $SECRET_KEYS | tr '\n' ' ')"
-                  echo " Database timestamp: $date_str"
+                  echo "AWS Secrets Manager key: $AWS_SECRET_KEY"
+                  echo "Secret keys mapped: $(echo $SECRET_KEYS | tr '\n' ' ')"
+                  echo "Database timestamp: $date_str"
                   echo ""
                   echo "Database copied and secret $NEW_SECRET_NAME created"
 {{- end }}
