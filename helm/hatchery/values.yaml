@@ -237,6 +237,20 @@ hatchery:
   skipNodeSelector: false
   # -- (bool) Whether to use internal services url. Defaults to `global.dev`.
   useInternalServicesUrl: false
+  # -- (map) Configuration for workspace launch test crobjob
+  workspaceLaunchTest:
+    # -- (bool) Whether the workspace launch test cron job is enabled.
+    workspaceLaunchTest: false
+    # -- (string) The schedule for the workspace launch test cron job.
+    schedule: "0 * * * *"
+    # -- (string) Images to test in the workspace launch test cron job.
+    # Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks"
+    workspaceImages: "(Generic) Jupyter Lab Notebook with R Kernel"
+    # -- (string) The name of the workspace launch test operator.
+    operatorName: "username"
+    # -- (string) Hostname for the workspace launch test operator.
+    hostname: "https://example.com"
+
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -249,19 +263,6 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-# -- (map) Configuration for workspace launch test crobjob
-workspaceLaunchTest:
-  # -- (bool) Whether the workspace launch test cron job is enabled.
-  workspaceLaunchTest: false
-  # -- (string) The schedule for the workspace launch test cron job.
-  schedule: "0 * * * *"
-  # -- (string) Images to test in the workspace launch test cron job.
-  # Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks"
-  workspaceImages: "(Generic) Jupyter Lab Notebook with R Kernel"
-  # -- (string) The name of the workspace launch test operator.
-  operatorName: "username"
-  # -- (string) Hostname for the workspace launch test operator.
-  hostname: "https://example.com"
 
 # -- (map) Service account to use or create.
 serviceAccount:

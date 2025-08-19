@@ -76,6 +76,12 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | hatchery.skipNodeSelector | bool | `false` | Whether to skip node selector for . Defaults to `global.dev`. |
 | hatchery.useInternalServicesUrl | bool | `false` | Whether to use internal services url. Defaults to `global.dev`. |
+| hatchery.workspaceLaunchTest | map | `{"hostname":"https://example.com","operatorName":"username","schedule":"0 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel","workspaceLaunchTest":false}` | Configuration for workspace launch test crobjob |
+| hatchery.workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
+| hatchery.workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
+| hatchery.workspaceLaunchTest.schedule | string | `"0 * * * *"` | The schedule for the workspace launch test cron job. |
+| hatchery.workspaceLaunchTest.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job. Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |
+| hatchery.workspaceLaunchTest.workspaceLaunchTest | bool | `false` | Whether the workspace launch test cron job is enabled. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/hatchery"` | Docker repository. |
@@ -103,9 +109,3 @@ A Helm chart for gen3 Hatchery
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
-| workspaceLaunchTest | map | `{"hostname":"https://example.com","operatorName":"username","schedule":"0 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel","workspaceLaunchTest":false}` | Configuration for workspace launch test crobjob |
-| workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
-| workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
-| workspaceLaunchTest.schedule | string | `"0 * * * *"` | The schedule for the workspace launch test cron job. |
-| workspaceLaunchTest.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job. Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |
-| workspaceLaunchTest.workspaceLaunchTest | bool | `false` | Whether the workspace launch test cron job is enabled. |

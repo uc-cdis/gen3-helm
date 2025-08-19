@@ -1,5 +1,5 @@
 
-{{- if .Values.workspaceLaunchTest.workspaceLaunchTest -}}
+{{- if .Values.hatchery.workspaceLaunchTest.workspaceLaunchTest -}}
 # WORKSPACE_LAUNCH_TEST_OPERATOR
 #   The workspace launch test operator will be read from values.yaml under .Values.workspaceLaunchTest.operatorName.
 #   You can override the secret value with an optional command line argument.
