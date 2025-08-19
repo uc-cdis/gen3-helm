@@ -289,6 +289,9 @@ server:
     # cred1:
     #   aws_access_key_id:
     #   aws_secret_access_key:
+  pull_frequency_seconds:
+    # how often to check the queue for new audit logs
+    # defaults to 300 seconds / 5 minutes
 
 api:
   # -- (int) Amount to time-box queries.
