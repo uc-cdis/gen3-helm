@@ -117,9 +117,9 @@ spec:
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\";"
-                  
+
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
-                  
+
                   TABLE_OWNERSHIP_CMD="DO \$\$ DECLARE tbl record; BEGIN FOR tbl IN (SELECT table_schema || '.' || table_name AS full_table_name FROM information_schema.tables WHERE table_schema = 'public') LOOP EXECUTE 'ALTER TABLE ' || tbl.full_table_name || ' OWNER TO \"$TARGET_USER\";'; END LOOP; END \$\$;"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d "$TARGET_DB" -c "$TABLE_OWNERSHIP_CMD"
                   if [ $? -eq 0 ]; then
@@ -192,6 +192,8 @@ spec:
                           secretKey: secretString
                           remoteRef:
                             remoteKey: "$AWS_SECRET_KEY"
+                        metadata:
+                          secretPushFormat: string
                   PUSHSECRET_EOF
 
                   # Apply the dynamically generated PushSecret
@@ -201,7 +203,8 @@ spec:
                   echo "Database copied successfully: $TARGET_DB"
                   echo "Kubernetes secret created: $NEW_SECRET_NAME"
                   echo "JSON secret created: ${NEW_SECRET_NAME}-json"
-                  echo "PushSecret created, AWS Secrets Manager key: $AWS_SECRET_KEY"
+                  echo "PushSecret created with string format for AWS console readability"
+                  echo "AWS Secrets Manager key: $AWS_SECRET_KEY"
                   echo "Database timestamp: $date_str"
 {{- end }}
 {{- end }}
