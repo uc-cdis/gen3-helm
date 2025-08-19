@@ -56,7 +56,7 @@ spec:
     matchExpressions:
     - key: app
       operator: In
-      values: {{ toYaml .Values.netPolicy.ingressApps | nindent 6 }} 
+      values: {{ toYaml .Values.netPolicy.egressApps | nindent 6 }} 
   egress:
     - to:
       - podSelector:
