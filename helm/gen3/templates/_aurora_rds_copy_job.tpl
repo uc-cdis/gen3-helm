@@ -117,8 +117,12 @@ spec:
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\";"
-
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
+                  TABLE_OWNERSHIP_CMD="DO \$\$ DECLARE tbl record; BEGIN FOR tbl IN (SELECT table_schema || '.' || table_name AS full_table_name FROM information_schema.tables WHERE table_schema = 'public') LOOP EXECUTE 'ALTER TABLE ' || tbl.full_table_name || ' OWNER TO \"$TARGET_USER\";'; END LOOP; END \$\$;"
+                  psql -h "$AURORA_HOST" -U "$AURORA_USER" -d "$TARGET_DB" -c "$TABLE_OWNERSHIP_CMD"
+                  if [ $? -eq 0 ]; then
+                    echo "Successfully set table ownership to $TARGET_USER"
+                  fi
 
                   echo "Creating new secret with updated database name..."
                   NEW_SECRET_NAME="{{ .serviceName }}-dbcreds-$(echo $date_str | tr '_' '-')"
@@ -155,6 +159,7 @@ spec:
                   spec:
                     deletionPolicy: Delete
                     refreshInterval: 30s
+                    conversionStrategy: Default
                     secretStoreRefs:
                       - name: gen3-secret-store
                         kind: SecretStore
