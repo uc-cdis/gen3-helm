@@ -13,6 +13,7 @@ spec:
           {{- with .Values.podAnnotations }}
           annotations:
             {{- toYaml . | nindent 12 }}
+            checksum/config: {{ include (print $.Template.BasePath "/etl-mapping.yaml") . | sha256sum }}
           {{- end }}
           labels:
             app: gen3job
@@ -43,12 +44,9 @@ spec:
                 secretName: etl-secret  
             {{- end }}  
             - name: emptydir
-              emptyDir: {}      
+              emptyDir: {}
             - name: signal-volume
               emptyDir: {}
-            - name: creds-volume
-              secret:
-                secretName: "peregrine-dbcreds"
             - name: etl-mapping
               configMap:
                 name: etl-mapping
@@ -77,10 +75,7 @@ spec:
                 periodSeconds: 10
               env:
               - name: DICTIONARY_URL
-                valueFrom:
-                  configMapKeyRef:
-                    name: manifest-global
-                    key: dictionary_url
+                value: {{ .Values.global.dictionaryUrl | quote }}
               - name: HADOOP_URL
                 value: hdfs://0.0.0.0:9000
               - name: HADOOP_HOST
@@ -119,7 +114,7 @@ spec:
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:
-                      name: peregrine-dbcreds
+                      name: sheepdog-dbcreds
                       key: host
                 - name: DB_DATABASE
                   valueFrom:
@@ -142,10 +137,7 @@ spec:
                       name: sheepdog-dbcreds
                       key: port
                 - name: DICTIONARY_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-global
-                      key: dictionary_url
+                  value: {{ .Values.global.dictionaryUrl | quote }}
                 - name: HADOOP_URL
                   value: hdfs://localhost:9000
                 - name: ES_URL
@@ -163,10 +155,7 @@ spec:
                 - name: ETL_FORCED
                   value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-global
-                      key: hostname
+                  value: {{ .Values.global.hostname | quote }}
                 - name: slackWebHook
                   valueFrom:
                     secretKeyRef:

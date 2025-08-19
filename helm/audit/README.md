@@ -1,6 +1,6 @@
 # audit
 
-![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.21 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -82,7 +82,7 @@ A Helm chart for Kubernetes
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | initEnv | list | `{}` | Volumes to attach to the init container. |
 | initVolumeMounts | list | `[]` | Volumes to mount to the init container. |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. This can be used to provide a unique name for a chart |
 | netPolicy | map | `{"egressApps":["fence","presigned-url-fence"],"ingressApps":["fence","presigned-url-fence"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["fence","presigned-url-fence"]` | List of apps that this app requires egress to |
@@ -113,12 +113,14 @@ A Helm chart for Kubernetes
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| server.AWS_CREDENTIALS | map | `{}` | AWS credentials to access SQS queue. |
+| server.AWS_CREDENTIALS | map | `nil` | AWS credentials to access SQS queue. |
 | server.debug | bool | `false` | Whether to enable or disable debug mode. |
 | server.pull_from_queue | bool | `false` | Whether to pull logs from sqs queue. |
-| server.sqs | map | `{"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
+| server.sqs | map | `{"aws_creds":null,"region":"us-east-1","url":"http://sqs.com"}` | AWS SQS queue information. |
+| server.sqs.aws_creds | string | `nil` | Name of the AWS credential defined in "AWS_CREDENTIALS" to use. |
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
+| server.type | string | `"aws_sqs"` | Whether audit should use the api or aws_sqs. |
 | service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

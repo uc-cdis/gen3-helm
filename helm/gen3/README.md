@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.27](https://img.shields.io/badge/Version-0.2.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,39 +18,40 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.6 |
-| file://../ambassador | ambassador | 0.1.23 |
-| file://../arborist | arborist | 0.1.22 |
-| file://../argo-wrapper | argo-wrapper | 0.1.16 |
-| file://../audit | audit | 0.1.23 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.23 |
-| file://../cedar | cedar | 0.1.9 |
-| file://../cohort-middleware | cohort-middleware | 0.1.7 |
-| file://../common | common | 0.1.20 |
-| file://../dashboard | dashboard | 0.1.3 |
-| file://../dicom-server | dicom-server | 0.1.17 |
-| file://../etl | etl | 0.1.13 |
-| file://../fence | fence | 0.1.47 |
-| file://../frontend-framework | frontend-framework | 0.1.11 |
+| file://../access-backend | access-backend | 0.1.8 |
+| file://../ambassador | ambassador | 0.1.25 |
+| file://../arborist | arborist | 0.1.24 |
+| file://../argo-wrapper | argo-wrapper | 0.1.19 |
+| file://../audit | audit | 0.1.28 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.28 |
+| file://../cedar | cedar | 0.1.12 |
+| file://../cohort-middleware | cohort-middleware | 0.1.11 |
+| file://../common | common | 0.1.22 |
+| file://../dashboard | dashboard | 0.1.8 |
+| file://../dicom-server | dicom-server | 0.1.19 |
+| file://../etl | etl | 0.1.15 |
+| file://../fence | fence | 0.1.53 |
+| file://../frontend-framework | frontend-framework | 0.1.13 |
+| file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.3 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../gen3-workflow | gen3-workflow | 0.1.10 |
-| file://../guppy | guppy | 0.1.23 |
-| file://../hatchery | hatchery | 0.1.21 |
-| file://../indexd | indexd | 0.1.29 |
-| file://../manifestservice | manifestservice | 0.1.27 |
-| file://../metadata | metadata | 0.1.27 |
+| file://../guppy | guppy | 0.1.25 |
+| file://../hatchery | hatchery | 0.1.26 |
+| file://../indexd | indexd | 0.1.32 |
+| file://../manifestservice | manifestservice | 0.1.31 |
+| file://../metadata | metadata | 0.1.29 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohif-viewer | ohif-viewer | 0.1.1 |
-| file://../orthanc | orthanc | 0.1.2 |
-| file://../peregrine | peregrine | 0.1.28 |
-| file://../portal | portal | 0.1.36 |
-| file://../requestor | requestor | 0.1.22 |
-| file://../revproxy | revproxy | 0.1.34 |
-| file://../sheepdog | sheepdog | 0.1.27 |
-| file://../sower | sower | 0.1.27 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.26 |
-| file://../wts | wts | 0.1.24 |
+| file://../ohif-viewer | ohif-viewer | 0.1.3 |
+| file://../orthanc | orthanc | 0.1.4 |
+| file://../peregrine | peregrine | 0.1.31 |
+| file://../portal | portal | 0.1.43 |
+| file://../requestor | requestor | 0.1.24 |
+| file://../revproxy | revproxy | 0.1.40 |
+| file://../sheepdog | sheepdog | 0.1.29 |
+| file://../sower | sower | 0.1.33 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.30 |
+| file://../wts | wts | 0.1.28 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -62,6 +63,13 @@ Helm chart to deploy Gen3 Data Commons
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
+| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
+| auroraRdsCopyJob.enabled | bool | `false` |  |
+| auroraRdsCopyJob.services | list | `[]` |  |
+| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
+| auroraRdsCopyJob.targetNamespace | string | `""` |  |
+| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
+| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
@@ -100,6 +108,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
 | frontend-framework.image.repository | string | `"quay.io/cdis/commons-frontend-app"` | The Docker image repository for the frontend-framework. |
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
+| gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":true,"image":{"repository":"quay.io/cdis/gen3-workflow","tag":"test_allow_mock_auth"},"workflowConfig":{"hostname":"localhost-helm","kmsEncryptionEnabled":false,"mockAuth":true,"s3AccessKeyId":"<redacted>","s3SecretAccessKey":"<redacted>"}}` | Configurations for gen3-workflow chart. |
@@ -128,6 +138,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.crossplane.providerConfigName | string | `"provider-aws"` | The name of the crossplane provider config. |
 | global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
 | global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
+| global.dataUploadBucket | string | `nil` |  |
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -139,12 +150,16 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.logoutInactiveUsers | bool | `true` |  |
+| global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
+| global.metricsEnabled | bool | `true` |  |
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
+| global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |
 | global.postgres.master.port | string | `"5432"` | global postgres master port |
@@ -154,6 +169,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.slackWebhook | string | `""` | slack webhook for notifications |
 | global.tierAccessLevel | string | `"private"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.workspaceTimeoutInMinutes | int | `480` |  |
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
@@ -163,6 +179,10 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/heal-notebooks:combined_tutorials__latest"` | docker image for workspace |
 | hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
 | hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
+| hatchery.hatchery.reaper.enabled | bool | `true` |  |
+| hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
+| hatchery.hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
+| hatchery.hatchery.reaper.suspendCronjob | bool | `false` |  |
 | hatchery.hatchery.sidecarContainer.args | list | `[]` | Arguments to pass to the sidecare container. |
 | hatchery.hatchery.sidecarContainer.command | list | `["/bin/bash","./sidecar.sh"]` | Commands to run for the sidecar container. |
 | hatchery.hatchery.sidecarContainer.cpu-limit | string | `"0.1"` | The maximum amount of CPU the sidecar container can use |

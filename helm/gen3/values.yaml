@@ -49,11 +49,14 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
+
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
     # -- (bool) Whether the database create job should run.
     dbCreate: true
+    # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
+    externalSecret: ""
     master:
       # -- global postgres master username
       username: postgres
@@ -81,6 +84,20 @@ global:
   tierAccessLevel: private
   # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
   tierAccessLimit: "1000"
+  logoutInactiveUsers: true
+  workspaceTimeoutInMinutes: 480
+  maintenanceMode: "off"
+  dataUploadBucket:
+  # fenceURL:
+  # arboristURL:
+  # indexdURL:
+  # workspaceURL:
+  # manifestServiceURL:
+  # wtsURL:
+  # privacyPolicyURL:
+  # mapboxToken:
+  # cookieDomain:
+  # desNamespace:
   # -- (bool) Global flags to control and manage network policies for a Gen3 installation
   # NOTE: Network policies are currently a beta feature. Use with caution!
   netPolicy:
@@ -99,6 +116,7 @@ global:
   createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
+  metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
@@ -445,6 +463,11 @@ dashboard:
     bucket: generic-dashboard-bucket
     prefix: hostname.com
 
+# -- (map) Configurations for gen3-analysis chart.
+gen3-analysis:
+  # -- (bool) Whether to deploy the gen3-analysis subchart.
+  enabled: false
+
 # -- (map) Configurations for gen3-user-data-library chart.
 gen3-user-data-library:
   # -- (bool) Whether to deploy the gen3-user-data-library subchart.
@@ -536,7 +559,11 @@ hatchery:
         fs-gid: 100
         user-volume-location: "/home/jovyan/pd"
         gen3-volume-location: "/home/jovyan/.gen3"
-
+    reaper:
+      enabled: true
+      suspendCronjob: false
+      schedule: "*/15 * * * *"
+      idleTimeoutSeconds: 3600
 indexd:
   # -- (bool) Whether to deploy the indexd subchart.
   enabled: true
@@ -690,3 +717,12 @@ tests:
       memory: "10G"
   image:
     tag: master
+# Default configuration for auroraRdsCopyJob
+auroraRdsCopyJob:
+  enabled: false
+  auroraMasterSecret: ""
+  sourceNamespace: ""
+  targetNamespace: ""
+  writeToK8sSecret: false
+  writeToAwsSecret: false
+  services: []
