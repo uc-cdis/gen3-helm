@@ -47,7 +47,7 @@ metadata:
   annotations:
     "cronjob.kubernetes.io/disabled": "true"
 spec:
-  schedule: "0 0 31 3 *" 
+  schedule: "0 0 31 3 *"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -117,7 +117,9 @@ spec:
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\";"
+                  
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
+                  
                   TABLE_OWNERSHIP_CMD="DO \$\$ DECLARE tbl record; BEGIN FOR tbl IN (SELECT table_schema || '.' || table_name AS full_table_name FROM information_schema.tables WHERE table_schema = 'public') LOOP EXECUTE 'ALTER TABLE ' || tbl.full_table_name || ' OWNER TO \"$TARGET_USER\";'; END LOOP; END \$\$;"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d "$TARGET_DB" -c "$TABLE_OWNERSHIP_CMD"
                   if [ $? -eq 0 ]; then
@@ -133,20 +135,40 @@ spec:
                     | kubectl apply -f -
 
                   echo "Creating PushSecret for AWS Secrets Manager..."
-                  
+
                   # Create AWS secret key with timestamp (convert underscores to hyphens for AWS)
                   AWS_SECRET_KEY="${TARGET_NS}-{{ .serviceName }}-creds-$(echo $date_str | tr '_' '-')"
-                  
+
                   echo "Database name: $TARGET_DB"
-                  echo "Local secret name: $NEW_SECRET_NAME"  
+                  echo "Local secret name: $NEW_SECRET_NAME"
                   echo "AWS Secret Manager key: $AWS_SECRET_KEY"
-                  
+
                   # Dynamically detect ALL keys in the secret
                   SECRET_KEYS=$(kubectl -n "$TARGET_NS" get secret "$NEW_SECRET_NAME" -o jsonpath='{.data}' | jq -r 'keys[]')
                   KEY_COUNT=$(echo $SECRET_KEYS | wc -w)
                   echo "Found $KEY_COUNT keys: $(echo $SECRET_KEYS | tr '\n' ' ')"
-                  
-                  # Generate PushSecret with dynamic key mappings
+
+                  # Build JSON string from secret data for AWS console readability
+                  echo "Building JSON secret string for AWS..."
+                  JSON_STRING="{"
+                  FIRST=true
+                  for key in $SECRET_KEYS; do
+                    if [ "$FIRST" = false ]; then
+                      JSON_STRING="$JSON_STRING,"
+                    fi
+                    VALUE=$(kubectl -n "$TARGET_NS" get secret "$NEW_SECRET_NAME" -o jsonpath="{.data.$key}" | base64 --decode)
+                    # Escape quotes and backslashes in the value to prevent JSON syntax errors
+                    VALUE_ESCAPED=$(echo "$VALUE" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+                    JSON_STRING="$JSON_STRING\"$key\":\"$VALUE_ESCAPED\""
+                    FIRST=false
+                  done
+                  JSON_STRING="$JSON_STRING}"
+
+                  # Create secret with JSON string for AWS
+                  kubectl -n "$TARGET_NS" create secret generic "${NEW_SECRET_NAME}-json" \
+                    --from-literal=secretString="$JSON_STRING"
+
+                  # Generate PushSecret for JSON format (readable in AWS console)
                   cat > /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << PUSHSECRET_EOF
                   apiVersion: external-secrets.io/v1alpha1
                   kind: PushSecret
@@ -164,35 +186,22 @@ spec:
                         kind: SecretStore
                     selector:
                       secret:
-                        name: ${NEW_SECRET_NAME}
+                        name: ${NEW_SECRET_NAME}-json
                     data:
+                      - secretKey: secretString
+                        remoteRef:
+                          remoteKey: "$AWS_SECRET_KEY"
                   PUSHSECRET_EOF
-                  
-                  # Dynamically add each key as individual property mapping
-                  for key in $SECRET_KEYS; do
-                    cat >> /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml << MAPPING_EOF
-                      - match:
-                          secretKey: $key
-                          conversionStrategy: Default
-                          remoteRef:
-                            remoteKey: "$AWS_SECRET_KEY"
-                            property: $key
-                  MAPPING_EOF
-                  done
-                  
+
                   # Apply the dynamically generated PushSecret
                   kubectl apply -f /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml
                   rm /tmp/pushsecret-$(echo $date_str | tr '_' '-').yaml
-                  
+
                   echo "Database copied successfully: $TARGET_DB"
                   echo "Kubernetes secret created: $NEW_SECRET_NAME"
-                  echo "PushSecret created with $KEY_COUNT key mappings"
-                  echo ""
-                  echo "AWS Secrets Manager key: $AWS_SECRET_KEY"
-                  echo "Secret keys mapped: $(echo $SECRET_KEYS | tr '\n' ' ')"
+                  echo "JSON secret created: ${NEW_SECRET_NAME}-json"
+                  echo "PushSecret created, AWS Secrets Manager key: $AWS_SECRET_KEY"
                   echo "Database timestamp: $date_str"
-                  echo ""
-                  echo "Database copied and secret $NEW_SECRET_NAME created"
 {{- end }}
 {{- end }}
 
