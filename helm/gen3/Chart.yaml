@@ -17,15 +17,15 @@ dependencies:
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.28
+    version: 0.1.30
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
@@ -37,7 +37,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.21
+    version: 0.1.23
     repository: file://../common
   - name: dashboard
     version: 0.1.8
@@ -52,7 +52,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.53
+    version: 0.1.54
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -64,15 +64,15 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.25
+    version: 0.1.28
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.32
+    version: 0.1.33
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
@@ -84,7 +84,7 @@ dependencies:
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.43
+    version: 0.1.45
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
@@ -100,15 +100,15 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.32
+    version: 0.1.34
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -164,7 +164,8 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.22
+
+version: 0.2.31
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
