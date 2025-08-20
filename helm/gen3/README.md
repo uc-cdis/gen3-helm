@@ -46,7 +46,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.31 |
 | file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.40 |
+| file://../revproxy | revproxy | 0.1.41 |
 | file://../sheepdog | sheepdog | 0.1.29 |
 | file://../sower | sower | 0.1.34 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
