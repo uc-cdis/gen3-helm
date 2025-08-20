@@ -42,6 +42,7 @@ spec:
                       name: slack-webhook
                       key: slack_webhook
                       optional: true
+                {{- toYaml .Values.env | nindent 16 }}
             volumeMounts:
               - name: "config-volume"
                 readOnly: true
