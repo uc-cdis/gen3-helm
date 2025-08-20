@@ -14,7 +14,6 @@ data:
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
   "frontend_root": {{ .Values.global.frontendRoot | quote }}
-  "slack_webhook": {{ .Values.global.slackWebhook }}
   "logout_inactive_users": {{ .Values.global.logoutInactiveUsers | quote }}
   "workspace_timeout_in_minutes": {{ .Values.global.workspaceTimeoutInMinutes | quote }}
   "maintenance_mode": {{ .Values.global.maintenanceMode | quote }}
