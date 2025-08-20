@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Metadata Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.23 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.17.1 |
 
@@ -24,7 +24,7 @@ A Helm chart for gen3 Metadata Service
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["metadata"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | aggMdsConfig | string | `"{\n  \"configuration\": {\n    \"schema\": {\n      \"_subjects_count\": {\n        \"type\": \"integer\"\n      },\n      \"__manifest\": {\n        \"description\": \"an array of filename (usually DRS ids and its size\",\n        \"type\": \"array\",\n        \"properties\": {\n          \"file_name\": {\n            \"type\": \"string\"\n          },\n          \"file_size\": {\n            \"type\": \"integer\"\n          }\n        }\n      },\n      \"tags\": {\n        \"type\": \"array\"\n      },\n      \"_unique_id\": {},\n      \"study_description\": {},\n      \"study_id\": {},\n      \"study_url\": {},\n      \"project_id\": {},\n      \"short_name\": {\n        \"default\": \"not_set\"\n      },\n      \"year\": {\n        \"default\": \"not_set\"\n      },\n      \"full_name\": {},\n      \"commons_url\": {},\n      \"commons\": {}\n    },\n    \"settings\": {\n      \"cache_drs\": true\n    }\n  },\n  \"adapter_commons\": {\n    \"Gen3\": {\n      \"mds_url\": \"https://gen3.datacommons.io/\",\n      \"commons_url\": \"gen3.datacommons.io/\",\n      \"adapter\": \"gen3\",\n      \"config\": {\n        \"guid_type\": \"discovery_metadata\",\n        \"study_field\": \"gen3_discovery\"\n      },\n      \"keep_original_fields\": false,\n      \"field_mappings\": {\n        \"tags\": \"path:tags\",\n        \"_unique_id\": \"path:_unique_id\",\n        \"study_description\": \"path:summary\",\n        \"full_name\": \"path:study_title\",\n        \"short_name\": \"path:short_name\",\n        \"year\": \"path:year\",\n        \"accession_number\": \"path:accession_number\",\n        \"commons\": \"Gen3 Data Commons\",\n        \"study_url\": {\n          \"path\": \"link\",\n          \"default\": \"unknown\"\n        }\n      }\n    }\n  }\n}\n"` |  |
-| aggMdsDefaultDataDictField | string | `nil` |  |
+| aggMdsDefaultDataDictField | string | `""` |  |
 | aggMdsNamespace | string | `"default"` | Namespae to use if AggMds is enabled. |
 | args | list | `["-c","# Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility\npoetry run alembic upgrade head || /env/bin/alembic upgrade head\n"]` | Arguments to pass to the init container. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
