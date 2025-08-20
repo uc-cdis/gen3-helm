@@ -223,7 +223,7 @@ volumeMounts:
     subPath: "settings.py"
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/peregrine/bin/settings.py"
+    mountPath: "peregrine/bin/settings.py"
     subPath: "settings.py"
 
 # Values to determine the labels that are used for the deployment, pod, etc.

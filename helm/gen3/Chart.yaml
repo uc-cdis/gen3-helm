@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.32
+    version: 0.1.31
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.30
+    version: 0.1.29
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher

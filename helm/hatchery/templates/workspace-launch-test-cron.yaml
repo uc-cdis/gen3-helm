@@ -23,6 +23,7 @@ spec:
           labels:
             app: gen3job
         spec:
+          serviceAccountName: workspace-launch-test-job
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
