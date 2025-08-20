@@ -102,6 +102,8 @@ spec:
                   value: {{ (.Values.useAggMds | quote | default "True") }}
                 - name: AGG_MDS_NAMESPACE
                   value: {{ .Values.aggMdsNamespace | default .Release.Name }}
+                - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
+                  value: {{ .Values.aggMdsDefaultDataDictField}}
               imagePullPolicy: Always
               command: ["/bin/sh"]
               args:
