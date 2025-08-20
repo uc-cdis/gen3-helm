@@ -8,12 +8,17 @@
 
 {{ include "common.egress_netpolicy" . }}
 
-{{- if .Values.global.netPolicy.enabled }}
+
+{{ if .Values.global.netPolicy.enabled }}
+
+{{ $jobsNamespace := .Values.funnel.Kubernetes.JobsNamespace | default .Release.Namespace }}
+
 ---
+# funnel ingress from gen3-workflow and mongodb
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-ingress-netpolicy
+  name: funnel-ingress-from-gen3workflow-and-mongo-netpolicy
 spec:
   podSelector:
     matchLabels:
@@ -21,24 +26,19 @@ spec:
   ingress:
     - from:
       - podSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - gen3-workflow
+          matchLabels:
+            app: gen3-workflow
     - from:
       - podSelector:
-          matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - mongodb
+          matchLabels:
+            app.kubernetes.io/name: mongodb
       ports:
         - protocol: TCP
           port: 27017
   policyTypes:
     - Ingress
 ---
+# Gen3-Workflow egress to funnel
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -48,8 +48,10 @@ spec:
     matchExpressions:
       - key: app
         operator: In
+        #TODO: add funnel-mongodb label once funnel team adds it
         values:
           - gen3-workflow
+          - funnel-worker
   egress:
     - to:
       - podSelector:
@@ -59,19 +61,33 @@ spec:
     - Egress
 
 ---
-
-# mongodb egress to funnel, this is temporary until funnel 
+# Need to his is temporary until funnel 
 #adds a label gen3-mongodb for their mongodb service,
-# then we can combine this with funnel egress netpolicy
+# then we can simplify this and combine multiple policies
+
+
+# mongodb egress to funnel
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: mongodb-egress-to-funnel
+  name: mongodb-egress-to-funnel-and-funnel-worker
 spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: mongodb
+  policyTypes:
+    - Egress
   egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ $jobsNamespace }}
+        podSelector:
+          matchLabels:
+            app: funnel-worker
+      ports:
+        - protocol: TCP
+          port: 27017
     - to:
       - podSelector:
           matchLabels:
@@ -79,15 +95,11 @@ spec:
       ports:
         - protocol: TCP
           port: 27017
-
-  policyTypes:
-    - Egress
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: mongodb-ingress-from-funnel
+  name: mongodb-ingress-from-funnel-and-funnel-worker
 spec:
   podSelector:
     matchLabels:
@@ -96,19 +108,28 @@ spec:
   - Ingress
   ingress:
   - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $jobsNamespace }}
+      podSelector:
+        matchLabels:
+          app: funnel-worker
+    ports:
+      - protocol: TCP
+        port: 27017
+  - from:
     - podSelector:
         matchLabels:
-          app: funnel   # adjust to match Funnel's labels
+            app: funnel
     ports:
     - protocol: TCP
       port: 27017
-
 ---
-
+# Funnel egress to mongodb
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-egress-to-mongo
+  name: mongodb-egress-netpolicy
 spec:
   podSelector:
     matchLabels:
@@ -124,4 +145,141 @@ spec:
 
   policyTypes:
     - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-to-funnel-worker-egress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $jobsNamespace }}
+      podSelector:
+        matchLabels:
+          app: funnel-worker
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-to-kubeapi-egress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel
+  policyTypes:
+  - Egress
+  egress:
+  # Allow access to the Kubernetes API server in kube-system
+  - to: []
+    ports:
+      - protocol: TCP
+        port: 443
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-from-funnel-worker-ingress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $jobsNamespace }}
+          podSelector:
+            matchLabels:
+              app: funnel-worker
+  policyTypes:
+    - Ingress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-to-dns-and-kubeapi-egress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  egress:
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443  # Kubernetes API
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+  policyTypes:
+    - Egress
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-to-mongo-egress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/name: mongodb
+      ports:
+        - protocol: TCP
+          port: 27017
+  policyTypes:
+    - Egress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-from-funnel-and-mongodb-ingress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchLabels:
+          app: funnel
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: mongodb
+    ports:
+      - protocol: TCP
+        port: 27017
+
 {{- end }}
