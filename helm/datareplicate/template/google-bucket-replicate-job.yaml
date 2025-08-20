@@ -13,6 +13,7 @@ spec:
       labels:
         app: gen3job
     spec:
+      serviceAccountName: google-bucket-replicate-job
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
