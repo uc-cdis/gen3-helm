@@ -231,7 +231,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-worker-to-mongo-egress
+  name: funnel-worker-to-mongo-and-gen3workflow-egress
   namespace: {{ $jobsNamespace }}
 spec:
   podSelector:
@@ -248,6 +248,13 @@ spec:
       ports:
         - protocol: TCP
           port: 27017
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app: gen3-workflow
   policyTypes:
     - Egress
 
@@ -255,7 +262,48 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-worker-from-funnel-and-mongodb-ingress
+  name: gen3-workflow-from-funnel-worker-ingress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: gen3-workflow
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $jobsNamespace }}
+      podSelector:
+        matchLabels:
+          app: funnel-worker
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gen3-workflow-to-funnel-worker-egress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: gen3-workflow
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ $jobsNamespace }}
+        podSelector:
+          matchLabels:
+            app: funnel-worker
+  policyTypes:
+  - Egress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-from-funnel-gen3workflow-and-mongodb-ingress
   namespace: {{ $jobsNamespace }}
 spec:
   podSelector:
@@ -269,8 +317,12 @@ spec:
         matchLabels:
           kubernetes.io/metadata.name: {{ .Release.Namespace }}
       podSelector:
-        matchLabels:
-          app: funnel
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - funnel
+              - gen3-workflow
   - from:
     - namespaceSelector:
         matchLabels:
@@ -281,5 +333,4 @@ spec:
     ports:
       - protocol: TCP
         port: 27017
-
 {{- end }}
