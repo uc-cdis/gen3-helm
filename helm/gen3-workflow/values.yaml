@@ -164,14 +164,10 @@ service:
 netPolicy:
   # -- (array) List of app labels that require ingress to this service
   ingressApps:
-    - fence
-    - presigned-url-fence
     - funnel
     
   # -- (array) List of apps that this app requires egress to
   egressApps:
-    - fence
-    - presigned-url-fence
     - funnel
 
 # -- (map) Resource requests and limits for the containers in the pod
