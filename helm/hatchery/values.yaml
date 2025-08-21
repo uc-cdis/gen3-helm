@@ -245,7 +245,7 @@ hatchery:
   # -- (map) Configuration for workspace launch test crobjob
   workspaceLaunchTest:
     # -- (bool) Whether the workspace launch test cron job is enabled.
-    workspaceLaunchTest: false
+    enableWorkspaceLaunchTest: false
     # -- (string) The schedule for the workspace launch test cron job.
     schedule: "0 * * * *"
     # -- (string) Images to test in the workspace launch test cron job.
