@@ -415,7 +415,7 @@ fence:
         policies:
         - all_programs_reader
         - open_data_reader
-      funnel-plugin-test:
+      funnel-plugin-client:
         policies:
         - workflow_user
     
