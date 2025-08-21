@@ -1,7 +1,6 @@
 # gen3
 
-![Version: 0.2.31](https://img.shields.io/badge/Version-0.2.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
-
+![Version: 0.2.33](https://img.shields.io/badge/Version-0.2.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 Helm chart to deploy Gen3 Data Commons
 
 ## Maintainers
@@ -30,7 +29,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.54 |
+| file://../fence | fence | 0.1.55 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
@@ -39,14 +38,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.27 |
 | file://../indexd | indexd | 0.1.33 |
 | file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.29 |
+| file://../metadata | metadata | 0.1.30 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
 | file://../peregrine | peregrine | 0.1.31 |
 | file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.40 |
+| file://../revproxy | revproxy | 0.1.41 |
 | file://../sheepdog | sheepdog | 0.1.29 |
 | file://../sower | sower | 0.1.34 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
