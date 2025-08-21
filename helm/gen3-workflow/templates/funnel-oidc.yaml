@@ -4,6 +4,8 @@ kind: Job
 metadata:
   name: funnel-oidc-job
   annotations:
+    # This would trigger the job after every helm install or upgrade,
+    # to make sure funnel is always configured with the latest OIDC client credentials.
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
@@ -40,11 +42,10 @@ spec:
               #!/bin/bash
               set -euo pipefail
 
-              funnel_client_name="funnel-plugin-test"
+              funnel_client_name="funnel-plugin-client"
               
               echo "Verifying if Fence client for funnel exists..."
               
-              echo "Fetching current oidc clients.."
               client_list_result=$(fence-create client-list)
               echo "Finished fetching clients, iterating over them to find $funnel_client_name"
 
@@ -79,10 +80,9 @@ spec:
                 exit 0
               fi
 
-              # If we reach here, it means the client was not found or was deleted
               echo "Client for funnel does not exist, creating..."
 
-              secrets=$(fence-create client-create --client funnel-plugin-test --grant-types client_credentials | tail -1)
+              secrets=$(fence-create client-create --client $funnel_client_name --grant-types client_credentials | tail -1)
               if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
                 echo "Failed generating oidc client for workspace token service: $secrets"
                 exit 1
@@ -186,14 +186,13 @@ spec:
                 exit 1
               fi
 
-              echo "Updating Kubernetes Secret..."
               echo "Patching funnel.conf in gen3workflow secret with new OIDC client credentials"
               PATCH=$(base64 -w 0 /tmp/funnel-patched.conf)
               kubectl patch secret gen3workflow-g3auto \
                 --type merge \
                 -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
 
-              echo "funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
+              echo "Current funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
                 namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
                 DEPLOYMENT_NAME="funnel-server"
