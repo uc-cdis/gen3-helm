@@ -26,7 +26,7 @@ image:
 # -- (string) Docker repository.
   repository: quay.io/cdis/datareplicate
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "master"
 googleBucketReplicateJob:
   # -- (bool) Whether to enable the Google bucket replicate job
   PROJECT: dcf-prod-buckets
