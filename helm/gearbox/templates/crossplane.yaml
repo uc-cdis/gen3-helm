@@ -2,14 +2,13 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gearbox.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gearbox.serviceAccountName" . }}"
     description: "Role for gearbox service account for {{ .Values.global.environment }}"
-    path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
         "Version":"2012-10-17",
@@ -22,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:gearbox-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "gearbox.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -38,7 +37,7 @@ spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gearbox.serviceAccountName" . }}"
     name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-role-policy"
     document: |
       {
@@ -64,12 +63,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: gearbox-sa-managed-policy-attachment
+  name: "{{ include "gearbox.serviceAccountName" . }}-{{ .Release.Namespace }}-managed-policy-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-sa"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gearbox.serviceAccountName" . }}"
     policyArnRef: 
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gearbox-role-policy"
 ---
