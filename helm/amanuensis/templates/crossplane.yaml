@@ -2,14 +2,13 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-amanuensis-sa"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "amanuensis.serviceAccountName" . }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-amanuensis-sa"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "amanuensis.serviceAccountName" . }}"
     description: "Role for amanuensis service account for {{ .Values.global.environment }}"
-    path: "/gen3-service/"
     assumeRolePolicyDocument: |
       {
         "Version":"2012-10-17",
@@ -22,7 +21,7 @@ spec:
             "Action":"sts:AssumeRoleWithWebIdentity",
             "Condition":{
               "StringEquals":{
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:amanuensis-sa",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ include "amanuensis.serviceAccountName" . }}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud":"sts.amazonaws.com"
               }
             }
@@ -46,7 +45,7 @@ spec:
           {
             "Effect":"Allow",
             "Action":["sqs:SendMessage"],
-            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-audit-sqs-queue", "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
+            "Resource":["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue", "arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-ssjdispatcher-sqs-queue"]
           }
         ]
       }
@@ -54,7 +53,7 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: amanuensis-sa-managed-policy-attachment
+  name: "{{ include "amanuensis.serviceAccountName" . }}-{{ .Release.Namespace }}-managed-policy-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
@@ -63,3 +62,4 @@ spec:
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-amanuensis-role-policy"
 {{- end}}
+
