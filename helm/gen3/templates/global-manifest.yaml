@@ -16,7 +16,6 @@ data:
   "dd_enabled": {{ .Values.global.ddEnabled | quote }}
   "authz_entity_name": {{.Values.global.authz_entity_name | quote }}
   "frontend_root": {{ .Values.global.frontendRoot | quote }}
-  "slack_webhook": {{ .Values.global.slackWebhook }}
   "logout_inactive_users": {{ .Values.global.logoutInactiveUsers | quote }}
   "workspace_timeout_in_minutes": {{ .Values.global.workspaceTimeoutInMinutes | quote }}
   "maintenance_mode": {{ .Values.global.maintenanceMode | quote }}
