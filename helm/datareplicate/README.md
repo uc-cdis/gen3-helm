@@ -23,6 +23,9 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | image.repository | string | `"quay.io/cdis/datareplicate"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| removeObjectsFromClouds.DRY_RUN | bool | `true` |  |
+| replicateValidationJobs.FORCE_CREATE_MANIFEST | bool | `true` |  |
+| replicateValidationJobs.OUT_FILES | string | `"replication_validation_output_manifest.tsv"` |  |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
