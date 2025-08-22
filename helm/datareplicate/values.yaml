@@ -8,13 +8,7 @@ global:
 
 
 # -- (map) Docker image information.
-image:
-  # -- (string) Docker repository.
-  repository: quay.io/cdis/datareplicate
-  # -- (string) Docker pull policy.
-  pullPolicy: IfNotPresent
-  # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+
 
 
 # -- (map) Resource requests and limits for the containers in the pod
@@ -27,3 +21,17 @@ resources:
   limits:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
+
+image:
+# -- (string) Docker repository.
+  repository: quay.io/cdis/datareplicate
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+googleBucketReplicateJob:
+  # -- (bool) Whether to enable the Google bucket replicate job
+  PROJECT: dcf-prod-buckets
+  MAX_WORKERS: 80
+  RELEASE: DR43
+  MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
+  IGNORED_FILE: gs://replication-input/ignored_files_manifest.csv
+  LOG_BUCKET: datarefresh-log

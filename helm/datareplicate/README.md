@@ -8,16 +8,19 @@ A Helm chart for gen3 datareplicate
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| file://../common | common | 0.1.21 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | global | string | `nil` |  |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/datareplicate","tag":""}` | Docker image information. |
-| image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
+| googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
+| googleBucketReplicateJob.LOG_BUCKET | string | `"datarefresh-log"` |  |
+| googleBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
+| googleBucketReplicateJob.MAX_WORKERS | int | `80` |  |
+| googleBucketReplicateJob.PROJECT | bool | `"dcf-prod-buckets"` | Whether to enable the Google bucket replicate job |
+| googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | image.repository | string | `"quay.io/cdis/datareplicate"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
