@@ -258,7 +258,7 @@ spec:
             {{- end }}
             {{- if .Values.customConfig.enabled }}
             - name: config-volume
-              mountPath: /gen3/config/gitops.json
+              mountPath: /data-portal/data/config/gitops.json
               subPath: gitops.json
             - name: config-volume
               mountPath: /data-portal/custom/

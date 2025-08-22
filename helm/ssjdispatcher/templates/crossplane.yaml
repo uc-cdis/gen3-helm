@@ -2,13 +2,13 @@
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
-    description: "Role for ES proxy service account for {{ .Values.global.environment }}"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
+    description: "Role for ssjdispatcher service account for {{ .Values.global.environment }}"
     assumeRolePolicyDocument: |
       {
         "Version": "2012-10-17",
@@ -27,7 +27,7 @@ spec:
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
               "StringEquals": {
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "audit.serviceAccountName" . }}",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "ssjdispatcher.serviceAccountName" .}}",
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com"
               }
             }
@@ -38,12 +38,12 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
     document: |
       {
         "Version": "2012-10-17",
@@ -55,7 +55,7 @@ spec:
               "sqs:GetQueueAttributes",
               "sqs:DeleteMessage"
             ],
-            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"]
+            "Resource": ["arn:aws:sqs:{{ .Values.global.aws.region }}:{{ .Values.global.crossplane.accountId }}:{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"]
           }
         ]
       }
@@ -63,24 +63,24 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: "{{ include "audit.serviceAccountName" . }}-{{ .Release.Namespace }}-managed-policy-attachment"
+  name: ssjdispatcher-sa-managed-policy-attachment
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "audit.serviceAccountName" . }}"
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "ssjdispatcher.serviceAccountName" .}}"
     policyArnRef:
-      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-role-policy"
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-ssjdispatcher-role-policy"
 ---
 apiVersion: sqs.aws.crossplane.io/v1beta1
 kind: Queue
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-audit-sqs-queue"
+    queueName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-data-upload"
     region: "{{ .Values.global.aws.region }}"
     visibilityTimeoutSeconds: 300
     messageRetentionSeconds: 1209600
