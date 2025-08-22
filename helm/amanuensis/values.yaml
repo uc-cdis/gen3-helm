@@ -110,7 +110,7 @@ global:
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -157,7 +157,6 @@ postgresql:
 
 # -- (int) Number of desired replicas
 replicaCount: 1
-
 
 image:
   # -- (string) The Docker image repository for the amanuensis service
@@ -342,7 +341,7 @@ commonLabels:
 # -- (map) Public configuration settings for Amanuensis app
 AMANUENSIS_CONFIG_PUBLIC: {}
 
-# -- (map) AWS credentials for Amanuensis app 
+# -- (map) AWS credentials for Amanuensis app
 AWS_CREDENTIALS:
   # -- (map) AWS SES settings for Amanuensis app
   AWS_SES:

@@ -24,9 +24,17 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/gearbox-middleware-creds.yaml") . | sha256sum }}
-        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
     spec:
       serviceAccountName: {{ include "gearbox-middleware.serviceAccountName" . }}
       {{- with .Values.affinity }}

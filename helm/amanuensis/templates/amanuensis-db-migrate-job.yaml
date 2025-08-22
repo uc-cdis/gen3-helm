@@ -69,7 +69,7 @@ spec:
           - "-c"
           - |
             # echo "${AMANUENSIS_PUBLIC_CONFIG:-""}" > "/var/www/amanuensis/amanuensis-config-public.yaml"
-            # python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml > /var/www/amanuensis/amanuensis-config.yaml
+            # python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml /var/www/amanuensis/amanuensis-config.yaml
             cd /amanuensis
             fence-create migrate
             if [[ $? != 0 ]]; then
