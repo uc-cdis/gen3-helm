@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
 # Global configuration
 global:
   # -- (map) AWS configuration
@@ -81,7 +80,7 @@ global:
 autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: true
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -119,7 +118,7 @@ postgresql:
 releaseLabel: production
 
 # -- (map) Annotations to add to the pod
-podAnnotations: {"gen3.io/network-ingress": "pcdcanalysistools"}
+podAnnotations: { "gen3.io/network-ingress": "pcdcanalysistools" }
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -200,7 +199,7 @@ volumeMounts:
   - name: "config-volume"
     readOnly: true
     mountPath: "PcdcAnalysisTools/bin/settings.py"
-    subPath: "settings.py" 
+    subPath: "settings.py"
   - name: "config-volume"
     readOnly: true
     mountPath: "PcdcAnalysisTools/bin/confighelper.py"
