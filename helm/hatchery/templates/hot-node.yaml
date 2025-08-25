@@ -153,7 +153,7 @@ spec:
                   - /bin/sh
                   - -c
                   - echo 'Pulling complete'
-                EOM
+            EOM
                   count=$((count+1))
                 done
               fi
