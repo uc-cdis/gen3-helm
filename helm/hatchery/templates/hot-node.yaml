@@ -41,11 +41,11 @@ spec:
         image: busybox:latest
         resources:
           requests:
-            memory: {{ $.Values.hotNode.workspaceSize.memory }}
-            cpu: {{ $.Values.hotNode.workspaceSize.cpu }}
+            memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
+            cpu: {{ $.Values.hotNode.workspaceCapacityReservation.cpu }}
           limits:
-            memory: {{ $.Values.hotNode.workspaceSize.memory }}
-            cpu: {{ $.Values.hotNode.workspaceSize.cpu }}
+            memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
+            cpu: {{ $.Values.hotNode.workspaceCapacityReservation.cpu }}
 ---
 {{- end }}
 {{- end }}
