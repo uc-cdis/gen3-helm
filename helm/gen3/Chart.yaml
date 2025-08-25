@@ -44,7 +44,7 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.0.2
+    version: 0.0.3
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: etl

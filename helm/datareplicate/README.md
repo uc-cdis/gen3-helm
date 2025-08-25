@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -24,9 +24,6 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.enabled | bool | `true` |  |
 | image.repository | string | `"quay.io/cdis/datareplicate"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
-| removeObjectsFromClouds.DRY_RUN | bool | `true` |  |
-| replicateValidationJobs.FORCE_CREATE_MANIFEST | bool | `true` |  |
-| replicateValidationJobs.OUT_FILES | string | `"replication_validation_output_manifest.tsv"` |  |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
