@@ -161,6 +161,7 @@ spec:
 
             #gen3_hatchery_prepuller | kubectl apply -f -
             gen3_hatchery_prepuller
+            sleep
 
         volumeMounts:
         - name: job-yaml
