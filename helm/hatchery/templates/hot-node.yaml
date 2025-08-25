@@ -131,7 +131,7 @@ spec:
         # TODO Get the pulling logic working
         args:
           - |
-            sleep infinity
+            exit 0
             # gen3_hatchery_prepuller() {
             #   local images
             #   local it
@@ -170,6 +170,7 @@ spec:
       containers:
       - name: hot-node
         image: busybox:latest
+        command: ["sleep", "infinity"]
         resources:
           requests:
             memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
