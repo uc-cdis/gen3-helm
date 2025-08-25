@@ -77,6 +77,11 @@ spec:
       - name: init-hot-node
         image: quay.io/cdis/awshelper:master
         command: ["/bin/sh","-c"]
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
         args:
           - |
           #!/bin/sh
@@ -90,7 +95,7 @@ spec:
             images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
           fi
 
-          cat "/job.yaml"
+          cat "/job.yaml" | envsubst
           if [[ -n "$images" ]]; then
             local count=0
             for it in ${images}; do
@@ -149,14 +154,13 @@ data:
           labels:
             app: jupyterhub-prepuller
         spec:
+          nodeName: NODE_NAME
           restartPolicy: Never
           tolerations:
           - key: "role"
             operator: "Equal"
             value: "jupyter"
             effect: "NoSchedule"
-          nodeSelector:
-            role: jupyter
           terminationGracePeriodSeconds: 0
           automountServiceAccountToken: false
           containers:
