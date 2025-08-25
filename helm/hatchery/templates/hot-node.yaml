@@ -182,5 +182,6 @@ spec:
       - name: job-yaml
         configMap:
           name: hot-node-job
+---
 {{- end }}
 {{- end }}
