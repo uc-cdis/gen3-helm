@@ -453,10 +453,6 @@ gearbox:
     repository: quay.io/pcdc/gearbox_be
     tag: "pcdc_dev_2025-08-22T09_51_08-05_00"
     pullPolicy: Always
-    # Note: gearbox = matching
-    #repository: gearbox-matching
-    #tag: "PEDS-1379"
-    #pullPolicy: Never
 
 gearbox-middleware:
   enabled: true
@@ -464,9 +460,6 @@ gearbox-middleware:
     repository: quay.io/pcdc/gearbox-middleware
     tag: "pcdc_dev_Fri__15_Aug_2025_17_57_50_GMT"
     pullPolicy: Always
-    #repository: gearbox-middleware
-    #tag: "PEDS-1379"
-    #pullPolicy: Never
 
 ########################################################################################
 #                               DISABLED SERVICES                                      #
