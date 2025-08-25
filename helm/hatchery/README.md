@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -80,6 +80,14 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | hatchery.skipNodeSelector | bool | `false` | Whether to skip node selector for . Defaults to `global.dev`. |
 | hatchery.useInternalServicesUrl | bool | `false` | Whether to use internal services url. Defaults to `global.dev`. |
+| hotNode.availabilityZones[0] | string | `"us-east-1a"` |  |
+| hotNode.availabilityZones[1] | string | `"us-east-1b"` |  |
+| hotNode.availabilityZones[2] | string | `"us-east-1c"` |  |
+| hotNode.availabilityZones[3] | string | `"us-east-1d"` |  |
+| hotNode.enabled | bool | `true` |  |
+| hotNode.workspaceReplicas | int | `3` |  |
+| hotNode.workspaceSize.cpu | int | `2` |  |
+| hotNode.workspaceSize.memory | string | `"3Gi"` |  |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/hatchery"` | Docker repository. |

@@ -1,0 +1,51 @@
+{{- if .Values.hotNode.enabled }}
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: hot-node-lowest-priority
+value: -1000000
+globalDefault: false
+description: "This priority class marks a pod as extremely low priority, for hot nodes"
+---
+{{ range .Values.hotNode.availabilityZones }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hot-node-{{ . }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: hot-node-{{ . }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    availability-zone: {{ . }}
+spec:
+  replicas: {{ $.Values.hotNode.workspaceReplicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hot-node-{{ . }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hot-node-{{ . }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+        availability-zone: {{ . }}
+    spec:
+      containers:
+        priorityClassName: hot-node-lowest-priority
+        nodeSelector:
+          role: jupyter
+          topology.kubernetes.io/zone: {{ . }}
+      - name: hot-node
+        image: busybox:latest
+        resources:
+          requests:
+            memory: {{ $.Values.hotNode.workspaceSize.memory }}
+            cpu: {{ $.Values.hotNode.workspaceSize.cpu }}
+          limits:
+            memory: {{ $.Values.hotNode.workspaceSize.memory }}
+            cpu: {{ $.Values.hotNode.workspaceSize.cpu }}
+---
+{{- end }}
+{{- end }}
