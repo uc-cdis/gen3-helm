@@ -1,4 +1,5 @@
 {{- if .Values.hotNode.enabled }}
+
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
@@ -39,6 +40,46 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: hot-node-prepuller
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hot-node-job
+  namespace: {{ $.Release.Namespace }}
+data:
+  job.yaml: |
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: jupyterhub-prepuller
+      labels:
+        app: jupyterhub-prepuller
+    spec:
+      template:
+        metadata:
+          labels:
+            app: jupyterhub-prepuller
+        spec:
+          nodeName: NODE_NAME
+          restartPolicy: Never
+          tolerations:
+          - key: "role"
+            operator: "Equal"
+            value: "jupyter"
+            effect: "NoSchedule"
+          terminationGracePeriodSeconds: 0
+          automountServiceAccountToken: false
+          containers:
+          - name: pause
+            image: gcr.io/google_containers/pause-amd64:3.1
+          initContainers:
+          - name: image-pull-minimal
+            image: jupyter/minimal-notebook:d29a0f617484
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+              - -c
+              - echo "Pulling complete"
 ---
 {{- range .Values.hotNode.availabilityZones }}
 apiVersion: apps/v1
@@ -137,46 +178,6 @@ spec:
       volumes:
       - name: job-yaml
         configMap:
-          name: hot-node-job-{{ . }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: hot-node-job-{{ . }}
-  namespace: {{ $.Release.Namespace }}
-data:
-  job.yaml: |
-    apiVersion: batch/v1
-    kind: Job
-    metadata:
-      name: jupyterhub-prepuller
-      labels:
-        app: jupyterhub-prepuller
-    spec:
-      template:
-        metadata:
-          labels:
-            app: jupyterhub-prepuller
-        spec:
-          nodeName: NODE_NAME
-          restartPolicy: Never
-          tolerations:
-          - key: "role"
-            operator: "Equal"
-            value: "jupyter"
-            effect: "NoSchedule"
-          terminationGracePeriodSeconds: 0
-          automountServiceAccountToken: false
-          containers:
-          - name: pause
-            image: gcr.io/google_containers/pause-amd64:3.1
-          initContainers:
-          - name: image-pull-minimal
-            image: jupyter/minimal-notebook:d29a0f617484
-            imagePullPolicy: IfNotPresent
-            command:
-              - /bin/sh
-              - -c
-              - echo "Pulling complete"
+          name: hot-node-job
 {{- end }}
 {{- end }}
