@@ -21,6 +21,7 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.MAX_WORKERS | int | `80` |  |
 | googleBucketReplicateJob.PROJECT | bool | `"dcf-prod-buckets"` | Whether to enable the Google bucket replicate job |
 | googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
+| googleBucketReplicateJob.enabled | bool | `true` |  |
 | image.repository | string | `"quay.io/cdis/datareplicate"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | removeObjectsFromClouds.DRY_RUN | bool | `true` |  |

@@ -1,3 +1,4 @@
+{{- if .Values.googleBucketReplicateJob.enabled -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -23,3 +24,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: google-bucket-replicate-job
+{{- end }}

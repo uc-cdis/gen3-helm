@@ -1,6 +1,7 @@
 # run with 
 # Ex. gen3 job run jobs/google-bucket-replicate-job.yaml PROJECT cdis-test-188416 MAX_WORKERS 4 RELEASE DR16 MANIFEST_FILE gs://data-flow-code/input/GDC_full_sync_legacy_manifest_20190326_post_DR16.0.tsv IGNORED_FILE gs://data-flow-code/ignored/ignored_files_manifest.csv LOG_BUCKET data-flow-code
 # Ex. gen3 runjob  jobs/google-bucket-replicate-job.yaml PROJECT dcf-prod-buckets MAX_WORKERS 80 RELEASE DR16 MANIFEST_FILE gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR16.0.tsv IGNORED_FILE gs://replication-input/ignored_files_manifest.csv LOG_BUCKET datarefresh-log
+{{- if .Values.googleBucketReplicateJob.enabled -}}
 apiVersion: batch/v1
 kind: CronJob # Change this to cronjob and set suspend: true 
 metadata:
@@ -114,3 +115,4 @@ spec:
                 echo "Neither active nor legacy manifest is provided. Please check the manifest name!!!"
               fi
         restartPolicy: Never
+{{- end }}

@@ -28,6 +28,7 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 googleBucketReplicateJob:
+  enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
   PROJECT: dcf-prod-buckets
   MAX_WORKERS: 80
