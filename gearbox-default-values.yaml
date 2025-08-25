@@ -57,7 +57,7 @@ global:
 arborist:
   image:
     repository: quay.io/cdis/arborist
-    tag: 	2025.07
+    tag: 2025.07
 
 fence:
   FENCE_CONFIG:
@@ -427,9 +427,9 @@ fence:
 portal:
   enabled: true
   image:
-    repository: gearbox-frontend
-    tag: "GEAR-488"
-    pullPolicy: Never
+    repository: quay.io/pcdc/gearbox_fe
+    tag: "dev"
+    pullPolicy: Always
   resources:
     requests:
       cpu: 1.0
@@ -445,40 +445,28 @@ revproxy:
   enabled: true
   image:
     repository: quay.io/cdis/nginx
-    tag: 2025.08
+    tag: 2023.09
 
 gearbox:
   enabled: true
   image:
-    repository: gearbox-be
-    tag: "GEAR-488"
-    pullPolicy: Never
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-  volumes:
-    - name: config-volume
-      secret:
-        secretName: "gearbox-g3auto"
-    - name: gearbox-middleware-jwt-keys
-      secret:
-        secretName: "gearbox-middleware-jwt-keys"
-        items:
-          - key: jwt_public_key.pem
-            path: jwt_public_key.pem
-        optional: false
+    repository: quay.io/pcdc/gearbox_be
+    tag: "pcdc_dev_2025-08-22T09_51_08-05_00"
+    pullPolicy: Always
+    # Note: gearbox = matching
+    #repository: gearbox-matching
+    #tag: "PEDS-1379"
+    #pullPolicy: Never
 
 gearbox-middleware:
   enabled: true
   image:
-    repository: gearbox-middleware
-    tag: "GEAR-488"
-    pullPolicy: Never
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
+    repository: quay.io/pcdc/gearbox-middleware
+    tag: "pcdc_dev_Fri__15_Aug_2025_17_57_50_GMT"
+    pullPolicy: Always
+    #repository: gearbox-middleware
+    #tag: "PEDS-1379"
+    #pullPolicy: Never
 
 ########################################################################################
 #                               DISABLED SERVICES                                      #
