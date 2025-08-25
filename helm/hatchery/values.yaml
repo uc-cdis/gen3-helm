@@ -256,7 +256,7 @@ selectorLabels:
 commonLabels:
 
 hotNode:
-  enabled: true
+  enabled: false
 
   availabilityZones:
     - us-east-1a
@@ -264,7 +264,7 @@ hotNode:
     - us-east-1c
     - us-east-1d
 
-  # This should be AT LEAST the total amount of CPU and memory to reserve, per-AZ
+  # This should be AT LEAST the total amount of CPU and memory to reserve, per availability zone
   workspaceCapacityReservation:
     cpu: 6
     memory: 9Gi

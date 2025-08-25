@@ -84,36 +84,35 @@ spec:
                 fieldPath: spec.nodeName
         args:
           - |
-          #!/bin/sh
-          gen3_hatchery_prepuller() {
-          local images
-          local it
-          images="$@"
+            gen3_hatchery_prepuller() {
+              local images
+              local it
+              images="$@"
 
-          # Get hatchery images from the manifest-hatchery configmap
-          if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
-            images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
-          fi
+              # Get hatchery images from the manifest-hatchery configmap
+              if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
+                images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
+              fi
 
-          cat "/job.yaml" | envsubst
-          if [[ -n "$images" ]]; then
-            local count=0
-            for it in ${images}; do
-            cat - <<EOM
-          - name: "image-${count}"
-            image: $it
-            imagePullPolicy: IfNotPresent
-            command:
-              - /bin/sh
-              - -c
-              - echo 'Pulling complete'
-EOM
-              count=$((count+1))
-            done
-          fi
-        }
+              cat "/job.yaml" | envsubst
+              if [[ -n "$images" ]]; then
+                local count=0
+                for it in ${images}; do
+                cat - <<EOM
+              - name: "image-${count}"
+                image: $it
+                imagePullPolicy: IfNotPresent
+                command:
+                  - /bin/sh
+                  - -c
+                  - echo 'Pulling complete'
+                EOM
+                  count=$((count+1))
+                done
+              fi
+            }
 
-          gen3_hatchery_prepuller | kubectl apply -f -
+            gen3_hatchery_prepuller | kubectl apply -f -
 
         volumeMounts:
         - name: job-yaml

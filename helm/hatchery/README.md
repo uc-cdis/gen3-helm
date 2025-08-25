@@ -84,7 +84,7 @@ A Helm chart for gen3 Hatchery
 | hotNode.availabilityZones[1] | string | `"us-east-1b"` |  |
 | hotNode.availabilityZones[2] | string | `"us-east-1c"` |  |
 | hotNode.availabilityZones[3] | string | `"us-east-1d"` |  |
-| hotNode.enabled | bool | `true` |  |
+| hotNode.enabled | bool | `false` |  |
 | hotNode.workspaceCapacityReservation.cpu | int | `6` |  |
 | hotNode.workspaceCapacityReservation.memory | string | `"9Gi"` |  |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
