@@ -65,6 +65,11 @@ spec:
         app.kubernetes.io/instance: {{ $.Release.Name }}
         availability-zone: {{ . }}
     spec:
+      tolerations:
+      - key: "role"
+        operator: "Equal"
+        value: "jupyter"
+        effect: "NoSchedule"
       priorityClassName: hot-node-lowest-priority
       nodeSelector:
         role: jupyter
