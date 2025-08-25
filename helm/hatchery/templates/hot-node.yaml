@@ -20,7 +20,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
     availability-zone: {{ . }}
 spec:
-  replicas: {{ $.Values.hotNode.workspaceReplicas }}
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: hot-node-{{ . }}
