@@ -57,7 +57,7 @@ spec:
             memory: "16Gi"
         env:
           - name: RELEASE
-            {{ .Values.googleBucketReplicateJob.RELEASE }}
+            value: {{ .Values.googleBucketReplicateJob.RELEASE }}
           - name: IGNORED_FILE
             value: {{ .Values.googleBucketReplicateJob.RELEASE }}
           - name: MANIFEST_FILES
