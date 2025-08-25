@@ -7,6 +7,7 @@ kind: CronJob # Change this to cronjob and set suspend: true
 metadata:
   name: google-bucket-replicate
 spec:
+  schedule: "0/20 * * * *" # once every 20 minutes
   suspended: true
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
