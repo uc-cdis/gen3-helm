@@ -7,7 +7,40 @@ value: -1000000
 globalDefault: false
 description: "This priority class marks a pod as extremely low priority, for hot nodes"
 ---
-{{ range .Values.hotNode.availabilityZones }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create","get","list","watch","delete","patch","update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: hot-node-prepuller
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hot-node-prepuller
+---
+{{- range .Values.hotNode.availabilityZones }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +69,52 @@ spec:
       nodeSelector:
         role: jupyter
         topology.kubernetes.io/zone: {{ . }}
+      terminationGracePeriodSeconds: 0
+      # Needs a token so kubectl can auth to the API
+      automountServiceAccountToken: true
+      serviceAccountName: hot-node-prepuller
+      initContainers:
+      - name: init-hot-node
+        image: quay.io/cdis/awshelper:master
+        command: ["/bin/sh","-c"]
+        args:
+          - |
+          #!/bin/sh
+          gen3_hatchery_prepuller() {
+          local images
+          local it
+          images="$@"
+
+          # Get hatchery images from the manifest-hatchery configmap
+          if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
+            images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
+          fi
+
+          cat "/job.yaml"
+          if [[ -n "$images" ]]; then
+            local count=0
+            for it in ${images}; do
+            cat - <<EOM
+          - name: "image-${count}"
+            image: $it
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+              - -c
+              - echo 'Pulling complete'
+EOM
+              count=$((count+1))
+            done
+          fi
+        }
+
+          gen3_hatchery_prepuller | kubectl apply -f -
+
+        volumeMounts:
+        - name: job-yaml
+          mountPath: /job.yaml
+          subPath: job.yaml
+
       containers:
       - name: hot-node
         image: busybox:latest
@@ -46,6 +125,50 @@ spec:
           limits:
             memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
             cpu: {{ $.Values.hotNode.workspaceCapacityReservation.cpu }}
+      volumes:
+      - name: job-yaml
+        configMap:
+          name: hot-node-job-{{ . }}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hot-node-job-{{ . }}
+  namespace: {{ $.Release.Namespace }}
+data:
+  job.yaml: |
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: jupyterhub-prepuller
+      labels:
+        app: jupyterhub-prepuller
+    spec:
+      template:
+        metadata:
+          labels:
+            app: jupyterhub-prepuller
+        spec:
+          restartPolicy: Never
+          tolerations:
+          - key: "role"
+            operator: "Equal"
+            value: "jupyter"
+            effect: "NoSchedule"
+          nodeSelector:
+            role: jupyter
+          terminationGracePeriodSeconds: 0
+          automountServiceAccountToken: false
+          containers:
+          - name: pause
+            image: gcr.io/google_containers/pause-amd64:3.1
+          initContainers:
+          - name: image-pull-minimal
+            image: jupyter/minimal-notebook:d29a0f617484
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+              - -c
+              - echo "Pulling complete"
 {{- end }}
 {{- end }}
