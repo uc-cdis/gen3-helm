@@ -159,8 +159,8 @@ spec:
               fi
             }
 
-            gen3_hatchery_prepuller | kubectl apply -f -
-
+            #gen3_hatchery_prepuller | kubectl apply -f -
+            gen3_hatchery_prepuller
         volumeMounts:
         - name: job-yaml
           mountPath: /job.yaml
