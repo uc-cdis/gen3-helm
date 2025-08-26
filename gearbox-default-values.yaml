@@ -445,7 +445,7 @@ revproxy:
   enabled: true
   image:
     repository: quay.io/cdis/nginx
-    tag: 2023.09
+    tag: 2025.08
 
 gearbox:
   enabled: true
@@ -453,6 +453,21 @@ gearbox:
     repository: quay.io/pcdc/gearbox_be
     tag: "pcdc_dev_2025-08-22T09_51_08-05_00"
     pullPolicy: Always
+  podSecurityContext:
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
+  volumes:
+    - name: config-volume
+      secret:
+        secretName: "gearbox-g3auto"
+    - name: gearbox-middleware-jwt-keys
+      secret:
+        secretName: "gearbox-middleware-jwt-keys"
+        items:
+          - key: jwt_public_key.pem
+            path: jwt_public_key.pem
+        optional: false
 
 gearbox-middleware:
   enabled: true
@@ -460,6 +475,10 @@ gearbox-middleware:
     repository: quay.io/pcdc/gearbox-middleware
     tag: "pcdc_dev_Fri__15_Aug_2025_17_57_50_GMT"
     pullPolicy: Always
+  podSecurityContext:
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
 
 ########################################################################################
 #                               DISABLED SERVICES                                      #
