@@ -60,7 +60,7 @@ data:
           labels:
             app: jupyterhub-prepuller
         spec:
-          nodeName: NODE_NAME
+          nodeName: $NODE_NAME
           restartPolicy: Never
           tolerations:
           - key: "role"
@@ -131,7 +131,6 @@ spec:
         # TODO Get the pulling logic working
         args:
           - |
-            sleep 10000000
             gen3_hatchery_prepuller() {
               local images
               local it
@@ -160,8 +159,8 @@ spec:
               fi
             }
 
-            #gen3_hatchery_prepuller | kubectl apply -f -
-            gen3_hatchery_prepuller
+            gen3_hatchery_prepuller | kubectl apply -f -
+        
         volumeMounts:
         - name: job-yaml
           mountPath: /job.yaml
