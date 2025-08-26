@@ -59,17 +59,17 @@ spec:
             imagePullPolicy: Always
             env:
                 - name: PROJECT
-                  value: {{ .Values.googleBucketReplicateJob.PROJECT }}
+                  value: "{{ .Values.googleBucketReplicateJob.PROJECT }}"
                 - name: MAX_WORKERS
                   value: {{ .Values.googleBucketReplicateJob.MAX_WORKERS }}
                 - name: RELEASE
-                  value: {{ .Values.googleBucketReplicateJob.RELEASE }}
+                  value: "{{ .Values.googleBucketReplicateJob.RELEASE }}"
                 - name: MANIFEST_FILE
-                  value: {{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}
+                  value: "{{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}"
                 - name: IGNORED_FILE
-                  value: {{ .Values.googleBucketReplicateJob.IGNORED_FILE }}
+                  value: "{{ .Values.googleBucketReplicateJob.IGNORED_FILE }}"
                 - name: LOG_BUCKET
-                  value: {{ .Values.googleBucketReplicateJob.LOG_BUCKET }}
+                  value: "{{ .Values.googleBucketReplicateJob.LOG_BUCKET }}"
                 - name: AUTH_NAMESPACE
                   valueFrom:
                     configMapKeyRef:
