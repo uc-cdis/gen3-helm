@@ -362,6 +362,9 @@ sowerConfig:
 pelican:
   bucket: "sower-pfb-bucket"
 
+auditExportJob:
+  bucket: "sower-audit-bucket"
+
 # -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
 sowerjobsG3auto: |
   {

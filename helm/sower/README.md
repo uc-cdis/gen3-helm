@@ -21,6 +21,7 @@ A Helm chart for gen3 sower
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["sower"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
+| auditExportJob.bucket | string | `"sower-audit-bucket"` |  |
 | automountServiceAccountToken | bool | `true` | Automount the default service account token |
 | autoscaling | object | `{}` |  |
 | awsRegion | string | `"us-east-1"` | AWS region to be used. |

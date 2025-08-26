@@ -147,7 +147,7 @@ dependencies:
   #   Reference: https://github.com/neuvector/neuvector-helm
   # For more information, please use the Gen3 community Slack.
   - name: neuvector
-    version: "0.1.2"
+    version: 0.1.2
     repository: "file://../neuvector"
     condition: neuvector.enabled
 
