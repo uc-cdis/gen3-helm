@@ -72,6 +72,10 @@ data:
           containers:
           - name: pause
             image: gcr.io/google_containers/pause-amd64:3.1
+            command:
+              - /bin/sh
+              - -c 
+              - exit 0
           initContainers:
           - name: image-pull-minimal
             image: jupyter/minimal-notebook:d29a0f617484
