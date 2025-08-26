@@ -58,24 +58,24 @@ spec:
                 memory: "24Gi"
             imagePullPolicy: Always
             env:
-              - name: PROJECT
-                value: {{ .Values.googleBucketReplicateJob.PROJECT }}
-              - name: MAX_WORKERS
-                value: {{ .Values.googleBucketReplicateJob.MAX_WORKERS }}
-              - name: RELEASE
-                value: {{ .Values.googleBucketReplicateJob.RELEASE }}
-              - name: MANIFEST_FILE
-                value: {{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}
-              - name: IGNORED_FILE
-                value: {{ .Values.googleBucketReplicateJob.IGNORED_FILE }}
-              - name: LOG_BUCKET
-                value: {{ .Values.googleBucketReplicateJob.LOG_BUCKET }}
-              - name: AUTH_NAMESPACE
-                valueFrom:
-                  configMapKeyRef:
-                    name: manifest-global
-                    key: auth_namespace
-                    optional: true
+                - name: PROJECT
+                  value: {{ .Values.googleBucketReplicateJob.PROJECT }}
+                - name: MAX_WORKERS
+                  value: {{ .Values.googleBucketReplicateJob.MAX_WORKERS }}
+                - name: RELEASE
+                  value: {{ .Values.googleBucketReplicateJob.RELEASE }}
+                - name: MANIFEST_FILE
+                  value: {{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}
+                - name: IGNORED_FILE
+                  value: {{ .Values.googleBucketReplicateJob.IGNORED_FILE }}
+                - name: LOG_BUCKET
+                  value: {{ .Values.googleBucketReplicateJob.LOG_BUCKET }}
+                - name: AUTH_NAMESPACE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: auth_namespace
+                      optional: true
             volumeMounts:
               - name: cred-volume
                 mountPath: "/secrets/google_service_account_creds"
