@@ -146,13 +146,13 @@ spec:
                 local count=0
                 for it in ${images}; do
                 cat - <<EOM
-                    - name: "image-${count}"
-                      image: $it
-                      imagePullPolicy: IfNotPresent
-                      command:
-                        - /bin/sh
-                        - -c
-                        - echo 'Pulling complete'
+                  - name: "image-${count}"
+                    image: $it
+                    imagePullPolicy: IfNotPresent
+                    command:
+                      - /bin/sh
+                      - -c
+                      - echo 'Pulling complete'
             EOM
                   count=$((count+1))
                 done
