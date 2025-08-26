@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-config
+  name: custom-objects
   namespace: argocd
 spec:
   project: default
@@ -14,4 +14,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
+  destination:
+    server: "https://kubernetes.default.svc"
 {{- end }}
