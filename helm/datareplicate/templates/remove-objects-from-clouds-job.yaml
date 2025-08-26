@@ -1,4 +1,3 @@
-@@ -0,0 +1,84 @@
 # run with 
 # gen3 job run jobs/remove-objects-from-clouds-job.yaml RELEASE DR17 MANIFEST_S3 s3://giang816test/GDC_sample_redact_manifest.tsv LOG_BUCKET log_bucket IGNORED_FILE_S3 s3://giang816test/ignored_files_manifest.csv
 apiVersion: batch/v1
@@ -7,6 +6,7 @@ metadata:
   name: remove-objects-from-clouds
 spec:
   # not yet supported - backOffLimit: 3
+  suspend: true
   schedule: "0/20 * * * *" # once every 20 minutes
   template:
     metadata:
