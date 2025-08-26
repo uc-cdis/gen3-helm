@@ -131,6 +131,7 @@ spec:
         # TODO Get the pulling logic working
         args:
           - |
+            sleep 10000000
             gen3_hatchery_prepuller() {
               local images
               local it
