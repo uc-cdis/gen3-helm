@@ -51,7 +51,7 @@ data:
     apiVersion: batch/v1
     kind: Job
     metadata:
-      name: jupyterhub-prepuller
+      name: jupyterhub-prepuller-$JOB_TIMESTAMP
       labels:
         app: jupyterhub-prepuller
     spec:
@@ -140,6 +140,8 @@ spec:
               if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
                 images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
               fi
+
+              export JOB_TIMESTAMP=$(date +%s )
 
               cat "/job.yaml" | envsubst
               if [[ -n "$images" ]]; then
