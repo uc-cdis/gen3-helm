@@ -2291,6 +2291,17 @@ entries:
   cluster-level-resources:
   - apiVersion: v2
     appVersion: 1.17.0
+    created: "2025-08-27T15:38:59.110848813Z"
+    description: An app-of-apps Helm chart that allows for flexible deployment of
+      resources that support Gen3
+    digest: a912f516f00edf6eea077a4757547f3555aa203ad0dda43305c103ca4643de2a
+    name: cluster-level-resources
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/cluster-level-resources-0.6.15/cluster-level-resources-0.6.15.tgz
+    version: 0.6.15
+  - apiVersion: v2
+    appVersion: 1.17.0
     created: "2025-08-11T15:36:36.855389041Z"
     description: An app-of-apps Helm chart that allows for flexible deployment of
       resources that support Gen3
@@ -30796,4 +30807,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-08-20T22:05:47.91140258Z"
+generated: "2025-08-27T15:38:59.112139809Z"
