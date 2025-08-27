@@ -1,5 +1,5 @@
 
-{{- if .Values.workspaceLaunchTest.enable -}}
+{{- if .Values.workspaceLaunchTest.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -33,15 +33,15 @@ spec:
                     - ONDEMAND
           containers:
           - name: fence
-            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            image: {{ .Values.fence.image }}
             imagePullPolicy: Always
             env:
               - name: PYTHONPATH
                 value: /var/www/fence
               - name: WORKSPACE_LAUNCH_TEST_OPERATOR
-                value: {{ .Values.workspaceLaunchTest.operatorName }}
+                value: "{{ .Values.workspaceLaunchTest.operatorName }}"
               - name: TOKEN_EXPIRATION
-                GEN3_TOKEN_EXPIRATION|-value: "3600"-|
+                value: "3600"
               - name: FENCE_PUBLIC_CONFIG
                 valueFrom:
                   configMapKeyRef:

@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -165,7 +165,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.34
+version: 0.2.35
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

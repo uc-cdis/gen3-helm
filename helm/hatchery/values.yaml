@@ -101,6 +101,9 @@ externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "stata-g3auto"
   stataG3auto:
 
+fence:
+  image: quay.io/cdis/fence:master
+
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
 
@@ -246,7 +249,7 @@ hatchery:
 # -- (map) Configuration for workspace launch test crobjob
 workspaceLaunchTest:
   # -- (bool) Whether the workspace launch test cron job is enabled.
-  enable: true
+  enabled: true
   # -- (string) The schedule for the workspace launch test cron job.
   schedule: "*/20 * * * *"
   # -- (string) Images to test in the workspace launch test cron job.

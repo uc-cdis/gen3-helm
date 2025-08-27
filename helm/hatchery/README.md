@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -22,6 +22,7 @@ A Helm chart for gen3 Hatchery
 | externalSecrets | map | `{"createK8sStataSecret":false,"stataG3auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sStataSecret | string | `false` | Will create the Helm "stata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.stataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "stata-g3auto" |
+| fence.image | string | `"quay.io/cdis/fence:master"` |  |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `100` |  |
@@ -107,8 +108,8 @@ A Helm chart for gen3 Hatchery
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
-| workspaceLaunchTest | map | `{"enable":true,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
-| workspaceLaunchTest.enable | bool | `true` | Whether the workspace launch test cron job is enabled. |
+| workspaceLaunchTest | map | `{"enabled":true,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
+| workspaceLaunchTest.enabled | bool | `true` | Whether the workspace launch test cron job is enabled. |
 | workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
 | workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
 | workspaceLaunchTest.schedule | string | `"*/20 * * * *"` | The schedule for the workspace launch test cron job. |
