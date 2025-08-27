@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -107,9 +107,9 @@ A Helm chart for gen3 Hatchery
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
-| workspaceLaunchTest | map | `{"enableWorkspaceLaunchTest":true,"hostname":"https://example.com","operatorName":"username","schedule":"0 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
-| workspaceLaunchTest.enableWorkspaceLaunchTest | bool | `true` | Whether the workspace launch test cron job is enabled. |
+| workspaceLaunchTest | map | `{"enable":true,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
+| workspaceLaunchTest.enable | bool | `true` | Whether the workspace launch test cron job is enabled. |
 | workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
 | workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
-| workspaceLaunchTest.schedule | string | `"0 * * * *"` | The schedule for the workspace launch test cron job. |
+| workspaceLaunchTest.schedule | string | `"*/20 * * * *"` | The schedule for the workspace launch test cron job. |
 | workspaceLaunchTest.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job. Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |

@@ -1,4 +1,4 @@
-{{- if .Values.hatchery.workspaceLaunchTest.enableWorkspaceLaunchTest -}}
+{{- if .Values.workspaceLaunchTest.enable -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
