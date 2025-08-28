@@ -52,11 +52,16 @@ metricsEnabled: false
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  createK8sGen3WorkflowSecret: false # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  gen3workflowG3auto: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
-  dbcreds: "" # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
-  createFunnelOidcClientSecret: true # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
-  funnelOidcClient: # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
+  # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sGen3WorkflowSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
+  gen3workflowG3auto: ""
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds: ""
+  # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
+  createFunnelOidcClientSecret: true
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
+  funnelOidcClient:
 
 # -- (map) Secret information for External Secrets.
 secrets:
