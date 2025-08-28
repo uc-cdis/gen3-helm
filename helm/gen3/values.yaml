@@ -499,14 +499,11 @@ data-upload-cron:
 # -- (map) Configurations for gen3-user-data-library chart.
 gen3-user-data-library:
   # -- (bool) Whether to deploy the gen3-user-data-library subchart.
-<<<<<<< HEAD
   enabled: false
 
 # -- (map) Configurations for gen3-workflow chart.
 gen3-workflow:
   # -- (bool) Whether to deploy the gen3-workflow subchart.
-=======
->>>>>>> 5ba4b84a (Update secrets.yaml and add gen3-workflow to umbrella chart)
   enabled: false
 
 # -- (map) Configurations for gen3-workflow chart.
@@ -517,12 +514,8 @@ gen3-workflow:
     # -- (string) The Docker image repository for the gen3-workflow.
     repository: "quay.io/cdis/gen3-workflow"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "test_allow_mock_auth"
+    tag: "master"
   workflowConfig:
-    mockAuth: true
-    hostname: localhost-helm
-    s3AccessKeyId: "<redacted>"
-    s3SecretAccessKey: "<redacted>"
     kmsEncryptionEnabled: false
 
 
