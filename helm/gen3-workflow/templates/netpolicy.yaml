@@ -14,11 +14,11 @@
 {{ $jobsNamespace := .Values.funnel.Kubernetes.JobsNamespace | default .Release.Namespace }}
 
 ---
-# funnel ingress from gen3-workflow and mongodb
+# Funnel needs both ingress and egress to/from gen3-workflow and funnel-mongodb
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-ingress-from-gen3workflow-and-mongo-netpolicy
+  name: funnel-ingress-netpolicy
 spec:
   podSelector:
     matchLabels:
@@ -26,19 +26,15 @@ spec:
   ingress:
     - from:
       - podSelector:
-          matchLabels:
-            app: gen3-workflow
-    - from:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: mongodb
-      ports:
-        - protocol: TCP
-          port: 27017
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - gen3-workflow
+                - funnel-mongodb
   policyTypes:
     - Ingress
 ---
-# Gen3-Workflow egress to funnel
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -48,10 +44,9 @@ spec:
     matchExpressions:
       - key: app
         operator: In
-        #TODO: add funnel-mongodb label once funnel team adds it
         values:
           - gen3-workflow
-          - funnel-worker
+          - funnel-mongodb
   egress:
     - to:
       - podSelector:
@@ -59,54 +54,48 @@ spec:
             app: funnel
   policyTypes:
     - Egress
-
 ---
-# Need to his is temporary until funnel 
-#adds a label gen3-mongodb for their mongodb service,
-# then we can simplify this and combine multiple policies
-
-
-# mongodb egress to funnel
+# Gen3-workflow needs to allow ingress from funnel workers in $jobsNamespace
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: mongodb-egress-to-funnel-and-funnel-worker
+  name: gen3-workflow-ingress-from-funnel-worker
+  namespace: {{ .Release.Namespace }}
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: mongodb
+      app: gen3-workflow
   policyTypes:
-    - Egress
-  egress:
-    - to:
+    - Ingress
+  ingress:
+    - from:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/metadata.name: {{ $jobsNamespace }}
         podSelector:
           matchLabels:
             app: funnel-worker
-      ports:
-        - protocol: TCP
-          port: 27017
-    - to:
-      - podSelector:
-          matchLabels:
-            app: funnel
-      ports:
-        - protocol: TCP
-          port: 27017
 ---
+# MongoDB needs to allow ingress from funnel in current namespace
+# and funnel worker in $jobsNamespace
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: mongodb-ingress-from-funnel-and-funnel-worker
+  name: mongodb-ingress-netpolicy
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: mongodb
+      app: funnel-mongodb
   policyTypes:
   - Ingress
   ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+            app: funnel
+    ports:
+    - protocol: TCP
+      port: 27017
   - from:
     - namespaceSelector:
         matchLabels:
@@ -117,13 +106,6 @@ spec:
     ports:
       - protocol: TCP
         port: 27017
-  - from:
-    - podSelector:
-        matchLabels:
-            app: funnel
-    ports:
-    - protocol: TCP
-      port: 27017
 ---
 # Funnel egress to mongodb
 apiVersion: networking.k8s.io/v1
@@ -134,27 +116,30 @@ spec:
   podSelector:
     matchLabels:
       app: funnel
+  policyTypes:
+  - Egress
   egress:
     - to:
       - podSelector:
           matchLabels:
-            app.kubernetes.io/name: mongodb
+            app: funnel-mongodb
       ports:
-        - protocol: TCP
-          port: 27017
-
-  policyTypes:
-    - Egress
+      - protocol: TCP
+        port: 27017
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-to-funnel-worker-egress
+  name: funnel-worker-egress-policy
   namespace: {{ .Release.Namespace }}
 spec:
   podSelector:
-    matchLabels:
-      app: funnel
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - funnel-mongodb
+          - gen3-workflow
   policyTypes:
   - Egress
   egress:
@@ -166,6 +151,57 @@ spec:
         matchLabels:
           app: funnel-worker
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-egress-to-mongo-and-gen3workflow
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - gen3-workflow
+              - funnel-mongodb
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-ingress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - gen3-workflow
+              - funnel-mongodb
+---
+# Funnel needs to be able to access the Kube API to launch jobs in a different namespace
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -183,29 +219,10 @@ spec:
     ports:
       - protocol: TCP
         port: 443
-
 ---
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: funnel-from-funnel-worker-ingress
-  namespace: {{ .Release.Namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: {{ $jobsNamespace }}
-          podSelector:
-            matchLabels:
-              app: funnel-worker
-  policyTypes:
-    - Ingress
-
----
+# Funnel workers need to be able to access DNS 
+# to interact with pods from different namespace
+# and the Kube API to create excecutor pods
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -226,111 +243,4 @@ spec:
           port: 53
   policyTypes:
     - Egress
----
-
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: funnel-worker-to-mongo-and-gen3workflow-egress
-  namespace: {{ $jobsNamespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel-worker
-  egress:
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: {{ .Release.Namespace }}
-        podSelector:
-          matchLabels:
-            app.kubernetes.io/name: mongodb
-      ports:
-        - protocol: TCP
-          port: 27017
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: {{ .Release.Namespace }}
-        podSelector:
-          matchLabels:
-            app: gen3-workflow
-  policyTypes:
-    - Egress
-
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: gen3-workflow-from-funnel-worker-ingress
-  namespace: {{ .Release.Namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: gen3-workflow
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: {{ $jobsNamespace }}
-      podSelector:
-        matchLabels:
-          app: funnel-worker
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: gen3-workflow-to-funnel-worker-egress
-  namespace: {{ .Release.Namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: gen3-workflow
-  egress:
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: {{ $jobsNamespace }}
-        podSelector:
-          matchLabels:
-            app: funnel-worker
-  policyTypes:
-  - Egress
-
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: funnel-worker-from-funnel-gen3workflow-and-mongodb-ingress
-  namespace: {{ $jobsNamespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel-worker
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: {{ .Release.Namespace }}
-      podSelector:
-        matchExpressions:
-          - key: app
-            operator: In
-            values:
-              - funnel
-              - gen3-workflow
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: {{ .Release.Namespace }}
-      podSelector:
-        matchLabels:
-          app.kubernetes.io/name: mongodb
-    ports:
-      - protocol: TCP
-        port: 27017
 {{- end }}
