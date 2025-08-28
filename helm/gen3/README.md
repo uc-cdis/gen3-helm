@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.33](https://img.shields.io/badge/Version-0.2.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.35](https://img.shields.io/badge/Version-0.2.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -22,37 +22,37 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
-| file://../audit | audit | 0.1.30 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.29 |
+| file://../audit | audit | 0.1.31 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
-| file://../common | common | 0.1.23 |
+| file://../common | common | 0.1.24 |
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.55 |
+| file://../fence | fence | 0.1.56 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
+| file://../gen3-workflow | gen3-workflow | 0.1.11 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.27 |
-| file://../indexd | indexd | 0.1.33 |
-| file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.30 |
+| file://../hatchery | hatchery | 0.1.28 |
+| file://../indexd | indexd | 0.1.34 |
+| file://../manifestservice | manifestservice | 0.1.33 |
+| file://../metadata | metadata | 0.1.31 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
 | file://../peregrine | peregrine | 0.1.31 |
-| file://../portal | portal | 0.1.45 |
+| file://../portal | portal | 0.1.46 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.41 |
+| file://../revproxy | revproxy | 0.1.42 |
 | file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.34 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
-| file://../wts | wts | 0.1.29 |
+| file://../sower | sower | 0.1.35 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.32 |
+| file://../wts | wts | 0.1.30 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
@@ -91,6 +91,8 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
+| fence.FENCE_CONFIG.MOCK_GOOGLE_AUTH | bool | `true` |  |
+| fence.USER_YAML | string | `"cloud_providers: {}\nauthz:\n  # policies automatically given to anyone, even if they are not authenticated\n  anonymous_policies:\n  - open_data_reader\n\n  # policies automatically given to authenticated users (in addition to their other policies)\n  all_users_policies: []\n\n  groups:\n  # can CRUD programs and projects and upload data files\n  - name: data_submitters\n    policies:\n    - services.sheepdog-admin\n    - data_upload\n    - MyFirstProject_submitter\n    users:\n    - username1@gmail.com\n\n  # can create/update/delete indexd records\n  - name: indexd_admins\n    policies:\n    - indexd_admin\n    users:\n    - username1@gmail.com\n\n  resources:\n  - name: workspace\n  - name: data_file\n  - name: services\n    subresources:\n    - name: sheepdog\n      subresources:\n      - name: submission\n        subresources:\n        - name: program\n        - name: project\n    - name: 'indexd'\n      subresources:\n        - name: 'admin'\n    - name: audit\n      subresources:\n        - name: presigned_url\n        - name: login\n    - name: 'workflow'\n      subresources:\n        - name: 'gen3-workflow'\n          subresources:\n          - name: 'user-bucket'\n          - name: 'tasks'\n  - name: open\n  - name: programs\n    subresources:\n    - name: MyFirstProgram\n      subresources:\n      - name: projects\n        subresources:\n        - name: MyFirstProject\n\n  policies:\n  - id: workspace\n    description: be able to use workspace\n    resource_paths:\n    - /workspace\n    role_ids:\n    - workspace_user\n  - id: data_upload\n    description: upload raw data files to S3\n    role_ids:\n    - file_uploader\n    resource_paths:\n    - /data_file\n  - id: services.sheepdog-admin\n    description: CRUD access to programs and projects\n    role_ids:\n      - sheepdog_admin\n    resource_paths:\n      - /services/sheepdog/submission/program\n      - /services/sheepdog/submission/project\n  - id: indexd_admin\n    description: full access to indexd API\n    role_ids:\n      - indexd_admin\n    resource_paths:\n      - /programs\n  - id: open_data_reader\n    role_ids:\n      - peregrine_reader\n      - guppy_reader\n      - fence_storage_reader\n    resource_paths:\n    - /open\n  - id: all_programs_reader\n    role_ids:\n    - peregrine_reader\n    - guppy_reader\n    - fence_storage_reader\n    resource_paths:\n    - /programs\n  - id: MyFirstProject_submitter\n    role_ids:\n    - reader\n    - creator\n    - updater\n    - deleter\n    - storage_reader\n    - storage_writer\n    resource_paths:\n    - /programs/MyFirstProgram/projects/MyFirstProject\n# Gen3 Workflow policies\n  - id: workflow_user\n    role_ids:\n    - workflow_user\n    resource_paths:\n    - '/services/workflow/gen3-workflow'\n    - '/services/workflow/gen3-workflow/tasks'\n  - id: workflow_storage_deleter\n    role_ids:\n    - workflow_storage_deleter\n    resource_paths:\n    - '/services/workflow/gen3-workflow/user-bucket'\n\n  roles:\n  - id: file_uploader\n    permissions:\n    - id: file_upload\n      action:\n        service: fence\n        method: file_upload\n  - id: workspace_user\n    permissions:\n    - id: workspace_access\n      action:\n        service: jupyterhub\n        method: access\n  - id: sheepdog_admin\n    description: CRUD access to programs and projects\n    permissions:\n    - id: sheepdog_admin_action\n      action:\n        service: sheepdog\n        method: '*'\n  - id: indexd_admin\n    description: full access to indexd API\n    permissions:\n    - id: indexd_admin\n      action:\n        service: indexd\n        method: '*'\n  - id: admin\n    permissions:\n      - id: admin\n        action:\n          service: '*'\n          method: '*'\n  - id: creator\n    permissions:\n      - id: creator\n        action:\n          service: '*'\n          method: create\n  - id: reader\n    permissions:\n      - id: reader\n        action:\n          service: '*'\n          method: read\n  - id: updater\n    permissions:\n      - id: updater\n        action:\n          service: '*'\n          method: update\n  - id: deleter\n    permissions:\n      - id: deleter\n        action:\n          service: '*'\n          method: delete\n  - id: storage_writer\n    permissions:\n      - id: storage_creator\n        action:\n          service: '*'\n          method: write-storage\n  - id: storage_reader\n    permissions:\n      - id: storage_reader\n        action:\n          service: '*'\n          method: read-storage\n  - id: peregrine_reader\n    permissions:\n    - id: peregrine_reader\n      action:\n        method: read\n        service: peregrine\n  - id: guppy_reader\n    permissions:\n    - id: guppy_reader\n      action:\n        method: read\n        service: guppy\n  - id: fence_storage_reader\n    permissions:\n    - id: fence_storage_reader\n      action:\n        method: read-storage\n        service: fence\n      # Gen3 Workflow\n  - id: workflow_user\n    permissions:\n    - id: workflow_user\n      action:\n        service: gen3-workflow\n        method: create\n  - id: workflow_storage_deleter\n    permissions:\n    - id: workflow_storage_deleter\n      action:\n        service: gen3-workflow\n        method: delete\n\nclients:\n  wts:\n    policies:\n    - all_programs_reader\n    - open_data_reader\n  funnel-plugin-client:\n    policies:\n    - workflow_user\n\nusers:\n  username1@gmail.com: {}\n  username2:\n    tags:\n      name: John Doe\n      email: johndoe@gmail.com\n    policies:\n    - MyFirstProject_submitter\n  main@example.org:\n    admin: true\n    policies:\n    - 'workflow_user'\n\ncloud_providers: {}\ngroups: {}\n"` |  |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | fence.usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
@@ -108,8 +110,12 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
-| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
-| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
+| gen3-workflow | map | `{"enabled":true,"image":{"repository":"quay.io/cdis/gen3-workflow","tag":"test_allow_mock_auth"},"workflowConfig":{"hostname":"localhost-helm","kmsEncryptionEnabled":false,"mockAuth":true,"s3AccessKeyId":"<redacted>","s3SecretAccessKey":"<redacted>"}}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `true` | Whether to deploy the gen3-workflow subchart. |
+| gen3-workflow.image.repository | string | `"quay.io/cdis/gen3-workflow"` | The Docker image repository for the gen3-workflow. |
+| gen3-workflow.image.tag | string | `"test_allow_mock_auth"` | Overrides the image tag whose default is the chart appVersion. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
