@@ -71,7 +71,6 @@ secrets:
   awsSecretAccessKey:
 
 
-
 # -- (int) Number of desired replicas
 replicaCount: 1
 
@@ -331,7 +330,7 @@ workflowConfig:
   # -- (list) Whitelist of container image patterns allowed for workflow tasks.
   #    Supports wildcards `*` and `{username}` placeholders.
   # TODO: Change this to a more restrictive value
-  taskImageWhitelist: ["*"] 
+  taskImageWhitelist: ["*"]
   # -- (bool) Enables Prometheus metrics for the workflow service.
   enablePrometheusMetrics: false
   # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
@@ -418,7 +417,6 @@ funnel:
     Disabled: false
     # -- (string) Path to the directory where Funnel plugins are stored.
     Path: plugin-binaries/auth-plugin
-
     # -- (map) Parameters to send to the Funnel plugin.
     Params:
       # -- (string) S3 URL for Funnel plugin.

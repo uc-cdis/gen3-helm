@@ -418,7 +418,7 @@ fence:
       funnel-plugin-client:
         policies:
         - workflow_user
-    
+
     users:
       username1@gmail.com: {}
       username2:
@@ -427,7 +427,7 @@ fence:
           email: johndoe@gmail.com
         policies:
         - MyFirstProject_submitter
-      main@example.org: 
+      main@example.org:
         admin: true
         policies:
         - 'workflow_user'
