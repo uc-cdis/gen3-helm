@@ -63,9 +63,6 @@ A Helm chart for Kubernetes
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
 | funnel.image.tag | string | `"2025-07-09"` | The Docker image tag for the Funnel service. |
-| funnel.mongodb.image.registry | string | `"docker.io"` |  |
-| funnel.mongodb.image.repository | string | `"dlavrenuek/bitnami-mongodb-arm"` |  |
-| funnel.mongodb.image.tag | string | `"6.0.13"` |  |
 | funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
 | funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
 | funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
@@ -168,9 +165,9 @@ A Helm chart for Kubernetes
 | workflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
 | workflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
 | workflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
-| workflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.      Leave empty to use credentials from an existing STS session. |
+| workflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
 | workflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
 | workflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
-| workflowConfig.taskImageWhitelist | list | `["*"]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
+| workflowConfig.taskImageWhitelist | list | `["*"]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. TODO: Change this to a more restrictive value |
 | workflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
 | workflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
