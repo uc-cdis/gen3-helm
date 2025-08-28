@@ -15,7 +15,11 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
+<<<<<<< HEAD
 version: 0.1.18
+=======
+version: 0.1.11
+>>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -29,6 +33,11 @@ dependencies:
 <<<<<<< HEAD
 =======
   - name: funnel
+<<<<<<< HEAD
     version: 0.1.50
     repository: "file://../funnel"
 >>>>>>> ac9ee302 (Add useryaml, update funnel secrets, add funnel local chart reference)
+=======
+    version: 0.1.53
+    repository: "https://ohsu-comp-bio.github.io/helm-charts"
+>>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)

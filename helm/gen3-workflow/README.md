@@ -1,6 +1,10 @@
 # gen3-workflow
 
+<<<<<<< HEAD
 ![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+=======
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
 
 A Helm chart for Kubernetes
 
@@ -9,11 +13,16 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.20 |
 | file://../funnel | funnel | 0.1.50 |
 >>>>>>> ac9ee302 (Add useryaml, update funnel secrets, add funnel local chart reference)
+=======
+| file://../common | common | 0.1.23 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.53 |
+>>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
 
 ## Values
 
