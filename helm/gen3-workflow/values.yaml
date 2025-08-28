@@ -110,13 +110,7 @@ serviceAccount:
   # -- (bool) Whether to create a service account
   create: true
   # Annotations to add to the service account
-<<<<<<< HEAD
   annotations: {}
-=======
-  annotations:
-    # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
-    eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa
->>>>>>> ac9ee302 (Add useryaml, update funnel secrets, add funnel local chart reference)
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   # -- (string) The name of the service account
