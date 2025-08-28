@@ -199,8 +199,9 @@ spec:
                 
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
                 kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
-                
-                echo "Rolling out funnel-server in namespace $namespace..."
-                kubectl rollout restart deployment/"$DEPLOYMENT_NAME" -n $namespace
               fi
+
+              # We have to temporairily restart funnel-server to pick up the new OIDC client credentials, until funnel supports storing sensitive information in secrets instead of Configmaps.
+              echo "Rolling out funnel-server in namespace $namespace..."
+              kubectl rollout restart deployment/"$DEPLOYMENT_NAME" -n $namespace
 {{- end }}

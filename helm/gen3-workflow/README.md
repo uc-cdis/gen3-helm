@@ -48,17 +48,6 @@ A Helm chart for Kubernetes
 | externalSecrets.gen3workflowG3auto | string | `""` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
-| funnel.Kubernetes | map | `{"JobsNamespace":"","Namespace":""}` | Kubernetes configuration for Funnel. |
-| funnel.Kubernetes.JobsNamespace | string | `""` | Namespace where Funnel jobs will be created. |
-| funnel.Kubernetes.Namespace | string | `""` | Namespace where Funnel server will be created. |
-| funnel.Logger.level | string | `"debug"` |  |
-| funnel.Plugins | map | `{"Disabled":false,"Params":{"OidcClientId":"<redacted>","OidcClientSecret":"<redacted>","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"},"Path":"plugin-binaries/auth-plugin"}` | Configuration for the Funnel plugin. |
-| funnel.Plugins.Params | map | `{"OidcClientId":"<redacted>","OidcClientSecret":"<redacted>","OidcTokenUrl":"gen3-workflow-service.jenkins-blood.svc.cluster.local","S3Url":"https://jenkins-blood.planx-pla.net/user"}` | Parameters to send to the Funnel plugin. |
-| funnel.Plugins.Params.OidcClientId | string | `"<redacted>"` | OIDC client ID for Funnel plugin. |
-| funnel.Plugins.Params.OidcClientSecret | string | `"<redacted>"` | OIDC client secret for Funnel plugin. |
-| funnel.Plugins.Params.OidcTokenUrl | string | `"gen3-workflow-service.jenkins-blood.svc.cluster.local"` | OIDC token URL for Funnel plugin. |
-| funnel.Plugins.Params.S3Url | string | `"https://jenkins-blood.planx-pla.net/user"` | S3 URL for Funnel plugin. |
-| funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` | Path to the directory where Funnel plugins are stored. |
 | funnel.image | map | `{"initContainer":{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"debug-logging"},"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"2025-07-09"}` | Configuration for the Funnel container image. |
 | funnel.image.initContainer | map | `{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","pullPolicy":"Always","tag":"debug-logging"}` | Configuration for the Funnel init container. |
 | funnel.image.initContainer.command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
@@ -117,10 +106,10 @@ A Helm chart for Kubernetes
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-workflow","tag":"feat_plugin-support"}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-workflow","tag":"master"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/gen3-workflow"` | The Docker image repository for the gen3workflow service |
-| image.tag | string | `"feat_plugin-support"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | initEnv | list | `{}` | Volumes to attach to the init container. |
 | initVolumeMounts | list | `[]` | Volumes to mount to the init container. |

@@ -94,7 +94,7 @@ image:
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_plugin-support"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -412,29 +412,3 @@ funnel:
       failureThreshold: 10
 
 
-  # -- (map) Configuration for the Funnel plugin.
-  Plugins:
-    Disabled: false
-    # -- (string) Path to the directory where Funnel plugins are stored.
-    Path: plugin-binaries/auth-plugin
-    # -- (map) Parameters to send to the Funnel plugin.
-    Params:
-      # -- (string) S3 URL for Funnel plugin.
-      S3Url: "https://jenkins-blood.planx-pla.net/user"
-      # -- (string) OIDC token URL for Funnel plugin.
-      OidcTokenUrl: "gen3-workflow-service.jenkins-blood.svc.cluster.local"
-      # -- (string) OIDC client ID for Funnel plugin.
-      OidcClientId: "<redacted>"
-      # -- (string) OIDC client secret for Funnel plugin.
-      OidcClientSecret: "<redacted>"
-
-  # -- (map) Kubernetes configuration for Funnel.
-  Kubernetes:
-    # -- (string) Namespace where Funnel server will be created.
-    Namespace: ""
-    # -- (string) Namespace where Funnel jobs will be created.
-    JobsNamespace: ""
-
-  Logger:
-    # Logging levels: debug, info, error
-    level: debug
