@@ -158,18 +158,9 @@ usersync:
   # -- (string) Known hosts for dbGaP SFTP
   sshKnownHosts: |
     # example: <host> <keytype> <base64-key>
-    # sftp-qa.planx-pla.net:22 SSH-2.0-OpenSSH_6.7p1 Debian-5+deb8u7
-    # sftp-qa.planx-pla.net:22 SSH-2.0-OpenSSH_6.7p1 Debian-5+deb8u7
-    sftp-qa.planx-pla.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4n3lOWqe+f+7lv58QVGyCKyn0//vgrsakd9WnDp5ke4AP9uKpk9x33uZl7Y8kHwLLm+QO+vKF9X8GHdEhlbno+fqdE9lujmFEyZq32UjJJqop/W3mDkiGS9U4z6xhhXLk+6qFfLhHTbkxgZ2KtFazYQFE+gml8FOGHJwlSNaAGKAXtI+33dwE6Rf1fFpCAMCKTJWgutL1zKbDrtXWo9UwpM30LyuEFp15O0DPk4k33bHnxCmg7YRD55SLoe3/GikSCvwyY7MyF3jNwXP8RAxqCm6f++hV3Bp2prVUAr/N7UjuzrH2HET6OrfgK/bYTPgjQOd6mARHEtLo81TBzlcQGLNmVohTxnzBxlpQmxpyOfv8lgaSuOAuiyhV75XWqlwLxp8q4QjPYYff3yB9QnkUXoYKGiG+HIDXAcMVcUv0q2jyBIBNSlHMOVEdgICu4+eVTumzWGJRfgaePJjlBET1/A8cswwDCedrMqMeiLH3Q5PBBk5MHDsDtXlBDimOmPIceHbV5Xm+ryCgfv4gTmo3Sq4++qOPzCNiuf+Dl4mv+v2TFkVamaZ08nyZ2IPSj5UQ1G0VZkBAJJtdgd27TR1nxx+cW9smn4Mca3GCsRer0BQY/VKsn93a3XVFc9HSjpY7JfWg/2KFlsGTvVZPAqvhb9oOfh7IwiamDbWZK2xusQ==
-    # sftp-qa.planx-pla.net:22 SSH-2.0-OpenSSH_6.7p1 Debian-5+deb8u7
-    sftp-qa.planx-pla.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPpxgkAzjN4xgB9VCkN4ldIv9a0NkrhBdO6xRBFJMLN8
-    # sftp-qa.planx-pla.net:22 SSH-2.0-OpenSSH_6.7p1 Debian-5+deb8u7
-    # s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com:22 SSH-2.0-AWS_SFTP_1.2
+    sftp-dev.planx-pla.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCe+Fo6FAZIMrFSeYtspkbNZJea9h0e7c72RLKAx7nQp/fa3WItQbySu7PTMntWEw7uy+CbFBaNXGHJJC7EFXqEWCVsr42B5oAWnd4MADauLQ3cvGcPNaadSeuDucf2+HlFcZDpCnGdJ3MmUYDOtSP3o3QXQ03Iwb8wSxyKR3+x/mRPrTFIvQrs20tjLwNbqtUSSXabTVqzPWcKMnahyB77RsZkCu+AaMovCK6ZPBjdLi9sMO9kfj6/oXDfrY9G6P2FFMis12pxtkqJHmmOfCfgGK2qcDdEMQTgRr1TEZRL1UpPbufJrXfmMpdLJ7RYhg9yopfB9aXkLCZ+h7rN/dKltQ1CrElXeUtI8c+JhTbHZpvd459Ek03pcbDBy2WhJNz4wY4Mrye2RPd0tQQWILxE7qNw0cWT7XWJoSiZqWrefAoYbivRLZ8nrIG5aRvHJAncxnGqMSF1IyPwMYGxz0z3y+q4S9MFwZZG3eowqcnj8Edljx1uSqqpY0e9hq53v4hG8Xwm+zEjoVn07oioB7BjH62xtVrltam7U461KG4Qlp2v6aHc+PYX+6hjsSHSSLa1mWFe7fIWdJkB4CsdFlZKwKNgCD5/GeZAb3Yai/gJAUJcKP9Snl4gf1gVnjY+eRKxjytweA12S6RmuKbM8aW4Pz2hHvms818zqsvNUT5ZuQ==
+    sftp-dev.planx-pla.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEUQQ1FBVwYzSekuX5rdj/DSCJd9d1DKZYSMqkaIg3yW
     s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNIOMhn0C6cf6pG0XnrXUP/TbzFgYN+tVoWzGuo4h8P5Foqev6Rs6gOXomu/vxONpNJ7/fl9oOAT3kD1Pdg0XkmEI2gksonwO5FRXEaMuz9be5d+uekrSuGSBV5ttoaiWvUootqbT8ZfG9aOHla/JbnvG9o8uijXdZsMZKgMRM/7tz+wF4Jp2+MqxMnpOS4NIknih16ZK2GTG4K2WmG4wsHmsLC+KMITc0UzDpD5aYWa+bicK4dsAk02Vu3R4FHsFdyMOZvdRbBRINlcmTYS7Ajd6Dow/iTDQGD5u2bOfPF0DGTg4jbwx7nnauEoMM20Ewr0QYdge6iac8VAzFfMOJ
-    # s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com:22 SSH-2.0-AWS_SFTP_1.2
-    # s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com:22 SSH-2.0-AWS_SFTP_1.2
-    # s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com:22 SSH-2.0-AWS_SFTP_1.2
-    # s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com:22 SSH-2.0-AWS_SFTP_1.2
 fenceCleanupExpiredGa4ghInfo:
   # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
   schedule: "*/5 * * * *"
