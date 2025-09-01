@@ -155,7 +155,12 @@ usersync:
   slack_send_dbgap: false
   # -- (list) Environment variables to pass to the job.
   env:
-
+  # -- (string) Known hosts for dbGaP SFTP
+  sshKnownHosts: |
+    # example: <host> <keytype> <base64-key>
+    sftp-dev.planx-pla.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCe+Fo6FAZIMrFSeYtspkbNZJea9h0e7c72RLKAx7nQp/fa3WItQbySu7PTMntWEw7uy+CbFBaNXGHJJC7EFXqEWCVsr42B5oAWnd4MADauLQ3cvGcPNaadSeuDucf2+HlFcZDpCnGdJ3MmUYDOtSP3o3QXQ03Iwb8wSxyKR3+x/mRPrTFIvQrs20tjLwNbqtUSSXabTVqzPWcKMnahyB77RsZkCu+AaMovCK6ZPBjdLi9sMO9kfj6/oXDfrY9G6P2FFMis12pxtkqJHmmOfCfgGK2qcDdEMQTgRr1TEZRL1UpPbufJrXfmMpdLJ7RYhg9yopfB9aXkLCZ+h7rN/dKltQ1CrElXeUtI8c+JhTbHZpvd459Ek03pcbDBy2WhJNz4wY4Mrye2RPd0tQQWILxE7qNw0cWT7XWJoSiZqWrefAoYbivRLZ8nrIG5aRvHJAncxnGqMSF1IyPwMYGxz0z3y+q4S9MFwZZG3eowqcnj8Edljx1uSqqpY0e9hq53v4hG8Xwm+zEjoVn07oioB7BjH62xtVrltam7U461KG4Qlp2v6aHc+PYX+6hjsSHSSLa1mWFe7fIWdJkB4CsdFlZKwKNgCD5/GeZAb3Yai/gJAUJcKP9Snl4gf1gVnjY+eRKxjytweA12S6RmuKbM8aW4Pz2hHvms818zqsvNUT5ZuQ==
+    sftp-dev.planx-pla.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEUQQ1FBVwYzSekuX5rdj/DSCJd9d1DKZYSMqkaIg3yW
+    s-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNIOMhn0C6cf6pG0XnrXUP/TbzFgYN+tVoWzGuo4h8P5Foqev6Rs6gOXomu/vxONpNJ7/fl9oOAT3kD1Pdg0XkmEI2gksonwO5FRXEaMuz9be5d+uekrSuGSBV5ttoaiWvUootqbT8ZfG9aOHla/JbnvG9o8uijXdZsMZKgMRM/7tz+wF4Jp2+MqxMnpOS4NIknih16ZK2GTG4K2WmG4wsHmsLC+KMITc0UzDpD5aYWa+bicK4dsAk02Vu3R4FHsFdyMOZvdRbBRINlcmTYS7Ajd6Dow/iTDQGD5u2bOfPF0DGTg4jbwx7nnauEoMM20Ewr0QYdge6iac8VAzFfMOJ
 fenceCleanupExpiredGa4ghInfo:
   # -- (string) The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default.
   schedule: "*/5 * * * *"
