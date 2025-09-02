@@ -5,7 +5,7 @@ metadata:
   name: google-bucket-replicate
 spec:
   schedule: "0/20 * * * *" # once every 20 minutes
-  suspended: true
+  suspended: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
   jobTemplate:
@@ -41,12 +41,12 @@ spec:
             - name: setting-volume
               secret:
                 secretName: "binamb-dcf-dataservice-settings-secrets"
-            - name: creds-json-volume
-              secret:
-                secretName: "dcf-dataservice-json-secret"
-            - name: project-map-volume
-              configMap:
-                name: project-map-manifest
+            # - name: creds-json-volume
+            #   secret:
+            #     secretName: "dcf-dataservice-json-secret"
+            # - name: project-map-volume
+            #   configMap:
+            #     name: project-map-manifest
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -83,12 +83,12 @@ spec:
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings"
                 subPath: "dcf_dataservice_settings"
-              - name: "creds-json-volume"
-                mountPath: "/secrets/dcf_dataservice_credentials.json"
-                subPath: "dcf_dataservice_credentials.json"
-              - name: "project-map-volume"
-                mountPath: "/dcf-dataservice/GDC_project_map.json"
-                subPath: "GDC_project_map.json"
+              # - name: "creds-json-volume"
+              #   mountPath: "/secrets/dcf_dataservice_credentials.json"
+              #   subPath: "dcf_dataservice_credentials.json"
+              # - name: "project-map-volume"
+              #   mountPath: "/dcf-dataservice/GDC_project_map.json"
+              #   subPath: "GDC_project_map.json"
             command: ["/bin/bash" ]
             args: 
               - "-c"
