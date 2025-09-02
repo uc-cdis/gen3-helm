@@ -1,15 +1,15 @@
 {{/*
   Google Credentials Secrets Manager Name
 */}}
-{{- define "google-creds-secret" -}}
-{{- default "google-creds-secret" .Values.externalSecrets.googleCredsSecret }}
+{{- define "binamb-gcloud-creds-secret" -}}
+{{- default "binamb-gcloud-creds-secret" .Values.externalSecrets.googleCredsSecret }}
 {{- end }}
 
 {{/*
   DCF Dataservice Settings Secrets Manager Name
 */}}
-{{- define "dcf-dataservice-settings-secret" -}}
-{{- default "dcf-dataservice-settings-secret" .Values.externalSecrets.dcfDataserviceSettingsSecret }}
+{{- define "binamb-dcf-dataservice-settings-secret" -}}
+{{- default "binamb-dcf-dataservice-settings-secret" .Values.externalSecrets.dcfDataserviceSettingsSecret }}
 {{- end }}
 
 {{/*
