@@ -37,10 +37,10 @@ spec:
           volumes:
             - name: cred-volume
               secret:
-                secretName: "google-creds-secret"
+                secretName: "binamb-gcloud-creds-secret"
             - name: setting-volume
               secret:
-                secretName: "dcf-dataservice-settings-secrets"
+                secretName: "binamb-dcf-dataservice-settings-secrets"
             - name: creds-json-volume
               secret:
                 secretName: "dcf-dataservice-json-secret"
