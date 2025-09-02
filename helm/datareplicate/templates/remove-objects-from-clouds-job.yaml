@@ -83,4 +83,4 @@ spec:
             export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
             aws s3 cp $IGNORED_FILE_S3 /dcf-dataservice/ignored_files_manifest.csv
             python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET
-      restartPolicy: Never
+        restartPolicy: Never
