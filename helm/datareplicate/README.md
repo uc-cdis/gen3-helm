@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.0.12](https://img.shields.io/badge/Version-0.0.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.0.13](https://img.shields.io/badge/Version-0.0.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -14,8 +14,9 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"fenceGoogleAppCredsSecret":null}` | external secrets for datareplicate jobs |
-| global | string | `nil` |  |
+| externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
+| global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
 | googleBucketReplicateJob.LOG_BUCKET | string | `"datarefresh-log"` |  |
 | googleBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |

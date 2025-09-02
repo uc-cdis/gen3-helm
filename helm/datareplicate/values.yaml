@@ -4,15 +4,16 @@
 
 # Global configuration
 global:
-  # -- (map) AWS configuration
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: true
 
-
-# -- (map) Docker image information.
 
 
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
-  fenceGoogleAppCredsSecret:
+  googleCredsSecret:
   dcfDataserviceSettingsSecret:
   dcfDataserviceJSONSecret:
 
