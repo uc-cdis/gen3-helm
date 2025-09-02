@@ -13,6 +13,7 @@ global:
 
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
+  deploy: true
   googleCredsSecret:
   dcfDataserviceSettingsSecret:
   dcfDataserviceJSONSecret:
