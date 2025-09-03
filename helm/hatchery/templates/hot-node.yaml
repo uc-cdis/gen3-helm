@@ -1,0 +1,185 @@
+{{- if .Values.hotNode.enabled }}
+
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: hot-node-lowest-priority
+value: -1000000
+globalDefault: false
+description: "This priority class marks a pod as extremely low priority, for hot nodes"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create","get","list","watch","delete","patch","update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hot-node-prepuller
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: hot-node-prepuller
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hot-node-prepuller
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hot-node-job
+  namespace: {{ $.Release.Namespace }}
+data:
+  job.yaml: |
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: jupyterhub-prepuller-$JOB_TIMESTAMP
+      labels:
+        app: jupyterhub-prepuller
+    spec:
+      template:
+        metadata:
+          labels:
+            app: jupyterhub-prepuller
+        spec:
+          nodeName: $NODE_NAME
+          restartPolicy: Never
+          tolerations:
+          - key: "role"
+            operator: "Equal"
+            value: "jupyter"
+            effect: "NoSchedule"
+          terminationGracePeriodSeconds: 0
+          automountServiceAccountToken: false
+          containers:
+          - name: pause
+            image: busybox:latest
+            command:
+              - /bin/sh
+              - -c 
+              - exit 0
+          initContainers:
+---
+{{- range .Values.hotNode.availabilityZones }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hot-node-{{ . }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: hot-node-{{ . }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}-{{ . }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    availability-zone: {{ . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hot-node-{{ . }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hot-node-{{ . }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+        availability-zone: {{ . }}
+    spec:
+      tolerations:
+      - key: "role"
+        operator: "Equal"
+        value: "jupyter"
+        effect: "NoSchedule"
+      priorityClassName: hot-node-lowest-priority
+      nodeSelector:
+        role: jupyter
+        topology.kubernetes.io/zone: {{ . }}
+      terminationGracePeriodSeconds: 0
+      # Needs a token so kubectl can auth to the API
+      automountServiceAccountToken: true
+      serviceAccountName: hot-node-prepuller
+      initContainers:
+      - name: init-hot-node
+        image: quay.io/cdis/awshelper:master
+        command: ["/bin/bash","-c"]
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        # TODO Get the pulling logic working
+        args:
+          - |
+            gen3_hatchery_prepuller() {
+              local images
+              local it
+              images="$@"
+
+              # Get hatchery images from the manifest-hatchery configmap
+              if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
+                images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
+              fi
+
+              export JOB_TIMESTAMP=$(date +%s )
+
+              cat "/job.yaml" | envsubst
+              if [[ -n "$images" ]]; then
+                local count=0
+                for it in ${images}; do
+                cat - <<EOM
+                  - name: "image-${count}"
+                    image: $it
+                    imagePullPolicy: IfNotPresent
+                    command:
+                      - /bin/sh
+                      - -c
+                      - echo 'Pulling complete'
+            EOM
+                  count=$((count+1))
+                done
+              fi
+            }
+
+            gen3_hatchery_prepuller | kubectl apply -f -
+        
+        volumeMounts:
+        - name: job-yaml
+          mountPath: /job.yaml
+          subPath: job.yaml
+
+      containers:
+      - name: hot-node
+        image: busybox:latest
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
+            cpu: {{ $.Values.hotNode.workspaceCapacityReservation.cpu }}
+          limits:
+            memory: {{ $.Values.hotNode.workspaceCapacityReservation.memory }}
+            cpu: {{ $.Values.hotNode.workspaceCapacityReservation.cpu }}
+      volumes:
+      - name: job-yaml
+        configMap:
+          name: hot-node-job
+---
+{{- end }}
+{{- end }}
