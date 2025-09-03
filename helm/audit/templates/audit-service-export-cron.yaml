@@ -42,16 +42,15 @@ spec:
                       -H "Authorization: Basic $bearer_token" \
                       -H "Content-Type: application/x-www-form-urlencoded" | jq -r '.access_token')
 
-                    echo "Got the access token: $access_token"
                     echo "Triggering the audit-export job via sower service /dispatch endpoint"
 
-                    response=$(curl -X POST "https://$HOSTNAME/job/dispatch" \
+                    response=$(curl -s -X POST "https://$HOSTNAME/job/dispatch" \
                       -H "Authorization: Bearer $access_token" \
                       -H "Content-Type: application/json" \
                       -d '{"action": "audit-export","input": {"category": "presigned_url","query": {}}}'
                       )
 
-                    echo "Dispatch response and sleeping for further test: $response"
+                    echo "Dispatch response : $response"
               env:
                 - name: OIDC_CLIENT_ID
                   valueFrom:
