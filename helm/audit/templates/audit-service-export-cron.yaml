@@ -1,0 +1,73 @@
+#################################################
+# CronJob to trigger audit-export-job           #
+# Uses a client-credential to authenticate      #
+# this job creates a new client if not exists.  #
+
+#################################################
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: audit-service-export
+spec:
+  schedule: {{ .Values.auditServiceExport.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: audit-service-sa. # Need to find out if we need a new SA or use existing one.
+          volumes: []
+          containers:
+            - name: audit-export
+              image: "{{ .Values.auditServiceExport.image.repository }}:{{ .Values.auditServiceExport.image.tag }}"
+              imagePullPolicy: {{ .Values.auditServiceExport.image.pullPolicy }}
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                    echo "Starting audit-service-export job..."
+                    echo "Hit fence to get the access token... using OIDC_CLIENT_ID: $OIDC_CLIENT_ID"
+
+                    # Build base64-encoded client credential
+                    bearer_token=$(echo -n "$OIDC_CLIENT_ID:$OIDC_CLIENT_SECRET" | base64 -w 0)
+
+                    # Request access token
+                    access_token=$(curl -s -X POST "https://$HOSTNAME/user/oauth2/token?grant_type=client_credentials&scope=openid" \
+                      -H "Authorization: Basic $bearer_token" \
+                      -H "Content-Type: application/x-www-form-urlencoded" | jq -r '.access_token')
+
+                    echo "Got the access token: $access_token"
+                    echo "Triggering the audit-export job via sower service /dispatch endpoint"
+
+                    response=$(curl -X POST "https://$HOSTNAME/job/dispatch" \
+                      -H "Authorization: Bearer $access_token" \
+                      -H "Content-Type: application/json" \
+                      -d '{"action": "audit-export","input": {"category": "presigned_url","query": {}}}'
+                      )
+
+                    echo "Dispatch response and sleeping for further test: $response"
+              env:
+                - name: OIDC_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: audit-export-oidc-client
+                      key: client_id
+                      optional: false
+                - name: OIDC_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: audit-export-oidc-client
+                      key: client_secret
+                      optional: false
+                - name: HOSTNAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname

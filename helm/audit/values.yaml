@@ -301,6 +301,17 @@ api:
   # -- (bool) Whether to return usernames in query responses and allow querying by username.
   QUERY_USERNAMES: true
 
+auditServiceExport:
+  # -- (string) The schedule in cron format for the audit export job.
+  schedule: "0 0 * * *"
+  # -- (map) Docker image information.
+  image:
+    # -- (string) The Docker image repository for the audit export cronjob.
+    repository: quay.io/cdis/awshelper
+    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+    pullPolicy: Always
+    # -- (string) Overrides the image tag whose default is `master`.
+    tag: "master"
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"
