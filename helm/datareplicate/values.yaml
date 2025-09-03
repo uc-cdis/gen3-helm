@@ -31,7 +31,7 @@ resources:
 
 image:
 # -- (string) Docker repository.
-  repository: quay.io/cdis/datareplicate
+  repository: quay.io/cdis/dcf-dataservice
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 googleBucketReplicateJob:
