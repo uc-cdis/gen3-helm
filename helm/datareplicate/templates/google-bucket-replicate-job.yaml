@@ -77,7 +77,7 @@ spec:
                 mountPath: "/secrets/google_service_account_creds"
                 subPath: google_service_account_creds
               - name: "setting-volume"
-                mountPath: "/secrets/dcf_dataservice_settings.txt"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf_dataservice_settings"
               # - name: "creds-json-volume"
               #   mountPath: "/secrets/dcf_dataservice_credentials.json"
@@ -89,9 +89,7 @@ spec:
             args: 
               - "-c"
               - |
-                ls -al /secrets/
-                ls -al /secrets/dcf_dataservice_settings.txt
-                cat /secrets/dcf_dataservice_settings.txt > ./dcfdataservice/settings.py
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
                 gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
                 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
                 export http_proxy='http://cloud-proxy.internal.io:3128'
