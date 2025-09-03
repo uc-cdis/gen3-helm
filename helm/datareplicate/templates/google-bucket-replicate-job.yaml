@@ -93,6 +93,8 @@ spec:
             args: 
               - "-c"
               - |
+                ls -al /secrets/
+                ls -al /secrets/dcf_dataservice_settings.txt
                 cat /secrets/dcf_dataservice_settings.txt > ./dcfdataservice/settings.py
                 gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
                 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
