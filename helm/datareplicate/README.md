@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.0.21](https://img.shields.io/badge/Version-0.0.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.0.22](https://img.shields.io/badge/Version-0.0.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -24,6 +24,11 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.PROJECT | bool | `"dcf-prod-buckets"` | Whether to enable the Google bucket replicate job |
 | googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | googleBucketReplicateJob.enabled | bool | `true` |  |
+| googleBucketReplicateJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
+| googleBucketReplicateJob.resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
+| googleBucketReplicateJob.resources.requests | map | `{"cpu":"2","memory":"128Mi"}` | The amount of resources that the container requests |
+| googleBucketReplicateJob.resources.requests.cpu | string | `"2"` | The amount of CPU requested |
+| googleBucketReplicateJob.resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | image.repository | string | `"quay.io/cdis/dcf-dataservice"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |

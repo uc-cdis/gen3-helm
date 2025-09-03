@@ -51,11 +51,7 @@ spec:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             resources: #TODO: add this to values.yaml
-              limits:
-                memory: "32Gi"
-              requests:
-                cpu: "14"
-                memory: "24Gi"
+              {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
             env:
                 - name: PROJECT
