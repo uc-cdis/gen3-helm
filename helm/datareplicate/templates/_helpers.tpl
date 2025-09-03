@@ -1,16 +1,24 @@
 {{/*
   Google Credentials Secrets Manager Name
 */}}
-{{- define "google-creds-secret" -}}
-{{- default "google-creds-secret" .Values.externalSecrets.googleCredsSecret }}
-{{- end }}
+{{- define "external-secrets.googleCredsSecretName" -}}
+{{- if .Values.externalSecrets.googleCredsSecret -}}
+{{- .Values.externalSecrets.googleCredsSecret -}}
+{{- else -}}
+google-creds-secret
+{{- end -}}
+{{- end -}}
 
 {{/*
   DCF Dataservice Settings Secrets Manager Name
 */}}
-{{- define "dcf-dataservice-settings-secrets" -}}
-{{- default "dcf-dataservice-settings-secrets" .Values.externalSecrets.dcfDataserviceSettingsSecret }}
-{{- end }}
+{{- define "external-secrets.dcfDataserviceSettingsSecretName" -}}
+{{- if .Values.externalSecrets.dcfDataserviceSettingsSecret -}}
+{{- .Values.externalSecrets.dcfDataserviceSettingsSecret -}}
+{{- else -}}
+dcf-dataservice-settings-secrets
+{{- end -}}
+{{- end -}}
 
 {{/*
   DCF Dataservice JSON Secrets Manager Name
