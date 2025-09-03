@@ -75,10 +75,10 @@ spec:
             volumeMounts:
               - name: cred-volume
                 mountPath: "/secrets/google_service_account_creds"
-                subPath: google_service_account_creds
+                subPath: google-creds-secret
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
-                subPath: "dcf_dataservice_settings"
+                subPath: "dcf-dataservice-settings-secrets"
               # - name: "creds-json-volume"
               #   mountPath: "/secrets/dcf_dataservice_credentials.json"
               #   subPath: "dcf_dataservice_credentials.json"
