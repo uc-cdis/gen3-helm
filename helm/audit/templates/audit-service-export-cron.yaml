@@ -1,8 +1,7 @@
 #################################################
 # CronJob to trigger audit-export-job           #
 # Uses a client-credential to authenticate      #
-# this job creates a new client if not exists.  #
-
+# Triggers a Sower job to run audit-export      #
 #################################################
 apiVersion: batch/v1
 kind: CronJob
