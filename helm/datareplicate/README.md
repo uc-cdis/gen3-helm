@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.0.11](https://img.shields.io/badge/Version-0.0.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.0.15](https://img.shields.io/badge/Version-0.0.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -14,7 +14,9 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| global | string | `nil` |  |
+| externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
+| global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
 | googleBucketReplicateJob.LOG_BUCKET | string | `"datarefresh-log"` |  |
 | googleBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
@@ -32,3 +34,4 @@ A Helm chart for gen3 datareplicate
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
 | resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
+| suspendCronjob | bool | `true` |  |

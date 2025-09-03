@@ -4,12 +4,19 @@
 
 # Global configuration
 global:
-  # -- (map) AWS configuration
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: true
 
 
-# -- (map) Docker image information.
 
-
+# -- (map) external secrets for datareplicate jobs
+externalSecrets:
+  deploy: true
+  googleCredsSecret:
+  dcfDataserviceSettingsSecret:
+  dcfDataserviceJSONSecret:
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -36,6 +43,8 @@ googleBucketReplicateJob:
   MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
   IGNORED_FILE: gs://replication-input/ignored_files_manifest.csv
   LOG_BUCKET: datarefresh-log
+suspendCronjob: true
+
 removeObjectsFromClouds:
   DRY_RUN: true
 replicateValidationJobs:
