@@ -21,37 +21,37 @@ Helm chart to deploy Gen3 Data Commons
 | file://../access-backend | access-backend | 0.1.8 |
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
-| file://../argo-wrapper | argo-wrapper | 0.1.18 |
-| file://../audit | audit | 0.1.28 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.28 |
+| file://../argo-wrapper | argo-wrapper | 0.1.19 |
+| file://../audit | audit | 0.1.30 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
-| file://../common | common | 0.1.21 |
+| file://../common | common | 0.1.23 |
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../datareplicate | datareplicate | 0.0.26 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.53 |
+| file://../fence | fence | 0.1.58 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.26 |
-| file://../indexd | indexd | 0.1.32 |
-| file://../manifestservice | manifestservice | 0.1.31 |
-| file://../metadata | metadata | 0.1.29 |
+| file://../hatchery | hatchery | 0.1.28 |
+| file://../indexd | indexd | 0.1.33 |
+| file://../manifestservice | manifestservice | 0.1.32 |
+| file://../metadata | metadata | 0.1.30 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
 | file://../peregrine | peregrine | 0.1.31 |
-| file://../portal | portal | 0.1.43 |
+| file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.40 |
+| file://../revproxy | revproxy | 0.1.42 |
 | file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.32 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.30 |
-| file://../wts | wts | 0.1.28 |
+| file://../sower | sower | 0.1.34 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
+| file://../wts | wts | 0.1.29 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -64,6 +64,13 @@ Helm chart to deploy Gen3 Data Commons
 | arborist.enabled | bool | `true` | Whether to deploy the arborist subchart. |
 | argo-wrapper.enabled | bool | `false` | Whether to deploy the argo-wrapper subchart. |
 | audit.enabled | bool | `true` | Whether to deploy the audit subchart. |
+| auroraRdsCopyJob.auroraMasterSecret | string | `""` |  |
+| auroraRdsCopyJob.enabled | bool | `false` |  |
+| auroraRdsCopyJob.services | list | `[]` |  |
+| auroraRdsCopyJob.sourceNamespace | string | `""` |  |
+| auroraRdsCopyJob.targetNamespace | string | `""` |  |
+| auroraRdsCopyJob.writeToAwsSecret | bool | `false` |  |
+| auroraRdsCopyJob.writeToK8sSecret | bool | `false` |  |
 | aws-es-proxy.enabled | bool | `false` | Whether to deploy the aws-es-proxy subchart. |
 | aws-es-proxy.esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
@@ -146,6 +153,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
