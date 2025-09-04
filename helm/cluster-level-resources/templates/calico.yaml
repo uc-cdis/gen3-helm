@@ -20,6 +20,8 @@ spec:
       ref: values
       {{- else }}
         values: |
+          nodeSelector:
+            role: default
           installation:
             kubernetesProvider: EKS
             registry: quay.io/
