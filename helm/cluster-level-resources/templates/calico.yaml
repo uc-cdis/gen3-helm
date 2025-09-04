@@ -23,6 +23,8 @@ spec:
           nodeSelector:
             role: default
           installation:
+            controlPlaneNodeSelector:
+              role: default
             kubernetesProvider: EKS
             registry: quay.io/
       {{- end }}
