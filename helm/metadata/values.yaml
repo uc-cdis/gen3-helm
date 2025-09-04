@@ -181,7 +181,7 @@ useAggMds: "False"
 # -- (string) Namespae to use if AggMds is enabled.
 aggMdsNamespace: default
 # -- (string)
-aggMdsDefaultDataDictField:
+aggMdsDefaultDataDictField: ""
 
 aggMdsConfig: |
   {

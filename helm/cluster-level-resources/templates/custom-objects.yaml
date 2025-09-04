@@ -1,0 +1,19 @@
+{{- if index .Values "custom-objects" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: custom-objects
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.configuration.configurationRepo }}
+    path: {{ .Values.cluster }}/cluster-values/custom-objects
+    targetRevision: {{ .Values.configuration.configurationRevision }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: "https://kubernetes.default.svc"
+{{- end }}

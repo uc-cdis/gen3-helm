@@ -9,8 +9,6 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: true
 
-
-
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
   deploy: true
@@ -31,18 +29,30 @@ resources:
 
 image:
 # -- (string) Docker repository.
-  repository: quay.io/cdis/datareplicate
+  repository: quay.io/cdis/dcf-dataservice
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 googleBucketReplicateJob:
   enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
+  schedule: "*/30 * * * *"
   PROJECT: dcf-prod-buckets
   MAX_WORKERS: 80
   RELEASE: DR43
   MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
   IGNORED_FILE: gs://replication-input/ignored_files_manifest.csv
   LOG_BUCKET: datarefresh-log
+  resources:
+  # -- (map) The amount of resources that the container requests
+    requests:
+      # -- (string) The amount of CPU requested
+      cpu: "2"
+      # -- (string) The amount of memory requested
+      memory: 128Mi
+    # -- (map) The maximum amount of resources that the container is allowed to use
+    limits:
+      # -- (string) The maximum amount of memory the container can use
+      memory: 2Gi
 suspendCronjob: true
 
 removeObjectsFromClouds:
