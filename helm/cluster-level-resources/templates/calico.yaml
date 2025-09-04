@@ -25,6 +25,10 @@ spec:
           installation:
             controlPlaneNodeSelector:
               role: default
+            typhaDeployment:
+              spec:
+                nodeSelector:
+                  role: default
             kubernetesProvider: EKS
             registry: quay.io/
       {{- end }}
