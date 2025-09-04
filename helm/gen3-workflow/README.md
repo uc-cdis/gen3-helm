@@ -92,7 +92,11 @@ A Helm chart for Kubernetes
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.crossplane.accountId | string | `""` | AWS Account ID where resources will be created. |
+| global.crossplane.enabled | bool | `false` | Whether Crossplane is being used to manage AWS resources. |
+| global.crossplane.oidcProviderUrl | string | `""` | OIDC provider URL for the EKS cluster. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
+| global.environment | string | `"default"` |  |
 | global.externalSecrets | map | `{"deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.pushGen3WorkflowSecretsToExternalSecret | bool | `false` | Will push secrets to External Secrets Store. |

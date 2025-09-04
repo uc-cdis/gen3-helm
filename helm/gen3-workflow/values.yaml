@@ -16,6 +16,13 @@ global:
       enabled: false
       # -- (String) Name of Secrets Manager secret.
       externalSecretAwsCreds:
+  crossplane:
+    # -- (bool) Whether Crossplane is being used to manage AWS resources.
+    enabled: false
+    # -- (string) AWS Account ID where resources will be created.
+    accountId: ""
+    # -- (string) OIDC provider URL for the EKS cluster.
+    oidcProviderUrl: ""
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
   postgres:
@@ -33,6 +40,9 @@ global:
       password:
       # -- (string) Port for Postgres.
       port: "5432"
+
+  environment: default
+
 
   # -- (map) External Secrets settings.
   externalSecrets:
