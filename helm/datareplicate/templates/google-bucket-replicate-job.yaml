@@ -4,7 +4,7 @@ kind: CronJob # Change this to cronjob and set suspend: true
 metadata:
   name: google-bucket-replicate
 spec:
-  schedule: {{ .Values.googleBucketReplicateJob.schedule }} # once every 20 minutes
+  schedule: {{ .Values.googleBucketReplicateJob.schedule | quote }}
   suspended: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
