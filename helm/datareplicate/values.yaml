@@ -9,8 +9,6 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: true
 
-
-
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
   deploy: true
