@@ -80,6 +80,13 @@ A Helm chart for gen3 Hatchery
 | hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | hatchery.skipNodeSelector | bool | `false` | Whether to skip node selector for . Defaults to `global.dev`. |
 | hatchery.useInternalServicesUrl | bool | `false` | Whether to use internal services url. Defaults to `global.dev`. |
+| hotNode.availabilityZones[0] | string | `"us-east-1a"` |  |
+| hotNode.availabilityZones[1] | string | `"us-east-1b"` |  |
+| hotNode.availabilityZones[2] | string | `"us-east-1c"` |  |
+| hotNode.availabilityZones[3] | string | `"us-east-1d"` |  |
+| hotNode.enabled | bool | `false` |  |
+| hotNode.workspaceCapacityReservation.cpu | int | `6` |  |
+| hotNode.workspaceCapacityReservation.memory | string | `"9Gi"` |  |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/hatchery","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/hatchery"` | Docker repository. |
