@@ -4,7 +4,7 @@ kind: CronJob # Change this to cronjob and set suspend: true
 metadata:
   name: google-bucket-replicate
 spec:
-  schedule: "0/20 * * * *" # once every 20 minutes
+  schedule: {{ .Values.googleBucketReplicateJob.schedule }} # once every 20 minutes
   suspended: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
@@ -41,16 +41,10 @@ spec:
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
-            # - name: creds-json-volume
-            #   secret:
-            #     secretName: "dcf-dataservice-json-secret"
-            # - name: project-map-volume
-            #   configMap:
-            #     name: project-map-manifest
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-            resources: #TODO: add this to values.yaml
+            resources:
               {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
             env:
@@ -79,12 +73,6 @@ spec:
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf-dataservice-settings-secrets"
-              # - name: "creds-json-volume"
-              #   mountPath: "/secrets/dcf_dataservice_credentials.json"
-              #   subPath: "dcf_dataservice_credentials.json"
-              # - name: "project-map-volume"
-              #   mountPath: "/dcf-dataservice/GDC_project_map.json"
-              #   subPath: "GDC_project_map.json"
             command: ["/bin/bash" ]
             args: 
               - "-c"

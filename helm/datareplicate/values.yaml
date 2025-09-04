@@ -37,6 +37,7 @@ image:
 googleBucketReplicateJob:
   enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
+  schedule: "*/30 * * * *"
   PROJECT: dcf-prod-buckets
   MAX_WORKERS: 80
   RELEASE: DR43
