@@ -1,9 +1,9 @@
 apiVersion: v1
-kind: ConfigMap
+kind: 
 metadata:
   name: alloy-gen3
 data:
   config: |
-    {{- with .Values.alloy.alloyConfigmapData }}
+    {{- with .Values.alloy.alloyData }}
     {{- toYaml . | nindent 4 }}
     {{ end }}

@@ -1,0 +1,100 @@
+{{- if .Values.googleBucketReplicateJob.enabled -}}
+apiVersion: batch/v1
+kind: CronJob # Change this to cronjob and set suspend: true 
+metadata:
+  name: google-bucket-replicate
+spec:
+  schedule: {{ .Values.googleBucketReplicateJob.schedule | quote }}
+  suspended: {{ .Values.suspendCronjob }}
+  concurrencyPolicy: Forbid
+  # not yet supported - backOffLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          serviceAccountName: google-bucket-replicate-job
+          affinity:
+            nodeAffinity:
+              # Avoids running on spot instances if possible
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: cred-volume
+              secret:
+                secretName: "google-creds-secret"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
+          containers:
+          - name: datareplicate
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            resources:
+              {{- toYaml .Values.resources | nindent 12 }}
+            imagePullPolicy: Always
+            env:
+                - name: PROJECT
+                  value: "{{ .Values.googleBucketReplicateJob.PROJECT }}"
+                - name: MAX_WORKERS
+                  value: "{{ .Values.googleBucketReplicateJob.MAX_WORKERS }}"
+                - name: RELEASE
+                  value: "{{ .Values.googleBucketReplicateJob.RELEASE }}"
+                - name: MANIFEST_FILE
+                  value: "{{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}"
+                - name: IGNORED_FILE
+                  value: "{{ .Values.googleBucketReplicateJob.IGNORED_FILE }}"
+                - name: LOG_BUCKET
+                  value: "{{ .Values.googleBucketReplicateJob.LOG_BUCKET }}"
+                - name: AUTH_NAMESPACE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: auth_namespace
+                      optional: true
+            volumeMounts:
+              - name: cred-volume
+                mountPath: "/secrets/google_service_account_creds"
+                subPath: google-creds-secret
+              - name: "setting-volume"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
+                subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash" ]
+            args: 
+              - "-c"
+              - |
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
+                gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
+                export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
+                export http_proxy='http://cloud-proxy.internal.io:3128'
+                export https_proxy='http://cloud-proxy.internal.io:3128/'
+                gsutil cp $IGNORED_FILE /dcf-dataservice/ignored_files_manifest.csv
+                if [[ "$MANIFEST_FILE" == *"active"* ]]; then
+                  type="active"
+                elif [[ "$MANIFEST_FILE" == *"legacy"* ]]; then
+                  type="legacy"
+                else
+                  type="unknown"
+                fi
+                if [[ "$type" == "active" || "$type" == "legacy" ]]; then
+                  rand_str="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 5 | head -n 1)"
+                  python dataflow_pipeline.py  --runner DataflowRunner --project $PROJECT --job_name dcf-dataservice --autoscaling_algorithm NONE --num_worker $MAX_WORKERS --maxNumWorkers $MAX_WORKERS --staging_location gs://$LOG_BUCKET/$RELEASE/staging --temp_location gs://$LOG_BUCKET/$RELEASE/temp --output gs://$LOG_BUCKET/$RELEASE/$type/output_$rand_str --setup_file ./setup.py --input $MANIFEST_FILE --global_config "{\"release\": \"$RELEASE/$type\", \"log_bucket\": \"$LOG_BUCKET\"}" --requirements_file requirements.txt --extra_package indexclient-1.6.0.zip --requirements_file dcfdataservice/requirements.txt
+                else
+                  echo "Neither active nor legacy manifest is provided. Please check the manifest name!!!"
+                fi
+          restartPolicy: Never
+{{- end }}

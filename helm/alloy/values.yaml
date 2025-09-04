@@ -34,7 +34,7 @@ alloy:
         cpu: 1000m
         memory: 1Gi
 
-  alloyConfigmapData: |
+  alloyData: |
     logging {
       level    = "info"
       format   = "json"
