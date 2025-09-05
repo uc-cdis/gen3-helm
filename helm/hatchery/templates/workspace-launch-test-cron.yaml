@@ -197,7 +197,7 @@ spec:
                 echo "Exit code: $?"
 
           restartPolicy: Never
-          serviceAccountName: useryaml-job
+          serviceAccountName: workspace-launch-test-job
           volumes:
             - name: yaml-merge
               configMap:
