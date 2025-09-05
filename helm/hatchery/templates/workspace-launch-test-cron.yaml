@@ -213,9 +213,11 @@ spec:
             - name: config-helper
               configMap:
                 name: config-helper
+                optional: true
             - name: json-secret-volume
               secret:
                 secretName: "fence-json-secret"
+                optional: true
             - name: config-volume
               secret:
                 secretName: "fence-config"
