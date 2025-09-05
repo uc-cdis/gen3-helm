@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.33](https://img.shields.io/badge/Version-0.2.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.34](https://img.shields.io/badge/Version-0.2.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -30,13 +30,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.55 |
+| file://../fence | fence | 0.1.56 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.27 |
+| file://../hatchery | hatchery | 0.1.28 |
 | file://../indexd | indexd | 0.1.33 |
 | file://../manifestservice | manifestservice | 0.1.32 |
 | file://../metadata | metadata | 0.1.30 |
@@ -151,6 +151,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
