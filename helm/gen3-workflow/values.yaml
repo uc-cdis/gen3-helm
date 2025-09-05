@@ -50,6 +50,7 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+    clusterSecretStoreRef: ""
     # -- (bool) Will push secrets to External Secrets Store.
     pushGen3WorkflowSecretsToExternalSecret: false
 
