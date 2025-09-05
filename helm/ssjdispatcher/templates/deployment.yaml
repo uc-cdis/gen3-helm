@@ -58,10 +58,8 @@ spec:
             - name: AWS_STS_REGIONAL_ENDPOINTS
               value: {{ . }}
             {{- end }}
-            {{- with .Values.gen3Namespace  }}
             - name: GEN3_NAMESPACE
-              value: {{ . }}
-            {{- end }}
+              value: {{ include "ssjdispatcher.gen3Namespace" . }}
             - name: JOB_IMAGES
               valueFrom:
                 configMapKeyRef:
