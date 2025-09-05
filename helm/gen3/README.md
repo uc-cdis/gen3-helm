@@ -110,10 +110,8 @@ Helm chart to deploy Gen3 Data Commons
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
-| gen3-workflow | map | `{"enabled":true,"image":{"repository":"quay.io/cdis/gen3-workflow","tag":"master"},"workflowConfig":{"kmsEncryptionEnabled":false}}` | Configurations for gen3-workflow chart. |
-| gen3-workflow.enabled | bool | `true` | Whether to deploy the gen3-workflow subchart. |
-| gen3-workflow.image.repository | string | `"quay.io/cdis/gen3-workflow"` | The Docker image repository for the gen3-workflow. |
-| gen3-workflow.image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

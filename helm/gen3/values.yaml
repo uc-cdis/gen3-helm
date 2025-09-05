@@ -228,14 +228,7 @@ gen3-user-data-library:
 # -- (map) Configurations for gen3-workflow chart.
 gen3-workflow:
   # -- (bool) Whether to deploy the gen3-workflow subchart.
-  enabled: true
-  image:
-    # -- (string) The Docker image repository for the gen3-workflow.
-    repository: "quay.io/cdis/gen3-workflow"
-    # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "master"
-  workflowConfig:
-    kmsEncryptionEnabled: false
+  enabled: false
 
 
 # -- (map) Configurations for guppy chart.
