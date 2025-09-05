@@ -86,7 +86,6 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
-
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
@@ -181,7 +180,7 @@ awsRegion: us-east-1
 # -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
 awsStsRegionalEndpoints: regional
 # -- (string) Namespace to deploy the job.
-gen3Namespace: default
+gen3Namespace: ""
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
@@ -261,7 +260,6 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
 
 # -- (map) External secrets configuration
 externalSecrets:

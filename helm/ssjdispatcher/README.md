@@ -33,7 +33,7 @@ A Helm chart for gen3 ssjdispatcher
 | externalSecrets.createK8sSsjdispatcherSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| gen3Namespace | string | `""` | Namespace to deploy the job. |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `100` |  |
 | global.autoscaling.minReplicas | int | `1` |  |

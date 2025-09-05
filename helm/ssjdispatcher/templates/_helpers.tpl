@@ -73,3 +73,10 @@ Create the name of the service account to use
 {{- define "creds-file" -}}
 {{- default "credentials.json" .Values.externalSecrets.credsFile }}
 {{- end }}
+
+{{/*
+  Function to set the namespace used
+*/}}
+{{- define "ssjdispatcher.gen3Namespace" -}}
+{{- default .Release.Namespace .Values.gen3Namespace }}
+{{- end }}
