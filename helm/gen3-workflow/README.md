@@ -155,10 +155,14 @@ A Helm chart for Kubernetes
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.environment | string | `"default"` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 =======
 | global.externalSecrets | map | `{"deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
 >>>>>>> dc5ea6b4 (Add Crossplane configuration for gen3-workflow)
+=======
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
+>>>>>>> e4fe116c (Respond to initial PR comments)
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
