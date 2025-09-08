@@ -68,6 +68,8 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+    # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config". Required for sidecar in workspace launch test.
+    fenceConfig: 
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
