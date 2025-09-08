@@ -38,16 +38,10 @@ spec:
                 secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "dcf-aws-fence-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
-            - name: creds-json-volume
-              secret:
-                secretName: "dcf-dataservice-json-secret"
-            - name: project-map-volume
-              configMap:
-                name: project-map-manifest
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -70,12 +64,6 @@ spec:
               - name: google-cred-volume
                 mountPath: "/secrets/google_service_account_creds"
                 subPath: google_service_account_creds
-              - name: "project-map-volume"
-                mountPath: "/dcf_dataservice/GDC_project_map.json"
-                subPath: "GDC_project_map.json"
-              - name: "creds-json-volume"
-                mountPath: "/secrets/dcf_dataservice_credentials.json"
-                subPath: "dcf_dataservice_credentials.json"
               - name: "setting-volume"
                 mountPath: "/secrets/dcf-dataservice-settings-secrets.json"
                 subPath: "dcf-dataservice-settings-secrets.json"                
@@ -83,6 +71,7 @@ spec:
             args: 
               - "-c"
               - |
+                cat /secrets/dcf_dataservice_settings > ./dcfdataservice/settings.py
                 echo """
                 [default]
                 region: us-east-1
