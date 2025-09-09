@@ -130,10 +130,14 @@ A Helm chart for gen3 Metadata Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | suspendCronjob | bool | `true` |  |
 | useAggMds | bool | `false` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
 =======
+=======
+| suspendCronjob | bool | `true` |  |
+>>>>>>> eb74ff3f ((HP-2279) Add suspend config)
 | useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
 >>>>>>> 4fd09d11 (Add postgresql 15+ support in dbcreate job, fix metadata and fence cronjob to work with openshift)
