@@ -110,8 +110,7 @@ spec:
                 subPath: yaml_merge.py
               - name: "fence-jwt-keys"
                 readOnly: true
-                mountPath: "/fence/jwt-keys.tar"
-                subPath: "jwt-keys.tar"
+                mountPath: "/fence/keys"
               - name: shared-data
                 mountPath: /mnt/shared
             command: ["/bin/bash"]
