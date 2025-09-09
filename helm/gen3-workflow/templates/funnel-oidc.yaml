@@ -3,11 +3,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: funnel-oidc-job
-  annotations:
-    # This would trigger the job after every helm install or upgrade,
-    # to make sure funnel is always configured with the latest OIDC client credentials.
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     metadata:
@@ -176,32 +171,11 @@ spec:
               echo "Updating k8s secret funnel-oidc-client"
               export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
               export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
-              kubectl get secret gen3workflow-g3auto -o jsonpath="{.data.funnel\.conf}" | base64 -d > /tmp/funnel.conf
-
-              echo "Patching values..."
-              yq eval '.Plugins.Params.OidcClientId = strenv(CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf
-
-              if [[ ! -s /tmp/funnel-patched.conf ]]; then
-                echo "ERROR: Patched config is empty. Aborting."
-                exit 1
-              fi
-
-              echo "Patching funnel.conf in gen3workflow secret with new OIDC client credentials"
-              PATCH=$(base64 -w 0 /tmp/funnel-patched.conf)
-              kubectl patch secret gen3workflow-g3auto \
-                --type merge \
-                -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
 
               echo "Current funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
-                namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-                DEPLOYMENT_NAME="funnel-server"
                 
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
                 kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
               fi
-
-              # We have to temporairily restart funnel-server to pick up the new OIDC client credentials, until funnel supports storing sensitive information in secrets instead of Configmaps.
-              echo "Rolling out funnel-server in namespace $namespace..."
-              kubectl rollout restart deployment/"$DEPLOYMENT_NAME" -n $namespace
 {{- end }}
