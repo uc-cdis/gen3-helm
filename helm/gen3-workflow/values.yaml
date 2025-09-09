@@ -40,10 +40,7 @@ global:
       password:
       # -- (string) Port for Postgres.
       port: "5432"
-
   environment: default
-
-
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed.
@@ -358,18 +355,59 @@ funnel:
     pullPolicy: Always
 
     # -- (map) Configuration for the Funnel init container.
-    initContainer:
-      # -- (string) The Docker image repository for the Funnel init/plugin container.
-      image: quay.io/cdis/funnel-gen3-plugin
-      # -- (string) The Docker image tag for the Funnel init/plugin container.
-      tag: debug-logging
-      # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-      pullPolicy: Always
-      # -- (list) Arguments to pass to the init container.
-      command:
-      - cp
-      - /app/build/plugins/authorizer
-      - /opt/funnel/plugin-binaries/auth-plugin
+    initContainers:
+      - name: plugin 
+        # -- (string) The Docker image repository for the Funnel init/plugin container.
+        image: quay.io/cdis/funnel-gen3-plugin
+        # -- (string) The Docker image tag for the Funnel init/plugin container.
+        tag: debug-logging
+        # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+        pullPolicy: Always
+        # -- (list) Arguments to pass to the init container.
+        command:
+          - cp
+          - /app/build/plugins/authorizer
+          - /opt/funnel/plugin-binaries/auth-plugin
+        volumeMounts:
+          - name: plugin-volume
+            mountPath: /opt/funnel/plugin-binaries
+      - name: secrets-updater
+        image: bitnami/kubectl
+        tag: latest
+        env:
+          - name: FUNNEL_OIDC_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: funnel-oidc-client
+                key: client_id
+                optional: false
+          - name: FUNNEL_OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: funnel-oidc-client
+                key: client_secret
+                optional: false
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - |
+            echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
+            kubectl get secret gen3workflow-g3auto -o jsonpath="{.data.funnel\.conf}" | base64 -d > /tmp/funnel.conf
+
+            echo "Patching values..."
+            yq eval '.Plugins.Params.OidcClientId = strenv(FUNNEL_OIDC_CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(FUNNEL_OIDC_CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf
+
+            if [[ ! -s /tmp/funnel-patched.conf ]]; then
+              echo "ERROR: Patched config is empty. Aborting."
+              exit 1
+            fi
+
+            echo "Patching funnel.conf in gen3workflow secret with new OIDC client credentials"
+            PATCH=$(base64 -w 0 /tmp/funnel-patched.conf)
+            kubectl patch secret gen3workflow-g3auto \
+              --type merge \
+              -p "{\"data\": {\"funnel.conf\": \"${PATCH}\"}}"
+
   volumes:
   - name: config-volume
     secret:

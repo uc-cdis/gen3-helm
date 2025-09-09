@@ -27,5 +27,5 @@ dependencies:
     version: 0.1.24
     repository: file://../common
   - name: funnel
-    version: 0.1.53
+    version: 0.1.56
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
