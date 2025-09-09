@@ -49,7 +49,7 @@ spec:
                     key: fence-config-public.yaml
                     optional: true
             volumeMounts:
-              - name: "old-config-volume"
+              - name: "old-config-volume" 
                 readOnly: true
                 mountPath: "/var/www/fence/local_settings.py"
                 subPath: local_settings.py
@@ -67,8 +67,13 @@ spec:
                 subPath: fence_credentials.json
     # -----------------------------------------------------------------------------
               - name: "config-volume"
+                readOnly: true
                 mountPath: "/var/www/fence/fence-config-secret.yaml"
                 subPath: fence-config.yaml
+              # - name: "fence-config"
+              #   readOnly: true
+              #   mountPath: "/var/www/fence/fence-config.yaml"
+              #   subPath: fence-config.yaml
               - name: "yaml-merge"
                 readOnly: true
                 mountPath: "/var/www/fence/yaml_merge.py"
@@ -96,7 +101,7 @@ spec:
                 fi
 
                 echo "${FENCE_PUBLIC_CONFIG:-""}" > "/var/www/fence/fence-config-public.yaml"
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
+                # python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml > /var/www/fence/fence-config.yaml
                 if [ -f /fence/jwt-keys.tar ]; then
                   cd /fence
                   tar xvf jwt-keys.tar
@@ -220,6 +225,9 @@ spec:
             - name: config-volume
               secret:
                 secretName: "fence-config"
+            # - name: fence-config
+            #   secret:
+            #     secretName: "fence-config"
             - name: fence-jwt-keys
               secret:
                 secretName: "fence-jwt-keys"
