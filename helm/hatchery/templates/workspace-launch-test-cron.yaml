@@ -67,7 +67,6 @@ spec:
                 subPath: fence_credentials.json
     # -----------------------------------------------------------------------------
               - name: "config-volume"
-                readOnly: true
                 mountPath: "/var/www/fence/fence-config-secret.yaml"
                 subPath: fence-config.yaml
               - name: "yaml-merge"
