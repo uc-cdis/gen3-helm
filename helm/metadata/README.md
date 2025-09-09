@@ -113,7 +113,11 @@ A Helm chart for gen3 Metadata Service
 | resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+<<<<<<< HEAD
 | schedule | string | `"0 0 1 1 */5"` |  |
+=======
+| schedule | string | `"0 1 2 3 *"` |  |
+>>>>>>> a1b44843 ((HP-2279) Update versions in README)
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
