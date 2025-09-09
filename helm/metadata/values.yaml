@@ -354,3 +354,4 @@ elasticsearch:
       # Here we can add elasticsearch config
 
 schedule: "0 1 2 3 *"
+suspendCronjob: true
