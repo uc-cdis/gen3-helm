@@ -17,6 +17,8 @@ global:
       enabled: false
       # -- (String) Name of Secrets Manager secret.
       externalSecretAwsCreds:
+      # -- (String) fence jwt keys for workspace launch test
+      fenceJwtKeys:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
