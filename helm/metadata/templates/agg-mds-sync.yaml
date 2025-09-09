@@ -12,6 +12,7 @@ kind: CronJob
 metadata:
   name: metadata-aggregate-sync
 spec:
+  suspend: {{ .Values.suspendCronjob }}
   schedule: {{ .Values.schedule | quote }}
   jobTemplate:
     spec:
