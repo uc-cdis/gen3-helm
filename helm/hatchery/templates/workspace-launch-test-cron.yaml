@@ -14,6 +14,36 @@ spec:
             app: gen3job
         spec:
           serviceAccountName: workspace-launch-test-job
+          volumes:
+            - name: yaml-merge
+              configMap:
+                name: "fence-yaml-merge"
+                optional: false
+            - name: shared-data
+              emptyDir: {}
+            - name: old-config-volume
+              secret:
+                secretName: "fence-secret"
+            - name: creds-volume
+              secret:
+                secretName: "fence-creds"
+            - name: config-helper
+              configMap:
+                name: config-helper
+                optional: true
+            - name: json-secret-volume
+              secret:
+                secretName: "fence-json-secret"
+                optional: true
+            - name: config-volume
+              secret:
+                secretName: "fence-config"
+            # - name: fence-config
+            #   secret:
+            #     secretName: "fence-config"
+            - name: fence-jwt-keys
+              secret:
+                secretName: "fence-jwt-keys"
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
@@ -201,34 +231,5 @@ spec:
                 echo "Exit code: $?"
 
           restartPolicy: Never
-          serviceAccountName: workspace-launch-test-job
-          volumes:
-            - name: yaml-merge
-              configMap:
-                name: "fence-yaml-merge"
-            - name: shared-data
-              emptyDir: {}
-            - name: old-config-volume
-              secret:
-                secretName: "fence-secret"
-            - name: creds-volume
-              secret:
-                secretName: "fence-creds"
-            - name: config-helper
-              configMap:
-                name: config-helper
-                optional: true
-            - name: json-secret-volume
-              secret:
-                secretName: "fence-json-secret"
-                optional: true
-            - name: config-volume
-              secret:
-                secretName: "fence-config"
-            # - name: fence-config
-            #   secret:
-            #     secretName: "fence-config"
-            - name: fence-jwt-keys
-              secret:
-                secretName: "fence-jwt-keys"
+
 {{- end }}
