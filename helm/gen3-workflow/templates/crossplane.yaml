@@ -30,7 +30,7 @@ spec:
             "Condition": {
               "StringEquals": {
                 "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com",
-                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:secret-store-sa"
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "gen3workflow.serviceAccountName" . }}"
               }
             }
           }
