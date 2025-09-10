@@ -210,7 +210,7 @@ spec:
                 python3 -m pip3 install requests
                 python3 -m pip3 install logging
 
-                cmd="python3 gen3-helm/helm/hatchery/scripts/workspaces_launch_test.py--commons-url $GEN3_HOSTNAME --access-token $ACCESS_TOKEN"
+                cmd="python3 gen3-helm/helm/hatchery/scripts/workspaces_launch_test.py --commons-url $GEN3_HOSTNAME --access-token $ACCESS_TOKEN"
 
                 if [[ -n "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                   echo "Running command:"
