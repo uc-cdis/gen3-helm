@@ -184,7 +184,6 @@ spec:
             args:
               - "-c"
               - |
-                sleep 999999s
                 if [[ -z "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                   if [[ ! -z "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                     echo "WORKSPACE_LAUNCH_IMAGES is from g3auto secret"
@@ -213,7 +212,7 @@ spec:
 
                 ls
 
-                cmd="python3 gen3-helm/helm/hatchery/scripts/workspaces_launch_test.py --commons-url $GEN3_HOSTNAME --access-token $ACCESS_TOKEN"
+                cmd="python3 cloud-automation/files/scripts/workspaces_launch_test.py --commons-url $GEN3_HOSTNAME --access-token $ACCESS_TOKEN"
 
                 if [[ -n "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                   echo "Running command:"
