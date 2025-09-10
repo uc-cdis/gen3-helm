@@ -82,10 +82,3 @@ Create the name of the jupyter namespace
 {{- define "stata-workspace-gen3-license" -}}
 {{- default "stata-workspace-gen3-license" .Values.externalSecrets.stataG3auto }}
 {{- end }}
-
-{{/*
-  Fence JWT Keys Secrets Manager Name
-*/}}
-{{- define "fence-jwt-keys" -}}
-{{- default "fence-jwt-keys" .Values.externalSecrets.fenceJwtKeys }}
-{{- end }}

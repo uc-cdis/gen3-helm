@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -29,13 +29,12 @@ A Helm chart for gen3 Hatchery
 | global.autoscaling.minReplicas | int | `1` |  |
 | global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"fenceJwtKeys":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
-| global.aws.externalSecrets.fenceJwtKeys | String | `nil` | fence jwt keys for workspace launch test |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
 | global.crossplane.enabled | bool | `false` | Set to true if deploying to AWS and want to use crossplane for AWS resources. |
@@ -46,9 +45,10 @@ A Helm chart for gen3 Hatchery
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
-| global.externalSecrets | map | `{"deploy":false,"fenceConfig":null,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"deploy":false,"fenceConfig":null,"fenceJwtKeys":null,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed. |
 | global.externalSecrets.fenceConfig | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-config". Required for sidecar in workspace launch test. |
+| global.externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys". Required for sidecar in workspace launch test. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
