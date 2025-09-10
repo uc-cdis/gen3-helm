@@ -23,14 +23,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../arborist | arborist | 0.1.24 |
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
 | file://../audit | audit | 0.1.30 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.29 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.23 |
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.54 |
+| file://../fence | fence | 0.1.59 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
@@ -39,14 +39,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.48 |
 | file://../indexd | indexd | 0.1.33 |
 | file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.29 |
+| file://../metadata | metadata | 0.1.30 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
 | file://../peregrine | peregrine | 0.1.31 |
 | file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.40 |
+| file://../revproxy | revproxy | 0.1.42 |
 | file://../sheepdog | sheepdog | 0.1.29 |
 | file://../sower | sower | 0.1.34 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
@@ -151,6 +151,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |

@@ -277,6 +277,20 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
+hotNode:
+  enabled: false
+
+  availabilityZones:
+    - us-east-1a
+    - us-east-1b
+    - us-east-1c
+    - us-east-1d
+
+  # This should be AT LEAST the total amount of CPU and memory to reserve, per availability zone
+  workspaceCapacityReservation:
+    cpu: 6
+    memory: 9Gi
+
 # -- (map) Service account to use or create.
 serviceAccount:
   # -- (bool) Specifies whether a service account should be created.

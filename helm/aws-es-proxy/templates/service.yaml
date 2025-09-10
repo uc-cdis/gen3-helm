@@ -13,3 +13,21 @@ spec:
       name: https
   selector:
     {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
+{{- if not .Values.global.dev }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gen3-elasticsearch-master
+  labels:
+    {{- include "aws-es-proxy.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: https
+  selector:
+    {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
+{{- end }}
