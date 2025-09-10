@@ -38,9 +38,6 @@ spec:
             - name: config-volume
               secret:
                 secretName: "fence-config"
-            # - name: fence-config
-            #   secret:
-            #     secretName: "fence-config"
             - name: fence-jwt-keys
               secret:
                 secretName: "fence-jwt-keys"
@@ -100,17 +97,14 @@ spec:
                 readOnly: true
                 mountPath: "/var/www/fence/fence-config-secret.yaml"
                 subPath: fence-config.yaml
-              # - name: "fence-config"
-              #   readOnly: true
-              #   mountPath: "/var/www/fence/fence-config.yaml"
-              #   subPath: fence-config.yaml
               - name: "yaml-merge"
                 readOnly: true
                 mountPath: "/var/www/fence/yaml_merge.py"
                 subPath: yaml_merge.py
               - name: "fence-jwt-keys"
                 readOnly: true
-                mountPath: "/fence/keys"
+                mountPath: "/fence/keys/key/jwt_private_key.pem"
+                subPath: "jwt_private_key.pem"
               - name: shared-data
                 mountPath: /mnt/shared
             command: ["/bin/bash"]
