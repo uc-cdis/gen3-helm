@@ -69,7 +69,7 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config". Required for sidecar in workspace launch test.
-    fenceConfig: 
+    fenceConfig:
     # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys". Required for sidecar in workspace launch test.
     fenceJwtKeys:
   # -- (map) Kubernetes configuration
@@ -249,7 +249,7 @@ hatchery:
   skipNodeSelector: false
   # -- (bool) Whether to use internal services url. Defaults to `global.dev`.
   useInternalServicesUrl: false
-  
+
 # -- (map) Configuration for workspace launch test crobjob
 workspaceLaunchTest:
   # -- (bool) Whether the workspace launch test cron job is enabled.
