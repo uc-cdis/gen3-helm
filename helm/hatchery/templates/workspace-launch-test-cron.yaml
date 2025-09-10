@@ -184,6 +184,7 @@ spec:
             args:
               - "-c"
               - |
+                sleep 999999s
                 if [[ -z "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                   if [[ ! -z "$WORKSPACE_LAUNCH_IMAGES" ]]; then
                     echo "WORKSPACE_LAUNCH_IMAGES is from g3auto secret"
