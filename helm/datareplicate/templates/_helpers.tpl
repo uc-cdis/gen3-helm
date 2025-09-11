@@ -20,10 +20,3 @@ dcf-dataservice-settings-secrets
 {{- end -}}
 {{- end -}}
 
-{{/*
-  DCF Dataservice JSON Secrets Manager Name
-*/}}
-{{- define "dcf-dataservice-json-secret" -}}
-{{- default "dcf-dataservice-json-secret" .Values.externalSecrets.dcfDataserviceJSONSecret }}
-{{- end }}
-
