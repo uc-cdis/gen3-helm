@@ -21,20 +21,6 @@ spec:
                 optional: false
             - name: shared-data
               emptyDir: {}
-            - name: old-config-volume
-              secret:
-                secretName: "fence-secret"
-            - name: creds-volume
-              secret:
-                secretName: "fence-creds"
-            - name: config-helper
-              configMap:
-                name: config-helper
-                optional: true
-            - name: json-secret-volume
-              secret:
-                secretName: "fence-json-secret"
-                optional: true
             - name: config-volume
               secret:
                 secretName: "fence-config"
@@ -76,23 +62,6 @@ spec:
                     key: fence-config-public.yaml
                     optional: true
             volumeMounts:
-              - name: "old-config-volume" 
-                readOnly: true
-                mountPath: "/var/www/fence/local_settings.py"
-                subPath: local_settings.py
-              - name: "creds-volume"
-                readOnly: true
-                mountPath: "/var/www/fence/creds.json"
-                subPath: creds.json
-              - name: "config-helper"
-                readOnly: true
-                mountPath: "/var/www/fence/config_helper.py"
-                subPath: config_helper.py
-              - name: "json-secret-volume"
-                readOnly: true
-                mountPath: "/var/www/fence/fence_credentials.json"
-                subPath: fence_credentials.json
-    # -----------------------------------------------------------------------------
               - name: "config-volume"
                 readOnly: true
                 mountPath: "/var/www/fence/fence-config-secret.yaml"
