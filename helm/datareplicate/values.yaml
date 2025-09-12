@@ -64,7 +64,7 @@ awsBucketReplicateJob:
   LOG_BUCKET: test-data-replication-manifest
   RELEASE: DR43
   QUICK_TEST: true
-  MANIFEST_FILE: s3://test-data-replication-manifest/GDC_full_sync_active_manifest_20250219_post_DR2.0.tsv
+  MANIFEST_FILE: s3://test-data-replication-manifest/DC_full_sync_active_manifest_20220114_post_DR1.0.tsv
   resources:
     requests:
       cpu: "2"
