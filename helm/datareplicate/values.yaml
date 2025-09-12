@@ -53,4 +53,22 @@ googleBucketReplicateJob:
     limits:
       # -- (string) The maximum amount of memory the container can use
       memory: 2Gi
+awsBucketReplicateJob:
+  enabled: true
+  # -- (bool) Whether to enable the AWS bucket replicate job
+  schedule: "*/30 * * * *"
+  THREAD_NUM: 20
+  CHUNK_SIZE: 1
+  GDC_BUCKET_NAME: gdcbackup
+  LOG_BUCKET: data-refresh-output
+  RELEASE: DR43
+  QUICK_TEST: true
+  MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
+  resources:
+    requests:
+      cpu: "2"
+      memory: 128Mi
+    limits:
+      memory: 2Gi
+
 suspendCronjob: true

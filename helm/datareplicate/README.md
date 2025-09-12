@@ -14,6 +14,18 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
+| awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"gdcbackup"` |  |
+| awsBucketReplicateJob.LOG_BUCKET | string | `"data-refresh-output"` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
+| awsBucketReplicateJob.QUICK_TEST | bool | `true` |  |
+| awsBucketReplicateJob.RELEASE | string | `"DR43"` |  |
+| awsBucketReplicateJob.THREAD_NUM | int | `20` |  |
+| awsBucketReplicateJob.enabled | bool | `true` |  |
+| awsBucketReplicateJob.resources.limits.memory | string | `"2Gi"` |  |
+| awsBucketReplicateJob.resources.requests.cpu | string | `"2"` |  |
+| awsBucketReplicateJob.resources.requests.memory | string | `"128Mi"` |  |
+| awsBucketReplicateJob.schedule | bool | `"*/30 * * * *"` | Whether to enable the AWS bucket replicate job |
 | externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
