@@ -47,6 +47,9 @@ spec:
       {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+        - name: nginx-config
+          configMap:
+            name: nginx-configmap
       containers:
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
