@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+suspendCronjob: true
+
 # Global configuration
 global:
   # -- (map) External Secrets settings.
@@ -69,5 +71,3 @@ awsBucketReplicateJob:
       memory: 128Mi
     limits:
       memory: 2Gi
-
-suspendCronjob: true
