@@ -55,7 +55,6 @@ googleBucketReplicateJob:
       memory: 2Gi
 awsBucketReplicateJob:
   enabled: true
-  # -- (bool) Whether to enable the AWS bucket replicate job
   schedule: "*/30 * * * *"
   THREAD_NUM: 20
   CHUNK_SIZE: 1
