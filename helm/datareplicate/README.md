@@ -17,7 +17,7 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
 | awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"gdcbackup"` |  |
 | awsBucketReplicateJob.LOG_BUCKET | string | `"data-refresh-output"` |  |
-| awsBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `"s3://data-refresh-manifest/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
 | awsBucketReplicateJob.QUICK_TEST | bool | `true` |  |
 | awsBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | awsBucketReplicateJob.THREAD_NUM | int | `20` |  |

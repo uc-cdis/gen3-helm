@@ -64,7 +64,7 @@ awsBucketReplicateJob:
   LOG_BUCKET: data-refresh-output
   RELEASE: DR43
   QUICK_TEST: true
-  MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
+  MANIFEST_FILE: s3://data-refresh-manifest/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
   resources:
     requests:
       cpu: "2"
