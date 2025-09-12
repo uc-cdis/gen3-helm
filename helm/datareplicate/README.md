@@ -26,7 +26,7 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.resources.requests.cpu | string | `"2"` |  |
 | awsBucketReplicateJob.resources.requests.memory | string | `"128Mi"` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
-| externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
+| externalSecrets | map | `{"awsCredsSecret":"jian-dcf-aws-creds-secret","dcfDataserviceSettingsSecret":"binamb-dcf-dataservice-settings-secrets","deploy":true,"googleCredsSecret":"binamb-gcloud-creds-secret"}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
