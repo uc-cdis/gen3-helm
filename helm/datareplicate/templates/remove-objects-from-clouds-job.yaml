@@ -66,7 +66,7 @@ spec:
                 subPath: google-creds-secret
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
-                subPath: "dcf-dataservice-settings-secrets"               
+                subPath: "dcf-dataservice-settings-secrets"
             command: ["/bin/bash" ]
             args: 
               - "-c"

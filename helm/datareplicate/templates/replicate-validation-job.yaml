@@ -33,12 +33,12 @@ spec:
                     values:
                     - ONDEMAND
           volumes:
-            - name: aws-cred-volume
-              secret:
-                secretName: "dcf-aws-creds-secret"
             - name: google-cred-volume
               secret:
                 secretName: "google-creds-secret"
+            - name: aws-cred-volume
+              secret:
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -54,17 +54,17 @@ spec:
                 memory: "16Gi"
             env:
               - name: RELEASE
-                value: "{{ .Values.googleBucketReplicateJob.RELEASE }}"
+                value: "{{ .Values.replicateValidationJob.RELEASE }}"
               - name: IGNORED_FILE
-                value: "{{ .Values.googleBucketReplicateJob.RELEASE }}"
+                value: "{{ .Values.replicateValidationJob.IGNORED_FILE }}"
               - name: MANIFEST_FILES
-                value: "{{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}"
+                value: "{{ .Values.replicateValidationJob.MANIFEST_FILE }}"
               - name: OUT_FILES
-                value: "{{ .Values.googleBucketReplicateJob.OUT_FILEs }}"
+                value: "{{ .Values.replicateValidationJob.OUT_FILEs }}"
               - name: FORCE_CREATE_MANIFEST
-                value: "{{ .Values.googleBucketReplicateJob.FORCE_CREATE_MANIFEST }}"
+                value: "{{ .Values.replicateValidationJob.FORCE_CREATE_MANIFEST }}"
               - name: LOG_BUCKET
-                value: "{{ .Values.googleBucketReplicateJob.LOG_BUCKET }}"
+                value: "{{ .Values.replicateValidationJob.LOG_BUCKET }}"
               - name: MAP_FILE
                 value: "" # Default to empty string if not provided
             volumeMounts:
@@ -73,10 +73,10 @@ spec:
                 subPath: credentials
               - name: google-cred-volume
                 mountPath: "/secrets/google_service_account_creds"
-                subPath: google_service_account_creds
+                subPath: google-creds-secret
               - name: "setting-volume"
-                mountPath: "/secrets/dcf_dataservice_settings"
-                subPath: "dcf_dataservice_settings"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
+                subPath: "dcf-dataservice-settings-secrets"
             command: ["/bin/bash" ]
             args:
               - "-c"
@@ -85,7 +85,7 @@ spec:
                 [default]
                 region: us-east-1
                 """ > ~/.aws/config
-                cat /secrets/dcf_dataservice_settings > ./dcfdataservice/settings.py
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
                 gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
                 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
                 gsutil cp $IGNORED_FILE /dcf-dataservice/ignored_files_manifest.csv
