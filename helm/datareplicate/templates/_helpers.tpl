@@ -10,6 +10,17 @@ google-creds-secret
 {{- end -}}
 
 {{/*
+  AWS Credentials Secrets Manager Name
+*/}}
+{{- define "external-secrets.awsCredsSecretName" -}}
+{{- if .Values.externalSecrets.awsCredsSecret -}}
+{{- .Values.externalSecrets.awsCredsSecret -}}
+{{- else -}}
+aws-creds-secret
+{{- end -}}
+{{- end -}}
+
+{{/*
   DCF Dataservice Settings Secrets Manager Name
 */}}
 {{- define "external-secrets.dcfDataserviceSettingsSecretName" -}}
