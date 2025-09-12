@@ -48,19 +48,19 @@ spec:
             imagePullPolicy: Always
             env:
               - name: THREAD_NUM
-                  value: "{{ .Values.awsBucketReplicateJob.THREAD_NUM }}"
+                value: "{{ .Values.awsBucketReplicateJob.THREAD_NUM }}"
               - name: CHUNK_SIZE
-                  value: "{{ .Values.awsBucketReplicateJob.CHUNK_SIZE }}"
+                value: "{{ .Values.awsBucketReplicateJob.CHUNK_SIZE }}"
               - name: GDC_BUCKET_NAME
-                  value: "{{ .Values.awsBucketReplicateJob.GDC_BUCKET_NAME }}"
+                value: "{{ .Values.awsBucketReplicateJob.GDC_BUCKET_NAME }}"
               - name: LOG_BUCKET
-                  value: "{{ .Values.awsBucketReplicateJob.LOG_BUCKET }}"
+                value: "{{ .Values.awsBucketReplicateJob.LOG_BUCKET }}"
               - name: RELEASE
-                  value: "{{ .Values.awsBucketReplicateJob.RELEASE }}"
+                value: "{{ .Values.awsBucketReplicateJob.RELEASE }}"
               - name: QUICK_TEST
-                  value: "{{ .Values.awsBucketReplicateJob.QUICK_TEST }}"
+                value: "{{ .Values.awsBucketReplicateJob.QUICK_TEST }}"
               - name: MANIFEST_FILE
-                  value: "{{ .Values.awsBucketReplicateJob.MANIFEST_FILE }}"
+                value: "{{ .Values.awsBucketReplicateJob.MANIFEST_FILE }}"
               - name: AUTH_NAMESPACE
                 valueFrom:
                   configMapKeyRef:
