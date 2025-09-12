@@ -60,11 +60,11 @@ awsBucketReplicateJob:
   schedule: "*/30 * * * *"
   THREAD_NUM: 20
   CHUNK_SIZE: 1
-  GDC_BUCKET_NAME: gdcbackup
-  LOG_BUCKET: data-refresh-output
+  GDC_BUCKET_NAME: test-gdc-bucket
+  LOG_BUCKET: test-data-replication-manifest
   RELEASE: DR43
   QUICK_TEST: true
-  MANIFEST_FILE: s3://data-refresh-manifest/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
+  MANIFEST_FILE: s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv
   resources:
     requests:
       cpu: "2"
