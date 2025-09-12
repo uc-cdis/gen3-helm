@@ -12,9 +12,9 @@ global:
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
   deploy: true
-  googleCredsSecret:
-  dcfDataserviceSettingsSecret:
-  dcfDataserviceJSONSecret:
+  googleCredsSecret: binamb-gcloud-creds-secret
+  awsCredsSecret: jian-dcf-aws-creds-secret
+  dcfDataserviceSettingsSecret: binamb-dcf-dataservice-settings-secrets
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
