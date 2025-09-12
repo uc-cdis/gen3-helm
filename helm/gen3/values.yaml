@@ -224,10 +224,16 @@ gen3-analysis:
   # -- (bool) Whether to deploy the gen3-analysis subchart.
   enabled: false
 
-# -- (map) Configurations for guppy chart.
+# -- (map) Configurations for gen3-user-data-library chart.
 gen3-user-data-library:
-  # -- (bool) Whether to deploy the guppy subchart.
+  # -- (bool) Whether to deploy the gen3-user-data-library subchart.
   enabled: false
+
+# -- (map) Configurations for gen3-workflow chart.
+gen3-workflow:
+  # -- (bool) Whether to deploy the gen3-workflow subchart.
+  enabled: false
+
 
 # -- (map) Configurations for guppy chart.
 guppy:

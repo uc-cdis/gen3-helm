@@ -22,11 +22,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
-| file://../audit | audit | 0.1.30 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
+| file://../audit | audit | 0.1.31 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.31 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
-| file://../common | common | 0.1.23 |
+| file://../common | common | 0.1.24 |
 | file://../dashboard | dashboard | 0.1.8 |
 | file://../datareplicate | datareplicate | 0.0.29 |
 | file://../dicom-server | dicom-server | 0.1.19 |
@@ -36,24 +36,24 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
+| file://../gen3-workflow | gen3-workflow | 0.1.11 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.28 |
-| file://../indexd | indexd | 0.1.33 |
-| file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.30 |
+| file://../hatchery | hatchery | 0.1.29 |
+| file://../indexd | indexd | 0.1.34 |
+| file://../manifestservice | manifestservice | 0.1.33 |
+| file://../metadata | metadata | 0.1.31 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
 | file://../peregrine | peregrine | 0.1.31 |
-| file://../portal | portal | 0.1.45 |
+| file://../portal | portal | 0.1.46 |
 | file://../requestor | requestor | 0.1.24 |
 | file://../revproxy | revproxy | 0.1.42 |
 | file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.34 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
-| file://../wts | wts | 0.1.29 |
+| file://../sower | sower | 0.1.35 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.32 |
+| file://../wts | wts | 0.1.30 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
@@ -110,8 +110,10 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
-| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
-| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
+| gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
