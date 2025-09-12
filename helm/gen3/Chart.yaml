@@ -43,6 +43,10 @@ dependencies:
     version: 0.1.8
     repository: file://../dashboard
     condition: dashboard.enabled
+  - name: datareplicate
+    version: 0.0.29
+    repository: "file://../datareplicate"
+    condition: datareplicate.enabled
   - name: etl
     version: 0.1.15
     repository: file://../etl
@@ -164,8 +168,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-
-version: 0.2.40
+version: 0.2.50
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
