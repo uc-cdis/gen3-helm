@@ -10,7 +10,6 @@
             - name: "nginx-config"
               mountPath: "/etc/nginx/conf.d/default.conf"
               subPath: default.conf
-          restartPolicy: Always
           readinessProbe:
             httpGet:
               path: /_status

@@ -100,6 +100,7 @@ spec:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          restartPolicy: Always
           ports:
             - name: app
               containerPort: 80
