@@ -60,6 +60,7 @@ spec:
             - name: app
               containerPort: 80
               protocol: TCP
+            {{- end }}
             - name: container
               containerPort: 6567
               protocol: TCP

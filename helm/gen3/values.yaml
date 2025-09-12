@@ -49,7 +49,7 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
   sidecar:
-    enabled: false
+    enabled: true
 
 
   # -- (bool) Deploys postgres/elasticsearch for dev
