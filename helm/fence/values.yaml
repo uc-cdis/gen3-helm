@@ -233,6 +233,9 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
+sidecar:
+  enabled: false
+
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
 

@@ -39,6 +39,12 @@ spec:
     spec:
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
+      {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
@@ -46,11 +52,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
+            {{- if .Values.sidecar.enabled  | default .Values.global.sidecar.enabled }}
+            - name: app
+              containerPort: 8000
               protocol: TCP
-            - name: https
-              containerPort: 443
+            {{- else }}
+            - name: app
+              containerPort: 80
               protocol: TCP
             - name: container
               containerPort: 6567
@@ -58,14 +66,14 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: app
             initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: app
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -86,11 +94,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: app
               containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
               protocol: TCP
             - name: container
               containerPort: 6567
@@ -117,6 +122,9 @@ spec:
             {{- toYaml .Values.initVolumeMounts | nindent 12 }}
           env:
             {{ toYaml .Values.initEnv | nindent 12 }}
+        {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
+        {{ include "common.sidecar.container" . }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

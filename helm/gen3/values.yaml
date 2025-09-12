@@ -48,6 +48,8 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
+  sidecar:
+    enabled: false
 
 
   # -- (bool) Deploys postgres/elasticsearch for dev
