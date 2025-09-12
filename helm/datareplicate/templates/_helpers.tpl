@@ -21,13 +21,6 @@ dcf-dataservice-settings-secrets
 {{- end -}}
 
 {{/*
-  DCF Dataservice JSON Secrets Manager Name
-*/}}
-{{- define "dcf-dataservice-json-secret" -}}
-{{- default "dcf-dataservice-json-secret" .Values.externalSecrets.dcfDataserviceJSONSecret }}
-{{- end }}
-
-{{/*
   AWS Credentials Secrets Manager Name
 */}}
 {{- define "external-secrets.dcfAwsCredsSecretName" -}}
