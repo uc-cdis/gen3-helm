@@ -93,6 +93,9 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
+        {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
+        {{ include "common.sidecar.container" . }}
+        {{- end }}
       initContainers:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -126,9 +129,6 @@ spec:
             {{- toYaml .Values.initVolumeMounts | nindent 12 }}
           env:
             {{ toYaml .Values.initEnv | nindent 12 }}
-        {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
-        {{ include "common.sidecar.container" . }}
-        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
