@@ -1,4 +1,4 @@
-{{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
+{{- if .Values.global.sidecar.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
