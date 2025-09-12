@@ -48,13 +48,13 @@ spec:
             imagePullPolicy: Always
             env:
               - name: RELEASE
-                value: "{{ .Values.googleBucketReplicateJob.RELEASE }}"
+                value: "{{ .Values.removeObjectsFromCloudsJob.RELEASE }}"
               - name: LOG_BUCKET
-                value: "{{ .Values.googleBucketReplicateJob.LOG_BUCKET }}"
+                value: "{{ .Values.removeObjectsFromCloudsJob.LOG_BUCKET }}"
               - name: MANIFEST_S3
-                value: "{{ .Values.googleBucketReplicateJob.MANIFEST_FILE }}"
+                value: "{{ .Values.removeObjectsFromCloudsJob.MANIFEST_FILE }}"
               - name: IGNORED_FILE_S3
-                value: "{{ .Values.googleBucketReplicateJob.IGNORED_FILE }}"
+                value: "{{ .Values.removeObjectsFromCloudsJob.IGNORED_FILE }}"
               - name: DRY_RUN
                 value: "{{ .Values.removeObjectsFromClouds.DRY_RUN }}"
             volumeMounts:
