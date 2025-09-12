@@ -39,12 +39,6 @@ spec:
     spec:
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
-      {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-      {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
         - name: nginx-config
