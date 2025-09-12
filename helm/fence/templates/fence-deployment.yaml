@@ -41,31 +41,37 @@ spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+        - name: nginx-config
+          configMap:
+            name: nginx-configmap
       containers:
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            {{- if .Values.sidecar.enabled  | default .Values.global.sidecar.enabled }}
+            - name: app
+              containerPort: 8000
+              protocol: TCP
+            {{- else }}
+            - name: app
               containerPort: 80
               protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
+            {{- end }}
             - name: container
               containerPort: 6567
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: app
             initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: app
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]
@@ -81,16 +87,16 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
+        {{- if .Values.sidecar.enabled | default .Values.global.sidecar.enabled }}
+        {{ include "common.sidecar.container" . }}
+        {{- end }}
       initContainers:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: app
               containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
               protocol: TCP
             - name: container
               containerPort: 6567

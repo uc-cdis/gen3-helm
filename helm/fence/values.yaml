@@ -105,6 +105,8 @@ global:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
+  sidecar:
+    enabled: true
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -231,7 +233,10 @@ image:
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "master"
+  tag: "feat_nginx-sidecar"
+
+sidecar:
+  enabled: false
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

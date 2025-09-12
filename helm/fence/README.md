@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.59](https://img.shields.io/badge/Version-0.1.59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.23 |
+| file://../common | common | 0.1.25 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -151,12 +151,13 @@ A Helm chart for gen3 Fence
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.sidecar.enabled | bool | `true` |  |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
 | googleCronJobs | map | `{"enabled":false}` | Configuration for the Google Cloud Storage cron jobs. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
-| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"feat_nginx-sidecar"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | initEnv | list | `[{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"FENCE_DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"PYTHONPATH","value":"/var/www/fence"}]` | Volumes to attach to the init container. |
 | initVolumeMounts | list | `[{"mountPath":"/var/www/fence/fence-config-secret.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/fence-config-public.yaml","name":"config-volume-public","readOnly":true,"subPath":"fence-config-public.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"}]` | Volumes to mount to the init container. |
@@ -204,6 +205,7 @@ A Helm chart for gen3 Fence
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
+| sidecar.enabled | bool | `false` |  |
 | tolerations | list | `[]` | Tolerations for the pods |
 | usersync | map | `{"addDbgap":false,"custom_image":null,"env":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","sshKnownHosts":"# example: <host> <keytype> <base64-key>\nsftp-dev.planx-pla.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCwGT41cGGn980gatwRR/EdKGx0QpOW2ghN6vhXAsCZBXvD1xsH7pGHK/5V2SASW5HvsbU73SKcA0KbNhYHDXN03Qr8bQ5or8b7EWs13TvNAMsPzFhwExZbZ8Zqqe7+ll4aA6uLk8FT/i1JqaJWUiJDHMl06BSdaEncwqB1FnluuGuFCbtApcAkGFCv9SFT3EvjJszOXHWcH7w/ZcaQnhXjIHhLooacDussSKYOxstWALJpC1eYtM0e2yq/ZlJzK0o4XH7j46av2SMs1Q9Esif8rX6cjqknI3d7AQP49rSGvj4oMwJCp74O6UieK7QetzabOSey/9h2OiRrJKOcQGsoikUJeJ3u+4lnHSqaVPhTiw+TXCCIi8DUXJksU+G7YNqsA5LB93ZKZvM/VFRJflLIwtZgP10qi+B+fBnT3Mln296x7nH+esT3IIWTn1Wfut/RKNuHbe4rC2LcuEHWv0l2iJTotXamDHcfFjYkZze3gF4fBfO36/wwMQLeInQ99W76B2Q6uKC7I1fnESu7KQR6nOiuQrLH4TADGT8QitEZC8guyWrW4SCDnGXAlCeI7U7cIhFwVlOPxeGKvyz33izAQNMkIXNrONIxdlN1yvSGsOls+ONuaf1a3CrLeXujI3ULB3bc26GWCIWKn+tEa+uC5meFQPeVFwXB4Qgn3+V6VQ==\nsftp-dev.planx-pla.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII12G7WwOj4xWHLwj2ZnpA8e/FwOwy97SlYslOpzKctT\ns-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNIOMhn0C6cf6pG0XnrXUP/TbzFgYN+tVoWzGuo4h8P5Foqev6Rs6gOXomu/vxONpNJ7/fl9oOAT3kD1Pdg0XkmEI2gksonwO5FRXEaMuz9be5d+uekrSuGSBV5ttoaiWvUootqbT8ZfG9aOHla/JbnvG9o8uijXdZsMZKgMRM/7tz+wF4Jp2+MqxMnpOS4NIknih16ZK2GTG4K2WmG4wsHmsLC+KMITc0UzDpD5aYWa+bicK4dsAk02Vu3R4FHsFdyMOZvdRbBRINlcmTYS7Ajd6Dow/iTDQGD5u2bOfPF0DGTg4jbwx7nnauEoMM20Ewr0QYdge6iac8VAzFfMOJ\n","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
 | usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |
