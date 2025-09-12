@@ -1,8 +1,4 @@
 {{- define "common.sidecar.container" -}}
-        securityContext:
-          runAsUser: 997
-          runAsGroup: 997
-          fsGroup: 997
         - name: sidecar-nginx
           image: "quay.io/cdis/nginx:master"
           imagePullPolicy: Always
