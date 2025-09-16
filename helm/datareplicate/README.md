@@ -17,7 +17,7 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
 | awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"test-gdc-bucket"` |  |
 | awsBucketReplicateJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
-| awsBucketReplicateJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/DC_full_sync_active_manifest_20220114_post_DR1.0.tsv"` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv"` |  |
 | awsBucketReplicateJob.QUICK_TEST | bool | `true` |  |
 | awsBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | awsBucketReplicateJob.THREAD_NUM | int | `20` |  |
