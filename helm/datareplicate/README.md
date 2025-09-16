@@ -14,6 +14,7 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+<<<<<<< HEAD
 | awsBatchReplicateJob.JOB_DEFINITION | string | `nil` |  |
 | awsBatchReplicateJob.JOB_QUEUE | string | `nil` |  |
 | awsBatchReplicateJob.MANIFEST_PATH | string | `nil` |  |
@@ -31,6 +32,15 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.QUICK_TEST | string | `nil` |  |
 | awsBucketReplicateJob.RELEASE | string | `nil` |  |
 | awsBucketReplicateJob.THREAD_NUM | string | `nil` |  |
+=======
+| awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
+| awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"test-gdc-bucket"` |  |
+| awsBucketReplicateJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv"` |  |
+| awsBucketReplicateJob.QUICK_TEST | bool | `true` |  |
+| awsBucketReplicateJob.RELEASE | string | `"DR43"` |  |
+| awsBucketReplicateJob.THREAD_NUM | int | `20` |  |
+>>>>>>> dba2283c (final changes)
 | awsBucketReplicateJob.enabled | bool | `true` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
 | batchServiceAccount.annotations | object | `{}` |  |
