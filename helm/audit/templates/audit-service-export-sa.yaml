@@ -1,0 +1,27 @@
+{{- if .Values.auditServiceExport.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: audit-service-export-job
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: audit-service-export-job-role
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: audit-service-export-job-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: audit-service-export-job-role
+subjects:
+  - kind: ServiceAccount
+    name: audit-service-export-job
+{{- end }}

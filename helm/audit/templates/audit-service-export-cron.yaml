@@ -1,3 +1,4 @@
+{{- if .Values.auditServiceExport.enabled -}}
 #################################################
 # CronJob to trigger audit-export-job           #
 # Uses a client-credential to authenticate      #
@@ -41,7 +42,11 @@ spec:
                     access_token=$(curl -s -X POST "https://$HOSTNAME/user/oauth2/token?grant_type=client_credentials&scope=openid" \
                       -H "Authorization: Basic $bearer_token" \
                       -H "Content-Type: application/x-www-form-urlencoded" | jq -r '.access_token')
-
+                    if [ -z "$access_token" ] || [ "$access_token" == "null" ]; then
+                      echo "Failed to get access token"
+                      exit 1
+                    fi
+                    echo "Successfully obtained access token" 
                     echo "Triggering the audit-export job via sower service /dispatch endpoint"
 
                     response=$(curl -s -X POST "https://$HOSTNAME/job/dispatch" \
@@ -69,3 +74,4 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
+{{- end }}

@@ -25,6 +25,7 @@ A Helm chart for Kubernetes
 | api.QUERY_PAGE_SIZE | int | `1000` | The maximum number of entires the query endpoint will return. |
 | api.QUERY_TIMEBOX_MAX_DAYS | int | `nil` | Amount to time-box queries. |
 | api.QUERY_USERNAMES | bool | `true` | Whether to return usernames in query responses and allow querying by username. |
+| auditServiceExport.enabled | bool | `false` |  |
 | auditServiceExport.image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/awshelper","tag":"master"}` | Docker image information. |
 | auditServiceExport.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | auditServiceExport.image.repository | string | `"quay.io/cdis/awshelper"` | The Docker image repository for the audit export cronjob. |

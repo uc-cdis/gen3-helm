@@ -302,6 +302,7 @@ api:
   QUERY_USERNAMES: true
 
 auditServiceExport:
+  enabled: false
   # -- (string) The schedule in cron format for the audit export job.
   schedule: "0 0 * * *"
   # -- (map) Docker image information.
