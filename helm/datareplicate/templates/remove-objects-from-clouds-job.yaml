@@ -6,8 +6,8 @@ metadata:
   name: remove-objects-from-clouds
 spec:
   # not yet supported - backOffLimit: 3
-  suspend: true
-  schedule: "0/20 * * * *" # once every 20 minutes
+  suspend: {{ .Values.removeObjectsFromCloudsJob.suspendCronjob }}
+  schedule: {{ .Values.removeObjectsFromCloudsJob.schedule | quote }}
   jobTemplate:
     spec:
       template:

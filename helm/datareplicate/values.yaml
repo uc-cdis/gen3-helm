@@ -56,7 +56,31 @@ googleBucketReplicateJob:
 suspendCronjob: true
 
 removeObjectsFromClouds:
+  suspendCronjob: true
+  schedule: "*/30 * * * *"
   DRY_RUN: true
+  RELEASE: DR43
+  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_manifest.tsv
+  IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
+  LOG_BUCKET: test-data-replication-manifest
+  
 replicateValidationJobs:
+  suspendCronjob: true
+  schedule: "*/30 * * * *"
+  enabled: true
+  RELEASE: DR43
+  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_manifest.tsv
+  IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
+  LOG_BUCKET: test-data-replication-manifest
   OUT_FILES: replication_validation_output_manifest.tsv
   FORCE_CREATE_MANIFEST: true
+  resources:
+  # -- (map) The amount of resources that the container requests
+    requests:
+      # -- (string) The amount of CPU requested
+      cpu: "8"
+      # -- (string) The amount of memory requested
+      memory: 16Gi
+    # -- (map) The maximum amount of resources that the container is allowed to use
+    limits:
+      memory: "32Gi"
