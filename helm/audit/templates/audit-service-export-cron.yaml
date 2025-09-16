@@ -21,7 +21,7 @@ spec:
             app: gen3job
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: audit-service-sa. # Need to find out if we need a new SA or use existing one.
+          serviceAccountName: audit-service-sa # Need to find out if we need a new SA or use existing one.
           volumes: []
           containers:
             - name: audit-export
