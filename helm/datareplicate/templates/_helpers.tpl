@@ -20,3 +20,13 @@ dcf-dataservice-settings-secrets
 {{- end -}}
 {{- end -}}
 
+{{/*
+  AWS Credentials Secrets Manager Name
+*/}}
+{{- define "external-secrets.dcfAwsCredsSecretName" -}}
+{{- if .Values.externalSecrets.dcfAwsCredsSecret -}}
+{{- .Values.externalSecrets.dcfAwsCredsSecret -}}
+{{- else -}}
+dcf-aws-creds-secret
+{{- end -}}
+{{- end -}}
