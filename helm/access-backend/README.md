@@ -1,6 +1,6 @@
 # access-backend
 
-![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -135,12 +135,8 @@ A Helm chart for Kubernetes
 | strategy.type | string | `"RollingUpdate"` |  |
 | superAdmins | string | `""` |  |
 | tolerations | list | `[]` |  |
-| volumeMounts[0].mountPath | string | `"/src/.env"` |  |
+| volumeMounts[0].mountPath | string | `"/src/user.yaml"` |  |
 | volumeMounts[0].name | string | `"config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"access-backend.env"` |  |
-| volumeMounts[1].mountPath | string | `"/src/user.yaml"` |  |
-| volumeMounts[1].name | string | `"config-volume"` |  |
-| volumeMounts[1].readOnly | bool | `true` |  |
-| volumeMounts[1].subPath | string | `"user.yaml"` |  |
+| volumeMounts[0].subPath | string | `"user.yaml"` |  |
 | volumes | list | `[]` |  |
