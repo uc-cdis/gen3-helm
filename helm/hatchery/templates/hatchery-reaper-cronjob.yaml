@@ -54,7 +54,7 @@ spec:
                   value: "whatever"
               volumeMounts:
                 - name: hatchery-config
-                  mountPath: /hatchery.json
+                  mountPath: /var/hatchery/hatchery.json
                   subPath: json
                   readOnly: true
               command: ["/bin/bash"]
@@ -63,8 +63,8 @@ spec:
                 - |
                   limit={{ .Values.hatchery.reaper.idleTimeoutSeconds | default 3600 }}
 
-                  if [[ -f "/hatchery.json" ]]; then
-                    namespace=$(jq -r '."user-namespace" // empty' /hatchery.json)
+                  if [[ -f "/var/hatchery/hatchery.json" ]]; then
+                    namespace=$(jq -r '."user-namespace" // empty' /var/hatchery/hatchery.json)
                   fi
 
                   if [[ -z "$namespace" ]]; then

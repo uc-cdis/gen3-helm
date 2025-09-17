@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.51](https://img.shields.io/badge/Version-0.1.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.52](https://img.shields.io/badge/Version-0.1.52-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -115,7 +115,7 @@ A Helm chart for gen3 Hatchery
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"hatchery-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
-| volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/var/hatchery/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
 | workspaceLaunchTest | map | `{"enabled":true,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
 | workspaceLaunchTest.enabled | bool | `true` | Whether the workspace launch test cron job is enabled. |

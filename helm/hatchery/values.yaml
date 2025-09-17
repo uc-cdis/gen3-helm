@@ -178,7 +178,7 @@ volumes:
 volumeMounts:
   - name: hatchery-config
     readOnly: true
-    mountPath: /hatchery.json
+    mountPath: /var/hatchery/hatchery.json
     subPath: json
 
 hatchery:
