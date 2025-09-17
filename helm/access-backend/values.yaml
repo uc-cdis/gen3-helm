@@ -202,10 +202,6 @@ affinity:
 volumeMounts:
   - name: "config-volume"
     readOnly: true
-    mountPath: "/src/.env"
-    subPath: "access-backend.env"
-  - name: "config-volume"
-    readOnly: true
     mountPath: "/src/user.yaml"
     subPath: "user.yaml"
 

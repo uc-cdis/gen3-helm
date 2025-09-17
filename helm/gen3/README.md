@@ -18,7 +18,7 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.8 |
+| file://../access-backend | access-backend | 0.1.9 |
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
