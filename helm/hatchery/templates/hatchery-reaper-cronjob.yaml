@@ -57,6 +57,10 @@ spec:
                   mountPath: /var/hatchery/hatchery.json
                   subPath: json
                   readOnly: true
+                - name: hatchery-config
+                  mountPath: /var/hatchery/hatchery.json
+                  subPath: json
+                  readOnly: true
               command: ["/bin/bash"]
               args:
                 - "-c"
