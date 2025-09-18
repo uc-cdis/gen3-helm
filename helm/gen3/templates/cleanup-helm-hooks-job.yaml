@@ -72,7 +72,7 @@ spec:
       serviceAccountName: {{ include "gen3.fullname" . }}-cleanup
       containers:
       - name: cleanup
-        image: bitnami/kubectl:latest
+        image: bitnamisecure/kubectl:latest
         command:
         - /bin/bash
         - -c
