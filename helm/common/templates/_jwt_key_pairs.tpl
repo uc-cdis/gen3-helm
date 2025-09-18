@@ -53,7 +53,7 @@ spec:
       serviceAccountName: {{ .Chart.Name }}-jwt-public-key-patch-sa
       containers:
       - name: public-key-gen
-        image: bitnami/kubectl:latest
+        image: bitnamisecure/kubectl:latest
         env:
           - name: PRIVATE_KEY_PEM
             valueFrom:
