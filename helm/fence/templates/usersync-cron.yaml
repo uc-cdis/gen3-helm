@@ -79,6 +79,10 @@ spec:
               {{- else }}
                 secretName: {{.Chart.Name}}-aws-config
               {{- end }}
+            - name: fence-known-hosts
+              configMap:
+                name: {{ include "fence.fullname" . }}-ssh-known-hosts
+                defaultMode: 0400
           initContainers:
             - name: wait-for-fence
               image: curlimages/curl:latest
@@ -124,6 +128,10 @@ spec:
                 - name: fence-sshconfig
                   mountPath: /root/.ssh/config
                   subPath: config
+                - name: fence-known-hosts
+                  mountPath: /root/.ssh/known_hosts
+                  subPath: known_hosts
+                  readOnly: true
               command: ["/bin/bash" ]
               args:
                 - "-c"
@@ -228,6 +236,11 @@ spec:
               - name: fence-sshconfig
                 mountPath: /root/.ssh/config
                 subPath: config
+              - name: fence-known-hosts
+                mountPath: /root/.ssh/known_hosts
+                subPath: known_hosts
+                readOnly: true
+
             command: ["/bin/bash" ]
             args:
               - "-c"

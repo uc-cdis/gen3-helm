@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.35](https://img.shields.io/badge/Version-0.2.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.56](https://img.shields.io/badge/Version-0.2.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,25 +18,26 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.8 |
+| file://../access-backend | access-backend | 0.1.9 |
 | file://../ambassador | ambassador | 0.1.25 |
 | file://../arborist | arborist | 0.1.24 |
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
 | file://../audit | audit | 0.1.31 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.29 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
 | file://../cedar | cedar | 0.1.12 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.23 |
 | file://../dashboard | dashboard | 0.1.8 |
+| file://../datareplicate | datareplicate | 0.0.29 |
 | file://../dicom-server | dicom-server | 0.1.19 |
 | file://../etl | etl | 0.1.15 |
-| file://../fence | fence | 0.1.55 |
+| file://../fence | fence | 0.1.59 |
 | file://../frontend-framework | frontend-framework | 0.1.13 |
 | file://../gen3-analysis | gen3-analysis | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.27 |
+| file://../hatchery | hatchery | 0.1.51 |
 | file://../indexd | indexd | 0.1.33 |
 | file://../manifestservice | manifestservice | 0.1.32 |
 | file://../metadata | metadata | 0.1.30 |
@@ -46,7 +47,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.31 |
 | file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.41 |
+| file://../revproxy | revproxy | 0.1.42 |
 | file://../sheepdog | sheepdog | 0.1.29 |
 | file://../sower | sower | 0.1.34 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.31 |
@@ -82,6 +83,7 @@ Helm chart to deploy Gen3 Data Commons
 | dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
+| datareplicate.enabled | bool | `false` | Whether to deploy the datareplicate subchart. |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |

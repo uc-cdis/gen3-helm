@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
@@ -25,7 +25,7 @@ dependencies:
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
@@ -43,6 +43,10 @@ dependencies:
     version: 0.1.8
     repository: file://../dashboard
     condition: dashboard.enabled
+  - name: datareplicate
+    version: 0.0.29
+    repository: "file://../datareplicate"
+    condition: datareplicate.enabled
   - name: etl
     version: 0.1.15
     repository: file://../etl
@@ -52,7 +56,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.55
+    version: 0.1.59
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -64,7 +68,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.27
+    version: 0.1.51
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -92,7 +96,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.41
+    version: 0.1.42
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -165,7 +169,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.35
+version: 0.2.56
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
