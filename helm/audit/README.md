@@ -1,6 +1,6 @@
 # audit
 
-![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -25,6 +25,12 @@ A Helm chart for Kubernetes
 | api.QUERY_PAGE_SIZE | int | `1000` | The maximum number of entires the query endpoint will return. |
 | api.QUERY_TIMEBOX_MAX_DAYS | int | `nil` | Amount to time-box queries. |
 | api.QUERY_USERNAMES | bool | `true` | Whether to return usernames in query responses and allow querying by username. |
+| auditServiceExport.enabled | bool | `false` |  |
+| auditServiceExport.image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/awshelper","tag":"master"}` | Docker image information. |
+| auditServiceExport.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| auditServiceExport.image.repository | string | `"quay.io/cdis/awshelper"` | The Docker image repository for the audit export cronjob. |
+| auditServiceExport.image.tag | string | `"master"` | Overrides the image tag whose default is `master`. |
+| auditServiceExport.schedule | string | `"0 0 * * *"` | The schedule in cron format for the audit export job. |
 | autoscaling | map | `{"enabled":false,"maxReplicas":4,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
 | autoscaling.enabled | bool | `false` | Whether autoscaling is enabled or not |
 | autoscaling.maxReplicas | int | `4` | The maximum number of replicas to scale up to |
