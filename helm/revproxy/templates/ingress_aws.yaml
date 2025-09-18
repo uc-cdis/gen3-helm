@@ -14,6 +14,11 @@ metadata:
     {{- if .Values.global.aws.wafv2.enabled }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.global.aws.wafv2.wafAclArn }}
     {{- end }}
+    {{- if .Values.ingress.annotations }}
+    {{- range $k, $v := .Values.ingress.annotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+    {{- end }}
 spec:
   ingressClassName: alb
   rules:
@@ -24,7 +29,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name:  revproxy-service
+                name: revproxy-service
                 port:
                   number: 80
 {{- end }}
