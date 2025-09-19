@@ -14,9 +14,9 @@ global:
 # -- (map) external secrets for datareplicate jobs
 externalSecrets:
   deploy: true
-  googleCredsSecret: 
-  awsCredsSecret: 
-  dcfDataserviceSettingsSecret: 
+  googleCredsSecret:
+  awsCredsSecret:
+  dcfDataserviceSettingsSecret:
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -38,12 +38,12 @@ googleBucketReplicateJob:
   enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
   schedule: "*/30 * * * *"
-  PROJECT: dcf-prod-buckets
-  MAX_WORKERS: 80
-  RELEASE: DR43
-  MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
-  IGNORED_FILE: gs://replication-input/ignored_files_manifest.csv
-  LOG_BUCKET: datarefresh-log
+  PROJECT:
+  MAX_WORKERS:
+  RELEASE:
+  MANIFEST_FILE:
+  IGNORED_FILE:
+  LOG_BUCKET:
   resources:
   # -- (map) The amount of resources that the container requests
     requests:
@@ -58,13 +58,13 @@ googleBucketReplicateJob:
 awsBucketReplicateJob:
   enabled: true
   schedule: "*/30 * * * *"
-  THREAD_NUM: 20
-  CHUNK_SIZE: 1
-  GDC_BUCKET_NAME: test-gdc-bucket
-  LOG_BUCKET: test-data-replication-manifest
-  RELEASE: DR1
-  QUICK_TEST: true
-  MANIFEST_FILE: s3://test-data-replication-manifest/DR1/short_manifest.tsv
+  THREAD_NUM:
+  CHUNK_SIZE:
+  GDC_BUCKET_NAME:
+  LOG_BUCKET:
+  RELEASE:
+  QUICK_TEST:
+  MANIFEST_FILE:
   resources:
     requests:
       cpu: "2"
