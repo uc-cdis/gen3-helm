@@ -33,7 +33,7 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 googleBucketReplicateJob:
-  enabled: true
+  enabled: false
   # -- (bool) Whether to enable the Google bucket replicate job
   schedule: "*/30 * * * *"
   PROJECT: dcf-prod-buckets
@@ -54,3 +54,6 @@ googleBucketReplicateJob:
       # -- (string) The maximum amount of memory the container can use
       memory: 2Gi
 suspendCronjob: true
+
+awsBatchReplicationJob:
+  enabled: false
