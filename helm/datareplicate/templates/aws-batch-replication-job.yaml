@@ -73,15 +73,15 @@ spec:
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
             volumeMounts:
-            - mountPath: /bucket-replicate/creds.json
-              name: cred-volume
-              subPath: creds.json
+            # - mountPath: /bucket-replicate/creds.json
+            #   name: cred-volume
+            #   subPath: creds.json
             - name: "setting-volume"
-              mountPath: "/secrets/dcf_dataservice_settings"
-              subPath: "dcf_dataservice_settings"
-            - name: "creds-json-volume"
-              mountPath: "/secrets/dcf_dataservice_credentials.json"
-              subPath: "dcf_dataservice_credentials.json"
+              mountPath: "/secrets/dcf_dataservice_settings.py"
+              subPath: "dcf-dataservice-settings-secrets"
+            # - name: "creds-json-volume"
+            #   mountPath: "/secrets/dcf_dataservice_credentials.json"
+            #   subPath: "dcf_dataservice_credentials.json"
           dnsPolicy: ClusterFirst
           restartPolicy: Never
           schedulerName: default-scheduler
@@ -90,17 +90,17 @@ spec:
           serviceAccountName: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
           terminationGracePeriodSeconds: 30
           volumes:
-          - name: cred-volume
-            secret:
-              defaultMode: 420
-              secretName: bucketreplicate-g3auto
+          # - name: cred-volume
+          #   secret:
+          #     defaultMode: 420
+          #     secretName: bucketreplicate-g3auto
           - name: setting-volume
             secret:
               secretName: "dcf-dataservice-settings-secrets"
-          - name: project-map-volume
-            configMap:
-              name: project-map-manifest
-          - name: creds-json-volume
-            secret:
-              secretName: "dcf-dataservice-json-secret"
+          # - name: project-map-volume
+          #   configMap:
+          #     name: project-map-manifest
+          # - name: creds-json-volume
+          #   secret:
+          #     secretName: "dcf-dataservice-json-secret"
 {{- end }}
