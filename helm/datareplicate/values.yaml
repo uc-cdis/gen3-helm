@@ -62,9 +62,9 @@ awsBucketReplicateJob:
   CHUNK_SIZE: 1
   GDC_BUCKET_NAME: test-gdc-bucket
   LOG_BUCKET: test-data-replication-manifest
-  RELEASE: DR43
+  RELEASE: DR1
   QUICK_TEST: true
-  MANIFEST_FILE: s3://test-data-replication-manifest/DR1/GDC_only_3plusgig_open_active_manifest.tsv
+  MANIFEST_FILE: s3://test-data-replication-manifest/DR1/short_manifest.tsv
   resources:
     requests:
       cpu: "2"
