@@ -1,3 +1,4 @@
+{{- if .Values.awsBatchReplicationJob.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -102,3 +103,4 @@ spec:
           - name: creds-json-volume
             secret:
               secretName: "dcf-dataservice-json-secret"
+{{- end }}

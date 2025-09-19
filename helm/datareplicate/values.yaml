@@ -54,3 +54,6 @@ googleBucketReplicateJob:
       # -- (string) The maximum amount of memory the container can use
       memory: 2Gi
 suspendCronjob: true
+
+awsBatchReplicationJob:
+  enabled: true
