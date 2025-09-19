@@ -63,7 +63,7 @@ awsBucketReplicateJob:
   MANIFEST_FILE:
 
 googleBucketReplicateJob:
-  enabled: true
+  enabled: false
   # -- (bool) Whether to enable the Google bucket replicate job
   schedule: "*/30 * * * *"
   PROJECT:
