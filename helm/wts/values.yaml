@@ -153,7 +153,7 @@ oidc_client_secret:
 oidc_job_enabled: true
 # Values for the service images being used in wts-oidc job
 oidc_job_images:
-  fence_client: "master"
+  fence_client_tag: "master"
 
 # -- (map) Service account to use or create.
 serviceAccount:

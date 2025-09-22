@@ -83,6 +83,10 @@ externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "cedar-directory-id".
   cedarDirectoryId:
 
+# Values for the service images being used in wts-oidc job
+cedar_client_create_job_images:
+  fence_client_tag: "master"
+
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 

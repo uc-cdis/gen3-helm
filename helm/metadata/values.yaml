@@ -351,3 +351,7 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+
+# Values for the service images being used in metadata-aggregate-sync job
+metadata_aggregate_sync_job_images:
+  awshelper_image_tag: "master"

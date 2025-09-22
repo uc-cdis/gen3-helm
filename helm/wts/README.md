@@ -73,7 +73,7 @@ A Helm chart for gen3 workspace token service
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
 | oidc_client_secret | string | `nil` | Secret for the OIDC client. |
 | oidc_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
-| oidc_job_images.fence_client | string | `"master"` |  |
+| oidc_job_images.fence_client_tag | string | `"master"` |  |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |

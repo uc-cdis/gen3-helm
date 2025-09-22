@@ -248,6 +248,7 @@ hatchery:
     suspendCronjob: false
     schedule: "*/15 * * * *"
     idleTimeoutSeconds: 3600
+    awshelper_image_tag: "master"
 
   # -- (bool) Whether to skip node selector for . Defaults to `global.dev`.
   skipNodeSelector: false

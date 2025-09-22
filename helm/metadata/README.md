@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -88,6 +88,7 @@ A Helm chart for gen3 Metadata Service
 | initResources.requests | map | `{"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
 | initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
 | initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
+| metadata_aggregate_sync_job_images.awshelper_image_tag | string | `"master"` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |

@@ -36,7 +36,7 @@ spec:
                         values: ["ONDEMAND"]
           containers:
             - name: awshelper
-              image: quay.io/cdis/awshelper:master
+              image: "quay.io/cdis/awshelper:{{ .Values.hatchery.reaper.awshelper_image_tag }}"
               imagePullPolicy: Always
               env:
                 - name: KUBECTL_NAMESPACE

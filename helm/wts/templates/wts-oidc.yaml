@@ -29,7 +29,7 @@ spec:
       containers:
         - name: fence-client
           # TODO: Make this configurable
-          image: "quay.io/cdis/fence:{{ .Values.oidc_job_images.fence_client }}"
+          image: "quay.io/cdis/fence:{{ .Values.oidc_job_images.fence_client_tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # TODO: ADD RESOURCES
           # resources:

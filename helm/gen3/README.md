@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.19 |
 | file://../audit | audit | 0.1.30 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
-| file://../cedar | cedar | 0.1.12 |
+| file://../cedar | cedar | 0.1.13 |
 | file://../cohort-middleware | cohort-middleware | 0.1.11 |
 | file://../common | common | 0.1.23 |
 | file://../dashboard | dashboard | 0.1.8 |
@@ -37,10 +37,10 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
 | file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.52 |
+| file://../hatchery | hatchery | 0.1.53 |
 | file://../indexd | indexd | 0.1.33 |
 | file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.30 |
+| file://../metadata | metadata | 0.1.31 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.3 |
 | file://../orthanc | orthanc | 0.1.4 |
