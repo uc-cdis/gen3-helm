@@ -127,7 +127,7 @@ spec:
 
             source "${GEN3_HOME}/gen3/lib/utils.sh"
             gen3_load "gen3/gen3setup"
-            sleep inifinity
+            sleep infinity
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
             echo "PGUSER=$PGUSER"
