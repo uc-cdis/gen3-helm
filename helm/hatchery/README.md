@@ -119,8 +119,8 @@ A Helm chart for gen3 Hatchery
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/var/hatchery/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"},{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
-| workspaceLaunchTest | map | `{"enabled":true,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
-| workspaceLaunchTest.enabled | bool | `true` | Whether the workspace launch test cron job is enabled. |
+| workspaceLaunchTest | map | `{"enabled":false,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
+| workspaceLaunchTest.enabled | bool | `false` | Whether the workspace launch test cron job is enabled. |
 | workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
 | workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
 | workspaceLaunchTest.schedule | string | `"*/20 * * * *"` | The schedule for the workspace launch test cron job. |
