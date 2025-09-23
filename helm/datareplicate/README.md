@@ -35,7 +35,7 @@ A Helm chart for gen3 datareplicate
 | removeObjectsFromClouds.DRY_RUN | bool | `true` |  |
 | removeObjectsFromClouds.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
 | removeObjectsFromClouds.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
-| removeObjectsFromClouds.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_manifest.tsv"` |  |
+| removeObjectsFromClouds.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv"` |  |
 | removeObjectsFromClouds.RELEASE | string | `"DR43"` |  |
 | removeObjectsFromClouds.schedule | string | `"*/30 * * * *"` |  |
 | removeObjectsFromClouds.suspendCronjob | bool | `true` |  |

@@ -60,7 +60,7 @@ removeObjectsFromClouds:
   schedule: "*/30 * * * *"
   DRY_RUN: true
   RELEASE: DR43
-  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_manifest.tsv
+  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv
   IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
   LOG_BUCKET: test-data-replication-manifest
   
