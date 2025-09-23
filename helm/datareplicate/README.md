@@ -32,7 +32,7 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.schedule | bool | `"*/30 * * * *"` | Whether to enable the Google bucket replicate job |
 | image.repository | string | `"quay.io/cdis/dcf-dataservice"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
-| removeObjectsFromCloudsJob.DRY_RUN | bool | `true` |  |
+| removeObjectsFromCloudsJob.DRY_RUN | string | `"True"` |  |
 | removeObjectsFromCloudsJob.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
 | removeObjectsFromCloudsJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
 | removeObjectsFromCloudsJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv"` |  |
