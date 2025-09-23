@@ -55,7 +55,7 @@ googleBucketReplicateJob:
       memory: 2Gi
 suspendCronjob: true
 
-removeObjectsFromClouds:
+removeObjectsFromCloudsJob:
   suspendCronjob: true
   schedule: "*/30 * * * *"
   DRY_RUN: true
@@ -64,7 +64,7 @@ removeObjectsFromClouds:
   IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
   LOG_BUCKET: test-data-replication-manifest
   
-replicateValidationJobs:
+replicateValidationJob:
   suspendCronjob: true
   schedule: "*/30 * * * *"
   enabled: true
