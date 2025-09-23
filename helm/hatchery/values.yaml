@@ -178,6 +178,10 @@ volumes:
 volumeMounts:
   - name: hatchery-config
     readOnly: true
+    mountPath: /var/hatchery/hatchery.json
+    subPath: json
+  - name: hatchery-config
+    readOnly: true
     mountPath: /hatchery.json
     subPath: json
 
@@ -253,7 +257,7 @@ hatchery:
 # -- (map) Configuration for workspace launch test crobjob
 workspaceLaunchTest:
   # -- (bool) Whether the workspace launch test cron job is enabled.
-  enabled: true
+  enabled: false
   # -- (string) The schedule for the workspace launch test cron job.
   schedule: "*/20 * * * *"
   # -- (string) Images to test in the workspace launch test cron job.

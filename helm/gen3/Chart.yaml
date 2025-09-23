@@ -44,7 +44,7 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.0.29
+    version: 0.0.30
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: etl
@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.51
+    version: 0.1.53
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.42
+    version: 0.1.43
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -112,7 +112,7 @@ dependencies:
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -169,7 +169,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.57
+version: 0.2.61
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
