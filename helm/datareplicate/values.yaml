@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+suspendCronjob: true
+
 # Global configuration
 global:
   # -- (map) External Secrets settings.
@@ -13,8 +15,8 @@ global:
 externalSecrets:
   deploy: true
   googleCredsSecret:
+  awsCredsSecret:
   dcfDataserviceSettingsSecret:
-  dcfDataserviceJSONSecret:
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -36,12 +38,12 @@ googleBucketReplicateJob:
   enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
   schedule: "*/30 * * * *"
-  PROJECT: dcf-prod-buckets
-  MAX_WORKERS: 80
-  RELEASE: DR43
-  MANIFEST_FILE: gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv
-  IGNORED_FILE: gs://replication-input/ignored_files_manifest.csv
-  LOG_BUCKET: datarefresh-log
+  PROJECT:
+  MAX_WORKERS:
+  RELEASE:
+  MANIFEST_FILE:
+  IGNORED_FILE:
+  LOG_BUCKET:
   resources:
   # -- (map) The amount of resources that the container requests
     requests:
@@ -86,3 +88,19 @@ replicateValidationJob:
     # -- (map) The maximum amount of resources that the container is allowed to use
     limits:
       memory: "32Gi"
+awsBucketReplicateJob:
+  enabled: true
+  schedule: "*/30 * * * *"
+  THREAD_NUM:
+  CHUNK_SIZE:
+  GDC_BUCKET_NAME:
+  LOG_BUCKET:
+  RELEASE:
+  QUICK_TEST:
+  MANIFEST_FILE:
+  resources:
+    requests:
+      cpu: "2"
+      memory: 128Mi
+    limits:
+      memory: 2Gi
