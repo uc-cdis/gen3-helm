@@ -73,6 +73,8 @@ replicateValidationJobs:
   IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
   LOG_BUCKET: test-data-replication-manifest
   OUT_FILES: replication_validation_output_manifest.tsv
+  MAP_FILE: ""
+  SAVE_COPIED_OBJECTS: 1
   FORCE_CREATE_MANIFEST: true
   resources:
   # -- (map) The amount of resources that the container requests

@@ -43,8 +43,10 @@ A Helm chart for gen3 datareplicate
 | replicateValidationJobs.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
 | replicateValidationJobs.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
 | replicateValidationJobs.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_manifest.tsv"` |  |
+| replicateValidationJobs.MAP_FILE | string | `""` |  |
 | replicateValidationJobs.OUT_FILES | string | `"replication_validation_output_manifest.tsv"` |  |
 | replicateValidationJobs.RELEASE | string | `"DR43"` |  |
+| replicateValidationJobs.SAVE_COPIED_OBJECTS | int | `1` |  |
 | replicateValidationJobs.enabled | bool | `true` |  |
 | replicateValidationJobs.resources.limits | map | `{"memory":"32Gi"}` | The maximum amount of resources that the container is allowed to use |
 | replicateValidationJobs.resources.requests | map | `{"cpu":"8","memory":"16Gi"}` | The amount of resources that the container requests |
