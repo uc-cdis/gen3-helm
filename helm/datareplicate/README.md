@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.0.30](https://img.shields.io/badge/Version-0.0.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.0.31](https://img.shields.io/badge/Version-0.0.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -14,27 +14,27 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
-| awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"test-gdc-bucket"` |  |
-| awsBucketReplicateJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
-| awsBucketReplicateJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/DR1/short_manifest.tsv"` |  |
-| awsBucketReplicateJob.QUICK_TEST | bool | `true` |  |
-| awsBucketReplicateJob.RELEASE | string | `"DR1"` |  |
-| awsBucketReplicateJob.THREAD_NUM | int | `20` |  |
+| awsBucketReplicateJob.CHUNK_SIZE | string | `nil` |  |
+| awsBucketReplicateJob.GDC_BUCKET_NAME | string | `nil` |  |
+| awsBucketReplicateJob.LOG_BUCKET | string | `nil` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `nil` |  |
+| awsBucketReplicateJob.QUICK_TEST | string | `nil` |  |
+| awsBucketReplicateJob.RELEASE | string | `nil` |  |
+| awsBucketReplicateJob.THREAD_NUM | string | `nil` |  |
 | awsBucketReplicateJob.enabled | bool | `true` |  |
 | awsBucketReplicateJob.resources.limits.memory | string | `"2Gi"` |  |
 | awsBucketReplicateJob.resources.requests.cpu | string | `"2"` |  |
 | awsBucketReplicateJob.resources.requests.memory | string | `"128Mi"` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
-| externalSecrets | map | `{"awsCredsSecret":"jian-dcf-aws-creds-secret","dcfDataserviceSettingsSecret":"binamb-dcf-dataservice-settings-secrets","deploy":true,"googleCredsSecret":"binamb-gcloud-creds-secret"}` | external secrets for datareplicate jobs |
+| externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
-| googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
-| googleBucketReplicateJob.LOG_BUCKET | string | `"datarefresh-log"` |  |
-| googleBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
-| googleBucketReplicateJob.MAX_WORKERS | int | `80` |  |
-| googleBucketReplicateJob.PROJECT | string | `"dcf-prod-buckets"` |  |
-| googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
+| googleBucketReplicateJob.IGNORED_FILE | string | `nil` |  |
+| googleBucketReplicateJob.LOG_BUCKET | string | `nil` |  |
+| googleBucketReplicateJob.MANIFEST_FILE | string | `nil` |  |
+| googleBucketReplicateJob.MAX_WORKERS | string | `nil` |  |
+| googleBucketReplicateJob.PROJECT | string | `nil` |  |
+| googleBucketReplicateJob.RELEASE | string | `nil` |  |
 | googleBucketReplicateJob.enabled | bool | `true` |  |
 | googleBucketReplicateJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | googleBucketReplicateJob.resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
