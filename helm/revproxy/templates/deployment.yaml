@@ -57,6 +57,8 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: false
       volumes:
+        - emptyDir: {}
+          name: nginx-logs
         - name: revproxy-conf
           configMap:
             name: revproxy-nginx-conf
@@ -74,19 +76,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 80
+          - containerPort: {{ .Values.service.targetPort }}
+            name: http
           - containerPort: 443
           - containerPort: 6567
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -123,6 +126,8 @@ spec:
                 key: base64Authz.txt
                 optional: true
           volumeMounts:
+          - mountPath: /var/log/nginx
+            name: nginx-logs
           - name: "revproxy-conf"
             readOnly: true
             mountPath: "/etc/nginx/nginx.conf"

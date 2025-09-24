@@ -169,7 +169,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_es-7"
+  tag: "master"
 
 debug: false
 
@@ -323,6 +323,7 @@ serviceAnnotations:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 80
   # -- (int) The port number that the service exposes.
   port:
     - protocol: TCP

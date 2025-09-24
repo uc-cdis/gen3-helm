@@ -44,6 +44,12 @@ spec:
         app: gen3job
     spec:
       serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
+      {{- if $.Values.podSecurityContext }}
+      securityContext:
+      {{- range $k, $v := $.Values.podSecurityContext }}
+        {{ $k }}: {{ $v  }}
+      {{- end }}
+      {{- end }}
       restartPolicy: Never
       containers:
       - name: db-setup

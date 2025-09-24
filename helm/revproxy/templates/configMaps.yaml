@@ -40,5 +40,5 @@ metadata:
 data:
 {{- range $path, $bytes := .Files.Glob "nginx/*" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}
+  {{- tpl ($bytes | toString) $ | nindent 4 }}
 {{- end}}

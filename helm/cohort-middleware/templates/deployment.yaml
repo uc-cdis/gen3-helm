@@ -54,7 +54,8 @@ spec:
               mountPath: /config/development.yaml
               subPath: development.yaml
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

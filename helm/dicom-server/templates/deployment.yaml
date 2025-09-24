@@ -48,19 +48,20 @@ spec:
           readinessProbe: 
             httpGet:
               path: /system
-              port: 8042
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 20
             timeoutSeconds: 30
           livenessProbe: 
             httpGet:
               path: /system
-              port: 8042
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 30
           ports:
-            - containerPort: 8042
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
           env:
             - name: PGHOST
               valueFrom:

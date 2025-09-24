@@ -1,6 +1,6 @@
 # argo-wrapper
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Argo Wrapper Service
 
@@ -58,7 +58,7 @@ A Helm chart for gen3 Argo Wrapper Service
 | s3Bucket | string | `"argo-artifact-downloadable"` | S3 bucket name for Argo artifacts (allows pre-signed URLs). |
 | scalingGroups | list | `[{"user1":"workflow1"},{"user2":"workflow2"},{"user3":"workflow3"}]` | The workflow scaling groups to be used by Argo. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":8000,"type":"ClusterIP"}` | Kubernetes service information. |
+| service | map | `{"port":8000,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `8000` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |

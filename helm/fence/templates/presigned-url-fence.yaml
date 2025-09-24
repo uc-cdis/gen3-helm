@@ -38,6 +38,8 @@ spec:
         userhelper: "yes"
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
@@ -46,7 +48,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
             - name: https
               containerPort: 443
