@@ -166,6 +166,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: NodePort
+  targetPort: 80
   # -- (int) The port number that the service exposes.
   port: 80
 
@@ -272,3 +273,7 @@ extraServices:
 
 # -- (bool) Whether to enable robots.txt generation and serving.
 enableRobotsTxt: false
+
+nginx:
+  user: nginx
+  resolver: kube-dns.kube-system.svc.cluster.local
