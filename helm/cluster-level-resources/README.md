@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.14](https://img.shields.io/badge/Version-0.6.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.16](https://img.shields.io/badge/Version-0.6.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -39,6 +39,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | crossplane.configuration.enabled | bool | `false` |  |
 | crossplane.enabled | bool | `false` |  |
 | crossplane.targetRevision | string | `"1.19.2"` |  |
+| custom-objects.enabled | bool | `false` |  |
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.38.1"` |  |

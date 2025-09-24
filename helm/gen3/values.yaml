@@ -108,6 +108,8 @@ global:
     dbSubnet: ""
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
   # -- (map) If you would like to add any extra values to the manifest-global configmap.
   manifestGlobalExtraValues: {}
   # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
@@ -158,6 +160,10 @@ aws-es-proxy:
     awsAccessKeyId: ""
     # -- (str) AWS secret access key for aws-es-proxy
     awsSecretAccessKey: ""
+
+datareplicate:
+  # -- (bool) Whether to deploy the datareplicate subchart.
+  enabled: false
 
 etl:
   # -- (bool) Whether to deploy the etl subchart.
@@ -450,3 +456,12 @@ tests:
       memory: "10G"
   image:
     tag: master
+# Default configuration for auroraRdsCopyJob
+auroraRdsCopyJob:
+  enabled: false
+  auroraMasterSecret: ""
+  sourceNamespace: ""
+  targetNamespace: ""
+  writeToK8sSecret: false
+  writeToAwsSecret: false
+  services: []
