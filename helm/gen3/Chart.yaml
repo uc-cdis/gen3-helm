@@ -49,10 +49,14 @@ dependencies:
     condition: dashboard.enabled
   - name: datareplicate
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.19
 =======
     version: 0.0.30
 >>>>>>> 135d55b2 (bump chart ver)
+=======
+    version: 0.0.31
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -201,7 +205,11 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
+<<<<<<< HEAD
 version: 0.3.39
+=======
+version: 0.2.62
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

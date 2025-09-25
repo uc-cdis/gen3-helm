@@ -1,10 +1,14 @@
 # datareplicate
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.0.30](https://img.shields.io/badge/Version-0.0.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 135d55b2 (bump chart ver)
+=======
+![Version: 0.0.31](https://img.shields.io/badge/Version-0.0.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
 
 A Helm chart for gen3 datareplicate
 
@@ -19,6 +23,7 @@ A Helm chart for gen3 datareplicate
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 <<<<<<< HEAD
+<<<<<<< HEAD
 | awsBatchReplicateJob.JOB_DEFINITION | string | `nil` |  |
 | awsBatchReplicateJob.JOB_QUEUE | string | `nil` |  |
 | awsBatchReplicateJob.MANIFEST_PATH | string | `nil` |  |
@@ -29,6 +34,8 @@ A Helm chart for gen3 datareplicate
 | awsBatchReplicateJob.enabled | bool | `true` |  |
 | awsBatchReplicateJob.namespace | string | `nil` |  |
 | awsBatchReplicateJob.schedule | string | `"*/30 * * * *"` |  |
+=======
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
 | awsBucketReplicateJob.CHUNK_SIZE | string | `nil` |  |
 | awsBucketReplicateJob.GDC_BUCKET_NAME | string | `nil` |  |
 | awsBucketReplicateJob.LOG_BUCKET | string | `nil` |  |
@@ -36,6 +43,7 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.QUICK_TEST | string | `nil` |  |
 | awsBucketReplicateJob.RELEASE | string | `nil` |  |
 | awsBucketReplicateJob.THREAD_NUM | string | `nil` |  |
+<<<<<<< HEAD
 =======
 | awsBucketReplicateJob.CHUNK_SIZE | int | `1` |  |
 | awsBucketReplicateJob.GDC_BUCKET_NAME | string | `"test-gdc-bucket"` |  |
@@ -45,9 +53,14 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.RELEASE | string | `"DR43"` |  |
 | awsBucketReplicateJob.THREAD_NUM | int | `20` |  |
 >>>>>>> dba2283c (final changes)
+=======
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
 | awsBucketReplicateJob.enabled | bool | `true` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
+<<<<<<< HEAD
 | batchServiceAccount.annotations | object | `{}` |  |
+=======
+>>>>>>> 273f853c (Update ETL job to call out to slack (#399))
 | externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
