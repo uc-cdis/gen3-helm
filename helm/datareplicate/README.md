@@ -44,9 +44,32 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.schedule | bool | `"*/30 * * * *"` | Whether to enable the Google bucket replicate job |
 | image.repository | string | `"quay.io/cdis/dcf-dataservice"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| removeObjectsFromCloudsJob.DRY_RUN | string | `"True"` |  |
+| removeObjectsFromCloudsJob.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
+| removeObjectsFromCloudsJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
+| removeObjectsFromCloudsJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv"` |  |
+| removeObjectsFromCloudsJob.RELEASE | string | `"DR43"` |  |
+| removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
+| removeObjectsFromCloudsJob.suspendCronjob | bool | `true` |  |
+| replicateValidationJob.FORCE_CREATE_MANIFEST | bool | `true` |  |
+| replicateValidationJob.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
+| replicateValidationJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
+| replicateValidationJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_manifest.tsv"` |  |
+| replicateValidationJob.MAP_FILE | string | `""` |  |
+| replicateValidationJob.OUT_FILES | string | `"replication_validation_output_manifest.tsv"` |  |
+| replicateValidationJob.RELEASE | string | `"DR43"` |  |
+| replicateValidationJob.SAVE_COPIED_OBJECTS | int | `1` |  |
+| replicateValidationJob.enabled | bool | `true` |  |
+| replicateValidationJob.resources.limits | map | `{"memory":"32Gi"}` | The maximum amount of resources that the container is allowed to use |
+| replicateValidationJob.resources.requests | map | `{"cpu":"8","memory":"16Gi"}` | The amount of resources that the container requests |
+| replicateValidationJob.resources.requests.cpu | string | `"8"` | The amount of CPU requested |
+| replicateValidationJob.resources.requests.memory | string | `"16Gi"` | The amount of memory requested |
+| replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
+| replicateValidationJob.suspendCronjob | bool | `true` |  |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
 | resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
+| suspendCronjob | bool | `true` |  |
 | suspendCronjob | bool | `true` |  |
