@@ -206,10 +206,14 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
 >>>>>>> 273f853c (Update ETL job to call out to slack (#399))
+=======
+version: 0.2.63
+>>>>>>> f6af5a27 (Updating Ssjdispatcher SA Logic (#397))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

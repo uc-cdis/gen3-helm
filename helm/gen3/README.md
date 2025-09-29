@@ -1,10 +1,14 @@
 # gen3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.3.39](https://img.shields.io/badge/Version-0.3.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.2.62](https://img.shields.io/badge/Version-0.2.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 273f853c (Update ETL job to call out to slack (#399))
+=======
+![Version: 0.2.63](https://img.shields.io/badge/Version-0.2.63-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> f6af5a27 (Updating Ssjdispatcher SA Logic (#397))
 
 Helm chart to deploy Gen3 Data Commons
 
