@@ -1,5 +1,6 @@
 # run with 
 # kubectl create job remove-objects-from-clouds --from=cronjob/remove-objects-from-clouds
+{{- if .Values.removeObjectsFromCloudsJob.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -81,3 +82,4 @@ spec:
                 aws s3 cp $IGNORED_FILE_S3 /dcf-dataservice/ignored_files_manifest.csv
                 python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET
           restartPolicy: Never
+{{- end }}

@@ -57,37 +57,38 @@ googleBucketReplicateJob:
       memory: 2Gi
 
 removeObjectsFromCloudsJob:
+  enabled: true
   suspendCronjob: true
   schedule: "*/30 * * * *"
-  # Value Must be capitalized string value
-  DRY_RUN: "True"
-  RELEASE: DR43
-  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv
-  IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
-  LOG_BUCKET: test-data-replication-manifest
+  # Value Must be capitalized string value i.e. True, False
+  DRY_RUN:
+  RELEASE:
+  MANIFEST_FILE:
+  IGNORED_FILE:
+  LOG_BUCKET:
 
 replicateValidationJob:
+  enabled: true
   suspendCronjob: true
   schedule: "*/30 * * * *"
-  enabled: true
-  RELEASE: DR43
-  MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_manifest.tsv
-  IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
-  LOG_BUCKET: test-data-replication-manifest
-  OUT_FILES: replication_validation_output_manifest.tsv
-  MAP_FILE: ""
-  SAVE_COPIED_OBJECTS: 1
-  FORCE_CREATE_MANIFEST: true
+  RELEASE:
+  MANIFEST_FILE:
+  IGNORED_FILE:
+  LOG_BUCKET:
+  OUT_FILES: 
+  MAP_FILE:
+  SAVE_COPIED_OBJECTS:
+  FORCE_CREATE_MANIFEST:
   resources:
   # -- (map) The amount of resources that the container requests
     requests:
       # -- (string) The amount of CPU requested
-      cpu: "8"
+      cpu: "2"
       # -- (string) The amount of memory requested
-      memory: 16Gi
+      memory: 128Mi
     # -- (map) The maximum amount of resources that the container is allowed to use
     limits:
-      memory: "32Gi"
+      memory: "2Gi"
 awsBucketReplicateJob:
   enabled: true
   schedule: "*/30 * * * *"

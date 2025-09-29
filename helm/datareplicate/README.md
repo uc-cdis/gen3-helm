@@ -44,26 +44,27 @@ A Helm chart for gen3 datareplicate
 | googleBucketReplicateJob.schedule | bool | `"*/30 * * * *"` | Whether to enable the Google bucket replicate job |
 | image.repository | string | `"quay.io/cdis/dcf-dataservice"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
-| removeObjectsFromCloudsJob.DRY_RUN | string | `"True"` |  |
-| removeObjectsFromCloudsJob.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
-| removeObjectsFromCloudsJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
-| removeObjectsFromCloudsJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv"` |  |
-| removeObjectsFromCloudsJob.RELEASE | string | `"DR43"` |  |
+| removeObjectsFromCloudsJob.DRY_RUN | string | `nil` |  |
+| removeObjectsFromCloudsJob.IGNORED_FILE | string | `nil` |  |
+| removeObjectsFromCloudsJob.LOG_BUCKET | string | `nil` |  |
+| removeObjectsFromCloudsJob.MANIFEST_FILE | string | `nil` |  |
+| removeObjectsFromCloudsJob.RELEASE | string | `nil` |  |
+| removeObjectsFromCloudsJob.enabled | bool | `true` |  |
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
 | removeObjectsFromCloudsJob.suspendCronjob | bool | `true` |  |
-| replicateValidationJob.FORCE_CREATE_MANIFEST | bool | `true` |  |
-| replicateValidationJob.IGNORED_FILE | string | `"s3://test-data-replication-manifest/ignored_files_manifest.csv"` |  |
-| replicateValidationJob.LOG_BUCKET | string | `"test-data-replication-manifest"` |  |
-| replicateValidationJob.MANIFEST_FILE | string | `"s3://test-data-replication-manifest/helm_test_manifest.tsv"` |  |
-| replicateValidationJob.MAP_FILE | string | `""` |  |
-| replicateValidationJob.OUT_FILES | string | `"replication_validation_output_manifest.tsv"` |  |
-| replicateValidationJob.RELEASE | string | `"DR43"` |  |
-| replicateValidationJob.SAVE_COPIED_OBJECTS | int | `1` |  |
+| replicateValidationJob.FORCE_CREATE_MANIFEST | string | `nil` |  |
+| replicateValidationJob.IGNORED_FILE | string | `nil` |  |
+| replicateValidationJob.LOG_BUCKET | string | `nil` |  |
+| replicateValidationJob.MANIFEST_FILE | string | `nil` |  |
+| replicateValidationJob.MAP_FILE | string | `nil` |  |
+| replicateValidationJob.OUT_FILES | string | `nil` |  |
+| replicateValidationJob.RELEASE | string | `nil` |  |
+| replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 | replicateValidationJob.enabled | bool | `true` |  |
-| replicateValidationJob.resources.limits | map | `{"memory":"32Gi"}` | The maximum amount of resources that the container is allowed to use |
-| replicateValidationJob.resources.requests | map | `{"cpu":"8","memory":"16Gi"}` | The amount of resources that the container requests |
-| replicateValidationJob.resources.requests.cpu | string | `"8"` | The amount of CPU requested |
-| replicateValidationJob.resources.requests.memory | string | `"16Gi"` | The amount of memory requested |
+| replicateValidationJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
+| replicateValidationJob.resources.requests | map | `{"cpu":"2","memory":"128Mi"}` | The amount of resources that the container requests |
+| replicateValidationJob.resources.requests.cpu | string | `"2"` | The amount of CPU requested |
+| replicateValidationJob.resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
 | replicateValidationJob.suspendCronjob | bool | `true` |  |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
