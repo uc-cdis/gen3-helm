@@ -1,5 +1,5 @@
 # run with
-# Ex. gen3 job run jobs/replicate-validation-job.yaml RELEASE DR16 IGNORED_FILE gs://data-flow-code/ignored/ignored_files_manifest.csv MANIFEST_FILES 's3://giang816test/GDC_full_sync_legacy_manifest_20190326_post_DR16.0.tsv' OUT_FILES 'GDC_full_sync_legacy_manifest_20190326_post_DR16_DCF.tsv' LOG_BUCKET 'xssxs'
+# kubectl create job replicate-validation --from=cronjob/replicate-validation
 apiVersion: batch/v1
 kind: CronJob
 metadata:
