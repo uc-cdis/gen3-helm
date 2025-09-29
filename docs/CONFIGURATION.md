@@ -366,8 +366,23 @@ Indexd is used to hold information regarding files in the commons. We can index 
 The manifestservice is used by the workspaces to mount files to a workspace. Workspace pods get setup with a sidecar container which will  mount files to the data directory. This is used so that users can access files directly on the worskpace container. The files pulled are defined by manifests, created through the export to workspace button in the explorer page. These manifests live in an s3 bucket which the manifestservice can query.
 
 ## How to Configure it
+For a full set of configuration see the [Helm README.md for Manifestservice](https://github.com/uc-cdis/gen3-helm/blob/master/helm/manifestservice/README.md) or read the [Manifestservice values.yaml](https://github.com/uc-cdis/gen3-helm/blob/master/helm/manifestservice/values.yaml) directly.
 
+```
+manifestservice:
+  enabled: true
 
+  manifestserviceG3auto:
+    hostname: testinstall
+    # -- (string) Bucket for the manifestservice to read and write to.
+    bucketName: testbucket
+    # -- (string) Directory name to use within the s3 bucket.
+    prefix: test
+    # -- (string) AWS access key.
+    awsaccesskey: ""
+    # -- (string) AWS secret access key.
+    awssecretkey: ""
+```
 
 ## Extra Information
 
