@@ -60,7 +60,7 @@ removeObjectsFromCloudsJob:
   suspendCronjob: true
   schedule: "*/30 * * * *"
   # Value Must be capitalized string value
-  DRY_RUN: "True" 
+  DRY_RUN: "True"
   RELEASE: DR43
   MANIFEST_FILE: s3://test-data-replication-manifest/helm_test_redaction_manifest.tsv
   IGNORED_FILE: s3://test-data-replication-manifest/ignored_files_manifest.csv
