@@ -242,7 +242,7 @@ alloy-configmap-data: |
 
   otelcol.exporter.otlp "tempo" {
     client {
-      endpoint = "http://monitoring-tempo-distributor.monitoring:4317"
+      endpoint = "http://tempo.planx-pla.net:4317"
       // Configure TLS settings for communicating with the endpoint.
       tls {
           // The connection is insecure.
