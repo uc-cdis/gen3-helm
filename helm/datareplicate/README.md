@@ -72,4 +72,3 @@ A Helm chart for gen3 datareplicate
 | resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
 | suspendCronjob | bool | `true` |  |
-| suspendCronjob | bool | `true` |  |
