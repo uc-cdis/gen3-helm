@@ -239,16 +239,11 @@ alloy-configmap-data: |
   otelcol.exporter.prometheus "default" {
     forward_to = [prometheus.remote_write.default.receiver]
   }
-
+  
   otelcol.exporter.otlphttp "tempo" {
     client {
-      endpoint = "tempo.planx-pla.net:4318"
-      // Configure TLS settings for communicating with the endpoint.
+      endpoint = "https://tempo.planx-pla.net:443"
       tls {
-          // The connection is insecure.
-          insecure = true
-          // Do not verify TLS certificates when connecting.
-          insecure_skip_verify = true
       }
     }
   }
