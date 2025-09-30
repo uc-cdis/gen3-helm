@@ -232,7 +232,7 @@ alloy-configmap-data: |
   otelcol.processor.batch "default" {
     output {
       metrics = [otelcol.exporter.prometheus.default.input]
-      traces  = [otelcol.exporter.otlp.tempo.input]
+      traces  = [otelcol.exporter.otlphttp.tempo.input]
     }
   }
 
@@ -240,9 +240,9 @@ alloy-configmap-data: |
     forward_to = [prometheus.remote_write.default.receiver]
   }
 
-  otelcol.exporter.otlp "tempo" {
+  otelcol.exporter.otlphttp "tempo" {
     client {
-      endpoint = "tempo.planx-pla.net:4317"
+      endpoint = "tempo.planx-pla.net:4318"
       // Configure TLS settings for communicating with the endpoint.
       tls {
           // The connection is insecure.
