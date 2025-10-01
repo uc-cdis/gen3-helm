@@ -49,7 +49,6 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
-
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -386,6 +385,8 @@ access-backend:
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
