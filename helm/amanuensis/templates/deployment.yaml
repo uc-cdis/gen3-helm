@@ -65,12 +65,14 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          command: ["/bin/bash"]
+          {{- if .Values.command }}
+          command:
+          {{- toYaml .Values.command | nindent 12 }}
+          {{- end }}
+          {{- if .Values.args }}
           args:
-            - "-c"
-            - |
-              python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml /var/www/amanuensis/amanuensis-config.yaml
-              if [[ -f /amanuensis/dockerrun.bash ]]; then bash /amanuensis/dockerrun.bash; elif [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; else echo 'Error: Neither /amanuensis/dockerrun.bash nor /dockerrun.sh exists.' >&2; exit 1; fi
+          {{- toYaml .Values.args | nindent 12 }}
+          {{- end }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:

@@ -5,7 +5,7 @@ global:
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
   authz_entity_name: "subject"
   tierAccessLevel: "granular"
-  tierAccessLimit: "5"
+  tierAccessLimit: "1"
   tls:
     cert: |
       -----BEGIN CERTIFICATE-----
@@ -62,7 +62,7 @@ arborist:
     tag: "2025.07"
 
 amanuensis:
-  enabled: true
+  enabled: false
   image:
     repository: "quay.io/pcdc/amanuensis"
     tag: "2.26.2"
@@ -82,6 +82,110 @@ fence:
     repository: "quay.io/pcdc/fence"
     tag: "helm-test"
     pullPolicy: Always
+  # -- (list) Volumes to attach to the container.
+  volumes:
+    - name: old-config-volume
+      secret:
+        secretName: "fence-secret"
+    - name: json-secret-volume
+      secret:
+        secretName: "fence-json-secret"
+        optional: true
+    - name: creds-volume
+      secret:
+        secretName: "fence-creds"
+    - name: config-helper
+      configMap:
+        name: config-helper
+        optional: true
+    - name: logo-volume
+      configMap:
+        name: "logo-config"
+    - name: config-volume
+      secret:
+        secretName: "fence-config"
+    - name: fence-google-app-creds-secret-volume
+      secret:
+        secretName: "fence-google-app-creds-secret"
+    - name: fence-google-storage-creds-secret-volume
+      secret:
+        secretName: "fence-google-storage-creds-secret"
+    - name: fence-jwt-keys
+      secret:
+        secretName: "fence-jwt-keys"
+    - name: privacy-policy
+      configMap:
+        name: "privacy-policy"
+    - name: yaml-merge
+      configMap:
+        name: "fence-yaml-merge"
+    - name: amanuensis-jwt-keys
+      secret:
+        secretName: "amanuensis-jwt-keys"
+        items:
+          - key: jwt_public_key.pem
+            path: jwt_public_key.pem
+        optional: true
+    - name: config-volume-public
+      configMap:
+        name: "manifest-fence"
+        optional: true
+
+  # -- (list) Volumes to mount to the container.
+  volumeMounts:
+    - name: "old-config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/local_settings.py"
+      subPath: local_settings.py
+    - name: "json-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_credentials.json"
+      subPath: fence_credentials.json
+    - name: "creds-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/creds.json"
+      subPath: creds.json
+    - name: "config-helper"
+      readOnly: true
+      mountPath: "/var/www/fence/config_helper.py"
+      subPath: config_helper.py
+    - name: "logo-volume"
+      readOnly: true
+      mountPath: "/fence/fence/static/img/logo.svg"
+      subPath: "logo.svg"
+    - name: "privacy-policy"
+      readOnly: true
+      mountPath: "/fence/fence/static/privacy_policy.md"
+      subPath: "privacy_policy.md"
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-secret.yaml"
+      subPath: fence-config.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_private_key.pem"
+      subPath: "jwt_private_key.pem"
+    - name: "amanuensis-jwt-keys"
+      readOnly: true
+      mountPath: "/amanuensis/jwt_public_key.pem"
+      subPath: "jwt_public_key.pem"
+    - name: "config-volume-public"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-public.yaml"
+      subPath: fence-config-public.yaml
+
   USER_YAML: |
     authz:
 
@@ -300,8 +404,12 @@ guppy:
   enabled: true
   image:
     repository: "quay.io/pcdc/guppy"
-    tag: "1.10.3"
+    tag: "1.11.0"
     pullPolicy: "IfNotPresent"
+  # image:
+  #   repository: "guppy"
+  #   tag: "test"
+  #   pullPolicy: "Never"
   authFilterField: "auth_resource_path"
 
 manifestservice:
@@ -325,7 +433,7 @@ portal:
   #enabled: false
   image:
     repository: "quay.io/pcdc/windmill"
-    tag: "1.41.0"
+    tag: "1.43.0"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -486,8 +594,7 @@ portal:
                     "age_at_censor_status",
                     "medical_histories.medical_history",
                     "medical_histories.medical_history_status",
-                    "external_references.external_resource_name",
-                    "biospecimen_status"
+                    "external_references.external_resource_name"
                   ]
                 },
                 {
@@ -565,7 +672,10 @@ portal:
                     "subject_responses.interim_response",
                     "subject_responses.response_method",
                     "minimal_residual_diseases.mrd_result",
-                    "minimal_residual_diseases.mrd_result_numeric"
+                    "minimal_residual_diseases.mrd_result_numeric",
+                    "minimal_residual_diseases.mrd_result_unit",
+                    "minimal_residual_diseases.mrd_method",
+                    "minimal_residual_diseases.mrd_sample_source"
                   ]
                 },
                 {
@@ -602,7 +712,61 @@ portal:
                     "stem_cell_transplants.sct_donor_relationship"
                   ]
                 }
-              ]
+              ],
+              "unitCalcConfig": {
+                "ageUnits": {
+                  "quantity": "age",
+                  "desiredUnit": "days",
+                  "selectUnits": { "months": 30, "years": 365.25 }
+                },
+                "calculatorMapping": {
+                  "number": [
+                    "year_at_disease_phase",
+                    "tumor_assessments.longest_diam_dim1",
+                    "radiation_therapies.rt_dose",
+                    "tumor_assessments.necrosis_pct",
+                    "labs.lab_result_numeric" 
+                  ],
+                  "age": [
+                    "age_at_censor_status",
+                    "tumor_assessments.age_at_tumor_assessment",
+                    "molecular_analysis.age_at_molecular_analysis",
+                    "secondary_malignant_neoplasm.age_at_smn",
+                    "radiation_therapies.age_at_rt_start",
+                    "subject_responses.age_at_response"
+                  ]
+                }
+              },
+              "filterDependencyConfig": {
+                "relations": {
+                  "molecular_abnormality": [
+                    "molecular_analysis.molecular_abnormality",
+                    "molecular_analysis.molecular_abnormality_result"
+                  ],
+                  "tumor_site_state": [
+                    "tumor_assessments.tumor_state",
+                    "tumor_assessments.tumor_site"
+                  ],
+                  "stage": ["stagings.stage_system", "stagings.stage"],
+                  "mrd_result": [
+                    "minimal_residual_diseases.mrd_result_numeric",
+                    "minimal_residual_diseases.mrd_result_unit"
+                  ],
+                  "lab_result": ["labs.lab_result_numeric", "labs.lab_result_unit"]
+                },
+                "filterToRelation": {
+                  "molecular_analysis.molecular_abnormality": "molecular_abnormality",
+                  "molecular_analysis.molecular_abnormality_result": "molecular_abnormality",
+                  "tumor_assessments.tumor_state": "tumor_site_state",
+                  "tumor_assessments.tumor_site": "tumor_site_state",
+                  "stagings.stage_system": "stage",
+                  "stagings.stage": "stage",
+                  "minimal_residual_diseases.mrd_result_numeric": "mrd_result",
+                  "minimal_residual_diseases.mrd_result_unit": "mrd_result",
+                  "labs.lab_result_numeric": "lab_result",
+                  "labs.lab_result_unit": "lab_result"
+                }
+              }
             },
             "projectId": "search",
             "graphqlField": "subject",
@@ -640,8 +804,10 @@ portal:
               ]
             },
             "patientIds": {
-              "filter": false,
-              "export": true
+              "filter": true,
+              "export": true,
+              "filterName": "subject_submitter_id",
+              "displayName": "Subject Submitter Ids"
             },
             "survivalAnalysis": {
               "result": {
@@ -682,6 +848,10 @@ portal:
                   "name": "Last Known Survival Status (LKSS)"
                 },
                 {
+                  "field": "age_at_censor_status",
+                  "name": "Age At Censor Status (days)"
+                },
+                {
                   "field": "medical_histories.medical_history",
                   "name": "Medical History"
                 },
@@ -692,10 +862,6 @@ portal:
                 {
                   "field": "external_references.external_resource_name",
                   "name": "External Resource Name"
-                },
-                {
-                  "field": "biospecimen_status",
-                  "name": "Biospecimen"
                 },
                 {
                   "field": "histologies.histology",
@@ -711,7 +877,7 @@ portal:
                 },
                 {
                   "field": "tumor_assessments.age_at_tumor_assessment",
-                  "name": "Age at Tumor Assessment"
+                  "name": "Age at Tumor Assessment (days)"
                 },
                 {
                   "field": "tumor_assessments.tumor_classification",
@@ -851,7 +1017,7 @@ portal:
                 },
                 {
                   "field": "molecular_analysis.age_at_molecular_analysis",
-                  "name": "Age at Molecular Analysis"
+                  "name": "Age at Molecular Analysis (days)"
                 },
                 {
                   "field": "molecular_analysis.mitoses",
@@ -883,7 +1049,7 @@ portal:
                 },
                 {
                   "field": "radiation_therapies.age_at_rt_start",
-                  "name": "Age at Radiation Therapy"
+                  "name": "Age at Radiation Therapy (days)"
                 },
                 {
                   "field": "radiation_therapies.rt_site",
@@ -903,7 +1069,7 @@ portal:
                 },
                 {
                   "field": "subject_responses.age_at_response",
-                  "name": "Age at Response"
+                  "name": "Age at Response (days)"
                 },
                 {
                   "field": "subject_responses.tx_prior_response",
@@ -930,12 +1096,24 @@ portal:
                   "name": "MRD Result Numeric"
                 },
                 {
+                  "field": "minimal_residual_diseases.mrd_result_unit",
+                  "name": "MRD Result Unit"
+                },
+                {
+                  "field": "minimal_residual_diseases.mrd_method",
+                  "name": "MRD Method"
+                },
+                {
+                  "field": "minimal_residual_diseases.mrd_sample_source",
+                  "name": "MRD Sample Source"
+                },  
+                {
                   "field": "subject_responses.necrosis",
                   "name": "Necrosis"
                 },
                 {
                   "field": "secondary_malignant_neoplasm.age_at_smn",
-                  "name": "Age at SMN"
+                  "name": "Age at SMN (days)"
                 },
                 {
                   "field": "secondary_malignant_neoplasm.smn_site",
@@ -988,6 +1166,230 @@ portal:
                 {
                   "field": "stem_cell_transplants.sct_donor_relationship",
                   "name": "SCT Donor Relationship"
+                }
+              ]
+            },
+            "dataRequests": {
+              "enabled": false
+            },
+            "getAccessButtonLink": "https://docs.pedscommons.org/PCDCProjectRequestForm/"
+          },
+          {
+            "id": 2,
+            "label": "data - survival",
+            "charts": {
+              "sex": {
+                "chartType": "bar",
+                "title": "Sex"
+              },
+              "race": {
+                "chartType": "bar",
+                "title": "Race"
+              },
+              "ethnicity": {
+                "chartType": "bar",
+                "title": "Ethnicity"
+              }
+            },
+            "adminAppliedPreFilters": {
+              "consortium": {
+                "selectedValues": ["INSTRuCT"]
+              }
+            },
+            "filters": {
+              "anchor": {
+                "field": "disease_phase",
+                "options": ["Initial Diagnosis", "Relapse"],
+                "tabs": ["Disease", "Molecular"],
+                "tooltip": "You can describe this filter here"
+              },
+              "tabs": [
+                {
+                  "title": "Subject",
+                  "fields": [
+                    "consortium",
+                    "sex",
+                    "race",
+                    "ethnicity",
+                    "survival_characteristics.lkss",
+                    "survival_characteristics.age_at_lkss"
+                  ]
+                },
+                {
+                  "title": "Disease",
+                  "fields": [
+                    "histologies.histology",
+                    "tumor_assessments.age_at_tumor_assessment",
+                    "tumor_assessments.tumor_classification",
+                    "tumor_assessments.tumor_site",
+                    "tumor_assessments.longest_diam_dim1",
+                    "tumor_assessments.invasiveness",
+                    "tumor_assessments.nodal_clinical",
+                    "tumor_assessments.nodal_pathology",
+                    "tumor_assessments.parameningeal_extension",
+                    "stagings.irs_group",
+                    "stagings.tnm_finding"
+                  ]
+                },
+                {
+                  "title": "Molecular",
+                  "fields": [
+                    "molecular_analysis.anaplasia",
+                    "molecular_analysis.anaplasia_extent",
+                    "molecular_analysis.molecular_abnormality",
+                    "molecular_analysis.molecular_abnormality_result",
+                    "molecular_analysis.gene1",
+                    "molecular_analysis.gene2"
+                  ]
+                }
+              ]
+            },
+            "projectId": "search",
+            "graphqlField": "subject",
+            "index": "",
+            "buttons": [
+              {
+                "enabled": true,
+                "type": "export-to-pfb",
+                "title": "Export to PFB",
+                "leftIcon": "datafile",
+                "rightIcon": "download"
+              },
+              {
+                "enabled": false,
+                "type": "data",
+                "title": "Download Data",
+                "leftIcon": "user",
+                "rightIcon": "download",
+                "fileName": "data.json",
+                "tooltipText": "You can only download data accessible to you"
+              }
+            ],
+            "table": {
+              "enabled": true,
+              "fields": [
+                "external_references.external_links",
+                "consortium",
+                "data_contributor_id",
+                "subject_submitter_id",
+                "sex",
+                "race",
+                "ethnicity",
+                "survival_characteristics.lkss",
+                "survival_characteristics.age_at_lkss"
+              ]
+            },
+            "patientIds": {
+              "filter": false,
+              "export": true
+            },
+            "survivalAnalysis": {
+              "result": {
+                "pval": false,
+                "risktable": true,
+                "survival": true
+              }
+            },
+            "guppyConfig": {
+              "dataType": "subject",
+              "nodeCountTitle": "Subjects",
+              "fieldMapping": [
+                {
+                  "field": "survival_characteristics.lkss",
+                  "name": "Last Known Survival Status (LKSS)",
+                  "tooltip": "test tooltip"
+                },
+                {
+                  "field": "survival_characteristics.age_at_lkss",
+                  "name": "Age at LKSS"
+                },
+                {
+                  "field": "external_references.external_resource_name",
+                  "name": "External Resource Name"
+                },
+                {
+                  "field": "tumor_assessments.age_at_tumor_assessment",
+                  "name": "Age at Tumor Assessment"
+                },
+                {
+                  "field": "tumor_assessments.tumor_classification",
+                  "name": "Tumor Classification"
+                },
+                {
+                  "field": "tumor_assessments.tumor_site",
+                  "name": "Tumor Site"
+                },
+                {
+                  "field": "tumor_assessments.tumor_size",
+                  "name": "Tumor Size"
+                },
+                {
+                  "field": "tumor_assessments.longest_diam_dim1",
+                  "name": "Longest Diameter Dimension 1"
+                },
+                {
+                  "field": "tumor_assessments.invasiveness",
+                  "name": "Invasiveness"
+                },
+                {
+                  "field": "tumor_assessments.nodal_clinical",
+                  "name": "Nodal Clinical"
+                },
+                {
+                  "field": "tumor_assessments.nodal_pathology",
+                  "name": "Nodal Pathology"
+                },
+                {
+                  "field": "tumor_assessments.parameningeal_extension",
+                  "name": "Parameningeal Extension"
+                },
+                {
+                  "field": "histologies.histology",
+                  "name": "Histology"
+                },
+                {
+                  "field": "histologies.histology_grade",
+                  "name": "Histology Grade"
+                },
+                {
+                  "field": "histologies.histology_inpc",
+                  "name": "Histology Inpc"
+                },
+                {
+                  "field": "molecular_analysis.anaplasia",
+                  "name": "Anaplasia"
+                },
+                {
+                  "field": "molecular_analysis.anaplasia_extent",
+                  "name": "Anaplasia Extent"
+                },
+                {
+                  "field": "molecular_analysis.molecular_abnormality",
+                  "name": "Molecular Abnormality"
+                },
+                {
+                  "field": "molecular_analysis.molecular_abnormality_result",
+                  "name": "Molecular Abnormality Result"
+                },
+                {
+                  "field": "molecular_analysis.gene1",
+                  "name": "Gene 1"
+                },
+                {
+                  "field": "molecular_analysis.gene2",
+                  "name": "Gene 2"
+                },
+                {
+                  "field": "project_id",
+                  "name": "Data Release Version"
+                },
+                {
+                  "field": "stagings.irs_group",
+                  "name": "IRS Group"
+                },
+                {
+                  "field": "stagings.tnm_finding",
+                  "name": "TNM Finding"
                 }
               ]
             },
@@ -1074,7 +1476,7 @@ wts:
 postgresql:
   primary:
     persistence:
-      enabled: true
+      enabled: false
       size: 5Gi
 
 elasticsearch:
