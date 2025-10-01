@@ -239,7 +239,7 @@ alloy-configmap-data: |
   otelcol.exporter.prometheus "default" {
     forward_to = [prometheus.remote_write.default.receiver]
   }
-  
+
   otelcol.exporter.otlphttp "tempo" {
     client {
       endpoint = "https://tempo.planx-pla.net:443"
