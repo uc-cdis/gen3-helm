@@ -125,7 +125,7 @@ fence:
         items:
           - key: jwt_public_key.pem
             path: jwt_public_key.pem
-        optional: true
+        optional: false
     - name: config-volume-public
       configMap:
         name: "manifest-fence"
