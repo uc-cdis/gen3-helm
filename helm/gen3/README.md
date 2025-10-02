@@ -47,7 +47,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.31 |
 | file://../portal | portal | 0.1.45 |
 | file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.43 |
+| file://../revproxy | revproxy | 0.1.44 |
 | file://../sheepdog | sheepdog | 0.1.29 |
 | file://../sower | sower | 0.1.34 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.32 |
@@ -211,7 +211,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"repository":"bitnamilegacy/postgresql"},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
