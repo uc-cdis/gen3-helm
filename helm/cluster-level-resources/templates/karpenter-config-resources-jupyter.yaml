@@ -8,7 +8,11 @@ kind: EC2NodeClass
 metadata:
   name: jupyter
 spec:
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion }}
+  amiFamily: AL2023
+  {{- else }}
   amiFamily: AL2
+  {{- end }}
   amiSelectorTerms:
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
     owner: "143731057154"
