@@ -9,7 +9,7 @@ kind: EC2NodeClass
 metadata:
   name: default
 spec:
-  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion }}
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
   amiFamily: AL2023
   {{- else }}
   amiFamily: AL2
