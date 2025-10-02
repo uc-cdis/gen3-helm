@@ -48,7 +48,7 @@ dependencies:
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: etl
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.43
+    version: 0.1.44
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -104,7 +104,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
@@ -169,7 +169,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.62
+version: 0.2.64
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
