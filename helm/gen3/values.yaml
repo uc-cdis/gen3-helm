@@ -49,7 +49,6 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
-
   # -- (bool) Deploys postgres/elasticsearch for dev
   dev: true
   postgres:
@@ -160,6 +159,10 @@ aws-es-proxy:
     awsAccessKeyId: ""
     # -- (str) AWS secret access key for aws-es-proxy
     awsSecretAccessKey: ""
+
+datareplicate:
+  # -- (bool) Whether to deploy the datareplicate subchart.
+  enabled: false
 
 etl:
   # -- (bool) Whether to deploy the etl subchart.
@@ -382,6 +385,8 @@ access-backend:
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
