@@ -1,6 +1,6 @@
 {{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "default" "enabled") }}
 ---
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.k8s.aws/v1
 {{- else }}
 apiVersion: karpenter.k8s.aws/v1beta1
