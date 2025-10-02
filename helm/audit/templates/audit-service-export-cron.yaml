@@ -22,7 +22,7 @@ spec:
             app: gen3job
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: audit-service-sa # Need to find out if we need a new SA or use existing one.
+          serviceAccountName: audit-service-export-job
           volumes: []
           containers:
             - name: audit-export
@@ -48,14 +48,33 @@ spec:
                     fi
                     echo "Successfully obtained access token" 
                     echo "Triggering the audit-export job via sower service /dispatch endpoint"
+                    
+                    last_run_timestamp=$(kubectl get cronjob audit-service-export -o jsonpath='{.status.lastSuccessfulTime}')
+                    if [ -n "$last_run_timestamp" ]; then
+                      echo "Last successful run was at: $last_run_timestamp. Getting audit records since then."
+                    else
+                      last_run_timestamp=$(date -d '1 month ago' --utc +%Y-%m-%dT%H:%M:%SZ)
+                      echo "This is the first run of the cronjob. Getting records for the last 30 days, i.e since $last_run_timestamp"
+                    fi
 
-                    response=$(curl -s -X POST "https://$HOSTNAME/job/dispatch" \
+                    # Send POST request
+                    status_code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X POST "https://$HOSTNAME/job/dispatch" \
                       -H "Authorization: Bearer $access_token" \
                       -H "Content-Type: application/json" \
-                      -d '{"action": "audit-export","input": {"category": "presigned_url","query": {}}}'
-                      )
+                      -d '{"action": "audit-export","input": {"category": "presigned_url","query": {"start": "'"$last_run_timestamp"'"}}}')
 
-                    echo "Dispatch response : $response"
+                    # Read response body
+                    body=$(cat /tmp/resp.txt)
+
+                    echo "HTTP Status: $status_code"
+                    echo "Response Body: $body"
+
+                    # Check status code
+                    if [ "$status_code" -ne 200 ]; then
+                      echo "Error: Dispatch request failed with status $status_code. Please verify that the OIDC client is configured correctly and has the required permissions."
+                      exit 1  # Exit CronJob with error
+                    fi
+                    echo "Audit-export job dispatched successfully"
               env:
                 - name: OIDC_CLIENT_ID
                   valueFrom:
