@@ -8,7 +8,7 @@ kind: EC2NodeClass
 metadata:
   name: jupyter
 spec:
-  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion }}
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
   amiFamily: AL2023
   {{- else }}
   amiFamily: AL2
