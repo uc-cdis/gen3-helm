@@ -114,10 +114,14 @@ A Helm chart for gen3 Metadata Service
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | schedule | string | `"0 0 1 1 */5"` |  |
 =======
 | schedule | string | `"0 1 2 3 *"` |  |
 >>>>>>> a1b44843 ((HP-2279) Update versions in README)
+=======
+| schedule | string | `"0 0 1 1 */5"` |  |
+>>>>>>> 3e134ea3 (Revert default schedule)
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
@@ -131,6 +135,7 @@ A Helm chart for gen3 Metadata Service
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | suspendCronjob | bool | `true` |  |
 | useAggMds | bool | `false` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
@@ -138,6 +143,9 @@ A Helm chart for gen3 Metadata Service
 =======
 | suspendCronjob | bool | `true` |  |
 >>>>>>> eb74ff3f ((HP-2279) Add suspend config)
+=======
+| suspendCronjob | bool | `false` |  |
+>>>>>>> 3e134ea3 (Revert default schedule)
 | useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
 >>>>>>> 4fd09d11 (Add postgresql 15+ support in dbcreate job, fix metadata and fence cronjob to work with openshift)
