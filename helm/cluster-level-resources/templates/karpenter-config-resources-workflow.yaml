@@ -59,7 +59,7 @@ spec:
 
     --BOUNDARY--
 
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
   kubelet:
     evictionHard:
       memory.available: 5%
@@ -73,7 +73,7 @@ spec:
       memory: 1632Mi
 {{- end }}
 ---
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
