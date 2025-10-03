@@ -72,6 +72,7 @@ global:
 
 arborist:
   enabled: true
+  #local Dev Only
   postgres:
     password: "arborist_thisisaweakpassword"
   image:
@@ -80,6 +81,7 @@ arborist:
 
 amanuensis:
   enabled: true
+  #local Dev Only
   postgres:
     password: "amanuensis_thisisaweakpassword"
   image:
@@ -89,6 +91,7 @@ amanuensis:
 
 fence:
   enabled: true
+  #local Dev Only
   postgres:
     password: "fence_thisisaweakpassword"
   FENCE_CONFIG:
@@ -448,6 +451,7 @@ pcdcanalysistools:
 
 peregrine:
   enabled: true
+  #local Dev Only
   postgres:
     password: "peregrine_thisisaweakpassword"
   image:
@@ -1215,6 +1219,7 @@ revproxy:
 
 sheepdog:
   enabled: true
+  #local Dev Only
   postgres:
     password: "sheepdog_thisisaweakpassword"
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
@@ -1286,6 +1291,7 @@ wts:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
+  #local Dev Only
   auth:
     postgresPassword: "thisisaterriblepassword"
   primary:

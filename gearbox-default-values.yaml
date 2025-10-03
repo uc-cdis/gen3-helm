@@ -55,6 +55,7 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
+  #local Dev Only
   postgres:
     password: "arborist_thisisaweakpassword"
   image:
@@ -62,6 +63,7 @@ arborist:
     tag: 2025.07
 
 fence:
+  #local Dev Only
   postgres:
     password: "fence_thisisaweakpassword"
   FENCE_CONFIG:
@@ -452,6 +454,7 @@ revproxy:
     tag: 2025.08
 
 gearbox:
+  #local Dev Only
   postgres:
     password: "gearbox_thisisaweakpassword"
   enabled: true
@@ -491,6 +494,7 @@ gearbox-middleware:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
+  #local Dev Only
   auth:
     postgresPassword: "thisisaterriblepassword"
   primary:
