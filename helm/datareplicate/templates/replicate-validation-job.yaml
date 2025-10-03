@@ -1,0 +1,94 @@
+# run with
+# kubectl create job replicate-validation --from=cronjob/replicate-validation
+{{- if .Values.replicateValidationJob.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: replicate-validation
+spec:
+  # not yet supported - backOffLimit: 3
+  suspend: {{ .Values.replicateValidationJob.suspendCronjob }}
+  schedule: {{ .Values.replicateValidationJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: google-cred-volume
+              secret:
+                secretName: "google-creds-secret"
+            - name: aws-cred-volume
+              secret:
+                secretName: "aws-creds-secret"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
+          containers:
+          - name: datareplicate
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: Always
+            resources:
+              {{- toYaml .Values.replicateValidationJob.resources | nindent 12 }}
+            env:
+              - name: RELEASE
+                value: "{{ .Values.replicateValidationJob.RELEASE }}"
+              - name: IGNORED_FILE
+                value: "{{ .Values.replicateValidationJob.IGNORED_FILE }}"
+              - name: MANIFEST_FILES
+                value: "{{ .Values.replicateValidationJob.MANIFEST_FILE }}"
+              - name: OUT_FILES
+                value: "{{ .Values.replicateValidationJob.OUT_FILES }}"
+              - name: FORCE_CREATE_MANIFEST
+                value: "{{ .Values.replicateValidationJob.FORCE_CREATE_MANIFEST }}"
+              - name: LOG_BUCKET
+                value: "{{ .Values.replicateValidationJob.LOG_BUCKET }}"
+              - name: MAP_FILE
+                value: "{{ .Values.replicateValidationJob.MAP_FILE }}"
+              - name: SAVE_COPIED_OBJECTS
+                value: "{{ .Values.replicateValidationJob.SAVE_COPIED_OBJECTS }}"
+            volumeMounts:
+              - name: aws-cred-volume
+                mountPath: "/root/.aws/credentials"
+                subPath: credentials
+              - name: google-cred-volume
+                mountPath: "/secrets/google_service_account_creds"
+                subPath: google-creds-secret
+              - name: "setting-volume"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
+                subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash" ]
+            args:
+              - "-c"
+              - |
+                echo """
+                [default]
+                region: us-east-1
+                """ > ~/.aws/config
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
+                gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
+                export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
+                gsutil cp $IGNORED_FILE /dcf-dataservice/ignored_files_manifest.csv
+                python replicate.py validate --global_config "{\"release\": \"$RELEASE\", \"manifest_files\":\"$MANIFEST_FILES\", \"out_manifests\": \"$OUT_FILES\", \"FORCE_CREATE_MANIFEST\": \"$FORCE_CREATE_MANIFEST\", \"log_bucket\": \"$LOG_BUCKET\", \"map_file\": \"$MAP_FILE\", \"save_copied_objects\": \"$SAVE_COPIED_OBJECTS\"}"
+                sleep infinity
+          restartPolicy: Never
+{{- end }}
