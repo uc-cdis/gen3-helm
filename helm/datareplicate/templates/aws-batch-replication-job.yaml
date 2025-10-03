@@ -43,7 +43,7 @@ spec:
             - -c
             - |
               # #python batch_jobs/bucket_replicate/dcf_replication.py
-              # sleep infinity
+              sleep infinity
               # #python batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket $SOURCE_BUCKET --destination_bucket $DESTINATION_BUCKET --job_queue ${JOB_QUEUE} --job_definition ${JOB_DEFINITION}
               # echo "All done - exit status $?"
               # python3 batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket test-gdc-bucket --destination_bucket manifestservice-emalinowskiv1-test --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
