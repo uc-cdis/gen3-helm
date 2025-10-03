@@ -50,6 +50,7 @@ dependencies:
   - name: datareplicate
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.19
 =======
     version: 0.0.30
@@ -57,6 +58,9 @@ dependencies:
 =======
     version: 0.0.31
 >>>>>>> 273f853c (Update ETL job to call out to slack (#399))
+=======
+    version: 0.0.32
+>>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron

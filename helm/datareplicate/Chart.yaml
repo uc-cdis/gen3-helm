@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -24,6 +25,9 @@ version: 0.0.30
 =======
 version: 0.0.31
 >>>>>>> 273f853c (Update ETL job to call out to slack (#399))
+=======
+version: 0.0.32
+>>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
