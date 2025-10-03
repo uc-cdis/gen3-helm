@@ -55,11 +55,15 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
+  postgres:
+    password: "arborist_thisisaweakpassword"
   image:
     repository: quay.io/cdis/arborist
     tag: 2025.07
 
 fence:
+  postgres:
+    password: "fence_thisisaweakpassword"
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
@@ -448,6 +452,8 @@ revproxy:
     tag: 2025.08
 
 gearbox:
+  postgres:
+    password: "gearbox_thisisaweakpassword"
   enabled: true
   image:
     repository: quay.io/pcdc/gearbox_be
