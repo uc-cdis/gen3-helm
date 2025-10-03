@@ -488,6 +488,13 @@ gearbox-middleware:
     # runAsUser: 1000
     # runAsGroup: 1000
 
+postgresql:
+  auth:
+    postgresPassword: "thisisaterriblepassword"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
 ########################################################################################
 #                               DISABLED SERVICES                                      #
 ########################################################################################
