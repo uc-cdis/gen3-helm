@@ -5,7 +5,21 @@ global:
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
   authz_entity_name: "subject"
   tierAccessLevel: "granular"
-  tierAccessLimit: "1"
+  tierAccessLimit: "5"
+  postgres:
+    # -- (bool) Whether the database create job should run.
+    dbCreate: true
+    # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
+    externalSecret: ""
+    master:
+      # -- global postgres master username
+      username: postgres
+      # -- global postgres master password
+      password:
+      # -- global postgres master host
+      host:
+      # -- global postgres master port
+      port: "5432"
   tls:
     cert: |
       -----BEGIN CERTIFICATE-----
@@ -57,18 +71,26 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
+  enabled: true
+  postgres:
+    password: "arborist_thisisaweakpassword"
   image:
     repository: quay.io/pcdc/arborist
     tag: "2025.07"
 
 amanuensis:
-  enabled: false
+  enabled: true
+  postgres:
+    password: "amanuensis_thisisaweakpassword"
   image:
     repository: "quay.io/pcdc/amanuensis"
     tag: "2.26.2"
     pullPolicy: IfNotPresent
 
 fence:
+  enabled: true
+  postgres:
+    password: "fence_thisisaweakpassword"
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
@@ -425,12 +447,15 @@ pcdcanalysistools:
     tag: "1.10.1"
 
 peregrine:
+  enabled: true
+  postgres:
+    password: "peregrine_thisisaweakpassword"
   image:
     repository: quay.io/pcdc/peregrine
     tag: "1.4.1"
 
 portal:
-  #enabled: false
+  enabled: true
   image:
     repository: "quay.io/pcdc/windmill"
     tag: "1.43.0"
@@ -1183,11 +1208,15 @@ portal:
       }
 
 revproxy:
+  enabled: true
   image:
     repository: quay.io/cdis/nginx
     tag: "2025.08"
 
 sheepdog:
+  enabled: true
+  postgres:
+    password: "sheepdog_thisisaweakpassword"
   dictionaryUrl: https://pcdc-staging-dictionaries.s3.amazonaws.com/pcdc-schema-staging-20250114.json
   image:
     repository: quay.io/pcdc/sheepdog
@@ -1255,12 +1284,15 @@ wts:
     pullPolicy: Always
 
 postgresql:
+  auth:
+    postgresPassword: "thisisaterriblepassword"
   primary:
     persistence:
-      enabled: false
+      enabled: true
       size: 5Gi
 
 elasticsearch:
+  enabled: true
   clusterName: gen3-elasticsearch
   maxUnavailable: 0
   singleNode: true
