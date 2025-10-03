@@ -489,6 +489,8 @@ gearbox-middleware:
     # runAsGroup: 1000
 
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   auth:
     postgresPassword: "thisisaterriblepassword"
   primary:

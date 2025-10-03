@@ -1284,6 +1284,8 @@ wts:
     pullPolicy: Always
 
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   auth:
     postgresPassword: "thisisaterriblepassword"
   primary:
