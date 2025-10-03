@@ -178,8 +178,12 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
+<<<<<<< HEAD
     version: 0.0.36
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.0.37
+>>>>>>> 761bd6c5 (update chart version)
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron

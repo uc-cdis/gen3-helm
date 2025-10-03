@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -44,6 +45,9 @@ version: 0.0.35
 =======
 version: 0.0.36
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.0.37
+>>>>>>> 761bd6c5 (update chart version)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
