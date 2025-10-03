@@ -46,7 +46,8 @@ spec:
               # sleep infinity
               # #python batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket $SOURCE_BUCKET --destination_bucket $DESTINATION_BUCKET --job_queue ${JOB_QUEUE} --job_definition ${JOB_DEFINITION}
               # echo "All done - exit status $?"
-              python3 batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket test-gdc-bucket --destination_bucket manifestservice-emalinowskiv1-test --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
+              # python3 batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket test-gdc-bucket --destination_bucket manifestservice-emalinowskiv1-test --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition thread_count 3 max_retries 10
             command:
             - /bin/bash
             env:
@@ -60,7 +61,7 @@ spec:
               value: binamb-planx-pla-net-bucket-replicate-jqhu_queue_job
             - name: JOB_DEFINITION
               value: binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
-            image: quay.io/cdis/bucket-replicate:test_basic_batch_test
+            image: quay.io/cdis/bucket-replicate:feat_dcf-datareplicate
             imagePullPolicy: Always
             name: aws-bucket-replicate
             ports:
