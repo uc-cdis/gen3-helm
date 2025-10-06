@@ -1,6 +1,6 @@
 {{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "workflow" "enabled") }}
 ---
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.k8s.aws/v1
 {{- else }}
 apiVersion: karpenter.k8s.aws/v1beta1
@@ -9,7 +9,11 @@ kind: EC2NodeClass
 metadata:
   name: workflow
 spec:
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
+  amiFamily: AL2023
+  {{- else }}
   amiFamily: AL2
+  {{- end }}
   amiSelectorTerms:
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
     owner: "143731057154"
@@ -59,7 +63,7 @@ spec:
 
     --BOUNDARY--
 
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
   kubelet:
     evictionHard:
       memory.available: 5%
@@ -73,7 +77,7 @@ spec:
       memory: 1632Mi
 {{- end }}
 ---
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
