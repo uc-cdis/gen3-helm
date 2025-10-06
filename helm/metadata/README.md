@@ -87,7 +87,7 @@ A Helm chart for gen3 Metadata Service
 | initResources | map | `{"requests":{"memory":"100Mi"}}` | Resource limits for the init container. |
 | initResources.requests | map | `{"memory":"100Mi"}` | The maximum amount of resources that the container is allowed to use |
 | initResources.requests.memory | string | `"100Mi"` | The maximum amount of memory the container can use |
-| initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"}]` | Volumes to mount to the init container. |
+| initVolumeMounts | list | `nil` | Volumes to mount to the init container. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
@@ -120,4 +120,4 @@ A Helm chart for gen3 Metadata Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
-| volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
