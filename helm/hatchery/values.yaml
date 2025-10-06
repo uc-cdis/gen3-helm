@@ -68,6 +68,10 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+    # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config". Required for sidecar in workspace launch test.
+    fenceConfig:
+    # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys". Required for sidecar in workspace launch test.
+    fenceJwtKeys:
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
@@ -100,6 +104,9 @@ externalSecrets:
   createK8sStataSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "stata-g3auto"
   stataG3auto:
+
+fence:
+  image: quay.io/cdis/fence:master
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
@@ -169,6 +176,10 @@ volumes:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
+  - name: hatchery-config
+    readOnly: true
+    mountPath: /var/hatchery/hatchery.json
+    subPath: json
   - name: hatchery-config
     readOnly: true
     mountPath: /hatchery.json
@@ -242,6 +253,21 @@ hatchery:
   skipNodeSelector: false
   # -- (bool) Whether to use internal services url. Defaults to `global.dev`.
   useInternalServicesUrl: false
+
+# -- (map) Configuration for workspace launch test crobjob
+workspaceLaunchTest:
+  # -- (bool) Whether the workspace launch test cron job is enabled.
+  enabled: false
+  # -- (string) The schedule for the workspace launch test cron job.
+  schedule: "*/20 * * * *"
+  # -- (string) Images to test in the workspace launch test cron job.
+  # Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks"
+  workspaceImages: "(Generic) Jupyter Lab Notebook with R Kernel"
+  # -- (string) The name of the workspace launch test operator.
+  operatorName: "username"
+  # -- (string) Hostname for the workspace launch test operator.
+  hostname: "https://example.com"
+
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
