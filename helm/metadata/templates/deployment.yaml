@@ -49,9 +49,9 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes: 
-        - name: config-volume-g3auto
-          secret:
-            secretName: metadata-g3auto
+        # - name: config-volume-g3auto
+        #   secret:
+        #     secretName: metadata-g3auto
         - name: config-volume
           configMap:
             name: agg-mds-config
@@ -131,7 +131,6 @@ spec:
         - name: {{ .Values.initContainerName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.initVolumeMounts }}
           env:
             - name: DB_HOST
               valueFrom:
@@ -163,6 +162,7 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
+          {{- with .Values.initVolumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
