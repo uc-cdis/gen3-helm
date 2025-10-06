@@ -22,7 +22,7 @@ spec:
             secretName: "wts-g3auto"
       initContainers:
         - name: wait-for-fence
-          image: curlimages/curl:latest
+          image: {{ .Values.image.utilImage }}
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh","-c"]
           args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
@@ -153,8 +153,7 @@ spec:
               mountPath: "/shared/appcreds.json"
               subPath: appcreds.json
         - name: kubectl
-          #TODO: Make this configurable?  
-          image: bitnami/kubectl:latest
+          image: {{ .Values.image.utilImage }}
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"

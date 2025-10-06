@@ -219,6 +219,14 @@ spec:
                   echo "Writing exit code to signal file to let spark die"
                   echo "$exitcode" > /usr/share/pod/exit
 
+                  if [[ "${slackWebHook}" != 'None' ]]; then
+                    if [[ $exitcode == 1 ]]; then
+                      curl -X POST --data-urlencode "payload={\"text\": \"JOBFAIL: ETL job on ${gen3Env}\"}" "${slackWebHook}"
+                    else
+                      curl -X POST --data-urlencode "payload={\"text\": \"SUCCESS: ETL job on ${gen3Env}\"}" "${slackWebHook}"
+                    fi
+                  fi
+
                   echo "Exit code: $exitcode"
                   exit "$exitcode"
           restartPolicy: Never

@@ -123,10 +123,7 @@ config['TABLE_ONE'] = {
             'field': 'studies.treatment_arm',
         }
     ],
-
-    'result': {
-        "enabled": True
-    }
+    "enabled": True
 }
 
 config['EXTERNAL'] = {

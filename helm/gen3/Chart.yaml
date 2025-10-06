@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
@@ -21,11 +21,11 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
@@ -43,8 +43,12 @@ dependencies:
     version: 0.1.8
     repository: file://../dashboard
     condition: dashboard.enabled
+  - name: datareplicate
+    version: 0.0.32
+    repository: "file://../datareplicate"
+    condition: datareplicate.enabled
   - name: etl
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -52,7 +56,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.56
+    version: 0.1.59
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -64,7 +68,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.28
+    version: 0.1.53
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -76,7 +80,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -92,7 +96,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.41
+    version: 0.1.45
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -100,7 +104,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
@@ -108,7 +112,7 @@ dependencies:
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../wts"
     condition: wts.enabled
   - name: pcdcanalysistools
@@ -182,7 +186,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.35
+version: 0.2.68
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

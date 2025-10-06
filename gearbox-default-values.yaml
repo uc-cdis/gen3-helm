@@ -55,11 +55,17 @@ global:
       -----END RSA PRIVATE KEY-----
 
 arborist:
+  #local Dev Only
+  postgres:
+    password: "arborist_thisisaweakpassword"
   image:
     repository: quay.io/cdis/arborist
     tag: 2025.07
 
 fence:
+  #local Dev Only
+  postgres:
+    password: "fence_thisisaweakpassword"
   FENCE_CONFIG:
     DEBUG: true
     MOCK_STORAGE: true
@@ -448,10 +454,13 @@ revproxy:
     tag: 2025.08
 
 gearbox:
+  #local Dev Only
+  postgres:
+    password: "gearbox_thisisaweakpassword"
   enabled: true
   image:
     repository: quay.io/pcdc/gearbox_be
-    tag: "pcdc_dev_2025-08-22T09_51_08-05_00"
+    tag: "pcdc_dev_2025-08-26T14_03_39-05_00"
     pullPolicy: Always
   podSecurityContext:
     # runAsNonRoot: true
@@ -471,6 +480,8 @@ gearbox:
 
 gearbox-middleware:
   enabled: true
+  gearboxMiddlewareG3auto:
+    testing: False
   image:
     repository: quay.io/pcdc/gearbox-middleware
     tag: "pcdc_dev_Fri__15_Aug_2025_17_57_50_GMT"
@@ -480,6 +491,16 @@ gearbox-middleware:
     # runAsUser: 1000
     # runAsGroup: 1000
 
+postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
+  #local Dev Only
+  auth:
+    postgresPassword: "thisisaterriblepassword"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
 ########################################################################################
 #                               DISABLED SERVICES                                      #
 ########################################################################################

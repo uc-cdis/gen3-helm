@@ -128,10 +128,11 @@ replicaCount: 1
 image:
   # -- (string) Docker repository.
   repository: quay.io/cdis/workspace-token-service
+  utilImage: quay.io/cdis/utilities:master
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_wts_internalfence"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []

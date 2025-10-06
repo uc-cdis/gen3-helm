@@ -368,3 +368,13 @@ amanuensisJobs:
   clearFilterSetCronjob: false
   dbMigrateJob: true
   validateFilterSetsJob: false
+
+# -- (list) Override the default Command to run in the container.
+command: ["/bin/bash"]
+
+# -- (list) Default Command and arguments to run in the container.
+args:
+  - "-c"
+  - |
+    python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml /var/www/amanuensis/amanuensis-config.yaml
+    if [[ -f /amanuensis/dockerrun.bash ]]; then bash /amanuensis/dockerrun.bash; elif [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; else echo 'Error: Neither /amanuensis/dockerrun.bash nor /dockerrun.sh exists.' >&2; exit 1; fi
