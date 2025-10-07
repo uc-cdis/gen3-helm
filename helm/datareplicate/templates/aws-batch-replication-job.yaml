@@ -42,12 +42,16 @@ spec:
           - args:
             - -c
             - |
+              echo """
+              [default]
+              region: us-east-1
+              """ > ~/.aws/config
               # #python batch_jobs/bucket_replicate/dcf_replication.py
               sleep infinity
               # #python batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket $SOURCE_BUCKET --destination_bucket $DESTINATION_BUCKET --job_queue ${JOB_QUEUE} --job_definition ${JOB_DEFINITION}
               # echo "All done - exit status $?"
               # python3 batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket test-gdc-bucket --destination_bucket manifestservice-emalinowskiv1-test --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
-              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition thread_count 3 max_retries 10
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition --thread_count 3 --max_retries 10
             command:
             - /bin/bash
             env:
@@ -74,15 +78,12 @@ spec:
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
             volumeMounts:
-            # - mountPath: /bucket-replicate/creds.json
-            #   name: cred-volume
-            #   subPath: creds.json
+            - name: cred-volume
+              mountPath: "/root/.aws/credentials"
+              subPath: aws-creds-secret
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
-            # - name: "creds-json-volume"
-            #   mountPath: "/secrets/dcf_dataservice_credentials.json"
-            #   subPath: "dcf_dataservice_credentials.json"
           dnsPolicy: ClusterFirst
           restartPolicy: Never
           schedulerName: default-scheduler
@@ -91,17 +92,10 @@ spec:
           serviceAccountName: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
           terminationGracePeriodSeconds: 30
           volumes:
-          # - name: cred-volume
-          #   secret:
-          #     defaultMode: 420
-          #     secretName: bucketreplicate-g3auto
+          - name: cred-volume
+            secret:
+              secretName: aws-creds-secret
           - name: setting-volume
             secret:
               secretName: "dcf-dataservice-settings-secrets"
-          # - name: project-map-volume
-          #   configMap:
-          #     name: project-map-manifest
-          # - name: creds-json-volume
-          #   secret:
-          #     secretName: "dcf-dataservice-json-secret"
 {{- end }}
