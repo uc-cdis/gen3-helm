@@ -52,7 +52,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         envFrom: 
           - secretRef:
-            name: access-backend-kv
+              name: access-backend-kv
         env:
           - name: GEN3_DEBUG
             value: "False"
