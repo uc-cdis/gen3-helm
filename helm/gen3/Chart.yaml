@@ -215,6 +215,7 @@ type: application
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -222,6 +223,9 @@ version: 0.2.62
 =======
 version: 0.2.63
 >>>>>>> f6af5a27 (Updating Ssjdispatcher SA Logic (#397))
+=======
+version: 0.2.69
+>>>>>>> 8b2498e7 (Fix envFrom for access-backend deployment)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
