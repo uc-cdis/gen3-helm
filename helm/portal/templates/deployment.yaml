@@ -39,6 +39,8 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "portal.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -64,6 +66,9 @@ spec:
           name: "privacy-policy"
           optional: true
       {{- end }}
+      - name: nginx-config
+        configMap:
+          name: portal-nginx
       - name: extra-images-config
         configMap:
           name: portal-extra-images
@@ -130,6 +135,8 @@ spec:
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
@@ -146,14 +153,15 @@ spec:
               {{- else }}
               path: /
               {{- end }}
-              port: 80
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           # command:
           #   - /bin/bash
@@ -266,6 +274,12 @@ spec:
             - name: "config-volume"
               mountPath: "/data-portal/data/config/pcdc.json"
               subPath: "gitops.json"
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/nginx.conf"
+              subPath: "nginx.conf"
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "main"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"
               subPath: "gitops-logo.png"

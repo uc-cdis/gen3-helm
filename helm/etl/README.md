@@ -8,6 +8,7 @@ A Helm chart for gen3 etl
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| env | string | `nil` |  |
 | esEndpoint | string | `"gen3-elasticsearch-master"` |  |
 | esGarbageCollect | map | `{"custom_image":null,"enabled":false,"schedule":"0 0 * * *","slack_webhook":"None"}` | Configuration options for es garbage cronjob. |
 | esGarbageCollect.custom_image | string | `nil` | To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image. |
@@ -100,10 +101,12 @@ A Helm chart for gen3 etl
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
+| podSecurityContext | map | `{}` | Security context for the pod |
 | resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
 | resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
+| securityContext | map | `{}` | Security context for the containers in the pod |
 | suspendCronjob | bool | `true` |  |

@@ -169,7 +169,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_es-7"
+  tag: "master"
 
 debug: false
 
@@ -254,15 +254,15 @@ aggMdsConfig: |
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /src/.env
-    subPath: metadata.env
+  # - name: config-volume-g3auto
+  #   readOnly: true
+  #   mountPath: /src/.env
+  #   subPath: metadata.env
   # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /mds/.env
-    subPath: metadata.env
+  # - name: config-volume-g3auto
+  #   readOnly: true
+  #   mountPath: /mds/.env
+  #   subPath: metadata.env
   - name: config-volume
     readOnly: true
     mountPath: /aggregate_config.json
@@ -284,15 +284,15 @@ resources:
 initContainerName: metadata-db-migrate
 # -- (list) Volumes to mount to the init container.
 initVolumeMounts:
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /src/.env
-    subPath: metadata.env
-  # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
-  - name: config-volume-g3auto
-    readOnly: true
-    mountPath: /mds/.env
-    subPath: metadata.env
+  # - name: config-volume-g3auto
+  #   readOnly: true
+  #   mountPath: /src/.env
+  #   subPath: metadata.env
+  # # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  # - name: config-volume-g3auto
+  #   readOnly: true
+  #   mountPath: /mds/.env
+  #   subPath: metadata.env
 # -- (map) Resource limits for the init container.
 initResources:
   # -- (map) The maximum amount of resources that the container is allowed to use
@@ -323,6 +323,7 @@ serviceAnnotations:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 80
   # -- (int) The port number that the service exposes.
   port:
     - protocol: TCP

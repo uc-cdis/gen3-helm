@@ -73,6 +73,8 @@ A Helm chart for gen3 revproxy
 | netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
+| nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
+| nginx.user | string | `"nginx"` |  |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
@@ -95,7 +97,7 @@ A Helm chart for gen3 revproxy
 | revproxyElb | map | `{"gen3SecretsFolder":"Gen3Secrets","sslCert":"","targetPortHTTP":80,"targetPortHTTPS":443}` | Configuration for depricated revproxy service ELB. |
 | securityContext | map | `{}` | Container-level security context. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"NodePort"}` | Kubernetes service information. |
+| service | map | `{"port":80,"targetPort":80,"type":"NodePort"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"NodePort"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |

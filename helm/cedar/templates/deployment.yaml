@@ -94,19 +94,19 @@ spec:
             - /src/start.sh
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /_status/
-              port: 8000
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           livenessProbe:
             httpGet:
               path: /_status/
-              port: 8000
+              port: http
             initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 30

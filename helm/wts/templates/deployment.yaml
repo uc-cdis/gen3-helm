@@ -79,18 +79,18 @@ spec:
             subPath: appcreds.json
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             failureThreshold: 10
             initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           env:
           - name: OIDC_CLIENT_ID
             valueFrom:

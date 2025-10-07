@@ -43,6 +43,8 @@ resources:
 
 esEndpoint: gen3-elasticsearch-master
 
+env:
+
 etlMapping:
   mappings:
     - name: dev_case
@@ -152,3 +154,17 @@ suspendCronjob: true
 legacySupport: false
 
 etlForced: "TRUE"
+
+# -- (map) Security context for the pod
+podSecurityContext: {}
+
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
