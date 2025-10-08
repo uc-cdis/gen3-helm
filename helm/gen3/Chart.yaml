@@ -216,6 +216,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -226,6 +227,9 @@ version: 0.2.63
 =======
 version: 0.2.69
 >>>>>>> 8b2498e7 (Fix envFrom for access-backend deployment)
+=======
+version: 0.2.70
+>>>>>>> 1797f707 (Set apollo mode=production for guppy)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
