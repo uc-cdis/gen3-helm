@@ -79,8 +79,6 @@ spec:
               value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
-            - name: NODE_ENV
-              value: production
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
