@@ -1,0 +1,71 @@
+# templates/cronjob.yaml (or the new CronJob.yaml location in a Helm chart)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-service-cronjob
+spec:
+  # Use the schedule from values.yaml
+  schedule: "{{ .Values.backups.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup-service
+              image: "{{ .Values.backups.image }}"
+              imagePullPolicy: Always
+
+              env:
+                # GRIP Host
+                - name: GRIP_HOST
+                  value: "{{ .Values.backups.grip.host }}"
+
+                # GRIP Graph
+                - name: GRIP_GRAPH
+                  value: "{{ .Values.backups.grip.graph }}"
+
+                # Postgres Host
+                - name: PGHOST
+                  value: "{{ .Values.backups.postgres.host }}"
+
+                # Postgres User
+                - name: PGUSER
+                  value: "{{ .Values.backups.postgres.user }}"
+
+                # Postgres Password
+                # Note: this secret relies on the existing Gen3 Postgres secret
+                #       and is not expected to be created separately.
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ .Values.backups.postgres.secret }}"
+                      key: postgres-password
+
+                # S3 Endpoint
+                - name: ENDPOINT
+                  value: "{{ .Values.backups.s3.endpoint }}"
+
+                # S3 Bucket
+                - name: BUCKET
+                  value: "{{ .Values.backups.s3.bucket }}"
+
+                # S3 Directory
+                - name: DIR
+                  value: "{{ .Values.backups.s3.dir }}"
+
+                # S3 Access Key
+                # TODO: This secret requires creation; it is not part of Gen3 by default.
+                - name: ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ .Values.backups.s3.secret }}"
+                      key: ACCESS_KEY
+
+                # S3 Secret Key
+                # TODO: This secret requires creation; it is not part of Gen3 by default.
+                - name: SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ .Values.backups.s3.secret }}"
+                      key: SECRET_KEY

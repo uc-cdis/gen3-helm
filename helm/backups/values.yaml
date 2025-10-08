@@ -1,0 +1,23 @@
+# values.yaml
+backups:
+  # CronJob configuration (Daily at 2am)
+  schedule: "0 2 * * *"
+  image: "quay.io/ohsu-comp-bio/backup-service:docs-contributing.md"
+
+  # GRIP
+  grip:
+    host: grip-service.default.svc.cluster.local
+    graph: CALYPR
+
+  # Postgres
+  postgres:
+    host: local-postgresql.default.svc.cluster.local
+    user: postgres
+    secret: local-postgresql
+
+  # S3
+  s3:
+    endpoint: https://aced-storage.ohsu.edu
+    bucket: calypr-backups
+    dir: "calypr-dev"
+    secret: s3-credentials
