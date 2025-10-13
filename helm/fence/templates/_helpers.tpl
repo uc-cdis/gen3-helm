@@ -16,6 +16,9 @@ a function to generate or get the jwt keys
 {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
 {{- if $existingSecret }}
 {{- index $existingSecret.data "jwt_private_key.pem" }}
+{{- else if (and .Values.jwtKeys (hasKey .Values.jwtKeys "jwt_private_key.pem")) }}
+{{- $val := index .Values.jwtKeys "jwt_private_key.pem" }}
+{{- $val | b64enc }}
 {{- else }}
 {{- genPrivateKey "rsa" | b64enc }}
 {{- end }}
