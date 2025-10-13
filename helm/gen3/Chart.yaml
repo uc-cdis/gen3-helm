@@ -217,6 +217,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -230,6 +231,9 @@ version: 0.2.69
 =======
 version: 0.2.70
 >>>>>>> 1797f707 (Set apollo mode=production for guppy)
+=======
+version: 0.2.71
+>>>>>>> e9600ec9 (Allow devs to configure fence-jwt-keys with values.yaml)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
