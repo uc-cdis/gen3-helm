@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | common | 0.1.24 |
+| file://../common | common | 0.1.24 |
 
 ## Values
 
