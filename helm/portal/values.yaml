@@ -80,8 +80,8 @@ global:
     enabled: false
     minReplicas: 1
     maxReplicas: 100
-    averageCPUValue: 500m
-    averageMemoryValue: 500Mi
+    averageCPUValue: 1000m
+    averageMemoryValue: 1000Mi
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
