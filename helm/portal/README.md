@@ -22,8 +22,8 @@ A Helm chart for gen3 data-portal
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["portal"]` | Value for the match expression key. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
-| autoscaling.averageCPUValue | string | `"1000m"` |  |
-| autoscaling.averageMemoryValue | string | `"1000Mi"` |  |
+| autoscaling.averageCPUValue | string | `"2000m"` |  |
+| autoscaling.averageMemoryValue | string | `"6000Mi"` |  |
 | autoscaling.maxReplicas | int | `5` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |

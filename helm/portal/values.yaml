@@ -87,8 +87,8 @@ global:
 autoscaling:
   minReplicas: 1
   maxReplicas: 5
-  averageCPUValue: 1000m
-  averageMemoryValue: 1000Mi
+  averageCPUValue: 2000m
+  averageMemoryValue: 6000Mi
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
