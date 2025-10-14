@@ -3,7 +3,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: presigned-url-fence-hpa
   labels:
-    {{- include "arborist.labels" . | nindent 4 }}
+    {{- include "fence.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
