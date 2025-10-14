@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.20 |
 | file://../audit | audit | 0.1.31 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.31 |
-| file://../cedar | cedar | 0.1.12 |
+| file://../cedar | cedar | 0.1.13 |
 | file://../cohort-middleware | cohort-middleware | 0.1.12 |
 | file://../common | common | 0.1.24 |
 | file://../dashboard | dashboard | 0.1.9 |
