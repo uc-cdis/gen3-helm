@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.53](https://img.shields.io/badge/Version-0.1.53-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.54](https://img.shields.io/badge/Version-0.1.54-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Hatchery
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.23 |
+| file://../common | common | 0.1.24 |
 
 ## Values
 
@@ -24,11 +24,11 @@ A Helm chart for gen3 Hatchery
 | externalSecrets.stataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "stata-g3auto" |
 | fence.image | string | `"quay.io/cdis/fence:master"` |  |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `100` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

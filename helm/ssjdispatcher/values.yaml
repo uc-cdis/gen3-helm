@@ -68,8 +68,8 @@ global:
     enabled: false
     minReplicas: 1
     maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
 
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
