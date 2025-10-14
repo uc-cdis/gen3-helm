@@ -24,8 +24,7 @@ A Helm chart for gen3 data-portal
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling.averageCPUValue | string | `"1000m"` |  |
 | autoscaling.averageMemoryValue | string | `"1000Mi"` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
+| autoscaling.maxReplicas | int | `5` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
