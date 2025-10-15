@@ -15,6 +15,7 @@ A Helm chart for gen3 cedar wrapper
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
+| autoscaling | object | `{}` |  |
 | cedarIngestion | map | `{"enabled":true}` | Whether or not to deploy the cedar ingestion job. |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
@@ -25,6 +26,11 @@ A Helm chart for gen3 cedar wrapper
 | externalSecrets.cedarG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cedar-g3auto". |
 | externalSecrets.createCedarClientSecret | bool | `true` | Will create the cedar secret or pull it from AWS Secrets Manager. Default is true. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
