@@ -351,3 +351,6 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
+
+schedule: "0 0 1 1 */5"
+suspendCronjob: false
