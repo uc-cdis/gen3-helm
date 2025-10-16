@@ -58,6 +58,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: WORKER_PODS_NAMESPACE
+              value: {{ .Values.funnel.Kubernetes.JobsNamespace | default .Release.Namespace }}
+            - name: CLUSTER_NAME
+              value: {{ .Values.global.environment }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- with .Values.volumeMounts }}
