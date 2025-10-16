@@ -185,7 +185,7 @@ gen3Namespace: default
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
-indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

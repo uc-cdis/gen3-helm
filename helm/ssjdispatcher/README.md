@@ -78,7 +78,7 @@ A Helm chart for gen3 ssjdispatcher
 | image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
+| indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10"` | Image to use for the "indexing" job. |
 | jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
 | jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
