@@ -71,6 +71,38 @@ spec:
             ]
           },
           {
+            "Sid": "GetIamRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:CreatePolicy",
+                "iam:PutRolePolicy",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:TagRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/gen3wf-*",
+                "arn:aws:iam::*:policy/gen3wf-*"
+            ]
+          },
+          {
+            "Sid": "GetCallerIdentity",
+            "Effect": "Allow",
+            "Action": [
+              "sts:GetCallerIdentity"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Sid": "GetClusterInfo",
+            "Effect": "Allow",
+            "Action": [
+              "eks:DescribeCluster"
+            ],
+            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.environment }}"
+          },
+          {
             "Sid": "ManageKMS",
             "Effect": "Allow",
             "Action": [
