@@ -38,8 +38,6 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
       enableServiceLinks: false
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
