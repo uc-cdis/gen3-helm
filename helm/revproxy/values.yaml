@@ -259,3 +259,4 @@ extraServices:
 nginx:
   user: nginx
   resolver: kube-dns.kube-system.svc.cluster.local
+  pidFile: /var/run/nginx.pid
