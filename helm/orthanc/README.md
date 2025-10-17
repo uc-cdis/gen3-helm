@@ -8,7 +8,11 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 ## Values
 
@@ -33,7 +37,10 @@ A Helm chart for gen3 Dicom Server
 | externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sOrthancS3G3auto | string | `false` | Will create the Helm "orthanc-s3-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.orthancS3G3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
+<<<<<<< HEAD
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+=======
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |

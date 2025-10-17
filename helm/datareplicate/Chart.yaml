@@ -18,6 +18,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -28,6 +29,9 @@ version: 0.0.31
 =======
 version: 0.0.32
 >>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
+=======
+version: 0.0.33
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -37,5 +41,9 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
     version: 0.1.33
+=======
+    version: 0.1.24
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: file://../common

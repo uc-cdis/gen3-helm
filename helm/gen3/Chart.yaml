@@ -5,7 +5,11 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
+<<<<<<< HEAD
     version: 0.1.18
+=======
+    version: 0.1.11
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
@@ -21,11 +25,19 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
+<<<<<<< HEAD
     version: 0.1.39
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
     version: 0.1.39
+=======
+    version: 0.1.32
+    repository: "file://../audit"
+    condition: audit.enabled
+  - name: aws-es-proxy
+    version: 0.1.31
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: aws-sigv4-proxy
@@ -44,6 +56,7 @@ dependencies:
     version: 0.1.34
     repository: file://../common
   - name: dashboard
+<<<<<<< HEAD
     version: 0.1.17
     repository: file://../dashboard
     condition: dashboard.enabled
@@ -61,6 +74,13 @@ dependencies:
 =======
     version: 0.0.32
 >>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
+=======
+    version: 0.1.9
+    repository: file://../dashboard
+    condition: dashboard.enabled
+  - name: datareplicate
+    version: 0.0.33
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -76,11 +96,19 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
+<<<<<<< HEAD
     version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
     version: 0.1.75
+=======
+    version: 0.1.14
+    repository: "file://../frontend-framework"
+    condition: frontend-framework.enabled
+  - name: fence
+    version: 0.1.61
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -96,11 +124,19 @@ dependencies:
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
+<<<<<<< HEAD
     version: 0.1.35
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
     version: 0.1.66
+=======
+    version: 0.1.27
+    repository: "file://../guppy"
+    condition: guppy.enabled
+  - name: hatchery
+    version: 0.1.54
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -112,7 +148,11 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
+<<<<<<< HEAD
     version: 0.1.41
+=======
+    version: 0.1.32
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -129,10 +169,14 @@ dependencies:
     condition: requestor.enabled
   - name: revproxy
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.56
 =======
     version: 0.1.45
 >>>>>>> 5be3d42a (update)
+=======
+    version: 0.1.46
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -140,7 +184,11 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
+<<<<<<< HEAD
     version: 0.1.43
+=======
+    version: 0.1.33
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
@@ -218,6 +266,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -234,6 +283,9 @@ version: 0.2.70
 =======
 version: 0.2.71
 >>>>>>> e9600ec9 (Allow devs to configure fence-jwt-keys with values.yaml)
+=======
+version: 0.2.72
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

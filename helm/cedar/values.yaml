@@ -182,6 +182,16 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 
+<<<<<<< HEAD
+=======
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 

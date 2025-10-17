@@ -1,6 +1,10 @@
 # access-backend
 
+<<<<<<< HEAD
 ![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
+=======
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 A Helm chart for Kubernetes
 
@@ -8,7 +12,11 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 ## Values
 

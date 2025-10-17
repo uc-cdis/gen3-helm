@@ -8,7 +8,11 @@ A Helm chart for gen3 Peregrine service
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

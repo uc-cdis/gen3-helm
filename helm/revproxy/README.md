@@ -1,10 +1,14 @@
 # revproxy
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.56](https://img.shields.io/badge/Version-0.1.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.45](https://img.shields.io/badge/Version-0.1.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 5be3d42a (update)
+=======
+![Version: 0.1.46](https://img.shields.io/badge/Version-0.1.46-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 A Helm chart for gen3 revproxy
 
@@ -12,7 +16,11 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 ## Values
 

@@ -8,7 +8,11 @@ A Helm chart for gen3 gen3-analysis Service
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
 ## Values
 
@@ -30,8 +34,11 @@ A Helm chart for gen3 gen3-analysis Service
 | env | string | `nil` |  |
 | externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+<<<<<<< HEAD
 | geneExpressionDataDir | string | `""` |  |
 | geneExpressionSQLitePath | string | `""` |  |
+=======
+>>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
