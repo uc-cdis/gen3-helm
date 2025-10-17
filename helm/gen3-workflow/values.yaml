@@ -388,18 +388,22 @@ funnel:
                 key: client_secret
                 optional: false
         volumeMounts:
-          - name: config-volume
+          - name: funnel-patched-config-volume
             mountPath: /tmp
+          - name: funnel-configmap
+            mountPath: /etc/config/funnel.conf
+            subPath: funnel-server.yaml
         command: ["/bin/bash"]
         args:
           - "-c"
           - |
             echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
-            # Step 1: Extract the current funnel-server.yaml from the ConfigMap
-            kubectl get configmap funnel-server-config -o jsonpath="{.data.funnel-server\.yaml}" > /tmp/funnel.conf
 
             echo "Patching values..."
-            yq eval '.Plugins.Params.OidcClientId = strenv(FUNNEL_OIDC_CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(FUNNEL_OIDC_CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf
+
+            # Assuming we don't have any other occurence of OidcClientId in the config file
+            sed -E "s|(OidcClientId:).*|\1 ${FUNNEL_OIDC_CLIENT_ID}|" /etc/config/funnel.conf \
+            | sed -E "s|(OidcClientSecret:).*|\1 ${FUNNEL_OIDC_CLIENT_SECRET}|" > /tmp/funnel-patched.conf
 
             if [[ ! -s /tmp/funnel-patched.conf ]]; then
               echo "ERROR: Patched config is empty. Aborting."
@@ -407,7 +411,9 @@ funnel:
             fi
 
   volumes:
-
+  - name: funnel-config-volume
+    configMap:
+      name: funnel-server-config
   - name: funnel-oidc-volume
     secret:
       secretName: "funnel-oidc-client"
@@ -424,11 +430,11 @@ funnel:
   - name: plugin-volume
     emptyDir: {}  # Shared volume
 
-  - name: config-volume
+  - name: funnel-patched-config-volume
     emptyDir: {} # Shared volume for config data
 
   volumeMounts:
-    - name: config-volume
+    - name: funnel-patched-config-volume
       mountPath: /etc/config/funnel-server.yaml
       subPath: funnel-patched.conf
 
