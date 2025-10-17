@@ -1,9 +1,10 @@
+{{- define "common.hpa" -}}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: presigned-url-fence-hpa
+  name: {{.Chart.Name}}-hpa
   labels:
-    {{- include "fence.labels" . | nindent 4 }}
+    {{- include "arborist.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -28,3 +29,4 @@ spec:
         type: AverageValue
         averageValue: {{ default .Values.global.autoscaling.averageMemoryValue .Values.autoscaling.averageMemoryValue }}
     {{- end }}
+{{- end }}

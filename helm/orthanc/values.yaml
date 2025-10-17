@@ -11,7 +11,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) Settings for network policies
   netPolicy:
     enabled: false
@@ -44,9 +44,9 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}

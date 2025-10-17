@@ -1,6 +1,6 @@
 # run with
 # kubectl create job replicate-validation --from=cronjob/replicate-validation
-{{- if .Values.replicateValidationJob.enabled -}}
+{{- if .Values.replicateValidationJob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:

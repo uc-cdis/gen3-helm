@@ -1,32 +1,3 @@
 {{- if default .Values.global.autoscaling.enabled .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: peregrine-deployment
-  labels:
-    {{- include "peregrine.labels" . | nindent 4 }}
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: peregrine-deployment
-  minReplicas: {{ default .Values.global.autoscaling.minReplicas .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ default .Values.global.autoscaling.maxReplicas .Values.autoscaling.maxReplicas }}
-  metrics:
-    {{- if default .Values.global.autoscaling.targetCPUUtilizationPercentage .Values.autoscaling.targetCPUUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ default .Values.global.autoscaling.targetCPUUtilizationPercentage .Values.autoscaling.targetCPUUtilizationPercentage}}
-    {{- end }}
-    {{- if default .Values.global.autoscaling.targetMemoryUtilizationPercentage .Values.autoscaling.targetMemoryUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        averageUtilization: {{ default .Values.global.autoscaling.targetMemoryUtilizationPercentage .Values.autoscaling.targetMemoryUtilizationPercentage }}
-        type: Utilization
-    {{- end }}
+{{ include "common.hpa" . }}
 {{- end }}
