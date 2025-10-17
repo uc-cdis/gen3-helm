@@ -7,9 +7,9 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
