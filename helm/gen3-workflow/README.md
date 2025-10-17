@@ -48,8 +48,8 @@ A Helm chart for Kubernetes
 | externalSecrets.gen3workflowG3auto | string | `""` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
-| funnel.image | map | `{"initContainers":[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"debug-logging","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n# Step 1: Extract the current funnel-server.yaml from the ConfigMap\nkubectl get configmap funnel-server-config -o jsonpath=\"{.data.funnel-server\\.yaml}\" > /tmp/funnel.conf\n\necho \"Patching values...\"\nyq eval '.Plugins.Params.OidcClientId = strenv(FUNNEL_OIDC_CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(FUNNEL_OIDC_CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf\n\nif [[ ! -s /tmp/funnel-patched.conf ]]; then\n  echo \"ERROR: Patched config is empty. Aborting.\"\n  exit 1\nfi\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"bitnami/kubectl","name":"secrets-updater","tag":"latest","volumeMounts":[{"mountPath":"/tmp","name":"config-volume"}]}],"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"2025-07-09"}` | Configuration for the Funnel container image. |
-| funnel.image.initContainers | map | `[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"debug-logging","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n# Step 1: Extract the current funnel-server.yaml from the ConfigMap\nkubectl get configmap funnel-server-config -o jsonpath=\"{.data.funnel-server\\.yaml}\" > /tmp/funnel.conf\n\necho \"Patching values...\"\nyq eval '.Plugins.Params.OidcClientId = strenv(FUNNEL_OIDC_CLIENT_ID) | .Plugins.Params.OidcClientSecret = strenv(FUNNEL_OIDC_CLIENT_SECRET)' /tmp/funnel.conf > /tmp/funnel-patched.conf\n\nif [[ ! -s /tmp/funnel-patched.conf ]]; then\n  echo \"ERROR: Patched config is empty. Aborting.\"\n  exit 1\nfi\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"bitnami/kubectl","name":"secrets-updater","tag":"latest","volumeMounts":[{"mountPath":"/tmp","name":"config-volume"}]}]` | Configuration for the Funnel init container. |
+| funnel.image | map | `{"initContainers":[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"debug-logging","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n\necho \"Patching values...\"\n\n# Assuming we don't have any other occurence of OidcClientId in the config file\nsed -E \"s|(OidcClientId:).*|\\1 ${FUNNEL_OIDC_CLIENT_ID}|\" /etc/config/funnel.conf \\\n| sed -E \"s|(OidcClientSecret:).*|\\1 ${FUNNEL_OIDC_CLIENT_SECRET}|\" > /tmp/funnel-patched.conf\n\nif [[ ! -s /tmp/funnel-patched.conf ]]; then\n  echo \"ERROR: Patched config is empty. Aborting.\"\n  exit 1\nfi\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"bitnami/kubectl","name":"secrets-updater","tag":"latest","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-configmap","subPath":"funnel-server.yaml"}]}],"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel","tag":"2025-07-09"}` | Configuration for the Funnel container image. |
+| funnel.image.initContainers | map | `[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"debug-logging","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n\necho \"Patching values...\"\n\n# Assuming we don't have any other occurence of OidcClientId in the config file\nsed -E \"s|(OidcClientId:).*|\\1 ${FUNNEL_OIDC_CLIENT_ID}|\" /etc/config/funnel.conf \\\n| sed -E \"s|(OidcClientSecret:).*|\\1 ${FUNNEL_OIDC_CLIENT_SECRET}|\" > /tmp/funnel-patched.conf\n\nif [[ ! -s /tmp/funnel-patched.conf ]]; then\n  echo \"ERROR: Patched config is empty. Aborting.\"\n  exit 1\nfi\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"bitnami/kubectl","name":"secrets-updater","tag":"latest","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-configmap","subPath":"funnel-server.yaml"}]}]` | Configuration for the Funnel init container. |
 | funnel.image.initContainers[0].command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
 | funnel.image.initContainers[0].image | string | `"quay.io/cdis/funnel-gen3-plugin"` | The Docker image repository for the Funnel init/plugin container. |
 | funnel.image.initContainers[0].pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
@@ -70,7 +70,7 @@ A Helm chart for Kubernetes
 | funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
 | funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
-| funnel.volumeMounts[0].name | string | `"config-volume"` |  |
+| funnel.volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
 | funnel.volumeMounts[0].subPath | string | `"funnel-patched.conf"` |  |
 | funnel.volumeMounts[1].mountPath | string | `"/etc/config/oidc"` |  |
 | funnel.volumeMounts[1].name | string | `"funnel-oidc-volume"` |  |
@@ -79,18 +79,20 @@ A Helm chart for Kubernetes
 | funnel.volumeMounts[2].name | string | `"worker-templates-volume"` |  |
 | funnel.volumeMounts[3].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
 | funnel.volumeMounts[3].name | string | `"plugin-volume"` |  |
-| funnel.volumes[0].name | string | `"funnel-oidc-volume"` |  |
-| funnel.volumes[0].secret.items[0].key | string | `"client_id"` |  |
-| funnel.volumes[0].secret.items[0].path | string | `"client_id"` |  |
-| funnel.volumes[0].secret.items[1].key | string | `"client_secret"` |  |
-| funnel.volumes[0].secret.items[1].path | string | `"client_secret"` |  |
-| funnel.volumes[0].secret.secretName | string | `"funnel-oidc-client"` |  |
-| funnel.volumes[1].configMap.name | string | `"funnel-worker-templates"` |  |
-| funnel.volumes[1].name | string | `"worker-templates-volume"` |  |
-| funnel.volumes[2].emptyDir | object | `{}` |  |
-| funnel.volumes[2].name | string | `"plugin-volume"` |  |
+| funnel.volumes[0].configMap.name | string | `"funnel-server-config"` |  |
+| funnel.volumes[0].name | string | `"funnel-config-volume"` |  |
+| funnel.volumes[1].name | string | `"funnel-oidc-volume"` |  |
+| funnel.volumes[1].secret.items[0].key | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[0].path | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[1].key | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.items[1].path | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.secretName | string | `"funnel-oidc-client"` |  |
+| funnel.volumes[2].configMap.name | string | `"funnel-worker-templates"` |  |
+| funnel.volumes[2].name | string | `"worker-templates-volume"` |  |
 | funnel.volumes[3].emptyDir | object | `{}` |  |
-| funnel.volumes[3].name | string | `"config-volume"` |  |
+| funnel.volumes[3].name | string | `"plugin-volume"` |  |
+| funnel.volumes[4].emptyDir | object | `{}` |  |
+| funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
