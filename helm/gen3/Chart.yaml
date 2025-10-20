@@ -21,7 +21,7 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -44,7 +44,7 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.0.31
+    version: 0.0.32
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: etl
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.43
+    version: 0.1.45
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -104,7 +104,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
@@ -186,7 +186,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.62
+version: 0.2.68
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

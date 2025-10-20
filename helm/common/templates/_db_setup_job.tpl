@@ -56,7 +56,7 @@ spec:
             {{- if $.Values.global.dev }}
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-postgresql
+                name: {{ .Values.postgres.host | default (printf "%s-postgresql" .Release.Name) }}
                 key: postgres-password
                 optional: false
             {{- else if $.Values.global.postgres.externalSecret }}
@@ -66,7 +66,7 @@ spec:
                 key: password
                 optional: false
             {{- else }}
-            value:  {{ .Values.global.postgres.master.password | quote}}
+            value: {{ .Values.global.postgres.master.password | quote }}
             {{- end }}
           - name: PGUSER
           {{- if $.Values.global.postgres.externalSecret }}
@@ -90,7 +90,7 @@ spec:
           {{- end }}
           - name: PGHOST
             {{- if $.Values.global.dev }}
-            value: "{{ .Release.Name }}-postgresql"
+            value: {{ .Values.postgres.host | default (printf "%s-postgresql" .Release.Name) }}
             {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
@@ -196,7 +196,7 @@ data:
     port: {{ $.Values.postgres.port | b64enc | quote }}
     password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
     {{- if $.Values.global.dev }}
-    host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+    host: {{ ($.Values.postgres.host | default (printf "%s-%s" $.Release.Name "postgresql") ) | b64enc | quote }}
     {{- else }}
     host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
     {{- end }}

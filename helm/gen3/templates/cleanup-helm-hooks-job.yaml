@@ -73,6 +73,7 @@ spec:
       containers:
       - name: cleanup
         image: bitnamisecure/kubectl:latest
+        imagePullPolicy: IfNotPresent    
         command:
         - /bin/bash
         - -c
