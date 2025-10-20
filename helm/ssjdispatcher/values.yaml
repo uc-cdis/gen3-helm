@@ -56,7 +56,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed.
@@ -67,9 +67,9 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
 
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
@@ -185,7 +185,7 @@ gen3Namespace: default
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
-indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

@@ -79,6 +79,8 @@ spec:
               value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
+            - name: NODE_ENV
+              value: production
             - name: PUBLIC_KEY_PATH
               value: /guppy/jwt_public_key.pem
           {{- with .Values.volumeMounts }}
