@@ -7,6 +7,8 @@ global:
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
     enabled: false
+    # -- (string) AWS region for this deployment
+    region: us-east-1
     # -- (string) Credentials for AWS stuff.
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.

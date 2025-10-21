@@ -93,12 +93,13 @@ A Helm chart for Kubernetes
 | funnel.volumes[3].name | string | `"plugin-volume"` |  |
 | funnel.volumes[4].emptyDir | object | `{}` |  |
 | funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1"}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.crossplane.accountId | string | `""` | AWS Account ID where resources will be created. |
 | global.crossplane.enabled | bool | `false` | Whether Crossplane is being used to manage AWS resources. |
 | global.crossplane.oidcProviderUrl | string | `""` | OIDC provider URL for the EKS cluster. |
