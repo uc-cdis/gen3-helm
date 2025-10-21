@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.61
+    version: 0.1.62
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library

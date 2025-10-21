@@ -31,7 +31,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../datareplicate | datareplicate | 0.0.34 |
 | file://../dicom-server | dicom-server | 0.1.20 |
 | file://../etl | etl | 0.1.16 |
-| file://../fence | fence | 0.1.61 |
+| file://../fence | fence | 0.1.62 |
 | file://../frontend-framework | frontend-framework | 0.1.14 |
 | file://../gen3-analysis | gen3-analysis | 0.1.2 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
