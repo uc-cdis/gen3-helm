@@ -60,8 +60,10 @@ spec:
           env:
             - name: WORKER_PODS_NAMESPACE
               value: {{ .Values.funnel.Kubernetes.JobsNamespace | default .Release.Namespace }}
-            - name: CLUSTER_NAME
+            - name: EKS_CLUSTER_NAME
               value: {{ .Values.global.environment }}
+            - name: EKS_CLUSTER_REGION
+              value: {{ .Values.global.aws.region }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- with .Values.volumeMounts }}
