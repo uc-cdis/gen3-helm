@@ -16,10 +16,14 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.75
 =======
 version: 0.1.61
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+version: 0.1.62
+>>>>>>> 476c43ee (Updating presigned HPA URL to only be added if autoscaling is enabled. (#417))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
