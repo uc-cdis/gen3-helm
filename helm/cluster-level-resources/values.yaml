@@ -294,6 +294,11 @@ alloy-configmap-data: |
       action = "replace"
       target_label = "__metrics_path__"
     }
+    rule {
+      source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+      action = "drop"
+      regex: "(canary|read|write)"
+    }
 
     // Choose the pod port
     // The discovery generates a target for each declared container port of the pod.
