@@ -16,9 +16,13 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
+=======
+version: 0.1.55
+>>>>>>> d87df217 (Update crossplane for hatchery)
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
