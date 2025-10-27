@@ -110,6 +110,8 @@ spec:
               "kms:GenerateDataKey",
               "kms:CreateAlias",
               "kms:DescribeKey",
+              "kms:Encrypt",
+              "kms:Decrypt",
               "kms:TagResource"
             ],
             "Resource": "*"
@@ -128,5 +130,87 @@ spec:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gen3workflow.serviceAccountName" . }}"
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+
+--- 
+{{- $funnelOidcJobSaName := "funnel-oidc-job-sa" }}
+
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+# use the funnelOidcJobSaName variable to create the name of the role
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ $funnelOidcJobSaName }}-role"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ $funnelOidcJobSaName }}-role"
+    description: "Role for funnel-oidc job service account for {{ .Values.global.environment }}-{{ .Release.Namespace }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ $funnelOidcJobSaName }}"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-funnel-oidc-job-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-funnel-oidc-job-policy"
+    document: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "DeleteSecretsManagerSecrets",
+            "Effect": "Allow",
+            "Action": [
+              "secretsmanager:DeleteSecret",
+              "secretsmanager:DescribeSecret",
+              "secretsmanager:ListSecrets"
+            ],
+            "Resource": [
+              "arn:aws:secretsmanager:*:{{ .Values.global.crossplane.accountId }}:secret:{{ include "funnel-oidc-client" . }}*"
+            ]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ $funnelOidcJobSaName }}-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ $funnelOidcJobSaName }}-role"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-funnel-oidc-job-policy"
 
 {{- end}}

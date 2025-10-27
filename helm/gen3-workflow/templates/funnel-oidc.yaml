@@ -10,7 +10,7 @@ spec:
         app: gen3job
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: funnel-secrets
+      serviceAccountName: funnel-oidc-job-sa
       volumes:
         - name: config-volume
           secret:
@@ -25,11 +25,8 @@ spec:
           args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
       containers:
         - name: fence-client
-          # TODO: Make this configurable
           image: "quay.io/cdis/fence:master"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # TODO: ADD RESOURCES
-          # resources:
           command: ["/bin/bash"]
           args:
             - "-c"
@@ -57,13 +54,13 @@ spec:
                 fi
                 
                 if [[ "$name" == "$funnel_client_name" ]]; then
-                  if [[ -n "$FUNNEL_OIDC_CLIENT_ID" && "$client_id" == "$FUNNEL_OIDC_CLIENT_ID" ]]; then
+                  if [[ -n "${FUNNEL_OIDC_CLIENT_ID:-}" && "$client_id" == "${FUNNEL_OIDC_CLIENT_ID:-}" ]]; then
                     echo "Client for funnel already exists, skipping creation."
                     echo -n "$FUNNEL_OIDC_CLIENT_ID" > /shared/funnel_oidc_client_id
                     echo -n "$FUNNEL_OIDC_CLIENT_SECRET" > /shared/funnel_oidc_client_secret
                   else
                     echo "No Client_ID exists in secrets or Name matches but Client ID differs. Deleting client: $funnel_client_name"
-                      fence-create client-delete --client="$funnel_client_name"
+                    fence-create client-delete --client="$funnel_client_name"
                   fi
                   break
                 fi
@@ -142,9 +139,8 @@ spec:
               readOnly: true
               mountPath: "/var/www/fence/fence-config.yaml"
               subPath: fence-config.yaml
-        - name: kubectl
-          #TODO: Make this configurable?  
-          image: bitnami/kubectl:latest
+        - name: funnel-oidc-secret-updater
+          image: quay.io/cdis/awshelper:master
           env:
             - name: FUNNEL_OIDC_CLIENT_ID
               valueFrom:
@@ -152,6 +148,8 @@ spec:
                   name: funnel-oidc-client
                   key: client_id
                   optional: true
+            - name: FUNNEL_REMOTE_SECRET_NAME
+              value: {{ include "funnel-oidc-client" . }}
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"
@@ -175,7 +173,26 @@ spec:
               echo "Current funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
                 
+                # Temporarily patch the external secret to point to a wrong secret store to prevent it from overriding our changes
+                store_name=$(kubectl get externalsecret funnel-oidc-client -o jsonpath='{.spec.secretStoreRef.name}')
+                kubectl patch externalsecret funnel-oidc-client --type merge -p '{"spec": {"secretStoreRef": {"name": "intentionally-set-to-incorrect-secret-store", "kind": "SecretStore"}}}'
+
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
                 kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
+
+                echo "local secret client_id is $(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)"
+
+                #Delete the secret from AWS Secrets manager so that PushSecret can send in the new secret from local K8s to AWS Secrets mnager
+                aws secretsmanager delete-secret --secret-id $FUNNEL_REMOTE_SECRET_NAME --region us-east-1 --force-delete-without-recovery
+
+                # Revert the external secret to point to the correct secret store
+                kubectl patch externalsecret funnel-oidc-client -n qa-midrc-test --type merge -p "{\"spec\":{\"secretStoreRef\":{\"name\":\"$store_name\",\"kind\":\"SecretStore\"}}}"
+
+                if [ "$CLIENT_ID" == "$(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)" ]; then
+                  echo "Successfully patched the secret with new OIDC client credentials"
+                else
+                  echo "Failed to patch the secret with new OIDC client credentials"
+                  exit 1
+                fi
               fi
 {{- end }}
