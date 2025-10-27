@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.25 |
+| file://../common | common | 0.1.24 |
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.56 |
 
 ## Values
