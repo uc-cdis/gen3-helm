@@ -1,0 +1,85 @@
+# run with 
+# kubectl create job remove-objects-from-clouds --from=cronjob/remove-objects-from-clouds
+{{- if .Values.removeObjectsFromCloudsJob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: remove-objects-from-clouds
+spec:
+  # not yet supported - backOffLimit: 3
+  suspend: {{ .Values.removeObjectsFromCloudsJob.suspendCronjob }}
+  schedule: {{ .Values.removeObjectsFromCloudsJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: google-cred-volume
+              secret:
+                secretName: "google-creds-secret"
+            - name: aws-cred-volume
+              secret:
+                secretName: "aws-creds-secret"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
+          containers:
+          - name: datareplicate
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: Always
+            env:
+              - name: RELEASE
+                value: "{{ .Values.removeObjectsFromCloudsJob.RELEASE }}"
+              - name: LOG_BUCKET
+                value: "{{ .Values.removeObjectsFromCloudsJob.LOG_BUCKET }}"
+              - name: MANIFEST_S3
+                value: "{{ .Values.removeObjectsFromCloudsJob.MANIFEST_FILE }}"
+              - name: IGNORED_FILE_S3
+                value: "{{ .Values.removeObjectsFromCloudsJob.IGNORED_FILE }}"
+              - name: DRY_RUN
+                value: "{{ .Values.removeObjectsFromCloudsJob.DRY_RUN }}"
+            volumeMounts:
+              - name: aws-cred-volume
+                mountPath: "/root/.aws/credentials"
+                subPath: credentials
+              - name: google-cred-volume
+                mountPath: "/secrets/google_service_account_creds"
+                subPath: google-creds-secret
+              - name: "setting-volume"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
+                subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash" ]
+            args: 
+              - "-c"
+              - |
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
+                echo """
+                [default]
+                region: us-east-1
+                """ > ~/.aws/config
+                gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
+                export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
+                aws s3 cp $IGNORED_FILE_S3 /dcf-dataservice/ignored_files_manifest.csv
+                python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET
+          restartPolicy: Never
+{{- end }}

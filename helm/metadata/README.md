@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -44,11 +44,11 @@ A Helm chart for gen3 Metadata Service
 | externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -65,7 +65,7 @@ A Helm chart for gen3 Metadata Service
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -108,6 +108,7 @@ A Helm chart for gen3 Metadata Service
 | resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| schedule | string | `"0 0 1 1 */5"` |  |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
@@ -119,5 +120,6 @@ A Helm chart for gen3 Metadata Service
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| suspendCronjob | bool | `false` |  |
 | useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |

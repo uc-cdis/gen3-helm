@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.55](https://img.shields.io/badge/Version-0.1.55-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -22,12 +22,13 @@ A Helm chart for gen3 Hatchery
 | externalSecrets | map | `{"createK8sStataSecret":false,"stataG3auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sStataSecret | string | `false` | Will create the Helm "stata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.stataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "stata-g3auto" |
+| fence.image | string | `"quay.io/cdis/fence:master"` |  |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -44,13 +45,15 @@ A Helm chart for gen3 Hatchery
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
-| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"deploy":false,"fenceConfig":null,"fenceJwtKeys":null,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed. |
+| global.externalSecrets.fenceConfig | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-config". Required for sidecar in workspace launch test. |
+| global.externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys". Required for sidecar in workspace launch test. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -112,5 +115,11 @@ A Helm chart for gen3 Hatchery
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"hatchery-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
-| volumeMounts | list | `[{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/var/hatchery/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"},{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
+| workspaceLaunchTest | map | `{"enabled":false,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
+| workspaceLaunchTest.enabled | bool | `false` | Whether the workspace launch test cron job is enabled. |
+| workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |
+| workspaceLaunchTest.operatorName | string | `"username"` | The name of the workspace launch test operator. |
+| workspaceLaunchTest.schedule | string | `"*/20 * * * *"` | The schedule for the workspace launch test cron job. |
+| workspaceLaunchTest.workspaceImages | string | `"(Generic) Jupyter Lab Notebook with R Kernel"` | Images to test in the workspace launch test cron job. Separate multiple images with '+'. Example: "(Generic) Jupyter Lab Notebook with R Kernel+(Tutorials) Example Analysis Jupyter Lab Notebooks" |

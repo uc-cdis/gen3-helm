@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.46](https://img.shields.io/badge/Version-0.1.46-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -20,11 +20,11 @@ A Helm chart for gen3 revproxy
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | extraServices | map | `nil` | Configuration to add any extra service endpoints outside of gen3 to be served by revproxy |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"scheme":"internet-facing","wafv2":{"enabled":false,"wafAclArn":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -40,7 +40,7 @@ A Helm chart for gen3 revproxy
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |

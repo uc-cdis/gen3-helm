@@ -1,6 +1,6 @@
 # access-backend
 
-![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.1](https://img.shields.io/badge/AppVersion-1.6.1-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.20 |
+| file://../common | common | 0.1.24 |
 
 ## Values
 
@@ -47,11 +47,11 @@ A Helm chart for Kubernetes
 | gh_key | string | `""` |  |
 | gh_org | string | `""` |  |
 | gh_repo | string | `""` |  |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -66,7 +66,7 @@ A Helm chart for Kubernetes
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -135,12 +135,8 @@ A Helm chart for Kubernetes
 | strategy.type | string | `"RollingUpdate"` |  |
 | superAdmins | string | `""` |  |
 | tolerations | list | `[]` |  |
-| volumeMounts[0].mountPath | string | `"/src/.env"` |  |
+| volumeMounts[0].mountPath | string | `"/src/user.yaml"` |  |
 | volumeMounts[0].name | string | `"config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"access-backend.env"` |  |
-| volumeMounts[1].mountPath | string | `"/src/user.yaml"` |  |
-| volumeMounts[1].name | string | `"config-volume"` |  |
-| volumeMounts[1].readOnly | bool | `true` |  |
-| volumeMounts[1].subPath | string | `"user.yaml"` |  |
+| volumeMounts[0].subPath | string | `"user.yaml"` |  |
 | volumes | list | `[]` |  |

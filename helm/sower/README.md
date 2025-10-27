@@ -35,11 +35,11 @@ A Helm chart for gen3 sower
 | externalSecrets.sowerjobsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "sower-jobs-g3auto" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |

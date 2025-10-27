@@ -1,0 +1,90 @@
+{{- if .Values.awsBucketReplicateJob.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aws-bucket-replicate
+spec:
+  schedule: {{ .Values.awsBucketReplicateJob.schedule | quote }}
+  suspended: {{ .Values.suspendCronjob }}
+  concurrencyPolicy: Forbid
+  # not yet supported - backOffLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          serviceAccountName: aws-bucket-replicate-job
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: cred-volume
+              secret:
+                secretName: "aws-creds-secret"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
+          containers:
+          - name: datareplicate
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            resources:
+              {{- toYaml .Values.resources | nindent 12 }}
+            imagePullPolicy: Always
+            env:
+              - name: THREAD_NUM
+                value: "{{ .Values.awsBucketReplicateJob.THREAD_NUM }}"
+              - name: CHUNK_SIZE
+                value: "{{ .Values.awsBucketReplicateJob.CHUNK_SIZE }}"
+              - name: GDC_BUCKET_NAME
+                value: "{{ .Values.awsBucketReplicateJob.GDC_BUCKET_NAME }}"
+              - name: LOG_BUCKET
+                value: "{{ .Values.awsBucketReplicateJob.LOG_BUCKET }}"
+              - name: RELEASE
+                value: "{{ .Values.awsBucketReplicateJob.RELEASE }}"
+              - name: QUICK_TEST
+                value: "{{ .Values.awsBucketReplicateJob.QUICK_TEST }}"
+              - name: MANIFEST_FILE
+                value: "{{ .Values.awsBucketReplicateJob.MANIFEST_FILE }}"
+              - name: AUTH_NAMESPACE
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-global
+                    key: auth_namespace
+                    optional: true
+            volumeMounts:
+              - name: cred-volume
+                mountPath: "/root/.aws/credentials"
+                subPath: aws-creds-secret
+              - name: "setting-volume"
+                mountPath: "/secrets/dcf_dataservice_settings.py"
+                subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash" ]
+            args:
+              - "-c"
+              - |
+                cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
+                echo """
+                [default]
+                region: us-east-1
+                """ > ~/.aws/config
+                aws configure set default.s3.max_concurrent_requests 1000
+                aws configure set default.s3.max_queue_size 10000
+                python replicate.py aws_replicate --release $RELEASE --quick_test $QUICK_TEST --bucket $GDC_BUCKET_NAME --thread_num $THREAD_NUM --manifest_file $MANIFEST_FILE --global_config "{\"chunk_size\": $CHUNK_SIZE, \"log_bucket\": \"$LOG_BUCKET\"}"
+          restartPolicy: Never
+{{- end }}

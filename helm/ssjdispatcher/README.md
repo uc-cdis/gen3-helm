@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -34,11 +34,11 @@ A Helm chart for gen3 ssjdispatcher
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -59,7 +59,7 @@ A Helm chart for gen3 ssjdispatcher
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -78,7 +78,7 @@ A Helm chart for gen3 ssjdispatcher
 | image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08"` | Image to use for the "indexing" job. |
+| indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10"` | Image to use for the "indexing" job. |
 | jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
 | jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |

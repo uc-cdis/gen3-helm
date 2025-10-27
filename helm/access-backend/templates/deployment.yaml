@@ -50,6 +50,9 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        envFrom: 
+          - secretRef:
+              name: access-backend-kv
         env:
           - name: GEN3_DEBUG
             value: "False"
