@@ -1,10 +1,14 @@
 # ssjdispatcher
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -12,6 +16,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -25,6 +30,9 @@ A Helm chart for gen3 ssjdispatcher
 =======
 | file://../common | common | 0.1.24 |
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+| file://../common | common | 0.1.25 |
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 ## Values
 

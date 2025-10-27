@@ -16,10 +16,14 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.27
 =======
 version: 0.1.14
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+version: 0.1.15
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -29,6 +33,7 @@ appVersion: "develop"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -42,4 +47,7 @@ dependencies:
 =======
     version: 0.1.24
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+    version: 0.1.25
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: file://../common

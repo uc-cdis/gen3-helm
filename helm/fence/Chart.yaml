@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.75
 =======
 version: 0.1.61
@@ -24,6 +25,9 @@ version: 0.1.61
 =======
 version: 0.1.62
 >>>>>>> 476c43ee (Updating presigned HPA URL to only be added if autoscaling is enabled. (#417))
+=======
+version: 0.1.63
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -32,6 +36,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -45,6 +50,9 @@ dependencies:
 =======
     version: 0.1.24
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+    version: 0.1.25
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: file://../common
   - name: postgresql
     version: 11.9.13

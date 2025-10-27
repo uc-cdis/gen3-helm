@@ -19,6 +19,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
@@ -29,6 +30,9 @@ A Helm chart for AWS ES Proxy Service for gen3
 =======
 | file://../common | common | 0.1.24 |
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+| file://../common | common | 0.1.25 |
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 ## Values
 

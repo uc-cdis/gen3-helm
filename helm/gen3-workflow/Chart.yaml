@@ -16,10 +16,14 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
 >>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
+=======
+version: 0.1.1
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -28,6 +32,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -41,6 +46,9 @@ dependencies:
 =======
     version: 0.1.24
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+    version: 0.1.25
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: file://../common
 <<<<<<< HEAD
 =======

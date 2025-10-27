@@ -6,6 +6,7 @@ description: Helm chart to deploy Gen3 Data Commons
 dependencies:
   - name: access-backend
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.18
 =======
     version: 0.1.11
@@ -33,6 +34,25 @@ dependencies:
     version: 0.1.39
 =======
     version: 0.1.32
+=======
+    version: 0.1.12
+    repository: "file://../access-backend"
+    condition: access-backend.enabled
+  - name: ambassador
+    version: 0.1.27
+    repository: "file://../ambassador"
+    condition: ambassador.enabled
+  - name: arborist
+    version: 0.1.26
+    repository: "file://../arborist"
+    condition: arborist.enabled
+  - name: argo-wrapper
+    version: 0.1.21
+    repository: "file://../argo-wrapper"
+    condition: argo-wrapper.enabled
+  - name: audit
+    version: 0.1.33
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -49,11 +69,19 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
+<<<<<<< HEAD
     version: 0.1.22
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
     version: 0.1.20
+=======
+    version: 0.1.14
+    repository: "file://../cedar"
+    condition: cedar.enabled
+  - name: cohort-middleware
+    version: 0.1.13
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
@@ -72,6 +100,7 @@ dependencies:
 >>>>>>> bc07ccb5 (Update common chart to 0.1.25)
     repository: file://../common
   - name: dashboard
+<<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.17
     repository: file://../dashboard
@@ -92,6 +121,9 @@ dependencies:
 >>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
 =======
     version: 0.1.9
+=======
+    version: 0.1.10
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
@@ -129,6 +161,7 @@ dependencies:
     condition: etl.enabled
   - name: frontend-framework
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
@@ -145,6 +178,13 @@ dependencies:
 =======
     version: 0.1.62
 >>>>>>> 476c43ee (Updating presigned HPA URL to only be added if autoscaling is enabled. (#417))
+=======
+    version: 0.1.15
+    repository: "file://../frontend-framework"
+    condition: frontend-framework.enabled
+  - name: fence
+    version: 0.1.63
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -152,6 +192,7 @@ dependencies:
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
+<<<<<<< HEAD
     version: 0.1.13
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
@@ -225,6 +266,49 @@ dependencies:
 =======
     version: 0.1.46
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+    version: 0.1.7
+    repository: "file://../gen3-user-data-library"
+    condition: gen3-user-data-library.enabled
+  - name: gen3-workflow
+    version: 0.1.1
+    repository: "file://../gen3-workflow"
+    condition: gen3-workflow.enabled
+  - name: guppy
+    version: 0.1.28
+    repository: "file://../guppy"
+    condition: guppy.enabled
+  - name: hatchery
+    version: 0.1.56
+    repository: "file://../hatchery"
+    condition: hatchery.enabled
+  - name: indexd
+    version: 0.1.35
+    repository: "file://../indexd"
+    condition: indexd.enabled
+  - name: manifestservice
+    version: 0.1.34
+    repository: "file://../manifestservice"
+    condition: manifestservice.enabled
+  - name: metadata
+    version: 0.1.33
+    repository: "file://../metadata"
+    condition: metadata.enabled
+  - name: peregrine
+    version: 0.1.33
+    repository: "file://../peregrine"
+    condition: peregrine.enabled
+  - name: portal
+    version: 0.1.47
+    repository: "file://../portal"
+    condition: portal.enabled
+  - name: requestor
+    version: 0.1.26
+    repository: "file://../requestor"
+    condition: requestor.enabled
+  - name: revproxy
+    version: 0.1.47
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -236,6 +320,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
+<<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.43
 =======
@@ -249,6 +334,17 @@ dependencies:
     repository: "file://../sower"
   - name: wts
     version: 0.1.38
+=======
+    version: 0.1.34
+    repository: "file://../ssjdispatcher"
+    condition: ssjdispatcher.enabled
+  - name: sower
+    version: 0.1.36
+    condition: sower.enabled
+    repository: "file://../sower"
+  - name: wts
+    version: 0.1.32
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -256,6 +352,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
+<<<<<<< HEAD
     version: 0.1.28
     repository: file://../dicom-server
     condition: dicom-server.enabled
@@ -269,6 +366,21 @@ dependencies:
     condition: orthanc.enabled
   - name: gen3-analysis
     version: 0.1.10
+=======
+    version: 0.1.21
+    repository: file://../dicom-server
+    condition: dicom-server.enabled
+  - name: ohif-viewer
+    version: 0.1.5
+    repository: file://../ohif-viewer
+    condition: ohif-viewer.enabled
+  - name: orthanc
+    version: 0.1.6
+    repository: file://../orthanc
+    condition: orthanc.enabled
+  - name: gen3-analysis
+    version: 0.1.3
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas

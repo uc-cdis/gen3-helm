@@ -1,6 +1,10 @@
 # manifestservice
 
+<<<<<<< HEAD
 ![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+=======
+![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 A Helm chart for Kubernetes
 
@@ -8,6 +12,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -21,6 +26,9 @@ A Helm chart for Kubernetes
 =======
 | file://../common | common | 0.1.24 |
 >>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
+=======
+| file://../common | common | 0.1.25 |
+>>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 
 ## Values
 
