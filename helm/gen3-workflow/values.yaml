@@ -357,7 +357,7 @@ funnel:
 
     # -- (map) Configuration for the Funnel init container.
     initContainers:
-      - name: plugin 
+      - name: plugin
         # -- (string) The Docker image repository for the Funnel init/plugin container.
         image: quay.io/cdis/funnel-gen3-plugin
         # -- (string) The Docker image tag for the Funnel init/plugin container.
@@ -432,7 +432,7 @@ funnel:
     emptyDir: {}  # Shared volume
 
   - name: funnel-patched-config-volume
-    emptyDir: {} # Shared volume for config data
+    emptyDir: {}  # Shared volume for config data
 
   volumeMounts:
     - name: funnel-patched-config-volume
@@ -550,4 +550,4 @@ funnel:
         # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
         S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
         # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.workflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
-        OidcTokenUrl: https://{{ .Values.workflowConfig.hostname }}/user 
+        OidcTokenUrl: https://{{ .Values.workflowConfig.hostname }}/user
