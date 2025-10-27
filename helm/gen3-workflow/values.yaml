@@ -43,6 +43,8 @@ global:
       # -- (string) Port for Postgres.
       port: "5432"
   environment: default
+  # -- (string) Kubernetes cluster name.
+  clusterName: default
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed.
@@ -51,7 +53,7 @@ global:
     separateSecretStore: false
     clusterSecretStoreRef: ""
     # -- (bool) Will push secrets to External Secrets Store.
-    pushGen3WorkflowSecretsToExternalSecret: false
+    pushGen3WorkflowSecretsToExternalSecret: true
 
   # -- (map) Network policy settings.
   netPolicy:
@@ -63,11 +65,9 @@ metricsEnabled: false
 # -- (map) External Secrets settings.
 externalSecrets:
   # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sGen3WorkflowSecret: false
+  createK8sGen3WorkflowSecret: true
   # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
   gen3workflowG3auto: ""
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
-  dbcreds: ""
   # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
   createFunnelOidcClientSecret: true
   # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
@@ -339,8 +339,7 @@ workflowConfig:
   tesServerUrl: http://funnel:8000
   # -- (list) Whitelist of container image patterns allowed for workflow tasks.
   #    Supports wildcards `*` and `{username}` placeholders.
-  # TODO: Change this to a more restrictive value
-  taskImageWhitelist: ["*"]
+  taskImageWhitelist: []
   # -- (bool) Enables Prometheus metrics for the workflow service.
   enablePrometheusMetrics: false
   # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
@@ -374,8 +373,8 @@ funnel:
           - name: plugin-volume
             mountPath: /opt/funnel/plugin-binaries
       - name: secrets-updater
-        image: bitnami/kubectl
-        tag: latest
+        image: quay.io/cdis/awshelper
+        tag: master
         env:
           - name: FUNNEL_OIDC_CLIENT_ID
             valueFrom:
