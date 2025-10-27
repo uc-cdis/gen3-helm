@@ -9,10 +9,14 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+| file://../common | common | 0.1.25 |
+>>>>>>> 950b51ce (Update version of common and gen3 charts)
 
 ## Values
 

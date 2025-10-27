@@ -15,7 +15,11 @@ type: library
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
+<<<<<<< HEAD
 version: 0.1.34
+=======
+version: 0.1.25
+>>>>>>> 950b51ce (Update version of common and gen3 charts)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
