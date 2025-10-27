@@ -14,6 +14,7 @@ A Helm chart for gen3 Guppy Service
 |------------|------|---------|
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
@@ -21,6 +22,9 @@ A Helm chart for gen3 Guppy Service
 =======
 | file://../common | common | 0.1.25 |
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
 
 ## Values
 

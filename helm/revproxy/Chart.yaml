@@ -35,6 +35,7 @@ dependencies:
   - name: common
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.34
 =======
     version: 0.1.24
@@ -42,4 +43,7 @@ dependencies:
 =======
     version: 0.1.25
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
+=======
+    version: 0.1.24
+>>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
     repository: file://../common

@@ -30,6 +30,7 @@ A Helm chart for gen3 datareplicate
 |------------|------|---------|
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.33 |
 =======
 | file://../common | common | 0.1.24 |
@@ -37,6 +38,9 @@ A Helm chart for gen3 datareplicate
 =======
 | file://../common | common | 0.1.25 |
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
 
 ## Values
 

@@ -16,6 +16,7 @@ A Helm chart for Kubernetes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.20 |
@@ -30,6 +31,9 @@ A Helm chart for Kubernetes
 >>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
 =======
 | file://../common | common | 0.1.25 |
+=======
+| file://../common | common | 0.1.24 |
+>>>>>>> dabe938c (Revert "Update version of common and gen3 charts")
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.56 |
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
 
