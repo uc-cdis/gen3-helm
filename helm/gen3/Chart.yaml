@@ -58,10 +58,14 @@ dependencies:
     condition: cohort-middleware.enabled
   - name: common
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.34
 =======
     version: 0.1.25
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
+=======
+    version: 0.1.24
+>>>>>>> 4837818e (revert common chart to 0.1.24)
     repository: file://../common
   - name: dashboard
 <<<<<<< HEAD
