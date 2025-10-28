@@ -137,6 +137,14 @@ karpenter-crds:
           - m
           - r
           - t
+  gpu:
+    enabled: false
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    volumeSize: 50Gi
+    additionalTags: {}
   jupyter:
     enabled: true
     consolidation: true
