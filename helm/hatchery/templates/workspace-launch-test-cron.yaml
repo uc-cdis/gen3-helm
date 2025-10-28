@@ -294,6 +294,20 @@ spec:
                         number_of_images = len(images_to_test)
                         number_of_runs = 0
 
+                        logging.info("Checking for existing workspace for clean up...")
+                        try:
+                          resp = self.get_workspace_status()
+                        except requests.exceptions.RequestException as e:
+                          logging.error(f"Couldn't get status for workspace user. Error: {e}")
+                        if resp.json()["status"] != "Not Found":
+                          logging.info("Found running workspaces. Attempting to terminate...")
+                          try:
+                            self.terminate_workspace()
+                            logging.info("Workspace terminated. Waiting to start testing...")
+                            time.sleep(120) 
+                          except requests.exceptions.RequestException as e:
+                            logging.error(f"Couldn't terminate workspace with error : {e}")
+
                         for image_name, id in images_to_test.items():
                             logging.info(f"Testing image: {image_name}")
                             final_result.append(self.start_workspace_launch_test(image_name, id))
@@ -341,12 +355,20 @@ spec:
 
                         except requests.exceptions.RequestException as e:
                             error_msg = f"Error connecting to workspace via proxy endpoint. Error: {e}"
-                        
-                        # Terminate active running workspace
+                    
+                        self.terminate_and_set_logs(image_name, workspace_id, proxy_status_code)
+                    
+
+                    def terminate_workspace(self):
                         terminate_url = self.commons_url + "/lw-workspace/terminate"
+                        return requests.post(terminate_url, headers= self.headers)
+
+                    
+                    def terminate_and_set_logs(self, image_name, workspace_id, proxy_status_code):    
+                        # Terminate active running workspace
                         try:
                             logging.info("Attempting to terminate workspace...")
-                            terminate_response = requests.post(terminate_url, headers= self.headers)
+                            terminate_response = self.terminate_workspace()
                             terminate_response.raise_for_status()
                             logging.info("Workspace terminated...")
                         except requests.exceptions.RequestException as e:
@@ -366,6 +388,12 @@ spec:
                             "proxy_status": proxy_status_code,
                         }
                         return json_result
+                    
+
+                    def get_workspace_status(self):
+                        status_url = self.commons_url + "/lw-workspace/status"
+                        status_response = requests.get(status_url, headers=self.headers)
+                        return status_response
                         
 
                     def monitor_workspace_status(self, interval=10, timeout_limit=10):
@@ -376,11 +404,10 @@ spec:
                             interval (int, optional): Interval (in seconds) to hit the options endpoint. Defaults to 10 seconds.
                             timeout_limit(int, optional): Time limit, in minutes, at which a workspace launch is considered a failure.
                         """
-                        status_url = self.commons_url + "/lw-workspace/status"
 
                         while True:
                             try:
-                                status_response = requests.get(status_url, headers=self.headers)
+                                status_response = self.get_workspace_status()
                                 status_response.raise_for_status()
                             except requests.exceptions.RequestException as e:
                                 error_msg = f"Error checking workspace status: {e}"
