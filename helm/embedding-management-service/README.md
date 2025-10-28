@@ -1,19 +1,31 @@
 # embedding-management-service
 
+<<<<<<< HEAD
 ![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
+=======
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+
+A Helm chart for the gen3 embedding management service
+>>>>>>> 5796495f (adding embedding management service to helm)
 
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
+=======
+| file://../common | common | 0.1.16 |
+| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+>>>>>>> 5796495f (adding embedding management service to helm)
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+<<<<<<< HEAD
 | affinity | object | `{}` |  |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
@@ -24,6 +36,27 @@ A Helm chart for Kubernetes
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | fullnameOverride | string | `""` |  |
+=======
+| affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["embedding-management-service"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["embedding-management-service"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["embedding-management-service"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}` | Weight value for preferred scheduling. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0] | list | `{"key":"app","operator":"In","values":["embedding-management-service"]}` | Label key for match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` | Operation type for the match expression. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values | list | `["embedding-management-service"]` | Value for the match expression key. |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Value for topology key label. |
+| args | list | `["-c","echo \"all good here\"\n"]` | Arguments to pass to the init container. |
+| automountServiceAccountToken | bool | `false` | Automount the default service account token |
+| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Configuration for autoscaling the number of replicas |
+| autoscaling.enabled | bool | `false` | Whether autoscaling is enabled |
+| autoscaling.maxReplicas | int | `100` | The maximum number of replicas to scale up to |
+| autoscaling.minReplicas | int | `1` | The minimum number of replicas to scale down to |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage for autoscaling |
+| command | list | `["/bin/bash"]` | Command to run for the init container. |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| debug | bool | `false` |  |
+| externalSecrets | map | `nil` | External Secrets settings. |
+>>>>>>> 5796495f (adding embedding management service to helm)
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -52,6 +85,7 @@ A Helm chart for Kubernetes
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+<<<<<<< HEAD
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/cdis/embedding-management-service"` |  |
 | image.tag | string | `"feat_service"` |  |
@@ -66,6 +100,20 @@ A Helm chart for Kubernetes
 | podAnnotations | object | `{}` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+=======
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/michaellukowski/meshcard","tag":"latest"}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/michaellukowski/meshcard"` | Docker repository. |
+| image.tag | string | `"latest"` | Overrides the image tag whose default is the chart appVersion. |
+| initContainerName | string | `"ems-db-migrate"` | Name of the init container. |
+| initResources | map | `{"limits":{"cpu":0.8,"memory":"512Mi"}}` | Resource limits for the init container. |
+| initResources.limits | map | `{"cpu":0.8,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| initResources.limits.cpu | string | `0.8` | The maximum amount of CPU the container can use |
+| initResources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| initVolumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"}]` | Volumes to mount to the init container. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+>>>>>>> 5796495f (adding embedding management service to helm)
 | postgres | map | `{"database":null,"dbCreate":false,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `false` | Whether the database should be created. Default to global.postgres.dbCreate |
@@ -74,6 +122,7 @@ A Helm chart for Kubernetes
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+<<<<<<< HEAD
 | readinessProbe.httpGet.path | string | `"/_status"` |  |
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
@@ -93,3 +142,29 @@ A Helm chart for Kubernetes
 | volumes[0].configMap.name | string | `"ems-config"` |  |
 | volumes[0].configMap.optional | bool | `false` |  |
 | volumes[0].name | string | `"config"` |  |
+=======
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
+| replicaCount | int | `1` | Number of replicas for the deployment. |
+| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
+| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
+| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
+| revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
+| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
+| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
+| selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
+| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAnnotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nambassador_id: \"gen3\"\nkind:  Mapping\nname:  ems_mapping\nprefix: /ems/\nservice: http://ems-service:80\n"` |  |
+| strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
+| strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
+| strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"},{"mountPath":"/ems/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"},{"mountPath":"/src/ems.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
+>>>>>>> 5796495f (adding embedding management service to helm)

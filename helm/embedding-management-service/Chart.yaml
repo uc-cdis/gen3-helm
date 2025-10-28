@@ -1,6 +1,10 @@
 apiVersion: v2
 name: embedding-management-service
+<<<<<<< HEAD
 description: A Helm chart for Kubernetes
+=======
+description: A Helm chart for the gen3 embedding management service
+>>>>>>> 5796495f (adding embedding management service to helm)
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -15,15 +19,32 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
+<<<<<<< HEAD
 version: 0.1.5
+=======
+version: 0.1.1
+>>>>>>> 5796495f (adding embedding management service to helm)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
+<<<<<<< HEAD
 appVersion: "1.16.0"
 
 dependencies:
   - name: common
     version: 0.1.34
     repository: file://../common
+=======
+appVersion: "master"
+
+dependencies:
+  - name: common
+    version: 0.1.16
+    repository: file://../common
+  - name: postgresql
+    version: 11.9.13
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgres.separate
+>>>>>>> 5796495f (adding embedding management service to helm)
