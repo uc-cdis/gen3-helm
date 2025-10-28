@@ -34,8 +34,29 @@ image:
   repository: quay.io/cdis/dcf-dataservice
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
-googleBucketReplicateJob:
+
+awsBatchReplicationJob:
   enabled: false
+
+awsBucketReplicateJob:
+  enabled: true
+  schedule: "*/30 * * * *"
+  THREAD_NUM:
+  CHUNK_SIZE:
+  GDC_BUCKET_NAME:
+  LOG_BUCKET:
+  RELEASE:
+  QUICK_TEST:
+  MANIFEST_FILE:
+  resources:
+    requests:
+      cpu: "2"
+      memory: 128Mi
+    limits:
+      memory: 2Gi
+
+googleBucketReplicateJob:
+  enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
   schedule: "*/30 * * * *"
   PROJECT:
@@ -55,10 +76,6 @@ googleBucketReplicateJob:
     limits:
       # -- (string) The maximum amount of memory the container can use
       memory: 2Gi
-suspendCronjob: true
-
-awsBatchReplicationJob:
-  enabled: false
 
 removeObjectsFromCloudsJob:
   enabled: true
@@ -93,19 +110,3 @@ replicateValidationJob:
     # -- (map) The maximum amount of resources that the container is allowed to use
     limits:
       memory: "2Gi"
-awsBucketReplicateJob:
-  enabled: true
-  schedule: "*/30 * * * *"
-  THREAD_NUM:
-  CHUNK_SIZE:
-  GDC_BUCKET_NAME:
-  LOG_BUCKET:
-  RELEASE:
-  QUICK_TEST:
-  MANIFEST_FILE:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 128Mi
-    limits:
-      memory: 2Gi
