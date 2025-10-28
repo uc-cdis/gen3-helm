@@ -140,10 +140,10 @@ dependencies:
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
 
-  # - name: elasticsearch
-  #   version: 7.10.2
-  #   repository: "https://helm.elastic.co"
-  #   condition: global.dev
+  - name: elasticsearch
+    version: 7.10.2
+    repository: "https://helm.elastic.co"
+    condition: global.dev
   - name: postgresql
     version: 11.9.13
     repository: "https://charts.bitnami.com/bitnami"

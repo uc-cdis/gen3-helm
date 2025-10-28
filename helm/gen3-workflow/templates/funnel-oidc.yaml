@@ -177,7 +177,7 @@ spec:
                 store_name=$(kubectl get externalsecret funnel-oidc-client -o jsonpath='{.spec.secretStoreRef.name}')
                 kubectl patch externalsecret funnel-oidc-client --type merge -p '{"spec": {"secretStoreRef": {"name": "intentionally-set-to-incorrect-secret-store", "kind": "SecretStore"}}}'
 
-                echo "Patching funnel-oidc-client secret with new OIDC client credentials, currently used as a semaphore for funnel-server"
+                echo "Patching funnel-oidc-client secret with new OIDC client credentials"
                 kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
 
                 echo "local secret client_id is $(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)"
