@@ -217,11 +217,15 @@ A Helm chart for Kubernetes
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | serviceAccount | map | `{"annotations":{},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
 =======
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa"},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `"arn:aws:iam::707767160287:role/gen3_service/devplanetv2--qa-midrc--gen3-workflow-sa"` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 >>>>>>> ac9ee302 (Add useryaml, update funnel secrets, add funnel local chart reference)
+=======
+| serviceAccount | map | `{"annotations":{},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
+>>>>>>> f0a6e9e7 (Re-Add elastic search chart from gen3 Charts, some minor updates)
 | serviceAccount.create | bool | `true` | Whether to create a service account |
 | serviceAccount.name | string | `"gen3-workflow-sa"` | The name of the service account |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
