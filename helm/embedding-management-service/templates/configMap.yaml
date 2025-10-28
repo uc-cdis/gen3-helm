@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ems-config
+data:
+  config.json: |
+    {{ .Values.embeddingsConfig | nindent 4 }}
