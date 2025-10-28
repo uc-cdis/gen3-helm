@@ -65,7 +65,7 @@ spec:
               value: binamb-planx-pla-net-bucket-replicate-jqhu_queue_job
             - name: JOB_DEFINITION
               value: binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
-            image: quay.io/cdis/gdc_copy:feat_dcf-datareplicate
+            image: quay.io/cdis/gdc_copy:feat_output-manifest
             imagePullPolicy: Always
             name: aws-bucket-replicate
             ports:
