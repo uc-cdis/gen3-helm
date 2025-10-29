@@ -74,7 +74,7 @@ spec:
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf-dataservice-settings-secrets"
-            command: ["/bin/bash" ]
+            command: ["/bin/bash"]
             args:
               - "-c"
               - |

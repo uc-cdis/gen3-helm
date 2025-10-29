@@ -1,13 +1,13 @@
-{{- if .Values.awsBatchReplicationJob.enabled -}}
+{{- if .Values.awsBatchReplicateJob.enabled -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: aws-batch-replication
+  name: aws-batch-replicate-job
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: aws-batch-replication-role
+  name: aws-batch-replicate-job-role
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -16,12 +16,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: aws-batch-replication-role-binding
+  name: aws-batch-replicate-job-role-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: aws-batch-replication-role
+  name: aws-batch-replicate-job-role
 subjects:
   - kind: ServiceAccount
-    name: aws-batch-replication
+    name: aws-batch-replicate-job
 {{- end }}

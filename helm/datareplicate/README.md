@@ -14,22 +14,33 @@ A Helm chart for gen3 datareplicate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| awsBatchReplicationJob.enabled | bool | `false` |  |
-| externalSecrets | map | `{"dcfDataserviceJSONSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
+| awsBatchReplicateJob.JOB_DEFINITION | string | `nil` |  |
+| awsBatchReplicateJob.JOB_QUEUE | string | `nil` |  |
+| awsBatchReplicateJob.MANIFEST_PATH | string | `nil` |  |
+| awsBatchReplicateJob.MAX_RETRIES | string | `nil` |  |
+| awsBatchReplicateJob.REGION | string | `nil` |  |
+| awsBatchReplicateJob.THREAD_COUNT | string | `nil` |  |
+| awsBatchReplicateJob.enabled | bool | `true` |  |
+| awsBatchReplicateJob.schedule | string | `"*/30 * * * *"` |  |
+| awsBucketReplicateJob.CHUNK_SIZE | string | `nil` |  |
+| awsBucketReplicateJob.GDC_BUCKET_NAME | string | `nil` |  |
+| awsBucketReplicateJob.LOG_BUCKET | string | `nil` |  |
+| awsBucketReplicateJob.MANIFEST_FILE | string | `nil` |  |
+| awsBucketReplicateJob.QUICK_TEST | string | `nil` |  |
+| awsBucketReplicateJob.RELEASE | string | `nil` |  |
+| awsBucketReplicateJob.THREAD_NUM | string | `nil` |  |
+| awsBucketReplicateJob.enabled | bool | `true` |  |
+| awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
+| externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
-| googleBucketReplicateJob.IGNORED_FILE | string | `"gs://replication-input/ignored_files_manifest.csv"` |  |
-| googleBucketReplicateJob.LOG_BUCKET | string | `"datarefresh-log"` |  |
-| googleBucketReplicateJob.MANIFEST_FILE | string | `"gs://replication-input/GDC_full_sync_active_manifest_20190326_post_DR43.0.tsv"` |  |
-| googleBucketReplicateJob.MAX_WORKERS | int | `80` |  |
-| googleBucketReplicateJob.PROJECT | string | `"dcf-prod-buckets"` |  |
-| googleBucketReplicateJob.RELEASE | string | `"DR43"` |  |
-| googleBucketReplicateJob.enabled | bool | `false` |  |
-| googleBucketReplicateJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
-| googleBucketReplicateJob.resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| googleBucketReplicateJob.resources.requests | map | `{"cpu":"2","memory":"128Mi"}` | The amount of resources that the container requests |
-| googleBucketReplicateJob.resources.requests.cpu | string | `"2"` | The amount of CPU requested |
-| googleBucketReplicateJob.resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
+| googleBucketReplicateJob.IGNORED_FILE | string | `nil` |  |
+| googleBucketReplicateJob.LOG_BUCKET | string | `nil` |  |
+| googleBucketReplicateJob.MANIFEST_FILE | string | `nil` |  |
+| googleBucketReplicateJob.MAX_WORKERS | string | `nil` |  |
+| googleBucketReplicateJob.PROJECT | string | `nil` |  |
+| googleBucketReplicateJob.RELEASE | string | `nil` |  |
+| googleBucketReplicateJob.enabled | bool | `true` |  |
 | googleBucketReplicateJob.schedule | bool | `"*/30 * * * *"` | Whether to enable the Google bucket replicate job |
 | image.repository | string | `"quay.io/cdis/dcf-dataservice"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
@@ -50,15 +61,12 @@ A Helm chart for gen3 datareplicate
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 | replicateValidationJob.enabled | bool | `true` |  |
-| replicateValidationJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
-| replicateValidationJob.resources.requests | map | `{"cpu":"2","memory":"128Mi"}` | The amount of resources that the container requests |
-| replicateValidationJob.resources.requests.cpu | string | `"2"` | The amount of CPU requested |
-| replicateValidationJob.resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
 | replicateValidationJob.suspendCronjob | bool | `true` |  |
-| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"2","memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
+| resources.requests | map | `{"cpu":"2","memory":"512Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `"2"` | The amount of CPU requested |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
 | suspendCronjob | bool | `true` |  |

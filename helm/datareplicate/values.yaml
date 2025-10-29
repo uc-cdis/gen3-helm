@@ -22,6 +22,8 @@ externalSecrets:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
+    cpu: "2"
     # -- (string) The amount of memory requested
     memory: 512Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
@@ -35,8 +37,17 @@ image:
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
 
-awsBatchReplicationJob:
-  enabled: false
+awsBatchReplicateJob:
+  enabled: true
+  schedule: "*/30 * * * *"
+  REGION:
+  THREAD_COUNT:
+  MAX_RETRIES:
+  # SOURCE_BUCKET:
+  # DESTINATION_BUCKET:
+  MANIFEST_PATH:
+  JOB_QUEUE:
+  JOB_DEFINITION:
 
 awsBucketReplicateJob:
   enabled: true
@@ -48,12 +59,6 @@ awsBucketReplicateJob:
   RELEASE:
   QUICK_TEST:
   MANIFEST_FILE:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 128Mi
-    limits:
-      memory: 2Gi
 
 googleBucketReplicateJob:
   enabled: true
@@ -65,17 +70,6 @@ googleBucketReplicateJob:
   MANIFEST_FILE:
   IGNORED_FILE:
   LOG_BUCKET:
-  resources:
-  # -- (map) The amount of resources that the container requests
-    requests:
-      # -- (string) The amount of CPU requested
-      cpu: "2"
-      # -- (string) The amount of memory requested
-      memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      # -- (string) The maximum amount of memory the container can use
-      memory: 2Gi
 
 removeObjectsFromCloudsJob:
   enabled: true
@@ -100,13 +94,3 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
-  resources:
-  # -- (map) The amount of resources that the container requests
-    requests:
-      # -- (string) The amount of CPU requested
-      cpu: "2"
-      # -- (string) The amount of memory requested
-      memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      memory: "2Gi"
