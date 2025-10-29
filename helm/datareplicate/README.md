@@ -62,15 +62,12 @@ A Helm chart for gen3 datareplicate
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 | replicateValidationJob.enabled | bool | `true` |  |
-| replicateValidationJob.resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
-| replicateValidationJob.resources.requests | map | `{"cpu":"2","memory":"128Mi"}` | The amount of resources that the container requests |
-| replicateValidationJob.resources.requests.cpu | string | `"2"` | The amount of CPU requested |
-| replicateValidationJob.resources.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
 | replicateValidationJob.suspendCronjob | bool | `true` |  |
-| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"2","memory":"512Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"2Gi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"2Gi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"memory":"512Mi"}` | The amount of resources that the container requests |
+| resources.requests | map | `{"cpu":"2","memory":"512Mi"}` | The amount of resources that the container requests |
+| resources.requests.cpu | string | `"2"` | The amount of CPU requested |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
 | suspendCronjob | bool | `true` |  |

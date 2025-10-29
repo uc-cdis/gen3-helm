@@ -1,14 +1,12 @@
-{{- if .Values.awsBatchReplicationJob.enabled -}}
+{{- if .Values.awsBatchReplicateJob.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  labels:
-    app: gen3job
-  name: aws-batch-replication
+  name: aws-batch-replicate
   namespace: binamb-helm
 spec:
-  schedule: "0 * * * *"
-  suspend: true
+  schedule: {{ .Values.awsBatchReplicateJob.schedule | quote }}
+  suspended: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -18,65 +16,63 @@ spec:
           creationTimestamp: null
           labels:
             app: gen3job
-            batch.kubernetes.io/job-name: aws-batch-replication
-            job-name: aws-batch-replication
+            batch.kubernetes.io/job-name: aws-batch-replicate
+            job-name: aws-batch-replicate
         spec:
+          serviceAccountName: aws-batch-replicate-job
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
-              - preference:
+              - weight: 100
+                preference:
                   matchExpressions:
                   - key: karpenter.sh/capacity-type
                     operator: In
                     values:
                     - on-demand
-                weight: 100
-              - preference:
+              - weight: 99
+                preference:
                   matchExpressions:
                   - key: eks.amazonaws.com/capacityType
                     operator: In
                     values:
                     - ONDEMAND
-                weight: 99
+          volumes:
+            - name: cred-volume
+              secret:
+                secretName: "aws-creds-secret"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
           containers:
-          - args:
-            - -c
-            - |
-              echo """
-              [default]
-              region: us-east-1
-              """ > ~/.aws/config
-              # #python batch_jobs/bucket_replicate/dcf_replication.py
-              # sleep infinity
-              # #python batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket $SOURCE_BUCKET --destination_bucket $DESTINATION_BUCKET --job_queue ${JOB_QUEUE} --job_definition ${JOB_DEFINITION}
-              # echo "All done - exit status $?"
-              # python3 batch_jobs/bin/run_bucket_replicate_job.py replicate-bucket --source_bucket test-gdc-bucket --destination_bucket manifestservice-emalinowskiv1-test --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
-              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path s3://test-data-replication-manifest/GDC_only_3plusgig_open_active_manifest.tsv --job_queue binamb-planx-pla-net-bucket-replicate-jqhu_queue_job --job_definition binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition --thread_count 3 --max_retries 10
-            command:
-            - /bin/bash
-            env:
-            - name: REGION
-              value: us-east-1
-            - name: SOURCE_BUCKET
-              value: kube-emalinowskiv1-gen3
-            - name: DESTINATION_BUCKET
-              value: manifestservice-emalinowskiv1-test
-            - name: JOB_QUEUE
-              value: binamb-planx-pla-net-bucket-replicate-jqhu_queue_job
-            - name: JOB_DEFINITION
-              value: binamb-planx-pla-net-bucket-replicate-jqhu-batch_job_definition
+          - name: aws-bucket-replicate
             image: quay.io/cdis/gdc_copy:feat_dcf-datareplicate
-            imagePullPolicy: Always
-            name: aws-bucket-replicate
-            ports:
-            - containerPort: 80
-              protocol: TCP
             resources:
-              limits:
-                cpu: "1"
-                memory: 1Gi
-            terminationMessagePath: /dev/termination-log
-            terminationMessagePolicy: File
+              {{- toYaml .Values.resources | nindent 12 }}
+            imagePullPolicy: Always
+            env:
+              - name: REGION
+                value: "{{ .Values.awsBatchReplicateJob.REGION }}"
+              - name: THREAD_COUNT
+                value: "{{ .Values.awsBatchReplicateJob.THREAD_COUNT }}"
+              - name: MAX_RETRIES
+                value: "{{ .Values.awsBatchReplicateJob.MAX_RETRIES }}"
+              # - name: SOURCE_BUCKET
+              #   value: "{{ .Values.awsBatchReplicateJob.SOURCE_BUCKET }}"
+              # - name: DESTINATION_BUCKET
+              #   value: "{{ .Values.awsBatchReplicateJob.DESTINATION_BUCKET }}"
+              - name: MANIFEST_PATH
+                value: "{{ .Values.awsBatchReplicateJob.MANIFEST_PATH }}"
+              - name: JOB_QUEUE
+                value: "{{ .Values.awsBatchReplicateJob.JOB_QUEUE }}"
+              - name: JOB_DEFINITION
+                value: "{{ .Values.awsBatchReplicateJob.JOB_DEFINITION }}"
+              - name: AUTH_NAMESPACE
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-global
+                    key: auth_namespace
+                    optional: true
             volumeMounts:
             - name: cred-volume
               mountPath: "/root/.aws/credentials"
@@ -84,18 +80,27 @@ spec:
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash"]
+            args:
+            - -c
+            - |
+              echo """
+              [default]
+              region: $REGION
+              """ > ~/.aws/config
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES
+
+            ports:
+            - containerPort: 80
+              protocol: TCP
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            
           dnsPolicy: ClusterFirst
-          restartPolicy: Never
           schedulerName: default-scheduler
           securityContext: {}
           serviceAccount: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
           serviceAccountName: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
           terminationGracePeriodSeconds: 30
-          volumes:
-          - name: cred-volume
-            secret:
-              secretName: aws-creds-secret
-          - name: setting-volume
-            secret:
-              secretName: "dcf-dataservice-settings-secrets"
+          restartPolicy: Never
 {{- end }}
