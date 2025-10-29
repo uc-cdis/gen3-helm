@@ -85,9 +85,9 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}

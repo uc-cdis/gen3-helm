@@ -1,15 +1,15 @@
-{{- if default .Values.global.autoscaling.enabled .Values.autoscaling.enabled }}
+{{- define "common.hpa" -}}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: presigned-url-fence-hpa
+  name: {{.Chart.Name}}-hpa
   labels:
-    {{- include "fence.labels" . | nindent 4 }}
+    {{- include "arborist.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: presigned-url-fence-deployment
+    name: {{.Chart.Name}}-deployment
   minReplicas: {{ default .Values.global.autoscaling.minReplicas .Values.autoscaling.minReplicas }}
   maxReplicas: {{ default .Values.global.autoscaling.maxReplicas .Values.autoscaling.maxReplicas }}
   metrics:
