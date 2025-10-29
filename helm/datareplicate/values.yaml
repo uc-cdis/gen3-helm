@@ -48,6 +48,7 @@ awsBatchReplicateJob:
   MANIFEST_PATH:
   JOB_QUEUE:
   JOB_DEFINITION:
+  OUTPUT_MANIFEST_BUCKET:
 
 awsBucketReplicateJob:
   enabled: true
