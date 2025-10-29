@@ -447,20 +447,7 @@ funnel:
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
 
-  mongodb:
-    # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture, uncomment this if you're using an M1/M2 Mac
-    # image:
-    #   registry: docker.io
-    #   repository: dlavrenuek/bitnami-mongodb-arm
-    #   tag: 6.0.13
-    readinessProbe:
-      enabled: true
-      initialDelaySeconds: 20
-      timeoutSeconds: 10
-      periodSeconds: 10
-      failureThreshold: 10
-
-    Kubernetes:
+  Kubernetes:
       PVTemplate: |
         apiVersion: v1
         kind: PersistentVolume
@@ -539,6 +526,21 @@ funnel:
                 persistentVolumeClaim:
                   claimName: funnel-worker-pvc-{{.TaskId}}
               {{- end }}
+  mongodb:
+    # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
+    # uncomment this if you're running it on an ARM chipset machine
+    # image:
+    #   registry: docker.io
+    #   repository: dlavrenuek/bitnami-mongodb-arm
+    #   tag: 6.0.13
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 10
+      periodSeconds: 10
+      failureThreshold: 10
+
+    
 
     Plugins:
       Path: plugin-binaries/auth-plugin
