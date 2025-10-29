@@ -75,12 +75,6 @@ awsBucketReplicateJob:
   RELEASE:
   QUICK_TEST:
   MANIFEST_FILE:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 128Mi
-    limits:
-      memory: 2Gi
 
 googleBucketReplicateJob:
   enabled: true
@@ -118,6 +112,7 @@ replicateValidationJob:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
 <<<<<<< HEAD
+<<<<<<< HEAD
   VALIDATE_PLATFORM: "AWS"
 
 batchServiceAccount:
@@ -136,3 +131,5 @@ replicateServiceAccount:
     limits:
       memory: "2Gi"
 >>>>>>> 515d2165 (Update values.yaml)
+=======
+>>>>>>> 6684a2f1 (readme)
