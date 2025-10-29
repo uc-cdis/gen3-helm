@@ -48,7 +48,7 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             resources:
-              {{- toYaml .Values.replicateValidationJob.resources | nindent 12 }}
+              {{- toYaml .Values.resources | nindent 12 }}
             env:
               - name: RELEASE
                 value: "{{ .Values.replicateValidationJob.RELEASE }}"

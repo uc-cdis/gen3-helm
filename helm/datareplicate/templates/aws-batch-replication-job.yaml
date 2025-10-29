@@ -57,10 +57,6 @@ spec:
                 value: "{{ .Values.awsBatchReplicateJob.THREAD_COUNT }}"
               - name: MAX_RETRIES
                 value: "{{ .Values.awsBatchReplicateJob.MAX_RETRIES }}"
-              # - name: SOURCE_BUCKET
-              #   value: "{{ .Values.awsBatchReplicateJob.SOURCE_BUCKET }}"
-              # - name: DESTINATION_BUCKET
-              #   value: "{{ .Values.awsBatchReplicateJob.DESTINATION_BUCKET }}"
               - name: MANIFEST_PATH
                 value: "{{ .Values.awsBatchReplicateJob.MANIFEST_PATH }}"
               - name: JOB_QUEUE
