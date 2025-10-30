@@ -147,7 +147,7 @@ spec:
                 - name: HADOOP_CLIENT_OPTS
                   value: -Xmx1g
                 - name: SPARK_EXECUTOR_MEMORY
-                  value: 4g
+                  value: 6g
                 - name: SPARK_DRIVER_MEMORY
                   value: 6g
                 - name: XDG_DATA_HOME
