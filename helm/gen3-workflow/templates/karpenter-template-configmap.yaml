@@ -1,10 +1,11 @@
-{{- with .Values.karpenter }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: karpenter-templates
-  namespace: argo-events
 data:
+{{- with .Values.karpenter }}
 {{- range $key, $value := . }}
-
+  {{ $key }}: |
+    {{- $value | nindent 4 }}
 {{- end }}
+{{- end}}
