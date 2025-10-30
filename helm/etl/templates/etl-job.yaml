@@ -147,9 +147,9 @@ spec:
                 - name: HADOOP_CLIENT_OPTS
                   value: -Xmx1g
                 - name: SPARK_EXECUTOR_MEMORY
-                  value: 8g
+                  value: 4g
                 - name: SPARK_DRIVER_MEMORY
-                  value: 6g
+                  value: 8g
                 - name: XDG_DATA_HOME
                   value: /tube
                 - name: ETL_FORCED
