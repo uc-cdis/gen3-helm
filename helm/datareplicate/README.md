@@ -18,6 +18,7 @@ A Helm chart for gen3 datareplicate
 | awsBatchReplicateJob.JOB_QUEUE | string | `nil` |  |
 | awsBatchReplicateJob.MANIFEST_PATH | string | `nil` |  |
 | awsBatchReplicateJob.MAX_RETRIES | string | `nil` |  |
+| awsBatchReplicateJob.OUTPUT_MANIFEST_BUCKET | string | `nil` |  |
 | awsBatchReplicateJob.REGION | string | `nil` |  |
 | awsBatchReplicateJob.THREAD_COUNT | string | `nil` |  |
 | awsBatchReplicateJob.enabled | bool | `true` |  |
