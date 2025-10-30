@@ -170,28 +170,23 @@ spec:
               export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
               export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
 
-              echo "Current funnel env var : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
+              echo "Current funnel client_id : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
-                
-                # Temporarily patch the external secret to point to a wrong secret store to prevent it from overriding our changes
-                store_name=$(kubectl get externalsecret funnel-oidc-client -o jsonpath='{.spec.secretStoreRef.name}')
-                kubectl patch externalsecret funnel-oidc-client --type merge -p '{"spec": {"secretStoreRef": {"name": "intentionally-set-to-incorrect-secret-store", "kind": "SecretStore"}}}'
 
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials"
                 kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
 
-                echo "local secret client_id is $(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)"
-
-                #Delete the secret from AWS Secrets manager so that PushSecret can send in the new secret from local K8s to AWS Secrets mnager
-                aws secretsmanager delete-secret --secret-id $FUNNEL_REMOTE_SECRET_NAME --region us-east-1 --force-delete-without-recovery
-
-                # Revert the external secret to point to the correct secret store
-                kubectl patch externalsecret funnel-oidc-client -n qa-midrc-test --type merge -p "{\"spec\":{\"secretStoreRef\":{\"name\":\"$store_name\",\"kind\":\"SecretStore\"}}}"
+                # wait for secret to be updated and verify if the change was persistent
+                sleep 5 
 
                 if [ "$CLIENT_ID" == "$(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)" ]; then
                   echo "Successfully patched the secret with new OIDC client credentials"
                 else
                   echo "Failed to patch the secret with new OIDC client credentials"
+                  echo " /!\  Ensure the external secret '$FUNNEL_REMOTE_SECRET_NAME' is deleted in AWS Secrets Manager before running this job."
+                  echo "   Otherwise, the External Secrets Operator may overwrite this new secret."
+                  echo "   To delete it manually, run:"
+                  echo "   aws secretsmanager delete-secret --secret-id \"$FUNNEL_REMOTE_SECRET_NAME\" --region us-east-1 --force-delete-without-recovery"
                   exit 1
                 fi
               fi
