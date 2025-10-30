@@ -92,7 +92,11 @@ dependencies:
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
+<<<<<<< HEAD
     version: 0.1.22
+=======
+    version: 0.1.17
+>>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -188,7 +192,11 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
+<<<<<<< HEAD
     version: 0.1.40
+=======
+    version: 0.1.32
+>>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
@@ -277,6 +285,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -302,6 +311,9 @@ version: 0.2.73
 =======
 version: 0.2.74
 >>>>>>> d87df217 (Update crossplane for hatchery)
+=======
+version: 0.2.76
+>>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
