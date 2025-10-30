@@ -1,0 +1,10 @@
+{{- with .Values.karpenter }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karpenter-templates
+  namespace: argo-events
+data:
+{{- range $key, $value := . }}
+
+{{- end }}
