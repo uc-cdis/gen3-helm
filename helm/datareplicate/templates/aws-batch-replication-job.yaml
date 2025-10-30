@@ -40,13 +40,13 @@ spec:
           volumes:
             - name: cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
           containers:
           - name: aws-bucket-replicate
-            image: quay.io/cdis/gdc_copy:feat_output-manifest
+            image: quay.io/cdis/gdc_copy:feat_dcf-datareplicate
             resources:
               {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
@@ -63,8 +63,6 @@ spec:
                 value: "{{ .Values.awsBatchReplicateJob.JOB_QUEUE }}"
               - name: JOB_DEFINITION
                 value: "{{ .Values.awsBatchReplicateJob.JOB_DEFINITION }}"
-              - name: OUTPUT_MANIFEST_BUCKET
-                value: "{{ .Values.awsBatchReplicateJob.OUTPUT_MANIFEST_BUCKET}}"
               - name: AUTH_NAMESPACE
                 valueFrom:
                   configMapKeyRef:
@@ -74,7 +72,7 @@ spec:
             volumeMounts:
             - name: cred-volume
               mountPath: "/root/.aws/credentials"
-              subPath: aws-creds-secret
+              subPath: dcf-aws-creds-secret
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
@@ -86,7 +84,8 @@ spec:
               [default]
               region: $REGION
               """ > ~/.aws/config
-              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES
+
             ports:
             - containerPort: 80
               protocol: TCP
