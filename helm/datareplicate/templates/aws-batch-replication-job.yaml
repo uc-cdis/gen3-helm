@@ -46,7 +46,7 @@ spec:
                 secretName: "dcf-dataservice-settings-secrets"
           containers:
           - name: aws-bucket-replicate
-            image: quay.io/cdis/gdc_copy:feat_dcf-datareplicate
+            image: quay.io/cdis/gdc_copy:feat_output-manifest
             resources:
               {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
@@ -63,6 +63,8 @@ spec:
                 value: "{{ .Values.awsBatchReplicateJob.JOB_QUEUE }}"
               - name: JOB_DEFINITION
                 value: "{{ .Values.awsBatchReplicateJob.JOB_DEFINITION }}"
+              - name: OUTPUT_MANIFEST_BUCKET
+                value: "{{ .Values.awsBatchReplicateJob.OUTPUT_MANIFEST_BUCKET}}"
               - name: AUTH_NAMESPACE
                 valueFrom:
                   configMapKeyRef:
@@ -84,7 +86,7 @@ spec:
               [default]
               region: $REGION
               """ > ~/.aws/config
-              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
 
             ports:
             - containerPort: 80
