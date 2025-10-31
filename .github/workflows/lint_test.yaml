@@ -37,6 +37,10 @@ jobs:
       
       - uses: actions/checkout@master
 
+      - name: Helm deps
+        run: |
+          helm dependency build ./helm/gen3
+
       - name: helm-check
         uses: igabaydulin/helm-check-action@0.1.4
         env:
