@@ -35,6 +35,14 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
       
+      - uses: actions/checkout@master
+
+      - name: helm-check
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ./helm/gen3-helm
+          CHART_VALUES: ./.github/lint_values/values.yaml
+
   # TODO: add back in when we have tests
   # deploy-and-test-chart:
   #   name: Deploy and Test Chart
