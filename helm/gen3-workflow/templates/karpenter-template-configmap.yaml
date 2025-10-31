@@ -1,3 +1,5 @@
+# This is a WIP, can be ignored in this PR review.
+# This shall be ironed out and added in a future Cost tracking related PR 
 apiVersion: v1
 kind: ConfigMap
 metadata:
