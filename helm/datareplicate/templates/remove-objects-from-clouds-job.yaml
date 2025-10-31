@@ -1,6 +1,6 @@
 # run with 
 # kubectl create job remove-objects-from-clouds --from=cronjob/remove-objects-from-clouds
-{{- if .Values.removeObjectsFromCloudsJob.enabled }}
+{{- if .Values.removeObjectsFromCloudsJob.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
