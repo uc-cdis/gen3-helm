@@ -28,9 +28,9 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.12 |
 | file://../common | common | 0.1.24 |
 | file://../dashboard | dashboard | 0.1.9 |
-| file://../datareplicate | datareplicate | 0.0.33 |
+| file://../datareplicate | datareplicate | 0.0.34 |
 | file://../dicom-server | dicom-server | 0.1.20 |
-| file://../etl | etl | 0.1.18 |
+| file://../etl | etl | 0.1.17 |
 | file://../fence | fence | 0.1.62 |
 | file://../frontend-framework | frontend-framework | 0.1.14 |
 | file://../gen3-analysis | gen3-analysis | 0.1.2 |
