@@ -389,20 +389,9 @@ env:
 
 # -- (list) Volumes to attach to the container.
 volumes:
-  - name: old-config-volume
-    secret:
-      secretName: "fence-secret"
-  - name: json-secret-volume
-    secret:
-      secretName: "fence-json-secret"
-      optional: true
   - name: creds-volume
     secret:
       secretName: "fence-creds"
-  - name: config-helper
-    configMap:
-      name: config-helper
-      optional: true
   - name: logo-volume
     configMap:
       name: "logo-config"
@@ -432,22 +421,10 @@ volumes:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  - name: "old-config-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/local_settings.py"
-    subPath: local_settings.py
-  - name: "json-secret-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/fence_credentials.json"
-    subPath: fence_credentials.json
   - name: "creds-volume"
     readOnly: true
     mountPath: "/var/www/fence/creds.json"
     subPath: creds.json
-  - name: "config-helper"
-    readOnly: true
-    mountPath: "/var/www/fence/config_helper.py"
-    subPath: config_helper.py
   - name: "logo-volume"
     readOnly: true
     mountPath: "/fence/fence/static/img/logo.svg"
