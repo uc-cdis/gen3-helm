@@ -87,7 +87,7 @@ spec:
               region: $REGION
               """ > ~/.aws/config
               python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
-
+              sleep infinity
             ports:
             - containerPort: 80
               protocol: TCP
