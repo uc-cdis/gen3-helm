@@ -61,7 +61,7 @@ spec:
                 defaultMode: 0744
           containers:
             - name: gen3-spark
-              image: {{ .Values.image.spark.repository }}:{{ .Values.image.spark.tag }}
+              image: {{ .Values.image.spark.repository }}:{{ .Values.image.spark.tag | default .Chart.AppVersion  }}
               ports:
               - containerPort: 22
               - containerPort: 9000
@@ -107,7 +107,7 @@ spec:
                   while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && echo "Exiting with exit code $exit_code" && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
               imagePullPolicy: IfNotPresent
-              image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
+              image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag | default .Chart.AppVersion  }}
               ports:
                 - containerPort: 80
               env:
