@@ -86,6 +86,7 @@ spec:
               [default]
               region: $REGION
               """ > ~/.aws/config
+              cp /secrets/dcf_dataservice_settings.py /dcf_replication/batch_jobs/bin/settings.py
               python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
               sleep infinity
             ports:
