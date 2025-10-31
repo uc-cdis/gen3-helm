@@ -199,7 +199,7 @@ frontend-framework:
     # -- (string) The Docker image repository for the frontend-framework.
     repository: "quay.io/cdis/commons-frontend-app"
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    # tag: ""
+    tag: "main"
 
 # -- (map) Configurations for cedar chart.
 cedar:
