@@ -169,7 +169,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_es-7"
+  # tag: ""
 
 debug: false
 
