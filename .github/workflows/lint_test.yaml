@@ -41,7 +41,7 @@ jobs:
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: ./helm/gen3
-          CHART_VALUES: ./.github/lint_values/values.yaml
+          CHART_VALUES: ./.github/workflows/lint_values/values.yaml
 
   # TODO: add back in when we have tests
   # deploy-and-test-chart:
