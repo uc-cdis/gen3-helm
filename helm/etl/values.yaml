@@ -10,14 +10,14 @@ image:
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "master"
+    # tag: ""
   spark:
     # -- (string) The Docker image repository for the spark service
     repository: quay.io/cdis/gen3-spark
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "master"
+    # tag: ""
 
 
 # -- (list) Docker image pull secrets.
