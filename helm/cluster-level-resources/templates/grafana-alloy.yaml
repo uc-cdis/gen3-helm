@@ -20,8 +20,8 @@ spec:
       ref: values
       {{- else }}
         values: |
-          priorityClassName: 'alloy-high-priority'
           controller:
+            priorityClassName: 'alloy-high-priority'
             type: "deployment"
             affinity:
               nodeAffinity:
