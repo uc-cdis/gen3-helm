@@ -54,6 +54,7 @@ spec:
               requests:
                 cpu: 1000m
                 memory: 1Gi
+            priorityClassName: 'alloy-high-priority'
       {{- end }}
   syncPolicy:
     syncOptions:
@@ -63,4 +64,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: alloy-high-priority
+value: 1000000
+globalDefault: false
+description: "Priority class for alloy service"
 {{ end }}
