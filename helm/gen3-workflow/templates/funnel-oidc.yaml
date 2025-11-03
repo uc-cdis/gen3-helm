@@ -174,7 +174,13 @@ spec:
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
 
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials"
-                kubectl patch secret/funnel-oidc-client --patch="{\"data\":{\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\", \"client_id\":\"$(echo -n $CLIENT_ID | base64)\"}}"
+                kubectl get secret/funnel-oidc-client >/dev/null 2>&1 || \
+                  kubectl create secret generic funnel-oidc-client \
+                    --from-literal=client_id="$(echo -n $CLIENT_ID | base64)" \
+                    --from-literal=client_secret="$(echo -n $CLIENT_SECRET | base64)"
+
+                kubectl patch secret/funnel-oidc-client --type merge \
+                  --patch "{\"data\":{\"client_id\":\"$(echo -n $CLIENT_ID | base64)\",\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\"}}"
 
                 # wait for secret to be updated and verify if the change was persistent
                 sleep 5 
