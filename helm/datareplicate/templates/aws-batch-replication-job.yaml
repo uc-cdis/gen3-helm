@@ -46,7 +46,7 @@ spec:
                 secretName: "dcf-dataservice-settings-secrets"
           containers:
           - name: aws-bucket-replicate
-            image: quay.io/cdis/gdc_copy:feat_output-manifest
+            image: quay.io/cdis/gdc_copy:feat_dcf-datareplicate
             resources:
               {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
