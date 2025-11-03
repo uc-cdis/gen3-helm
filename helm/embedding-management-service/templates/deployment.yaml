@@ -44,25 +44,25 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: ems-dbcreds
+                  name: embedding-management-service-dbcreds
                   key: host
                   optional: false  
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: ems-dbcreds
+                  name: embedding-management-service-dbcreds
                   key: username
                   optional: false
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: ems-dbcreds
+                  name: embedding-management-service-dbcreds
                   key: password
                   optional: false
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: ems-dbcreds
+                  name: embedding-management-service-dbcreds
                   key: database
                   optional: false
           livenessProbe:
@@ -77,9 +77,10 @@ spec:
           {{- end }}
       {{- with .Values.volumes }}
       volumes:
-        - name: ems-config
+        - name: config-volume
           configMap:
             name: ems-config
+            optional: false
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
