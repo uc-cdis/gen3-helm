@@ -173,6 +173,7 @@ A Helm chart for Kubernetes
 | global.environment | string | `"default"` |  |
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 =======
 | global.externalSecrets | map | `{"deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
@@ -181,6 +182,11 @@ A Helm chart for Kubernetes
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
 >>>>>>> e4fe116c (Respond to initial PR comments)
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+=======
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"pushFunnelOidcClientToExternalSecrets":true,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+| global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` | Will push secrets to External Secrets Store. |
+>>>>>>> 5d63219c (Rename`pushGen3WorkflowSecretsToExternalSecret` to `pushFunnelOidcClientToExternalSecrets`)
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"dbSubnets":[],"enabled":false}` | Network policy settings. |
