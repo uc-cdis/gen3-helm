@@ -389,9 +389,6 @@ funnel:
         volumeMounts:
           - name: funnel-patched-config-volume
             mountPath: /tmp
-          - name: funnel-configmap
-            mountPath: /etc/config/funnel.conf
-            subPath: funnel-server.yaml
         command: ["/bin/bash"]
         args:
           - "-c"
