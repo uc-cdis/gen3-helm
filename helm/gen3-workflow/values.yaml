@@ -54,7 +54,8 @@ global:
     clusterSecretStoreRef: ""
     # -- (bool) Will push secrets to External Secrets Store.
     pushFunnelOidcClientToExternalSecrets: true
-
+  # -- (string) Hostname for the deployment.
+  hostname: ""
   # -- (map) Network policy settings.
   netPolicy:
     # -- (bool) Whether network policies are enabled
@@ -296,8 +297,8 @@ extraLabels:
   netnolimit: "yes"
 
 workflowConfig:
-  # -- (string) Hostname where the workflow service runs.
-  hostname: localhost
+  # -- (string) Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname
+  hostname: ""
   # -- (bool) Enables debug mode for the application.
   debug: false
   # -- (bool) Enables verbose logging specifically for httpx requests.
