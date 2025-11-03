@@ -1,4 +1,4 @@
-{{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "default" "enabled") }}
+{{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "secondary" "enabled") }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.k8s.aws/v1
@@ -7,7 +7,7 @@ apiVersion: karpenter.k8s.aws/v1beta1
 {{- end }}
 kind: EC2NodeClass
 metadata:
-  name: default
+  name: secondary
 spec:
   {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
   amiFamily: AL2023
@@ -22,7 +22,7 @@ spec:
     ebs:
       deleteOnTermination: true
       encrypted: true
-      volumeSize: {{ index .Values "karpenter-crds" "default" "volumeSize" }}
+      volumeSize: {{ index .Values "karpenter-crds" "secondary" "volumeSize" }}
       volumeType: gp3
   metadataOptions:
     httpEndpoint: enabled
@@ -76,7 +76,7 @@ spec:
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: default
+  name: secondary
 spec:
   template:
     metadata:
@@ -86,42 +86,42 @@ spec:
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
-        name: default
+        name: secondary
       expireAfter: 168h
       terminationGracePeriod: 48h
       requirements:
-      {{ toYaml (index .Values "karpenter-crds" "default" "requirements") | nindent 6 }}
+      {{ toYaml (index .Values "karpenter-crds" "secondary" "requirements") | nindent 6 }}
 
   disruption:
-    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
-    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "secondary" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "secondary" "consolidationPolicy" }}
     budgets:
     - nodes: 10%
 
   limits:
     cpu: "1000"
     memory: 1000Gi
-  weight: 99
+  weight: 1
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
-  name: default
+  name: secondary
 spec:
   disruption:
-    {{ if eq (index .Values "karpenter-crds" "default" "consolidationPolicy" ) "WhenEmpty" }}
-    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
+    {{ if eq (index .Values "karpenter-crds" "secondary" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "secondary" "consolidateAfter" }}
     {{ end }}
-    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
-    expireAfter: {{ index .Values "karpenter-crds" "default" "expireAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "secondary" "consolidationPolicy" }}
+    expireAfter: {{ index .Values "karpenter-crds" "secondary" "expireAfter" }}
   limits:
     cpu: "1000"
     memory: 1000Gi
-  weight: 99
+  weight: 1
   template:
     metadata:
       labels:
-        role: default
+        role: secondary
     spec:
       kubelet:
         evictionHard:
@@ -137,8 +137,8 @@ spec:
       nodeClassRef:
         apiVersion: karpenter.k8s.aws/v1beta1
         kind: EC2NodeClass
-        name: default
+        name: secondary
       requirements:
-      {{ toYaml (index .Values "karpenter-crds" "default" "requirements") | nindent 6 }}
+      {{ toYaml (index .Values "karpenter-crds" "secondary" "requirements") | nindent 6 }}
 {{- end }}
 {{ end }}
