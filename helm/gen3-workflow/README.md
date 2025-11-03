@@ -108,6 +108,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` | Will push secrets to External Secrets Store. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `false` | Whether the database should be created. |
@@ -166,7 +167,7 @@ A Helm chart for Kubernetes
 | workflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | workflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
 | workflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
-| workflowConfig.hostname | string | `"localhost"` | Hostname where the workflow service runs. |
+| workflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
 | workflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
 | workflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
 | workflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
