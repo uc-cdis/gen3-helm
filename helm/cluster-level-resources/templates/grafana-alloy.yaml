@@ -20,6 +20,7 @@ spec:
       ref: values
       {{- else }}
         values: |
+          priorityClassName: 'alloy-high-priority'
           controller:
             type: "deployment"
             affinity:
@@ -54,7 +55,6 @@ spec:
               requests:
                 cpu: 1000m
                 memory: 1Gi
-            priorityClassName: 'alloy-high-priority'
       {{- end }}
   syncPolicy:
     syncOptions:
