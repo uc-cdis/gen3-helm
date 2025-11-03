@@ -48,7 +48,7 @@ dependencies:
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: etl
-    version: 0.1.16
+    version: 0.1.17
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
