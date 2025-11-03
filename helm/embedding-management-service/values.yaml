@@ -107,7 +107,7 @@ externalSecrets:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 
-    
+
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
   # (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore
@@ -130,7 +130,6 @@ postgres:
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -138,12 +137,17 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+# -- (map) Kubernetes service information.
 service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-  port: 80
+  # -- (int) The port number that the service exposes.
+  port:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      name: http
+
 
 
 resources: {}
@@ -161,12 +165,15 @@ resources: {}
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /_status
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
 readinessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /_status
+    port: 8000
 
 #This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
@@ -177,13 +184,13 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-# volumes:
-# - name: config
-#   configMap:
-#     configMapName: "ems-config"
-#     optional: false
+volumes:
+- name: config
+  configMap:
+    configMapName: ems-config
+    name: ems-config
+    optional: false
 
-imagePullSecrets: []
 
 
       # imagePullSecrets:
@@ -197,7 +204,11 @@ spec:
             name: ems-config
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
+volumeMounts:
+  - name: config-volume
+    readOnly: true
+    mountPath: /config.json
+    subPath: config.json
 # - name: foo
 #   mountPath: "/etc/foo"
 #   readOnly: true

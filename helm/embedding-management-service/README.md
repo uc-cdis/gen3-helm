@@ -50,9 +50,11 @@ A Helm chart for Kubernetes
 | image.repository | string | `"quay.io/cdis/embedding-management-service"` |  |
 | image.tag | string | `"feat_service"` |  |
 | imagePullSecrets | list | `[]` |  |
-| imagePullSecrets | list | `[]` |  |
-| livenessProbe.httpGet.path | string | `"/"` |  |
-| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe.httpGet.path | string | `"/_status"` |  |
+| livenessProbe.httpGet.port | int | `8000` |  |
+| livenessProbe.initialDelaySeconds | int | `30` |  |
+| livenessProbe.periodSeconds | int | `60` |  |
+| livenessProbe.timeoutSeconds | int | `30` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
@@ -66,13 +68,13 @@ A Helm chart for Kubernetes
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| readinessProbe.httpGet.path | string | `"/"` |  |
-| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe.httpGet.path | string | `"/_status"` |  |
+| readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
-| securityContext | object | `{}` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
+| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |
+| service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |
 | serviceAccount.create | bool | `true` |  |
@@ -80,4 +82,11 @@ A Helm chart for Kubernetes
 | spec.template.spec.volumes[0].configMap.name | string | `"ems-config"` |  |
 | spec.template.spec.volumes[0].name | string | `"config"` |  |
 | tolerations | list | `[]` |  |
-| volumeMounts | list | `[]` |  |
+| volumeMounts[0].mountPath | string | `"/config.json"` |  |
+| volumeMounts[0].name | string | `"config-volume"` |  |
+| volumeMounts[0].readOnly | bool | `true` |  |
+| volumeMounts[0].subPath | string | `"config.json"` |  |
+| volumes[0].configMap.configMapName | string | `"ems-config"` |  |
+| volumes[0].configMap.name | string | `"ems-config"` |  |
+| volumes[0].configMap.optional | bool | `false` |  |
+| volumes[0].name | string | `"config"` |  |
