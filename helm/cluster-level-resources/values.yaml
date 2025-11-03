@@ -91,7 +91,7 @@ grafana-alloy:
 karpenter:
   enabled: false
   awsRegion: "us-east-1"
-  targetRevision: v0.32.9
+  targetRevision: v1.0.8
   configuration:
     enabled: false
   resources:
@@ -103,7 +103,7 @@ karpenter:
       cpu: "1"
   controller:
     image:
-      tag: "v0.32.9"
+      tag: "v1.0.8"
       digest: "sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"
 
 karpenter-crds:
