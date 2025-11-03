@@ -161,7 +161,7 @@ karpenter-crds:
           - c
           - m
           - r
-          - t          
+          - t
   jupyter:
     enabled: true
     consolidation: true
@@ -683,7 +683,7 @@ alloy-configmap-data: |
       project = "{{ .Values.project }}",
     }
     endpoint {
-      url = "https://loki.planx-pla.net/loki/api/v1/push"
+      url = "https://loki3.planx-pla.net/loki/api/v1/push"
     }
   }
 
