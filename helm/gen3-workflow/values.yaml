@@ -53,7 +53,7 @@ global:
     separateSecretStore: false
     clusterSecretStoreRef: ""
     # -- (bool) Will push secrets to External Secrets Store.
-    pushGen3WorkflowSecretsToExternalSecret: true
+    pushFunnelOidcClientToExternalSecrets: true
 
   # -- (map) Network policy settings.
   netPolicy:
