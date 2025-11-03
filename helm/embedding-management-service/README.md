@@ -165,9 +165,14 @@ A Helm chart for the gen3 embedding management service
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+<<<<<<< HEAD
 | service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |
 >>>>>>> d19062f7 (updating db deployment)
+=======
+| service | map | `{"port":{"name":"http","port":80,"protocol":"TCP","targetPort":8000},"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000}` | The port number that the service exposes. |
+>>>>>>> ea0cb244 (fix templating)
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |
