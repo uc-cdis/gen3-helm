@@ -101,16 +101,22 @@ A Helm chart for the gen3 embedding management service
 | image.tag | string | `"feat_service"` |  |
 | imagePullSecrets | list | `[]` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d19062f7 (updating db deployment)
 | livenessProbe.httpGet.path | string | `"/_status"` |  |
 | livenessProbe.httpGet.port | int | `8000` |  |
 | livenessProbe.initialDelaySeconds | int | `30` |  |
 | livenessProbe.periodSeconds | int | `60` |  |
 | livenessProbe.timeoutSeconds | int | `30` |  |
+<<<<<<< HEAD
 =======
 | imagePullSecrets | list | `[]` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | string | `"http"` |  |
 >>>>>>> 9791452b (embedding service secrets)
+=======
+>>>>>>> d19062f7 (updating db deployment)
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
@@ -143,6 +149,7 @@ A Helm chart for the gen3 embedding management service
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | readinessProbe.httpGet.path | string | `"/_status"` |  |
 | readinessProbe.httpGet.port | int | `8000` |  |
 =======
@@ -153,6 +160,14 @@ A Helm chart for the gen3 embedding management service
 | resources | object | `{}` |  |
 | service | map | `{"port":{"name":"http","port":80,"protocol":"TCP","targetPort":8000},"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000}` | The port number that the service exposes. |
+=======
+| readinessProbe.httpGet.path | string | `"/_status"` |  |
+| readinessProbe.httpGet.port | int | `8000` |  |
+| replicaCount | int | `1` |  |
+| resources | object | `{}` |  |
+| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}],"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":8000}]` | The port number that the service exposes. |
+>>>>>>> d19062f7 (updating db deployment)
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |
@@ -162,10 +177,14 @@ A Helm chart for the gen3 embedding management service
 | spec.template.spec.volumes[0].name | string | `"config"` |  |
 | tolerations | list | `[]` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d19062f7 (updating db deployment)
 | volumeMounts[0].mountPath | string | `"/config.json"` |  |
 | volumeMounts[0].name | string | `"config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
 | volumeMounts[0].subPath | string | `"config.json"` |  |
+<<<<<<< HEAD
 | volumes[0].configMap.name | string | `"ems-config"` |  |
 | volumes[0].configMap.optional | bool | `false` |  |
 | volumes[0].name | string | `"config"` |  |
@@ -198,3 +217,9 @@ A Helm chart for the gen3 embedding management service
 =======
 | volumeMounts | list | `[]` |  |
 >>>>>>> 9791452b (embedding service secrets)
+=======
+| volumes[0].configMap.configMapName | string | `"ems-config"` |  |
+| volumes[0].configMap.name | string | `"ems-config"` |  |
+| volumes[0].configMap.optional | bool | `false` |  |
+| volumes[0].name | string | `"config"` |  |
+>>>>>>> d19062f7 (updating db deployment)
