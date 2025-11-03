@@ -47,6 +47,10 @@ dependencies:
     version: 0.0.33
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+  - name: embedding-management-service
+    version: 0.1.0
+    repository: file://../embedding-management-service
+    condition: embedding-management-service.enabled
   - name: etl
     version: 0.1.16
     repository: file://../etl
@@ -137,7 +141,7 @@ dependencies:
     condition: gen3-analysis.enabled
 
   - name: elasticsearch
-    version: 7.10.2
+    version: 8.5.1
     repository: "https://helm.elastic.co"
     condition: global.dev
   - name: postgresql

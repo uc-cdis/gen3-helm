@@ -40,6 +40,31 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ems-dbcreds
+                  key: host
+                  optional: false  
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ems-dbcreds
+                  key: username
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ems-dbcreds
+                  key: password
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: ems-dbcreds
+                  key: database
+                  optional: false
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -52,6 +77,9 @@ spec:
           {{- end }}
       {{- with .Values.volumes }}
       volumes:
+        - name: ems-config
+          configMap:
+            name: ems-config
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
