@@ -102,6 +102,7 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../access-backend | access-backend | 0.1.18 |
 | file://../ambassador | ambassador | 0.1.35 |
 | file://../arborist | arborist | 0.1.32 |
@@ -130,6 +131,32 @@ Helm chart to deploy Gen3 Data Commons
 | file://../indexd | indexd | 0.1.44 |
 | file://../manifestservice | manifestservice | 0.1.40 |
 | file://../metadata | metadata | 0.1.41 |
+=======
+| file://../access-backend | access-backend | 0.1.10 |
+| file://../ambassador | ambassador | 0.1.26 |
+| file://../arborist | arborist | 0.1.25 |
+| file://../argo-wrapper | argo-wrapper | 0.1.20 |
+| file://../audit | audit | 0.1.31 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
+| file://../cedar | cedar | 0.1.13 |
+| file://../cohort-middleware | cohort-middleware | 0.1.12 |
+| file://../common | common | 0.1.24 |
+| file://../dashboard | dashboard | 0.1.8 |
+| file://../datareplicate | datareplicate | 0.0.29 |
+| file://../dicom-server | dicom-server | 0.1.20 |
+| file://../embedding-management-service | embedding-management-service | 0.1.0 |
+| file://../etl | etl | 0.1.16 |
+| file://../fence | fence | 0.1.60 |
+| file://../frontend-framework | frontend-framework | 0.1.13 |
+| file://../gen3-analysis | gen3-analysis | 0.1.2 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.6 |
+| file://../guppy | guppy | 0.1.26 |
+| file://../hatchery | hatchery | 0.1.53 |
+| file://../indexd | indexd | 0.1.34 |
+| file://../manifestservice | manifestservice | 0.1.33 |
+| file://../metadata | metadata | 0.1.31 |
+>>>>>>> 9791452b (embedding service secrets)
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.3 |
@@ -144,7 +171,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
 | file://../wts | wts | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
+| https://helm.elastic.co | elasticsearch | 8.5.1 |
 
 ## Values
 

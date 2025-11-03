@@ -31,11 +31,16 @@ A Helm chart for the gen3 embedding management service
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+<<<<<<< HEAD
 | embeddingsConfig | string | `"{\n  \"expr\": 256,\n  \"hist\": 1536,\n  \"summ\": 4096,\n  \"text\": 4096\n}\n"` |  |
+=======
+| embeddingsConfig | string | `"{\n  \"expr\": 256,\n  \"hist\": 1536,\n  \"summ\": 4096,\n  \"text\": 4096\n}"` |  |
+>>>>>>> 9791452b (embedding service secrets)
 | externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | fullnameOverride | string | `""` |  |
+<<<<<<< HEAD
 =======
 | affinity | map | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["embedding-management-service"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity to use for the deployment. |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["embedding-management-service"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]` | Option for scheduling to be required or preferred. |
@@ -57,6 +62,8 @@ A Helm chart for the gen3 embedding management service
 | debug | bool | `false` |  |
 | externalSecrets | map | `nil` | External Secrets settings. |
 >>>>>>> 5796495f (adding embedding management service to helm)
+=======
+>>>>>>> 9791452b (embedding service secrets)
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -86,20 +93,30 @@ A Helm chart for the gen3 embedding management service
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9791452b (embedding service secrets)
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/cdis/embedding-management-service"` |  |
 | image.tag | string | `"feat_service"` |  |
 | imagePullSecrets | list | `[]` |  |
+<<<<<<< HEAD
 | livenessProbe.httpGet.path | string | `"/_status"` |  |
 | livenessProbe.httpGet.port | int | `8000` |  |
 | livenessProbe.initialDelaySeconds | int | `30` |  |
 | livenessProbe.periodSeconds | int | `60` |  |
 | livenessProbe.timeoutSeconds | int | `30` |  |
+=======
+| imagePullSecrets | list | `[]` |  |
+| livenessProbe.httpGet.path | string | `"/"` |  |
+| livenessProbe.httpGet.port | string | `"http"` |  |
+>>>>>>> 9791452b (embedding service secrets)
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+<<<<<<< HEAD
 =======
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/michaellukowski/meshcard","tag":"latest"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
@@ -114,6 +131,8 @@ A Helm chart for the gen3 embedding management service
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Discovery-Tab"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 >>>>>>> 5796495f (adding embedding management service to helm)
+=======
+>>>>>>> 9791452b (embedding service secrets)
 | postgres | map | `{"database":null,"dbCreate":false,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `false` | Whether the database should be created. Default to global.postgres.dbCreate |
@@ -123,8 +142,13 @@ A Helm chart for the gen3 embedding management service
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | readinessProbe.httpGet.path | string | `"/_status"` |  |
 | readinessProbe.httpGet.port | int | `8000` |  |
+=======
+| readinessProbe.httpGet.path | string | `"/"` |  |
+| readinessProbe.httpGet.port | string | `"http"` |  |
+>>>>>>> 9791452b (embedding service secrets)
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | service | map | `{"port":{"name":"http","port":80,"protocol":"TCP","targetPort":8000},"type":"ClusterIP"}` | Kubernetes service information. |
@@ -134,7 +158,10 @@ A Helm chart for the gen3 embedding management service
 | serviceAccount.automount | bool | `true` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
+| spec.template.spec.volumes[0].configMap.name | string | `"ems-config"` |  |
+| spec.template.spec.volumes[0].name | string | `"config"` |  |
 | tolerations | list | `[]` |  |
+<<<<<<< HEAD
 | volumeMounts[0].mountPath | string | `"/config.json"` |  |
 | volumeMounts[0].name | string | `"config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
@@ -168,3 +195,6 @@ A Helm chart for the gen3 embedding management service
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"},{"mountPath":"/ems/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"ems.env"},{"mountPath":"/src/ems.json","name":"config-manifest","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 >>>>>>> 5796495f (adding embedding management service to helm)
+=======
+| volumeMounts | list | `[]` |  |
+>>>>>>> 9791452b (embedding service secrets)

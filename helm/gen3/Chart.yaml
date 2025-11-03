@@ -202,12 +202,17 @@ dependencies:
 >>>>>>> 761bd6c5 (update chart version)
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+<<<<<<< HEAD
   - name: data-upload-cron
     version: 0.1.4
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
     version: 0.1.5
+=======
+  - name: embedding-management-service
+    version: 0.1.0
+>>>>>>> 9791452b (embedding service secrets)
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
@@ -544,7 +549,7 @@ dependencies:
     condition: ohdsi-webapi.enabled
 
   - name: elasticsearch
-    version: 7.10.2
+    version: 8.5.1
     repository: "https://helm.elastic.co"
     condition: global.dev
   - name: postgresql
