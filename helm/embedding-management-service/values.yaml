@@ -143,10 +143,10 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
-      name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8000
+    name: http
 
 
 
