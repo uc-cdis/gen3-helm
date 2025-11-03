@@ -130,3 +130,4 @@ spec:
     roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gen3workflow.serviceAccountName" . }}"
     policyArnRef:
       name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+{{- end }}
