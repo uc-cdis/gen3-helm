@@ -11,12 +11,8 @@ metadata:
 spec:
   {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
   amiFamily: AL2023
-  {{- else }}
-  amiFamily: AL2
-  {{- end }}
   amiSelectorTerms:
-  - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
-    owner: "143731057154"
+  - name: al2023@latest
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
