@@ -55,14 +55,7 @@ jobs:
   
       - name: Kubeconform
         run: |
-          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary -ignore-missing-schemas -debug
-
-
-      # - name: helm-check
-      #   uses: igabaydulin/helm-check-action@0.1.4
-      #   env:
-      #     CHART_LOCATION: ./helm/gen3
-      #     CHART_VALUES: ./.github/workflows/lint_values/values.yaml
+          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary -ignore-missing-schemas
 
 
 
