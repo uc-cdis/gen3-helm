@@ -35,10 +35,6 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
 
-      # - name: Helm deps
-      #   run: |
-      #     helm dependency build ./helm/gen3
-
       - name: Set up Kubeconform
         id: setup-kubeconform
         uses: bmuschko/setup-kubeconform@v1
@@ -53,74 +49,6 @@ jobs:
             echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
         shell: bash
   
-      - name: Kubeconform only changed
-        run: |
-          #!/usr/bin/env bash
-          set -euo pipefail
-
-          # Base ref to diff against. Works for local and GitHub Actions.
-          BASE_REF="${BASE_REF:-${GITHUB_BASE_REF:-origin/main}}"
-
-          # Find merge base (safe for PRs/feature branches)
-          MERGE_BASE="$(git merge-base HEAD "$BASE_REF" 2>/dev/null || true)"
-          if [[ -z "${MERGE_BASE:-}" ]]; then
-            echo "WARN: couldn't resolve merge-base with $BASE_REF; falling back to comparing against $BASE_REF directly"
-            MERGE_BASE="$BASE_REF"
-          fi
-
-          # 1) List files changed under helm/ (Added, Copied, Modified, Renamed, Type)
-          mapfile -t CHANGED_FILES < <(
-            git diff --name-only --diff-filter=ACMRT "$MERGE_BASE"...HEAD -- helm/ 2>/dev/null || true
-          )
-
-          # 2) Map each file to its chart directory (the closest parent containing Chart.yaml)
-          declare -A CHART_DIRS=()
-          for f in "${CHANGED_FILES[@]}"; do
-            # skip deletions implicitly (file won't exist; we only validate existing charts)
-            dir="$(dirname "$f")"
-            while [[ "$dir" != "." && "$dir" != "/" ]]; do
-              if [[ -f "$dir/Chart.yaml" ]]; then
-                CHART_DIRS["$dir"]=1
-                break
-              fi
-              dir="$(dirname "$dir")"
-            done
-          done
-
-          # Nothing to do?
-          if [[ "${#CHART_DIRS[@]}" -eq 0 ]]; then
-            echo "No new or changed charts under helm/ relative to $MERGE_BASE…HEAD."
-            exit 0
-          fi
-
-          # Helper: skip library charts
-          is_library() {
-            local chart_dir="$1"
-            if command -v yq >/dev/null 2>&1; then
-              [[ "$(yq -r '.type // ""' "$chart_dir/Chart.yaml" 2>/dev/null)" == "library" ]]
-            else
-              grep -Eq '^[[:space:]]*type:[[:space:]]*library[[:space:]]*$' "$chart_dir/Chart.yaml"
-            fi
-          }
-
-          # 3) Validate only the changed charts
-          for chart in $(printf '%s\n' "${!CHART_DIRS[@]}" | sort); do
-            if is_library "$chart"; then
-              echo ">>> Skipping library chart: $chart"
-              continue
-            fi
-            if [[ -f "$chart/.skip-kubeconform" ]]; then
-              echo ">>> Skipping by marker: $chart"
-              continue
-            fi
-
-            echo "=== Validating chart: $chart ==="
-            helm dep up "$chart" >/dev/null
-            helm template "$chart" --include-crds \
-            | kubeconform --summary -ignore-missing-schemas
-            echo
-          done
-
       # - name: Kubeconform
       #   run: |
       #     #!/usr/bin/env bash
@@ -182,6 +110,42 @@ jobs:
       #       echo
       #     '
 
+      - name: Kubeconform Parrallel Better Output
+        run: |
+          find helm -type f -name Chart.yaml -print0 \
+          | xargs -0 -n1 -P "$(nproc)" -I{} bash -eo pipefail -c '
+            chart="$(dirname "{}")"
+
+            # skip library charts
+            if command -v yq >/dev/null 2>&1; then
+              type="$(yq -r ".type // \"\"" "$chart/Chart.yaml" 2>/dev/null)"
+              [[ "$type" == "library" ]] && { echo ">>> Skipping library chart: $chart"; exit 0; }
+            else
+              grep -Eq "^[[:space:]]*type:[[:space:]]*library[[:space:]]*$" "$chart/Chart.yaml" \
+                && { echo ">>> Skipping library chart: $chart"; exit 0; }
+            fi
+
+            [[ -f "$chart/.skip-kubeconform" ]] && { echo ">>> Skipping by marker: $chart"; exit 0; }
+
+            tmp="$(mktemp)"
+            status=0
+            {
+              echo "=== Validating: $chart ==="
+              helm dep up "$chart" >/dev/null
+              helm template "$chart" --include-crds \
+              | kubeconform --summary -ignore-missing-schemas
+              echo
+            } >"$tmp" 2>&1 || status=$?
+
+            # Print the whole block together
+            if [[ $status -eq 0 ]]; then
+              cat "$tmp"
+            else
+              echo "=== FAILED: $chart ==="
+              cat "$tmp"
+            fi
+            rm -f "$tmp"
+          '
 
 
       # - name: Kubeconform
