@@ -83,23 +83,27 @@ jobs:
 
       - name: Kubeconform Parrallel
         run: |
-          export -f is_library
-          is_library() {
-            local chart_dir="$1"
-            if command -v yq >/dev/null 2>&1; then
-              [[ "$(yq -r '.type // ""' "$chart_dir/Chart.yaml" 2>/dev/null)" == "library" ]]
-            else
-              grep -Eq '^[[:space:]]*type:[[:space:]]*library[[:space:]]*$$' "$chart_dir/Chart.yaml"
-            fi
-          }
-
           find helm -type f -name Chart.yaml -print0 \
-          | xargs -0 -n1 dirname \
-          | sort \
-          | parallel --halt now,fail=1 '
-            chart={}
-            if is_library "$chart"; then
-              echo ">>> Skipping library chart: $chart"
+          | xargs -0 -n1 -P "$(nproc)" -I{} bash -eo pipefail -c '
+            chart="$(dirname "{}")"
+
+            # skip library charts
+            if command -v yq >/dev/null 2>&1; then
+              type="$(yq -r ".type // \"\"" "$chart/Chart.yaml" 2>/dev/null)"
+              if [[ "$type" == "library" ]]; then
+                echo ">>> Skipping library chart: $chart"
+                exit 0
+              fi
+            else
+              if grep -Eq "^[[:space:]]*type:[[:space:]]*library[[:space:]]*$" "$chart/Chart.yaml"; then
+                echo ">>> Skipping library chart: $chart"
+                exit 0
+              fi
+            fi
+
+            # optional per-chart skip marker
+            if [[ -f "$chart/.skip-kubeconform" ]]; then
+              echo ">>> Skipping by marker: $chart"
               exit 0
             fi
 
@@ -109,6 +113,7 @@ jobs:
             | kubeconform --summary -ignore-missing-schemas
             echo
           '
+
 
 
       # - name: Kubeconform
