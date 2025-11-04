@@ -9,7 +9,6 @@ kind: EC2NodeClass
 metadata:
   name: gpu
 spec:
-  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
   amiFamily: AL2023
   amiSelectorTerms:
   - name: al2023@latest
