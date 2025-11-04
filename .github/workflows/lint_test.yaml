@@ -49,7 +49,7 @@ jobs:
             echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
         shell: bash
   
-      - name: Kubeconform Parrallel Better Output
+      - name: Kubeconform Parrallel
         run: |
           find helm -type f -name Chart.yaml -print0 \
           | xargs -0 -P "$(nproc)" -I{} bash -eo pipefail -c '
