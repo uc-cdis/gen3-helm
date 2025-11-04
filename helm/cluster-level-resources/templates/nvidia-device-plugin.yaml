@@ -7,8 +7,8 @@ metadata:
 spec:
   project: default
   sources:
-    - chart: aws-load-balancer-controller
-      repoURL: https://aws.github.io/eks-charts
+    - chart: nvidia-device-plugin
+      repoURL: https://nvidia.github.io/k8s-device-plugin
       targetRevision: {{ index .Values "nvidia-device-plugin" "targetRevision" }}
       helm:
         releaseName: nvidia-device-plugin
