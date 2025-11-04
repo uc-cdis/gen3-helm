@@ -87,7 +87,7 @@ spec:
               imagePullPolicy: {{ .Values.image.spark.pullPolicy }}
               resources:
                 requests:
-                  cpu: {{  .Values.resources.spark.requests.cpu }}
+                  cpu: {{ .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
               command: ["/bin/bash" ]
               args: 
