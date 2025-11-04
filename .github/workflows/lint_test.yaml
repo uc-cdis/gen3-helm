@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -34,22 +34,37 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
-      
-      - uses: actions/checkout@master
 
       - name: Helm deps
         run: |
           helm dependency build ./helm/gen3
 
-      - name: helm-check
-        uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ./helm/gen3
-          CHART_VALUES: ./.github/workflows/lint_values/values.yaml
+      - name: Set up Kubeconform
+        id: setup-kubeconform
+        uses: bmuschko/setup-kubeconform@v1
+        with:
+          kubeconform-version: '0.6.1'
 
-      - name: Run Helm Install Dry Run
+      - name: Print Kubeconform installation path
+        env:
+          KUBECONFORM_INSTALLATION_PATH: ${{ steps.setup-kubeconform.outputs.installation-path }}
         run: |
-          helm install -f ./.github/workflows/lint_values/values.yaml gen3 gen3 --dry-run --debug
+            echo "Kubeconform installed..."
+            echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
+        shell: bash
+  
+      - name: Helm deps
+        run: |
+          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary --strict
+
+
+      # - name: helm-check
+      #   uses: igabaydulin/helm-check-action@0.1.4
+      #   env:
+      #     CHART_LOCATION: ./helm/gen3
+      #     CHART_VALUES: ./.github/workflows/lint_values/values.yaml
+
+
 
   # TODO: add back in when we have tests
   # deploy-and-test-chart:
