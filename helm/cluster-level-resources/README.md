@@ -142,6 +142,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | kube-state-metrics.configuration.enabled | bool | `false` |  |
 | kube-state-metrics.enabled | bool | `false` |  |
 | kube-state-metrics.targetRevision | string | `"5.28.0"` |  |
+| nvidia-device-plugin.configuration.enabled | bool | `false` |  |
+| nvidia-device-plugin.enabled | bool | `false` |  |
+| nvidia-device-plugin.targetRevision | string | `"v0.18.0"` |  |
 | project | string | `"unfunded"` |  |
 | vpc-cni.configuration.enabled | bool | `false` |  |
 | vpc-cni.enabled | bool | `false` |  |
