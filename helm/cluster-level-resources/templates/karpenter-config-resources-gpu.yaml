@@ -29,7 +29,7 @@ spec:
   securityGroupSelectorTerms:
   # Use a GPU-specific SG discovery tag (matches your original -gpu convention)
   - tags:
-      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-gpu
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
 
   subnetSelectorTerms:
   - tags:
