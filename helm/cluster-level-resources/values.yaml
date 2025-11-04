@@ -138,7 +138,7 @@ karpenter-crds:
           - r
           - t
   gpu:
-    enabled: false
+    enabled: true
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
