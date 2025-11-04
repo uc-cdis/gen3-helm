@@ -210,7 +210,7 @@ kube-state-metrics:
   targetRevision: 5.28.0
 
 nvidia-device-plugin:
-  enabled: false
+  enabled: true
   configuration:
     enabled: false
   targetRevision: v0.18.0
