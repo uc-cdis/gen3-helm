@@ -38,7 +38,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port.targetPort }}
+              containerPort: 8000
               protocol: TCP
           env:
             - name: DB_HOST
