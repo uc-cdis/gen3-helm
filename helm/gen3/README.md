@@ -9,6 +9,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.3.39](https://img.shields.io/badge/Version-0.3.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.2.62](https://img.shields.io/badge/Version-0.2.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -37,6 +38,9 @@
 =======
 ![Version: 0.2.76](https://img.shields.io/badge/Version-0.2.76-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
+=======
+![Version: 0.2.78](https://img.shields.io/badge/Version-0.2.78-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
 
 Helm chart to deploy Gen3 Data Commons
 

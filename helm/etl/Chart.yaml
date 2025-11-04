@@ -16,10 +16,14 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.22
 =======
 version: 0.1.17
 >>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
+=======
+version: 0.1.18
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

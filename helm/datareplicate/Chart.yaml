@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -32,6 +33,9 @@ version: 0.0.32
 =======
 version: 0.0.33
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+version: 0.0.34
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

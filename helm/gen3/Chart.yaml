@@ -79,8 +79,12 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
+<<<<<<< HEAD
     version: 0.0.33
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+    version: 0.0.34
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -93,10 +97,14 @@ dependencies:
     condition: embedding-management-service.enabled
   - name: etl
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
 =======
     version: 0.1.17
 >>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
+=======
+    version: 0.1.18
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -286,6 +294,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -314,6 +323,9 @@ version: 0.2.74
 =======
 version: 0.2.76
 >>>>>>> a6ef146d (Increase SPARK_EXECUTOR_MEMORY and SPARK_DRIVER_MEMORY for ETL (#424))
+=======
+version: 0.2.78
+>>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
