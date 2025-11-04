@@ -52,10 +52,25 @@ jobs:
             echo "Kubeconform installed..."
             echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
         shell: bash
-  
+      
       - name: Kubeconform
         run: |
-          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary -ignore-missing-schemas
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          # Find every chart under ./helm (any depth)
+          while IFS= read -r chart; do
+            echo "=== Validating chart: $chart ==="
+            helm dep up "$chart" >/dev/null
+            # Render and validate this chart only
+            helm template "$chart" --include-crds \
+            | kubeconform --summary -ignore-missing-schemas
+            echo
+          done < <(find helm -type f -name Chart.yaml -print0 | xargs -0 -n1 dirname | sort)
+  
+      # - name: Kubeconform
+      #   run: |
+      #     helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary -ignore-missing-schemas
 
 
 
