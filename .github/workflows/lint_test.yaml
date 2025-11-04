@@ -49,71 +49,10 @@ jobs:
             echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
         shell: bash
   
-      # - name: Kubeconform
-      #   run: |
-      #     #!/usr/bin/env bash
-      #     set -euo pipefail
-
-      #     is_library() {
-      #       local chart_dir="$1"
-      #       if command -v yq >/dev/null 2>&1; then
-      #         [[ "$(yq -r '.type // ""' "$chart_dir/Chart.yaml" 2>/dev/null)" == "library" ]]
-      #       else
-      #         grep -Eq '^[[:space:]]*type:[[:space:]]*library[[:space:]]*$$' "$chart_dir/Chart.yaml"
-      #       fi
-      #     }
-
-      #     while IFS= read -r chart; do
-      #       if is_library "$chart"; then
-      #         echo ">>> Skipping library chart: $chart"
-      #         continue
-      #       fi
-
-      #       echo "=== Validating chart: $chart ==="
-      #       helm dep up "$chart" >/dev/null
-      #       helm template "$chart" --include-crds \
-      #       | kubeconform --summary -ignore-missing-schemas
-      #       echo
-      #     done < <(find helm -type f -name Chart.yaml -print0 | xargs -0 -n1 dirname | sort)
-
-
-      # - name: Kubeconform Parrallel
-      #   run: |
-      #     find helm -type f -name Chart.yaml -print0 \
-      #     | xargs -0 -n1 -P "$(nproc)" -I{} bash -eo pipefail -c '
-      #       chart="$(dirname "{}")"
-
-      #       # skip library charts
-      #       if command -v yq >/dev/null 2>&1; then
-      #         type="$(yq -r ".type // \"\"" "$chart/Chart.yaml" 2>/dev/null)"
-      #         if [[ "$type" == "library" ]]; then
-      #           echo ">>> Skipping library chart: $chart"
-      #           exit 0
-      #         fi
-      #       else
-      #         if grep -Eq "^[[:space:]]*type:[[:space:]]*library[[:space:]]*$" "$chart/Chart.yaml"; then
-      #           echo ">>> Skipping library chart: $chart"
-      #           exit 0
-      #         fi
-      #       fi
-
-      #       # optional per-chart skip marker
-      #       if [[ -f "$chart/.skip-kubeconform" ]]; then
-      #         echo ">>> Skipping by marker: $chart"
-      #         exit 0
-      #       fi
-
-      #       echo "=== Validating: $chart ==="
-      #       helm dep up "$chart" >/dev/null
-      #       helm template "$chart" --include-crds \
-      #       | kubeconform --summary -ignore-missing-schemas
-      #       echo
-      #     '
-
       - name: Kubeconform Parrallel Better Output
         run: |
           find helm -type f -name Chart.yaml -print0 \
-          | xargs -0 -n1 -P "$(nproc)" -I{} bash -eo pipefail -c '
+          | xargs -0 -P "$(nproc)" -I{} bash -eo pipefail -c '
             chart="$(dirname "{}")"
 
             # skip library charts
@@ -146,11 +85,6 @@ jobs:
             fi
             rm -f "$tmp"
           '
-
-
-      # - name: Kubeconform
-      #   run: |
-      #     helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary -ignore-missing-schemas
 
 
 
