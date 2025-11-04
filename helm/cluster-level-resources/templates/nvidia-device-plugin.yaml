@@ -18,6 +18,7 @@ spec:
     - repoURL: {{ .Values.configuration.configurationRepo }}
       targetRevision: {{ .Values.configuration.configurationRevision }}
       ref: values
+      {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kube-system
