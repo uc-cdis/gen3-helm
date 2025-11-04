@@ -53,7 +53,7 @@ jobs:
             echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
         shell: bash
   
-      - name: Helm deps
+      - name: Kubeconform
         run: |
           helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary --strict
 
