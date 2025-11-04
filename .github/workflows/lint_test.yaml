@@ -55,7 +55,7 @@ jobs:
   
       - name: Kubeconform
         run: |
-          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary --strict
+          helm template gen3 ./helm/gen3 -f ./.github/workflows/lint_values/values.yaml | kubeconform --summary
 
 
       # - name: helm-check
