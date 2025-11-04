@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -34,7 +34,60 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
-      
+
+      - name: Set up Kubeconform
+        id: setup-kubeconform
+        uses: bmuschko/setup-kubeconform@v1
+        with:
+          kubeconform-version: '0.6.1'
+
+      - name: Print Kubeconform installation path
+        env:
+          KUBECONFORM_INSTALLATION_PATH: ${{ steps.setup-kubeconform.outputs.installation-path }}
+        run: |
+            echo "Kubeconform installed..."
+            echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
+        shell: bash
+  
+      - name: Kubeconform Parrallel
+        run: |
+          find helm -type f -name Chart.yaml -print0 \
+          | xargs -0 -P "$(nproc)" -I{} bash -eo pipefail -c '
+            chart="$(dirname "{}")"
+
+            # skip library charts
+            if command -v yq >/dev/null 2>&1; then
+              type="$(yq -r ".type // \"\"" "$chart/Chart.yaml" 2>/dev/null)"
+              [[ "$type" == "library" ]] && { echo ">>> Skipping library chart: $chart"; exit 0; }
+            else
+              grep -Eq "^[[:space:]]*type:[[:space:]]*library[[:space:]]*$" "$chart/Chart.yaml" \
+                && { echo ">>> Skipping library chart: $chart"; exit 0; }
+            fi
+
+            [[ -f "$chart/.skip-kubeconform" ]] && { echo ">>> Skipping by marker: $chart"; exit 0; }
+
+            tmp="$(mktemp)"
+            status=0
+            {
+              echo "=== Validating: $chart ==="
+              helm dep up "$chart" >/dev/null
+              helm template "$chart" --include-crds \
+              | kubeconform --summary -ignore-missing-schemas
+              echo
+            } >"$tmp" 2>&1 || status=$?
+
+            # Print the whole block together
+            if [[ $status -eq 0 ]]; then
+              cat "$tmp"
+            else
+              echo "=== FAILED: $chart ==="
+              cat "$tmp"
+            fi
+            rm -f "$tmp"
+          '
+
+
+
   # TODO: add back in when we have tests
   # deploy-and-test-chart:
   #   name: Deploy and Test Chart

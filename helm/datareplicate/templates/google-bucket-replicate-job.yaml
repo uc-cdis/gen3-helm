@@ -1,4 +1,4 @@
-{{- if .Values.googleBucketReplicateJob.enabled -}}
+{{- if .Values.googleBucketReplicateJob.enabled }}
 apiVersion: batch/v1
 kind: CronJob # Change this to cronjob and set suspend: true 
 metadata:

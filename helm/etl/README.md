@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -105,7 +105,8 @@ A Helm chart for gen3 etl
 | resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
 | resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.tube.requests | map | `{"cpu":"10m","memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.tube.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
 | securityContext | map | `{}` | Security context for the containers in the pod |
