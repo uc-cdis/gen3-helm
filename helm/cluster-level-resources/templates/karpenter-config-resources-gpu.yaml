@@ -11,7 +11,7 @@ metadata:
 spec:
   amiFamily: AL2023
   amiSelectorTerms:
-  - name: al2023@latest
+  - alias: al2023@latest
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
