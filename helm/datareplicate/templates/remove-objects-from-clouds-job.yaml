@@ -39,7 +39,7 @@ spec:
                 secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
