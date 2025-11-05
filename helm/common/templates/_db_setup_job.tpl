@@ -250,8 +250,7 @@ kind: PushSecret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
 spec:
-  updatePolicy: IfNotExists     # create in provider if missing; don’t overwrite later
-  deletionPolicy: Retain        # don’t delete the provider secret if this resource is removed
+  updatePolicy: IfNotExists
   refreshInterval: 15s
   secretStoreRefs:
     - name: {{ include "common.SecretStore" . }}
