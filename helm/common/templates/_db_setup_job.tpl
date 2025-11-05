@@ -207,7 +207,13 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if not .Values.global.externalSecrets.deploy }}
+{{- if and 
+      (or 
+        (not .Values.global.externalSecrets.deploy)
+        (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate)
+      )
+      (not .Values.postgres.bootstrap)
+}}
 apiVersion: v1
 kind: Secret
 metadata:
