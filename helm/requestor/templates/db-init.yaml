@@ -3,4 +3,7 @@
 {{ include "common.db_setup_job" . }}
 ---
 {{ include "common.db_setup_sa" . }}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
 ---
+{{ include "common.db-push-secret" . }}
+{{- end }}

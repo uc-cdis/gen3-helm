@@ -101,23 +101,53 @@ spec:
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
           - name: SERVICE_PGUSER
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds-bootstrap
+                key: username
+                optional: false
+          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: username
                 optional: false
+          {{- end }}
           - name: SERVICE_PGDB
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds-bootstrap
+                key: database
+                optional: false
+          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: database
                 optional: false
+          {{- end }}
           - name: SERVICE_PGPASS
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds
+                key: password
+                optional: true
+          - name: SERVICE_PGPASS_BOOTSTRAP
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Chart.Name }}-dbcreds-bootstrap
+                key: password
+                optional: false
+          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: password
                 optional: false
+          {{- end }}
           - name: GEN3_HOME
             value: /home/ubuntu/cloud-automation
         args:
@@ -144,7 +174,15 @@ spec:
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
-              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+
+              # Bootstrap logic for External Secrets:
+              # On first run, SERVICE_PGPASS won't exist (secret not synced yet) — use bootstrap password.
+              # If SERVICE_PGPASS is set, the secret already exists in Secrets Manager — use it to avoid recreating the DB.
+              if [[ -n "${SERVICE_PGPASS}" ]]; then
+                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+              else
+                PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+              fi
 
               # Update secret to signal that db is ready, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
@@ -169,7 +207,7 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
+{{- if not .Values.global.externalSecrets.deploy }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -186,3 +224,71 @@ data:
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Bootstrap Secret for PushSecret to populate External Secret
+*/}}
+{{- define "common.secret.db.bootstrap" -}}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}
+type: Opaque
+stringData:
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | quote }}
+{{- end }}
+{{- end -}}
+
+
+{{- define "common.pushSecret.db" -}}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds
+spec:
+  updatePolicy: IfNotExists     # create in provider if missing; don’t overwrite later
+  deletionPolicy: Retain        # don’t delete the provider secret if this resource is removed
+  refreshInterval: 15s
+  secretStoreRefs:
+    - name: {{ include "common.SecretStore" . }}
+      kind: SecretStore
+  selector:
+    secret:
+      name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  data:
+    - match:
+        secretKey: password
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+          property: password
+    - match:
+        secretKey: username
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+          property: username
+    - match:
+        secretKey: host
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+          property: host
+    - match:
+        secretKey: port
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+          property: port
+    - match:
+        secretKey: database
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+          property: database
+    - match:
+        secretKey: dbcreated
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+      property: dbcreated
+{{- end }}
+{{- end -}}
