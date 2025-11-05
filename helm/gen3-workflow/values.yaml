@@ -358,7 +358,7 @@ funnel:
         # -- (string) The Docker image repository for the Funnel init/plugin container.
         image: quay.io/cdis/funnel-gen3-plugin
         # -- (string) The Docker image tag for the Funnel init/plugin container.
-        tag: debug-logging
+        tag: main-gen3
         # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
         pullPolicy: Always
         # -- (list) Arguments to pass to the init container.
