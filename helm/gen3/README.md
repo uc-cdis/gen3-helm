@@ -10,6 +10,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.3.39](https://img.shields.io/badge/Version-0.3.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.2.62](https://img.shields.io/badge/Version-0.2.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -41,6 +42,9 @@
 =======
 ![Version: 0.2.78](https://img.shields.io/badge/Version-0.2.78-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
+=======
+![Version: 0.2.79](https://img.shields.io/badge/Version-0.2.79-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 8553e1fb (Close quote in es-proxy crossplane policy (#432))
 
 Helm chart to deploy Gen3 Data Commons
 
