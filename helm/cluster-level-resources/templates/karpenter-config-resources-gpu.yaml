@@ -86,7 +86,7 @@ spec:
         kind: EC2NodeClass
         name: gpu
       # v1: expireAfter & terminationGracePeriod live under template.spec
-      expireAfter: 5m
+      expireAfter: 24h
       terminationGracePeriod: 48h
       taints:
       - key: "nvidia.com/gpu"
@@ -124,7 +124,7 @@ spec:
     consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
     {{ end }}
     consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
-    expireAfter: 5m
+    expireAfter: 24h
   limits:
     cpu: "1000"
     memory: 1000Gi
@@ -185,7 +185,7 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: gpu
-      expireAfter: 5m
+      expireAfter: 24h
       terminationGracePeriod: 48h
       taints:
       - key: "nvidia.com/gpu"
@@ -223,7 +223,7 @@ spec:
     consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
     {{ end }}
     consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
-    expireAfter: 5m
+    expireAfter: 24h
   limits:
     cpu: "1000"
     memory: 1000Gi
