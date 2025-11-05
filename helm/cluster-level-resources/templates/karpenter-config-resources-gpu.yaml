@@ -89,12 +89,13 @@ spec:
       expireAfter: 30s
       terminationGracePeriod: 48h
       taints:
-      - key: nvidia.com/gpu
-        effect: NoSchedule
+      - effect: NoSchedule
+        key: role
+        value: jupyter
       requirements:
-      - key: node.kubernetes.io/instance-type
+      - key: karpenter.k8s.aws/instance-family
         operator: In
-        values: ["g3.8xlarge"]
+        values: ["g4dn"]
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["on-demand"]
@@ -149,12 +150,13 @@ spec:
         kind: EC2NodeClass
         name: gpu
       taints:
-      - key: nvidia.com/gpu
-        effect: NoSchedule
+      - effect: NoSchedule
+        key: role
+        value: gpu
       requirements:
-      - key: node.kubernetes.io/instance-type
+      - key: karpenter.k8s.aws/instance-family
         operator: In
-        values: ["g3.8xlarge"]
+        values: ["g4dn"]
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["on-demand"]
@@ -184,12 +186,13 @@ spec:
       expireAfter: 30s
       terminationGracePeriod: 48h
       taints:
-      - key: nvidia.com/gpu-shared
-        effect: NoSchedule
+      - effect: NoSchedule
+        key: role
+        value: jupyter
       requirements:
-      - key: node.kubernetes.io/instance-type
+      - key: karpenter.k8s.aws/instance-family
         operator: In
-        values: ["g3.8xlarge"]
+        values: ["g4dn"]
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["spot","on-demand"]
@@ -245,12 +248,13 @@ spec:
         kind: EC2NodeClass
         name: gpu
       taints:
-      - key: nvidia.com/gpu-shared
-        effect: NoSchedule
+      - effect: NoSchedule
+        key: role
+        value: gpu
       requirements:
-      - key: node.kubernetes.io/instance-type
+      - key: karpenter.k8s.aws/instance-family
         operator: In
-        values: ["g3.8xlarge"]
+        values: ["g4dn"]
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["spot","on-demand"]
