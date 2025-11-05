@@ -89,9 +89,10 @@ spec:
       expireAfter: 30s
       terminationGracePeriod: 48h
       taints:
-      - effect: NoSchedule
-        key: role
-        value: gpu
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
@@ -150,9 +151,10 @@ spec:
         kind: EC2NodeClass
         name: gpu
       taints:
-      - effect: NoSchedule
-        key: role
-        value: gpu
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
@@ -186,9 +188,10 @@ spec:
       expireAfter: 30s
       terminationGracePeriod: 48h
       taints:
-      - effect: NoSchedule
-        key: role
-        value: gpu
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
@@ -248,9 +251,10 @@ spec:
         kind: EC2NodeClass
         name: gpu
       taints:
-      - effect: NoSchedule
-        key: role
-        value: gpu
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
