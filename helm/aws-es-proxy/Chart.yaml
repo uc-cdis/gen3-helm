@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.39
 =======
 version: 0.1.31
@@ -24,6 +25,9 @@ version: 0.1.31
 =======
 version: 0.1.32
 >>>>>>> 8553e1fb (Close quote in es-proxy crossplane policy (#432))
+=======
+version: 0.1.33
+>>>>>>> 8bac4f48 (Version bump to fix linting errors)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

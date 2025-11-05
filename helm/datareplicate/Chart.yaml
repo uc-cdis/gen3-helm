@@ -20,6 +20,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -36,6 +37,9 @@ version: 0.0.33
 =======
 version: 0.0.34
 >>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
+=======
+version: 0.0.35
+>>>>>>> 8bac4f48 (Version bump to fix linting errors)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
