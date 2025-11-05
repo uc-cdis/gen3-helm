@@ -91,7 +91,7 @@ spec:
       taints:
       - effect: NoSchedule
         key: role
-        value: jupyter
+        value: gpu
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
@@ -188,7 +188,7 @@ spec:
       taints:
       - effect: NoSchedule
         key: role
-        value: jupyter
+        value: gpu
       requirements:
       - key: karpenter.k8s.aws/instance-family
         operator: In
