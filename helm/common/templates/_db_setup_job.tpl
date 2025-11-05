@@ -243,7 +243,7 @@ stringData:
 {{- end -}}
 
 
-{{- define "common.pushSecret.db" -}}
+{{- define "common.db-push-secret" -}}
 {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
