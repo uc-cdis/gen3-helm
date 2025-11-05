@@ -101,7 +101,7 @@ spec:
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
           - name: SERVICE_PGUSER
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds-bootstrap
@@ -115,7 +115,7 @@ spec:
                 optional: false
           {{- end }}
           - name: SERVICE_PGDB
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds-bootstrap
@@ -129,7 +129,7 @@ spec:
                 optional: false
           {{- end }}
           - name: SERVICE_PGPASS
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
@@ -229,7 +229,7 @@ data:
   Bootstrap Secret for PushSecret to populate External Secret
 */}}
 {{- define "common.secret.db.bootstrap" -}}
-{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -244,7 +244,7 @@ stringData:
 
 
 {{- define "common.db-push-secret" -}}
-{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) }}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
