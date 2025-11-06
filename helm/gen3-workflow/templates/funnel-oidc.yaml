@@ -59,7 +59,7 @@ spec:
                     echo -n "$FUNNEL_OIDC_CLIENT_ID" > /shared/funnel_oidc_client_id
                     echo -n "$FUNNEL_OIDC_CLIENT_SECRET" > /shared/funnel_oidc_client_secret
                   else
-                    echo "No Client_ID exists in secrets or Name matches but Client ID differs. Deleting client: $funnel_client_name"
+                    echo "No Client_ID exists in secrets, or Client Name matches but Client ID differs. Deleting client: $funnel_client_name"
                     fence-create client-delete --client="$funnel_client_name"
                   fi
                   break
@@ -76,7 +76,7 @@ spec:
 
               secrets=$(fence-create client-create --client $funnel_client_name --grant-types client_credentials | tail -1)
               if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
-                echo "Failed generating oidc client for workspace token service: $secrets"
+                echo "Failed generating oidc client for gen3-workflow: $secrets"
                 exit 1
               fi
 
@@ -170,7 +170,7 @@ spec:
               export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
               export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
 
-              echo "Current funnel client_id : $FUNNEL_OIDC_CLIENT_ID ; client_id : $CLIENT_ID"
+              echo "Current funnel client_id : $FUNNEL_OIDC_CLIENT_ID ; configured client_id : $CLIENT_ID"
               if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
 
                 echo "Patching funnel-oidc-client secret with new OIDC client credentials"

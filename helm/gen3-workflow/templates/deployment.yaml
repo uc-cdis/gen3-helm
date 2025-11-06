@@ -19,7 +19,7 @@ spec:
     metadata:
       annotations:
         # This is used to trigger a rolling update when the secrets.yaml changes. 
-        # Only useful if we are keepeing secrets.yaml in the chart.
+        # Only useful if we are keeping secrets.yaml in the chart.
         checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}

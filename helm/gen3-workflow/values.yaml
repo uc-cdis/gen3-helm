@@ -296,7 +296,7 @@ extraLabels:
   # for network policy
   netnolimit: "yes"
 
-workflowConfig:
+gen3WorkflowConfig:
   # -- (string) Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname
   hostname: ""
   # -- (bool) Enables debug mode for the application.
@@ -546,8 +546,8 @@ funnel:
         OidcClientSecret: <redacted>
         # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
         S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
-        # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.workflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
-        OidcTokenUrl: https://{{ .Values.workflowConfig.hostname }}/user
+        # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
+        OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
 
 karpenter:
   nodeclass.yaml: |

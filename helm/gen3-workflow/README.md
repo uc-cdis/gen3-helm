@@ -59,7 +59,7 @@ A Helm chart for Kubernetes
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
 | funnel.mongodb.Plugins.Params.OidcClientId | string | `"<redacted>"` |  |
 | funnel.mongodb.Plugins.Params.OidcClientSecret | string | `"<redacted>"` |  |
-| funnel.mongodb.Plugins.Params.OidcTokenUrl | string | `"https://{{ .Values.workflowConfig.hostname }}/user"` | OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.workflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed. |
+| funnel.mongodb.Plugins.Params.OidcTokenUrl | string | `"https://{{ .Values.gen3WorkflowConfig.hostname }}/user"` | OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed. |
 | funnel.mongodb.Plugins.Params.S3Url | string | `"gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local"` |  |
 | funnel.mongodb.Plugins.Path | string | `"plugin-binaries/auth-plugin"` |  |
 | funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
@@ -91,6 +91,27 @@ A Helm chart for Kubernetes
 | funnel.volumes[3].name | string | `"plugin-volume"` |  |
 | funnel.volumes[4].emptyDir | object | `{}` |  |
 | funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
+| gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
+| gen3WorkflowConfig.db.database | string | `"gen3workflow_test"` | Name of the database to connect to. |
+| gen3WorkflowConfig.db.driver | string | `"postgresql+asyncpg"` | SQLAlchemy-compatible database driver. |
+| gen3WorkflowConfig.db.host | string | `"localhost"` | Hostname of the database server. |
+| gen3WorkflowConfig.db.password | string | `"postgres"` | Password used to authenticate with the database. |
+| gen3WorkflowConfig.db.port | int | `5432` | Port number on which the database listens. |
+| gen3WorkflowConfig.db.user | string | `"postgres"` | Username used to authenticate with the database. |
+| gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
+| gen3WorkflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
+| gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
+| gen3WorkflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
+| gen3WorkflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
+| gen3WorkflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
+| gen3WorkflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
+| gen3WorkflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
+| gen3WorkflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
+| gen3WorkflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
+| gen3WorkflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
+| gen3WorkflowConfig.taskImageWhitelist | list | `[]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
+| gen3WorkflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
+| gen3WorkflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1"}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -157,24 +178,3 @@ A Helm chart for Kubernetes
 | tolerations | list | `[]` | Tolerations for the pods |
 | volumeMounts | list | `[{"mountPath":"/src/gen3-workflow-config.yaml","name":"config-volume","readOnly":true,"subPath":"gen3-workflow-config.yaml"},{"mountPath":"/gen3-workflow/gen3-workflow-config.yaml","name":"config-volume","readOnly":true,"subPath":"gen3-workflow-config.yaml"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"name":"config-volume","secret":{"secretName":"gen3workflow-g3auto"}}]` | Volumes to attach to the container. |
-| workflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
-| workflowConfig.db.database | string | `"gen3workflow_test"` | Name of the database to connect to. |
-| workflowConfig.db.driver | string | `"postgresql+asyncpg"` | SQLAlchemy-compatible database driver. |
-| workflowConfig.db.host | string | `"localhost"` | Hostname of the database server. |
-| workflowConfig.db.password | string | `"postgres"` | Password used to authenticate with the database. |
-| workflowConfig.db.port | int | `5432` | Port number on which the database listens. |
-| workflowConfig.db.user | string | `"postgres"` | Username used to authenticate with the database. |
-| workflowConfig.debug | bool | `false` | Enables debug mode for the application. |
-| workflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
-| workflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
-| workflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
-| workflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
-| workflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
-| workflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
-| workflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
-| workflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
-| workflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
-| workflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
-| workflowConfig.taskImageWhitelist | list | `[]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
-| workflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
-| workflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
