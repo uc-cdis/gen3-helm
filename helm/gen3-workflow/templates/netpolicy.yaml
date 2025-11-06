@@ -222,7 +222,7 @@ spec:
 ---
 # Funnel workers need to be able to access DNS 
 # to interact with pods from different namespace
-# and the Kube API to create excecutor pods
+# and the Kube API to create executor pods
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
