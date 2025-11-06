@@ -244,7 +244,14 @@ metadata:
     app.kubernetes.io/name: {{ $.Chart.Name }}
 type: Opaque
 stringData:
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | quote }}
+  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  port: {{ $.Values.postgres.port | b64enc | quote }}
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+  {{- if $.Values.global.dev }}
+  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- else }}
+  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
 {{- end }}
 {{- end -}}
 
@@ -259,8 +266,13 @@ spec:
   updatePolicy: IfNotExists
   refreshInterval: 15s
   secretStoreRefs:
-    - name: {{ include "common.SecretStore" . }}
+    {{- if ne .Values.global.externalSecrets.clusterSecretStoreRef "" }}
+    - name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
+      kind: ClusterSecretStore
+    {{- else }}
+    - name: {{include "common.SecretStore" .}}
       kind: SecretStore
+    {{- end }}
   selector:
     secret:
       name: {{ $.Chart.Name }}-dbcreds-bootstrap
