@@ -203,6 +203,7 @@ spec:
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
                 # Update secret to signal that db has been created, and services can start
                 kubectl patch secret/{{ .Chart.Name }}-dbcreds-bootstrap -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
+              fi
             fi
 {{- end}}
 {{- end }}
