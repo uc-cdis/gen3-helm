@@ -260,6 +260,7 @@ data:
   {{- else }}
   host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
   {{- end }}
+  dbcreated: {{ "true" | b64enc | quote }}
 {{- end }}
 {{- end -}}
 
