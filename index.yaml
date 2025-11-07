@@ -3,6 +3,20 @@ entries:
   access-backend:
   - apiVersion: v2
     appVersion: 1.6.1
+    created: "2025-11-07T21:13:49.971648414Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for Kubernetes
+    digest: 384cdd1b31bcc17cf655ba48f53d9ee613f86fd8c06eafb5bc6e4d755986ae21
+    name: access-backend
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/access-backend-0.1.12/access-backend-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 1.6.1
     created: "2025-10-07T15:44:42.23417548Z"
     dependencies:
     - name: common
@@ -185,6 +199,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/alloy-0.1.0/alloy-0.1.0.tgz
     version: 0.1.0
   ambassador:
+  - apiVersion: v2
+    appVersion: 1.4.2
+    created: "2025-11-07T21:13:50.09569807Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for deploying ambassador for gen3
+    digest: 63b86af652b4d1c2f4135a33bc6e70b04d10dfaa1c7ca5617b36e392dc429222
+    name: ambassador
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/ambassador-0.1.27/ambassador-0.1.27.tgz
+    version: 0.1.27
   - apiVersion: v2
     appVersion: 1.4.2
     created: "2025-08-05T21:59:58.243831407Z"
@@ -498,6 +526,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/ambassador-0.0.1/ambassador-0.0.1.tgz
     version: 0.0.1
   arborist:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:50.264012389Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 arborist
+    digest: da28230cb270f0659a06a3478a1ff5e3c0e25fa3753201cc0cd77a7e82eb27a2
+    name: arborist
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/arborist-0.1.26/arborist-0.1.26.tgz
+    version: 0.1.26
   - apiVersion: v2
     appVersion: master
     created: "2025-08-05T21:59:58.386317006Z"
@@ -949,6 +995,20 @@ entries:
   argo-wrapper:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:50.388913815Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Argo Wrapper Service
+    digest: deeffc7801bdfcf10e23e80ed76da2e970da54b5b16102d63759be87e47bcb0a
+    name: argo-wrapper
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/argo-wrapper-0.1.21/argo-wrapper-0.1.21.tgz
+    version: 0.1.21
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-19T17:20:45.30990509Z"
     dependencies:
     - name: common
@@ -1230,6 +1290,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/argo-wrapper-0.0.1/argo-wrapper-0.0.1.tgz
     version: 0.0.1
   audit:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:50.533543125Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for Kubernetes
+    digest: 3dd9ffa5804903ebfc70180d4235fff74e78a67b174cb5fffa4683e4aa1abd02
+    name: audit
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/audit-0.1.33/audit-0.1.33.tgz
+    version: 0.1.33
   - apiVersion: v2
     appVersion: master
     created: "2025-10-03T15:39:58.368805047Z"
@@ -1809,6 +1887,20 @@ entries:
   aws-es-proxy:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:50.647669074Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for AWS ES Proxy Service for gen3
+    digest: 3c39bb077b5160317f80f9549d49149971e767289f7c4c26ed596adf6fa72b8a
+    name: aws-es-proxy
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/aws-es-proxy-0.1.33/aws-es-proxy-0.1.33.tgz
+    version: 0.1.33
+  - apiVersion: v2
+    appVersion: master
     created: "2025-11-05T17:27:54.747624879Z"
     dependencies:
     - name: common
@@ -2238,6 +2330,20 @@ entries:
   cedar:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:50.772548087Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 cedar wrapper
+    digest: 80cd8d6b45ab66b226a95224d72baba8ff538c72a42df95a9f8554f875dab99e
+    name: cedar
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/cedar-0.1.14/cedar-0.1.14.tgz
+    version: 0.1.14
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-05T21:59:58.932372773Z"
     dependencies:
     - name: common
@@ -2553,6 +2659,20 @@ entries:
   cohort-middleware:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:50.928673269Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 cohort-middleware
+    digest: 5a9543b7bd3b589d641cbaa9041bf71d8b376f73217996cfa776dda859cf079c
+    name: cohort-middleware
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/cohort-middleware-0.1.13/cohort-middleware-0.1.13.tgz
+    version: 0.1.13
+  - apiVersion: v2
+    appVersion: master
     created: "2025-07-30T14:54:30.697342084Z"
     dependencies:
     - name: common
@@ -2742,6 +2862,16 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/cohort-middleware-0.1.1/cohort-middleware-0.1.1.tgz
     version: 0.1.1
   common:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:51.065107501Z"
+    description: A Helm chart for provisioning databases in gen3
+    digest: f8c273c28253b3564713f2877da95d37c50a38667b05cc129455baf2f89ec0c4
+    name: common
+    type: library
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/common-0.1.25/common-0.1.25.tgz
+    version: 0.1.25
   - apiVersion: v2
     appVersion: master
     created: "2025-08-19T19:03:04.792730289Z"
@@ -2995,6 +3125,20 @@ entries:
   dashboard:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-11-07T21:13:51.180601903Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for Kubernetes
+    digest: 80f5a624d08ef3ccd463365fb015e4798f43a06b00cc8576eba90450c45d07b7
+    name: dashboard
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/dashboard-0.1.10/dashboard-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-08-15T15:05:38.57081838Z"
     description: A Helm chart for Kubernetes
     digest: 92d55a4738866460dc910757f739676e34ad5d6cc8ef8bfd560321c01e4e302d
@@ -3076,6 +3220,20 @@ entries:
   datareplicate:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:51.312686563Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 datareplicate
+    digest: 962e3e78696506a7952bdebca57611f6e3bb165ead640fff71027e9ade5c773b
+    name: datareplicate
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/datareplicate-0.0.35/datareplicate-0.0.35.tgz
+    version: 0.0.35
+  - apiVersion: v2
+    appVersion: master
     created: "2025-11-04T20:51:36.715009673Z"
     dependencies:
     - name: common
@@ -3145,6 +3303,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/datareplicate-0.0.29/datareplicate-0.0.29.tgz
     version: 0.0.29
   dicom-server:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:51.437782047Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Dicom Server
+    digest: ef7ed5ab1d67eb32fcb8388643072dfee7fcee155ed83f4fb8aac1781412b680
+    name: dicom-server
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/dicom-server-0.1.21/dicom-server-0.1.21.tgz
+    version: 0.1.21
   - apiVersion: v2
     appVersion: master
     created: "2025-08-05T21:59:59.045335445Z"
@@ -3839,6 +4011,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/etl-0.1.0/etl-0.1.0.tgz
     version: 0.1.0
   fence:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:51.6191646Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Fence
+    digest: 2cca28360e9599fbc30a2e96ea73fe5352154305c12e8465c33d732f941555f5
+    name: fence
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/fence-0.1.63/fence-0.1.63.tgz
+    version: 0.1.63
   - apiVersion: v2
     appVersion: master
     created: "2025-10-21T16:49:39.013174191Z"
@@ -4912,6 +5102,20 @@ entries:
   frontend-framework:
   - apiVersion: v2
     appVersion: develop
+    created: "2025-11-07T21:13:51.749525651Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for the gen3 frontend framework
+    digest: 3a08b2e068d8246357c3b17c5c6086c6626e88c9a829e0c0c7b07b7988e6eb35
+    name: frontend-framework
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/frontend-framework-0.1.15/frontend-framework-0.1.15.tgz
+    version: 0.1.15
+  - apiVersion: v2
+    appVersion: develop
     created: "2025-08-05T21:59:59.389938163Z"
     dependencies:
     - name: common
@@ -5093,6 +5297,175 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/frontend-framework-0.1.1/frontend-framework-0.1.1.tgz
     version: 0.1.1
   gen3:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:52.009182184Z"
+    dependencies:
+    - condition: access-backend.enabled
+      name: access-backend
+      repository: file://../access-backend
+      version: 0.1.12
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: file://../ambassador
+      version: 0.1.27
+    - condition: arborist.enabled
+      name: arborist
+      repository: file://../arborist
+      version: 0.1.26
+    - condition: argo-wrapper.enabled
+      name: argo-wrapper
+      repository: file://../argo-wrapper
+      version: 0.1.21
+    - condition: audit.enabled
+      name: audit
+      repository: file://../audit
+      version: 0.1.33
+    - condition: aws-es-proxy.enabled
+      name: aws-es-proxy
+      repository: file://../aws-es-proxy
+      version: 0.1.33
+    - condition: cedar.enabled
+      name: cedar
+      repository: file://../cedar
+      version: 0.1.14
+    - condition: cohort-middleware.enabled
+      name: cohort-middleware
+      repository: file://../cohort-middleware
+      version: 0.1.13
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: dashboard.enabled
+      name: dashboard
+      repository: file://../dashboard
+      version: 0.1.10
+    - condition: datareplicate.enabled
+      name: datareplicate
+      repository: file://../datareplicate
+      version: 0.0.35
+    - condition: etl.enabled
+      name: etl
+      repository: file://../etl
+      version: 0.1.18
+    - condition: frontend-framework.enabled
+      name: frontend-framework
+      repository: file://../frontend-framework
+      version: 0.1.15
+    - condition: fence.enabled
+      name: fence
+      repository: file://../fence
+      version: 0.1.63
+    - condition: gen3-user-data-library.enabled
+      name: gen3-user-data-library
+      repository: file://../gen3-user-data-library
+      version: 0.1.7
+    - condition: gen3-workflow.enabled
+      name: gen3-workflow
+      repository: file://../gen3-workflow
+      version: 0.1.1
+    - condition: guppy.enabled
+      name: guppy
+      repository: file://../guppy
+      version: 0.1.28
+    - condition: hatchery.enabled
+      name: hatchery
+      repository: file://../hatchery
+      version: 0.1.56
+    - condition: indexd.enabled
+      name: indexd
+      repository: file://../indexd
+      version: 0.1.35
+    - condition: manifestservice.enabled
+      name: manifestservice
+      repository: file://../manifestservice
+      version: 0.1.34
+    - condition: metadata.enabled
+      name: metadata
+      repository: file://../metadata
+      version: 0.1.33
+    - condition: peregrine.enabled
+      name: peregrine
+      repository: file://../peregrine
+      version: 0.1.33
+    - condition: portal.enabled
+      name: portal
+      repository: file://../portal
+      version: 0.1.47
+    - condition: requestor.enabled
+      name: requestor
+      repository: file://../requestor
+      version: 0.1.26
+    - condition: revproxy.enabled
+      name: revproxy
+      repository: file://../revproxy
+      version: 0.1.47
+    - condition: sheepdog.enabled
+      name: sheepdog
+      repository: file://../sheepdog
+      version: 0.1.33
+    - condition: ssjdispatcher.enabled
+      name: ssjdispatcher
+      repository: file://../ssjdispatcher
+      version: 0.1.34
+    - condition: sower.enabled
+      name: sower
+      repository: file://../sower
+      version: 0.1.36
+    - condition: wts.enabled
+      name: wts
+      repository: file://../wts
+      version: 0.1.32
+    - condition: global.netPolicy.enabled
+      name: gen3-network-policies
+      repository: file://../gen3-network-policies
+      version: 0.1.2
+    - condition: dicom-server.enabled
+      name: dicom-server
+      repository: file://../dicom-server
+      version: 0.1.21
+    - condition: ohif-viewer.enabled
+      name: ohif-viewer
+      repository: file://../ohif-viewer
+      version: 0.1.5
+    - condition: orthanc.enabled
+      name: orthanc
+      repository: file://../orthanc
+      version: 0.1.6
+    - condition: gen3-analysis.enabled
+      name: gen3-analysis
+      repository: file://../gen3-analysis
+      version: 0.1.3
+    - condition: global.dev
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.10.2
+    - condition: global.dev
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: neuvector.enabled
+      name: neuvector
+      repository: file://../neuvector
+      version: 0.1.2
+    description: Helm chart to deploy Gen3 Data Commons
+    digest: d325d0fbb20c16a668daf46cd812bc372ba8ac17a0a999f034dcc4b1ea913101
+    maintainers:
+    - email: ahilt@uchicago.edu
+      name: ahilt
+    - email: ajoa@uchicago.edu
+      name: ajoaugustine
+    - email: emalinowski@uchicago.edu
+      name: emalinowski
+    - email: elisemcastle@uchicago.edu
+      name: EliseCastle23
+    - email: qureshi@uchicago.edu
+      name: jawadqur
+    name: gen3
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-0.2.80/gen3-0.2.80.tgz
+    version: 0.2.80
   - apiVersion: v2
     appVersion: master
     created: "2025-11-05T17:27:54.963182684Z"
@@ -28724,6 +29097,20 @@ entries:
   gen3-analysis:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:52.12421358Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 gen3-analysis Service
+    digest: f14f72dd07cd847de4c7cba893806ec4d02861c08fe2a14bb451387d6b18ad91
+    name: gen3-analysis
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-analysis-0.1.3/gen3-analysis-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: master
     created: "2025-07-30T14:54:31.053409462Z"
     dependencies:
     - name: common
@@ -28779,6 +29166,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-test-data-job-0.0.1/gen3-test-data-job-0.0.1.tgz
     version: 0.0.1
   gen3-user-data-library:
+  - apiVersion: v2
+    appVersion: main
+    created: "2025-11-07T21:13:52.269472806Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for Kubernetes
+    digest: 1766104fa6f39da43ebe27deae6d92cbf303e5be6962a2103e9651057a520474
+    name: gen3-user-data-library
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-user-data-library-0.1.7/gen3-user-data-library-0.1.7.tgz
+    version: 0.1.7
   - apiVersion: v2
     appVersion: main
     created: "2025-08-05T21:59:59.822919815Z"
@@ -28887,7 +29292,39 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-user-data-library-0.1.0/gen3-user-data-library-0.1.0.tgz
     version: 0.1.0
+  gen3-workflow:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:52.408156991Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - name: funnel
+      repository: https://ohsu-comp-bio.github.io/helm-charts
+      version: 0.1.58
+    description: A Helm chart for Kubernetes
+    digest: f47c9a265f79ccb7ad5ec19b94445954f6be9e9956967f9bd8fc7640cfa09968
+    name: gen3-workflow
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/gen3-workflow-0.1.1/gen3-workflow-0.1.1.tgz
+    version: 0.1.1
   guppy:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:52.569186885Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Guppy Service
+    digest: c8e66ac7c364a8029e3ebd437f311f6d214d0a77839d3581fd774449134a925c
+    name: guppy
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/guppy-0.1.28/guppy-0.1.28.tgz
+    version: 0.1.28
   - apiVersion: v2
     appVersion: master
     created: "2025-08-05T21:59:59.990214066Z"
@@ -29253,6 +29690,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/guppy-0.0.1/guppy-0.0.1.tgz
     version: 0.0.1
   hatchery:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:52.684827123Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Hatchery
+    digest: bc9df5b0bcb3939f36707876247978392725e0f6509e7bbc03e3f84644efe6ff
+    name: hatchery
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/hatchery-0.1.56/hatchery-0.1.56.tgz
+    version: 0.1.56
   - apiVersion: v2
     appVersion: master
     created: "2025-10-24T18:06:02.692842807Z"
@@ -29696,6 +30147,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/hatchery-0.0.1/hatchery-0.0.1.tgz
     version: 0.0.1
   indexd:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:52.79959714Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 indexd
+    digest: 55a565a038be143b1df335c973fd1b87f13041648ccb282b5ad1cb2d44eec164
+    name: indexd
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/indexd-0.1.35/indexd-0.1.35.tgz
+    version: 0.1.35
   - apiVersion: v2
     appVersion: master
     created: "2025-08-19T19:03:05.618195944Z"
@@ -30358,6 +30827,20 @@ entries:
   manifestservice:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:52.923273225Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for Kubernetes
+    digest: be412f0d351db271a68175146842a4c430936af3653d47a616349a4a2b5eed10
+    name: manifestservice
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/manifestservice-0.1.34/manifestservice-0.1.34.tgz
+    version: 0.1.34
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-19T19:03:05.830543863Z"
     dependencies:
     - name: common
@@ -30791,6 +31274,28 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/manifestservice-0.0.1/manifestservice-0.0.1.tgz
     version: 0.0.1
   metadata:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:53.050521484Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    - condition: elasticsearch.separate
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.17.1
+    description: A Helm chart for gen3 Metadata Service
+    digest: 52f2dc30437ff30000429b8cb6ecef2de6016e69f15d6b25f56f27afc056b5a1
+    name: metadata
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/metadata-0.1.33/metadata-0.1.33.tgz
+    version: 0.1.33
   - apiVersion: v2
     appVersion: master
     created: "2025-10-03T20:24:18.738904666Z"
@@ -31475,6 +31980,20 @@ entries:
   ohif-viewer:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:53.252717838Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Ohif Viewer
+    digest: 8d69cab53ddad16e9bfe86fbe1cd180007fbc7aa905a1b1d6fe64673d6fde525
+    name: ohif-viewer
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/ohif-viewer-0.1.5/ohif-viewer-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-05T22:00:00.666187686Z"
     dependencies:
     - name: common
@@ -31530,6 +32049,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/ohif-viewer-0.1.0/ohif-viewer-0.1.0.tgz
     version: 0.1.0
   orthanc:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:53.385697234Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 Dicom Server
+    digest: 43aff7b09ead3b12ea8f1153c923c43687269281ec5117cdbab3e4907c752baa
+    name: orthanc
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/orthanc-0.1.6/orthanc-0.1.6.tgz
+    version: 0.1.6
   - apiVersion: v2
     appVersion: master
     created: "2025-08-05T22:00:00.842157084Z"
@@ -31601,6 +32134,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/orthanc-0.1.0/orthanc-0.1.0.tgz
     version: 0.1.0
   peregrine:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:53.55527329Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Peregrine service
+    digest: 8557bea0bb0ea9489c29219702b10c1a32922cb84db4551601b27ab826e07a3f
+    name: peregrine
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/peregrine-0.1.33/peregrine-0.1.33.tgz
+    version: 0.1.33
   - apiVersion: v2
     appVersion: master
     created: "2025-08-05T22:00:00.98161513Z"
@@ -32379,6 +32930,20 @@ entries:
   portal:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:53.722468138Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 data-portal
+    digest: a44251a480c6fd79e57d8a5184bc4367eacae7ae623ecdf6b9f7ce2f5dda06aa
+    name: portal
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/portal-0.1.47/portal-0.1.47.tgz
+    version: 0.1.47
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-19T21:13:01.830531322Z"
     dependencies:
     - name: common
@@ -33004,6 +33569,24 @@ entries:
   requestor:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:53.850362557Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Requestor Service
+    digest: e6c5baeaab94c2e1a82adced542b72ccf55bcfad7769bb25e2d74bb287a205cd
+    name: requestor
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/requestor-0.1.26/requestor-0.1.26.tgz
+    version: 0.1.26
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-05T22:00:01.271090565Z"
     dependencies:
     - name: common
@@ -33453,6 +34036,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/requestor-0.0.1/requestor-0.0.1.tgz
     version: 0.0.1
   revproxy:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:54.002740593Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 revproxy
+    digest: e9e21ab9f0a5592aa794d80f457dd0c2ec1979597f1022e4881a0dac0b2f1c36
+    name: revproxy
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/revproxy-0.1.47/revproxy-0.1.47.tgz
+    version: 0.1.47
   - apiVersion: v2
     appVersion: master
     created: "2025-10-03T14:19:51.632587785Z"
@@ -34044,6 +34641,24 @@ entries:
   sheepdog:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:54.180131411Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 Sheepdog Service
+    digest: eefeff4a21e17aa94a090c885b099a550783531e65dea717b20a67b69bfee4a5
+    name: sheepdog
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/sheepdog-0.1.33/sheepdog-0.1.33.tgz
+    version: 0.1.33
+  - apiVersion: v2
+    appVersion: master
     created: "2025-10-30T21:21:54.748909747Z"
     dependencies:
     - name: common
@@ -34605,6 +35220,20 @@ entries:
   sower:
   - apiVersion: v2
     appVersion: master
+    created: "2025-11-07T21:13:54.32956436Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 sower
+    digest: 8d6cf2bf9373091057132e55588ea6d69ff74733486ad6231b924e9aaba906db
+    name: sower
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/sower-0.1.36/sower-0.1.36.tgz
+    version: 0.1.36
+  - apiVersion: v2
+    appVersion: master
     created: "2025-08-19T19:03:06.167105037Z"
     dependencies:
     - name: common
@@ -35052,6 +35681,20 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/sower-0.1.3/sower-0.1.3.tgz
     version: 0.1.3
   ssjdispatcher:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:54.492899601Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    description: A Helm chart for gen3 ssjdispatcher
+    digest: 47909fab884d0afe5634d3f6d4d7808918e91c23aa7ed6afc951e874a021d46e
+    name: ssjdispatcher
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/ssjdispatcher-0.1.34/ssjdispatcher-0.1.34.tgz
+    version: 0.1.34
   - apiVersion: v2
     appVersion: master
     created: "2025-09-29T18:43:58.852426825Z"
@@ -35534,6 +36177,24 @@ entries:
     - https://github.com/uc-cdis/gen3-helm/releases/download/terraform-runner-job-0.0.1/terraform-runner-job-0.0.1.tgz
     version: 0.0.1
   wts:
+  - apiVersion: v2
+    appVersion: master
+    created: "2025-11-07T21:13:54.62290533Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 0.1.25
+    - condition: postgres.separate
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A Helm chart for gen3 workspace token service
+    digest: 0a696d3c712798256d2b06debfbc2c164cadfd73349cb36a42ffe87fa14d4124
+    name: wts
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.1.32/wts-0.1.32.tgz
+    version: 0.1.32
   - apiVersion: v2
     appVersion: master
     created: "2025-09-18T16:05:22.274459915Z"
@@ -36086,4 +36747,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/wts-0.0.1/wts-0.0.1.tgz
     version: 0.0.1
-generated: "2025-11-05T17:27:54.967363819Z"
+generated: "2025-11-07T21:13:54.627019699Z"
