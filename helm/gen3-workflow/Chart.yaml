@@ -34,5 +34,5 @@ dependencies:
     #
     # ArgoCD relies on this checked-in .tgz reference — if it's missing,
     # Funnel will not be deployed as a dependency.
-    version: 0.1.58 
+    version: 0.1.58
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
