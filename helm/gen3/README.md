@@ -44,11 +44,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.4 |
 | file://../orthanc | orthanc | 0.1.5 |
-| file://../peregrine | peregrine | 0.1.32 |
+| file://../peregrine | peregrine | 0.1.33 |
 | file://../portal | portal | 0.1.46 |
 | file://../requestor | requestor | 0.1.25 |
 | file://../revproxy | revproxy | 0.1.46 |
-| file://../sheepdog | sheepdog | 0.1.32 |
+| file://../sheepdog | sheepdog | 0.1.33 |
 | file://../sower | sower | 0.1.35 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.33 |
 | file://../wts | wts | 0.1.31 |

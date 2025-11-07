@@ -389,9 +389,6 @@ env:
 
 # -- (list) Volumes to attach to the container.
 volumes:
-  - name: creds-volume
-    secret:
-      secretName: "fence-creds"
   - name: logo-volume
     configMap:
       name: "logo-config"
@@ -421,10 +418,6 @@ volumes:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  - name: "creds-volume"
-    readOnly: true
-    mountPath: "/var/www/fence/creds.json"
-    subPath: creds.json
   - name: "logo-volume"
     readOnly: true
     mountPath: "/fence/fence/static/img/logo.svg"
