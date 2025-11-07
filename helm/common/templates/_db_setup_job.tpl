@@ -164,6 +164,7 @@ spec:
 
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
+            sleep infinity
 
             until pg_isready -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -d template1
             do
