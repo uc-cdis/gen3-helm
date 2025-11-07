@@ -7,7 +7,7 @@ type: Opaque
 stringData:
   {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "gearbox-middleware-g3auto" }}
   {{- $randomPass := printf "%s%s" "gateway:" (randAlphaNum 32) }}
-  base64Authz.txt: {{ if and $existingSecret (index $existingSecret.data "base64Authz.txt") }}{{ index $existingSecret.data "base64Authz.txt" | b64dec | quote }}{{ else }}{{ $randomPass | quote | b64enc }}{{ end }}
+  base64Authz.txt: {{ if and $existingSecret (index $existingSecret.data "base64Authz.txt") }}{{ (index $existingSecret.data "base64Authz.txt") | b64dec | quote }}{{ else }}{{ $randomPass | quote }}{{ end }}
   gearbox-middleware.env: |
     HOSTNAME={{ .Values.global.hostname }}
     {{ if and .Values.gearboxMiddlewareG3auto.awsaccesskey .Values.gearboxMiddlewareG3auto.awssecretkey }}
