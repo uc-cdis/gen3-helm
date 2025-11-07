@@ -387,8 +387,8 @@ spec:
   selector:
     secret:
       name: {{ $.Chart.Name }}-dbcreds-bootstrap
-  dataFrom:
-    - extract:
+  data:
+    - match:
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
 {{- end }}
