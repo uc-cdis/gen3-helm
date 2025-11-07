@@ -161,90 +161,80 @@ spec:
             echo "SERVICE_PGDB=$SERVICE_PGDB"
             echo "SERVICE_PGUSER=$SERVICE_PGUSER"
 
-            # Decide if we're in bootstrap mode by presence of the bootstrap var
+            # Determine if we are in bootstrap mode
             BOOTSTRAP_MODE="false"
-            if [[ -n "${SERVICE_PGPASS_BOOTSTRAP:-}" ]]; then
-              BOOTSTRAP_MODE="true"
-            fi
+            [[ -n "${SERVICE_PGPASS_BOOTSTRAP:-}" ]] && BOOTSTRAP_MODE="true"
 
-            # Choose the **service** password to test app connectivity later:
-            # Prefer final secret's SERVICE_PGPASS; if absent and we're bootstrapping, use bootstrap.
+            # Determine the service password we should use
             ACTIVE_SERVICE_PGPASS="${SERVICE_PGPASS:-}"
             if [[ -z "$ACTIVE_SERVICE_PGPASS" && "$BOOTSTRAP_MODE" == "true" ]]; then
               ACTIVE_SERVICE_PGPASS="${SERVICE_PGPASS_BOOTSTRAP:-}"
             fi
-            # It's OK if ACTIVE_SERVICE_PGPASS is empty here; we only need it for final test.
 
-            sleep infinity
-            until pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 >/dev/null 2>&1; do
-              >&2 echo "Postgres is unavailable - sleeping"
+            # Wait for Postgres to be ready
+            until pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" >/dev/null 2>&1; do
+              echo "Postgres is unavailable - sleeping"
               sleep 5
             done
-            >&2 echo "Postgres is up - executing command"
+            echo "Postgres is up - executing command"
 
+            # Catalog queries now use database = PGUSER
             db_exists() {
               PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
-                "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1
+                -d "$PGUSER" -Atqc \
+                "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB';" | grep -q 1
             }
             user_exists() {
               PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
-                "SELECT 1 FROM pg_roles WHERE rolname = '$SERVICE_PGUSER'" | grep -q 1
+                -d "$PGUSER" -Atqc \
+                "SELECT 1 FROM pg_roles WHERE rolname = '$SERVICE_PGUSER';" | grep -q 1
             }
 
+            # Create database if not exists (use TEMPLATE template0 to avoid locking issues)
             if db_exists; then
               echo "Database exists"
             else
-              echo "Database does not exist; creating (idempotent)"
-              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -c "CREATE DATABASE \"$SERVICE_PGDB\";" || true
+              echo "Database does not exist — creating"
+              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
+                -c "CREATE DATABASE \"$SERVICE_PGDB\" TEMPLATE template0;" || true
             fi
 
-            # Ensure role exists; set LOGIN and the **service** password that will be used by the app
+            # Ensure service user exists and has the correct password
             if user_exists; then
-              # If we don't have a service password yet (non-bootstrap, not synced), keep role but ensure LOGIN
+              echo "Role exists"
               if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
                   -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
               else
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
                   -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
               fi
             else
-              # Create role with a password if we have it; otherwise create LOGIN and let ESO fill later
+              echo "Role does not exist — creating"
               if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
                   -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
               else
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER"  \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
                   -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
               fi
             fi
 
-            # Grants + extension
-            PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
+            # Grant database access and create extension ltree
+            PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
               -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\";"
+
             PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$SERVICE_PGDB" \
               -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 
-            # Final proof: only if we actually have a service password now
+            # Final connectivity test with service credentials
             if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-              PGPASSWORD="$ACTIVE_SERVICE_PGPASS" psql -h "$PGHOST" -p "$PGPORT" -U "$SERVICE_PGUSER" -d "$SERVICE_PGDB" -c "\conninfo"
+              PGPASSWORD="$ACTIVE_SERVICE_PGPASS" psql -h "$PGHOST" -p "$PGPORT" \
+                -U "$SERVICE_PGUSER" -d "$SERVICE_PGDB" -c "\conninfo"
             else
-              echo "Skipping service-user connectivity check (no SERVICE_PGPASS yet)."
+              echo "Skipping service-user connectivity check (no SERVICE_PGPASS yet)"
             fi
 
-            # Patch dbcreated=true only if the **final** secret exists
-            FINAL_SECRET="{{ .Chart.Name }}-dbcreds"
-            if kubectl get "secret/$FINAL_SECRET" >/dev/null 2>&1; then
-              kubectl patch "secret/$FINAL_SECRET" -p '{"data":{"dbcreated":"dHJ1ZQo="}}' >/dev/null
-              echo "Patched $FINAL_SECRET with dbcreated=true"
-            else
-              if [[ "$BOOTSTRAP_MODE" == "true" ]]; then
-                echo "Final secret not present yet (bootstrap); skipping patch"
-              else
-                echo "ERROR: Final secret '$FINAL_SECRET' missing in non-bootstrap mode." >&2
-                exit 1
-              fi
-            fi
 
             # #!/bin/bash
             # set -e
