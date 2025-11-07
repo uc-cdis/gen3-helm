@@ -389,34 +389,7 @@ spec:
       name: {{ $.Chart.Name }}-dbcreds-bootstrap
   data:
     - match:
-        secretKey: password
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: password
-    - match:
-        secretKey: username
-        remoteRef:
-          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: username
-    - match:
-        secretKey: host
-        remoteRef:
-          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: host
-    - match:
-        secretKey: port
-        remoteRef:
-          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: port
-    - match:
-        secretKey: database
-        remoteRef:
-          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: database
-    - match:
-        secretKey: dbcreated
-        remoteRef:
-          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-          property: dbcreated
 {{- end }}
 {{- end -}}
