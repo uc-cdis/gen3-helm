@@ -180,8 +180,10 @@ spec:
               # If SERVICE_PGPASS is set, the secret already exists in Secrets Manager — use it to avoid recreating the DB.
               if [[ -n "${SERVICE_PGPASS}" ]]; then
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+                echo "service pgpass exists"
               else
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+                echo "service pgpass does not exist, using bootstrap password"
               fi
                 # Update secret to signal that db is ready, and services can start
                 kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
@@ -195,8 +197,10 @@ spec:
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
               if [[ -n "${SERVICE_PGPASS}" ]]; then
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+                echo "service pgpass exists"
               else
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+                echo "service pgpass does not exist, using bootstrap password"
               fi
                 # Update secret to signal that db has been created, and services can start
                 kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
@@ -287,30 +291,25 @@ spec:
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
           property: password
-    - match:
         secretKey: username
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
           property: username
-    - match:
         secretKey: host
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
           property: host
-    - match:
         secretKey: port
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
           property: port
-    - match:
         secretKey: database
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
           property: database
-    - match:
         secretKey: dbcreated
         remoteRef:
           remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
-      property: dbcreated
+          property: dbcreated
 {{- end }}
 {{- end -}}
