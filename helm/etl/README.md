@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -100,10 +100,12 @@ A Helm chart for gen3 etl
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
-| resources | map | `{"spark":{"requests":{"memory":"128Mi"}},"tube":{"requests":{"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
-| resources.spark.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
+| resources | map | `{"spark":{"requests":{"cpu":"10m","memory":"128Mi"}},"tube":{"requests":{"cpu":"10m","memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
+| resources.spark.requests | map | `{"cpu":"10m","memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.spark.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| resources.tube.requests | map | `{"memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.tube.requests | map | `{"cpu":"10m","memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.tube.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
 | suspendCronjob | bool | `true` |  |

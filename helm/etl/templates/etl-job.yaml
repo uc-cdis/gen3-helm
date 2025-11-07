@@ -87,7 +87,7 @@ spec:
               imagePullPolicy: {{ .Values.image.spark.pullPolicy }}
               resources:
                 requests:
-                  cpu: {{  .Values.resources.spark.requests.cpu }}
+                  cpu: {{ .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
               command: ["/bin/bash" ]
               args: 
@@ -147,9 +147,9 @@ spec:
                 - name: HADOOP_CLIENT_OPTS
                   value: -Xmx1g
                 - name: SPARK_EXECUTOR_MEMORY
-                  value: 4g
+                  value: 8g
                 - name: SPARK_DRIVER_MEMORY
-                  value: 6g
+                  value: 8g
                 - name: XDG_DATA_HOME
                   value: /tube
                 - name: ETL_FORCED
@@ -184,7 +184,7 @@ spec:
                   subPath: useryaml
               resources:
                 requests:
-                  cpu: {{  .Values.resources.tube.requests.cpu }}
+                  cpu: {{ .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
               command: ["/bin/bash"]
               args:
