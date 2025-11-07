@@ -7,3 +7,9 @@
 {{- else }}
 {{ include "common.db_setup_job" . }}
 {{- end -}}
+{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
+---
+{{ include "common.db-push-secret" . }}
+---
+{{ include "common.secret.db.bootstrap" . }}
+{{- end }}
