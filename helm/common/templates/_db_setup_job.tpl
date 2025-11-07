@@ -180,13 +180,11 @@ spec:
               # If SERVICE_PGPASS is set, the secret already exists in Secrets Manager — use it to avoid recreating the DB.
               if [[ -n "${SERVICE_PGPASS}" ]]; then
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-                # Update secret to signal that db is ready, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               else
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-                # Update secret to signal that db is ready, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds-bootstrap -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               fi
+                # Update secret to signal that db is ready, and services can start
+                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
 
             else
               echo "database does not exist"
@@ -197,13 +195,11 @@ spec:
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
               if [[ -n "${SERVICE_PGPASS}" ]]; then
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-                # Update secret to signal that db has been created, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               else
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-                # Update secret to signal that db has been created, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds-bootstrap -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               fi
+                # Update secret to signal that db has been created, and services can start
+                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
 {{- end}}
 {{- end }}
