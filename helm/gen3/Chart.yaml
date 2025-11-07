@@ -102,6 +102,7 @@ dependencies:
   - name: etl
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
 =======
     version: 0.1.17
@@ -109,6 +110,9 @@ dependencies:
 =======
     version: 0.1.18
 >>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
+=======
+    version: 0.1.19
+>>>>>>> a6dcdb6f (update version)
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -300,6 +304,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -334,6 +339,9 @@ version: 0.2.78
 =======
 version: 0.2.79
 >>>>>>> 8553e1fb (Close quote in es-proxy crossplane policy (#432))
+=======
+version: 0.2.80
+>>>>>>> a6dcdb6f (update version)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

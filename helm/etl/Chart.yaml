@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.22
 =======
 version: 0.1.17
@@ -24,6 +25,9 @@ version: 0.1.17
 =======
 version: 0.1.18
 >>>>>>> 1d9d5b3b (Adding Kubeconform Github Action. (#428))
+=======
+version: 0.1.19
+>>>>>>> a6dcdb6f (update version)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
