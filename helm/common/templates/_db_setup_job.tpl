@@ -175,10 +175,7 @@ spec:
             fi
             # It's OK if ACTIVE_SERVICE_PGPASS is empty here; we only need it for final test.
 
-            # Wait for Postgres using **admin** user (PGUSER + PGPASSWORD)
-            export PGPASSWORD="${PGPASSWORD:-$PGPASS:-${PG_PWD:-}}"
-            # If your admin password comes from env named PGPASSWORD already, this will pick it up.
-
+            sleep infinity
             until pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 >/dev/null 2>&1; do
               >&2 echo "Postgres is unavailable - sleeping"
               sleep 5
@@ -186,11 +183,11 @@ spec:
             >&2 echo "Postgres is up - executing command"
 
             db_exists() {
-              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 -Atqc \
+              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
                 "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1
             }
             user_exists() {
-              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 -Atqc \
+              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
                 "SELECT 1 FROM pg_roles WHERE rolname = '$SERVICE_PGUSER'" | grep -q 1
             }
 
@@ -198,32 +195,32 @@ spec:
               echo "Database exists"
             else
               echo "Database does not exist; creating (idempotent)"
-              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 -c "CREATE DATABASE \"$SERVICE_PGDB\";" || true
+              PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -c "CREATE DATABASE \"$SERVICE_PGDB\";" || true
             fi
 
             # Ensure role exists; set LOGIN and the **service** password that will be used by the app
             if user_exists; then
               # If we don't have a service password yet (non-bootstrap, not synced), keep role but ensure LOGIN
               if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
                   -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
               else
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
                   -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
               fi
             else
               # Create role with a password if we have it; otherwise create LOGIN and let ESO fill later
               if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
                   -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
               else
-                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 \
+                PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER"  \
                   -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
               fi
             fi
 
             # Grants + extension
-            PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d template1 \
+            PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
               -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\";"
             PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$SERVICE_PGDB" \
               -c "CREATE EXTENSION IF NOT EXISTS ltree;"
