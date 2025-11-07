@@ -30,7 +30,7 @@ dependencies:
     # NOTE:
     # When updating this version:
     # 1) Run `helm dependency update` to generate a new .tgz file
-    # 2) Commit the updated .tgz file into gen3-helm in a separate PR
+    # 2) Commit the updated .tgz file into gen3-helm in the same PR
     #
     # ArgoCD relies on this checked-in .tgz reference — if it's missing,
     # Funnel will not be deployed as a dependency.
