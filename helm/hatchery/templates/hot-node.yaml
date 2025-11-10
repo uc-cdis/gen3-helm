@@ -129,34 +129,42 @@ spec:
         args:
           - |
             gen3_hatchery_prepuller() {
-              local images
-              local it
-              images="$@"
+              # Get all containers JSON
+              local containers_json
+              containers_json=$(kubectl get configmap manifest-hatchery -ojson | jq -c '.data.json | fromjson | .containers[]')
 
-              # Get hatchery images from the manifest-hatchery configmap
-              if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
-                images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
-              fi
+              export JOB_TIMESTAMP=$(date +%s)
 
-              export JOB_TIMESTAMP=$(date +%s )
+              # Loop through each container
+              echo "$containers_json" | while read -r container; do
+                local image gpu name
+                image=$(echo "$container" | jq -r '.image')
+                gpu=$(echo "$container" | jq -r '.gpu')
+                name=$(echo "$container" | jq -r '.name // "unknown"')
 
-              cat "/job.yaml" | envsubst
-              if [[ -n "$images" ]]; then
-                local count=0
-                for it in ${images}; do
-                cat - <<EOM
-                  - name: "image-${count}"
-                    image: $it
-                    imagePullPolicy: IfNotPresent
-                    command:
-                      - /bin/sh
-                      - -c
-                      - echo 'Pulling complete'
+                echo "Creating job for $name ($image) [gpu=${gpu}]"
+
+                # Start from base job.yaml
+                job_yaml=$(cat /job.yaml | envsubst)
+
+                # If GPU is required, inject nodeSelector
+                if [[ "$gpu" == "true" ]]; then
+                  echo "  -> GPU detected, adding nodeSelector.gpu=true"
+                  job_yaml=$(echo "$job_yaml" | yq e '.spec.template.spec.nodeSelector.gpu = "true"' -)
+                fi
+
+                # Inject the container spec
+                cat <<EOM | kubectl apply -f -
+            $(echo "$job_yaml" | yq e '.spec.template.spec.initContainers += [{
+              "name": "prepull-'${name}'",
+              "image": "'${image}'",
+              "imagePullPolicy": "IfNotPresent",
+              "command": ["/bin/sh","-c","echo Pulling complete"]
+            }]' -)
             EOM
-                  count=$((count+1))
-                done
-              fi
+              done
             }
+
 
             gen3_hatchery_prepuller | kubectl apply -f -
         
