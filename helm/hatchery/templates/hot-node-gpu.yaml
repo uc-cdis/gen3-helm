@@ -1,72 +1,30 @@
 {{- if .Values.hotNode.enabled }}
-
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: hot-node-lowest-priority
-value: -1000000
-globalDefault: false
-description: "This priority class marks a pod as extremely low priority, for hot nodes"
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: hot-node-prepuller
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: hot-node-prepuller
-  namespace: {{ .Release.Namespace }}
-rules:
-  - apiGroups: ["batch"]
-    resources: ["jobs"]
-    verbs: ["create","get","list","watch","delete","patch","update"]
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: hot-node-prepuller
-  namespace: {{ .Release.Namespace }}
-subjects:
-  - kind: ServiceAccount
-    name: hot-node-prepuller
-    namespace: {{ .Release.Namespace }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: hot-node-prepuller
----
-{{- if .Values.hotNode.jupyter }}
+{{- if .Values.hotNode.gpu }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hot-node-job
+  name: hot-node-gpu-job
   namespace: {{ $.Release.Namespace }}
 data:
   job.yaml: |
     apiVersion: batch/v1
     kind: Job
     metadata:
-      name: jupyterhub-prepuller-$JOB_TIMESTAMP
+      name: jupyterhub-gpu-prepuller-$JOB_TIMESTAMP
       labels:
-        app: jupyterhub-prepuller
+        app: jupyterhub-gpu-prepuller
     spec:
       template:
         metadata:
           labels:
-            app: jupyterhub-prepuller
+            app: jupyterhub-gpu-prepuller
         spec:
           nodeName: $NODE_NAME
           restartPolicy: Never
           tolerations:
           - key: "role"
             operator: "Equal"
-            value: "jupyter"
+            value: "gpu"
             effect: "NoSchedule"
           terminationGracePeriodSeconds: 0
           automountServiceAccountToken: false
@@ -83,10 +41,10 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hot-node-{{ . }}
+  name: hot-node-gpu-{{ . }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/name: hot-node-{{ . }}
+    app.kubernetes.io/name: hot-node-gpu-{{ . }}
     app.kubernetes.io/instance: {{ $.Release.Name }}-{{ . }}
     app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
@@ -95,23 +53,23 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: hot-node-{{ . }}
+      app.kubernetes.io/name: hot-node-gpu-{{ . }}
       app.kubernetes.io/instance: {{ $.Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: hot-node-{{ . }}
+        app.kubernetes.io/name: hot-node-gpu-{{ . }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
         availability-zone: {{ . }}
     spec:
       tolerations:
       - key: "role"
         operator: "Equal"
-        value: "jupyter"
+        value: "gpu"
         effect: "NoSchedule"
       priorityClassName: hot-node-lowest-priority
       nodeSelector:
-        role: jupyter
+        role: gpu
         topology.kubernetes.io/zone: {{ . }}
       terminationGracePeriodSeconds: 0
       # Needs a token so kubectl can auth to the API
@@ -180,8 +138,7 @@ spec:
       volumes:
       - name: job-yaml
         configMap:
-          name: hot-node-job
+          name: hot-node-gpu-job
 ---
-{{- end }}
 {{- end }}
 {{- end }}
