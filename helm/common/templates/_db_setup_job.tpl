@@ -160,7 +160,7 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-{{- end}}
+{{- end }}
 {{- end }}
 
 
@@ -169,13 +169,7 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if and 
-      (or 
-        (not .Values.global.externalSecrets.deploy)
-        (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate)
-      )
-      (not .Values.postgres.bootstrap)
-}}
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -197,7 +191,7 @@ data:
   Bootstrap Secret for PushSecret to populate External Secret
 */}}
 {{- define "common.secret.db.bootstrap" -}}
-{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -221,7 +215,7 @@ data:
 
 
 {{- define "common.db-push-secret" -}}
-{{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:

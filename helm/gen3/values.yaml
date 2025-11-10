@@ -19,6 +19,8 @@ global:
       enabled: false
       # -- (String) Name of Secrets Manager secret.
       externalSecretAwsCreds:
+      # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+      pushSecret: false
     # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
     secretStoreServiceAccount:
       # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.

@@ -82,7 +82,7 @@ A Helm chart for gen3 Fence
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"INDEXD_PASSWORD","valueFrom":{"secretKeyRef":{"key":"fence","name":"indexd-service-creds"}}},{"name":"gen3Env","valueFrom":{"configMapKeyRef":{"key":"hostname","name":"manifest-global"}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null,"fenceSshKeys":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null,"fenceSshKeys":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sFenceConfigSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sGoogleAppSecrets | string | `false` | Will create the Helm "fence-google-app-creds-secret" and "fence-google-storage-creds-secret" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sJwtKeysSecret | string | `false` | Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -92,6 +92,7 @@ A Helm chart for gen3 Fence
 | externalSecrets.fenceGoogleStorageCredsSecret | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-google-storage-creds-secret" |
 | externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys" |
 | externalSecrets.fenceSshKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fenceCleanupExpiredGa4ghInfo.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
 | fenceCleanupExpiredGa4ghInfo.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | fenceDeleteExpiredClients.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
@@ -180,7 +181,7 @@ A Helm chart for gen3 Fence
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"bootstrap":false,"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | privacy_policy | string | `nil` |  |
 | projects | string | `nil` |  |

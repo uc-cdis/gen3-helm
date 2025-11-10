@@ -115,12 +115,13 @@ Helm chart to deploy Gen3 Data Commons
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
 | gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
 | global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |

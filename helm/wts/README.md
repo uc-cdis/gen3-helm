@@ -19,10 +19,11 @@ A Helm chart for gen3 workspace token service
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"pushSecret":false,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
 | externalSecrets.createK8sWtsSecret | bool | `false` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is false. |
 | externalSecrets.createWtsOidcClientSecret | bool | `true` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is true. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | externalSecrets.wtsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-g3auto". |
 | externalSecrets.wtsOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-oidc-client". |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -84,7 +85,7 @@ A Helm chart for gen3 workspace token service
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"bootstrap":false,"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"120Mi"}}` | Resource requests and limits for the containers in the pod |

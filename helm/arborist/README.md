@@ -22,8 +22,9 @@ A Helm chart for gen3 arborist
 | cronjob | bool | `{"enabled":true}` | Whether the arborist rm exipred access cronjob is enabled. |
 | env | list | `[{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}]` | Environment variables to pass to the container |
 | env[0] | string | `{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}` | The URL of the JSON Web Key Set (JWKS) endpoint for authentication |
-| externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
@@ -79,7 +80,7 @@ A Helm chart for gen3 arborist
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"bootstrap":false,"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

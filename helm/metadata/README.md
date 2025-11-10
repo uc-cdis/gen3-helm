@@ -40,10 +40,11 @@ A Helm chart for gen3 Metadata Service
 | elasticsearch.separate | bool | `false` |  |
 | elasticsearch.singleNode | bool | `true` |  |
 | esEndpoint | string | `"http://gen3-elasticsearch-master:9200"` | Elasticsearch endpoint. |
-| externalSecrets | map | `{"createK8sMetadataSecret":false,"dbcreds":null,"metadataG3auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sMetadataSecret":false,"dbcreds":null,"metadataG3auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sMetadataSecret | string | `false` | Will create the Helm "metadata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -98,7 +99,7 @@ A Helm chart for gen3 Metadata Service
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"bootstrap":false,"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |

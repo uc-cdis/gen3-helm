@@ -16,7 +16,7 @@
     ExternalSecrets Object
 */}}
 {{- define "common.externalSecret.db" -}}
-{{- if or .Values.global.externalSecrets.deploy (and .Values.global.externalSecrets.dbCreate .Values.postgres.bootstrap) }}
+{{- if and .Values.global.externalSecrets.deploy (not .Values.global.externalSecrets.dbCreate) }}
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:

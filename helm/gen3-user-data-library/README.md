@@ -22,10 +22,11 @@ A Helm chart for Kubernetes
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
 | env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sGen3UserDataLibrarySecret":false,"dbcreds":null,"gen3UserDataLibraryG3auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sGen3UserDataLibrarySecret":false,"dbcreds":null,"gen3UserDataLibraryG3auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sGen3UserDataLibrarySecret | string | `false` | Will create the Helm "gen3UserDataLibrary-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.gen3UserDataLibraryG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fullnameOverride | string | `""` |  |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |

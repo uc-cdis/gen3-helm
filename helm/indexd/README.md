@@ -21,9 +21,10 @@ A Helm chart for gen3 indexd
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | defaultPrefix | string | `"PREFIX/"` | default prefix for indexd |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"pushSecret":false,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
@@ -83,7 +84,7 @@ A Helm chart for gen3 indexd
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
-| postgresql | map | `{"bootstrap":false,"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |

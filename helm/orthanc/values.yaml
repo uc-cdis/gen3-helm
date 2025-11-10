@@ -111,7 +111,6 @@ postgres:
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
-  bootstrap: false
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
