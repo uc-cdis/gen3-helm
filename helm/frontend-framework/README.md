@@ -8,7 +8,7 @@ A Helm chart for the gen3 frontend framework
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.25 |
+| file://../common | common | 0.1.26 |
 
 ## Values
 
