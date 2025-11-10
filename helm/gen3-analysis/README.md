@@ -27,9 +27,8 @@ A Helm chart for gen3 gen3-analysis Service
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | deploymentType | string | `"prod"` |  |
-| externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
+| externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
-| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |

@@ -146,6 +146,8 @@ externalSecrets:
   createK8sOrthancS3G3auto: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto"
   orthancS3G3Auto:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

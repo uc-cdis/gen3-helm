@@ -30,9 +30,10 @@ A Helm chart for gen3 Dicom Server
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sOrthancS3G3auto":false,"orthancS3G3Auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sOrthancS3G3auto | string | `false` | Will create the Helm "orthanc-s3-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.orthancS3G3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
