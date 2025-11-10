@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.81](https://img.shields.io/badge/Version-0.2.81-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.82](https://img.shields.io/badge/Version-0.2.82-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-analysis | gen3-analysis | 0.1.3 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.7 |
-| file://../gen3-workflow | gen3-workflow | 0.1.1 |
+| file://../gen3-workflow | gen3-workflow | 0.1.2 |
 | file://../guppy | guppy | 0.1.28 |
 | file://../hatchery | hatchery | 0.1.56 |
 | file://../indexd | indexd | 0.1.35 |
