@@ -101,53 +101,23 @@ spec:
             value: {{ .Values.global.postgres.master.host | quote }}
             {{- end }}
           - name: SERVICE_PGUSER
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds-bootstrap
-                key: username
-                optional: false
-          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: username
                 optional: false
-          {{- end }}
           - name: SERVICE_PGDB
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds-bootstrap
-                key: database
-                optional: false
-          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: database
                 optional: false
-          {{- end }}
           - name: SERVICE_PGPASS
-          {{- if and (.Values.global.externalSecrets.deploy) (.Values.global.externalSecrets.dbCreate) (.Values.postgres.bootstrap) }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
-                key: password
-                optional: true
-          - name: SERVICE_PGPASS_BOOTSTRAP
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds-bootstrap
-                key: password
-                optional: false
-          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
                 key: password
                 optional: false
-          {{- end }}
           - name: GEN3_HOME
             value: /home/ubuntu/cloud-automation
         args:
@@ -171,185 +141,25 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
-            
-            if [[ -n "${SERVICE_PGPASS}" ]]; then
-              if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-                gen3_log_info "Database exists"
-                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
 
-                # Update secret to signal that db is ready, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
-              else
-                echo "database does not exist- using service pgpass"
-                psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-                psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-                psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
-                psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
-                PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+            if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
+              gen3_log_info "Database exists"
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
 
-                # Update secret to signal that db has been created, and services can start
-                kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
-              fi
+              # Update secret to signal that db is ready, and services can start
+              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
-              if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-                gen3_log_info "Database exists"
-                PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+              echo "database does not exist"
+              psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
+              gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+              psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+              psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
+              psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
 
-              else
-                echo "database does not exist- using bootstrap password"
-                psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
-                psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
-                psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
-                psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
-                PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-                fi
+              # Update secret to signal that db has been created, and services can start
+              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-
-
-            # #!/usr/bin/env bash
-            # set -euo pipefail
-
-            # echo "PGHOST=$PGHOST"
-            # echo "PGPORT=$PGPORT"
-            # echo "PGUSER=$PGUSER"
-            # echo "SERVICE_PGDB=$SERVICE_PGDB"
-            # echo "SERVICE_PGUSER=$SERVICE_PGUSER"
-
-            # # Determine if we are in bootstrap mode
-            # BOOTSTRAP_MODE="false"
-            # [[ -n "${SERVICE_PGPASS_BOOTSTRAP:-}" ]] && BOOTSTRAP_MODE="true"
-
-            # # Determine the service password we should use
-            # ACTIVE_SERVICE_PGPASS="${SERVICE_PGPASS:-}"
-            # if [[ -z "$ACTIVE_SERVICE_PGPASS" && "$BOOTSTRAP_MODE" == "true" ]]; then
-            #   ACTIVE_SERVICE_PGPASS="${SERVICE_PGPASS_BOOTSTRAP:-}"
-            # fi
-
-            # # Wait for Postgres to be ready
-            # until pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" >/dev/null 2>&1; do
-            #   echo "Postgres is unavailable - sleeping"
-            #   sleep 5
-            # done
-            # echo "Postgres is up - executing command"
-
-            # # Catalog queries now use database = PGUSER
-            # db_exists() {
-            #   PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
-            #     -d "$PGUSER" -Atqc \
-            #     "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB';" | grep -q 1
-            # }
-            # user_exists() {
-            #   PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" \
-            #     -d "$PGUSER" -Atqc \
-            #     "SELECT 1 FROM pg_roles WHERE rolname = '$SERVICE_PGUSER';" | grep -q 1
-            # }
-
-            # # Create database if not exists (use TEMPLATE template0 to avoid locking issues)
-            # if db_exists; then
-            #   echo "Database exists"
-            # else
-            #   echo "Database does not exist — creating"
-            #   PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #     -c "CREATE DATABASE \"$SERVICE_PGDB\" TEMPLATE template0;" || true
-            # fi
-
-            # # Ensure service user exists and has the correct password
-            # if user_exists; then
-            #   echo "Role exists"
-            #   if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-            #     PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #       -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
-            #   else
-            #     PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #       -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
-            #   fi
-            # else
-            #   echo "Role does not exist — creating"
-            #   if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-            #     PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #       -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$ACTIVE_SERVICE_PGPASS';"
-            #   else
-            #     PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #       -c "CREATE ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
-            #   fi
-            # fi
-
-            # # Grant database access and create extension ltree
-            # PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGUSER" \
-            #   -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\";"
-
-            # PGPASSWORD="$PGPASSWORD" psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$SERVICE_PGDB" \
-            #   -c "CREATE EXTENSION IF NOT EXISTS ltree;"
-
-            # # Final connectivity test with service credentials
-            # if [[ -n "${ACTIVE_SERVICE_PGPASS:-}" ]]; then
-            #   PGPASSWORD="$ACTIVE_SERVICE_PGPASS" psql -h "$PGHOST" -p "$PGPORT" \
-            #     -U "$SERVICE_PGUSER" -d "$SERVICE_PGDB" -c "\conninfo"
-            # else
-            #   echo "Skipping service-user connectivity check (no SERVICE_PGPASS yet)"
-            # fi
-
-
-            # #!/bin/bash
-            # set -e
-
-            # source "${GEN3_HOME}/gen3/lib/utils.sh"
-            # gen3_load "gen3/gen3setup"
-
-            # echo "PGHOST=$PGHOST"
-            # echo "PGPORT=$PGPORT"
-            # echo "PGUSER=$PGUSER"
-
-            # echo "SERVICE_PGDB=$SERVICE_PGDB"
-            # echo "SERVICE_PGUSER=$SERVICE_PGUSER"
-
-            # until pg_isready -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -d template1
-            # do
-            #   >&2 echo "Postgres is unavailable - sleeping"
-            #   sleep 5
-            # done
-            # >&2 echo "Postgres is up - executing command"
-
-            # if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-            #   gen3_log_info "Database exists"
-
-            #   # Bootstrap logic for External Secrets:
-            #   # On first run, SERVICE_PGPASS won't exist (secret not synced yet) — use bootstrap password.
-            #   # If SERVICE_PGPASS is set, the secret already exists in Secrets Manager — use it to avoid recreating the DB.
-            #   if [[ -n "${SERVICE_PGPASS}" ]]; then
-            #     echo "service pgpass exists"
-            #     PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-            #   else
-            #     echo "service pgpass does not exist, using bootstrap password"
-            #     PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-            #   fi
-            #     # Update secret to signal that db is ready, and services can start
-            #     kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
-
-            # else
-            #   echo "database does not exist"
-            #   if [[ -n "${SERVICE_PGPASS}" ]]; then
-            #     echo "service pgpass exists"
-            #     psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-            #     gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-            #     psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-            #     psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
-            #     psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
-            #     PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-            #   else
-            #     echo "service pgpass does not exist, using bootstrap password"
-            #     psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-            #     gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
-            #     psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
-            #     psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
-            #     psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
-            #     PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-            #   fi
-            #     # Update secret to signal that db has been created, and services can start
-            #     kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
-            # fi
 {{- end}}
 {{- end }}
 
