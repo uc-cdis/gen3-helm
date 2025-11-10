@@ -119,9 +119,13 @@ A Helm chart for gen3 datareplicate
 | removeObjectsFromCloudsJob.LOG_BUCKET | string | `nil` |  |
 | removeObjectsFromCloudsJob.MANIFEST_FILE | string | `nil` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | removeObjectsFromCloudsJob.ONLY_REDACT | string | `nil` |  |
 =======
 >>>>>>> 2537941b (Migrate DCF redaction and validation jobs (#385))
+=======
+| removeObjectsFromCloudsJob.ONLY_REDACT | string | `"all"` |  |
+>>>>>>> 92f7a427 (Add New Param for Redaction Job)
 | removeObjectsFromCloudsJob.RELEASE | string | `nil` |  |
 | removeObjectsFromCloudsJob.enabled | bool | `true` |  |
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
