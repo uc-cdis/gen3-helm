@@ -73,10 +73,10 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ $.Values.global.postgres.externalSecret }}
-                key: usename
+                key: username
                 optional: false
           {{- else }}
-            value: {{ .Values.global.postgres.master.usename | quote }}
+            value: {{ .Values.global.postgres.master.username | quote }}
           {{- end }}
           - name: PGPORT
           {{- if $.Values.global.postgres.externalSecret }}
@@ -105,13 +105,13 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds-bootstrap
-                key: usename
+                key: username
                 optional: false
           {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: usename
+                key: username
                 optional: false
           {{- end }}
           - name: SERVICE_PGDB
@@ -372,7 +372,7 @@ metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  usename: {{ ( $.Values.postgres.usename | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}
@@ -397,7 +397,7 @@ metadata:
 type: Opaque
 data:
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  usename: {{ ( $.Values.postgres.usename | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}
