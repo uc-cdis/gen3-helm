@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.80](https://img.shields.io/badge/Version-0.2.80-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.81](https://img.shields.io/badge/Version-0.2.81-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -30,12 +30,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dashboard | dashboard | 0.1.10 |
 | file://../datareplicate | datareplicate | 0.0.35 |
 | file://../dicom-server | dicom-server | 0.1.21 |
-| file://../etl | etl | 0.1.18 |
+| file://../etl | etl | 0.1.19 |
 | file://../fence | fence | 0.1.63 |
 | file://../frontend-framework | frontend-framework | 0.1.15 |
 | file://../gen3-analysis | gen3-analysis | 0.1.3 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.7 |
+| file://../gen3-workflow | gen3-workflow | 0.1.1 |
 | file://../guppy | guppy | 0.1.28 |
 | file://../hatchery | hatchery | 0.1.56 |
 | file://../indexd | indexd | 0.1.35 |
@@ -110,8 +111,10 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
-| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
-| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
+| gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -126,6 +129,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
+| global.clusterName | string | `"default"` | Kubernetes cluster name. |
 | global.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
