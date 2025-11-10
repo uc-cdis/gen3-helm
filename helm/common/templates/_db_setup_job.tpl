@@ -73,10 +73,10 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ $.Values.global.postgres.externalSecret }}
-                key: username
+                key: usename
                 optional: false
           {{- else }}
-            value: {{ .Values.global.postgres.master.username | quote }}
+            value: {{ .Values.global.postgres.master.usename | quote }}
           {{- end }}
           - name: PGPORT
           {{- if $.Values.global.postgres.externalSecret }}
@@ -105,13 +105,13 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds-bootstrap
-                key: username
+                key: usename
                 optional: false
           {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Chart.Name }}-dbcreds
-                key: username
+                key: usename
                 optional: false
           {{- end }}
           - name: SERVICE_PGDB
@@ -183,8 +183,8 @@ spec:
               else
                 echo "database does not exist- using service pgpass"
                 psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE username = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-                psql -tc "SELECT 1 FROM pg_user WHERE username = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+                psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
                 psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
                 psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
                 PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
@@ -200,8 +200,8 @@ spec:
               else
                 echo "database does not exist- using bootstrap password"
                 psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE username = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
-                psql -tc "SELECT 1 FROM pg_user WHERE username = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
+                gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
+                psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS_BOOTSTRAP';"
                 psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
                 psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
                 PGPASSWORD=$SERVICE_PGPASS_BOOTSTRAP psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
@@ -373,7 +373,7 @@ metadata:
   name: {{ $.Chart.Name }}-dbcreds
 data:
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  usename: {{ ( $.Values.postgres.usename | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}
@@ -398,7 +398,7 @@ metadata:
 type: Opaque
 data:
   database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  usename: {{ ( $.Values.postgres.usename | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
   {{- if $.Values.global.dev }}
@@ -419,7 +419,7 @@ metadata:
   name: {{ $.Chart.Name }}-dbcreds
 spec:
   updatePolicy: IfNotExists
-  refreshInterval: 15s
+  refreshInterval: 2m
   secretStoreRefs:
     {{- if ne .Values.global.externalSecrets.clusterSecretStoreRef "" }}
     - name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
