@@ -22,6 +22,9 @@ data:
           nodeName: $NODE_NAME
           restartPolicy: Never
           tolerations:
+          - effect: NoSchedule
+            key: nvidia.com/gpu
+            operator: Exists
           - key: "role"
             operator: "Equal"
             value: "gpu"
