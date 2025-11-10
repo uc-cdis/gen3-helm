@@ -48,6 +48,7 @@ A Helm chart for gen3 datareplicate
 | removeObjectsFromCloudsJob.IGNORED_FILE | string | `nil` |  |
 | removeObjectsFromCloudsJob.LOG_BUCKET | string | `nil` |  |
 | removeObjectsFromCloudsJob.MANIFEST_FILE | string | `nil` |  |
+| removeObjectsFromCloudsJob.ONLY_REDACT | string | `"all"` |  |
 | removeObjectsFromCloudsJob.RELEASE | string | `nil` |  |
 | removeObjectsFromCloudsJob.enabled | bool | `true` |  |
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
