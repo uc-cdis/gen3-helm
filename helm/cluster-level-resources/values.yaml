@@ -137,6 +137,14 @@ karpenter-crds:
           - m
           - r
           - t
+  gpu:
+    enabled: true
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    volumeSize: 50Gi
+    additionalTags: {}
   secondary:
     enabled: false
     consolidation: true
@@ -225,6 +233,12 @@ kube-state-metrics:
   configuration:
     enabled: false
   targetRevision: 6.3.0
+
+nvidia-device-plugin:
+  enabled: true
+  configuration:
+    enabled: false
+  targetRevision: v0.18.0
 
 vpc-cni:
   enabled: false
