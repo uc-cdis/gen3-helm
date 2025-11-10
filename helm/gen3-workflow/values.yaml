@@ -476,6 +476,8 @@ funnel:
           volumeHandle: s3-csi-{{.TaskId}}
           volumeAttributes:
             bucketName: {{.Bucket}}
+            authenticationSource: pod
+            stsRegion: us-east-1 # <-- Must match the EKS cluster region for your deployment
         claimRef:
           namespace: {{.Namespace}}
           name: funnel-worker-pvc-{{.TaskId}}
