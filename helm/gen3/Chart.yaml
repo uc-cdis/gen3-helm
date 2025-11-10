@@ -279,7 +279,7 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.1
+    version: 0.1.2
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
@@ -445,6 +445,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -482,6 +483,9 @@ version: 0.2.79
 =======
 version: 0.2.80
 >>>>>>> a6dcdb6f (update version)
+=======
+version: 0.2.82
+>>>>>>> 9cc23438 (Update PV Template in funnel to add flags to csi driver config)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

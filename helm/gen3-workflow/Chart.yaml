@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -24,6 +25,9 @@ version: 0.1.11
 =======
 version: 0.1.1
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+version: 0.1.2
+>>>>>>> 9cc23438 (Update PV Template in funnel to add flags to csi driver config)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
