@@ -56,7 +56,8 @@ spec:
                 value: "{{ .Values.removeObjectsFromCloudsJob.MANIFEST_FILE }}"
               - name: IGNORED_FILE_S3
                 value: "{{ .Values.removeObjectsFromCloudsJob.IGNORED_FILE }}"
-              - name: "{{ .Values.removeObjectsFromCloudsJob.ONLY_REDACT}}"
+              - name: ONLY_REDACT
+                value: "{{ .Values.removeObjectsFromCloudsJob.ONLY_REDACT}}"
               - name: DRY_RUN
                 value: "{{ .Values.removeObjectsFromCloudsJob.DRY_RUN }}"
             volumeMounts:
