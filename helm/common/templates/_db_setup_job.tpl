@@ -171,7 +171,6 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
-            sleep infinity
             
             if [[ -n "${SERVICE_PGPASS}" ]]; then
               if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
