@@ -58,3 +58,33 @@ There is a job to restore dummy data for Postgres and Elasticsearch to speed up 
 
 In the future this job may be used to set up fully tested production environments, negating the need to run ETL in production, and have all your databases tested before doing a data-release.
 
+## Bootstrapping Databases with External Secrets and Secrets Manager
+
+Gen3 supports bootstrapping and managing database credentials using [External Secrets](https://external-secrets.io/) and AWS Secrets Manager.
+
+To successfully create your databases (with an auto-generated password) and have the relevant secrets pushed to your secrets manager, you need to provide the following configuration:
+
+**Global Settings:**
+
+```yaml
+global:
+  externalSecrets:
+    deploy: true        # Enable deployment of the external secrets resources
+    dbCreate: true      # Enable database creation
+  postgres:
+    externalSecret: "<name of secrets manager secret that contains master Postgres info>" # Reference to master database credentials
+
+**Service-Specific Settings (set per service, not globally):**
+
+<service-name>:
+  postgres:
+    dbCreate: true      # Enable database creation for this service
+    bootstrap: true     # Enable bootstrapping logic for this service
+  externalSecrets:
+    dbcreds: "<name of the secret that will be created in secrets manager>" # Name for the service-specific DB secret
+
+**Note:**
+- Set the service-specific values for every service you wish to bootstrap.
+- These settings ensure database credentials are generated, stored in your Secrets Manager, and made available for automated deployments and recovery.
+- Pushsecret resource will never overide or replace your Secrets Manager Secret unless the AWS resource is deleted.
+
