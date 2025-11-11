@@ -34,7 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.64 |
 | file://../frontend-framework | frontend-framework | 0.1.16 |
 | file://../gen3-analysis | gen3-analysis | 0.1.4 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.8 |
 | file://../gen3-workflow | gen3-workflow | 0.1.3 |
 | file://../guppy | guppy | 0.1.29 |
@@ -144,9 +144,9 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createSlackWebhookSecret":false,"dbCreate":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
-| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |

@@ -64,8 +64,8 @@ Gen3 can create database credentials, keep them as **local Kubernetes Secrets**,
 
 ### TL;DR behavior
 
-- **Local only**: If **both** `global.externalSecrets.deploy` and `global.externalSecrets.dbCreate` are `true` **and no push flag is set**, the DB create job runs and writes a **local K8s Secret only**.
-- **Push to Secrets Manager**: If `global.externalSecrets.deploy` is `true` **and** `global.externalSecrets.dbCreate` is `false` **and** either:
+- **Local only**: If **both** `global.externalSecrets.deploy` and `global.externalSecrets.createLocalK8sSecret` are `true` **and no push flag is set**, the DB create job runs and writes a **local K8s Secret only**.
+- **Push to Secrets Manager**: If `global.externalSecrets.deploy` is `true` **and** `global.externalSecrets.createLocalK8sSecret` is `false` **and** either:
   - `global.externalSecrets.pushSecret` is `true`, **or**
   - `<service>.externalSecrets.pushSecret` is `true` (per-service),
   
@@ -80,7 +80,7 @@ Gen3 can create database credentials, keep them as **local Kubernetes Secrets**,
 global:
   externalSecrets:
     deploy: true        # required to enable any of this flow
-    dbCreate: false     # create DB + credentials (set true if you want to create the local k8s secret and not use Secrets Manager for the database secrets.)
+    createLocalK8sSecret: false     # create DB + credentials (set true if you want to create the local k8s secret and not use Secrets Manager for the database secrets.)
     pushSecret: true    # Will create the database and push the secret to Secrets Manager to then be used by External Secrets.
   postgres:
     externalSecret: "<name of master Postgres secret in Secrets Manager>" # This value is required for the db create job unless you are using a local Postgres.

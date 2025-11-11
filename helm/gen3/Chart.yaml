@@ -120,7 +120,7 @@ dependencies:
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
