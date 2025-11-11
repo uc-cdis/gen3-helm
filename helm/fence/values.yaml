@@ -9,7 +9,7 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+    createLocalK8sSecret: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     # -- (string) Will use a manually deployed clusterSecretStore if defined.
@@ -128,6 +128,8 @@ externalSecrets:
   fenceGoogleStorageCredsSecret:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config"
   fenceConfig:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys"
