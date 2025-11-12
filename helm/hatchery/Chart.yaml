@@ -18,6 +18,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
@@ -27,6 +28,9 @@ version: 0.1.55
 =======
 version: 0.1.56
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+version: 0.1.57
+>>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 

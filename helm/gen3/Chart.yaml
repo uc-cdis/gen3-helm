@@ -74,6 +74,7 @@ dependencies:
     condition: aws-sigv4-proxy.enabled
   - name: cedar
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
     repository: "file://../cedar"
     condition: cedar.enabled
@@ -81,6 +82,9 @@ dependencies:
     version: 0.1.20
 =======
     version: 0.1.14
+=======
+    version: 0.1.15
+>>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -287,7 +291,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.56
+    version: 0.1.57
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -451,6 +455,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -494,6 +499,9 @@ version: 0.2.82
 =======
 version: 0.2.83
 >>>>>>> d89729c9 (Update Gen3Workflow secrets to include EKS cluster variables)
+=======
+version: 0.2.84
+>>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
