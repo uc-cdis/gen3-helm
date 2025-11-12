@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -9,6 +10,9 @@
 =======
 ![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+![Version: 0.1.35](https://img.shields.io/badge/Version-0.1.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 141c2bd3 (Specify namespace for ssjdispatcher rolebinding (#439))
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -58,10 +62,14 @@ A Helm chart for gen3 ssjdispatcher
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | gen3Namespace | string | `""` | Namespace to deploy the job. Defaults to .Release.Namespace |
 =======
 | gen3Namespace | string | `"default"` | Namespace to deploy the job. |
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+| gen3Namespace | string | `""` | Namespace to deploy the job. Defaults to .Release.Namespace |
+>>>>>>> 141c2bd3 (Specify namespace for ssjdispatcher rolebinding (#439))
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
