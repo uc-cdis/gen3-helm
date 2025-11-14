@@ -75,6 +75,7 @@ dependencies:
   - name: cedar
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
     repository: "file://../cedar"
     condition: cedar.enabled
@@ -85,6 +86,9 @@ dependencies:
 =======
     version: 0.1.15
 >>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
+=======
+    version: 0.1.16
+>>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -457,6 +461,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -506,6 +511,9 @@ version: 0.2.84
 =======
 version: 0.2.85
 >>>>>>> ac4934b9 (Tag sower rpa with env and namespace like other crossplane resources (#441))
+=======
+version: 0.2.86
+>>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

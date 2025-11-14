@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -9,6 +10,9 @@
 =======
 ![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
+=======
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
 
 A Helm chart for gen3 cedar wrapper
 
@@ -40,14 +44,20 @@ A Helm chart for gen3 cedar wrapper
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
 | autoscaling.averageCPUValue | string | `"500m"` |  |
 | autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `10` |  |
 | autoscaling.minReplicas | int | `1` |  |
+<<<<<<< HEAD
 =======
 | autoscaling | object | `{}` |  |
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+>>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
 | cedarIngestion | map | `{"enabled":true}` | Whether or not to deploy the cedar ingestion job. |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
@@ -111,7 +121,7 @@ A Helm chart for gen3 cedar wrapper
 | podSecurityContext | map | `{}` | Security context for the pod |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
-| resources | map | `{"autoscaling":{"averageCPUValue":"500m","averageMemoryValue":"500Mi","enabled":false,"maxReplicas":10,"minReplicas":1},"limits":{"memory":"512Mi"},"requests":{"memory":"120Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"120Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
 | resources.requests | map | `{"memory":"120Mi"}` | The amount of resources that the container requests |
