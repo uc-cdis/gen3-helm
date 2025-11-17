@@ -58,3 +58,44 @@ There is a job to restore dummy data for Postgres and Elasticsearch to speed up 
 
 In the future this job may be used to set up fully tested production environments, negating the need to run ETL in production, and have all your databases tested before doing a data-release.
 
+## Bootstrapping Databases with External Secrets & AWS Secrets Manager
+
+Gen3 can create database credentials, keep them as **local Kubernetes Secrets**, or **push them to AWS Secrets Manager and sync back via External Secrets**.
+
+### TL;DR behavior
+
+- **Local only**: If **both** `global.externalSecrets.deploy` and `global.externalSecrets.createLocalK8sSecret` are `true` **and no push flag is set**, the DB create job runs and writes a **local K8s Secret only**.
+- **Push to Secrets Manager**: If `global.externalSecrets.deploy` is `true` **and** `global.externalSecrets.createLocalK8sSecret` is `false` **and** either:
+  - `global.externalSecrets.pushSecret` is `true`, **or**
+  - `<service>.externalSecrets.pushSecret` is `true` (per-service),
+  
+  then the secret is **pushed to AWS Secrets Manager**, and **External Secrets** syncs it back to Kubernetes.  
+
+---
+
+### Values for enabling pushSecret Bootstrap
+
+**Global:**
+```yaml
+global:
+  externalSecrets:
+    deploy: true        # required to enable any of this flow
+    createLocalK8sSecret: false     # create DB + credentials (set true if you want to create the local k8s secret and not use Secrets Manager for the database secrets.)
+    pushSecret: true    # Will create the database and push the secret to Secrets Manager to then be used by External Secrets.
+  postgres:
+    externalSecret: "<name of master Postgres secret in Secrets Manager>" # This value is required for the db create job unless you are using a local Postgres.
+```
+
+**Per service:**
+```yaml
+<service-name>:
+  postgres:
+    dbCreate: true      # enable DB creation for this service (optional if handled globally)
+  externalSecrets:
+    dbcreds: "<name of the secret that will be created in secrets manager>" # Name for the service-specific DB secret
+    # pushSecret: true  # optional per-service override to push
+```
+
+**Notes**
+- pushSecret configuration will ensure database credentials are generated, stored in your Secrets Manager, and made available for automated deployments and recovery.
+- Pushsecret resource will never overide or replace your Secrets Manager Secret unless the AWS resource is deleted.

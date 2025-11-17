@@ -20,7 +20,7 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+    createLocalK8sSecret: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     # -- (string) Will use a manually deployed clusterSecretStore if defined.

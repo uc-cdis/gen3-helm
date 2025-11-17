@@ -93,6 +93,8 @@ externalSecrets:
   createK8sAuditSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "audit-g3auto"
   auditG3auto:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 # -- (map) Secret information for External Secrets.
