@@ -106,7 +106,7 @@ spec:
                   /spark/sbin/start-all.sh
                   while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && echo "Exiting with exit code $exit_code" && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: {{ .Values.image.tube.pullPolicy | default "IfNotPresent" | quote }}
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
