@@ -37,10 +37,10 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.26
+    version: 0.1.27
     repository: file://../common
   - name: dashboard
-    version: 0.1.11
+    version: 0.1.12
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
