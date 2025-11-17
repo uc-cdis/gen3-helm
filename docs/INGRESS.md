@@ -7,7 +7,7 @@ if `global.dev` is set to true, a very basic ingress is created.
 
 if `global.aws.` is set to true, there is a special ingress resource that will be created, that has prepoulated annotations for the `alb-controller` to create an alb with similar settings as `cloud-automation`.
 
-# Custom Ingress
+# Custom Ingress 
 
 There is a custom ingress that can be deployed and manipulated. This is a default helm ingress resource, and can be enabled using values like the ones below: 
 
