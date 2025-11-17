@@ -171,10 +171,10 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.26
+    version: 0.1.27
     repository: file://../common
   - name: dashboard
-    version: 0.1.11
+    version: 0.1.12
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
@@ -530,6 +530,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -585,6 +586,9 @@ version: 0.2.86
 =======
 version: 0.2.87
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.2.88
+>>>>>>> 45aed67d (Update labeling for hpa template, add partOf to dashboard (#431))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
