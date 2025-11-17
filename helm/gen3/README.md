@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.86](https://img.shields.io/badge/Version-0.2.86-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.87](https://img.shields.io/badge/Version-0.2.87-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,41 +18,41 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.12 |
-| file://../ambassador | ambassador | 0.1.27 |
-| file://../arborist | arborist | 0.1.26 |
-| file://../argo-wrapper | argo-wrapper | 0.1.21 |
-| file://../audit | audit | 0.1.33 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.33 |
-| file://../cedar | cedar | 0.1.16 |
-| file://../cohort-middleware | cohort-middleware | 0.1.13 |
-| file://../common | common | 0.1.25 |
-| file://../dashboard | dashboard | 0.1.10 |
-| file://../datareplicate | datareplicate | 0.0.35 |
-| file://../dicom-server | dicom-server | 0.1.21 |
+| file://../access-backend | access-backend | 0.1.13 |
+| file://../ambassador | ambassador | 0.1.28 |
+| file://../arborist | arborist | 0.1.27 |
+| file://../argo-wrapper | argo-wrapper | 0.1.22 |
+| file://../audit | audit | 0.1.34 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.34 |
+| file://../cedar | cedar | 0.1.17 |
+| file://../cohort-middleware | cohort-middleware | 0.1.14 |
+| file://../common | common | 0.1.26 |
+| file://../dashboard | dashboard | 0.1.11 |
+| file://../datareplicate | datareplicate | 0.0.36 |
+| file://../dicom-server | dicom-server | 0.1.22 |
 | file://../etl | etl | 0.1.19 |
-| file://../fence | fence | 0.1.63 |
-| file://../frontend-framework | frontend-framework | 0.1.15 |
-| file://../gen3-analysis | gen3-analysis | 0.1.3 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.7 |
-| file://../gen3-workflow | gen3-workflow | 0.1.2 |
-| file://../guppy | guppy | 0.1.28 |
-| file://../hatchery | hatchery | 0.1.57 |
-| file://../indexd | indexd | 0.1.35 |
-| file://../manifestservice | manifestservice | 0.1.34 |
-| file://../metadata | metadata | 0.1.33 |
+| file://../fence | fence | 0.1.64 |
+| file://../frontend-framework | frontend-framework | 0.1.16 |
+| file://../gen3-analysis | gen3-analysis | 0.1.4 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.8 |
+| file://../gen3-workflow | gen3-workflow | 0.1.3 |
+| file://../guppy | guppy | 0.1.29 |
+| file://../hatchery | hatchery | 0.1.58 |
+| file://../indexd | indexd | 0.1.36 |
+| file://../manifestservice | manifestservice | 0.1.35 |
+| file://../metadata | metadata | 0.1.35 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohif-viewer | ohif-viewer | 0.1.5 |
-| file://../orthanc | orthanc | 0.1.6 |
-| file://../peregrine | peregrine | 0.1.33 |
-| file://../portal | portal | 0.1.47 |
-| file://../requestor | requestor | 0.1.26 |
-| file://../revproxy | revproxy | 0.1.47 |
-| file://../sheepdog | sheepdog | 0.1.33 |
-| file://../sower | sower | 0.1.37 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.35 |
-| file://../wts | wts | 0.1.32 |
+| file://../ohif-viewer | ohif-viewer | 0.1.6 |
+| file://../orthanc | orthanc | 0.1.7 |
+| file://../peregrine | peregrine | 0.1.34 |
+| file://../portal | portal | 0.1.48 |
+| file://../requestor | requestor | 0.1.27 |
+| file://../revproxy | revproxy | 0.1.48 |
+| file://../sheepdog | sheepdog | 0.1.34 |
+| file://../sower | sower | 0.1.38 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.36 |
+| file://../wts | wts | 0.1.33 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -115,12 +115,13 @@ Helm chart to deploy Gen3 Data Commons
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
 | gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
 | global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
@@ -143,9 +144,9 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createSlackWebhookSecret":false,"dbCreate":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
-| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
