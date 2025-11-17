@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.36](https://img.shields.io/badge/Version-0.1.36-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.25 |
+| file://../common | common | 0.1.26 |
 
 ## Values
 
@@ -33,7 +33,7 @@ A Helm chart for gen3 ssjdispatcher
 | externalSecrets.createK8sSsjdispatcherSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| gen3Namespace | string | `""` | Namespace to deploy the job. Defaults to .Release.Namespace |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |

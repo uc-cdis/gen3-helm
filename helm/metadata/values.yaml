@@ -88,6 +88,8 @@ externalSecrets:
   createK8sMetadataSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "metadata-g3auto"
   metadataG3auto:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 # -- (map) Secret information to access the db restore job S3 bucket.
