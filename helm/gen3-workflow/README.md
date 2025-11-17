@@ -30,6 +30,7 @@ A Helm chart for Kubernetes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.20 |
@@ -52,6 +53,10 @@ A Helm chart for Kubernetes
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.56 |
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
+=======
+| file://../common | common | 0.1.26 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.58 |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 ## Values
 

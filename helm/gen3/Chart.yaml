@@ -7,6 +7,7 @@ dependencies:
   - name: access-backend
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.18
 =======
     version: 0.1.11
@@ -36,21 +37,25 @@ dependencies:
     version: 0.1.32
 =======
     version: 0.1.12
+=======
+    version: 0.1.13
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
+<<<<<<< HEAD
     version: 0.1.33
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../audit"
@@ -66,6 +71,13 @@ dependencies:
 =======
     version: 0.1.33
 >>>>>>> 8bac4f48 (Version bump to fix linting errors)
+=======
+    version: 0.1.34
+    repository: "file://../audit"
+    condition: audit.enabled
+  - name: aws-es-proxy
+    version: 0.1.34
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: aws-sigv4-proxy
@@ -73,6 +85,7 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -149,6 +162,24 @@ dependencies:
 =======
     version: 0.0.35
 >>>>>>> 8bac4f48 (Version bump to fix linting errors)
+=======
+    version: 0.1.17
+    repository: "file://../cedar"
+    condition: cedar.enabled
+  - name: cohort-middleware
+    version: 0.1.14
+    repository: "file://../cohort-middleware"
+    condition: cohort-middleware.enabled
+  - name: common
+    version: 0.1.26
+    repository: file://../common
+  - name: dashboard
+    version: 0.1.11
+    repository: file://../dashboard
+    condition: dashboard.enabled
+  - name: datareplicate
+    version: 0.0.36
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -178,6 +209,7 @@ dependencies:
   - name: frontend-framework
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
@@ -201,6 +233,13 @@ dependencies:
   - name: fence
     version: 0.1.63
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.16
+    repository: "file://../frontend-framework"
+    condition: frontend-framework.enabled
+  - name: fence
+    version: 0.1.64
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -208,6 +247,7 @@ dependencies:
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
+<<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.13
     repository: "file://../gen3-user-data-library"
@@ -284,6 +324,9 @@ dependencies:
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 =======
     version: 0.1.7
+=======
+    version: 0.1.8
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
@@ -291,40 +334,44 @@ dependencies:
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.57
+    version: 0.1.58
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.35
+    version: 0.1.36
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.33
+    version: 0.1.35
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.33
+    version: 0.1.34
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.47
+    version: 0.1.48
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
+<<<<<<< HEAD
     version: 0.1.47
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.48
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -336,6 +383,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -356,13 +404,17 @@ dependencies:
 =======
     version: 0.1.35
 >>>>>>> 141c2bd3 (Specify namespace for ssjdispatcher rolebinding (#439))
+=======
+    version: 0.1.36
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.37
+    version: 0.1.38
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
+<<<<<<< HEAD
     version: 0.1.32
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
     repository: "file://../wts"
@@ -388,19 +440,34 @@ dependencies:
     version: 0.1.10
 =======
     version: 0.1.21
+=======
+    version: 0.1.33
+    repository: "file://../wts"
+    condition: wts.enabled
+  - name: gen3-network-policies
+    version: 0.1.3
+    repository: "file://../gen3-network-policies"
+    condition: global.netPolicy.enabled
+  - name: dicom-server
+    version: 0.1.22
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.5
+    version: 0.1.6
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.6
+    version: 0.1.7
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
+<<<<<<< HEAD
     version: 0.1.3
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.4
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
@@ -445,6 +512,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -514,6 +582,9 @@ version: 0.2.85
 =======
 version: 0.2.86
 >>>>>>> 9db0730f (Remove autoscaling from requests key (#442))
+=======
+version: 0.2.87
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

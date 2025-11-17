@@ -1,10 +1,14 @@
 # orthanc
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 A Helm chart for gen3 Dicom Server
 
@@ -12,6 +16,7 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -29,6 +34,9 @@ A Helm chart for gen3 Dicom Server
 =======
 | file://../common | common | 0.1.25 |
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+| file://../common | common | 0.1.26 |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 ## Values
 
@@ -54,9 +62,13 @@ A Helm chart for gen3 Dicom Server
 | externalSecrets.createK8sOrthancS3G3auto | string | `false` | Will create the Helm "orthanc-s3-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.orthancS3G3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "orthanc-s3-g3auto" |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 =======
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |

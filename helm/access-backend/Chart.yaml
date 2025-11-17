@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -24,6 +25,9 @@ version: 0.1.11
 =======
 version: 0.1.12
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+version: 0.1.13
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -33,6 +37,7 @@ appVersion: "1.6.1"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -50,4 +55,7 @@ dependencies:
 =======
     version: 0.1.25
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.26
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: file://../common

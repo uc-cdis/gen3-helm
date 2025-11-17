@@ -16,6 +16,7 @@ A Helm chart for gen3 Sheepdog Service
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
@@ -29,6 +30,9 @@ A Helm chart for gen3 Sheepdog Service
 =======
 | file://../common | common | 0.1.25 |
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+| file://../common | common | 0.1.26 |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -51,9 +55,13 @@ A Helm chart for gen3 Sheepdog Service
 | externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 =======
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |

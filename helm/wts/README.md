@@ -1,10 +1,14 @@
 # wts
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.38](https://img.shields.io/badge/Version-0.1.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 A Helm chart for gen3 workspace token service
 
@@ -12,6 +16,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -29,6 +34,9 @@ A Helm chart for gen3 workspace token service
 =======
 | file://../common | common | 0.1.25 |
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+| file://../common | common | 0.1.26 |
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

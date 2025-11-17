@@ -21,6 +21,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.19
 =======
 version: 0.0.30
@@ -40,6 +41,9 @@ version: 0.0.34
 =======
 version: 0.0.35
 >>>>>>> 8bac4f48 (Version bump to fix linting errors)
+=======
+version: 0.0.36
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -49,6 +53,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -66,4 +71,7 @@ dependencies:
 =======
     version: 0.1.25
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.26
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: file://../common

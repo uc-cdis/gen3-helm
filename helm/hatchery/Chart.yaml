@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
@@ -31,6 +32,9 @@ version: 0.1.56
 =======
 version: 0.1.57
 >>>>>>> c96cacf2 (set concurrencyPolicy: Forbid on cronjobs to prevent job buildup)
+=======
+version: 0.1.58
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
@@ -42,6 +46,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -59,4 +64,7 @@ dependencies:
 =======
     version: 0.1.25
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
+=======
+    version: 0.1.26
+>>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
     repository: file://../common
