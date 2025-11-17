@@ -29,7 +29,7 @@ dependencies:
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.15
+    version: 0.1.16
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
@@ -173,7 +173,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.83
+version: 0.2.86
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
