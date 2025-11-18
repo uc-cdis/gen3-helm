@@ -16,7 +16,7 @@ spec:
   {{- end }}
   amiSelectorTerms:
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
-    owner: "143731057154"
+    owner: {{ index .Values "karpenter-crds" "amiOwner" | quote }}
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
