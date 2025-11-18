@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.89](https://img.shields.io/badge/Version-0.2.89-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.90](https://img.shields.io/badge/Version-0.2.90-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -45,11 +45,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.6 |
 | file://../orthanc | orthanc | 0.1.7 |
-| file://../peregrine | peregrine | 0.1.34 |
+| file://../peregrine | peregrine | 0.1.35 |
 | file://../portal | portal | 0.1.48 |
 | file://../requestor | requestor | 0.1.27 |
 | file://../revproxy | revproxy | 0.1.48 |
-| file://../sheepdog | sheepdog | 0.1.34 |
+| file://../sheepdog | sheepdog | 0.1.35 |
 | file://../sower | sower | 0.1.38 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.36 |
 | file://../wts | wts | 0.1.33 |
