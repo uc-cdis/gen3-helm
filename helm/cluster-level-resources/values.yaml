@@ -110,6 +110,7 @@ karpenter-crds:
   enabled: false
   targetRevision: master
   amiSelectorName: "EKS-FIPS*"
+  amiOwner: "143731057154"
   selectorTag: ""
   migration: false
   default:
