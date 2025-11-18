@@ -33,7 +33,7 @@ dependencies:
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
@@ -52,7 +52,7 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence

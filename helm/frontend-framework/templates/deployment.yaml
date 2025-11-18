@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "frontend-framework.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "frontend-framework.selectorLabels" . | nindent 6 }}
