@@ -19,6 +19,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.3.39](https://img.shields.io/badge/Version-0.3.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.2.62](https://img.shields.io/badge/Version-0.2.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -77,6 +78,9 @@
 =======
 ![Version: 0.2.88](https://img.shields.io/badge/Version-0.2.88-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 45aed67d (Update labeling for hpa template, add partOf to dashboard (#431))
+=======
+![Version: 0.2.89](https://img.shields.io/badge/Version-0.2.89-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> fd4a8a32 (Fix YAML indentation in Gen3-workflow config)
 
 Helm chart to deploy Gen3 Data Commons
 
