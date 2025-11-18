@@ -19,6 +19,8 @@ global:
       enabled: false
       # -- (String) Name of Secrets Manager secret.
       externalSecretAwsCreds:
+      # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+      pushSecret: false
     # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
     secretStoreServiceAccount:
       # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
@@ -125,7 +127,7 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+    createLocalK8sSecret: false
     clusterSecretStoreRef: ""
     # -- (bool) Will create a Kubernetes Secret for the slack webhook.
     createSlackWebhookSecret: false
