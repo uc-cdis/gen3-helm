@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.20
 =======
 version: 0.1.13
@@ -24,6 +25,9 @@ version: 0.1.13
 =======
 version: 0.1.14
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.15
+>>>>>>> 2193ec23 (Updating Cohort middleware to have a PDB and updating Frontend Framework to have a PDB and replicaCount. (#447))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -33,6 +37,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -54,4 +59,7 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.27
+>>>>>>> 2193ec23 (Updating Cohort middleware to have a PDB and updating Frontend Framework to have a PDB and replicaCount. (#447))
     repository: file://../common

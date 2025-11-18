@@ -167,7 +167,7 @@ dependencies:
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
@@ -210,6 +210,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
@@ -235,6 +236,9 @@ dependencies:
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 =======
     version: 0.1.16
+=======
+    version: 0.1.17
+>>>>>>> 2193ec23 (Updating Cohort middleware to have a PDB and updating Frontend Framework to have a PDB and replicaCount. (#447))
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
