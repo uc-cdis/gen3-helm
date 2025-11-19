@@ -17,6 +17,7 @@ A Helm chart for gen3 Sheepdog Service
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
@@ -33,6 +34,9 @@ A Helm chart for gen3 Sheepdog Service
 =======
 | file://../common | common | 0.1.26 |
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+| file://../common | common | 0.1.27 |
+>>>>>>> b940ee5a (Update versions for #445 (#450))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

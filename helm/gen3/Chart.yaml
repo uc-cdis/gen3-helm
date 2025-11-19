@@ -358,7 +358,7 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
@@ -536,6 +536,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.39
 =======
 version: 0.2.62
@@ -597,6 +598,9 @@ version: 0.2.88
 =======
 version: 0.2.89
 >>>>>>> fd4a8a32 (Fix YAML indentation in Gen3-workflow config)
+=======
+version: 0.2.91
+>>>>>>> b940ee5a (Update versions for #445 (#450))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
