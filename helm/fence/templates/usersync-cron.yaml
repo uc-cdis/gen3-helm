@@ -56,9 +56,6 @@ spec:
               configMap:
                 name: "manifest-fence"
                 optional: true
-            - name: creds-volume
-              secret:
-                secretName: "fence-creds"
             - name: projects
               configMap:
                 name: "projects"
@@ -210,10 +207,6 @@ spec:
                 readOnly: true
                 mountPath: "/var/www/fence/yaml_merge.py"
                 subPath: yaml_merge.py
-              - name: "creds-volume"
-                readOnly: true
-                mountPath: "/var/www/fence/creds.json"
-                subPath: creds.json
               - name: "projects"
                 mountPath: "/var/www/fence/projects.yaml"
                 subPath: "projects.yaml"
