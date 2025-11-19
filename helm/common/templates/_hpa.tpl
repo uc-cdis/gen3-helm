@@ -4,7 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{.Chart.Name}}-hpa
   labels:
-    {{- include "arborist.labels" . | nindent 4 }}
+    {{- include "common.commonLabels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

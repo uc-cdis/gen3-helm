@@ -124,6 +124,9 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    limits:
+      cpu: "1000"
+      memory: 1000Gi
     volumeSize: 50Gi
     additionalTags: {}
     requirements:
