@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.21](https://img.shields.io/badge/Version-0.6.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.22](https://img.shields.io/badge/Version-0.6.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -64,6 +64,8 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
+| karpenter-crds.default.limits.cpu | string | `"1000"` |  |
+| karpenter-crds.default.limits.memory | string | `"1000Gi"` |  |
 | karpenter-crds.default.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.default.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.default.requirements[0].values[0] | string | `"on-demand"` |  |

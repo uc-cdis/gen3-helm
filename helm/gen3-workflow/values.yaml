@@ -447,40 +447,6 @@ funnel:
       mountPath: /opt/funnel/plugin-binaries
 
   Kubernetes:
-    PVTemplate: |
-      apiVersion: v1
-      kind: PersistentVolume
-      metadata:
-        name: funnel-worker-pv-{{.TaskId}}
-        labels:
-          app: funnel
-          taskId: {{.TaskId}}
-      spec:
-        storageClassName: "" # Required for static provisioning
-        capacity:
-          storage: "10Mi"
-        accessModes:
-          - ReadWriteMany
-        persistentVolumeReclaimPolicy: Retain
-        mountOptions:
-          - allow-delete
-          - allow-overwrite
-          - region={{.Region}}
-          - file-mode=0755
-          {{- if .KmsKeyID }}
-          - sse aws:kms
-          - sse-kms-key-id={{.KmsKeyID}}
-          {{- end }}
-        csi:
-          driver: s3.csi.aws.com
-          volumeHandle: s3-csi-{{.TaskId}}
-          volumeAttributes:
-            bucketName: {{.Bucket}}
-            authenticationSource: pod
-            stsRegion: us-east-1 # <-- Must match the EKS cluster region for your deployment
-        claimRef:
-          namespace: {{.Namespace}}
-          name: funnel-worker-pvc-{{.TaskId}}
     ExecutorTemplate: |
       # Task Executor
       apiVersion: batch/v1
@@ -541,15 +507,15 @@ funnel:
       periodSeconds: 10
       failureThreshold: 10
 
-    Plugins:
-      Path: plugin-binaries/auth-plugin
-      Params:
-        OidcClientId: <redacted>
-        OidcClientSecret: <redacted>
-        # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
-        S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
-        # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
-        OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
+  Plugins:
+    Path: plugin-binaries/auth-plugin
+    Params:
+      OidcClientId: <redacted>
+      OidcClientSecret: <redacted>
+      # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
+      S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
+      # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
+      OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
 
 karpenter:
   nodeclass.yaml: |
