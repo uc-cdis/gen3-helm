@@ -87,7 +87,7 @@ spec:
               imagePullPolicy: {{ .Values.image.spark.pullPolicy }}
               resources:
                 requests:
-                  cpu: {{  .Values.resources.spark.requests.cpu }}
+                  cpu: {{ .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
               command: ["/bin/bash" ]
               args: 
@@ -106,7 +106,7 @@ spec:
                   /spark/sbin/start-all.sh
                   while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && echo "Exiting with exit code $exit_code" && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: {{ .Values.image.tube.pullPolicy | default "IfNotPresent" | quote }}
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
@@ -184,7 +184,7 @@ spec:
                   subPath: useryaml
               resources:
                 requests:
-                  cpu: {{  .Values.resources.tube.requests.cpu }}
+                  cpu: {{ .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
               command: ["/bin/bash"]
               args:

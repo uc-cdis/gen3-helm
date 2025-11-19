@@ -1,6 +1,6 @@
 # peregrine
 
-![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.35](https://img.shields.io/badge/Version-0.1.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Peregrine service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Peregrine service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.24 |
+| file://../common | common | 0.1.26 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -21,8 +21,9 @@ A Helm chart for gen3 Peregrine service
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `nil` | Environment variables to pass to the container |
-| externalSecrets | map | `{"dbcreds":null}` | External Secrets settings. |
+| externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
@@ -60,7 +61,7 @@ A Helm chart for gen3 Peregrine service
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | image.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
 | image.repository | string | `"quay.io/cdis/peregrine"` | The Docker image repository for the fence service |
-| image.tag | string | `"feat_jq-audience"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |

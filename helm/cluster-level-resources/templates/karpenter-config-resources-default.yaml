@@ -99,8 +99,9 @@ spec:
     - nodes: 10%
 
   limits:
-    cpu: "1000"
-    memory: 1000Gi
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: 99
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -114,8 +115,9 @@ spec:
     consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
     expireAfter: {{ index .Values "karpenter-crds" "default" "expireAfter" }}
   limits:
-    cpu: "1000"
-    memory: 1000Gi
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: 99
   template:
     metadata:
       labels:
