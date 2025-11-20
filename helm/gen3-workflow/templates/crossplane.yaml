@@ -1,0 +1,133 @@
+{{- if .Values.global.crossplane.enabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gen3workflow.serviceAccountName" . }}"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gen3workflow.serviceAccountName" . }}"
+    description: "Role for gen3workflow service account for {{ .Values.global.environment }}-{{ .Release.Namespace }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:oidc-provider/{{ .Values.global.crossplane.oidcProviderUrl }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:aud": "sts.amazonaws.com",
+                "{{ .Values.global.crossplane.oidcProviderUrl }}:sub": "system:serviceaccount:{{ .Release.Namespace }}:{{ include "gen3workflow.serviceAccountName" . }}"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+    document: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "ManageS3Buckets",
+            "Effect": "Allow",
+            "Action": [
+              "s3:CreateBucket",
+              "s3:DeleteBucket",
+              "s3:ListBucket",
+              "s3:GetObject",
+              "s3:PutObject",
+              "s3:DeleteObject",
+              "s3:DeleteBucketPolicy",
+              "s3:PutEncryptionConfiguration",
+              "s3:PutBucketPolicy",
+              "s3:PutLifecycleConfiguration"
+            ],
+            "Resource": [
+              "arn:aws:s3:::gen3wf-*",
+              "arn:aws:s3:::gen3wf-*/*"
+            ]
+          },
+          {
+            "Sid": "GetIamRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:CreatePolicy",
+                "iam:PutRolePolicy",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:TagRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/gen3wf-*",
+                "arn:aws:iam::*:policy/gen3wf-*"
+            ]
+          },
+          {
+            "Sid": "GetCallerIdentity",
+            "Effect": "Allow",
+            "Action": [
+              "sts:GetCallerIdentity"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Sid": "GetClusterInfo",
+            "Effect": "Allow",
+            "Action": [
+              "eks:DescribeCluster"
+            ],
+            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.environment }}"
+          },
+          {
+            "Sid": "ManageKMS",
+            "Effect": "Allow",
+            "Action": [
+              "kms:CreateKey",
+              "kms:GenerateDataKey",
+              "kms:CreateAlias",
+              "kms:DescribeKey",
+              "kms:Encrypt",
+              "kms:Decrypt",
+              "kms:TagResource"
+            ],
+            "Resource": "*"
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ include "gen3workflow.serviceAccountName" . }}-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: provider-aws
+  forProvider:
+    roleName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-{{ include "gen3workflow.serviceAccountName" . }}"
+    policyArnRef:
+      name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+{{- end }}
