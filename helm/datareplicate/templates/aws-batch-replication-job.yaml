@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: aws-batch-replicate
-  namespace: binamb-helm
+  namespace: {{ .Values.awsBatchReplicateJob.namespace }}
 spec:
   schedule: {{ .Values.awsBatchReplicateJob.schedule | quote }}
   suspended: {{ .Values.suspendCronjob }}
