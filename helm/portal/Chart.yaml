@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.47
@@ -24,6 +25,9 @@ version: 0.1.47
 =======
 version: 0.1.48
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.49
+>>>>>>> 1981e151 (Crossplane Fixes (#453))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -33,6 +37,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -54,4 +59,7 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.27
+>>>>>>> 1981e151 (Crossplane Fixes (#453))
     repository: file://../common
