@@ -64,7 +64,7 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.4
+    version: 0.1.5
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
