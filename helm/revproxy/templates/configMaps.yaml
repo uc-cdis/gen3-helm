@@ -18,9 +18,9 @@ data:
   {{ "portal-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
 {{- end }}
-{{- if .Values.enableRobotsTxt -}}
+{{- if .Values.enableRobotsTxt }}
   {{ "robots-txt.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/robots/robots-txt.conf" | nindent 4 }}
+  {{- .Files.Get "gen3.nginx.conf/robots/robots-txt.conf" | nindent 4}}
 {{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
