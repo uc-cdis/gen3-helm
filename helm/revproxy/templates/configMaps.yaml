@@ -38,7 +38,14 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-conf
 data:
+{{- if .Values.enableRobotsTxt }}
+{{- range $path, $bytes := .Files.Glob "nginxPrivate/*" }}
+  {{ ($a := split "/" $path)._1 }}: |
+  {{- $bytes | toString | nindent 4 }}
+{{- end}}
+{{- else }}
 {{- range $path, $bytes := .Files.Glob "nginx/*" }}
   {{ ($a := split "/" $path)._1 }}: |
   {{- $bytes | toString | nindent 4 }}
 {{- end}}
+{{- end }}
