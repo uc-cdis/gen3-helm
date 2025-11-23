@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.45
@@ -32,6 +33,9 @@ version: 0.1.47
 =======
 version: 0.1.48
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.49
+>>>>>>> cf201226 (Added robots.txt endpoint)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

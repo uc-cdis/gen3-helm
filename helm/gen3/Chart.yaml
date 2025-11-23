@@ -371,11 +371,15 @@ dependencies:
     condition: requestor.enabled
   - name: revproxy
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.47
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 =======
     version: 0.1.48
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.49
+>>>>>>> cf201226 (Added robots.txt endpoint)
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
