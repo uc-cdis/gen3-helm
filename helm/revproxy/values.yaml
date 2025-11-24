@@ -254,3 +254,5 @@ extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint
+
+privateIndexdEnabled: false
