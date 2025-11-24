@@ -18,6 +18,13 @@ data:
   {{ "portal-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
 {{- end }}
+{{- if .Values.privateIndexdEnabled }}
+  {{ "indexd-service.conf" }}: |
+  {{- .Files.Get "gen3.nginx.conf/indexd-private/indexd-service.conf" | nindent 4}}
+{{- else }}
+  {{ "indexd-service.conf" }}: |
+  {{- .Files.Get "gen3.nginx.conf/indexd/indexd-service.conf" | nindent 4}}
+{{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
