@@ -33,6 +33,7 @@ spec:
                     operator: In
                     values:
                     - ONDEMAND
+              
           volumes:
             - name: google-cred-volume
               secret:
@@ -46,6 +47,12 @@ spec:
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            resources:
+              requests: 
+                cpu: "2"
+                memory: "2Gi"
+              limits:
+                memory: "3Gi"
             imagePullPolicy: Always
             env:
               - name: RELEASE
