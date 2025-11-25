@@ -98,8 +98,6 @@ spec:
           dnsPolicy: ClusterFirst
           schedulerName: default-scheduler
           securityContext: {}
-          serviceAccount: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
-          serviceAccountName: binamb-helm-planx-pla-net-bucket-replicate-jqhu-sa
           terminationGracePeriodSeconds: 30
           restartPolicy: Never
 {{- end }}
