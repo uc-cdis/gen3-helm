@@ -33,6 +33,7 @@ spec:
                     operator: In
                     values:
                     - ONDEMAND
+              
           volumes:
             - name: google-cred-volume
               secret:
@@ -46,6 +47,8 @@ spec:
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            resources:
+              {{- toYaml .Values.resources | nindent 12 }}
             imagePullPolicy: Always
             env:
               - name: RELEASE
