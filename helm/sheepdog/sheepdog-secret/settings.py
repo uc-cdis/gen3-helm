@@ -5,13 +5,8 @@
 
 from sheepdog.api import app, app_init
 from os import environ
-# import config_helper
 
 APP_NAME='sheepdog'
-# def load_json(file_name):
-#   return config_helper.load_json(file_name, APP_NAME)
-
-# conf_data = load_json('creds.json')
 config = app.config
 
 
