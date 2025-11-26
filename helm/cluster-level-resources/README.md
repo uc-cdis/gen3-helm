@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.22](https://img.shields.io/badge/Version-0.6.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.23](https://img.shields.io/badge/Version-0.6.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -16,6 +16,13 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | argo-events.configuration.enabled | bool | `false` |  |
 | argo-events.enabled | bool | `false` |  |
 | argo-events.targetRevision | string | `"2.1.3"` |  |
+| argo-workflows.GEN3_ARGO_BUCKET | string | `""` |  |
+| argo-workflows.GEN3_ARGO_DB_HOST | string | `""` |  |
+| argo-workflows.GEN3_ARGO_DB_NAME | string | `""` |  |
+| argo-workflows.configuration.enabled | bool | `false` |  |
+| argo-workflows.enabled | bool | `false` |  |
+| argo-workflows.namespace | string | `"argo"` |  |
+| argo-workflows.targetRevision | string | `"0.29.1"` |  |
 | aws-s3-mountpoint.configuration.enabled | bool | `false` |  |
 | aws-s3-mountpoint.enabled | bool | `false` |  |
 | aws-s3-mountpoint.targetRevision | string | `"2.2.0"` |  |
