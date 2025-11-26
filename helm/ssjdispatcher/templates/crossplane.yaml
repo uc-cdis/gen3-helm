@@ -63,7 +63,7 @@ spec:
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: ssjdispatcher-sa-managed-policy-attachment
+  name: "{{ .Values.global.environment }}-ssjdispatcher-sa-managed-policy-attachment"
 spec:
   providerConfigRef:
     name: provider-aws
