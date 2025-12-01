@@ -216,3 +216,18 @@ partOf: "Workspace-tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) Security context for the pod
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000

@@ -89,3 +89,10 @@ spec:
           # Clean up secrets created by hooks (if any)
           kubectl delete secrets -l app=gen3-created-by-hook   
           echo "Cleanup completed"
+        resources:
+          requests:
+            memory: 12Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m

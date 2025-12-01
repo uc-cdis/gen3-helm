@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openshift-fence-override-files
+data:
+  dockerrun.bash: |-
+    #!/bin/bash
+    #
+    # Kubernetes may mount jwt-keys as a tar ball
+    #
+    if [ -f /fence/jwt-keys.tar ]; then
+      (
+        cd /fence
+        tar xvf jwt-keys.tar
+        if [ -d jwt-keys ]; then
+          mkdir -p keys
+          mv jwt-keys/* keys/
+        fi
+      )
+    fi
+
+    if [ "${OPENSHIFT}" = "true" ]; then
+      /usr/bin/nginx
+    else
+      nginx
+    fi
+    poetry run gunicorn -c "/fence/deployment/wsgi/gunicorn.conf.py"
+
+  gunicorn.conf.py: |-
+    wsgi_app = "deployment.wsgi.wsgi:application"
+    bind = "0.0.0.0:8000"
+    workers = 1
+    preload_app = True
+    import os
+    # Set user/group to the current user's UID and GID, unless UID is 0 (root), then set to 'gen3'
+    if os.getuid() == 0:
+        user = "gen3"
+        group = "gen3"
+    else:
+        user = os.getuid()
+        group = os.getgid()
+    timeout = 300
+    keepalive = 2
+    keepalive_timeout = 5

@@ -63,6 +63,8 @@ spec:
                 optional: false
           - name: SERVICE
             value: {{ .Chart.Name }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         command: ["/bin/sh", "-c"]
         args:
           - |

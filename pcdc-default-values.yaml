@@ -101,6 +101,11 @@ fence:
     AMANUENSIS_PUBLIC_KEY_PATH: "/amanuensis/jwt_public_key.pem"
     MOCK_GOOGLE_AUTH: true
     mock_default_user: "test@example.com"
+    ENABLE_VISA_UPDATE_CRON: false
+    ENABLE_DELETE_EXPIRED_CLIENTS: false
+    ENABLE_FENCE_DEPLOYMENT: true
+    ENABLE_PRESIGNED_URL_FENCE: true
+    USER_YAML_ENABLED: true
     #LOGIN_REDIRECT_WHITELIST: ["https://localhost:9443/", "http://localhost:9443/"]
   podSecurityContext: {}
   image:

@@ -109,6 +109,7 @@ spec:
             - /bin/sh
             - -c
             - |
+              sleep infinity
               mkdir -p /tmp/repo
               cd /tmp/repo
               # Clone only the specific branch with minimal history and sparse checkout
@@ -163,9 +164,10 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
             - containerPort: 443
-          # command:
-          #   - /bin/bash
-          #   - ./dockerStart.sh
+          command:
+            - /bin/sh
+            - -c
+            - sleep infinity
           env:
             - name: HOSTNAME
               value: revproxy-service
@@ -274,12 +276,12 @@ spec:
             - name: "config-volume"
               mountPath: "/data-portal/data/config/pcdc.json"
               subPath: "gitops.json"
-            - name: "nginx-config"
-              mountPath: "/etc/nginx/conf.d/nginx.conf"
-              subPath: "nginx.conf"
-            - name: "nginx-config"
-              mountPath: "/etc/nginx/nginx.conf"
-              subPath: "main"
+            # - name: "nginx-config"
+            #   mountPath: "/etc/nginx/conf.d/nginx.conf"
+            #   subPath: "nginx.conf"
+            # - name: "nginx-config"
+            #   mountPath: "/etc/nginx/nginx.conf"
+            #   subPath: "main"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"
               subPath: "gitops-logo.png"

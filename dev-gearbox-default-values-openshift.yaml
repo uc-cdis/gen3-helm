@@ -1,20 +1,15 @@
 # Global configuration
 global:
-  dev: false
   portal_app: gitops
   authz_entity_name: "subject"
-  hostname: "gearbox-ped-gearbox-p1.apps.bsd-openshift-prod.bsd.uchicago.edu"
-  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
-  pdb: true
-  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 2
-  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+
+  # -- (map) Pod security context settings
+  compatibility:
+    # -- (map) OpenShift Settings
+    openshift:
+      # -- (bool) Set to force if deploying to OpenShift
+      adaptSecurityContext: force
+ 
   
 arborist:
   enabled: false
@@ -54,7 +49,21 @@ arborist:
     fsGroup: 1000970000
 
 fence:
-  enabled: true
+  #local Dev Only
+  # postgres:
+  #   password: "fence_thisisaweakpassword"
+  FENCE_CONFIG:
+    DEBUG: true
+    MOCK_STORAGE: true
+    #fill in
+    AMANUENSIS_PUBLIC_KEY_PATH: "/fence/keys/key/jwt_public_key.pem"
+    MOCK_GOOGLE_AUTH: true
+    mock_default_user: "test@example.com"
+    ENABLE_VISA_UPDATE_CRON: false
+    ENABLE_DELETE_EXPIRED_CLIENTS: false
+    ENABLE_FENCE_DEPLOYMENT: true
+    ENABLE_PRESIGNED_URL_FENCE: false
+    USER_YAML_ENABLED: false
   volumes:
     - name: old-config-volume
       secret:
@@ -102,10 +111,6 @@ fence:
         items:
           - key: nginx.conf
             path: nginx.conf
-    - name: openshift-fence-override-files
-      configMap:
-        name: openshift-fence-override-files
-        defaultMode: 0755
 
   volumeMounts:
     - name: "old-config-volume"
@@ -152,6 +157,10 @@ fence:
       readOnly: true
       mountPath: "/fence/keys/key/jwt_private_key.pem"
       subPath: "jwt_private_key.pem"
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_public_key.pem"
+      subPath: "jwt_public_key.pem"
     - name: "config-volume-public"
       readOnly: true
       mountPath: "/var/www/fence/fence-config-public.yaml"
@@ -159,14 +168,6 @@ fence:
     - name: nginx-config
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
-      readOnly: true
-    - name: openshift-fence-override-files
-      mountPath: /fence/dockerrun.bash
-      subPath: dockerrun.bash
-      readOnly: true
-    - name: openshift-fence-override-files
-      mountPath: /fence/deployment/wsgi/gunicorn.conf.py
-      subPath: gunicorn.conf.py
       readOnly: true
 
     # -- (list) Volumes to mount to the init container.
@@ -199,8 +200,11 @@ fence:
     # -- (int) The port number that the service exposes.
     port: 80
     targetPort: 8080
-  
   podSecurityContext:
+    runAsNonRoot: true
+    # runAsUser: 1000970000
+    # runAsGroup: 1000970000
+    # fsGroup: 1000970000
     supplementalGroups:
       - 1000
   # -- (map) Resource requests and limits for the containers in the pod
@@ -485,15 +489,14 @@ portal:
 
 revproxy:
   enabled: true
-  # -- (int) Number of replicas for the deployment.
-  replicaCount: 2
   nginx:
     user: "nginx"
     resolver: "dns-default.openshift-dns.svc.cluster.local"
-    pidFile: "/tmp/nginx.pid"
   service:
     # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
     type: ClusterIP
+    # -- (int) The port number that the service exposes.
+    port: 80
     targetPort: 8080
   image:
     repository: quay.io/cdis/nginx
@@ -644,7 +647,6 @@ gearbox-middleware:
     fsGroup: 1000970000
 
 postgresql:
-  enabled: false
   image:
     repository: bitnamilegacy/postgresql
   primary:

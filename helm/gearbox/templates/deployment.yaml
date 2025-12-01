@@ -37,6 +37,8 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ include "gearbox.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -87,18 +89,20 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
       initContainers:
         - name: gearbox-db-migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

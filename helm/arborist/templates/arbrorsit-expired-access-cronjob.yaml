@@ -77,6 +77,8 @@ spec:
                   name: arborist-dbcreds
                   key: dbcreated
                   optional: false
+            resources:
+              {{- toYaml .Values.resources | nindent 12 }}
             command: ["sh"]
             args:
             - "-c"
