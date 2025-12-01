@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.48](https://img.shields.io/badge/Version-0.1.48-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.49](https://img.shields.io/badge/Version-0.1.49-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -18,6 +18,7 @@ A Helm chart for gen3 revproxy
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| enableRobotsTxt | bool | `false` | Whether to enable robots.txt generation and serving. |
 | extraServices | map | `nil` | Configuration to add any extra service endpoints outside of gen3 to be served by revproxy |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |

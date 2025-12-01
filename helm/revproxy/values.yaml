@@ -254,3 +254,6 @@ extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint
+
+# -- (bool) Whether to enable robots.txt generation and serving.
+enableRobotsTxt: false
