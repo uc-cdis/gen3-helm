@@ -67,6 +67,16 @@ crossplane-crds:
   configuration:
     enabled: false
 
+argo-workflows:
+  enabled: false
+  targetRevision: "0.29.1"
+  namespace: "argo"
+  GEN3_ARGO_DB_HOST: ""
+  GEN3_ARGO_DB_NAME: ""
+  GEN3_ARGO_BUCKET: ""
+  configuration:
+    enabled: false
+
 custom-objects:
   enabled: false
 
