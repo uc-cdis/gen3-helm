@@ -98,5 +98,4 @@ replicateValidationJob:
   FORCE_CREATE_MANIFEST:
 
 batchServiceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::test
+  annotations: {}
