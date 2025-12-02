@@ -48,7 +48,7 @@ spec:
           - name: aws-bucket-replicate
             image: quay.io/cdis/gdc_copy:master
             resources:
-              {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 16 }}
             imagePullPolicy: Always
             env:
               - name: REGION
