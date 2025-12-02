@@ -96,3 +96,7 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
+
+batchServiceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::test
