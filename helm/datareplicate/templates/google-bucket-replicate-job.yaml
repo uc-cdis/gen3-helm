@@ -5,7 +5,7 @@ metadata:
   name: google-bucket-replicate
 spec:
   schedule: {{ .Values.googleBucketReplicateJob.schedule | quote }}
-  suspended: {{ .Values.suspendCronjob }}
+  suspend: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
   jobTemplate:
