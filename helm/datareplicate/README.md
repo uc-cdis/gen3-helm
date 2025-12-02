@@ -26,6 +26,7 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.resources.requests.cpu | string | `"2"` |  |
 | awsBucketReplicateJob.resources.requests.memory | string | `"128Mi"` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
+| batchServiceAccount.annotations."eks.amazonaws.com/role-arn" | string | `"arn:aws:iam::test"` |  |
 | externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
