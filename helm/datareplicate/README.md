@@ -102,9 +102,13 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.enabled | bool | `true` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | batchServiceAccount.annotations | object | `{}` |  |
 =======
 >>>>>>> 273f853c (Update ETL job to call out to slack (#399))
+=======
+| batchServiceAccount.annotations."eks.amazonaws.com/role-arn" | string | `"arn:aws:iam::test"` |  |
+>>>>>>> 511a72d0 (adding annotations to aws-batch-replicate job sa.)
 | externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
