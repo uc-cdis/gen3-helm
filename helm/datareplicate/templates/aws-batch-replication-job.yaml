@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.awsBatchReplicateJob.namespace }}
 spec:
   schedule: {{ .Values.awsBatchReplicateJob.schedule | quote }}
-  suspended: {{ .Values.suspendCronjob }}
+  suspend: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   jobTemplate:
