@@ -28,6 +28,13 @@ data:
         if ($csrf_check !~ ^ok-\S.+$) {
           return 403 "failed csrf check";
         }
+        {{- if and .authzPolicy .authzService -}}
+        set $authz_resource "/{{ .authzPolicy }}";
+        set $authz_method "access";
+        set $authz_service "{{ .authzService }}";
+        # be careful - sub-request runs in same context as this request
+        auth_request /gen3-authz;
+        {{- end }}
 
         set $proxy_service "{{ .name }}";
         set $upstream http://{{ .serviceName }}$des_domain;

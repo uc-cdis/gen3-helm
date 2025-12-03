@@ -255,6 +255,8 @@ extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint
+#    authzPolicy: "protein-paint"
+#    authzService: "protein-paint"
 
 nginx:
   user: nginx
