@@ -1,0 +1,19 @@
+# Default values for ohdsi-atlas.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/cdis/ohdsi-atlas
+  pullPolicy: Always
+  tag: "2.15.0-DEV"
+
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  port: 80
+
+# Global configuration
+global:
+  # -- (string) URL for the WebAPI, e.g. "https://atlas.mywebapi.com"
+  webapiHost: ""
+  hostname: "" # set this to parent portal URL when running Atlas in iframe of a parent portal

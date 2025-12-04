@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ohdsi-webapi-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: ohdsi-webapi
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: ohdsi-webapi
+        dbohdsi: "yes"
+        dbomop-data: "yes"
+        internet: "yes"
+        public: "yes"
+    spec:
+      volumes:
+        - name: ohdsi-webapi-reverse-proxy-config
+          configMap:
+            name: ohdsi-webapi-reverse-proxy-config
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /WebAPI/info/
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /WebAPI/info/
+              port: 8080
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: ohdsi-webapi-config
+          resources:
+            requests:
+              memory: 1500Mi
+            limits:
+              memory: 4Gi
+        - name: ohdsi-webapi-reverse-proxy
+          image: "{{ .Values.nginx.repository }}:{{ .Values.nginx.tag }}"
+          ports:
+          - containerPort: 80
+          volumeMounts:
+            - name: ohdsi-webapi-reverse-proxy-config
+              readOnly: true
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 100Mi
+            limits:
+              memory: 500Mi
