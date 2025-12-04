@@ -733,11 +733,19 @@ dependencies:
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
+<<<<<<< HEAD
     version: 0.1.1
     repository: file://../ohdsi-atlas
     condition: ohdsi-atlas.enabled
   - name: ohdsi-webapi
     version: 0.1.3
+=======
+    version: 0.1.0
+    repository: file://../ohdsi-atlas
+    condition: ohdsi-atlas.enabled
+  - name: ohdsi-webapi
+    version: 0.1.0
+>>>>>>> 76517a99 (feat: add ohdsi-atlas and ohdsi-webapi helm charts)
     repository: file://../ohdsi-webapi
     condition: ohdsi-webapi.enabled
 

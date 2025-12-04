@@ -9,7 +9,4 @@ _sample-*/
 # exception: do not ignore the `helm/funnel/charts/funnel*` file
 !helm/funnel/charts
 helm/funnel/charts/common*
-<<<<<<< HEAD
 *copy.yaml
-=======
->>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
