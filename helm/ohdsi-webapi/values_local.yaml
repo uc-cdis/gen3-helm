@@ -1,0 +1,44 @@
+# Default values for ohdsi-webapi >>>>>>>>> FOR TESTING LOCALLY !! <<<<<<<<<
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Keep this at 1 since ohdsi-webapi is not well suited for more than 1 instance at a time:
+replicaCount: 1
+
+image:
+  repository: quay.io/cdis/ohdsi-webapi
+  pullPolicy: IfNotPresent
+  tag: "2.15.0-DEV"
+
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  port: 80
+
+nginx:
+  # see also ./templates/ohdsi-webapi-reverse-proxy-config.yaml for other nginx config related to this service
+  repository: quay.io/cdis/nginx
+  tag: master
+
+# Global configuration
+global:
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed.
+    deploy: false
+  # -- (string) Hostname for the deployment.
+  hostname: "host.docker.internal"
+  atlasUrl: http://localhost:8889
+
+# Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
+webapiConfig:
+  dbUser: "postgres"
+  dbPass: "mypass"
+  dbHost: "host.docker.internal"
+  dbName: "postgres"
+  dbPort: 5436
+
+# -- (bool) Whether to automatically create a OIDC a client in Fence.
+createFenceClientJobEnabled: true
+
+arboristUrl: http://arborist-service # add some local URL...
+fenceUrl: http://host.docker.internal
