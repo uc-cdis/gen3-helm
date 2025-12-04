@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "ohdsi-webapi.fullname" . }}
-  labels:
-    {{- include "ohdsi-webapi.labels" . | nindent 4 }}
+  name: ohdsi-webapi-service
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  type: NodePort
   selector:
-    {{- include "ohdsi-webapi.selectorLabels" . | nindent 4 }}
+    app: ohdsi-webapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
