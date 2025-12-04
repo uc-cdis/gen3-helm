@@ -38,7 +38,7 @@ spec:
           volumes:
             - name: cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -72,7 +72,7 @@ spec:
             volumeMounts:
             - name: cred-volume
               mountPath: "/secrets/.aws/credentials"
-              subPath: aws-creds-secret
+              subPath: dcf-aws-creds-secret
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
