@@ -9,3 +9,4 @@ _sample-*/
 # exception: do not ignore the `helm/funnel/charts/funnel*` file
 !helm/funnel/charts
 helm/funnel/charts/common*
+*copy.yaml
