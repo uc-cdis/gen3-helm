@@ -1,5 +1,5 @@
 
-{{- if .Values.workspaceLaunchTest.enabled -}}
+{{- if .Values.workspaceLaunchTest.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
