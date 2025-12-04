@@ -71,7 +71,7 @@ spec:
                     optional: true
             volumeMounts:
             - name: cred-volume
-              mountPath: "/root/.aws/credentials"
+              mountPath: "/secrets/.aws/credentials"
               subPath: aws-creds-secret
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
