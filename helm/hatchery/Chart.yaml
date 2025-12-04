@@ -20,6 +20,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
@@ -35,6 +36,9 @@ version: 0.1.57
 =======
 version: 0.1.58
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.59
+>>>>>>> f2bc4614 (remove dash)
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
