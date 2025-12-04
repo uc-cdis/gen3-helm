@@ -1,4 +1,4 @@
-{{- if .Values.awsBatchReplicateJob.enabled -}}
+{{- if .Values.awsBatchReplicateJob.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
