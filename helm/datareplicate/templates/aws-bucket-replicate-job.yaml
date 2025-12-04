@@ -1,4 +1,4 @@
-{{- if .Values.awsBucketReplicateJob.enabled -}}
+{{- if .Values.awsBucketReplicateJob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -70,7 +70,7 @@ spec:
             volumeMounts:
               - name: cred-volume
                 mountPath: "/root/.aws/credentials"
-                subPath: aws-creds-secret
+                subPath: credentials
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf-dataservice-settings-secrets"

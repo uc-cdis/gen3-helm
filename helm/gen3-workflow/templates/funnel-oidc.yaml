@@ -1,0 +1,199 @@
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createFunnelOidcClientSecret) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: funnel-oidc-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: funnel-oidc-job-sa
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "fence-config"
+        - name: shared-volume
+          emptyDir: {}
+      initContainers:
+        - name: wait-for-fence
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-c"]
+          args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
+      containers:
+        - name: fence-client
+          image: "quay.io/cdis/fence:master"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              #!/bin/bash
+              set -euo pipefail
+
+              funnel_client_name="funnel-plugin-client"
+              
+              echo "Verifying if Fence client for funnel exists..."
+              
+              client_list_result=$(fence-create client-list)
+              echo "Finished fetching clients, iterating over them to find $funnel_client_name"
+
+              echo $client_list_result | sed "s/{'_client_metadata'/\n{'_client_metadata'/g" |  while read -r block; do
+                name=$(echo "$block" | grep -oP "'name':\s*'\K[^']+" || true)
+                echo "Client name :  $name"
+
+                client_id=$(echo "$block" | grep -oP "'client_id':\s*'\K[^']+" || true)
+                echo "Client id : $client_id"
+                
+                if [[ -z "$name" ]]; then
+                  echo "Skipping this client since client_name is empty"  
+                  continue
+                fi
+                
+                if [[ "$name" == "$funnel_client_name" ]]; then
+                  if [[ -n "${FUNNEL_OIDC_CLIENT_ID:-}" && "$client_id" == "${FUNNEL_OIDC_CLIENT_ID:-}" ]]; then
+                    echo "Client for funnel already exists, skipping creation."
+                    echo -n "$FUNNEL_OIDC_CLIENT_ID" > /shared/funnel_oidc_client_id
+                    echo -n "$FUNNEL_OIDC_CLIENT_SECRET" > /shared/funnel_oidc_client_secret
+                  else
+                    echo "No Client_ID exists in secrets, or Client Name matches but Client ID differs. Deleting client: $funnel_client_name"
+                    fence-create client-delete --client="$funnel_client_name"
+                  fi
+                  break
+                fi
+
+              done
+
+              if [[ -s /shared/funnel_oidc_client_id ]]; then
+                echo "funnel_oidc_client_id is already set. Exiting."
+                exit 0
+              fi
+
+              echo "Client for funnel does not exist, creating..."
+
+              secrets=$(fence-create client-create --client $funnel_client_name --grant-types client_credentials | tail -1)
+              if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                echo "Failed generating oidc client for gen3-workflow: $secrets"
+                exit 1
+              fi
+
+              client_id="${BASH_REMATCH[2]}"
+              client_secret="${BASH_REMATCH[3]}"
+              echo "client_id: $client_id"
+              echo -n $client_id > /shared/funnel_oidc_client_id
+              echo -n $client_secret > /shared/funnel_oidc_client_secret
+          env:
+            - name: FUNNEL_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_id
+                  optional: true
+            - name: FUNNEL_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_secret
+                  optional: true
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: DB
+              value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+            - name: PYTHONPATH
+              value: /var/www/fence
+            - name: FENCE_PUBLIC_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-fence
+                  key: fence-config-public.yaml
+                  optional: true
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+        - name: funnel-oidc-secret-updater
+          image: quay.io/cdis/awshelper:master
+          env:
+            - name: FUNNEL_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: funnel-oidc-client
+                  key: client_id
+                  optional: true
+            - name: FUNNEL_REMOTE_SECRET_NAME
+              value: {{ include "funnel-oidc-client" . }}
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+          command: ["/bin/bash"]
+          args: 
+            - "-c"
+            - |
+              #!/bin/bash
+              set -eo pipefail
+              echo "waiting for /shared/funnel_oidc_client_id"
+              while [ ! -e /shared/funnel_oidc_client_id ]
+              do
+                echo "..."
+                sleep 5
+              done
+
+              echo "Updating k8s secret funnel-oidc-client"
+              export CLIENT_ID=$(cat /shared/funnel_oidc_client_id)
+              export CLIENT_SECRET=$(cat /shared/funnel_oidc_client_secret)
+
+              echo "Current funnel client_id : $FUNNEL_OIDC_CLIENT_ID ; configured client_id : $CLIENT_ID"
+              if [[ -z $FUNNEL_OIDC_CLIENT_ID ||  $CLIENT_ID != $FUNNEL_OIDC_CLIENT_ID ]]; then
+
+                echo "Patching funnel-oidc-client secret with new OIDC client credentials"
+                kubectl get secret/funnel-oidc-client >/dev/null 2>&1 || \
+                  kubectl create secret generic funnel-oidc-client \
+                    --from-literal=client_id="$(echo -n $CLIENT_ID | base64)" \
+                    --from-literal=client_secret="$(echo -n $CLIENT_SECRET | base64)"
+
+                kubectl patch secret/funnel-oidc-client --type merge \
+                  --patch "{\"data\":{\"client_id\":\"$(echo -n $CLIENT_ID | base64)\",\"client_secret\":\"$(echo -n $CLIENT_SECRET | base64)\"}}"
+
+                # wait for secret to be updated and verify if the change was persistent
+                sleep 5 
+
+                if [ "$CLIENT_ID" == "$(kubectl get secret funnel-oidc-client -o jsonpath='{.data.client_id}' | base64 -d)" ]; then
+                  echo "Successfully patched the secret with new OIDC client credentials"
+                else
+                  echo "Failed to patch the secret with new OIDC client credentials"
+                  echo " /!\  Ensure the external secret '$FUNNEL_REMOTE_SECRET_NAME' is deleted in AWS Secrets Manager before running this job."
+                  echo "   Otherwise, the External Secrets Operator may overwrite this new secret."
+                  echo "   To delete it manually, run:"
+                  echo "   aws secretsmanager delete-secret --secret-id \"$FUNNEL_REMOTE_SECRET_NAME\" --region us-east-1 --force-delete-without-recovery"
+                  exit 1
+                fi
+              fi
+{{- end }}

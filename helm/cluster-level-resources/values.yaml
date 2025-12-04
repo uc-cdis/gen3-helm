@@ -20,6 +20,12 @@ alb-controller:
   configuration:
     enabled: false
 
+argo-events:
+  enabled: false
+  targetRevision: "2.1.3"
+  configuration:
+    enabled: false
+
 aws-s3-mountpoint:
   enabled: false
   targetRevision: "2.2.0"
@@ -58,6 +64,16 @@ crossplane-crds:
   awsSecretAccessKey: "YOUR_SECRET_ACCESS_KEY"
   region: "us-east-1"
   targetRevision: "v0.52.5"
+  configuration:
+    enabled: false
+
+argo-workflows:
+  enabled: false
+  targetRevision: "0.29.1"
+  namespace: "argo"
+  GEN3_ARGO_DB_HOST: ""
+  GEN3_ARGO_DB_NAME: ""
+  GEN3_ARGO_BUCKET: ""
   configuration:
     enabled: false
 
@@ -119,6 +135,9 @@ karpenter-crds:
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
+    limits:
+      cpu: "1000"
+      memory: 1000Gi
     volumeSize: 50Gi
     additionalTags: {}
     requirements:
