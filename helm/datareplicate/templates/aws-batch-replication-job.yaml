@@ -16,8 +16,6 @@ spec:
           creationTimestamp: null
           labels:
             app: gen3job
-            batch.kubernetes.io/job-name: aws-batch-replicate
-            job-name: aws-batch-replicate
         spec:
           serviceAccountName: aws-batch-replicate-job
           affinity:
