@@ -1,0 +1,117 @@
+{{- if (.Values.createFenceClientJobEnabled) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ohdsi-webapi-client-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: "webapi-secrets"
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "fence-config"
+        - name: shared-volume
+          emptyDir: {}
+      initContainers:
+        - name: wait-for-fence
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-c"]
+          args: ["while [ $(curl -sw '%{http_code}' {{ .Values.fenceUrl }} -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
+      containers:
+        - name: add-fence-client
+          image: "quay.io/cdis/fence:master"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              client_exists() {
+                local client_name="$1"
+                echo -e "\n\n>>========== CHECKING if Fence client already exists for $client_name... ============\n\n"
+                local existing=$(fence-create client-list | grep "['\"]name['\"]: ['\"]${client_name}['\"]")
+                if [[ -n "$existing" ]]; then
+                  return 0  # client exists
+                fi
+                return 1
+              }
+
+              new_client() {
+                local hostname={{ .Values.global.hostname }}
+                atlas_hostname="atlas.${hostname}"
+                client_name="atlas"
+
+                if client_exists $client_name; then
+                  echo -e "\n\n>>========== FOUND existing OIDC client for $atlas_hostname... deleting so it can be recreated... ============\n\n"
+                  fence-create client-delete --client $client_name
+                fi
+
+                echo -e "\n\n>>========== CREATING NEW Fence oidc client for $atlas_hostname ... ============\n\n"
+                local secrets=$(fence-create client-create --client $client_name --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --auto-approve --username atlas --allowed-scopes openid user | tail -1)
+                # secrets looks like ('CLIENT_ID', 'CLIENT_SECRET')
+                if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                  echo -e "\n\n>>========== FAILED generating oidc client for $client_name  ============\n\n"
+                  return 1
+                fi
+                local FENCE_CLIENT_ID="${BASH_REMATCH[2]}"
+                local FENCE_CLIENT_SECRET="${BASH_REMATCH[3]}"
+                echo "store temp ohdsi-secret"
+                echo -n "$FENCE_CLIENT_ID" > /shared/client_id
+                echo -n "$FENCE_CLIENT_SECRET" > /shared/client_secret
+                return 0
+              }
+
+              # main --------------------------------------
+              new_client
+              rc=$?
+
+              if [[ $rc -ne 0 ]]; then
+                echo -e "\n\n>>========== ERROR: new_client failed with exit code $rc  ============\n\n"
+                exit $rc
+              else
+                echo -e "\n\n>>========== SUCCESS: new_client ran successfully  ============\n\n"
+                exit 0
+              fi
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+        - name: update-webapi-config
+          image: bitnami/kubectl:latest
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+          command: ["/bin/bash"]
+          args: 
+            - "-c"
+            - |
+              echo -e "\n\n>>========== waiting for /shared/client_id... ============\n\n"
+              while [ ! -e /shared/client_id ]
+              do
+                echo "..."
+                sleep 5
+              done
+              echo -e "\n\n>>========== Updating k8s secret ohdsi-webapi-config... ============\n\n"
+              FENCE_CLIENT_ID=$(cat /shared/client_id)
+              FENCE_CLIENT_SECRET=$(cat /shared/client_secret)
+              echo -e "\n\n>>========== waiting for ohdsi-webapi-config secret to appear... ============\n\n"
+              until kubectl get secret ohdsi-webapi-config; do
+                echo "---- get secret Command returned -- status $?"
+                echo "retrying..."
+                sleep 5
+              done
+              echo -e "\n\n>>========== Patching ... ============\n\n"
+              kubectl patch secret ohdsi-webapi-config \
+                --patch="{\"stringData\":{
+                    \"security_oid_clientId\":\"${FENCE_CLIENT_ID}\",
+                    \"security_oid_apiSecret\":\"${FENCE_CLIENT_SECRET}\"
+                }}"
+{{- end }}

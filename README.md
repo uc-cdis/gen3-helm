@@ -92,3 +92,32 @@ After configuration is complete, take note of the client ID that was created. Yo
 * Sometimes there are cryptic errors that occur during use of the helm chart, such as duplicate env vars or other items. Try rendering the resources to a file, in debug mode, and it will help determine where the issues may be taking place
 
 `helm template --debug gen3 ./helm/gen3 -f ./values.yaml > test.yaml`
+
+## Other useful commands
+
+In any folder containing a `Chart.yaml`:
+```
+helm lint .
+```
+
+Install a chart locally for testing:
+```
+helm install my-release-name . --namespace mynamespace --create-namespace
+```
+
+helm upgrade my-release-name . -n mynamespace
+
+helm uninstall my-release-name -n mynamespace
+
+
+OR just
+
+Install, upgrade, remove a chart locally for testing:
+```
+helm install my-release-name . 
+
+helm upgrade my-release-name . 
+
+helm uninstall my-release-name 
+```
+
