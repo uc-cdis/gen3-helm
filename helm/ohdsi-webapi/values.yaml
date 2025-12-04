@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/ohdsi-webapi
   # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -19,12 +19,3 @@ service:
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 80
-
-# Configure the external database connection
-config:
-  datasource:
-    ohdsi:
-      driverClassName: org.postgresql.Driver
-      url: 'jdbc:postgresql://<your_postgres_hostname>:<your_postgres_port>/<your_database_name>'
-      username: <your_db_username>
-      password: <your_db_password>
