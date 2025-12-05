@@ -1,0 +1,139 @@
+{{- if (.Values.createFenceClientJobEnabled) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cedar-client-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: cedar-secrets
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "fence-config"
+        - name: shared-volume
+          emptyDir: {}
+      initContainers:
+        - name: wait-for-fence
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-c"]
+          args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
+      containers:
+        - name: fence-client
+          image: "quay.io/cdis/fence:master"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              client_exists() {
+                local existing=$(kubectl exec -c fence $(gen3 pod fence) -- fence-create client-list | grep "\"client_id\": \"atlas\"")
+                if [[ -n "$existing" ]](); then
+                  return 0  # client exists
+                fi
+                return 1
+              }
+
+              new_client() {
+                local hostname=$(gen3 api hostname)
+                atlas_hostname="atlas.${hostname}"
+
+                if client_exists "$hostname"; then
+                  echo "OIDC client for $atlas_hostname already exists, skipping creation"
+                  return 0
+                fi
+
+                echo "creating fence oidc client for $atlas_hostname"
+                local secrets=$(kubectl exec -c fence $(gen3 pod fence) -- fence-create client-create --client atlas --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --username atlas --allowed-scopes openid profile email user | tail -1)
+                # secrets looks like ('CLIENT_ID', 'CLIENT_SECRET')
+                if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
+                  gen3_log_err "kube-setup-ohdsi" "Failed generating oidc client for atlas: $secrets"
+                  return 1
+                fi
+                local FENCE_CLIENT_ID="${BASH_REMATCH[2]}"
+                local FENCE_CLIENT_SECRET="${BASH_REMATCH[3]}"
+                echo "store temp ohdsi-secret"
+                echo -n "$FENCE_CLIENT_ID" > /shared/client_id
+                echo -n "$FENCE_CLIENT_SECRET" > /shared/client_secret
+                return 0
+              }
+
+              # main --------------------------------------
+              new_client
+              rc=$?
+
+              if [[ $rc -ne 0 ]](); then
+                echo "Error: new_client failed with exit code $rc"
+                exit $rc
+              else
+                echo "Success: new_client ran successfully"
+                exit 0
+              fi
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: host
+                  optional: false  
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: username
+                  optional: false 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: fence-dbcreds
+                  key: database
+                  optional: false
+            - name: DB
+              value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+            - name: PYTHONPATH
+              value: /var/www/fence
+            - name: FENCE_PUBLIC_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-fence
+                  key: fence-config-public.yaml
+                  optional: true
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/fence/fence-config.yaml"
+              subPath: fence-config.yaml
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          volumeMounts:
+            - name: "shared-volume"
+              mountPath: "/shared"
+          command: ["/bin/bash"]
+          args: 
+            - "-c"
+            - |
+              echo "waiting for /shared/client_id"
+              while [ ! -e /shared/client_id ]
+              do
+                echo "..."
+                sleep 5
+              done
+              echo "Updating k8s secret ohdsi-webapi-config"
+              FENCE_CLIENT_ID=$(cat /shared/client_id | base64)
+              FENCE_CLIENT_SECRET=$(cat /shared/client_secret | base64)
+              envsubst <${GEN3_HOME}/kube/services/ohdsi-atlas/ohdsi-webapi-config.yaml | kubectl apply -f -
+
+{{- end }}
