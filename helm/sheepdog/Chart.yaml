@@ -35,6 +35,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.34
 =======
     version: 0.1.24
@@ -54,6 +55,9 @@ dependencies:
 =======
     version: 0.1.27
 >>>>>>> b940ee5a (Update versions for #445 (#450))
+=======
+    version: 0.1.28
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
     repository: file://../common
   - name: postgresql
     version: 11.9.13

@@ -17,6 +17,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.13
 =======
 version: 0.1.7
@@ -24,6 +25,9 @@ version: 0.1.7
 =======
 version: 0.1.8
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.9
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -32,6 +36,7 @@ version: 0.1.8
 appVersion: "main"
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -53,6 +58,9 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.28
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
     repository: file://../common
   - name: postgresql
     version: 11.9.13

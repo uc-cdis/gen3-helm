@@ -6,6 +6,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -25,6 +26,9 @@
 =======
 ![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> ab9a5ede (Update gen3-workflow version)
+=======
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 
 A Helm chart for Kubernetes
 
@@ -32,6 +36,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -63,6 +68,9 @@ A Helm chart for Kubernetes
 >>>>>>> 950b51ce (Update version of common and gen3 charts)
 =======
 | file://../common | common | 0.1.26 |
+=======
+| file://../common | common | 0.1.28 |
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.58 |
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 
@@ -231,6 +239,16 @@ A Helm chart for Kubernetes
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"dbSubnets":[],"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+<<<<<<< HEAD
+=======
+| global.postgres.dbCreate | bool | `false` | Whether the database should be created. |
+| global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
+| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `nil` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 | global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |

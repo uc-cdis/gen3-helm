@@ -20,6 +20,7 @@ type: library
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.34
 =======
 version: 0.1.25
@@ -36,6 +37,9 @@ version: 0.1.26
 =======
 version: 0.1.27
 >>>>>>> 45aed67d (Update labeling for hpa template, add partOf to dashboard (#431))
+=======
+version: 0.1.28
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

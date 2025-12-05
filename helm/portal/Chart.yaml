@@ -18,6 +18,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.47
@@ -28,6 +29,9 @@ version: 0.1.48
 =======
 version: 0.1.49
 >>>>>>> 1981e151 (Crossplane Fixes (#453))
+=======
+version: 0.1.50
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -37,6 +41,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -62,4 +67,7 @@ dependencies:
 =======
     version: 0.1.27
 >>>>>>> 1981e151 (Crossplane Fixes (#453))
+=======
+    version: 0.1.28
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
     repository: file://../common

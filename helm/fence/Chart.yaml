@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.75
 =======
 version: 0.1.61
@@ -32,6 +33,9 @@ version: 0.1.63
 =======
 version: 0.1.64
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+version: 0.1.65
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -40,6 +44,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -61,6 +66,9 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.28
+>>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
     repository: file://../common
   - name: postgresql
     version: 11.9.13
