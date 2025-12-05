@@ -99,3 +99,5 @@ replicateValidationJob:
 
 batchServiceAccount:
   annotations: {}
+replicateServiceAccount:
+  annotations: {}
