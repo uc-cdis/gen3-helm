@@ -1,6 +1,6 @@
 # orthanc
 
-![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.26 |
+| file://../common | common | 0.1.28 |
 
 ## Values
 
@@ -56,6 +56,10 @@ A Helm chart for gen3 Dicom Server
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/gen3-orthanc","tag":"orthancteam-master-gen3-24.3.5"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/gen3-orthanc"` | Docker repository. |

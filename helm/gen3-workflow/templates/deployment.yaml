@@ -31,6 +31,9 @@ spec:
         {{- include "gen3workflow.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       serviceAccountName: {{ include "gen3workflow.serviceAccountName" . }}
       volumes:
         {{- with .Values.volumes }}
