@@ -171,7 +171,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.slackWebhook | string | `""` | slack webhook for notifications |
 | global.tierAccessLevel | string | `"private"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
-| global.topologySpread.enabled | bool | `true` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | global.workspaceTimeoutInMinutes | int | `480` |  |

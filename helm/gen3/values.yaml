@@ -135,7 +135,7 @@ global:
     slackWebhookSecretName: ""
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
-    enabled: true
+    enabled: false
     # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
     topologyKey: "topology.kubernetes.io/zone"
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
