@@ -39,7 +39,7 @@ spec:
                 secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -48,7 +48,7 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             resources:
-              {{- toYaml .Values.replicateValidationJob.resources | nindent 12 }}
+              {{- toYaml .Values.resources | nindent 14 }}
             env:
               - name: RELEASE
                 value: "{{ .Values.replicateValidationJob.RELEASE }}"
