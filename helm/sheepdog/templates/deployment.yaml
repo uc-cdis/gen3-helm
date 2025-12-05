@@ -43,6 +43,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

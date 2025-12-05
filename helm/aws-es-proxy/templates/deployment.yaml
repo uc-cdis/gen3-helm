@@ -31,6 +31,9 @@ spec:
       {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       serviceAccountName: {{ include "aws-es-proxy.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
