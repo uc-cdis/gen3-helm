@@ -8,7 +8,7 @@ A Helm chart for gen3 datareplicate
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.27 |
+| file://../common | common | 0.1.28 |
 
 ## Values
 
