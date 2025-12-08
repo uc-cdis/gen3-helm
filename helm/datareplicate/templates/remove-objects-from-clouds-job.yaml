@@ -40,7 +40,7 @@ spec:
                 secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -48,7 +48,7 @@ spec:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             resources:
-              {{- toYaml .Values.resources | nindent 12 }}
+              {{- toYaml .Values.resources | nindent 14 }}
             imagePullPolicy: Always
             env:
               - name: RELEASE

@@ -114,7 +114,9 @@ externalSecrets:
   stataG3auto:
 
 fence:
-  image: quay.io/cdis/fence:master
+  image:
+    repository: quay.io/cdis/fence
+    tag: master
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:

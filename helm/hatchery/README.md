@@ -1,6 +1,6 @@
 # hatchery
 
-![Version: 0.1.59](https://img.shields.io/badge/Version-0.1.59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Hatchery
 
@@ -22,7 +22,8 @@ A Helm chart for gen3 Hatchery
 | externalSecrets | map | `{"createK8sStataSecret":false,"stataG3auto":null}` | External Secrets settings. |
 | externalSecrets.createK8sStataSecret | string | `false` | Will create the Helm "stata-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.stataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "stata-g3auto" |
-| fence.image | string | `"quay.io/cdis/fence:master"` |  |
+| fence.image.repository | string | `"quay.io/cdis/fence"` |  |
+| fence.image.tag | string | `"master"` |  |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
