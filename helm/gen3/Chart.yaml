@@ -5,42 +5,42 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.13
+    version: 0.1.14
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.15
+    version: 0.1.16
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.27
+    version: 0.1.28
     repository: file://../common
   - name: dashboard
-    version: 0.1.12
+    version: 0.1.13
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
@@ -52,23 +52,23 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.17
+    version: 0.1.18
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.64
+    version: 0.1.65
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
-    version: 0.1.8
+    version: 0.1.9
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.5
+    version: 0.1.6
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
@@ -76,47 +76,47 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.36
+    version: 0.1.37
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.35
+    version: 0.1.36
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.35
+    version: 0.1.36
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.35
+    version: 0.1.36
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.49
+    version: 0.1.50
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.27
+    version: 0.1.28
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.48
+    version: 0.1.49
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.35
+    version: 0.1.36
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.37
+    version: 0.1.38
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.38
+    version: 0.1.39
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.33
+    version: 0.1.34
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -124,15 +124,15 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.22
+    version: 0.1.23
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.6
+    version: 0.1.7
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.7
+    version: 0.1.8
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis

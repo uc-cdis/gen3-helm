@@ -55,6 +55,7 @@ A Helm chart for gen3 datareplicate
 | removeObjectsFromCloudsJob.enabled | bool | `true` |  |
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
 | removeObjectsFromCloudsJob.suspendCronjob | bool | `true` |  |
+| replicateServiceAccount.annotations | object | `{}` |  |
 | replicateValidationJob.FORCE_CREATE_MANIFEST | string | `nil` |  |
 | replicateValidationJob.IGNORED_FILE | string | `nil` |  |
 | replicateValidationJob.LOG_BUCKET | string | `nil` |  |
