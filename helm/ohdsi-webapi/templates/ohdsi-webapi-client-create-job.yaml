@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cedar-client-job
+  name: atlas-webapi-client-job
 spec:
   template:
     metadata:
@@ -10,7 +10,7 @@ spec:
         app: gen3job
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: cedar-secrets
+      serviceAccountName: webapi-secrets
       volumes:
         - name: config-volume
           secret:

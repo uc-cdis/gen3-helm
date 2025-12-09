@@ -20,7 +20,6 @@ spec:
         dbomop-data: "yes"
         internet: "yes"
         public: "yes"
-        #GEN3_DATE_LABEL ?
     spec:
       volumes:
         - name: ohdsi-webapi-reverse-proxy-config
