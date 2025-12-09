@@ -22,6 +22,7 @@ A Helm chart for gen3 datareplicate
 | awsBatchReplicateJob.REGION | string | `nil` |  |
 | awsBatchReplicateJob.THREAD_COUNT | string | `nil` |  |
 | awsBatchReplicateJob.enabled | bool | `true` |  |
+| awsBatchReplicateJob.namespace | string | `nil` |  |
 | awsBatchReplicateJob.schedule | string | `"*/30 * * * *"` |  |
 | awsBucketReplicateJob.CHUNK_SIZE | string | `nil` |  |
 | awsBucketReplicateJob.GDC_BUCKET_NAME | string | `nil` |  |
@@ -31,7 +32,6 @@ A Helm chart for gen3 datareplicate
 | awsBucketReplicateJob.RELEASE | string | `nil` |  |
 | awsBucketReplicateJob.THREAD_NUM | string | `nil` |  |
 | awsBucketReplicateJob.enabled | bool | `true` |  |
-| awsBucketReplicateJob.namespace | string | `nil` |  |
 | awsBucketReplicateJob.schedule | string | `"*/30 * * * *"` |  |
 | batchServiceAccount.annotations | object | `{}` |  |
 | externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
