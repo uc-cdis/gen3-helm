@@ -19,3 +19,14 @@ service:
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 80
+
+webapiConfig:
+  dbUser: ""
+  dbPass: ""
+  dbHost: ""
+  dbName: ""
+
+# -- (bool) Whether to automatically create a OIDC a client in Fence.
+createFenceClientJobEnabled: true
+
+arboristUrl: http://arborist-service

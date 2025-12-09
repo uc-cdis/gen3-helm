@@ -1,23 +1,26 @@
+{{- if or (not .Values.webapiConfig.dbUser) (not .Values.webapiConfig.dbPass) (not .Values.webapiConfig.dbHost) (not .Values.webapiConfig.dbName) }}
+{{- fail "You must set webapiConfig.dbUser, dbPass, dbHost, and dbName in your values.yaml!" }}
+{{- end }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: ohdsi-webapi-config
 type: Opaque
-stringData:
+stringData: # TODO - should this be data (base64)??
   datasource_driverClassName: org.postgresql.Driver
-  datasource_url: jdbc:postgresql://$DB_HOST:5432/$DB_NAME
+  datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
   datasource_ohdsi_schema: ohdsi
-  datasource_username: $DB_USER
-  datasource_password: $DB_PASS
+  datasource_username: {{ .Values.webapiConfig.dbUser }}
+  datasource_password: {{ .Values.webapiConfig.dbPass }}
   spring_jpa_properties_hibernate_default_schema: ohdsi
   spring_jpa_properties_hibernate_dialect: org.hibernate.dialect.PostgreSQLDialect
   spring_batch_repository_tableprefix: ohdsi.BATCH_
   flyway_datasource_driverClassName: org.postgresql.Driver
-  flyway_datasource_url: jdbc:postgresql://$DB_HOST:5432/$DB_NAME
+  flyway_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
   flyway_schemas: ohdsi
   flyway_placeholders_ohdsiSchema: ohdsi
-  flyway_datasource_username: $DB_USER
-  flyway_datasource_password: $DB_PASS
+  flyway_datasource_username: {{ .Values.webapiConfig.dbUser }}
+  flyway_datasource_password: {{ .Values.webapiConfig.dbPass }}
   flyway_locations: classpath:db/migration/postgresql
 
   security_cors_enabled: "true"
@@ -39,10 +42,10 @@ stringData:
   security_auth_cas_enabled: "false"
 
   security_db_datasource_schema: security
-  security_db_datasource_url: jdbc:postgresql://$DB_HOST:5432/$DB_NAME
+  security_db_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
   security_db_datasource_driverClassName: org.postgresql.Driver
-  security_db_datasource_username: $DB_USER
-  security_db_datasource_password: $DB_PASS
+  security_db_datasource_username: {{ .Values.webapiConfig.dbUser }}
+  security_db_datasource_password: {{ .Values.webapiConfig.dbPass }}
 
   security_oid_clientId: $FENCE_CLIENT_ID
   security_oid_apiSecret: $FENCE_CLIENT_SECRET
@@ -56,7 +59,7 @@ stringData:
   security_oauth_callback_urlResolver: query
 
   security_ohdsi_custom_authorization_mode: teamproject
-  security_ohdsi_custom_authorization_url: $ARBORIST_URL/auth/request
+  security_ohdsi_custom_authorization_url: "{{ .Values.arboristUrl }}/auth/request"
 
   logging_level_root: info
   logging_level_org_ohdsi: info
