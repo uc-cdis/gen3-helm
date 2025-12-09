@@ -51,6 +51,7 @@ awsBatchReplicateJob:
   OUTPUT_MANIFEST_BUCKET:
 
 awsBucketReplicateJob:
+  namespace:
   enabled: true
   schedule: "*/30 * * * *"
   THREAD_NUM:
