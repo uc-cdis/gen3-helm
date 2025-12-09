@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-global
+data:
+  "environment": {{ .Values.global.environment | quote }}
+  "hostname": {{ .Values.global.hostname | quote }}
+  "revproxy_arn": {{ .Values.global.revproxyArn | quote }}
+  "dictionary_url": {{ .Values.global.dictionaryUrl | quote }}
+  "portal_app": {{ .Values.global.portalApp | quote }}
+  "public_datasets": {{ .Values.global.publicDataSets | quote }}
+  "tier_access_level": {{ .Values.global.tierAccessLevel | quote }}
+  "tier_access_limit": {{ .Values.global.tierAccessLimit | quote }}
+  "netpolicy": {{ .Values.global.netPolicy | quote }}
+  "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
+  "frontend_root": {{ .Values.global.frontendRoot | quote }}
+  "logout_inactive_users": {{ .Values.global.logoutInactiveUsers | quote }}
+  "workspace_timeout_in_minutes": {{ .Values.global.workspaceTimeoutInMinutes | quote }}
+  "maintenance_mode": {{ .Values.global.maintenanceMode | quote }}
+  {{- if .Values.global.fenceURL }}
+  "fence_url":  {{ .Values.global.fenceURL | quote }}
+  {{- end -}}
+  {{- if .Values.global.indexdURL }}
+  "indexd_url": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.workspaceURL }}
+  "workspace_url": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.wtsURL }}
+  "wts_url":  {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.arboristURL }}
+  "arborist_url":  {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.manifestServiceURL }}
+  "manifest_service_url": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.privacyPolicyURL }}
+  "privacy_policy_url": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.mapboxToken }}
+  "mapbox_token": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.cookieDomain }}
+  "cookie_domain": {{ . | quote }}
+  {{- end -}}
+  {{- if .Values.global.desNamespace }}
+  "des_namespace":  {{ . | quote }}
+  {{- end -}}
+  {{- with .Values.global.origins_allow_credentials }}
+  "origins_allow_credentials": {{ . | toJson | quote }}
+  {{- end -}}
+  {{- with .Values.global.manifestGlobalExtraValues }}
+  {{- range $key, $value := . }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}

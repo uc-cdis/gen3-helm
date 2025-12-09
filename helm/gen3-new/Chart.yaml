@@ -1,6 +1,28 @@
 apiVersion: v2
-name: common
-description: A Helm chart for provisioning databases in gen3
+name: gen3
+description: Helm chart to deploy Gen3 Data Commons
+
+# Dependencies
+dependencies:
+  - name: app
+    version: 0.1.0
+    alias: arborist
+    repository: "file://../app"
+    condition: arborist.enabled
+  # - name: app
+  #   version: 0.1.0
+  #   alias: fence
+  #   repository: "file://../app"
+  #   condition: fence.enabled
+
+  - name: elasticsearch
+    version: 7.10.2
+    repository: "https://helm.elastic.co"
+    condition: global.dev
+  - name: postgresql
+    version: 11.9.13
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: global.dev
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -10,15 +32,32 @@ description: A Helm chart for provisioning databases in gen3
 # Library charts provide useful utilities or functions for the chart developer. They're included as
 # a dependency of application charts to inject those utilities and functions into the rendering
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
-type: library
+type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.29
+
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "master"
+
+maintainers:
+  - name: ahilt
+    email: ahilt@uchicago.edu
+
+  - name: ajoaugustine
+    email: ajoa@uchicago.edu
+
+  - name: emalinowski
+    email: emalinowski@uchicago.edu
+
+  - name: EliseCastle23
+    email: elisemcastle@uchicago.edu
+
+  - name: jawadqur
+    email: qureshi@uchicago.edu

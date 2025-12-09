@@ -66,3 +66,42 @@ Usage:
 {{- end }}
 
 
+
+{{- define "common.db-env" }}
+- name: PGPASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: password
+      optional: false
+- name: PGUSER
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: username
+      optional: false
+- name: PGDATABASE
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: database
+      optional: false
+- name: PGHOST
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: host
+      optional: false
+- name: PGPORT
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: port
+      optional: false
+- name: DBREADY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: dbcreated
+      optional: false
+{{- end }}

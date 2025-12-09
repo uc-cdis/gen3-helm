@@ -1,0 +1,13 @@
+{{- if .Values.dbService }}
+{{ include "common.db-secret" . }}
+---
+{{ include "common.db_setup_job" . }}
+---
+{{ include "common.db_setup_sa" . }}
+{{- end }}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+---
+{{ include "common.db-push-secret" . }}
+---
+{{ include "common.secret.db.bootstrap" . }}
+{{- end }}

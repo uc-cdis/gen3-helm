@@ -1,0 +1,268 @@
+# Default values for gen3.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
+      # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+      pushSecret: false
+    # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
+    secretStoreServiceAccount:
+      # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
+      enabled: false
+      # -- (string) Name of the service account to create
+      name: secret-store-sa
+      # -- (string) AWS Role ARN for Secret Store to use
+      roleArn:
+    # -- (map) Local secret setting if using a pre-exising secret.
+    useLocalSecret:
+      # -- (bool) Set to true if you would like to use a secret that is already running on your cluster.
+      enabled: false
+      # -- (string) Name of the local secret.
+      localSecretName:
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+  # -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+
+  # -- (bool) Deploys postgres/elasticsearch for dev
+  dev: true
+  postgres:
+    # -- (bool) Whether the database create job should run.
+    dbCreate: true
+    # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
+    externalSecret: ""
+    master:
+      # -- global postgres master username
+      username: postgres
+      # -- global postgres master password
+      password:
+      # -- global postgres master host
+      host:
+      # -- global postgres master port
+      port: "5432"
+  # -- (string) Environment name.
+  # This should be the same as vpcname if you're doing an AWS deployment.
+  # Currently this is being used to share ALB's if you have multiple namespaces in same cluster.
+  environment: default
+  # -- (string) Kubernetes cluster name.
+  clusterName: default
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
+  # -- (string) ARN of the reverse proxy certificate.
+  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
+  # -- (string) URL of the data dictionary.
+  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
+  # -- (string) Portal application name.
+  portalApp: gitops
+  # -- (bool) Whether public datasets are enabled.
+  publicDataSets: true
+  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
+  tierAccessLevel: private
+  # -- (int) Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data.
+  tierAccessLimit: "1000"
+  logoutInactiveUsers: true
+  workspaceTimeoutInMinutes: 480
+  maintenanceMode: "off"
+  dataUploadBucket:
+  # fenceURL:
+  # arboristURL:
+  # indexdURL:
+  # workspaceURL:
+  # manifestServiceURL:
+  # wtsURL:
+  # privacyPolicyURL:
+  # mapboxToken:
+  # cookieDomain:
+  # desNamespace:
+  # -- (bool) Global flags to control and manage network policies for a Gen3 installation
+  # NOTE: Network policies are currently a beta feature. Use with caution!
+  netPolicy:
+    # -- (bool) Whether network policies are enabled
+    enabled: false
+
+    # -- (array) A CIDR range representing a database subnet, that services with a database need access to
+    dbSubnet: ""
+  # -- (int) Number of dispatcher jobs.
+  dispatcherJobNum: "10"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (map) If you would like to add any extra values to the manifest-global configmap.
+  manifestGlobalExtraValues: {}
+  # -- (string) Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework.
+  frontendRoot: "portal"
+  # -- (bool) Will create a Kubernetes Secret for the slack webhook.
+  createSlackWebhookSecret: false
+  # -- (string) slack webhook for notifications
+  slackWebhook: ""
+  metricsEnabled: true
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
+    deploy: false
+    # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
+    createLocalK8sSecret: false
+    clusterSecretStoreRef: ""
+    # -- (bool) Will create a Kubernetes Secret for the slack webhook.
+    createSlackWebhookSecret: false
+    # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
+    slackWebhookSecretName: ""
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+# Default values for app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+livenessProbe: {}
+readinessProbe: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+secrets:
+  # -- (string) Credentials for AWS stuff.
+  awsAccessKeyId:
+  # -- (string) Credentials for AWS stuff.
+  awsSecretAccessKey:
+
+# -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
+postgres:
+  # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
+  dbCreate:
+  # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
+  host:
+  # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  database:
+  # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
+  username:
+  # -- (string) Port for Postgres.
+  port: "5432"
+  # -- (string) Password for Postgres. Will be autogenerated if left empty.
+  password:
+  # -- (string) Will create a Database for the individual service to help with developing it.
+  separate: false
+
+# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
+# Disable persistence by default so we can spin up and down ephemeral environments
+postgresql:
+  primary:
+    persistence:
+      # -- (bool) Option to persist the dbs data.
+      enabled: false
+
+dbService: false
