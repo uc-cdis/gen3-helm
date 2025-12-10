@@ -1,3 +1,4 @@
+{{- if (not .Values.global.externalSecrets.deploy) }}
 {{- if or (not .Values.webapiConfig.dbUser) (not .Values.webapiConfig.dbPass) (not .Values.webapiConfig.dbHost) (not .Values.webapiConfig.dbName) }}
 {{- fail "You must set webapiConfig.dbUser, dbPass, dbHost, and dbName in your values.yaml!" }}
 {{- end }}
@@ -64,4 +65,4 @@ stringData: # TODO - should this be data (base64)??
   logging_level_root: info
   logging_level_org_ohdsi: info
   logging_level_org_apache_shiro: info
-  
+{{- end }}
