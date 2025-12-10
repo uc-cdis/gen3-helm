@@ -131,10 +131,10 @@ spec:
               value: /portal
             {{- end }}
             {{- if .Values.datadogApplicationId }}
-            - name: NEXT_PUBLIC_DATADOG_APPLICATION_ID
+            - name: DATADOG_APPLICATION_ID
               value: {{ .Values.datadogApplicationId | quote }}
             {{- else }}
-            - name: NEXT_PUBLIC_DATADOG_APPLICATION_ID
+            - name: DATADOG_APPLICATION_ID
               valueFrom:
                 secretKeyRef:
                   name: portal-datadog-config
@@ -142,10 +142,10 @@ spec:
                   optional: true
             {{- end }}
             {{- if .Values.datadogClientToken }}
-            - name: NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
+            - name: DATADOG_CLIENT_TOKEN
               value: {{ .Values.datadogClientToken | quote }}
             {{- else }}
-            - name: NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
+            - name: DATADOG_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: portal-datadog-config
