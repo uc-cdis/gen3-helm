@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.103](https://img.shields.io/badge/Version-0.2.103-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.104](https://img.shields.io/badge/Version-0.2.104-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -89,6 +89,8 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
+| elasticsearch.image | string | `"quay.io/cdis/elasticsearch"` |  |
+| elasticsearch.imageTag | string | `"7.10.2"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
