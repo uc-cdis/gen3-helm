@@ -20,6 +20,8 @@ global:
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed.
     deploy: false
+  # -- (string) Hostname for the deployment.
+  hostname: localhost
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 webapiConfig:

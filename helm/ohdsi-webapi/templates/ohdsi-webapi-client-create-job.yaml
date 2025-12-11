@@ -32,7 +32,8 @@ spec:
             - "-c"
             - |
               client_exists() {
-                local existing=$(kubectl exec -c fence $(gen3 pod fence) -- fence-create client-list | grep "\"client_id\": \"atlas\"")
+                local client_name="$1"
+                local existing=$(fence-create client-list | grep "\"client_id\": \"${client_name}\"")
                 if [[ -n "$existing" ]](); then
                   return 0  # client exists
                 fi
@@ -40,19 +41,20 @@ spec:
               }
 
               new_client() {
-                local hostname=$(gen3 api hostname)
+                local hostname={{ .Values.global.hostname }}
                 atlas_hostname="atlas.${hostname}"
+                client_name="atlas"
 
-                if client_exists "$hostname"; then
-                  echo "OIDC client for $atlas_hostname already exists, skipping creation"
-                  return 0
+                if client_exists $client_name; then
+                  echo "found existing OIDC client for $atlas_hostname... deleting so it can be recreated..."
+                  fence-create client-delete --client $client_name
                 fi
 
                 echo "creating fence oidc client for $atlas_hostname"
-                local secrets=$(kubectl exec -c fence $(gen3 pod fence) -- fence-create client-create --client atlas --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --username atlas --allowed-scopes openid profile email user | tail -1)
+                local secrets=$(fence-create client-create --client $client_name --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --username atlas --allowed-scopes openid profile email user | tail -1)
                 # secrets looks like ('CLIENT_ID', 'CLIENT_SECRET')
                 if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
-                  gen3_log_err "kube-setup-ohdsi" "Failed generating oidc client for atlas: $secrets"
+                  echo "Failed generating oidc client for $client_name"
                   return 1
                 fi
                 local FENCE_CLIENT_ID="${BASH_REMATCH[2]}"
@@ -134,6 +136,11 @@ spec:
               echo "Updating k8s secret ohdsi-webapi-config"
               FENCE_CLIENT_ID=$(cat /shared/client_id | base64)
               FENCE_CLIENT_SECRET=$(cat /shared/client_secret | base64)
-              envsubst <${GEN3_HOME}/kube/services/ohdsi-atlas/ohdsi-webapi-config.yaml | kubectl apply -f -
-
+              echo "waiting for ohdsi-webapi-config secret to appear"
+              until kubectl get secret ohdsi-webapi-config >/dev/null 2>&1
+              do
+                echo "..."
+                sleep 5
+              done
+              kubectl patch secret ohdsi-webapi-config --patch='{"data":{"client_secret":"${FENCE_CLIENT_SECRET}", "client_id":"${FENCE_CLIENT_ID}"}}'
 {{- end }}
