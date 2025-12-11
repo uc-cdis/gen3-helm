@@ -88,6 +88,8 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
+| elasticsearch.image | string | `"quay.io/cdis/elasticsearch"` |  |
+| elasticsearch.imageTag | string | `"7.10.2"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
