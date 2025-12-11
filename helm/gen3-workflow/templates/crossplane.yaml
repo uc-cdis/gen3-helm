@@ -100,7 +100,7 @@ spec:
             "Action": [
               "eks:DescribeCluster"
             ],
-            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.environment }}"
+            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.clusterName }}"
           },
           {
             "Sid": "ManageKMS",
