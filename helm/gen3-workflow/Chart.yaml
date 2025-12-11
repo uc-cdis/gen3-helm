@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -44,6 +45,9 @@ version: 0.1.5
 =======
 version: 0.1.6
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+version: 0.1.7
+>>>>>>> a21aca21 (Update IAM role in gen3-workflow crossplane.yaml (#468))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
