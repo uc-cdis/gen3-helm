@@ -271,11 +271,15 @@ dependencies:
     condition: frontend-framework.enabled
   - name: fence
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.65
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 =======
     version: 0.1.66
 >>>>>>> ad290d7a (Add fence db migrate cronjob (#464))
+=======
+    version: 0.1.67
+>>>>>>> 9cf76072 (Update fence helm chart to work with readonly private key)
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel

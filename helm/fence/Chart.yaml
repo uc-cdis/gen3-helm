@@ -21,6 +21,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.75
 =======
 version: 0.1.61
@@ -40,6 +41,9 @@ version: 0.1.65
 =======
 version: 0.1.66
 >>>>>>> ad290d7a (Add fence db migrate cronjob (#464))
+=======
+version: 0.1.67
+>>>>>>> 9cf76072 (Update fence helm chart to work with readonly private key)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
