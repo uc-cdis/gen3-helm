@@ -428,8 +428,6 @@ volumes:
   - name: fence-jwt-keys-readonly
     secret:
       secretName: "fence-jwt-keys"
-  - name: fence-jwt-keys
-    emptyDir: {}
   - name: privacy-policy
     configMap:
       name: "privacy-policy"
