@@ -484,7 +484,7 @@ volumeMounts:
     subPath: fence_google_storage_creds_secret.json
   - name: "fence-jwt-keys-readonly"
     readOnly: true
-    mountPath: "/tmp/keys/readonly/jwt_private_key.pem"
+    mountPath: "/tmp/keys/key/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
   - name: "config-volume-public"
     readOnly: true
