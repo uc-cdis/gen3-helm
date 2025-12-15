@@ -77,7 +77,7 @@ spec:
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
-              bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
+              bash /fence/dockerrun.bash
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
