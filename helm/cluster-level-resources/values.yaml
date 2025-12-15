@@ -16,13 +16,19 @@ configuration:
 
 alb-controller:
   enabled: false
-  targetRevision: "1.11.0"
+  targetRevision: "1.13.4"
+  configuration:
+    enabled: false
+
+argo-events:
+  enabled: false
+  targetRevision: "2.1.3"
   configuration:
     enabled: false
 
 aws-s3-mountpoint:
   enabled: false
-  targetRevision: "1.11.0"
+  targetRevision: "2.2.0"
   configuration:
     enabled: false
 
@@ -34,13 +40,13 @@ cert-manager:
 
 calico:
   enabled: false
-  targetRevision: "v3.29.1"
+  targetRevision: "v3.30.3"
   configuration:
     enabled: false
 
 coreDNS:
   enabled: false
-  targetRevision: "v1.37.0"
+  targetRevision: "1.43.1"
   configuration:
     enabled: false
 
@@ -61,12 +67,22 @@ crossplane-crds:
   configuration:
     enabled: false
 
+argo-workflows:
+  enabled: false
+  targetRevision: "0.29.1"
+  namespace: "argo"
+  GEN3_ARGO_DB_HOST: ""
+  GEN3_ARGO_DB_NAME: ""
+  GEN3_ARGO_BUCKET: ""
+  configuration:
+    enabled: false
+
 custom-objects:
   enabled: false
 
 ebs-csi-driver:
   enabled: false
-  targetRevision: "2.38.1"
+  targetRevision: "2.48.0"
   configuration:
     enabled: false
 
@@ -91,7 +107,7 @@ grafana-alloy:
 karpenter:
   enabled: false
   awsRegion: "us-east-1"
-  targetRevision: v0.32.9
+  targetRevision: 1.0.8
   configuration:
     enabled: false
   resources:
@@ -103,17 +119,46 @@ karpenter:
       cpu: "1"
   controller:
     image:
-      tag: "v0.32.9"
+      tag: "1.0.8"
       digest: "sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"
 
 karpenter-crds:
   enabled: false
   targetRevision: master
   amiSelectorName: "EKS-FIPS*"
+  amiOwner: "143731057154"
   selectorTag: ""
   migration: false
   default:
     enabled: true
+    consolidation: true
+    consolidateAfter: "30s"
+    consolidationPolicy: "WhenEmpty"
+    expireAfter: "168h"
+    limits:
+      cpu: "1000"
+      memory: 1000Gi
+    volumeSize: 50Gi
+    additionalTags: {}
+    requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+          - spot
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+          - c
+          - m
+          - r
+          - t
+  secondary:
+    enabled: false
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
@@ -191,7 +236,7 @@ kube-proxy:
   enabled: false
   image:
     repo: "602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/kube-proxy"
-    tag: "v1.31.2-minimal-eksbuild.3"
+    tag: "v1.33.3-minimal-eksbuild.11"
   configuration:
     enabled: false
 
@@ -199,11 +244,11 @@ kube-state-metrics:
   enabled: false
   configuration:
     enabled: false
-  targetRevision: 5.28.0
+  targetRevision: 6.3.0
 
 vpc-cni:
   enabled: false
-  targetRevision: v1.16.2
+  targetRevision: v1.20.4
   configuration:
     enabled: false
 
@@ -658,7 +703,7 @@ alloy-configmap-data: |
       project = "{{ .Values.project }}",
     }
     endpoint {
-      url = "https://loki.planx-pla.net/loki/api/v1/push"
+      url = "https://loki3.planx-pla.net/loki/api/v1/push"
     }
   }
 

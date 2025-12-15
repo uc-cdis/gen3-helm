@@ -10,7 +10,7 @@
 app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.Version }}
-app.kubernetes.io/part-of: {{ .Values.partOf }}
+app.kubernetes.io/part-of: {{ .Values.partOf | default "Gen3" }}
 app.kubernetes.io/managed-by: "Helm"
 app: {{ .Chart.Name }}
 {{- if eq .Values.criticalService "true"}}
@@ -40,7 +40,7 @@ release: "dev"
 hostname: {{ .Values.global.hostname }}
 {{- if .Values.extraLabels }}
     {{- with .Values.extraLabels }}
-    {{- toYaml . }}
+    {{- toYaml . | nindent 0 }}
     {{- end }}
 {{- end }}
 {{- end }}

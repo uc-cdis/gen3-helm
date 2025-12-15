@@ -1,0 +1,680 @@
+# Default values for gen3workflow.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # -- (map) AWS configuration
+  aws:
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) AWS region for this deployment
+    region: us-east-1
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
+  crossplane:
+    # -- (bool) Whether Crossplane is being used to manage AWS resources.
+    enabled: false
+    # -- (string) AWS Account ID where resources will be created.
+    accountId: ""
+    # -- (string) OIDC provider URL for the EKS cluster.
+    oidcProviderUrl: ""
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  postgres:
+    # -- (bool) Whether the database should be created.
+    dbCreate: false
+    # -- (string) Name of external secret. Disabled if empty
+    externalSecret: ""
+    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
+    master:
+      # -- (string) hostname of postgres server
+      host:
+      # -- (string) username of superuser in postgres. This is used to create or restore databases
+      username: postgres
+      # -- (string) password for superuser in postgres. This is used to create or restore databases
+      password:
+      # -- (string) Port for Postgres.
+      port: "5432"
+  environment: default
+  # -- (string) Kubernetes cluster name.
+  clusterName: default
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+    clusterSecretStoreRef: ""
+    # -- (bool) Will push secrets to External Secrets Store.
+    pushFunnelOidcClientToExternalSecrets: true
+  # -- (string) Hostname for the deployment.
+  hostname: ""
+  # -- (map) Network policy settings.
+  netPolicy:
+    # -- (bool) Whether network policies are enabled
+    enabled: false
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled: false
+
+# -- (map) External Secrets settings.
+externalSecrets:
+  # -- (string) Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sGen3WorkflowSecret: true
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto"
+  gen3workflowG3auto: ""
+  # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
+  createFunnelOidcClientSecret: true
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
+  funnelOidcClient:
+
+# -- (map) Secret information for External Secrets.
+secrets:
+  # -- (str) AWS access key ID. Overrides global key.
+  awsAccessKeyId:
+  # -- (str) AWS secret access key ID. Overrides global key.
+  awsSecretAccessKey:
+
+
+# -- (int) Number of desired replicas
+replicaCount: 1
+
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0
+
+
+# -- (bool) Automount the default service account token
+automountServiceAccountToken: false
+
+# -- (map) Docker image information.
+image:
+  # -- (string) The Docker image repository for the gen3workflow service
+  repository: quay.io/cdis/gen3-workflow
+  # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "master"
+
+# -- (list) Docker image pull secrets.
+imagePullSecrets: []
+
+# -- (string) Override the name of the chart. This can be used to provide a unique name for a chart
+nameOverride: ""
+
+# -- (string) Override the full name of the chart, which is used as the name of resources created by the chart
+fullnameOverride: ""
+
+# -- (bool) Whether to create a job to generate the OIDC client for Funnel.
+oidc_job_enabled: true
+
+# -- (map) Service account to use or create.
+serviceAccount:
+  # Specifies whether a service account should be created
+  # -- (bool) Whether to create a service account
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account
+  name: "gen3-workflow-sa"
+
+# -- (map) Annotations to add to the pod
+podAnnotations: {}
+
+# -- (map) Security context for the pod
+podSecurityContext: {}
+
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# -- (map) Configuration for the service
+service:
+  # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
+  type: ClusterIP
+  # -- (int) Port on which the service is exposed
+  port: 80
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - funnel
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - funnel
+
+# -- (map) Resource requests and limits for the containers in the pod
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# -- (map) Configuration for autoscaling the number of replicas
+autoscaling:
+  # -- (bool) Whether autoscaling is enabled or not
+  enabled: false
+  # -- (int) The minimum number of replicas to scale down to
+  minReplicas: 1
+  # -- (int) The maximum number of replicas to scale up to
+  maxReplicas: 4
+  # -- (int) The target CPU utilization percentage for autoscaling
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# -- (map) Node Selector for the pods
+nodeSelector: {}
+
+# -- (list) Tolerations for the pods
+tolerations: []
+
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 25
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              # -- (list) Label key for match expression.
+              - key: app
+                # -- (string) Operation type for the match expression.
+                operator: In
+                # -- (list) Value for the match expression key.
+                values:
+                  - gen3-workflow
+          # -- (string) Value for topology key label.
+          topologyKey: "kubernetes.io/hostname"
+  nodeAffinity:
+    # -- (map) Option for scheduling to be required or preferred.
+    preferredDuringSchedulingIgnoredDuringExecution:
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 100
+        preference:
+          # -- (list) Label key for match expression.
+          matchExpressions:
+          - key: karpenter.sh/capacity-type
+            # -- (string) Operation type for the match expression.
+            operator: In
+            # -- (list) Value for the match expression key.
+            values:
+            - spot
+      # -- (int) Weight value for preferred scheduling.
+      - weight: 99
+        preference:
+          # -- (list) Label key for match expression.
+          matchExpressions:
+          - key: eks.amazonaws.com/capacityType
+            # -- (string) Operation type for the match expression.
+            operator: In
+            # -- (list) Value for the match expression key.
+            values:
+            - SPOT
+
+# -- (list) Environment variables to pass to the container
+env:
+  - name: DEBUG
+    value: "false"
+  - name: ARBORIST_URL
+    valueFrom:
+      configMapKeyRef:
+        name: manifest-global
+        key: arborist_url
+        optional: true
+
+# -- (list) Volumes to attach to the container.
+volumes:
+  - name: config-volume
+    secret:
+      secretName: "gen3workflow-g3auto"
+
+# -- (list) Volumes to mount to the container.
+volumeMounts:
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/src/gen3-workflow-config.yaml"
+    subPath: "gen3-workflow-config.yaml"
+  # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  - name: "config-volume"
+    readOnly: true
+    mountPath: "/gen3-workflow/gen3-workflow-config.yaml"
+    subPath: "gen3-workflow-config.yaml"
+
+# -- (list) Volumes to mount to the init container.
+initVolumeMounts: []
+
+# -- (list) Volumes to attach to the init container.
+initEnv: {}
+
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Workflow_Execution"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
+# -- (map) Will completely override the extraLabels defined in the common chart's _label_setup.tpl
+extraLabels:
+  dbgen3workflow: "yes"
+  # for revproxy authz
+  public: "yes"
+  # for network policy
+  netnolimit: "yes"
+
+gen3WorkflowConfig:
+  # -- (string) Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname
+  hostname: ""
+  # -- (bool) Enables debug mode for the application.
+  debug: false
+  # -- (bool) Enables verbose logging specifically for httpx requests.
+  httpxDebug: false
+  # -- (string) URL prefix used for serving OpenAPI documentation.
+  docsUrlPrefix: /gen3workflow
+  # -- (string) Custom Arborist URL. Ignored if already set via environment variable.
+  arboristUrl: ""
+  # -- (bool) Enables mock authentication, bypassing Arborist. Use only for development.
+  mockAuth: false
+  # -- (string) AWS region used for creating user S3 buckets.
+  userBucketsRegion: us-east-1
+  # -- (int) Number of days after which workflow-generated S3 objects are deleted.
+  s3ObjectsExpirationDays: 30
+  # -- (string) AWS Access Key ID used to make S3 requests on behalf of users.
+  #    Leave empty to use credentials from an existing STS session.
+  s3AccessKeyId: ""
+  # -- (string) AWS Secret Access Key used to make S3 requests on behalf of users.
+  #    Leave empty to use credentials from an existing STS session.
+  s3SecretAccessKey: ""
+  # -- (bool) Enables KMS encryption for S3 uploads.
+  kmsEncryptionEnabled: true
+  db:
+    # -- (string) SQLAlchemy-compatible database driver.
+    driver: postgresql+asyncpg
+    # -- (string) Hostname of the database server.
+    host: localhost
+    # -- (int) Port number on which the database listens.
+    port: 5432
+    # -- (string) Username used to authenticate with the database.
+    user: postgres
+    # -- (string) Password used to authenticate with the database.
+    password: postgres
+    # -- (string) Name of the database to connect to.
+    database: gen3workflow_test
+  # -- (string) TES server URL to which workflow tasks are forwarded.
+  tesServerUrl: http://funnel:8000
+  # -- (list) Whitelist of container image patterns allowed for workflow tasks.
+  #    Supports wildcards `*` and `{username}` placeholders.
+  taskImageWhitelist: []
+  # -- (bool) Enables Prometheus metrics for the workflow service.
+  enablePrometheusMetrics: false
+  # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
+  prometheusMultiprocDir: /var/tmp/prometheus_metrics
+
+funnel:
+  # -- (map) Configuration for the Funnel container image.
+  image:
+    # -- (string) The Docker image repository for the Funnel service.
+    repository: quay.io/ohsu-comp-bio/funnel
+    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+    pullPolicy: Always
+
+    # -- (map) Configuration for the Funnel init container.
+    initContainers:
+      - name: plugin
+        # -- (string) The Docker image repository for the Funnel init/plugin container.
+        image: quay.io/cdis/funnel-gen3-plugin
+        # -- (string) The Docker image tag for the Funnel init/plugin container.
+        tag: main-gen3
+        # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+        pullPolicy: Always
+        # -- (list) Arguments to pass to the init container.
+        command:
+          - cp
+          - /app/build/plugins/authorizer
+          - /opt/funnel/plugin-binaries/auth-plugin
+        volumeMounts:
+          - name: plugin-volume
+            mountPath: /opt/funnel/plugin-binaries
+      - name: secrets-updater
+        image: quay.io/cdis/awshelper
+        tag: master
+        env:
+          - name: FUNNEL_OIDC_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: funnel-oidc-client
+                key: client_id
+                optional: false
+          - name: FUNNEL_OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: funnel-oidc-client
+                key: client_secret
+                optional: false
+        volumeMounts:
+          - name: funnel-patched-config-volume
+            mountPath: /tmp
+          - name: funnel-config-volume
+            mountPath: /etc/config/funnel.conf
+            subPath: funnel-server.yaml
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - |
+            echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
+
+            echo "Patching values..."
+
+            # Assuming we don't have any other occurence of OidcClientId in the config file
+            sed -E "s|(OidcClientId:).*|\1 ${FUNNEL_OIDC_CLIENT_ID}|" /etc/config/funnel.conf \
+            | sed -E "s|(OidcClientSecret:).*|\1 ${FUNNEL_OIDC_CLIENT_SECRET}|" > /tmp/funnel-patched.conf
+
+            if [[ ! -s /tmp/funnel-patched.conf ]]; then
+              echo "ERROR: Patched config is empty. Aborting."
+              exit 1
+            fi
+
+  volumes:
+  - name: funnel-config-volume
+    configMap:
+      name: funnel-server-config
+  - name: funnel-oidc-volume
+    secret:
+      secretName: "funnel-oidc-client"
+      items:
+        - key: client_id
+          path: client_id
+        - key: client_secret
+          path: client_secret
+
+  - name: worker-templates-volume
+    configMap:
+      name: funnel-worker-templates
+
+  - name: plugin-volume
+    emptyDir: {}  # Shared volume
+
+  - name: funnel-patched-config-volume
+    emptyDir: {}  # Shared volume for config data
+
+  volumeMounts:
+    - name: funnel-patched-config-volume
+      mountPath: /etc/config/funnel-server.yaml
+      subPath: funnel-patched.conf
+
+    - name: "funnel-oidc-volume"
+      readOnly: true
+      mountPath: "/etc/config/oidc"
+
+    - name: worker-templates-volume
+      mountPath: /etc/funnel/templates
+
+    - name: plugin-volume
+      mountPath: /opt/funnel/plugin-binaries
+
+  Kubernetes:
+    ExecutorTemplate: |
+      # Task Executor
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: {{.TaskId}}-{{.JobId}}
+        namespace: {{.JobsNamespace}}
+        labels:
+          app: funnel-executor
+          job-name: {{.TaskId}}-{{.JobId}}
+      spec:
+        backoffLimit: 1
+        completions: 1
+        template:
+          spec:
+            restartPolicy: OnFailure
+            serviceAccountName: funnel-sa-{{.Namespace}}
+            containers:
+            - name: funnel-worker-{{.TaskId}}
+              image: {{.Image}}
+              imagePullPolicy: Always
+              command: ["/bin/sh", "-c"]
+              args: {{.Command}}
+              workingDir: {{.Workdir}}
+              resources:
+                requests:
+                  cpu: {{if ne .Cpus 0 -}}{{.Cpus}}{{ else }}{{"100m"}}{{end}}
+                  memory: '{{if ne .RamGb 0.0 -}}{{printf "%.0fG" .RamGb}}{{else}}{{"4G"}}{{end}}'
+                  ephemeral-storage: '{{if ne .DiskGb 0.0 -}}{{printf "%.0fG" .DiskGb}}{{else}}{{"2G"}}{{end}}'
+
+              volumeMounts:
+              ### DO NOT CHANGE THIS
+              {{- if .NeedsPVC }}
+                {{range $idx, $item := .Volumes}}
+                - name: funnel-storage-{{$.TaskId}}
+                  mountPath: {{$item.ContainerPath}}
+                  subPath: {{$.TaskId}}{{$item.ContainerPath}}
+                {{end}}
+              {{- end }}
+
+            volumes:
+            {{- if .NeedsPVC }}
+            - name: funnel-storage-{{.TaskId}}
+              persistentVolumeClaim:
+                claimName: funnel-worker-pvc-{{.TaskId}}
+            {{- end }}
+  mongodb:
+    # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
+    # uncomment this if you're running it on an ARM chipset machine
+    # image:
+    #   registry: docker.io
+    #   repository: dlavrenuek/bitnami-mongodb-arm
+    #   tag: 6.0.13
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 20
+      timeoutSeconds: 10
+      periodSeconds: 10
+      failureThreshold: 10
+
+  Plugins:
+    Path: plugin-binaries/auth-plugin
+    Params:
+      OidcClientId: <redacted>
+      OidcClientSecret: <redacted>
+      # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
+      S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
+      # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
+      OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
+
+karpenter:
+  nodeclass.yaml: |
+    apiVersion: karpenter.k8s.aws/v1
+    kind: EC2NodeClass
+    metadata:
+      name: gen3-workflow-user-USER_ID
+    spec:
+      amiFamily: AL2
+      amiSelectorTerms:
+      - name: 1-31-EKS-FIPS*
+        owner: "143731057154"
+      blockDeviceMappings:
+      - deviceName: /dev/xvda
+        ebs:
+          deleteOnTermination: true
+          encrypted: true
+          volumeSize: 100Gi
+          volumeType: gp2
+      metadataOptions:
+        httpEndpoint: enabled
+        httpProtocolIPv6: disabled
+        httpPutResponseHopLimit: 2
+        httpTokens: optional
+      role: eks_ENVIRONMENT_workers_role
+      securityGroupSelectorTerms:
+      - tags:
+          karpenter.sh/discovery: ENVIRONMENT-workflow
+      subnetSelectorTerms:
+      - tags:
+          karpenter.sh/discovery: ENVIRONMENT
+      tags:
+        Environment: ENVIRONMENT
+        Name: eks-ENVIRONMENT-workflow-karpenter
+        gen3service: argo-workflows
+        gen3username: GEN3_USERNAME
+        gen3teamproject: "GEN3_TEAMNAME"
+        karpenter.sh/discovery: ENVIRONMENT
+        purpose: gen3-workflow-task
+        "vadc:cost-type": user-based-variable
+        "vadc:usage-type": user-infrastructure
+        "vadc:environment-type": "ENVIRONMENT_TYPE_CODE"
+      userData: |
+        MIME-Version: 1.0
+        Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+        --BOUNDARY
+        Content-Type: text/x-shellscript; charset="us-ascii"
+
+        #!/bin/bash -x
+        instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+        curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+
+        echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+
+        sysctl -w fs.inotify.max_user_watches=12000
+
+        --BOUNDARY--
+  nodepool.yaml: |
+    apiVersion: karpenter.sh/v1
+    kind: NodePool
+    metadata:
+      name: gen3-workflow-USER_ID
+    spec:
+      disruption:
+        consolidateAfter: 10s
+        consolidationPolicy: WhenEmpty
+      limits:
+        cpu: 4k
+      template:
+        metadata:
+          labels:
+            purpose: workflow
+            role: WORKFLOW_NAME
+        spec:
+          nodeClassRef:
+            group: karpenter.k8s.aws
+            kind: EC2NodeClass
+            name: gen3-workflow-USER_ID
+          requirements:
+          - key: karpenter.sh/capacity-type
+            operator: In
+            values:
+            - on-demand
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+          - key: node.kubernetes.io/instance-type
+            operator: In
+            values:
+            - c6a.large
+            - c6a.xlarge
+            - c6a.2xlarge
+            - c6a.4xlarge
+            - c6a.8xlarge
+            - c6a.12xlarge
+            - c7a.large
+            - c7a.xlarge
+            - c7a.2xlarge
+            - c7a.4xlarge
+            - c7a.8xlarge
+            - c7a.12xlarge
+            - c6i.large
+            - c6i.xlarge
+            - c6i.2xlarge
+            - c6i.4xlarge
+            - c6i.8xlarge
+            - c6i.12xlarge
+            - c7i.large
+            - c7i.xlarge
+            - c7i.2xlarge
+            - c7i.4xlarge
+            - c7i.8xlarge
+            - c7i.12xlarge
+            - m6a.2xlarge
+            - m6a.4xlarge
+            - m6a.8xlarge
+            - m6a.12xlarge
+            - m6a.16xlarge
+            - m6a.24xlarge
+            - m7a.2xlarge
+            - m7a.4xlarge
+            - m7a.8xlarge
+            - m7a.12xlarge
+            - m7a.16xlarge
+            - m7a.24xlarge
+            - m6i.2xlarge
+            - m6i.4xlarge
+            - m6i.8xlarge
+            - m6i.12xlarge
+            - m6i.16xlarge
+            - m6i.24xlarge
+            - m7i.2xlarge
+            - m7i.4xlarge
+            - m7i.8xlarge
+            - m7i.12xlarge
+            - m7i.16xlarge
+            - m7i.24xlarge
+            - r7iz.2xlarge
+            - r7iz.4xlarge
+            - r7iz.8xlarge
+            - r7iz.12xlarge
+            - r7iz.16xlarge
+            - r7iz.24xlarge
+          - key: kubernetes.io/os
+            operator: In
+            values:
+            - linux
+          taints:
+          - effect: NoSchedule
+            key: role
+            value: WORKFLOW_NAME

@@ -33,19 +33,22 @@ spec:
                     operator: In
                     values:
                     - ONDEMAND
+              
           volumes:
             - name: google-cred-volume
               secret:
                 secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
           containers:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            resources:
+              {{- toYaml .Values.resources | nindent 14 }}
             imagePullPolicy: Always
             env:
               - name: RELEASE
@@ -56,6 +59,8 @@ spec:
                 value: "{{ .Values.removeObjectsFromCloudsJob.MANIFEST_FILE }}"
               - name: IGNORED_FILE_S3
                 value: "{{ .Values.removeObjectsFromCloudsJob.IGNORED_FILE }}"
+              - name: ONLY_REDACT
+                value: "{{ .Values.removeObjectsFromCloudsJob.ONLY_REDACT}}"
               - name: DRY_RUN
                 value: "{{ .Values.removeObjectsFromCloudsJob.DRY_RUN }}"
             volumeMounts:
@@ -80,6 +85,6 @@ spec:
                 gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
                 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
                 aws s3 cp $IGNORED_FILE_S3 /dcf-dataservice/ignored_files_manifest.csv
-                python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET
+                python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET --only_redact $ONLY_REDACT
           restartPolicy: Never
 {{- end }}
