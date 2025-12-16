@@ -254,7 +254,8 @@ spec:
               - "-c"
               # Script always succeeds if it runs (echo exits with 0)
               - |
-                sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /venv/lib/python3.13/site-packages/paramiko/pkey.py
+                $pkey_path=$('find / -name pkey.py')
+                sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' $(find / -name pkey.py)
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
