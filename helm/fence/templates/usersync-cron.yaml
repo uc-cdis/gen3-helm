@@ -28,6 +28,10 @@ spec:
           labels:
             app: gen3job
         spec:
+          dnsPolicy: ClusterFirst
+          dnsConfig:
+            options:
+              - name: use-vc
           serviceAccountName: usersync-job
           volumes:
             - name: yaml-merge
@@ -249,7 +253,7 @@ spec:
                 # sed -i 's/KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,/KexAlgorithms ecdh-sha2-nistp256,/g' /etc/crypto-policies/back-ends/openssh.config
                 sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /venv/lib/python3.13/site-packages/paramiko/pkey.py
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
-                echo 'options use-vc' >> /etc/resolv.conf
+                # echo 'options use-vc' >> /etc/resolv.conf
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
                     echo "running fence-create"
