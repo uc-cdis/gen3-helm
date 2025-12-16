@@ -34,11 +34,15 @@ resources:
     requests:
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
 
 
 esEndpoint: gen3-elasticsearch-master

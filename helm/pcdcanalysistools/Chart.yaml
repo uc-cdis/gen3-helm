@@ -25,5 +25,5 @@ appVersion: "master"
 
 dependencies:
   - name: common
-    version: 0.1.23
+    version: 0.1.28
     repository: file://../common

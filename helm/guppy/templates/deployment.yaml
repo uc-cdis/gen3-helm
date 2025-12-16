@@ -38,6 +38,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -84,6 +87,8 @@ spec:
               value: {{ .Values.global.tierAccessLevel | quote }}
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
+            - name: NODE_ENV
+              value: production
             - name: PUBLIC_KEY_PATH
               value: /guppy/jwt_public_key.pem
           {{- with .Values.volumeMounts }}

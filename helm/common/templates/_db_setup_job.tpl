@@ -174,7 +174,7 @@ spec:
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-{{- end}}
+{{- end }}
 {{- end }}
 
 
@@ -183,7 +183,7 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.createLocalK8sSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -217,3 +217,57 @@ data:
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Bootstrap Secret for PushSecret to populate External Secret
+*/}}
+{{- define "common.secret.db.bootstrap" -}}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}
+type: Opaque
+data:
+  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  port: {{ $.Values.postgres.port | b64enc | quote }}
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+  {{- if $.Values.global.dev }}
+  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- else }}
+  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+  {{- end }}
+  dbcreated: {{ "true" | b64enc | quote }}
+{{- end }}
+{{- end -}}
+
+
+{{- define "common.db-push-secret" -}}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds
+spec:
+  updatePolicy: IfNotExists
+  refreshInterval: 2m
+  secretStoreRefs:
+    {{- if ne .Values.global.externalSecrets.clusterSecretStoreRef "" }}
+    - name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
+      kind: ClusterSecretStore
+    {{- else }}
+    - name: {{include "common.SecretStore" .}}
+      kind: SecretStore
+    {{- end }}
+  selector:
+    secret:
+      name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  data:
+    - match:
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+{{- end }}
+{{- end -}}
