@@ -28,7 +28,6 @@ spec:
           labels:
             app: gen3job
         spec:
-          dnsPolicy: ClusterFirst
           dnsConfig:
             options:
               - name: use-vc
