@@ -36,9 +36,6 @@ spec:
                     values:
                     - ONDEMAND
           volumes:
-            - name: cred-volume
-              secret:
-                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -70,9 +67,6 @@ spec:
                     key: auth_namespace
                     optional: true
             volumeMounts:
-            - name: cred-volume
-              mountPath: "/root/.aws/credentials"
-              subPath: dcf-aws-creds-secret
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
@@ -80,6 +74,7 @@ spec:
             args:
             - -c
             - |
+              mkdir ~/.aws
               echo """
               [default]
               region: $REGION
