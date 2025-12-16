@@ -86,7 +86,6 @@ global:
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
 
-
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
@@ -204,6 +203,27 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+# -- (map) Configuration for OpenShift Route.
+openshiftRoute:
+  # -- (bool) Whether to create an OpenShift Route
+  enabled: false
+  # -- (map) Annotations to add to the Route.
+  annotations: {}
+  # -- (string) Hostname for the Route. Leave empty to let OpenShift auto-generate
+  host: ""
+  # -- (string) Path for the Route.
+  path: "/"
+  # -- (string) Target port for the Route.
+  targetPort: "http"
+  # -- (map) TLS configuration for the Route.
+  tls:
+    # -- (string) Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt".
+    termination: "edge"
+    # -- (string) Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect".
+    insecureEdgeTerminationPolicy: "Redirect"
+  # -- (string) Wildcard policy for the Route. Valid options are "None" and "Subdomain".
+  wildcardPolicy: "None"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

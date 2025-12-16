@@ -12,9 +12,6 @@ global:
   autoscaling:
     enabled: true
     minReplicas: 2
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
 
 arborist:
   enabled: false
@@ -54,7 +51,7 @@ arborist:
     fsGroup: 1000970000
 
 fence:
-  enabled: true
+  enabled: false
   volumes:
     - name: old-config-volume
       secret:
@@ -348,6 +345,9 @@ revproxy:
   image:
     repository: quay.io/cdis/nginx
     tag: 2025.09
+  autoscaling:
+    averageCPUValue: 300m
+    averageMemoryValue: 256Mi
   # -- (map) Resource requests and limits for the containers in the pod
   resources:
     # -- (map) The amount of resources that the container requests
@@ -362,6 +362,14 @@ revproxy:
       memory: 512Mi
       # -- (string) The maximum amount of CPU the container can use
       cpu: 500m
+
+  # OpenShift Route configuration (replaces Ingress on OpenShift)
+  openshiftRoute:
+    enabled: true
+    # Leave host empty to auto-generate, or specify your desired hostname
+    host: "gearbox-ped-gearbox-p1.apps.bsd-openshift-prod.bsd.uchicago.edu" # Auto-generates: <app>-<namespace>.apps.<cluster-domain>
+    annotations:
+      openshift.io/host.generated: "true"
 
 gearbox:
   enabled: false
@@ -493,16 +501,6 @@ gearbox-middleware:
     runAsGroup: 1000970000
     fsGroup: 1000970000
 
-postgresql:
-  enabled: false
-  image:
-    repository: bitnamilegacy/postgresql
-  primary:
-    networkPolicy:
-      enabled: false
-  readReplicas:
-    networkPolicy:
-      enabled: false
   #local Dev Only
   # auth:
   #   postgresPassword: "thisisaterriblepassword"
@@ -510,6 +508,7 @@ postgresql:
   #   persistence:
   #     enabled: true
   #     size: 1Gi
+
 ########################################################################################
 #                               DISABLED SERVICES                                      #
 ########################################################################################
