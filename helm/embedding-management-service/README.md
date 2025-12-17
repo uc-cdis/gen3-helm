@@ -1,6 +1,6 @@
 # embedding-management-service
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -90,7 +90,6 @@ A Helm chart for Kubernetes
 | volumeMounts[0].name | string | `"config-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
 | volumeMounts[0].subPath | string | `"config.json"` |  |
-| volumes[0].configMap.configMapName | string | `"ems-config"` |  |
 | volumes[0].configMap.name | string | `"ems-config"` |  |
 | volumes[0].configMap.optional | bool | `false` |  |
 | volumes[0].name | string | `"config"` |  |
