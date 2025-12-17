@@ -233,33 +233,18 @@ spec:
                 mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
                 subPath: fence_google_storage_creds_secret.json
               - name: fence-ssh-keys
-                mountPath: /root/.ssh/id_rsa
+                mountPath: /secret/.ssh/id_rsa
                 readOnly: true
                 subPath: id_rsa
               - name: fence-ssh-keys
-                mountPath: /root/.ssh/id_rsa.pub
+                mountPath: /secret/.ssh/id_rsa.pub
                 readOnly: true
                 subPath: id_rsa.pub
               - name: fence-sshconfig
-                mountPath: /root/.ssh/config
+                mountPath: /secret/.ssh/config
                 subPath: config
               - name: fence-known-hosts
-                mountPath: /root/.ssh/known_hosts
-                subPath: known_hosts
-                readOnly: true
-              - name: fence-ssh-keys
-                mountPath: /home/gen3/.ssh/id_rsa
-                readOnly: true
-                subPath: id_rsa
-              - name: fence-ssh-keys
-                mountPath: home/gen3/.ssh/id_rsa.pub
-                readOnly: true
-                subPath: id_rsa.pub
-              - name: fence-sshconfig
-                mountPath: /home/gen3/.ssh/config
-                subPath: config
-              - name: fence-known-hosts
-                mountPath: /home/gen3/.ssh/known_hosts
+                mountPath: /secret/.ssh/known_hosts
                 subPath: known_hosts
                 readOnly: true
 
