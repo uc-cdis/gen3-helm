@@ -19,7 +19,7 @@ A Helm chart for Kubernetes
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| embeddingsConfig | string | `"{\n  \"expr\": 256,\n  \"hist\": 1536,\n  \"summ\": 4096,\n  \"text\": 4096\n}"` |  |
+| embeddingsConfig | string | `"{\n  \"expr\": 256,\n  \"hist\": 1536,\n  \"summ\": 4096,\n  \"text\": 4096\n}\n"` |  |
 | externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
