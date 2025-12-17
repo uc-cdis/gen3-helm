@@ -22,6 +22,8 @@ externalSecrets:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
+    # -- (string) The amount of CPU requested
+    cpu: "2"
     # -- (string) The amount of memory requested
     memory: 512Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
@@ -34,6 +36,32 @@ image:
   repository: quay.io/cdis/dcf-dataservice
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "master"
+
+awsBatchReplicateJob:
+  namespace:
+  enabled: true
+  schedule: "*/30 * * * *"
+  REGION:
+  THREAD_COUNT:
+  MAX_RETRIES:
+  # SOURCE_BUCKET:
+  # DESTINATION_BUCKET:
+  MANIFEST_PATH:
+  JOB_QUEUE:
+  JOB_DEFINITION:
+  OUTPUT_MANIFEST_BUCKET:
+
+awsBucketReplicateJob:
+  enabled: true
+  schedule: "*/30 * * * *"
+  THREAD_NUM:
+  CHUNK_SIZE:
+  GDC_BUCKET_NAME:
+  LOG_BUCKET:
+  RELEASE:
+  QUICK_TEST:
+  MANIFEST_FILE:
+
 googleBucketReplicateJob:
   enabled: true
   # -- (bool) Whether to enable the Google bucket replicate job
@@ -44,17 +72,6 @@ googleBucketReplicateJob:
   MANIFEST_FILE:
   IGNORED_FILE:
   LOG_BUCKET:
-  resources:
-  # -- (map) The amount of resources that the container requests
-    requests:
-      # -- (string) The amount of CPU requested
-      cpu: "2"
-      # -- (string) The amount of memory requested
-      memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      # -- (string) The maximum amount of memory the container can use
-      memory: 2Gi
 
 removeObjectsFromCloudsJob:
   enabled: true
@@ -66,6 +83,7 @@ removeObjectsFromCloudsJob:
   MANIFEST_FILE:
   IGNORED_FILE:
   LOG_BUCKET:
+  ONLY_REDACT:
 
 replicateValidationJob:
   enabled: true
@@ -79,29 +97,8 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
-  resources:
-  # -- (map) The amount of resources that the container requests
-    requests:
-      # -- (string) The amount of CPU requested
-      cpu: "2"
-      # -- (string) The amount of memory requested
-      memory: 128Mi
-    # -- (map) The maximum amount of resources that the container is allowed to use
-    limits:
-      memory: "2Gi"
-awsBucketReplicateJob:
-  enabled: true
-  schedule: "*/30 * * * *"
-  THREAD_NUM:
-  CHUNK_SIZE:
-  GDC_BUCKET_NAME:
-  LOG_BUCKET:
-  RELEASE:
-  QUICK_TEST:
-  MANIFEST_FILE:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 128Mi
-    limits:
-      memory: 2Gi
+
+batchServiceAccount:
+  annotations: {}
+replicateServiceAccount:
+  annotations: {}
