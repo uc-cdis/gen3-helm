@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
@@ -43,6 +44,9 @@ version: 0.1.59
 =======
 version: 0.1.60
 >>>>>>> c7900e9c (update hatchery)
+=======
+version: 0.1.61
+>>>>>>> 84e852e7 (Bump charts..)
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 

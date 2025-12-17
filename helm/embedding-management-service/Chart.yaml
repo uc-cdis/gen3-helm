@@ -32,6 +32,7 @@ version: 0.1.1
 <<<<<<< HEAD
 appVersion: "1.16.0"
 
+<<<<<<< HEAD
 dependencies:
   - name: common
     version: 0.1.34
@@ -48,3 +49,10 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgres.separate
 >>>>>>> 5796495f (adding embedding management service to helm)
+=======
+
+dependencies:
+  - name: common
+    version: 0.1.29
+    repository: file://../common
+>>>>>>> 84e852e7 (Bump charts..)

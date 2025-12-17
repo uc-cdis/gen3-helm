@@ -21,6 +21,12 @@ A Helm chart for the gen3 embedding management service
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 >>>>>>> 5796495f (adding embedding management service to helm)
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common | common | 0.1.29 |
+
 ## Values
 
 | Key | Type | Default | Description |
