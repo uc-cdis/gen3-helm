@@ -33,8 +33,6 @@ spec:
               - name: use-vc
           serviceAccountName: usersync-job
           securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
               fsGroup: 1000
           volumes:
             - name: yaml-merge
