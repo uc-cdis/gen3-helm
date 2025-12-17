@@ -259,7 +259,7 @@ spec:
                 sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' $PKEY_PATH
                 
                 # Backwards compatible solution to mount the fence-ssh-keys
-                cp /secret/.ssh/* ~/.ssh/
+                mkdir -p ~/.ssh && cp /secret/.ssh/* ~/.ssh/
                 #Change the file permissions to current user
                 chmod 400 ~/.ssh/id*
                 
