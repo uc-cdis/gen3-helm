@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.109](https://img.shields.io/badge/Version-0.2.109-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.110](https://img.shields.io/badge/Version-0.2.110-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -26,10 +26,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.35 |
 | file://../cedar | cedar | 0.1.18 |
 | file://../cohort-middleware | cohort-middleware | 0.1.16 |
-| file://../common | common | 0.1.28 |
+| file://../common | common | 0.1.29 |
 | file://../dashboard | dashboard | 0.1.13 |
 | file://../datareplicate | datareplicate | 0.1.10 |
 | file://../dicom-server | dicom-server | 0.1.23 |
+| file://../embedding-management-service | embedding-management-service | 0.1.0 |
 | file://../etl | etl | 0.1.19 |
 | file://../fence | fence | 0.1.66 |
 | file://../frontend-framework | frontend-framework | 0.1.18 |
@@ -38,7 +39,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.9 |
 | file://../gen3-workflow | gen3-workflow | 0.1.7 |
 | file://../guppy | guppy | 0.1.30 |
-| file://../hatchery | hatchery | 0.1.60 |
+| file://../hatchery | hatchery | 0.1.61 |
 | file://../indexd | indexd | 0.1.37 |
 | file://../manifestservice | manifestservice | 0.1.36 |
 | file://../metadata | metadata | 0.1.36 |
@@ -54,7 +55,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ssjdispatcher | ssjdispatcher | 0.1.38 |
 | file://../wts | wts | 0.1.34 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
+| https://helm.elastic.co | elasticsearch | 8.5.1 |
 
 ## Values
 
