@@ -1,7 +1,11 @@
 # embedding-management-service
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+=======
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+>>>>>>> c25779c9 (Disable EMS by default (#474))
 
 A Helm chart for Kubernetes
 =======
@@ -196,6 +200,7 @@ A Helm chart for the gen3 embedding management service
 | volumeMounts[0].readOnly | bool | `true` |  |
 | volumeMounts[0].subPath | string | `"config.json"` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | volumes[0].configMap.name | string | `"ems-config"` |  |
 | volumes[0].configMap.optional | bool | `false` |  |
 | volumes[0].name | string | `"config"` |  |
@@ -230,6 +235,8 @@ A Helm chart for the gen3 embedding management service
 >>>>>>> 9791452b (embedding service secrets)
 =======
 | volumes[0].configMap.configMapName | string | `"ems-config"` |  |
+=======
+>>>>>>> c25779c9 (Disable EMS by default (#474))
 | volumes[0].configMap.name | string | `"ems-config"` |  |
 | volumes[0].configMap.optional | bool | `false` |  |
 | volumes[0].name | string | `"config"` |  |

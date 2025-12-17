@@ -211,8 +211,12 @@ dependencies:
     version: 0.1.5
 =======
   - name: embedding-management-service
+<<<<<<< HEAD
     version: 0.1.0
 >>>>>>> 9791452b (embedding service secrets)
+=======
+    version: 0.1.1
+>>>>>>> c25779c9 (Disable EMS by default (#474))
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
