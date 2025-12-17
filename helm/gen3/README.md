@@ -26,10 +26,11 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.35 |
 | file://../cedar | cedar | 0.1.18 |
 | file://../cohort-middleware | cohort-middleware | 0.1.16 |
-| file://../common | common | 0.1.28 |
+| file://../common | common | 0.1.29 |
 | file://../dashboard | dashboard | 0.1.13 |
 | file://../datareplicate | datareplicate | 0.1.10 |
 | file://../dicom-server | dicom-server | 0.1.23 |
+| file://../embedding-management-service | embedding-management-service | 0.1.0 |
 | file://../etl | etl | 0.1.19 |
 | file://../fence | fence | 0.1.66 |
 | file://../frontend-framework | frontend-framework | 0.1.18 |
@@ -38,7 +39,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.9 |
 | file://../gen3-workflow | gen3-workflow | 0.1.7 |
 | file://../guppy | guppy | 0.1.30 |
-| file://../hatchery | hatchery | 0.1.60 |
+| file://../hatchery | hatchery | 0.1.61 |
 | file://../indexd | indexd | 0.1.37 |
 | file://../manifestservice | manifestservice | 0.1.36 |
 | file://../metadata | metadata | 0.1.36 |

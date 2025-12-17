@@ -4,6 +4,12 @@
 
 A Helm chart for Kubernetes
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common | common | 0.1.29 |
+
 ## Values
 
 | Key | Type | Default | Description |
