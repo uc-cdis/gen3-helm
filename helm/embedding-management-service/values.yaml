@@ -186,7 +186,6 @@ autoscaling:
 volumes:
 - name: config
   configMap:
-    configMapName: ems-config
     name: ems-config
     optional: false
 
