@@ -32,6 +32,10 @@ spec:
             options:
               - name: use-vc
           serviceAccountName: usersync-job
+          securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
           volumes:
             - name: yaml-merge
               configMap:
@@ -177,8 +181,6 @@ spec:
           - name: usersync
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
-            securityContext:
-              runAsUser: 1000
             env:
               - name: SYNC_FROM_DBGAP
                 value: {{ .Values.usersync.syncFromDbgap | quote }}
@@ -243,6 +245,21 @@ spec:
                 subPath: config
               - name: fence-known-hosts
                 mountPath: /root/.ssh/known_hosts
+                subPath: known_hosts
+                readOnly: true
+              - name: fence-ssh-keys
+                mountPath: /home/gen3/.ssh/id_rsa
+                readOnly: true
+                subPath: id_rsa
+              - name: fence-ssh-keys
+                mountPath: home/gen3/.ssh/id_rsa.pub
+                readOnly: true
+                subPath: id_rsa.pub
+              - name: fence-sshconfig
+                mountPath: /home/gen3/.ssh/config
+                subPath: config
+              - name: fence-known-hosts
+                mountPath: /home/gen3/.ssh/known_hosts
                 subPath: known_hosts
                 readOnly: true
 
