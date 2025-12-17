@@ -15,6 +15,11 @@ service:
   type: ClusterIP
   port: 80
 
+nginx:
+  # see also ./templates/ohdsi-webapi-reverse-proxy-config.yaml for other nginx config related to this service
+  repository: quay.io/cdis/nginx
+  tag: master
+
 # Global configuration
 global:
   externalSecrets:

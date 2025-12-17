@@ -9,7 +9,7 @@ metadata:
 type: Opaque
 stringData: # TODO - should this be data (base64)??
   datasource_driverClassName: org.postgresql.Driver
-  datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
+  datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   datasource_ohdsi_schema: ohdsi
   datasource_username: {{ .Values.webapiConfig.dbUser }}
   datasource_password: {{ .Values.webapiConfig.dbPass }}
@@ -17,7 +17,7 @@ stringData: # TODO - should this be data (base64)??
   spring_jpa_properties_hibernate_dialect: org.hibernate.dialect.PostgreSQLDialect
   spring_batch_repository_tableprefix: ohdsi.BATCH_
   flyway_datasource_driverClassName: org.postgresql.Driver
-  flyway_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
+  flyway_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   flyway_schemas: ohdsi
   flyway_placeholders_ohdsiSchema: ohdsi
   flyway_datasource_username: {{ .Values.webapiConfig.dbUser }}
@@ -43,7 +43,7 @@ stringData: # TODO - should this be data (base64)??
   security_auth_cas_enabled: "false"
 
   security_db_datasource_schema: security
-  security_db_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:5432/{{ .Values.webapiConfig.dbName }}
+  security_db_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   security_db_datasource_driverClassName: org.postgresql.Driver
   security_db_datasource_username: {{ .Values.webapiConfig.dbUser }}
   security_db_datasource_password: {{ .Values.webapiConfig.dbPass }}
