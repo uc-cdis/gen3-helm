@@ -189,13 +189,7 @@ volumes:
     configMapName: ems-config
     name: ems-config
     optional: false
-spec:
-  template:
-    spec:
-      volumes:
-        - name: config
-          configMap:
-            name: ems-config
+
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:

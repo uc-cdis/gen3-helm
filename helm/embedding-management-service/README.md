@@ -85,8 +85,6 @@ A Helm chart for Kubernetes
 | serviceAccount.automount | bool | `true` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
-| spec.template.spec.volumes[0].configMap.name | string | `"ems-config"` |  |
-| spec.template.spec.volumes[0].name | string | `"config"` |  |
 | tolerations | list | `[]` |  |
 | volumeMounts[0].mountPath | string | `"/config.json"` |  |
 | volumeMounts[0].name | string | `"config-volume"` |  |
