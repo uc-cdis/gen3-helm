@@ -125,18 +125,18 @@ spec:
                   mountPath: "/home/ubuntu/.aws/credentials"
                   subPath: credentials
                 - name: fence-ssh-keys
-                  mountPath: /root/.ssh/id_rsa
+                  mountPath: /secret/.ssh/id_rsa
                   readOnly: true
                   subPath: id_rsa
                 - name: fence-ssh-keys
-                  mountPath: /root/.ssh/id_rsa.pub
+                  mountPath: /secret/.ssh/id_rsa.pub
                   readOnly: true
                   subPath: id_rsa.pub
                 - name: fence-sshconfig
-                  mountPath: /root/.ssh/config
+                  mountPath: /secret/.ssh/config
                   subPath: config
                 - name: fence-known-hosts
-                  mountPath: /root/.ssh/known_hosts
+                  mountPath: /secret/.ssh/known_hosts
                   subPath: known_hosts
                   readOnly: true
               command: ["/bin/bash" ]
@@ -274,6 +274,12 @@ spec:
                 EOF
                 )
                 sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' $PKEY_PATH
+                
+                # Backwards compatible solution to mount the fence-ssh-keys
+                cp /secret/.ssh/* ~/.ssh/
+                #Change the file permissions to current user
+                chmod 400 ~/.ssh/id*
+                
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
