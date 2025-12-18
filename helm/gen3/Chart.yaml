@@ -145,7 +145,7 @@ dependencies:
     condition: gen3-analysis.enabled
 
   - name: elasticsearch
-    version: 8.5.1
+    version: 7.10.2
     repository: "https://helm.elastic.co"
     condition: global.dev
   - name: postgresql
@@ -177,7 +177,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.111
+version: 0.2.112
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
