@@ -553,7 +553,7 @@ dependencies:
     condition: ohdsi-webapi.enabled
 
   - name: elasticsearch
-    version: 8.5.1
+    version: 7.10.2
     repository: "https://helm.elastic.co"
     condition: global.dev
   - name: postgresql
