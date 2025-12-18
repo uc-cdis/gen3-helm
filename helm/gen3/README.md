@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.111](https://img.shields.io/badge/Version-0.2.111-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.113](https://img.shields.io/badge/Version-0.2.113-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -30,7 +30,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dashboard | dashboard | 0.1.13 |
 | file://../datareplicate | datareplicate | 0.1.11 |
 | file://../dicom-server | dicom-server | 0.1.23 |
-| file://../embedding-management-service | embedding-management-service | 0.1.0 |
+| file://../embedding-management-service | embedding-management-service | 0.1.1 |
 | file://../etl | etl | 0.1.19 |
 | file://../fence | fence | 0.1.66 |
 | file://../frontend-framework | frontend-framework | 0.1.18 |
@@ -55,7 +55,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ssjdispatcher | ssjdispatcher | 0.1.38 |
 | file://../wts | wts | 0.1.34 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 8.5.1 |
+| https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
 
@@ -96,6 +96,7 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
+| embedding-management-service.enabled | bool | `false` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |

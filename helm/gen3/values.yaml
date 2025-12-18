@@ -175,6 +175,10 @@ datareplicate:
   # -- (bool) Whether to deploy the datareplicate subchart.
   enabled: false
 
+embedding-management-service:
+  enabled: false
+
+
 etl:
   # -- (bool) Whether to deploy the etl subchart.
   enabled: true
