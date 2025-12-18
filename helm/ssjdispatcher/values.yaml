@@ -85,7 +85,14 @@ global:
       kmsKeyId:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
-
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -115,8 +122,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # -- (map) Security context for the containers in the pod
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -180,8 +186,8 @@ volumeMounts:
 awsRegion: us-east-1
 # -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
 awsStsRegionalEndpoints: regional
-# -- (string) Namespace to deploy the job.
-gen3Namespace: default
+# -- (string) Namespace to deploy the job. Defaults to .Release.Namespace
+gen3Namespace: ""
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
@@ -261,7 +267,6 @@ partOf: "Workspace-Tab"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
-
 
 # -- (map) External secrets configuration
 externalSecrets:

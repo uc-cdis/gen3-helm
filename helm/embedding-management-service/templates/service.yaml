@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "embedding-management-service.fullname" . }}
+  labels:
+    {{- include "embedding-management-service.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "embedding-management-service.selectorLabels" . | nindent 4 }}

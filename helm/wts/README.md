@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.24 |
+| file://../common | common | 0.1.28 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -19,10 +19,11 @@ A Helm chart for gen3 workspace token service
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sWtsSecret":false,"createWtsOidcClientSecret":true,"dbcreds":null,"pushSecret":false,"wtsG3auto":null,"wtsOidcClient":null}` | External Secrets settings. |
 | externalSecrets.createK8sWtsSecret | bool | `false` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is false. |
 | externalSecrets.createWtsOidcClientSecret | bool | `true` | Will create the WTS secret or pull it from AWS Secrets Manager. Default is true. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | externalSecrets.wtsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-g3auto". |
 | externalSecrets.wtsOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "wts-oidc-client". |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
@@ -61,6 +62,10 @@ A Helm chart for gen3 workspace token service
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | hostname | string | `nil` | Hostname for the deployment. |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/workspace-token-service","tag":"master","utilImage":"quay.io/cdis/utilities:master"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |

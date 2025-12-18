@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "frontend-framework.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "frontend-framework.selectorLabels" . | nindent 6 }}
@@ -34,6 +37,9 @@ spec:
         {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

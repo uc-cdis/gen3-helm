@@ -5,7 +5,7 @@ metadata:
   name: aws-bucket-replicate
 spec:
   schedule: {{ .Values.awsBucketReplicateJob.schedule | quote }}
-  suspended: {{ .Values.suspendCronjob }}
+  suspend: {{ .Values.suspendCronjob }}
   concurrencyPolicy: Forbid
   # not yet supported - backOffLimit: 3
   jobTemplate:
@@ -36,7 +36,7 @@ spec:
           volumes:
             - name: cred-volume
               secret:
-                secretName: "aws-creds-secret"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -44,7 +44,7 @@ spec:
           - name: datareplicate
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             resources:
-              {{- toYaml .Values.resources | nindent 12 }}
+              {{- toYaml .Values.resources | nindent 14 }}
             imagePullPolicy: Always
             env:
               - name: THREAD_NUM
@@ -70,11 +70,11 @@ spec:
             volumeMounts:
               - name: cred-volume
                 mountPath: "/root/.aws/credentials"
-                subPath: aws-creds-secret
+                subPath: credentials
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf-dataservice-settings-secrets"
-            command: ["/bin/bash" ]
+            command: ["/bin/bash"]
             args:
               - "-c"
               - |
@@ -85,6 +85,6 @@ spec:
                 """ > ~/.aws/config
                 aws configure set default.s3.max_concurrent_requests 1000
                 aws configure set default.s3.max_queue_size 10000
-                python replicate.py aws_replicate --release $RELEASE --quick_test $QUICK_TEST --bucket $GDC_BUCKET_NAME --thread_num $THREAD_NUM --manifest_file $MANIFEST_FILE --global_config "{\"chunk_size\": $CHUNK_SIZE, \"log_bucket\": \"$LOG_BUCKET\"}"
+                time python replicate.py aws_replicate --release $RELEASE --quick_test $QUICK_TEST --bucket $GDC_BUCKET_NAME --thread_num $THREAD_NUM --manifest_file $MANIFEST_FILE --global_config "{\"chunk_size\": $CHUNK_SIZE, \"log_bucket\": \"$LOG_BUCKET\"}"
           restartPolicy: Never
 {{- end }}
