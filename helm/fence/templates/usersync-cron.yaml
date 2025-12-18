@@ -122,21 +122,6 @@ spec:
                 - name: cred-volume
                   mountPath: "/home/ubuntu/.aws/credentials"
                   subPath: credentials
-                - name: fence-ssh-keys
-                  mountPath: /secret/.ssh/id_rsa
-                  readOnly: true
-                  subPath: id_rsa
-                - name: fence-ssh-keys
-                  mountPath: /secret/.ssh/id_rsa.pub
-                  readOnly: true
-                  subPath: id_rsa.pub
-                - name: fence-sshconfig
-                  mountPath: /secret/.ssh/config
-                  subPath: config
-                - name: fence-known-hosts
-                  mountPath: /secret/.ssh/known_hosts
-                  subPath: known_hosts
-                  readOnly: true
               command: ["/bin/bash" ]
               args:
                 - "-c"
