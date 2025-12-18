@@ -158,7 +158,7 @@ karpenter-crds:
           - r
           - t
   gpu:
-    enabled: true
+    enabled: false
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
@@ -255,7 +255,7 @@ kube-state-metrics:
   targetRevision: 6.3.0
 
 nvidia-device-plugin:
-  enabled: true
+  enabled: false
   configuration:
     enabled: false
   targetRevision: v0.18.0
