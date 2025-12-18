@@ -162,9 +162,9 @@ dependencies:
     repository: "https://helm.elastic.co"
     condition: elasticsearch.enabled
   - name: postgresql
-    version: 11.9.13
+    version: 14.3.3
     repository: "https://charts.bitnami.com/bitnami"
-    condition: global.dev
+    condition: postgresql.enabled
 
   # (optional) NeuVector Kubernetes Security Policy templates to protect Gen3
   #   NeuVector must be installed separately.

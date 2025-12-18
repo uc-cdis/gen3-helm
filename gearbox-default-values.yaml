@@ -1,6 +1,6 @@
 # Global configuration
 global:
-  dev: false
+  dev: true
   portal_app: gitops
   authz_entity_name: "subject"
   hostname: "gearbox-ped-gearbox-p1.apps.bsd-openshift-prod.bsd.uchicago.edu"
@@ -12,9 +12,22 @@ global:
   autoscaling:
     enabled: true
     minReplicas: 2
+  # -- (map) Pod security context settings
+  compatibility:
+    # -- (map) OpenShift Settings
+    openshift:
+      # -- (bool) Set to force if deploying to OpenShift
+      adaptSecurityContext: force
 
 arborist:
-  enabled: false
+  enabled: true
+  postgres:
+    password: "arborist_thisisaweakpassword"
+  imagePullSecrets:
+    - name: ecr-pull-secret
+  autoscaling:
+    averageCPUValue: 300m
+    averageMemoryValue: 256Mi
   # -- (map) Resource requests and limits for the containers in the pod
   resources:
     # -- (map) The amount of resources that the container requests
@@ -29,26 +42,14 @@ arborist:
       memory: 512Mi
       # -- (string) The maximum amount of CPU the container can use
       cpu: 500m
-  #local Dev Only
-  # postgres:
-  #   password: "arborist_thisisaweakpassword"
   image:
-    # repository: quay.io/pcdc/arborist
-    # tag: 2025.09
     repository: "973342646972.dkr.ecr.us-east-1.amazonaws.com/openshift-pcdc/arborist"
     tag: "latest"
     pullPolicy: Always
+  # -- (int) Number of replicas for the deployment.
+  replicaCount: 2
   service:
-    # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
-    type: ClusterIP
-    # -- (int) The port number that the service exposes.
-    port: 80
     targetPort: 8080
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000970000
-    runAsGroup: 1000970000
-    fsGroup: 1000970000
 
 fence:
   enabled: false
@@ -508,7 +509,21 @@ gearbox-middleware:
   #   persistence:
   #     enabled: true
   #     size: 1Gi
-
+postgresql:
+  enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+  readReplicas:
+    networkPolicy:
+      enabled: false
+  auth:
+    postgresPassword: "thisisaterriblepassword"
+  primary:
+    networkPolicy:
+      enabled: false
+    persistence:
+      enabled: true
+      size: 1Gi
 ########################################################################################
 #                               DISABLED SERVICES                                      #
 ########################################################################################

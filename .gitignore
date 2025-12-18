@@ -20,4 +20,7 @@ temp.yaml
 # Main Helm values file
 /values.yaml                               
 postgres.txt
-pcdc_data/external/external_reference.json  # External reference data file for PCDC
+# External reference data file for PCDC
+pcdc_data/external/external_reference.json  
+# Script that creates external secrets IAM user
+external_secrets.bash                    

@@ -244,7 +244,6 @@ gen3-workflow:
   # -- (bool) Whether to deploy the gen3-workflow subchart.
   enabled: false
 
-
 # -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
@@ -402,6 +401,7 @@ access-backend:
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
+  enabled: true
   image:
     repository: bitnamilegacy/postgresql
   primary:
@@ -463,7 +463,6 @@ pcdcanalysistools:
 amanuensis:
   # -- (bool) Whether to deploy the amanuensis subchart.
   enabled: true
-
 
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
