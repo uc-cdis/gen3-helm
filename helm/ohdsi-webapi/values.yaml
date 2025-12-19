@@ -38,8 +38,8 @@ webapiConfig:
 
 # -- (bool) Whether to automatically create a OIDC a client in Fence.
 createFenceClientJobEnabled: true
-# Service account for accessing webapi secrets and updating with OIDC client ID created in Fence:
-webapiSecretsServiceAccountName: "webapi-secrets" # set to "default" if testing locally
+# Service account for accessing webapi secrets and updating with OIDC client ID created in Fence (set to "default" if testing locally):
+webapiSecretsServiceAccountName: "webapi-secrets"
 
 arboristUrl: http://arborist-service
 fenceUrl: http://fence-service
