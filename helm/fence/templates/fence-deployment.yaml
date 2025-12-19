@@ -46,6 +46,10 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

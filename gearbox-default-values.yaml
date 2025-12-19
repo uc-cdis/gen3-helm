@@ -7,7 +7,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: true
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 2
+  minAvailable: 2
   #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
   autoscaling:
     enabled: true
@@ -52,7 +52,15 @@ arborist:
     targetPort: 8080
 
 fence:
-  enabled: false
+  enabled: true
+  replicaCount: 2
+  autoscaling:
+    averageCPUValue: 300m
+    averageMemoryValue: 256Mi
+  imagePullSecrets:
+    - name: ecr-pull-secret
+  postgres:
+    password: "fence_thisisaweakpassword"
   volumes:
     - name: old-config-volume
       secret:
@@ -150,6 +158,10 @@ fence:
       readOnly: true
       mountPath: "/fence/keys/key/jwt_private_key.pem"
       subPath: "jwt_private_key.pem"
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_public_key.pem"
+      subPath: "jwt_public_key.pem"
     - name: "config-volume-public"
       readOnly: true
       mountPath: "/var/www/fence/fence-config-public.yaml"
@@ -192,10 +204,6 @@ fence:
       subPath: fence_google_storage_creds_secret.json
 
   service:
-    # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
-    type: ClusterIP
-    # -- (int) The port number that the service exposes.
-    port: 80
     targetPort: 8080
 
   podSecurityContext:
@@ -216,9 +224,6 @@ fence:
       # -- (string) The maximum amount of CPU the container can use
       cpu: 500m
   image:
-    # repository: quay.io/pcdc/fence
-    # tag: "3.6.0"
-    # pullPolicy: IfNotPresent
     repository: "973342646972.dkr.ecr.us-east-1.amazonaws.com/openshift-pcdc/fence"
     tag: "latest"
     pullPolicy: Always
