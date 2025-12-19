@@ -1,5 +1,5 @@
 remote: origin
-target-branch: openshift
+target-branch: master
 chart-dirs:
   - helm
 chart-repos:

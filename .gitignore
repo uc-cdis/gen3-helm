@@ -23,4 +23,7 @@ postgres.txt
 # External reference data file for PCDC
 pcdc_data/external/external_reference.json  
 # Script that creates external secrets IAM user
-external_secrets.bash                    
+external_secrets.bash
+secret-gearbox-default-values.yaml
+secret-openshift-gearbox-default-values.yaml
+secret-pcdc-default-values.yaml
