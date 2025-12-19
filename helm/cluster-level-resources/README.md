@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.25](https://img.shields.io/badge/Version-0.6.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.26](https://img.shields.io/badge/Version-0.6.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -89,6 +89,13 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.default.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.enabled | bool | `false` |  |
+| karpenter-crds.gpu.additionalTags | object | `{}` |  |
+| karpenter-crds.gpu.consolidateAfter | string | `"30s"` |  |
+| karpenter-crds.gpu.consolidation | bool | `true` |  |
+| karpenter-crds.gpu.consolidationPolicy | string | `"WhenEmpty"` |  |
+| karpenter-crds.gpu.enabled | bool | `false` |  |
+| karpenter-crds.gpu.expireAfter | string | `"168h"` |  |
+| karpenter-crds.gpu.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
 | karpenter-crds.jupyter.consolidation | bool | `true` |  |
@@ -168,6 +175,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | kube-state-metrics.configuration.enabled | bool | `false` |  |
 | kube-state-metrics.enabled | bool | `false` |  |
 | kube-state-metrics.targetRevision | string | `"6.3.0"` |  |
+| nvidia-device-plugin.configuration.enabled | bool | `false` |  |
+| nvidia-device-plugin.enabled | bool | `false` |  |
+| nvidia-device-plugin.targetRevision | string | `"v0.18.0"` |  |
 | project | string | `"unfunded"` |  |
 | vpc-cni.configuration.enabled | bool | `false` |  |
 | vpc-cni.enabled | bool | `false` |  |
