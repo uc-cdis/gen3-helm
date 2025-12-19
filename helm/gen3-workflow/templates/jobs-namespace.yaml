@@ -1,8 +1,10 @@
-{{- if and .Values.funnel.Kubernetes.JobsNamespace (ne .Values.funnel.Kubernetes.JobsNamespace .Release.Namespace) -}}
+{{- $jobsNamespace := default (printf "gen3-%s-workflow-pods" .Release.Namespace) .Values.funnel.Kubernetes.JobsNamespace }}
+
+{{- if ne $jobsNamespace .Release.Namespace }}
 apiVersion: v1
 kind: Namespace
 metadata:
-    name: {{ .Values.funnel.Kubernetes.JobsNamespace | quote }}
+    name: {{ $jobsNamespace | quote }}
     labels:
-        app.kubernetes.io/name: {{ .Values.funnel.Kubernetes.JobsNamespace | quote }}
+        app.kubernetes.io/name: {{ $jobsNamespace | quote }}
 {{- end }}
