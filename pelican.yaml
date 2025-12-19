@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pelican-pod
+spec:
+  volumes:
+    - name: pelican-creds-volume
+      secret:
+        secretName: pelicanservice-g3auto
+    - name: peregrine-creds-volume
+      secret:
+        secretName: peregrine-creds
+  containers:
+  - name: pelican-container
+    image: pelican:test
+    imagePullPolicy: Never
+    command: ["/bin/sh"]
+    args: ["-c", "cd / && tail -f /dev/null"]
+    ports:
+    - containerPort: 80
+    env:
+      - name: DICTIONARY_URL
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: dictionary_url
+      - name: GEN3_HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+      - name: ROOT_NODE
+        value: subject
+      - name: OUTPUT_FILE_FORMAT
+        value: ZIP
+      - name: INPUT_DATA
+        value: "{}"
+      - name: ACCESS_FORMAT
+        value: presigned_url
+      - name: INPUT_VARIABLES_FOR_FILE_CONVERSION
+        value: '{"config": "config.py","analysis": "INRG","is_black_list": false}'
+      - name: ACCESS_TOKEN
+        value: ""
+    volumeMounts:
+      - name: pelican-creds-volume
+        readOnly: true
+        mountPath: "/pelican-creds.json"
+        subPath: config.json
+      - name: peregrine-creds-volume
+        readOnly: true
+        mountPath: "/peregrine-creds.json"
+        subPath: creds.json

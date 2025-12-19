@@ -96,7 +96,7 @@ spec:
                 secretKeyRef:
                   name: indexd-service-creds
                   key: sheepdog
-                  optional: false
+                  optional: true
             - name: PGHOST
               valueFrom:
                 secretKeyRef:
@@ -158,11 +158,11 @@ spec:
               value: {{ .Values.global.hostname | quote }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:

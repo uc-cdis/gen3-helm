@@ -1,0 +1,5 @@
+{{include "common.jwt-key-pair-secret" .}}
+---
+{{include "common.jwt_public_key_setup_sa" .}}
+---
+{{include "common.create_public_key_job" .}}

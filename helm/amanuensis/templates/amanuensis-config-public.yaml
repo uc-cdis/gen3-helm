@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifest-amanuensis
+data:
+  amanuensis-config-public.yaml: |
+    {{- with .Values.amanuensis_CONFIG_PUBLIC }}
+    {{- toYaml . | nindent 4 }}
+    {{ end }}
+

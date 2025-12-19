@@ -1,4 +1,4 @@
-{{- if and (eq .Values.global.dev true) (eq .Values.global.aws.enabled false) }}
+{{- if and (eq .Values.global.dev true) (eq .Values.global.aws.enabled false) (eq .Values.openshiftRoute.enabled false) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

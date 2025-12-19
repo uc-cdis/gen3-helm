@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcdcanalysistools-deployment
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "pcdcanalysistools.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pcdcanalysistools.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        # gen3 networkpolicy labels
+        public: "yes"
+        netnolimit: "yes"
+        s3: "yes"
+        {{- include "pcdcanalysistools.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pcdcanalysistools-secret.yaml") . | sha256sum }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+      containers:
+        - name: pcdcanalysistools
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          livenessProbe:
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            initialDelaySeconds: 30
+            httpGet:
+              path: /_status?timeout=2
+              port: 80
+          env:
+            - name: CONF_HOSTNAME
+              value: {{ .Values.global.hostname }}
+            - name: DICTIONARY_URL
+              value: {{ default "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json" .Values.global.dictionaryUrl | quote }}
+            - name: INDEX_CLIENT_HOST
+              value: {{ default "http://indexd-service" .Values.global.indexdURL | quote }}
+            {{- if eq .Values.global.dev false }}
+            - name: FENCE_URL
+              value: https://{{ .Values.global.hostname }}/user
+            {{- else }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
+            {{- end }}
+            - name: ARBORIST_URL
+              value: {{ default "http://arborist-service" .Values.global.arboristURL | quote }}
+            {{- with .Values.authNamespace }}
+            - name: AUTH_NAMESPACE
+              value: {{ . }}
+            {{- end }}
+            # - name: REQUESTS_CA_BUNDLE
+            #   #
+            #   # override python 'requests' SSL certificate bundle
+            #   # to use system trusted certs
+            #   # which includes our private certificate authority
+            #   #
+            #   value: /etc/ssl/certs/ca-certificates.crt
+            - name: GEN3_DEBUG
+              value: "True"
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          # command: ["/bin/bash" ]
+          # args: 
+          #   - "-c"
+          #   - "sleep infinity"

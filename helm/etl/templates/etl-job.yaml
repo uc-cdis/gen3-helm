@@ -36,6 +36,8 @@ spec:
                         operator: In
                         values:
                           - ONDEMAND
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
           volumes:
             {{- if .Values.legacySupport }}
             - name: config-volume
@@ -111,6 +113,12 @@ spec:
               ports:
                 - containerPort: 80
               env:
+              {{- with .Values.env }}
+              {{- range $key, $value := . }}
+                - name: {{ $key }}
+                  value: {{ $value | quote }}
+              {{- end }}
+              {{- end }}
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:

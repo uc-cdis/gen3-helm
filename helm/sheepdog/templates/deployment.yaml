@@ -51,6 +51,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: config-volume
           secret:
@@ -122,12 +124,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           livenessProbe:
             httpGet:
               path: /_status?timeout=20
-              port: 80
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
@@ -135,7 +138,7 @@ spec:
             initialDelaySeconds: 30
             httpGet:
               path: /_status?timeout=2
-              port: 80
+              port: http
           # command: ["/bin/bash" ]
           # args: 
           #   - "-c"
@@ -216,7 +219,12 @@ spec:
                 secretKeyRef:
                   name: indexd-service-creds
                   key: sheepdog
-                  optional: false
+                  optional: true
+            - name: AUTHZ_ENTITY_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: authz_entity_name
             - name: GEN3_UWSGI_TIMEOUT
               value: "600"
             - name: DICTIONARY_URL

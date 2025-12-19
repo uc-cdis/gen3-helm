@@ -268,8 +268,8 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Security context for the pod
-podSecurityContext:
-  fsGroup: 101
+podSecurityContext: {}
+  # fsGroup: 101
 
 # -- (map) Security context for the containers in the pod
 securityContext:
@@ -287,6 +287,7 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
+  targetPort: 80
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -391,6 +392,7 @@ env:
       secretKeyRef:
         name: indexd-service-creds
         key: fence
+        optional: true
   - name: gen3Env
     valueFrom:
       configMapKeyRef:
@@ -434,6 +436,12 @@ volumes:
   - name: yaml-merge
     configMap:
       name: "fence-yaml-merge"
+  - name: amanuensis-jwt-keys
+    secret:
+      secretName: "amanuensis-jwt-keys"
+      items:
+        - key: jwt_public_key.pem
+          path: jwt_public_key.pem
       optional: false
   - name: config-volume-public
     configMap:
@@ -486,6 +494,10 @@ volumeMounts:
     readOnly: true
     mountPath: "/tmp/keys/readonly/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
+  - name: "amanuensis-jwt-keys"
+    readOnly: true
+    mountPath: "/amanuensis/jwt_public_key.pem"
+    subPath: "jwt_public_key.pem"
   - name: "config-volume-public"
     readOnly: true
     mountPath: "/var/www/fence/fence-config-public.yaml"

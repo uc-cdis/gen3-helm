@@ -18,45 +18,44 @@ spec:
           labels:
             app: gen3job
         spec:
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
           volumes:
-            - name: yaml-merge
-              configMap:
-                name: "fence-yaml-merge"
-            - name: config-volume
-              secret:
-                secretName: "fence-config"
+            {{- toYaml .Values.volumes | nindent 12 }}
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
           - name: fence
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
-                - name: FENCE_PUBLIC_CONFIG
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-fence
-                      key: fence-config-public.yaml
-                      optional: true
-                - name: slackWebHook
-                  valueFrom:
-                    secretKeyRef:
-                      name: slack-webhook
-                      key: slack_webhook
-                      optional: true
-                {{- toYaml .Values.env | nindent 16 }}
+              {{- if .Values.env }}
+              {{- toYaml .Values.env | nindent 14 }}
+              {{- end }}
+              - name: FENCE_PUBLIC_CONFIG
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-fence
+                    key: fence-config-public.yaml
+                    optional: true
+              - name: slackWebHook
+                valueFrom:
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
+
             volumeMounts:
-              - name: "config-volume"
-                readOnly: true
-                mountPath: "/var/www/fence/fence-config-secret.yaml"
-                subPath: fence-config.yaml
-              - name: "yaml-merge"
-                readOnly: true
-                mountPath: "/var/www/fence/yaml_merge.py"
-                subPath: yaml_merge.py
+              {{- toYaml .Values.initVolumeMounts | nindent 14 }}
+            resources:
+              {{- toYaml .Values.resources | nindent 14 }}
             command: ["/bin/bash"]
             args:
               - "-c"
               - |
-                python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
+                python /var/www/fence/yaml_merge.py  /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config.yaml
                 if [[ "$slackWebHook" =~ ^http ]]; then
                   fence-create client-delete-expired --slack-webhook $slackWebHook --warning-days 7
                 else
