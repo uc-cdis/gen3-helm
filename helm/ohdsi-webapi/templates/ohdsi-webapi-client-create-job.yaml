@@ -134,20 +134,25 @@ spec:
           args: 
             - "-c"
             - |
-              echo "waiting for /shared/client_id"
+              echo -e "\n\n>>========== waiting for /shared/client_id... ============\n\n"
               while [ ! -e /shared/client_id ]
               do
                 echo "..."
                 sleep 5
               done
-              echo "Updating k8s secret ohdsi-webapi-config"
-              FENCE_CLIENT_ID=$(cat /shared/client_id | base64)
-              FENCE_CLIENT_SECRET=$(cat /shared/client_secret | base64)
-              echo "waiting for ohdsi-webapi-config secret to appear"
+              echo -e "\n\n>>========== Updating k8s secret ohdsi-webapi-config... ============\n\n"
+              FENCE_CLIENT_ID=$(cat /shared/client_id)
+              FENCE_CLIENT_SECRET=$(cat /shared/client_secret)
+              echo -e "\n\n>>========== waiting for ohdsi-webapi-config secret to appear... ============\n\n"
               until kubectl get secret ohdsi-webapi-config; do
-                echo "---- get secret Command failed -- status $?"
-                echo "..."
+                echo "---- get secret Command returned -- status $?"
+                echo "retrying..."
                 sleep 5
               done
-              kubectl patch secret ohdsi-webapi-config --patch='{"data":{"client_secret":"${FENCE_CLIENT_SECRET}", "client_id":"${FENCE_CLIENT_ID}"}}'
+              echo -e "\n\n>>========== Patching ... ============\n\n"
+              kubectl patch secret ohdsi-webapi-config \
+                --patch="{\"stringData\":{
+                    \"security_oid_clientId\":\"${FENCE_CLIENT_ID}\",
+                    \"security_oid_apiSecret\":\"${FENCE_CLIENT_SECRET}\"
+                }}"
 {{- end }}
