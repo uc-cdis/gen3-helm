@@ -379,7 +379,8 @@ funnel:
           - name: plugin-volume
             mountPath: /opt/funnel/plugin-binaries
       - name: fence-url-fetcher
-        image: curlimages/curl:latest
+        image: curlimages/curl
+        tag: latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh","-c"]
         args: 
@@ -388,8 +389,8 @@ funnel:
         - name: funnel-patched-config-volume
           mountPath: /tmp
       - name: secrets-updater
-        image: quay.io/cdis/awshelper
-        tag: master
+        image: bitnamilegacy/kubectl
+        tag: latest
         env:
           - name: FUNNEL_OIDC_CLIENT_ID
             valueFrom:
@@ -422,7 +423,7 @@ funnel:
 
             echo "Patching values..."
 
-            yq '.Kubernetes.JobsNamespace = strenv(JOBS_NAMESPACE)' | .Plugins = {
+            yq '.Kubernetes.JobsNamespace = strenv(JOBS_NAMESPACE) | .Plugins = {
               "Path": "plugin-binaries/auth-plugin",
               "Params": {
                 "OidcClientId": strenv(FUNNEL_OIDC_CLIENT_ID),
