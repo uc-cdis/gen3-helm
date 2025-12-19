@@ -94,16 +94,6 @@ spec:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
-            - name: container
-              containerPort: 6567
-              protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/bash"]

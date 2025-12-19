@@ -7,7 +7,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: true
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvailable: 2
+  minAvailable: 1
   #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
   autoscaling:
     enabled: true
@@ -108,10 +108,6 @@ fence:
         items:
           - key: nginx.conf
             path: nginx.conf
-    - name: openshift-fence-override-files
-      configMap:
-        name: openshift-fence-override-files
-        defaultMode: 0755
 
   volumeMounts:
     - name: "old-config-volume"
@@ -170,14 +166,6 @@ fence:
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
       readOnly: true
-    - name: openshift-fence-override-files
-      mountPath: /fence/dockerrun.bash
-      subPath: dockerrun.bash
-      readOnly: true
-    - name: openshift-fence-override-files
-      mountPath: /fence/deployment/wsgi/gunicorn.conf.py
-      subPath: gunicorn.conf.py
-      readOnly: true
 
     # -- (list) Volumes to mount to the init container.
 
@@ -202,7 +190,68 @@ fence:
       readOnly: true
       mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
       subPath: fence_google_storage_creds_secret.json
-
+  env:
+    - name: GEN3_UWSGI_TIMEOUT
+      valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: uwsgi-timeout
+          optional: true
+    - name: DD_AGENT_HOST
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    - name: AWS_STS_REGIONAL_ENDPOINTS
+      value: regional
+    - name: PYTHONPATH
+      value: /var/www/fence
+    - name: GEN3_DEBUG
+      value: "False"
+    - name: PGHOST
+      valueFrom:
+        secretKeyRef:
+          name: fence-dbcreds
+          key: host
+          optional: false
+    - name: PGUSER
+      valueFrom:
+        secretKeyRef:
+          name: fence-dbcreds
+          key: username
+          optional: false
+    - name: PGPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: fence-dbcreds
+          key: password
+          optional: false
+    - name: PGDB
+      valueFrom:
+        secretKeyRef:
+          name: fence-dbcreds
+          key: database
+          optional: false
+    - name: DBREADY
+      valueFrom:
+        secretKeyRef:
+          name: fence-dbcreds
+          key: dbcreated
+          optional: false
+    - name: DB
+      value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+    - name: INDEXD_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: indexd-service-creds
+          key: fence
+          optional: true
+    - name: gen3Env
+      valueFrom:
+        configMapKeyRef:
+          name: manifest-global
+          key: hostname
+    - name: OPENSHIFT
+      value: "true"
   service:
     targetPort: 8080
 
@@ -303,7 +352,7 @@ fence:
           - services.gearbox-data-admin
 
 portal:
-  enabled: false
+  enabled: true
   image:
     repository: "973342646972.dkr.ecr.us-east-1.amazonaws.com/openshift-pcdc/gearbox-fe"
     tag: "latest"
@@ -312,8 +361,9 @@ portal:
   resources:
     # -- (map) The amount of resources that the container requests
     requests:
-      cpu: 1.0
-      memory: 1024Mi
+      memory: 12Mi
+      # -- (string) The amount of CPU requested (e.g., 100m = 0.1 CPU)
+      cpu: 100m
     limits:
       cpu: 2.0
       memory: 4096Mi
@@ -329,6 +379,8 @@ portal:
       {
         "s3_bucket": "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
       }
+  imagePullSecrets:
+    - name: ecr-pull-secret
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000970000
@@ -378,25 +430,24 @@ revproxy:
       openshift.io/host.generated: "true"
 
 gearbox:
-  enabled: false
+  enabled: true
+  replicaCount: 2
+  postgres:
+    password: "gearbox_thisisaweakpassword"
+  autoscaling:
+    averageCPUValue: 300m
+    averageMemoryValue: 256Mi
+  imagePullSecrets:
+    - name: ecr-pull-secret
+  podSecurityContext:
+    supplementalGroups:
+      - 1000
   image:
-    # repository: quay.io/pcdc/gearbox_be
-    # tag: "pcdc_dev_2025-08-26T14_03_39-05_00"
-    # pullPolicy: Always
     repository: "973342646972.dkr.ecr.us-east-1.amazonaws.com/openshift-pcdc/gearbox-matching"
     tag: "latest"
     pullPolicy: Always
   service:
-    # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
-    type: ClusterIP
-    # -- (int) The port number that the service exposes.
-    port: 80
     targetPort: 8080
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000970000
-    runAsGroup: 1000970000
-    fsGroup: 1000970000
   volumes:
     - name: config-volume
       secret:
@@ -440,20 +491,63 @@ gearbox:
       memory: 512Mi
       # -- (string) The maximum amount of CPU the container can use
       cpu: 500m
+  env:
+    - name: GEN3_DEBUG
+      value: "False"
+    - name: DB_DATABASE
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: database
+          optional: false
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: host
+          optional: false
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: username
+          optional: false
+    - name: ADMIN_LOGINS
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-g3auto
+          key: base64Authz.txt
+          optional: true
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: password
+          optional: false
+    - name: DBREADY
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: dbcreated
+          optional: false
+    - name: OPENSHIFT
+      value: "true"
 gearbox-middleware:
-  enabled: false
+  enabled: true
+  replicaCount: 2
+  autoscaling:
+    averageCPUValue: 300m
+    averageMemoryValue: 256Mi
+  imagePullSecrets:
+    - name: ecr-pull-secret
+  podSecurityContext:
+    supplementalGroups:
+      - 1000
   gearboxMiddlewareG3auto:
     testing: False
   service:
-    # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
-    type: ClusterIP
-    # -- (int) The port number that the service exposes.
-    port: 80
     targetPort: 8080
   image:
-    # repository: quay.io/pcdc/gearbox-middleware
-    # tag: "pcdc_dev_Fri__15_Aug_2025_17_57_50_GMT"
-    # pullPolicy: Always
     repository: "973342646972.dkr.ecr.us-east-1.amazonaws.com/openshift-pcdc/gearbox-middleware"
     tag: "latest"
     pullPolicy: Always
@@ -488,6 +582,41 @@ gearbox-middleware:
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
       readOnly: true
+  env:
+    - name: GEN3_DEBUG
+      value: "False"
+    - name: DB_DATABASE
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: database
+          optional: false
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: host
+          optional: false
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: username
+          optional: false
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: password
+          optional: false
+    - name: DBREADY
+      valueFrom:
+        secretKeyRef:
+          name: gearbox-dbcreds
+          key: dbcreated
+          optional: false
+    - name: OPENSHIFT
+      value: "true"
   resources:
     # -- (map) The amount of resources that the container requests
     requests:
@@ -501,19 +630,7 @@ gearbox-middleware:
       memory: 512Mi
       # -- (string) The maximum amount of CPU the container can use
       cpu: 500m
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000970000
-    runAsGroup: 1000970000
-    fsGroup: 1000970000
 
-  #local Dev Only
-  # auth:
-  #   postgresPassword: "thisisaterriblepassword"
-  # primary:
-  #   persistence:
-  #     enabled: true
-  #     size: 1Gi
 postgresql:
   enabled: true
   image:
@@ -524,6 +641,13 @@ postgresql:
   auth:
     postgresPassword: "thisisaterriblepassword"
   primary:
+    resources:
+      requests:
+        cpu: 250m        # Change this value to adjust CPU requests, e.g., "500m" for 0.5 CPU
+        memory: 512Mi    # Add or change this line to set memory requests
+      limits:
+        cpu: 1           # Add or change this line to set CPU limits, e.g., "1" for 1 CPU
+        memory: 1Gi      # Add or change this line to set memory limits
     networkPolicy:
       enabled: false
     persistence:

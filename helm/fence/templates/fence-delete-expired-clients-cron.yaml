@@ -19,33 +19,38 @@ spec:
             app: gen3job
         spec:
           securityContext:
-          {{- toYaml .Values.podSecurityContext | nindent 12 }}
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
           volumes:
-            {{- toYaml .Values.volumes | nindent 10 }}
+            {{- toYaml .Values.volumes | nindent 12 }}
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
-            {{- toYaml . | nindent 8 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           containers:
           - name: fence
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
-                - name: FENCE_PUBLIC_CONFIG
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-fence
-                      key: fence-config-public.yaml
-                      optional: true
-                - name: slackWebHook
-                  valueFrom:
-                    secretKeyRef:
-                      name: slack-webhook
-                      key: slack_webhook
-                      optional: true
-                {{- toYaml .Values.env | nindent 16 }}
+              {{- if .Values.env }}
+              {{- toYaml .Values.env | nindent 14 }}
+              {{- end }}
+              - name: FENCE_PUBLIC_CONFIG
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-fence
+                    key: fence-config-public.yaml
+                    optional: true
+              - name: slackWebHook
+                valueFrom:
+                  secretKeyRef:
+                    name: slack-webhook
+                    key: slack_webhook
+                    optional: true
+
             volumeMounts:
-              {{- toYaml .Values.initVolumeMounts | nindent 12 }}
+              {{- toYaml .Values.initVolumeMounts | nindent 14 }}
+            resources:
+              {{- toYaml .Values.resources | nindent 14 }}
             command: ["/bin/bash"]
             args:
               - "-c"

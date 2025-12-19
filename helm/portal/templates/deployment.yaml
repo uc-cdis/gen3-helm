@@ -78,6 +78,10 @@ spec:
           optional: true
       - name: extra-images
         emptyDir: {}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
       {{- if .Values.extraImages }}
         - name: init
@@ -112,7 +116,6 @@ spec:
             - /bin/sh
             - -c
             - |
-              sleep infinity
               mkdir -p /tmp/repo
               cd /tmp/repo
               # Clone only the specific branch with minimal history and sparse checkout
@@ -167,10 +170,9 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
             - containerPort: 443
-          command:
-            - /bin/sh
-            - -c
-            - sleep infinity
+          # command:
+          #   - /bin/bash
+          #   - ./dockerStart.sh
           env:
             - name: HOSTNAME
               value: revproxy-service
