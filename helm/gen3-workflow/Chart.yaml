@@ -23,6 +23,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -48,6 +49,9 @@ version: 0.1.6
 =======
 version: 0.1.7
 >>>>>>> a21aca21 (Update IAM role in gen3-workflow crossplane.yaml (#468))
+=======
+version: 0.1.8
+>>>>>>> d7adb420 (Improve gen3-workflow to run out of the box)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
