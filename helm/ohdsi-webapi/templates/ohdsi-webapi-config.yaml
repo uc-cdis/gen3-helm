@@ -50,13 +50,13 @@ stringData: # TODO - should this be data (base64)??
 
   security_oid_clientId: $FENCE_CLIENT_ID
   security_oid_apiSecret: $FENCE_CLIENT_SECRET
-  security_oid_url: https://$hostname/.well-known/openid-configuration
-  security_oid_redirectUrl: https://atlas.$hostname/atlas/#/welcome
-  security_oid_logoutUrl: https://atlas.$hostname/atlas/#/home
+  security_oid_url: https://{{ .Values.global.hostname }}/.well-known/openid-configuration
+  security_oid_redirectUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/welcome
+  security_oid_logoutUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/home
   security_oid_extraScopes: user
 
-  security_oauth_callback_ui: https://atlas.$hostname/atlas/#/welcome
-  security_oauth_callback_api: https://atlas.$hostname/WebAPI/user/oauth/callback
+  security_oauth_callback_ui: https://atlas.{{ .Values.global.hostname }}/atlas/#/welcome
+  security_oauth_callback_api: https://atlas.{{ .Values.global.hostname }}/WebAPI/user/oauth/callback
   security_oauth_callback_urlResolver: query
 
   security_ohdsi_custom_authorization_mode: teamproject

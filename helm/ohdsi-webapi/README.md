@@ -38,11 +38,27 @@ kubectl create secret generic fence-dbcreds \
 ```
 where `port=":<port number>"` is only needed if using non-standard port.
 
-5. Install chart with:
+5. Create role for default service account to be able to read and update the
+WebAPI config/secret:
+```
+kubectl create role secret-admin \
+  --verb=get,list,update,patch \
+  --resource=secrets \
+  --namespace=default
+```
+and
+```
+kubectl create rolebinding default-sa-secret-admin \
+  --role=secret-admin \
+  --serviceaccount=default:default \
+  --namespace=default
+```
+
+6. Install chart with:
 ```
 helm install my-release-name . 
 ```
-6. Monitor the most complex step (creating a Fence client for WebAPI) with:
+7. Monitor the most complex step (creating a Fence client for WebAPI) with:
 ```
 kubectl describe pod atlas-webapi-client-job-<SOME_UID>
 
@@ -52,3 +68,12 @@ kubectl logs -f atlas-webapi-client-job-<SOME_UID> -c wait-for-fence
 kubectl logs -f atlas-webapi-client-job-<SOME_UID> -c add-fence-client
 kubectl logs -f atlas-webapi-client-job-<SOME_UID> -c update-webapi-config
 ```
+8. Forward internal port 80 to 8888:
+```
+kubectl port-forward svc/ohdsi-webapi-service 8888:80
+```
+8. Check result in browser:
+http://localhost:8888
+http://localhost:8888/WebAPI/user/login/openid?redirectUrl=/home
+or add a team project:
+/WebAPI/user/login/openid?redirectUrl=/home?teamproject=team1
