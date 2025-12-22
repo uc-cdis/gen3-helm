@@ -583,6 +583,7 @@ funnel:
       S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
       # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
       OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
+  Postgres: {POSTGRES_CONFIG_PLACEHOLDER: POSTGRES_CONFIG_PLACEHOLDER}
 
 karpenter:
   nodeclass.yaml: |
