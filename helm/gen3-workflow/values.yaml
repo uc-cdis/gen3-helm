@@ -465,7 +465,10 @@ funnel:
             | sed -E "s|(OidcClientSecret:).*|\1 ${FUNNEL_OIDC_CLIENT_SECRET}|" > /tmp/funnel-patched.conf
 
             # Add the database creds to the config
-            sed -i "s/{POSTGRES_CONFIG_PLACEHOLDER: POSTGRES_CONFIG_PLACEHOLDER}/{Host: \"${DB_HOST}:5432\", Database: \"${DB_DATABASE}\", Username: \"${DB_USER}\", Password: \"${DB_PASSWORD}\"}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" /tmp/funnel-patched.conf
 
             # DEBUG - REMOVE THIS
             cat /tmp/funnel-patched.conf
