@@ -389,8 +389,8 @@ funnel:
         - name: funnel-patched-config-volume
           mountPath: /tmp
       - name: secrets-updater
-        image: bitnamilegacy/kubectl
-        tag: latest
+        image: quay.io/cdis/awshelper
+        tag: master
         env:
           - name: FUNNEL_OIDC_CLIENT_ID
             valueFrom:
@@ -423,13 +423,13 @@ funnel:
 
             echo "Patching values..."
 
-            yq '.Kubernetes.JobsNamespace = strenv(JOBS_NAMESPACE) | .Plugins = {
+            yq -y '.Kubernetes.JobsNamespace = env.JOBS_NAMESPACE | .Plugins = {
               "Path": "plugin-binaries/auth-plugin",
               "Params": {
-                "OidcClientId": strenv(FUNNEL_OIDC_CLIENT_ID),
-                "OidcClientSecret": strenv(FUNNEL_OIDC_CLIENT_SECRET),
-                "OidcTokenUrl": strenv(OIDC_TOKEN_URL),
-                "S3Url": strenv(S3_URL)
+                "OidcClientId": env.FUNNEL_OIDC_CLIENT_ID,
+                "OidcClientSecret": env.FUNNEL_OIDC_CLIENT_SECRET,
+                "OidcTokenUrl": env.OIDC_TOKEN_URL,
+                "S3Url": env.S3_URL
               }
             }' /etc/config/funnel.conf > /tmp/funnel-patched.conf
 
@@ -475,6 +475,11 @@ funnel:
 
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
+
+  resources:
+    requests:
+      memory: "2Gi"
+      ephemeral_storage: "2Gi"
 
   mongodb:
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
