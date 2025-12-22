@@ -470,9 +470,6 @@ funnel:
             sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" /tmp/funnel-patched.conf
             sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" /tmp/funnel-patched.conf
 
-            # DEBUG - REMOVE THIS
-            cat /tmp/funnel-patched.conf
-
             if [[ ! -s /tmp/funnel-patched.conf ]]; then
               echo "ERROR: Patched config is empty. Aborting."
               exit 1
