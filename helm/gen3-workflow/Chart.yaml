@@ -24,7 +24,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
-    version: 0.1.28
+    version: 0.1.29
     repository: file://../common
   - name: funnel
     # NOTE:
@@ -34,5 +34,5 @@ dependencies:
     #
     # ArgoCD relies on this checked-in .tgz reference — if it's missing,
     # Funnel will not be deployed as a dependency.
-    version: 0.1.58
+    version: 0.1.71
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
