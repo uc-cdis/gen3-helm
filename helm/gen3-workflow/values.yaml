@@ -455,7 +455,7 @@ funnel:
           - "-c"
           - |
             echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
-            echo "Priting DB_HOST DB_DATABASE: $DB_HOST ${DB_DATABASE}"
+            echo "Priting DB_DATABASE: $DB_DATABASE"
 
             echo "Patching values..."
 
@@ -466,6 +466,9 @@ funnel:
 
             # Add the database creds to the config
             sed -i "s/{POSTGRES_CONFIG_PLACEHOLDER: POSTGRES_CONFIG_PLACEHOLDER}/{Host: \"${DB_HOST}:5432\", Database: \"${DB_DATABASE}\", Username: \"${DB_USER}\", Password: \"${DB_PASSWORD}\"}/g" /tmp/funnel-patched.conf
+
+            # DEBUG - REMOVE THIS
+            cat /tmp/funnel-patched.conf
 
             if [[ ! -s /tmp/funnel-patched.conf ]]; then
               echo "ERROR: Patched config is empty. Aborting."
