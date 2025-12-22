@@ -389,8 +389,8 @@ funnel:
         - name: funnel-patched-config-volume
           mountPath: /tmp
       - name: secrets-updater
-        image: bitnamilegacy/kubectl
-        tag: latest
+        image: quay.io/cdis/awshelper
+        tag: master
         env:
           - name: FUNNEL_OIDC_CLIENT_ID
             valueFrom:
