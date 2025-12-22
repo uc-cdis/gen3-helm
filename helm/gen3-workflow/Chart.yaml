@@ -24,15 +24,15 @@ appVersion: "master"
 
 dependencies:
   - name: common
-    version: 0.1.28
+    version: 0.1.29
     repository: file://../common
   - name: funnel
     # NOTE:
     # When updating this version:
-    # 1) Run `helm dependency update` to generate a new .tgz file
+    # 1) Run `helm dependency update` in this directory to generate a new .tgz file
     # 2) Commit the updated .tgz file into gen3-helm in the same PR
     #
     # ArgoCD relies on this checked-in .tgz reference — if it's missing,
     # Funnel will not be deployed as a dependency.
-    version: 0.1.58
+    version: 0.1.73
     repository: "https://ohsu-comp-bio.github.io/helm-charts"

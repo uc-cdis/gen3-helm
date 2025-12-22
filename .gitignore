@@ -1,5 +1,6 @@
 postgres.txt
 **/charts/
+!helm/gen3-workflow/charts/funnel
 notes/
 Chart.lock
 .DS_Store
