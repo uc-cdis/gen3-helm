@@ -257,6 +257,7 @@ extraServices:
 #    serviceName: protein-paint
 #    authzPolicy: "protein-paint"
 #    authzService: "protein-paint"
+#    csrfCheck: true
 
 nginx:
   user: nginx

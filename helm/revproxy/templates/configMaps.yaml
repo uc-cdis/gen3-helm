@@ -25,9 +25,11 @@ data:
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
+        {{- if .csrfCheck -}}
         if ($csrf_check !~ ^ok-\S.+$) {
           return 403 "failed csrf check";
         }
+        {{- end }}
         {{- if and .authzPolicy .authzService -}}
         set $authz_resource "/{{ .authzPolicy }}";
         set $authz_method "access";
