@@ -465,7 +465,7 @@ funnel:
             | sed -E "s|(OidcClientSecret:).*|\1 ${FUNNEL_OIDC_CLIENT_SECRET}|" > /tmp/funnel-patched.conf
 
             # Add the database creds to the config
-            sed -i 's/{POSTGRES_CONFIG_PLACEHOLDER: POSTGRES_CONFIG_PLACEHOLDER}/{Host: "${DB_HOST}:5432", Database: "${DB_DATABASE}", Username: "${DB_USER}", Password: "${DB_PASSWORD}"}/g' /tmp/funnel-patched.conf
+            sed -i "s/{POSTGRES_CONFIG_PLACEHOLDER: POSTGRES_CONFIG_PLACEHOLDER}/{Host: \"${DB_HOST}:5432\", Database: \"${DB_DATABASE}\", Username: \"${DB_USER}\", Password: \"${DB_PASSWORD}\"}/g" /tmp/funnel-patched.conf
 
             if [[ ! -s /tmp/funnel-patched.conf ]]; then
               echo "ERROR: Patched config is empty. Aborting."
