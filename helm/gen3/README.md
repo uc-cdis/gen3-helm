@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.115](https://img.shields.io/badge/Version-0.2.115-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.116](https://img.shields.io/badge/Version-0.2.116-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -24,7 +24,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../argo-wrapper | argo-wrapper | 0.1.23 |
 | file://../audit | audit | 0.1.35 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.35 |
-| file://../cedar | cedar | 0.1.18 |
+| file://../cedar | cedar | 0.1.19 |
 | file://../cohort-middleware | cohort-middleware | 0.1.16 |
 | file://../common | common | 0.1.29 |
 | file://../dashboard | dashboard | 0.1.13 |
@@ -53,7 +53,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sheepdog | sheepdog | 0.1.36 |
 | file://../sower | sower | 0.1.39 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.38 |
-| file://../wts | wts | 0.1.34 |
+| file://../wts | wts | 0.1.35 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
