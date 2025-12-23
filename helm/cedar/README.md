@@ -1,6 +1,6 @@
 # cedar
 
-![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 cedar wrapper
 
@@ -74,7 +74,6 @@ A Helm chart for gen3 cedar wrapper
 | image.repository | string | `"quay.io/cdis/cedar"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| ingestion | map | `{"image":"quay.io/cdis/awshelper:master"}` | Cedar configuration for ingestion job. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |
@@ -103,4 +102,6 @@ A Helm chart for gen3 cedar wrapper
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| service_images_for_jobs.awshelper | string | `"master"` |  |
+| service_images_for_jobs.fence | string | `"master"` |  |
 | tolerations | list | `[]` | Tolerations for the pods |

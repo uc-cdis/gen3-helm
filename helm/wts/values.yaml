@@ -161,6 +161,9 @@ oidc_client_id:
 oidc_client_secret:
 # -- (bool) Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created.
 oidc_job_enabled: true
+# Values for the service images being used in wts jobs
+service_images_for_jobs:
+  fence: "master"
 
 # -- (map) Service account to use or create.
 serviceAccount:

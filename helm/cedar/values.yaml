@@ -109,10 +109,6 @@ externalSecrets:
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
-# -- (map) Cedar configuration for ingestion job.
-ingestion:
-  image: "quay.io/cdis/awshelper:master"
-
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
@@ -216,3 +212,8 @@ commonLabels:
 # -- (map) Whether or not to deploy the cedar ingestion job.
 cedarIngestion:
   enabled: true
+
+# Values for the service images being used in cedar jobs
+service_images_for_jobs:
+  fence: "master"
+  awshelper: "master"
