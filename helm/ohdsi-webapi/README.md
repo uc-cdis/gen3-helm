@@ -58,8 +58,17 @@ kubectl create rolebinding default-sa-secret-admin \
 ```
 helm install my-release-name . 
 ```
+OR for testing locally:
+```
+helm install my-release-name . --values ./values_local.yaml
+```
+
 7. Monitor the most complex step (creating a Fence client for WebAPI) with:
 ```
+kubectl describe job atlas-webapi-client-job
+
+and then
+
 kubectl describe pod atlas-webapi-client-job-<SOME_UID>
 
 and each job step with:
@@ -76,4 +85,4 @@ kubectl port-forward svc/ohdsi-webapi-service 8888:80
 http://localhost:8888
 http://localhost:8888/WebAPI/user/login/openid?redirectUrl=/home
 or add a team project:
-/WebAPI/user/login/openid?redirectUrl=/home?teamproject=team1
+http://localhost:8888/WebAPI/user/login/openid?redirectUrl=/home?teamproject=team1
