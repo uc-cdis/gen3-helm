@@ -50,7 +50,7 @@ stringData: # TODO - should this be data (base64)??
 
   security_oid_clientId: $FENCE_CLIENT_ID
   security_oid_apiSecret: $FENCE_CLIENT_SECRET
-  security_oid_url: https://{{ .Values.global.hostname }}/.well-known/openid-configuration
+  security_oid_url: "{{ .Values.fenceUrl }}/.well-known/openid-configuration"
   security_oid_redirectUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/welcome
   security_oid_logoutUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/home
   security_oid_extraScopes: user
