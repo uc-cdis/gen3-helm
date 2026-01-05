@@ -421,6 +421,7 @@ dependencies:
   - name: revproxy
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.47
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 =======
@@ -429,6 +430,9 @@ dependencies:
 =======
     version: 0.1.49
 >>>>>>> cf201226 (Added robots.txt endpoint)
+=======
+    version: 0.1.50
+>>>>>>> 7e079f32 (Made csrf check optional for extra services)
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
