@@ -8,7 +8,7 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.28 |
+| file://../common | common | 0.1.29 |
 
 ## Values
 
