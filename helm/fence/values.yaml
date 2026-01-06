@@ -427,7 +427,7 @@ volumes:
   - name: fence-google-storage-creds-secret-volume
     secret:
       secretName: "fence-google-storage-creds-secret"
-  - name: fence-jwt-keys
+  - name: fence-jwt-keys-readonly
     secret:
       secretName: "fence-jwt-keys"
   - name: privacy-policy
@@ -490,9 +490,9 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
-  - name: "fence-jwt-keys"
+  - name: "fence-jwt-keys-readonly"
     readOnly: true
-    mountPath: "/fence/keys/key/jwt_private_key.pem"
+    mountPath: "/tmp/keys/readonly/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
   - name: "amanuensis-jwt-keys"
     readOnly: true

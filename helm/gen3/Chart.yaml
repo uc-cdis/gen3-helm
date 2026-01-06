@@ -37,16 +37,20 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.28
+    version: 0.1.29
     repository: file://../common
   - name: dashboard
     version: 0.1.13
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.1.7
+    version: 0.1.12
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+  - name: embedding-management-service
+    version: 0.1.1
+    repository: file://../embedding-management-service
+    condition: embedding-management-service.enabled
   - name: etl
     version: 0.1.19
     repository: file://../etl
@@ -56,7 +60,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.66
+    version: 0.1.67
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
@@ -72,7 +76,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.60
+    version: 0.1.61
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -190,7 +194,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.106
+version: 0.2.115
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

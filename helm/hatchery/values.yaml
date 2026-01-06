@@ -295,6 +295,9 @@ commonLabels:
 hotNode:
   enabled: false
 
+  gpu: false
+  jupyter: true
+
   availabilityZones:
     - us-east-1a
     - us-east-1b
