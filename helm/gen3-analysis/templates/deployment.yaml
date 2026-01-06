@@ -38,6 +38,25 @@ spec:
         - name: config-volume
           secret:
             secretName: "gen3-analysis-secret"
+        {{- if .Values.s3DataMount.enabled }}
+        - name: tmp-volume
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.s3DataMount.enabled -}}
+      initContainers:
+        - name: data-mount-init
+          image: "{{ .Values.s3DataMount.image.repository }}:{{ .Values.s3DataMount.image.tag | default "master" }}"
+          imagePullPolicy: {{ .Values.s3DataMount.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /mnt/secrets
+            - name: tmp-volume
+              mountPath: /tmp
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }}
+      {{- end -}}
       containers:
         - name: gen3-analysis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -72,6 +91,10 @@ spec:
             - containerPort: 8000
           {{- with .Values.volumeMounts }}
           volumeMounts:
+            {{- if .Values.s3DataMount.enabled }}
+            - name: tmp-volume
+              mountPath: /opt/mmrf_gene_expression_test_data
+            {{- end }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- with .Values.resources }}
