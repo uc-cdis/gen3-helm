@@ -36,7 +36,7 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml
       
-  # TODO: add back in when we have tests
+  # TODO: add back in when tests are re-enabled
   # deploy-and-test-chart:
   #   name: Deploy and Test Chart
   #   timeout-minutes: 20

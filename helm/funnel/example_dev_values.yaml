@@ -1,0 +1,37 @@
+image:
+  repository: quay.io/ohsu-comp-bio/funnel
+  tag: feature-plugins-cleanup
+  pullPolicy: Always
+  # Plugin Init Container
+  initContainer:
+    image: quay.io/ohsu-comp-bio/funnel-plugins
+    tag: feature-auth-proto-config
+    pullPolicy: Always
+    command:
+      - cp
+      - /app/build/plugins/authorizer
+      - /opt/funnel/plugin-binaries/auth-plugin
+
+Logger:
+  Level: debug
+
+GenericS3:
+  - Disabled: false
+    Endpoint: "s3.us-west-2.amazonaws.com"
+    Key: "you-bucket-key-goes-here"
+    Secret: "your-bucket-secret-goes-here"
+    Bucket: funnel-testing
+    Region: us-west-2
+
+AmazonS3:
+  Disabled: true
+
+Plugins:
+  Path: plugin-binaries/auth-plugin
+  Params:
+    Host: http://funnel-plugin-test-server:8080/token?user=
+
+Kubernetes:
+  JobsNamespace: "funnel"
+  Namespace:     "funnel"
+  ReconcileRate: 6s
