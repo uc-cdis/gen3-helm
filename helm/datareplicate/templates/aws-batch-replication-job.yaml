@@ -80,7 +80,6 @@ spec:
             args:
             - -c
             - |
-              mkdir ~/.aws
               echo """
               [default]
               region: $REGION
