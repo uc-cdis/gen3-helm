@@ -1,6 +1,8 @@
 apiVersion: v2
-name: backups
-description: A Helm chart for Kubernetes
+name: funnel
+description: A toolkit for distributed task execution ⚙️
+keywords:
+  - funnel
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -15,11 +17,21 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.5.1
+version: 0.1.76
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-# Ref: https://github.com/calypr/backup-service/releases
-appVersion: "1.15.1"
+appVersion: 2025-12-22
+
+dependencies:
+  - name: postgresql
+    version: 18.1.15
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  
+  - name: mongodb
+    version: 13.9.4
+    repository: https://charts.bitnami.com/bitnami
+    condition: mongodb.enabled

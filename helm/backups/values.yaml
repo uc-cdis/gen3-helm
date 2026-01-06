@@ -2,7 +2,7 @@
 backups:
   # CronJob configuration (Daily at 2am)
   schedule: "0 2 * * *"
-  image: "quay.io/ohsu-comp-bio/backup-service:docs-contributing.md"
+  image: "quay.io/ohsu-comp-bio/backup-service:main"
 
   # GRIP
   grip:

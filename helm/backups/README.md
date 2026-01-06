@@ -1,6 +1,6 @@
 # backups
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.13.0](https://img.shields.io/badge/AppVersion-1.13.0-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.15.0](https://img.shields.io/badge/AppVersion-1.15.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -10,15 +10,14 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | backups.grip.graph | string | `"CALYPR"` |  |
 | backups.grip.host | string | `"grip-service.default.svc.cluster.local"` |  |
-| backups.image | string | `"quay.io/ohsu-comp-bio/backup-service:latest"` |  |
+| backups.image | string | `"quay.io/ohsu-comp-bio/backup-service:main"` |  |
 | backups.postgres.host | string | `"local-postgresql.default.svc.cluster.local"` |  |
 | backups.postgres.secret | string | `"local-postgresql"` |  |
 | backups.postgres.user | string | `"postgres"` |  |
 | backups.s3.bucket | string | `"calypr-backups"` |  |
 | backups.s3.dir | string | `"calypr-dev"` |  |
 | backups.s3.endpoint | string | `"https://aced-storage.ohsu.edu"` |  |
-| backups.s3.secret.key | string | `"s3-credentials-key"` |  |
-| backups.s3.secret.secret | string | `"s3-credentials-secret"` |  |
+| backups.s3.secret | string | `"s3-credentials"` |  |
 | backups.schedule | string | `"0 2 * * *"` |  |
 
 ----------------------------------------------
