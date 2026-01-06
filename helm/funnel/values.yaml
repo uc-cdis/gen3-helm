@@ -209,8 +209,8 @@ Worker:
   # after the executor exits.
   LogUpdateRate: 5s
 
-  # Max bytes to store for stdout/err in the task log.
-  LogTailSize: 10000 # 10 KB
+  # Max bytes to store for stdout/err in the task log (10 KB)
+  LogTailSize: 10000
 
   # Normally the worker deletes its working directory after executing.
   # This option disables that behavior.
@@ -219,9 +219,9 @@ Worker:
   # Limit the number of concurrent downloads/uploads
   MaxParallelTransfers: 10
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Databases and/or Event Writers/Handlers
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 BoltDB:
   # Path to the database file
@@ -282,9 +282,9 @@ Postgres:
 Kafka:
   Topic: funnel
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Compute Backends
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 HTCondor:
   # Turn off task state reconciler. When enabled, Funnel communicates with the HPC
@@ -437,9 +437,9 @@ Kubernetes:
   PVTemplate: ""
   PVCTemplate: ""
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Storage
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 # If possible, credentials will be automatically discovered
 # from the environment.

@@ -23,14 +23,14 @@ version: 0.1.76
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: 2025-12-22
+appVersion: "2025-12-22"
 
 dependencies:
   - name: postgresql
     version: 18.1.15
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
-  
+
   - name: mongodb
     version: 13.9.4
     repository: https://charts.bitnami.com/bitnami

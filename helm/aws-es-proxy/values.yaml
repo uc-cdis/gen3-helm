@@ -109,6 +109,11 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
+# Added default to resolve nil pointer error with `ct` linting:
+# <.Values.persistence.capacity>: nil pointer evaluating interface {}.capacity
+persistence:
+  capacity: 1Gi
+
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".

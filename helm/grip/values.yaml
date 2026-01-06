@@ -49,6 +49,11 @@ resources:
     cpu: 0.2
     memory: 256Mi
 
+# Added default to resolve nil pointer error with `ct` linting:
+# <.Values.persistence.capacity>: nil pointer evaluating interface {}.capacity
+persistence:
+  capacity: 1Gi
+
 autoscaling:
   enabled: false
   minReplicas: 1
