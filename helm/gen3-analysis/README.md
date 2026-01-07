@@ -84,6 +84,12 @@ A Helm chart for gen3 gen3-analysis Service
 | resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
+| s3DataMount.enabled | bool | `false` |  |
+| s3DataMount.image.pullPolicy | string | `"IfNotPresent"` |  |
+| s3DataMount.image.repository | string | `"quay.io/cdis/amazonlinux-base"` |  |
+| s3DataMount.image.tag | string | `"master"` |  |
+| s3DataMount.localPath | string | `""` |  |
+| s3DataMount.s3Path | string | `""` |  |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
