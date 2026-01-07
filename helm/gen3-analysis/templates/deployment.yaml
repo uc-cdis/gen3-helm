@@ -55,7 +55,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }}
+              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }} --recursive
       {{- end -}}
       containers:
         - name: gen3-analysis
@@ -91,11 +91,11 @@ spec:
             - containerPort: 8000
           {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- if .Values.s3DataMount.enabled }}
-            - name: tmp-volume
-              mountPath: /opt/mmrf_gene_expression_test_data
-            {{- end }}
             {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if .Values.s3DataMount.enabled }}
+          - name: tmp-volume
+            mountPath: /opt/mmrf_gene_expression_test_data
           {{- end }}
           {{- with .Values.resources }}
           resources:
