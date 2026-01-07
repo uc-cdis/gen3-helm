@@ -42,7 +42,7 @@ spec:
         - name: tmp-volume
           emptyDir: {}
         {{- end }}
-      {{- if .Values.s3DataMount.enabled -}}
+      {{- if .Values.s3DataMount.enabled }}
       initContainers:
         - name: data-mount-init
           image: "{{ .Values.s3DataMount.image.repository }}:{{ .Values.s3DataMount.image.tag | default "master" }}"
