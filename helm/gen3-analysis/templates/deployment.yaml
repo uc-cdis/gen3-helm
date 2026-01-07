@@ -55,7 +55,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }} --recursive
+              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }}
       {{- end }}
       containers:
         - name: gen3-analysis
