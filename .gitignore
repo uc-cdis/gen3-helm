@@ -1,7 +1,10 @@
 postgres.txt
 **/charts/
-!helm/gen3-workflow/charts/funnel
 notes/
 Chart.lock
 .DS_Store
 _sample-*/
+
+# exception: do not ignore the `helm/gen3-workflow/charts/funnel*` file
+!helm/gen3-workflow/charts
+helm/gen3-workflow/charts/common*
