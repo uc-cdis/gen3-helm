@@ -56,8 +56,7 @@ spec:
           args:
             - |
               aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }}
-              mkdir -p /tmp/mmrf_gene_expression_test_data
-              tar -xvf /tmp/{{ .Values.s3DataMount.localPath }} -C /tmp/mmrf_gene_expression_test_data
+              tar -xvf /tmp/{{ .Values.s3DataMount.localPath }} -C /tmp/
       {{- end }}
       containers:
         - name: gen3-analysis
