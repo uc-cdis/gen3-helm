@@ -89,14 +89,14 @@ spec:
               port: 8000
           ports:
             - containerPort: 8000
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- if .Values.s3DataMount.enabled }}
-          - name: tmp-volume
-            mountPath: /opt/mmrf_gene_expression_test_data
-          {{- end }}
+            {{- if .Values.s3DataMount.enabled }}
+            - name: tmp-volume
+              mountPath: /opt/mmrf_gene_expression_test_data
+            {{- end }}
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 2 }}
+            {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
