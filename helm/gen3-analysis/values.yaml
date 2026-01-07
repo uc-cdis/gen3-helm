@@ -213,6 +213,6 @@ s3DataMount:
   s3Path: ""
   localPath: ""
   image:
-    repository: quay.io/cdis/amazonlinux-base
+    repository: quay.io/cdis/awshelper
     tag: "master"
     pullPolicy: IfNotPresent

@@ -86,7 +86,7 @@ A Helm chart for gen3 gen3-analysis Service
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | s3DataMount.enabled | bool | `false` |  |
 | s3DataMount.image.pullPolicy | string | `"IfNotPresent"` |  |
-| s3DataMount.image.repository | string | `"quay.io/cdis/amazonlinux-base"` |  |
+| s3DataMount.image.repository | string | `"quay.io/cdis/awshelper"` |  |
 | s3DataMount.image.tag | string | `"master"` |  |
 | s3DataMount.localPath | string | `""` |  |
 | s3DataMount.s3Path | string | `""` |  |
