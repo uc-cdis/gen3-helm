@@ -96,7 +96,7 @@ spec:
     consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
     consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
     budgets:
-    - nodes: 10%
+    - nodes: 80%
 
   limits:
     cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
