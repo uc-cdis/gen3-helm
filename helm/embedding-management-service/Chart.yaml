@@ -21,6 +21,7 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.5
 =======
 version: 0.1.1
@@ -28,6 +29,9 @@ version: 0.1.1
 =======
 version: 0.1.1
 >>>>>>> c25779c9 (Disable EMS by default (#474))
+=======
+version: 0.1.2
+>>>>>>> f639072d (hardcode embedding management service name)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
