@@ -48,7 +48,7 @@ dependencies:
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: embedding-management-service
-    version: 0.1.1
+    version: 0.1.2
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl

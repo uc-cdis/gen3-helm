@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "embedding-management-service.fullname" . }}
+  name: embedding-management-service
   labels:
     {{- include "embedding-management-service.labels" . | nindent 4 }}
 spec:
