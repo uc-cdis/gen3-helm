@@ -417,26 +417,20 @@ funnel:
             echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
 
             namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-            export JOBS_NAMESPACE=gen3-$namespace-workflow-pods
+            
+            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly and replace JobsNamespace
+            sed "s/FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER/gen3-${namespace}-workflow-pods/g" /etc/config/funnel.conf > /tmp/funnel-patched.conf
+
+
             export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
             export OIDC_TOKEN_URL=$(cat /tmp/openid-config.json | jq -r ".issuer")
 
-            echo "Patching values..."
-
-            yq -y '.Kubernetes.JobsNamespace = env.JOBS_NAMESPACE | .Plugins = {
-              "Path": "plugin-binaries/auth-plugin",
-              "Params": {
-                "OidcClientId": env.FUNNEL_OIDC_CLIENT_ID,
-                "OidcClientSecret": env.FUNNEL_OIDC_CLIENT_SECRET,
-                "OidcTokenUrl": env.OIDC_TOKEN_URL,
-                "S3Url": env.S3_URL
-              }
-            }' /etc/config/funnel.conf > /tmp/funnel-patched.conf
-
-            if [[ ! -s /tmp/funnel-patched.conf ]]; then
-              echo "ERROR: Patched config is empty. Aborting."
-              exit 1
-            fi
+            echo "Patching Funnel Plugin values..."
+            # Replace Funnel plugin value placeholders with actual values (in-place)
+            sed -i "s/FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER/${FUNNEL_OIDC_CLIENT_ID}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER/${FUNNEL_OIDC_CLIENT_SECRET}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_PLUGIN_OIDC_TOKEN_URL_PLACEHOLDER/${OIDC_TOKEN_URL}/g" /tmp/funnel-patched.conf
+            sed -i "s/FUNNEL_PLUGIN_S3URL_PLACEHOLDER/${S3_URL}/g" /tmp/funnel-patched.conf
 
   volumes:
   - name: funnel-config-volume
@@ -495,6 +489,15 @@ funnel:
       timeoutSeconds: 10
       periodSeconds: 10
       failureThreshold: 10
+  Kubernetes:
+    JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
+  Plugins:
+    Path: plugin-binaries/auth-plugin
+    Params:
+      OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
+      OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
+      S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
+      OidcTokenUrl: FUNNEL_PLUGIN_OIDC_TOKEN_URL_PLACEHOLDER
 
 karpenter:
   nodeclass.yaml: |
