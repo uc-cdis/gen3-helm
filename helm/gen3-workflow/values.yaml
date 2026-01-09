@@ -414,24 +414,31 @@ funnel:
         args:
           - "-c"
           - |
-            echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
+            echo "Printing FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
 
             namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
             # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly and replace JobsNamespace
             export JOBS_NAMESPACE=gen3-$namespace-workflow-pods
-            sed "s/FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER/${JOBS_NAMESPACE}/g" /etc/config/funnel.conf > /tmp/funnel-patched.conf
+            sed "s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g" /etc/config/funnel.conf > /tmp/funnel-patched.conf
             echo "Replaced .Kubernetes.JobsNamespace with $JOBS_NAMESPACE"
 
             export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
             export OIDC_TOKEN_URL=$(cat /tmp/openid-config.json | jq -r ".issuer")
 
-            echo "Patching Funnel Plugin values with \n\tFUNNEL_OIDC_CLIENT_ID = $FUNNEL_OIDC_CLIENT_ID ;\n\tOIDC_TOKEN_URL = $OIDC_TOKEN_URL;\n\t S3_URL = $S3_URL along with FUNNEL_OIDC_CLIENT_SECRET"
+            echo "=== Patching Funnel Plugin values ==="
+            echo "  FUNNEL_OIDC_CLIENT_ID      : $FUNNEL_OIDC_CLIENT_ID"
+            echo "  OIDC_TOKEN_URL            : $OIDC_TOKEN_URL"
+            echo "  S3_URL                    : $S3_URL"
+            echo "  FUNNEL_OIDC_CLIENT_SECRET : [REDACTED]"
+            echo "===================================="
+
             # Replace Funnel plugin value placeholders with actual values (in-place)
-            sed -i "s/FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER/${FUNNEL_OIDC_CLIENT_ID}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER/${FUNNEL_OIDC_CLIENT_SECRET}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_PLUGIN_OIDC_TOKEN_URL_PLACEHOLDER/${OIDC_TOKEN_URL}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_PLUGIN_S3URL_PLACEHOLDER/${S3_URL}/g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_OIDC_TOKEN_URL_PLACEHOLDER|${OIDC_TOKEN_URL}|g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
+
 
   volumes:
   - name: funnel-config-volume
