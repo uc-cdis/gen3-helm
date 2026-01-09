@@ -27,7 +27,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: gitops-sa
-    namespace: default
+    namespace: "{{ .Release.Namespace }}"
 ---
 apiVersion: batch/v1
 kind: CronJob
