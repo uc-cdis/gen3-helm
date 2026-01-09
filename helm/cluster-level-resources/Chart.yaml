@@ -5,9 +5,13 @@ description: An app-of-apps Helm chart that allows for flexible deployment of re
 type: application
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.6.38
 =======
 version: 0.6.25
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+version: 0.6.28
+>>>>>>> 7319cd3c (version bunp for lint test)
 
 appVersion: "1.17.0"
