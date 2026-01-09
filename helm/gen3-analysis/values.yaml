@@ -207,3 +207,12 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+s3DataMount:
+  enabled: false
+  s3Path: ""
+  localPath: ""
+  image:
+    repository: quay.io/cdis/awshelper
+    tag: "master"
+    pullPolicy: IfNotPresent
