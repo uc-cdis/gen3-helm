@@ -476,10 +476,11 @@ funnel:
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
 
-  resources:
-    requests:
-      memory: "2Gi"
-      ephemeral_storage: "2Gi"
+  # Uncomment this once funnel is updated to a latest version say > 0.1.78 with STDOUT fix
+  # resources:
+  #   requests:
+  #     memory: "2Gi"
+  #     ephemeral_storage: "2Gi"
 
   mongodb:
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
