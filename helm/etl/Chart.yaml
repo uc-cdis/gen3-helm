@@ -18,6 +18,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.22
 =======
 version: 0.1.17
@@ -28,6 +29,9 @@ version: 0.1.18
 =======
 version: 0.1.19
 >>>>>>> a6dcdb6f (update version)
+=======
+version: 0.1.20
+>>>>>>> f0075136 (updating garbage collect RoleBinding to use proper namespace. (#486))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
