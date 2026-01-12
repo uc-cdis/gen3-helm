@@ -378,16 +378,6 @@ funnel:
         volumeMounts:
           - name: plugin-volume
             mountPath: /opt/funnel/plugin-binaries
-      - name: fence-url-fetcher
-        image: curlimages/curl
-        tag: latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - "while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done; curl -s  'http://fence-service/.well-known/openid-configuration' > /tmp/openid-config.json"
-        volumeMounts:
-        - name: funnel-patched-config-volume
-          mountPath: /tmp
       - name: secrets-updater
         image: quay.io/cdis/awshelper
         tag: master
@@ -424,11 +414,9 @@ funnel:
             echo "Replaced .Kubernetes.JobsNamespace with $JOBS_NAMESPACE"
 
             export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
-            export OIDC_TOKEN_URL=$(cat /tmp/openid-config.json | jq -r ".issuer")
 
             echo "=== Patching Funnel Plugin values ==="
             echo "  FUNNEL_OIDC_CLIENT_ID      : $FUNNEL_OIDC_CLIENT_ID"
-            echo "  OIDC_TOKEN_URL            : $OIDC_TOKEN_URL"
             echo "  S3_URL                    : $S3_URL"
             echo "  FUNNEL_OIDC_CLIENT_SECRET : [REDACTED]"
             echo "===================================="
@@ -436,7 +424,6 @@ funnel:
             # Replace Funnel plugin value placeholders with actual values (in-place)
             sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
             sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_OIDC_TOKEN_URL_PLACEHOLDER|${OIDC_TOKEN_URL}|g" /tmp/funnel-patched.conf
             sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
 
 
