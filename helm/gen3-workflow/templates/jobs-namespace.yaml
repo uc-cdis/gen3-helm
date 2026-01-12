@@ -1,4 +1,4 @@
-{{- $jobsNamespace := default (printf "gen3-%s-workflow-pods" .Release.Namespace) .Values.funnel.Kubernetes.JobsNamespace }}
+{{- $jobsNamespace := default (printf "workflow-pods-%s" .Release.Namespace) .Values.funnel.Kubernetes.JobsNamespace }}
 
 {{- if ne $jobsNamespace .Release.Namespace }}
 apiVersion: v1
