@@ -18,6 +18,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.44
 =======
 version: 0.1.35
@@ -28,6 +29,9 @@ version: 0.1.36
 =======
 version: 0.1.37
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+version: 0.1.38
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -37,6 +41,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -62,6 +67,9 @@ dependencies:
 =======
     version: 0.1.28
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.29
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: file://../common
   - name: postgresql
     version: 11.9.13

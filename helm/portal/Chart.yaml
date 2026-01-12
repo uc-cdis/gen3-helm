@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.47
@@ -32,6 +33,9 @@ version: 0.1.49
 =======
 version: 0.1.50
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+version: 0.1.51
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -41,6 +45,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -70,4 +75,7 @@ dependencies:
 =======
     version: 0.1.28
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.29
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: file://../common

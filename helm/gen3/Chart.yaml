@@ -9,6 +9,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.18
 =======
     version: 0.1.11
@@ -44,21 +45,25 @@ dependencies:
 =======
     version: 0.1.14
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.15
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.29
+    version: 0.1.30
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.23
+    version: 0.1.24
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.33
@@ -90,6 +95,13 @@ dependencies:
   - name: aws-es-proxy
     version: 0.1.35
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.36
+    repository: "file://../audit"
+    condition: audit.enabled
+  - name: aws-es-proxy
+    version: 0.1.36
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: aws-sigv4-proxy
@@ -97,6 +109,7 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -180,17 +193,20 @@ dependencies:
 =======
     version: 0.1.18
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.19
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.16
+    version: 0.1.17
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
     version: 0.1.29
     repository: file://../common
   - name: dashboard
-    version: 0.1.13
+    version: 0.1.14
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
@@ -249,6 +265,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
@@ -284,6 +301,9 @@ dependencies:
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 =======
     version: 0.1.18
+=======
+    version: 0.1.19
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
@@ -304,6 +324,7 @@ dependencies:
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -388,6 +409,9 @@ dependencies:
 =======
     version: 0.1.9
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.10
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
@@ -395,7 +419,7 @@ dependencies:
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
@@ -403,27 +427,27 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.37
+    version: 0.1.38
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.36
+    version: 0.1.37
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.36
+    version: 0.1.38
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.36
+    version: 0.1.37
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.50
+    version: 0.1.51
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.28
+    version: 0.1.29
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
@@ -458,6 +482,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.43
 =======
     version: 0.1.33
@@ -484,13 +509,17 @@ dependencies:
 =======
     version: 0.1.38
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.39
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.39
+    version: 0.1.40
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.32
@@ -523,6 +552,9 @@ dependencies:
 =======
     version: 0.1.34
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.35
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -531,28 +563,36 @@ dependencies:
     condition: global.netPolicy.enabled
   - name: dicom-server
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
 =======
     version: 0.1.23
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.24
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.7
+    version: 0.1.8
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.8
+    version: 0.1.9
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
+<<<<<<< HEAD
 <<<<<<< HEAD
     version: 0.1.3
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 =======
     version: 0.1.4
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.5
+>>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
