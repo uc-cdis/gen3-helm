@@ -187,7 +187,7 @@ debug: false
 # -- (string) Elasticsearch endpoint.
 esEndpoint: http://gen3-elasticsearch-master:9200
 # -- (bool) Set to true to aggregate metadata from multiple other Metadata Service instances.
-useAggMds: False
+useAggMds: false
 # -- (string) Namespae to use if AggMds is enabled.
 aggMdsNamespace: default
 # -- (string)

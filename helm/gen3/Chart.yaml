@@ -140,7 +140,7 @@ dependencies:
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
-    version: 0.1.4
+    version: 0.1.5
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
 
