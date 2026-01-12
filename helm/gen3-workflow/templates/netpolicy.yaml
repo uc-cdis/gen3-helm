@@ -11,7 +11,7 @@
 
 {{ if .Values.global.netPolicy.enabled }}
 
-{{- $jobsNamespace := default (printf "gen3-%s-workflow-pods" .Release.Namespace) .Values.funnel.Kubernetes.JobsNamespace }}
+{{- $jobsNamespace := default (printf "workflow-pods-%s" .Release.Namespace) .Values.funnel.Kubernetes.JobsNamespace }}
 
 ---
 # Funnel needs both ingress and egress to/from gen3-workflow and funnel-mongodb
