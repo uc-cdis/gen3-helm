@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.36](https://img.shields.io/badge/Version-0.1.36-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.37](https://img.shields.io/badge/Version-0.1.37-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -126,5 +126,5 @@ A Helm chart for gen3 Metadata Service
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | suspendCronjob | bool | `false` |  |
-| useAggMds | bool | `"False"` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
+| useAggMds | bool | `false` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |
