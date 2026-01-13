@@ -24,6 +24,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -52,6 +53,9 @@ version: 0.1.7
 =======
 version: 0.1.8
 >>>>>>> d7adb420 (Improve gen3-workflow to run out of the box)
+=======
+version: 0.1.9
+>>>>>>> 94864c64 (Bump gen3-workflow chart)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
