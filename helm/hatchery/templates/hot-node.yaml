@@ -41,6 +41,7 @@ roleRef:
   kind: Role
   name: hot-node-prepuller
 ---
+{{- if .Values.hotNode.jupyter }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -181,5 +182,6 @@ spec:
         configMap:
           name: hot-node-job
 ---
+{{- end }}
 {{- end }}
 {{- end }}

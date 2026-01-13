@@ -1,0 +1,265 @@
+{{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "gpu" "enabled") }}
+---
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
+apiVersion: karpenter.k8s.aws/v1
+{{- else }}
+apiVersion: karpenter.k8s.aws/v1beta1
+{{- end }}
+kind: EC2NodeClass
+metadata:
+  name: gpu
+spec:
+  amiFamily: AL2023
+  amiSelectorTerms:
+  - alias: al2023@latest
+  blockDeviceMappings:
+  - deviceName: /dev/xvda
+    ebs:
+      deleteOnTermination: true
+      encrypted: true
+      volumeSize: {{ index .Values "karpenter-crds" "gpu" "volumeSize" }}
+      volumeType: gp3
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  role: eks_{{ index .Values "karpenter-crds" "selectorTag" }}_workers_role
+
+  securityGroupSelectorTerms:
+  # Use a GPU-specific SG discovery tag (matches your original -gpu convention)
+  - tags:
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+
+  subnetSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-gpu-karpenter
+    karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+    purpose: gpu
+
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+    curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys &
+    sysctl -w fs.inotify.max_user_watches=12000 &
+
+    --BOUNDARY--
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
+  kubelet:
+    evictionHard:
+      memory.available: 5%
+    evictionSoft:
+      memory.available: 10%
+    evictionSoftGracePeriod:
+      memory.available: 5m
+{{- end }}
+---
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: gpu
+spec:
+  template:
+    metadata:
+      labels:
+        role: gpu
+        jina.ai/node-type: gpu
+        jina.ai/gpu-type: nvidia
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: gpu
+      # v1: expireAfter & terminationGracePeriod live under template.spec
+      expireAfter: 24h
+      terminationGracePeriod: 48h
+      taints:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      requirements:
+      - key: "topology.kubernetes.io/zone"
+        operator: In
+        values: ["us-east-1c"]
+      - key: karpenter.k8s.aws/instance-family
+        operator: In
+        values: ["g4dn"]
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values: ["on-demand"]
+      - key: kubernetes.io/arch
+        operator: In
+        values: ["amd64"]
+
+  disruption:
+    consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
+    budgets:
+    - nodes: 10%
+
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+{{- else }}
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: gpu
+spec:
+  disruption:
+    {{ if eq (index .Values "karpenter-crds" "gpu" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
+    {{ end }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
+    expireAfter: 24h
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  template:
+    metadata:
+      labels:
+        role: gpu
+        jina.ai/node-type: gpu
+        jina.ai/gpu-type: nvidia
+    spec:
+      kubelet:
+        evictionHard:
+          memory.available: 5%
+        evictionSoft:
+          memory.available: 10%
+        evictionSoftGracePeriod:
+          memory.available: 5m
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: gpu
+      taints:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      requirements:
+      - key: karpenter.k8s.aws/instance-family
+        operator: In
+        values: ["g4dn"]
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values: ["on-demand"]
+      - key: kubernetes.io/arch
+        operator: In
+        values: ["amd64"]
+{{- end }}
+---
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: gpu-shared
+spec:
+  template:
+    metadata:
+      labels:
+        role: gpu-shared
+        jina.ai/node-type: gpu-shared
+        jina.ai/gpu-type: nvidia
+        nvidia.com/device-plugin.config: shared_gpu
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: gpu
+      expireAfter: 24h
+      terminationGracePeriod: 48h
+      taints:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      requirements:
+      - key: karpenter.k8s.aws/instance-family
+        operator: In
+        values: ["g4dn"]
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values: ["spot","on-demand"]
+      - key: kubernetes.io/arch
+        operator: In
+        values: ["amd64"]
+
+  disruption:
+    consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
+    budgets:
+    - nodes: 10%
+
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+{{- else }}
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: gpu-shared
+spec:
+  disruption:
+    {{ if eq (index .Values "karpenter-crds" "gpu" "consolidationPolicy" ) "WhenEmpty" }}
+    consolidateAfter: {{ index .Values "karpenter-crds" "gpu" "consolidateAfter" }}
+    {{ end }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "gpu" "consolidationPolicy" }}
+    expireAfter: 24h
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  template:
+    metadata:
+      labels:
+        role: gpu-shared
+        jina.ai/node-type: gpu-shared
+        jina.ai/gpu-type: nvidia
+        nvidia.com/device-plugin.config: shared_gpu
+    spec:
+      kubelet:
+        evictionHard:
+          memory.available: 5%
+        evictionSoft:
+          memory.available: 10%
+        evictionSoftGracePeriod:
+          memory.available: 5m
+        kubeReserved:
+          cpu: 480m
+          ephemeral-storage: 3Gi
+          memory: 1632Mi
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: gpu
+      taints:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      requirements:
+      - key: karpenter.k8s.aws/instance-family
+        operator: In
+        values: ["g4dn"]
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values: ["spot","on-demand"]
+      - key: kubernetes.io/arch
+        operator: In
+        values: ["amd64"]
+{{- end }}
+{{ end }}
+

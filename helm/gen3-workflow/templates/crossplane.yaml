@@ -79,7 +79,8 @@ spec:
                 "iam:PutRolePolicy",
                 "iam:GetRole",
                 "iam:GetRolePolicy",
-                "iam:TagRole"
+                "iam:TagRole",
+                "iam:UpdateAssumeRolePolicy"
             ],
             "Resource": [
                 "arn:aws:iam::*:role/gen3wf-*",
@@ -100,7 +101,7 @@ spec:
             "Action": [
               "eks:DescribeCluster"
             ],
-            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.environment }}"
+            "Resource": "arn:aws:eks:*:{{ .Values.global.crossplane.accountId }}:cluster/{{ .Values.global.clusterName }}"
           },
           {
             "Sid": "ManageKMS",

@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: aws-batch-replicate
-  namespace: {{ .Values.awsBatchReplicateJob.namespace }}
+  namespace: {{ default .Release.Namespace .Values.awsBatchReplicateJob.namespace }}
 spec:
   schedule: {{ .Values.awsBatchReplicateJob.schedule | quote }}
   suspend: {{ .Values.suspendCronjob }}
@@ -38,7 +38,7 @@ spec:
           volumes:
             - name: cred-volume
               secret:
-                secretName: "dcf-aws-creds-secret"
+                secretName: "fence-bot-aws-creds"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -72,7 +72,7 @@ spec:
             volumeMounts:
             - name: cred-volume
               mountPath: "/root/.aws/credentials"
-              subPath: dcf-aws-creds-secret
+              subPath: credentials
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
@@ -86,7 +86,6 @@ spec:
               """ > ~/.aws/config
               cp /secrets/dcf_dataservice_settings.py /dcf_replication/batch_jobs/bin/settings.py
               python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
-              sleep infinity
             ports:
             - containerPort: 80
               protocol: TCP

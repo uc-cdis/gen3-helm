@@ -175,6 +175,10 @@ datareplicate:
   # -- (bool) Whether to deploy the datareplicate subchart.
   enabled: false
 
+embedding-management-service:
+  enabled: false
+
+
 etl:
   # -- (bool) Whether to deploy the etl subchart.
   enabled: true
@@ -410,6 +414,8 @@ postgresql:
       enabled: false
 
 elasticsearch:
+  image: "quay.io/cdis/elasticsearch"
+  imageTag: "7.10.2"
   clusterName: gen3-elasticsearch
   maxUnavailable: 0
   singleNode: true
