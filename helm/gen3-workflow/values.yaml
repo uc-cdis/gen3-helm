@@ -404,18 +404,28 @@ funnel:
         args:
           - "-c"
           - |
-            echo "Priting FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
+            echo "Printing FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID"
 
-            echo "Patching values..."
+            namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
-            # Assuming we don't have any other occurence of OidcClientId in the config file
-            sed -E "s|(OidcClientId:).*|\1 ${FUNNEL_OIDC_CLIENT_ID}|" /etc/config/funnel.conf \
-            | sed -E "s|(OidcClientSecret:).*|\1 ${FUNNEL_OIDC_CLIENT_SECRET}|" > /tmp/funnel-patched.conf
+            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly and replace JobsNamespace
+            export JOBS_NAMESPACE=workflow-pods-$namespace
+            sed "s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g" /etc/config/funnel.conf > /tmp/funnel-patched.conf
+            echo "Replaced .Kubernetes.JobsNamespace with $JOBS_NAMESPACE"
 
-            if [[ ! -s /tmp/funnel-patched.conf ]]; then
-              echo "ERROR: Patched config is empty. Aborting."
-              exit 1
-            fi
+            export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
+
+            echo "=== Patching Funnel Plugin values ==="
+            echo "  FUNNEL_OIDC_CLIENT_ID      : $FUNNEL_OIDC_CLIENT_ID"
+            echo "  S3_URL                    : $S3_URL"
+            echo "  FUNNEL_OIDC_CLIENT_SECRET : [REDACTED]"
+            echo "===================================="
+
+            # Replace Funnel plugin value placeholders with actual values (in-place)
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
+
 
   volumes:
   - name: funnel-config-volume
@@ -455,53 +465,12 @@ funnel:
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
 
-  Kubernetes:
-    ExecutorTemplate: |
-      # Task Executor
-      apiVersion: batch/v1
-      kind: Job
-      metadata:
-        name: {{.TaskId}}-{{.JobId}}
-        namespace: {{.JobsNamespace}}
-        labels:
-          app: funnel-executor
-          job-name: {{.TaskId}}-{{.JobId}}
-      spec:
-        backoffLimit: 1
-        completions: 1
-        template:
-          spec:
-            restartPolicy: OnFailure
-            serviceAccountName: funnel-sa-{{.Namespace}}
-            containers:
-            - name: funnel-worker-{{.TaskId}}
-              image: {{.Image}}
-              imagePullPolicy: Always
-              command: ["/bin/sh", "-c"]
-              args: {{.Command}}
-              workingDir: {{.Workdir}}
-              resources:
-                requests:
-                  cpu: {{if ne .Cpus 0 -}}{{.Cpus}}{{ else }}{{"100m"}}{{end}}
-                  memory: '{{if ne .RamGb 0.0 -}}{{printf "%.0fG" .RamGb}}{{else}}{{"4G"}}{{end}}'
-                  ephemeral-storage: '{{if ne .DiskGb 0.0 -}}{{printf "%.0fG" .DiskGb}}{{else}}{{"2G"}}{{end}}'
+  # Uncomment this once funnel is updated to a latest version say > 0.1.78 with STDOUT fix
+  # resources:
+  #   requests:
+  #     memory: "2Gi"
+  #     ephemeral_storage: "2Gi"
 
-              volumeMounts:
-              ### DO NOT CHANGE THIS
-              {{- if .NeedsPVC }}
-                {{range $idx, $item := .Volumes}}
-                - name: funnel-storage-{{$.TaskId}}
-                  mountPath: {{$item.ContainerPath}}
-                  subPath: {{$.TaskId}}{{$item.ContainerPath}}
-                {{end}}
-              {{- end }}
-
-            volumes:
-            {{- if .NeedsPVC }}
-            - name: funnel-storage-{{.TaskId}}
-              persistentVolumeClaim:
-                claimName: funnel-worker-pvc-{{.TaskId}}
-            {{- end }}
   mongodb:
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
     # uncomment this if you're running it on an ARM chipset machine
@@ -515,16 +484,14 @@ funnel:
       timeoutSeconds: 10
       periodSeconds: 10
       failureThreshold: 10
-
+  Kubernetes:
+    JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
   Plugins:
     Path: plugin-binaries/auth-plugin
     Params:
-      OidcClientId: <redacted>
-      OidcClientSecret: <redacted>
-      # Replace {{ .Release.Namespace }} with the actual namespace where gen3-workflow is deployed
-      S3Url: gen3-workflow-service.{{ .Release.Namespace }}.svc.cluster.local
-      # -- (string) OIDC token URL for the Funnel service to use for authentication. Replace {{ .Values.gen3WorkflowConfig.hostname }} with the actual hostname where gen3-workflow is deployed.
-      OidcTokenUrl: https://{{ .Values.gen3WorkflowConfig.hostname }}/user
+      OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
+      OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
+      S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
 
 karpenter:
   nodeclass.yaml: |
