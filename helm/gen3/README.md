@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.122](https://img.shields.io/badge/Version-0.2.122-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.124](https://img.shields.io/badge/Version-0.2.124-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -28,7 +28,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.17 |
 | file://../common | common | 0.1.29 |
 | file://../dashboard | dashboard | 0.1.14 |
-| file://../datareplicate | datareplicate | 0.1.13 |
+| file://../datareplicate | datareplicate | 0.1.15 |
 | file://../dicom-server | dicom-server | 0.1.24 |
 | file://../embedding-management-service | embedding-management-service | 0.1.2 |
 | file://../etl | etl | 0.1.20 |
@@ -47,7 +47,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ohif-viewer | ohif-viewer | 0.1.8 |
 | file://../orthanc | orthanc | 0.1.9 |
 | file://../peregrine | peregrine | 0.1.37 |
-| file://../portal | portal | 0.1.51 |
+| file://../portal | portal | 0.1.52 |
 | file://../requestor | requestor | 0.1.29 |
 | file://../revproxy | revproxy | 0.1.50 |
 | file://../sheepdog | sheepdog | 0.1.37 |
