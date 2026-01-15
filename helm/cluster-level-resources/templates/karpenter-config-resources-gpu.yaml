@@ -90,9 +90,6 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
-      - key: "topology.kubernetes.io/zone"
-        operator: In
-        values: ["us-east-1c"]
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
