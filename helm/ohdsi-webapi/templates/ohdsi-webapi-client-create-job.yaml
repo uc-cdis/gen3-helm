@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: atlas-webapi-client-job
+  name: ohdsi-webapi-client-job
 spec:
   template:
     metadata:
@@ -10,11 +10,11 @@ spec:
         app: gen3job
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: {{ .Values.webapiSecretsServiceAccountName }}
+      serviceAccountName: "webapi-secrets"
       volumes:
         - name: config-volume
           secret:
-            secretName: "fence-config" # TODO does not seem to be used anywhere....instead "fence-dbcreds" is used...
+            secretName: "fence-config"
         - name: shared-volume
           emptyDir: {}
       initContainers:
@@ -77,47 +77,6 @@ spec:
                 echo -e "\n\n>>========== SUCCESS: new_client ran successfully  ============\n\n"
                 exit 0
               fi
-          env:
-            - name: PGHOST
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: host
-                  optional: false  
-            - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: username
-                  optional: false 
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: password
-                  optional: false
-            - name: PGDB
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: database
-                  optional: false
-            - name: PGPORT
-              valueFrom:
-                secretKeyRef:
-                  name: fence-dbcreds
-                  key: port
-                  optional: true                
-            - name: DB
-              value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST)$(PGPORT)/$(PGDB)
-            - name: PYTHONPATH
-              value: /var/www/fence
-            - name: FENCE_PUBLIC_CONFIG
-              valueFrom:
-                configMapKeyRef:
-                  name: manifest-fence
-                  key: fence-config-public.yaml
-                  optional: true
           volumeMounts:
             - name: "shared-volume"
               mountPath: "/shared"

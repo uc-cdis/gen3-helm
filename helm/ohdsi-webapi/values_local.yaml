@@ -38,8 +38,6 @@ webapiConfig:
 
 # -- (bool) Whether to automatically create a OIDC a client in Fence.
 createFenceClientJobEnabled: true
-# Service account for accessing webapi secrets and updating with OIDC client ID created in Fence (set to "default" if testing locally):
-webapiSecretsServiceAccountName: "default"
 
 arboristUrl: http://arborist-service # add some local URL...
 fenceUrl: http://host.docker.internal

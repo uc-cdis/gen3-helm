@@ -7,7 +7,7 @@ kind: Secret
 metadata:
   name: ohdsi-webapi-config
 type: Opaque
-stringData: # TODO - should this be data (base64)??
+stringData:
   datasource_driverClassName: org.postgresql.Driver
   datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   datasource_ohdsi_schema: ohdsi
