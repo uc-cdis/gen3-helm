@@ -25,7 +25,7 @@ stringData:
   flyway_locations: classpath:db/migration/postgresql
 
   security_cors_enabled: "true"
-  security_origin: "*"
+  security_origin: https://atlas.{{ .Values.global.hostname }}
   security_token_expiration: "960"
   security_ssl_enabled: "false"
 
