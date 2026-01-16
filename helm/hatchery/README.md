@@ -17,6 +17,7 @@ A Helm chart for gen3 Hatchery
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| createNamespace | bool | `true` |  |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"HTTP_PORT","value":"8000"},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sStataSecret":false,"stataG3auto":null}` | External Secrets settings. |
@@ -95,6 +96,7 @@ A Helm chart for gen3 Hatchery
 | image.repository | string | `"quay.io/cdis/hatchery"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| jupyterNamespace | string | `""` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector labels. |

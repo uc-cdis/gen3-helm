@@ -186,6 +186,9 @@ volumeMounts:
     mountPath: /hatchery.json
     subPath: json
 
+jupyterNamespace: ""
+createNamespace: true
+
 hatchery:
   json: ""
   sidecarContainer:
