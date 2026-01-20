@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.59](https://img.shields.io/badge/Version-0.1.59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.67](https://img.shields.io/badge/Version-0.1.67-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.23 |
+| file://../common | common | 0.1.29 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -82,7 +82,7 @@ A Helm chart for gen3 Fence
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"GEN3_UWSGI_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"uwsgi-timeout","name":"manifest-global","optional":true}}},{"name":"DD_AGENT_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"AWS_STS_REGIONAL_ENDPOINTS","value":"regional"},{"name":"PYTHONPATH","value":"/var/www/fence"},{"name":"GEN3_DEBUG","value":"False"},{"name":"PGHOST","valueFrom":{"secretKeyRef":{"key":"host","name":"fence-dbcreds","optional":false}}},{"name":"PGUSER","valueFrom":{"secretKeyRef":{"key":"username","name":"fence-dbcreds","optional":false}}},{"name":"PGPASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"fence-dbcreds","optional":false}}},{"name":"PGDB","valueFrom":{"secretKeyRef":{"key":"database","name":"fence-dbcreds","optional":false}}},{"name":"DBREADY","valueFrom":{"secretKeyRef":{"key":"dbcreated","name":"fence-dbcreds","optional":false}}},{"name":"DB","value":"postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)"},{"name":"INDEXD_PASSWORD","valueFrom":{"secretKeyRef":{"key":"fence","name":"indexd-service-creds"}}},{"name":"gen3Env","valueFrom":{"configMapKeyRef":{"key":"hostname","name":"manifest-global"}}}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null,"fenceSshKeys":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sFenceConfigSecret":false,"createK8sGoogleAppSecrets":false,"createK8sJwtKeysSecret":false,"dbcreds":null,"fenceConfig":null,"fenceGoogleAppCredsSecret":null,"fenceGoogleStorageCredsSecret":null,"fenceJwtKeys":null,"fenceSshKeys":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sFenceConfigSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sGoogleAppSecrets | string | `false` | Will create the Helm "fence-google-app-creds-secret" and "fence-google-storage-creds-secret" secrets even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.createK8sJwtKeysSecret | string | `false` | Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -92,6 +92,7 @@ A Helm chart for gen3 Fence
 | externalSecrets.fenceGoogleStorageCredsSecret | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-google-storage-creds-secret" |
 | externalSecrets.fenceJwtKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-jwt-keys" |
 | externalSecrets.fenceSshKeys | string | `nil` | Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fenceCleanupExpiredGa4ghInfo.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
 | fenceCleanupExpiredGa4ghInfo.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | fenceDeleteExpiredClients.schedule | string | `"*/5 * * * *"` | The cron schedule expression to use in the fence-visa-update cronjob. Runs 30 past the hour by default. |
@@ -104,11 +105,11 @@ A Helm chart for gen3 Fence
 | fenceVisaUpdate.slack_webhook | string | `"None"` | Slack webhook endpoint used with certain jobs. |
 | fenceVisaUpdate.threadPoolSize | int | `nil` | number of Docker container CPU used for jwt verifcation |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
-| global.autoscaling.maxReplicas | int | `100` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
-| global.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| global.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"useLocalSecret":{"enabled":false,"localSecretName":null,"localSecretNamespace":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -130,15 +131,15 @@ A Helm chart for gen3 Fence
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","dbCreate":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createLocalK8sSecret":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.clusterSecretStoreRef | string | `""` | Will use a manually deployed clusterSecretStore if defined. |
-| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
+| global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -153,6 +154,10 @@ A Helm chart for gen3 Fence
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | googleCronJobs | map | `{"enabled":false}` | Configuration for the Google Cloud Storage cron jobs. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/fence"` | The Docker image repository for the fence service |
@@ -217,5 +222,5 @@ A Helm chart for gen3 Fence
 | usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| volumeMounts | list | `[{"mountPath":"/var/www/fence/local_settings.py","name":"old-config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/var/www/fence/fence_credentials.json","name":"json-secret-volume","readOnly":true,"subPath":"fence_credentials.json"},{"mountPath":"/var/www/fence/creds.json","name":"creds-volume","readOnly":true,"subPath":"creds.json"},{"mountPath":"/var/www/fence/config_helper.py","name":"config-helper","readOnly":true,"subPath":"config_helper.py"},{"mountPath":"/fence/fence/static/img/logo.svg","name":"logo-volume","readOnly":true,"subPath":"logo.svg"},{"mountPath":"/fence/fence/static/privacy_policy.md","name":"privacy-policy","readOnly":true,"subPath":"privacy_policy.md"},{"mountPath":"/var/www/fence/fence-config-secret.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"},{"mountPath":"/fence/keys/key/jwt_private_key.pem","name":"fence-jwt-keys","readOnly":true,"subPath":"jwt_private_key.pem"},{"mountPath":"/var/www/fence/fence-config-public.yaml","name":"config-volume-public","readOnly":true,"subPath":"fence-config-public.yaml"}]` | Volumes to mount to the container. |
-| volumes | list | `[{"name":"old-config-volume","secret":{"secretName":"fence-secret"}},{"name":"json-secret-volume","secret":{"optional":true,"secretName":"fence-json-secret"}},{"name":"creds-volume","secret":{"secretName":"fence-creds"}},{"configMap":{"name":"config-helper","optional":true},"name":"config-helper"},{"configMap":{"name":"logo-config"},"name":"logo-volume"},{"name":"config-volume","secret":{"secretName":"fence-config"}},{"name":"fence-google-app-creds-secret-volume","secret":{"secretName":"fence-google-app-creds-secret"}},{"name":"fence-google-storage-creds-secret-volume","secret":{"secretName":"fence-google-storage-creds-secret"}},{"name":"fence-jwt-keys","secret":{"secretName":"fence-jwt-keys"}},{"configMap":{"name":"privacy-policy"},"name":"privacy-policy"},{"configMap":{"name":"fence-yaml-merge","optional":false},"name":"yaml-merge"},{"configMap":{"name":"manifest-fence","optional":true},"name":"config-volume-public"}]` | Volumes to attach to the container. |
+| volumeMounts | list | `[{"mountPath":"/var/www/fence/local_settings.py","name":"old-config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/var/www/fence/fence_credentials.json","name":"json-secret-volume","readOnly":true,"subPath":"fence_credentials.json"},{"mountPath":"/var/www/fence/creds.json","name":"creds-volume","readOnly":true,"subPath":"creds.json"},{"mountPath":"/var/www/fence/config_helper.py","name":"config-helper","readOnly":true,"subPath":"config_helper.py"},{"mountPath":"/fence/fence/static/img/logo.svg","name":"logo-volume","readOnly":true,"subPath":"logo.svg"},{"mountPath":"/fence/fence/static/privacy_policy.md","name":"privacy-policy","readOnly":true,"subPath":"privacy_policy.md"},{"mountPath":"/var/www/fence/fence-config-secret.yaml","name":"config-volume","readOnly":true,"subPath":"fence-config.yaml"},{"mountPath":"/var/www/fence/yaml_merge.py","name":"yaml-merge","readOnly":true,"subPath":"yaml_merge.py"},{"mountPath":"/var/www/fence/fence_google_app_creds_secret.json","name":"fence-google-app-creds-secret-volume","readOnly":true,"subPath":"fence_google_app_creds_secret.json"},{"mountPath":"/var/www/fence/fence_google_storage_creds_secret.json","name":"fence-google-storage-creds-secret-volume","readOnly":true,"subPath":"fence_google_storage_creds_secret.json"},{"mountPath":"/tmp/keys/readonly/jwt_private_key.pem","name":"fence-jwt-keys-readonly","readOnly":true,"subPath":"jwt_private_key.pem"},{"mountPath":"/var/www/fence/fence-config-public.yaml","name":"config-volume-public","readOnly":true,"subPath":"fence-config-public.yaml"}]` | Volumes to mount to the container. |
+| volumes | list | `[{"name":"old-config-volume","secret":{"secretName":"fence-secret"}},{"name":"json-secret-volume","secret":{"optional":true,"secretName":"fence-json-secret"}},{"name":"creds-volume","secret":{"secretName":"fence-creds"}},{"configMap":{"name":"config-helper","optional":true},"name":"config-helper"},{"configMap":{"name":"logo-config"},"name":"logo-volume"},{"name":"config-volume","secret":{"secretName":"fence-config"}},{"name":"fence-google-app-creds-secret-volume","secret":{"secretName":"fence-google-app-creds-secret"}},{"name":"fence-google-storage-creds-secret-volume","secret":{"secretName":"fence-google-storage-creds-secret"}},{"name":"fence-jwt-keys-readonly","secret":{"secretName":"fence-jwt-keys"}},{"configMap":{"name":"privacy-policy"},"name":"privacy-policy"},{"configMap":{"name":"fence-yaml-merge","optional":false},"name":"yaml-merge"},{"configMap":{"name":"manifest-fence","optional":true},"name":"config-volume-public"}]` | Volumes to attach to the container. |

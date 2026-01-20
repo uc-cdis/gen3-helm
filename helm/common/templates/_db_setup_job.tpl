@@ -44,6 +44,12 @@ spec:
         app: gen3job
     spec:
       serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
+      {{- if $.Values.podSecurityContext }}
+      securityContext:
+      {{- range $k, $v := $.Values.podSecurityContext }}
+        {{ $k }}: {{ $v  }}
+      {{- end }}
+      {{- end }}
       restartPolicy: Never
       containers:
       - name: db-setup
@@ -145,22 +151,28 @@ spec:
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               gen3_log_info "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-
-              # Update secret to signal that db is ready, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
-              echo "database does not exist"
-              psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
-              gen3_log_info psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-              psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
-              psql -c "GRANT ALL ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\" WITH GRANT OPTION;"
-              psql -d $SERVICE_PGDB -c "CREATE EXTENSION ltree; ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN"
-              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
+              echo "Database does not exist — creating..."
+              psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || \
+                psql -c "CREATE DATABASE \"$SERVICE_PGDB\";"
+              psql -tc "SELECT 1 FROM pg_user WHERE usename = '$SERVICE_PGUSER'" | grep -q 1 || \
+                psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
 
-              # Update secret to signal that db has been created, and services can start
+              echo "Granting privileges to $SERVICE_PGUSER..."
+              psql -c "GRANT ALL PRIVILEGES ON DATABASE \"$SERVICE_PGDB\" TO \"$SERVICE_PGUSER\";"
+              psql -d $SERVICE_PGDB -c "ALTER SCHEMA public OWNER TO \"$SERVICE_PGUSER\";"
+              psql -d $SERVICE_PGDB -c "GRANT ALL ON SCHEMA public TO \"$SERVICE_PGUSER\";"
+              psql -d $SERVICE_PGDB -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO \"$SERVICE_PGUSER\";"
+              psql -d $SERVICE_PGDB -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
+
+              echo "Creating ltree extension..."
+              psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS ltree;"
+
+              PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
-{{- end}}
+{{- end }}
 {{- end }}
 
 
@@ -169,7 +181,7 @@ Create k8s secrets for connecting to postgres
 */}}
 # DB Secrets
 {{- define "common.db-secret" -}}
-{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.dbCreate) }}
+{{- if or (not .Values.global.externalSecrets.deploy) (and .Values.global.externalSecrets.deploy .Values.global.externalSecrets.createLocalK8sSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -186,3 +198,57 @@ data:
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Bootstrap Secret for PushSecret to populate External Secret
+*/}}
+{{- define "common.secret.db.bootstrap" -}}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}
+type: Opaque
+data:
+  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
+  port: {{ $.Values.postgres.port | b64enc | quote }}
+  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+  {{- if $.Values.global.dev }}
+  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
+  {{- else }}
+  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+  {{- end }}
+  dbcreated: {{ "true" | b64enc | quote }}
+{{- end }}
+{{- end -}}
+
+
+{{- define "common.db-push-secret" -}}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: {{ $.Chart.Name }}-dbcreds
+spec:
+  updatePolicy: IfNotExists
+  refreshInterval: 2m
+  secretStoreRefs:
+    {{- if ne .Values.global.externalSecrets.clusterSecretStoreRef "" }}
+    - name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
+      kind: ClusterSecretStore
+    {{- else }}
+    - name: {{include "common.SecretStore" .}}
+      kind: SecretStore
+    {{- end }}
+  selector:
+    secret:
+      name: {{ $.Chart.Name }}-dbcreds-bootstrap
+  data:
+    - match:
+        remoteRef:
+          remoteKey: {{ include "common.externalSecret.dbcreds.name" . }}
+{{- end }}
+{{- end -}}

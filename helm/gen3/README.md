@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.69](https://img.shields.io/badge/Version-0.2.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.124](https://img.shields.io/badge/Version-0.2.124-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,40 +18,42 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.10 |
-| file://../ambassador | ambassador | 0.1.25 |
-| file://../arborist | arborist | 0.1.24 |
-| file://../argo-wrapper | argo-wrapper | 0.1.19 |
-| file://../audit | audit | 0.1.31 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.30 |
-| file://../cedar | cedar | 0.1.12 |
-| file://../cohort-middleware | cohort-middleware | 0.1.11 |
-| file://../common | common | 0.1.23 |
-| file://../dashboard | dashboard | 0.1.8 |
-| file://../datareplicate | datareplicate | 0.0.32 |
-| file://../dicom-server | dicom-server | 0.1.19 |
-| file://../etl | etl | 0.1.16 |
-| file://../fence | fence | 0.1.59 |
-| file://../frontend-framework | frontend-framework | 0.1.13 |
-| file://../gen3-analysis | gen3-analysis | 0.1.1 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.2 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.5 |
-| file://../guppy | guppy | 0.1.25 |
-| file://../hatchery | hatchery | 0.1.53 |
-| file://../indexd | indexd | 0.1.33 |
-| file://../manifestservice | manifestservice | 0.1.32 |
-| file://../metadata | metadata | 0.1.31 |
+| file://../access-backend | access-backend | 0.1.15 |
+| file://../ambassador | ambassador | 0.1.30 |
+| file://../arborist | arborist | 0.1.29 |
+| file://../argo-wrapper | argo-wrapper | 0.1.24 |
+| file://../audit | audit | 0.1.36 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.36 |
+| file://../cedar | cedar | 0.1.19 |
+| file://../cohort-middleware | cohort-middleware | 0.1.17 |
+| file://../common | common | 0.1.29 |
+| file://../dashboard | dashboard | 0.1.14 |
+| file://../datareplicate | datareplicate | 0.1.15 |
+| file://../dicom-server | dicom-server | 0.1.24 |
+| file://../embedding-management-service | embedding-management-service | 0.1.2 |
+| file://../etl | etl | 0.1.20 |
+| file://../fence | fence | 0.1.67 |
+| file://../frontend-framework | frontend-framework | 0.1.19 |
+| file://../gen3-analysis | gen3-analysis | 0.1.5 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.10 |
+| file://../gen3-workflow | gen3-workflow | 0.1.9 |
+| file://../guppy | guppy | 0.1.31 |
+| file://../hatchery | hatchery | 0.1.61 |
+| file://../indexd | indexd | 0.1.38 |
+| file://../manifestservice | manifestservice | 0.1.37 |
+| file://../metadata | metadata | 0.1.38 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohif-viewer | ohif-viewer | 0.1.3 |
-| file://../orthanc | orthanc | 0.1.4 |
-| file://../peregrine | peregrine | 0.1.31 |
-| file://../portal | portal | 0.1.45 |
-| file://../requestor | requestor | 0.1.24 |
-| file://../revproxy | revproxy | 0.1.45 |
-| file://../sheepdog | sheepdog | 0.1.29 |
-| file://../sower | sower | 0.1.34 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.32 |
-| file://../wts | wts | 0.1.30 |
+| file://../ohif-viewer | ohif-viewer | 0.1.8 |
+| file://../orthanc | orthanc | 0.1.9 |
+| file://../peregrine | peregrine | 0.1.37 |
+| file://../portal | portal | 0.1.51 |
+| file://../requestor | requestor | 0.1.29 |
+| file://../revproxy | revproxy | 0.1.50 |
+| file://../sheepdog | sheepdog | 0.1.37 |
+| file://../sower | sower | 0.1.40 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.39 |
+| file://../wts | wts | 0.1.35 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -88,10 +90,13 @@ Helm chart to deploy Gen3 Data Commons
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
+| elasticsearch.image | string | `"quay.io/cdis/elasticsearch"` |  |
+| elasticsearch.imageTag | string | `"7.10.2"` |  |
 | elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
+| embedding-management-service.enabled | bool | `false` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
@@ -110,14 +115,17 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
-| gen3-user-data-library | map | `{"enabled":false}` | Configurations for guppy chart. |
-| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the guppy subchart. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
+| gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
+| gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
+| gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
+| gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.aws.secretStoreServiceAccount | map | `{"enabled":false,"name":"secret-store-sa","roleArn":null}` | Service account and AWS role for authentication to AWS Secrets Manager |
 | global.aws.secretStoreServiceAccount.enabled | bool | `false` | Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn. |
@@ -126,6 +134,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret | map | `{"enabled":false,"localSecretName":null}` | Local secret setting if using a pre-exising secret. |
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
+| global.clusterName | string | `"default"` | Kubernetes cluster name. |
 | global.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
@@ -139,9 +148,9 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createSlackWebhookSecret":false,"dbCreate":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
-| global.externalSecrets.dbCreate | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
@@ -166,6 +175,9 @@ Helm chart to deploy Gen3 Data Commons
 | global.slackWebhook | string | `""` | slack webhook for notifications |
 | global.tierAccessLevel | string | `"private"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | global.workspaceTimeoutInMinutes | int | `480` |  |
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |

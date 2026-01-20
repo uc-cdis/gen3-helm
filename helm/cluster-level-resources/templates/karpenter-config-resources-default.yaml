@@ -16,7 +16,7 @@ spec:
   {{- end }}
   amiSelectorTerms:
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
-    owner: "143731057154"
+    owner: {{ index .Values "karpenter-crds" "amiOwner" | quote }}
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
@@ -66,10 +66,6 @@ spec:
       memory.available: 10%
     evictionSoftGracePeriod:
       memory.available: 5m
-    kubeReserved:
-      cpu: 480m
-      ephemeral-storage: 3Gi
-      memory: 1632Mi
 {{- end }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
@@ -99,8 +95,9 @@ spec:
     - nodes: 10%
 
   limits:
-    cpu: "1000"
-    memory: 1000Gi
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: 99
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -114,8 +111,9 @@ spec:
     consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
     expireAfter: {{ index .Values "karpenter-crds" "default" "expireAfter" }}
   limits:
-    cpu: "1000"
-    memory: 1000Gi
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: 99
   template:
     metadata:
       labels:
@@ -128,10 +126,6 @@ spec:
           memory.available: 10%
         evictionSoftGracePeriod:
           memory.available: 5m
-        kubeReserved:
-          cpu: 480m
-          ephemeral-storage: 3Gi
-          memory: 1632Mi
       nodeClassRef:
         apiVersion: karpenter.k8s.aws/v1beta1
         kind: EC2NodeClass

@@ -21,6 +21,7 @@ spec:
       {{- else }}
         values: |
           controller:
+            priorityClassName: 'alloy-high-priority'
             type: "deployment"
             affinity:
               nodeAffinity:
@@ -63,4 +64,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: alloy-high-priority
+value: 1000000
+globalDefault: false
+description: "Priority class for alloy service"
 {{ end }}

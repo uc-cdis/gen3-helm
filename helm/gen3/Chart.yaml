@@ -5,134 +5,142 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.10
+    version: 0.1.15
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.25
+    version: 0.1.30
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.24
+    version: 0.1.29
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.19
+    version: 0.1.24
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.31
+    version: 0.1.36
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.30
+    version: 0.1.36
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: cedar
-    version: 0.1.12
+    version: 0.1.19
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.11
+    version: 0.1.17
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.23
+    version: 0.1.29
     repository: file://../common
   - name: dashboard
-    version: 0.1.8
+    version: 0.1.14
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.0.32
+    version: 0.1.15
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+  - name: embedding-management-service
+    version: 0.1.2
+    repository: file://../embedding-management-service
+    condition: embedding-management-service.enabled
   - name: etl
-    version: 0.1.16
+    version: 0.1.20
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.13
+    version: 0.1.19
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.59
+    version: 0.1.67
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-user-data-library
-    version: 0.1.5
+    version: 0.1.10
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
+  - name: gen3-workflow
+    version: 0.1.9
+    repository: "file://../gen3-workflow"
+    condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.25
+    version: 0.1.31
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.53
+    version: 0.1.61
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.33
+    version: 0.1.38
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.32
+    version: 0.1.37
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.31
+    version: 0.1.38
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.31
+    version: 0.1.37
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.45
+    version: 0.1.51
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.24
+    version: 0.1.29
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.45
+    version: 0.1.50
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.29
+    version: 0.1.37
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.32
+    version: 0.1.39
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.34
+    version: 0.1.40
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.30
+    version: 0.1.35
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.19
+    version: 0.1.24
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.3
+    version: 0.1.8
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.4
+    version: 0.1.9
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
-    version: 0.1.1
+    version: 0.1.5
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
 
@@ -169,7 +177,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.69
+version: 0.2.124
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

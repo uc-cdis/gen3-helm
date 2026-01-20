@@ -9,7 +9,7 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+    createLocalK8sSecret: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     # -- (string) Will use a manually deployed clusterSecretStore if defined.
@@ -82,7 +82,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
@@ -102,9 +102,17 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -128,6 +136,8 @@ externalSecrets:
   fenceGoogleStorageCredsSecret:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-config"
   fenceConfig:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
   # -- (string) Will override the name of the aws secrets manager secret. Default is "fence-ssh-keys"
@@ -415,7 +425,7 @@ volumes:
   - name: fence-google-storage-creds-secret-volume
     secret:
       secretName: "fence-google-storage-creds-secret"
-  - name: fence-jwt-keys
+  - name: fence-jwt-keys-readonly
     secret:
       secretName: "fence-jwt-keys"
   - name: privacy-policy
@@ -472,9 +482,9 @@ volumeMounts:
     readOnly: true
     mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
     subPath: fence_google_storage_creds_secret.json
-  - name: "fence-jwt-keys"
+  - name: "fence-jwt-keys-readonly"
     readOnly: true
-    mountPath: "/fence/keys/key/jwt_private_key.pem"
+    mountPath: "/tmp/keys/readonly/jwt_private_key.pem"
     subPath: "jwt_private_key.pem"
   - name: "config-volume-public"
     readOnly: true

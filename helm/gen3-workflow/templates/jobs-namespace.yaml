@@ -1,0 +1,15 @@
+{{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
+
+{{- $overrideJobsNamespace := .Values.funnel.Kubernetes.JobsNamespace -}}
+{{- if and $overrideJobsNamespace (ne $overrideJobsNamespace "FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER") -}}
+    {{- $jobsNamespace = $overrideJobsNamespace -}}
+{{- end -}}
+
+{{- if ne $jobsNamespace .Release.Namespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: {{ $jobsNamespace | quote }}
+    labels:
+        app.kubernetes.io/name: {{ $jobsNamespace | quote }}
+{{- end }}
