@@ -48,6 +48,8 @@ A Helm chart for Kubernetes
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | funnel.Database | string | `"mongodb"` |  |
+| funnel.EventWriters[0] | string | `"mongodb"` |  |
+| funnel.EventWriters[1] | string | `"log"` |  |
 | funnel.Kubernetes.JobsNamespace | string | `"FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
