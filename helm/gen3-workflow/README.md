@@ -70,6 +70,8 @@ A Helm chart for Kubernetes
 | funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
 | funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
 | funnel.postgresql.enabled | bool | `false` |  |
+| funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
+| funnel.resources.requests.memory | string | `"2Gi"` |  |
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | funnel.volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
 | funnel.volumeMounts[0].subPath | string | `"funnel-patched.conf"` |  |
