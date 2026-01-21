@@ -470,7 +470,8 @@ funnel:
   #   requests:
   #     memory: "2Gi"
   #     ephemeral_storage: "2Gi"
-
+  postgresql:
+    enabled: false
   mongodb:
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
     # uncomment this if you're running it on an ARM chipset machine
@@ -478,6 +479,7 @@ funnel:
     #   registry: docker.io
     #   repository: dlavrenuek/bitnami-mongodb-arm
     #   tag: 6.0.13
+    enabled: true
     readinessProbe:
       enabled: true
       initialDelaySeconds: 20

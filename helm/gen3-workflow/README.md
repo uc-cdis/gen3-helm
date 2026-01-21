@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -9,7 +9,7 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.29 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.58 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.80 |
 
 ## Values
 
@@ -60,11 +60,13 @@ A Helm chart for Kubernetes
 | funnel.image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
+| funnel.mongodb.enabled | bool | `true` |  |
 | funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
 | funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
 | funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
 | funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
 | funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
+| funnel.postgresql.enabled | bool | `false` |  |
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | funnel.volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
 | funnel.volumeMounts[0].subPath | string | `"funnel-patched.conf"` |  |
