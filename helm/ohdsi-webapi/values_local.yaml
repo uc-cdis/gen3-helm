@@ -27,6 +27,7 @@ global:
     deploy: false
   # -- (string) Hostname for the deployment.
   hostname: "host.docker.internal"
+  atlasUrl: http://localhost:8889
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 webapiConfig:

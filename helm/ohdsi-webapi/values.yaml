@@ -27,6 +27,7 @@ global:
     deploy: false
   # -- (string) Hostname for the deployment.
   hostname: localhost
+  atlasUrl: https://localhost
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 webapiConfig:

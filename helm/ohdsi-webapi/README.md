@@ -47,3 +47,9 @@ http://localhost:8888
 http://localhost:8888/WebAPI/user/login/openid?redirectUrl=/home
 or add a team project:
 http://localhost:8888/WebAPI/user/login/openid?redirectUrl=/home?teamproject=team1
+
+Other URLs that can be checked to ensure
+DB connection is working:
+http://localhost:8888/WebAPI/conceptset
+or 
+http://atlas.localhost:8888/WebAPI/conceptset
