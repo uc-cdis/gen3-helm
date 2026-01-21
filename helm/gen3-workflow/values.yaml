@@ -465,11 +465,10 @@ funnel:
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
 
-  # Uncomment this once funnel is updated to a latest version say > 0.1.78 with STDOUT fix
-  # resources:
-  #   requests:
-  #     memory: "2Gi"
-  #     ephemeral_storage: "2Gi"
+  resources:
+    requests:
+      memory: "2Gi"
+      ephemeral_storage: "2Gi"
   
   Database: mongodb
   EventWriters:
