@@ -470,6 +470,8 @@ funnel:
   #   requests:
   #     memory: "2Gi"
   #     ephemeral_storage: "2Gi"
+  
+  Database: mongodb
   postgresql:
     enabled: false
   mongodb:

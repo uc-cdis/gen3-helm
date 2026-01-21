@@ -47,6 +47,7 @@ A Helm chart for Kubernetes
 | externalSecrets.gen3workflowG3auto | string | `""` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
+| funnel.Database | string | `"mongodb"` |  |
 | funnel.Kubernetes.JobsNamespace | string | `"FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
