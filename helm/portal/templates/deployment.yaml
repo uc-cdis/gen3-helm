@@ -107,25 +107,104 @@ spec:
             - /bin/sh
             - -c
             - |
-              mkdir -p /tmp/repo
-              cd /tmp/repo
-              # Clone only the specific branch with minimal history and sparse checkout
-              git clone \
+              set -eu
+
+              log() { echo "[$(date -u +'%Y-%m-%dT%H:%M:%SZ')] $*"; }
+              die() { log "ERROR: $*"; exit 1; }
+
+              REPO_DIR="/tmp/repo"
+              CLONE_DIR="${REPO_DIR}/custom"
+              SRC_DIR="{{ .Values.customConfig.dir }}"
+              DEST_DIR="/gen3/config"
+
+              # Retry settings (tune as desired)
+              MAX_ATTEMPTS="${MAX_ATTEMPTS:-8}"     # total tries
+              SLEEP_SECONDS="${SLEEP_SECONDS:-5}"   # initial backoff
+              MAX_SLEEP="${MAX_SLEEP:-40}"          # cap backoff
+
+              retry() {
+                attempt=1
+                sleep_s="$SLEEP_SECONDS"
+                while :; do
+                  log "Attempt ${attempt}/${MAX_ATTEMPTS}: $*"
+                  if "$@"; then
+                    return 0
+                  fi
+                  if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+                    return 1
+                  fi
+                  log "Command failed. Sleeping ${sleep_s}s before retry..."
+                  sleep "$sleep_s"
+                  attempt=$((attempt + 1))
+                  # exponential backoff with cap
+                  sleep_s=$((sleep_s * 2))
+                  if [ "$sleep_s" -gt "$MAX_SLEEP" ]; then
+                    sleep_s="$MAX_SLEEP"
+                  fi
+                done
+              }
+
+              log "Preparing repo dir: ${REPO_DIR}"
+              rm -rf "$REPO_DIR"
+              mkdir -p "$REPO_DIR"
+              cd "$REPO_DIR" || die "Failed to cd to ${REPO_DIR}"
+
+              : "${GIT_REPO:?GIT_REPO is not set}"
+              : "${GIT_BRANCH:?GIT_BRANCH is not set}"
+
+              log "Cloning repo (branch=${GIT_BRANCH}) from ${GIT_REPO}"
+              retry git clone \
                 --depth 1 \
                 --single-branch \
-                --branch ${GIT_BRANCH} \
+                --branch "${GIT_BRANCH}" \
                 --filter=blob:none \
                 --sparse \
-                ${GIT_REPO} custom
-              cd custom
+                "${GIT_REPO}" custom \
+                || die "git clone failed after ${MAX_ATTEMPTS} attempts (likely DNS/network)."
 
-              git sparse-checkout set {{ .Values.customConfig.dir }}
-              cd {{ .Values.customConfig.dir }}
-              ls
-              echo 'cp -r * /gen3/config'
-              cp -r * /gen3/config
-              echo 'ls /gen3/config'
-              ls /gen3/config
+              cd "$CLONE_DIR" || die "Clone dir missing: ${CLONE_DIR}"
+
+              log "Setting sparse checkout: ${SRC_DIR}"
+              git sparse-checkout set "$SRC_DIR" \
+                || die "sparse-checkout failed for path: ${SRC_DIR}"
+
+              if [ ! -d "$SRC_DIR" ]; then
+                log "Repo tree at $(pwd):"
+                ls -la
+                die "Expected directory not found after sparse checkout: ${SRC_DIR}"
+              fi
+
+              cd "$SRC_DIR" || die "Failed to cd to ${SRC_DIR}"
+
+              log "Copying config to ${DEST_DIR}"
+              mkdir -p "$DEST_DIR"
+              # copy dotfiles too
+              cp -R . "$DEST_DIR"/ || die "Copy to ${DEST_DIR} failed"
+
+              log "Final contents of ${DEST_DIR}:"
+              ls -la "$DEST_DIR"
+
+              log "Init container completed successfully."
+                  
+              # mkdir -p /tmp/repo
+              # cd /tmp/repo
+              # # Clone only the specific branch with minimal history and sparse checkout
+              # git clone \
+              #   --depth 1 \
+              #   --single-branch \
+              #   --branch ${GIT_BRANCH} \
+              #   --filter=blob:none \
+              #   --sparse \
+              #   ${GIT_REPO} custom
+              # cd custom
+
+              # git sparse-checkout set {{ .Values.customConfig.dir }}
+              # cd {{ .Values.customConfig.dir }}
+              # ls
+              # echo 'cp -r * /gen3/config'
+              # cp -r * /gen3/config
+              # echo 'ls /gen3/config'
+              # ls /gen3/config
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
