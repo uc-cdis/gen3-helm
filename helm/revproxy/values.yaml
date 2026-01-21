@@ -263,3 +263,9 @@ extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint
+#    authzPolicy: "protein-paint"
+#    authzService: "protein-paint"
+#    csrfCheck: true
+
+# -- (bool) Whether to enable robots.txt generation and serving.
+enableRobotsTxt: false
