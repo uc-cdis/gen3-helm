@@ -20,6 +20,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.47
@@ -36,6 +37,9 @@ version: 0.1.50
 =======
 version: 0.1.51
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+version: 0.1.52
+>>>>>>> b323eaff (Updating "config-puller" init container. (#490))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
