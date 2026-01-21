@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.51
+    version: 0.1.52
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
