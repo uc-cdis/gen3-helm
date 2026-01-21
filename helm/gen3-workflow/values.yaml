@@ -472,6 +472,9 @@ funnel:
   #     ephemeral_storage: "2Gi"
   
   Database: mongodb
+  EventWriters:
+    - mongodb
+    - log
   postgresql:
     enabled: false
   mongodb:
