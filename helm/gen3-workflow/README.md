@@ -10,6 +10,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -41,6 +42,9 @@
 =======
 ![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 94864c64 (Bump gen3-workflow chart)
+=======
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
 
 A Helm chart for Kubernetes
 
@@ -48,6 +52,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -85,6 +90,10 @@ A Helm chart for Kubernetes
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.58 |
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+| file://../common | common | 0.1.29 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.80 |
+>>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
 
 ## Values
 
@@ -131,6 +140,53 @@ A Helm chart for Kubernetes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+| funnel.Kubernetes.JobsNamespace | string | `"FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER"` |  |
+| funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
+| funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
+| funnel.Plugins.Params.S3Url | string | `"FUNNEL_PLUGIN_S3URL_PLACEHOLDER"` |  |
+| funnel.Plugins.Path | string | `"plugin-binaries/auth-plugin"` |  |
+| funnel.image | map | `{"initContainers":[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"main-gen3","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Printing FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n\nnamespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\n\n# Create a funnel-patched.conf since /etc/config/funnel.conf is readonly and replace JobsNamespace\nexport JOBS_NAMESPACE=workflow-pods-$namespace\nsed \"s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g\" /etc/config/funnel.conf > /tmp/funnel-patched.conf\necho \"Replaced .Kubernetes.JobsNamespace with $JOBS_NAMESPACE\"\n\nexport S3_URL=gen3-workflow-service.$namespace.svc.cluster.local\n\necho \"=== Patching Funnel Plugin values ===\"\necho \"  FUNNEL_OIDC_CLIENT_ID      : $FUNNEL_OIDC_CLIENT_ID\"\necho \"  S3_URL                    : $S3_URL\"\necho \"  FUNNEL_OIDC_CLIENT_SECRET : [REDACTED]\"\necho \"====================================\"\n\n# Replace Funnel plugin value placeholders with actual values (in-place)\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g\" /tmp/funnel-patched.conf\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g\" /tmp/funnel-patched.conf\nsed -i \"s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g\" /tmp/funnel-patched.conf\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"quay.io/cdis/awshelper","name":"secrets-updater","tag":"master","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-config-volume","subPath":"funnel-server.yaml"}]}],"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel"}` | Configuration for the Funnel container image. |
+| funnel.image.initContainers | map | `[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"main-gen3","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","echo \"Printing FUNNEL_OIDC_CLIENT_ID: $FUNNEL_OIDC_CLIENT_ID\"\n\nnamespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\n\n# Create a funnel-patched.conf since /etc/config/funnel.conf is readonly and replace JobsNamespace\nexport JOBS_NAMESPACE=workflow-pods-$namespace\nsed \"s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g\" /etc/config/funnel.conf > /tmp/funnel-patched.conf\necho \"Replaced .Kubernetes.JobsNamespace with $JOBS_NAMESPACE\"\n\nexport S3_URL=gen3-workflow-service.$namespace.svc.cluster.local\n\necho \"=== Patching Funnel Plugin values ===\"\necho \"  FUNNEL_OIDC_CLIENT_ID      : $FUNNEL_OIDC_CLIENT_ID\"\necho \"  S3_URL                    : $S3_URL\"\necho \"  FUNNEL_OIDC_CLIENT_SECRET : [REDACTED]\"\necho \"====================================\"\n\n# Replace Funnel plugin value placeholders with actual values (in-place)\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g\" /tmp/funnel-patched.conf\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g\" /tmp/funnel-patched.conf\nsed -i \"s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g\" /tmp/funnel-patched.conf\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}}],"image":"quay.io/cdis/awshelper","name":"secrets-updater","tag":"master","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-config-volume","subPath":"funnel-server.yaml"}]}]` | Configuration for the Funnel init container. |
+| funnel.image.initContainers[0].command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
+| funnel.image.initContainers[0].image | string | `"quay.io/cdis/funnel-gen3-plugin"` | The Docker image repository for the Funnel init/plugin container. |
+| funnel.image.initContainers[0].pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| funnel.image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
+| funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
+| funnel.mongodb.enabled | bool | `true` |  |
+| funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
+| funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
+| funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
+| funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
+| funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
+| funnel.postgresql.enabled | bool | `false` |  |
+| funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
+| funnel.volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
+| funnel.volumeMounts[0].subPath | string | `"funnel-patched.conf"` |  |
+| funnel.volumeMounts[1].mountPath | string | `"/etc/config/oidc"` |  |
+| funnel.volumeMounts[1].name | string | `"funnel-oidc-volume"` |  |
+| funnel.volumeMounts[1].readOnly | bool | `true` |  |
+| funnel.volumeMounts[2].mountPath | string | `"/etc/funnel/templates"` |  |
+| funnel.volumeMounts[2].name | string | `"worker-templates-volume"` |  |
+| funnel.volumeMounts[3].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
+| funnel.volumeMounts[3].name | string | `"plugin-volume"` |  |
+| funnel.volumes[0].configMap.name | string | `"funnel-server-config"` |  |
+| funnel.volumes[0].name | string | `"funnel-config-volume"` |  |
+| funnel.volumes[1].name | string | `"funnel-oidc-volume"` |  |
+| funnel.volumes[1].secret.items[0].key | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[0].path | string | `"client_id"` |  |
+| funnel.volumes[1].secret.items[1].key | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.items[1].path | string | `"client_secret"` |  |
+| funnel.volumes[1].secret.secretName | string | `"funnel-oidc-client"` |  |
+| funnel.volumes[2].configMap.name | string | `"funnel-worker-templates"` |  |
+| funnel.volumes[2].name | string | `"worker-templates-volume"` |  |
+| funnel.volumes[3].emptyDir | object | `{}` |  |
+| funnel.volumes[3].name | string | `"plugin-volume"` |  |
+| funnel.volumes[4].emptyDir | object | `{}` |  |
+| funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
+>>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |

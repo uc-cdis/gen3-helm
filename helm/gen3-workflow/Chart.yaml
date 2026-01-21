@@ -25,6 +25,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -56,6 +57,9 @@ version: 0.1.8
 =======
 version: 0.1.9
 >>>>>>> 94864c64 (Bump gen3-workflow chart)
+=======
+version: 0.1.10
+>>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -94,10 +98,21 @@ dependencies:
 =======
   - name: funnel
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.50
     repository: "file://../funnel"
 >>>>>>> ac9ee302 (Add useryaml, update funnel secrets, add funnel local chart reference)
 =======
     version: 0.1.53
+=======
+    # NOTE:
+    # When updating this version:
+    # 1) Run `helm dependency update` to generate a new .tgz file
+    # 2) Commit the updated .tgz file into gen3-helm in the same PR
+    #
+    # ArgoCD relies on this checked-in .tgz reference — if it's missing,
+    # Funnel will not be deployed as a dependency.
+    version: 0.1.80
+>>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
 >>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
