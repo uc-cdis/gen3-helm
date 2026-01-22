@@ -270,6 +270,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
+<<<<<<< HEAD
     version: 0.1.75
 =======
     version: 0.1.14
@@ -317,6 +318,9 @@ dependencies:
 =======
     version: 0.1.67
 >>>>>>> 9cf76072 (Update fence helm chart to work with readonly private key)
+=======
+    version: 0.1.68
+>>>>>>> c1da8f28 (Add ALLOW_NEW_USER_ON_LOGIN to fence config (#496))
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel

@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.75
 =======
 version: 0.1.61
@@ -44,6 +45,9 @@ version: 0.1.66
 =======
 version: 0.1.67
 >>>>>>> 9cf76072 (Update fence helm chart to work with readonly private key)
+=======
+version: 0.1.68
+>>>>>>> c1da8f28 (Add ALLOW_NEW_USER_ON_LOGIN to fence config (#496))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
