@@ -32,12 +32,12 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dicom-server | dicom-server | 0.1.23 |
 | file://../embedding-management-service | embedding-management-service | 0.1.1 |
 | file://../etl | etl | 0.1.19 |
-| file://../fence | fence | 0.1.67 |
+| file://../fence | fence | 0.1.68 |
 | file://../frontend-framework | frontend-framework | 0.1.18 |
 | file://../gen3-analysis | gen3-analysis | 0.1.4 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.9 |
-| file://../gen3-workflow | gen3-workflow | 0.1.8 |
+| file://../gen3-workflow | gen3-workflow | 0.1.11 |
 | file://../guppy | guppy | 0.1.30 |
 | file://../hatchery | hatchery | 0.1.61 |
 | file://../indexd | indexd | 0.1.37 |
