@@ -244,6 +244,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
 =======
     version: 0.1.17
@@ -257,6 +258,9 @@ dependencies:
 =======
     version: 0.1.20
 >>>>>>> f0075136 (updating garbage collect RoleBinding to use proper namespace. (#486))
+=======
+    version: 0.1.21
+>>>>>>> 7fff5bc5 (Updating ES Garbage Cronjob to Always be Enabled. (#494))
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
