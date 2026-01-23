@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.6.38](https://img.shields.io/badge/Version-0.6.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 =======
 ![Version: 0.6.25](https://img.shields.io/badge/Version-0.6.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
@@ -9,6 +10,9 @@
 =======
 ![Version: 0.6.28](https://img.shields.io/badge/Version-0.6.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 >>>>>>> f0075136 (updating garbage collect RoleBinding to use proper namespace. (#486))
+=======
+![Version: 0.6.30](https://img.shields.io/badge/Version-0.6.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+>>>>>>> 7f5da680 (Update tempo endpoint in alloy config. (#401))
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 

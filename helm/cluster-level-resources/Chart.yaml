@@ -6,6 +6,7 @@ type: application
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.6.38
 =======
 version: 0.6.25
@@ -13,5 +14,8 @@ version: 0.6.25
 =======
 version: 0.6.28
 >>>>>>> 7319cd3c (version bunp for lint test)
+=======
+version: 0.6.30
+>>>>>>> 7f5da680 (Update tempo endpoint in alloy config. (#401))
 
 appVersion: "1.17.0"
