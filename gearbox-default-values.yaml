@@ -1,0 +1,373 @@
+global:
+  dev: true
+  hostname: localhost
+  portal_app: gitops
+  dictionaryUrl: https://pcdc-gen3-dictionaries.s3.amazonaws.com/pcdc-schema-demo-amia.json
+  authz_entity_name: "subject"
+
+arborist:
+  #local Dev Only
+  postgres:
+    password: "arborist_thisisaweakpassword"
+  image:
+    repository: quay.io/cdis/arborist
+    tag: 2025.07
+
+fence:
+  #local Dev Only
+  postgres:
+    password: "fence_thisisaweakpassword"
+  FENCE_CONFIG:
+    DEBUG: true
+    MOCK_STORAGE: true
+    #fill in
+    AMANUENSIS_PUBLIC_KEY_PATH: "/fence/keys/key/jwt_public_key.pem"
+    MOCK_GOOGLE_AUTH: true
+    mock_default_user: "test@example.com"
+  volumes:
+    - name: old-config-volume
+      secret:
+        secretName: "fence-secret"
+    - name: json-secret-volume
+      secret:
+        secretName: "fence-json-secret"
+        optional: true
+    - name: creds-volume
+      secret:
+        secretName: "fence-creds"
+    - name: config-helper
+      configMap:
+        name: config-helper
+        optional: true
+    - name: logo-volume
+      configMap:
+        name: "logo-config"
+    - name: config-volume
+      secret:
+        secretName: "fence-config"
+    - name: fence-google-app-creds-secret-volume
+      secret:
+        secretName: "fence-google-app-creds-secret"
+    - name: fence-google-storage-creds-secret-volume
+      secret:
+        secretName: "fence-google-storage-creds-secret"
+    - name: fence-jwt-keys
+      secret:
+        secretName: "fence-jwt-keys"
+    - name: privacy-policy
+      configMap:
+        name: "privacy-policy"
+    - name: yaml-merge
+      configMap:
+        name: "fence-yaml-merge"
+        optional: true
+    - name: config-volume-public
+      configMap:
+        name: "manifest-fence"
+        optional: true
+
+  volumeMounts:
+    - name: "old-config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/local_settings.py"
+      subPath: local_settings.py
+    - name: "json-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_credentials.json"
+      subPath: fence_credentials.json
+    - name: "creds-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/creds.json"
+      subPath: creds.json
+    - name: "config-helper"
+      readOnly: true
+      mountPath: "/var/www/fence/config_helper.py"
+      subPath: config_helper.py
+    - name: "logo-volume"
+      readOnly: true
+      mountPath: "/fence/fence/static/img/logo.svg"
+      subPath: "logo.svg"
+    - name: "privacy-policy"
+      readOnly: true
+      mountPath: "/fence/fence/static/privacy_policy.md"
+      subPath: "privacy_policy.md"
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config.yaml"
+      subPath: fence-config.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+    - name: "fence-jwt-keys"
+      readOnly: true
+      mountPath: "/fence/keys/key/jwt_private_key.pem"
+      subPath: "jwt_private_key.pem"
+    # - name: "fence-jwt-keys"
+    #   readOnly: true
+    #   mountPath: "/fence/keys/key/jwt_public_key.pem"
+    #   subPath: "jwt_public_key.pem"
+    - name: "config-volume-public"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-public.yaml"
+      subPath: fence-config-public.yaml
+
+    # -- (list) Volumes to mount to the init container.
+
+  initVolumeMounts:
+    - name: "config-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config.yaml"
+      subPath: fence-config.yaml
+    - name: "config-volume-public"
+      readOnly: true
+      mountPath: "/var/www/fence/fence-config-public.yaml"
+      subPath: fence-config-public.yaml
+    - name: "yaml-merge"
+      readOnly: true
+      mountPath: "/var/www/fence/yaml_merge.py"
+      subPath: yaml_merge.py
+    - name: "fence-google-app-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_app_creds_secret.json"
+      subPath: fence_google_app_creds_secret.json
+    - name: "fence-google-storage-creds-secret-volume"
+      readOnly: true
+      mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
+      subPath: fence_google_storage_creds_secret.json
+
+  podSecurityContext:
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
+    {}
+  # securityContext:
+  #   allowPrivilegeEscalation: false
+  #   runAsNonRoot: true
+  image:
+    repository: quay.io/pcdc/fence
+    tag: "3.8.0"
+    pullPolicy: IfNotPresent
+  USER_YAML: |
+    authz:
+
+      resources:
+        - name: portal
+          description: data portal service
+        - name: 'services'
+          subresources:
+          - name: 'gearbox'
+            subresources:
+            - name: 'data-admin'
+            - name: 'data-manager'
+          - name: 'fence'
+            subresources:
+              - name: 'admin'
+
+      policies:
+        - id: base_access
+          resource_paths: ['/portal']
+          role_ids: ['base_access']
+        - id: 'services.gearbox-data-manager'
+          description: 'admin access to most gearbox data endpoints'
+          resource_paths: 
+          - /services/gearbox/data-manager
+          role_ids: 
+          - 'data_manager'
+        - id: 'services.gearbox-data-admin'
+          description: 'admin access to gearbox data'
+          role_ids:
+            - 'data_admin'
+          resource_paths:
+            - '/services/gearbox/data-admin'
+        - id: 'services.fence-admin'
+          description: 'admin access to fence'
+          role_ids:
+            - 'fence_admin'
+          resource_paths:
+            - '/services/fence/admin'   
+
+      roles:
+        - id: fence_admin
+          permissions:
+            - id: fence_admin_permission
+              action:
+                service: 'fence'
+                method: '*'
+        - id: base_access
+          permissions:
+            - id: gearbox_access
+              action:
+                service: '*'
+                method: 'read'
+        - id: data_manager
+          permissions:
+            - id: gearbox_data_manager
+              action:
+                service: 'gearbox'
+                method: '*'
+        - id: data_admin
+          permissions:
+            - id: gearbox_data_admin
+              action:
+                service: '*'
+                method: '*'
+    users:
+      ### BEGIN INTERNS SECTION ###
+      ### END INTERNS SECTION ###
+      pmurdoch@uchicago.edu:
+        admin: true
+        policies:
+          - base_access
+          - services.gearbox-data-manager
+          - services.fence-admin
+          - services.gearbox-data-admin
+
+portal:
+  enabled: true
+  image:
+    repository: quay.io/pcdc/gearbox_fe
+    tag: "dev"
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 1.0
+  gitops:
+    json: |
+      {
+        "s3_bucket": "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
+      }
+
+  gearboxS3Bucket: "https://test-compose-gearbox-data-bucket-with-versioning.s3.amazonaws.com"
+
+revproxy:
+  enabled: true
+  image:
+    repository: quay.io/cdis/nginx
+    tag: 2025.11
+
+gearbox:
+  #local Dev Only
+  postgres:
+    password: "gearbox_thisisaweakpassword"
+  enabled: true
+  image:
+    repository: quay.io/pcdc/gearbox_be
+    tag: "pcdc_dev_2025-11-19T15_28_30-06_00"
+    pullPolicy: IfNotPresent
+  # image:
+  #   repository: gearbox-be
+  #   tag: "test"
+  #   pullPolicy: Never
+  podSecurityContext:
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
+  volumes:
+    - name: config-volume
+      secret:
+        secretName: "gearbox-g3auto"
+    - name: gearbox-middleware-jwt-keys
+      secret:
+        secretName: "gearbox-middleware-jwt-keys"
+        items:
+          - key: jwt_public_key.pem
+            path: jwt_public_key.pem
+        optional: false
+
+gearbox-middleware:
+  enabled: true
+  gearboxMiddlewareG3auto:
+    testing: False
+  image:
+    repository: quay.io/pcdc/gearbox-middleware
+    tag: "pcdc_dev_Wed__19_Nov_2025_19_24_44_GMT"
+    pullPolicy: IfNotPresent
+  # image:
+  #   repository: gearbox-middleware
+  #   tag: "test"
+  #   pullPolicy: Never
+  podSecurityContext:
+    # runAsNonRoot: true
+    # runAsUser: 1000
+    # runAsGroup: 1000
+
+postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
+  #local Dev Only
+  auth:
+    postgresPassword: "thisisaterriblepassword"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+########################################################################################
+#                               DISABLED SERVICES                                      #
+########################################################################################
+elasticsearch:
+  enabled: false
+
+amanuensis:
+  enabled: false
+
+guppy:
+  enabled: false
+
+manifestservice:
+  enabled: false
+
+pcdcanalysistools:
+  enabled: false
+
+peregrine:
+  enabled: false
+
+sheepdog:
+  enabled: false
+
+sower:
+  enabled: false
+
+wts:
+  enabled: false
+
+ambassador:
+  # -- (bool) Whether to deploy the ambassador subchart.
+  enabled: false
+
+argo-wrapper:
+  # -- (bool) Whether to deploy the argo-wrapper subchart.
+  enabled: false
+
+audit:
+  # -- (bool) Whether to deploy the audit subchart.
+  enabled: false
+
+aws-es-proxy:
+  enabled: false
+
+metadata:
+  # -- (bool) Whether to deploy the metadata subchart.
+  enabled: false
+
+pidgin:
+  # -- (bool) Whether to deploy the pidgin subchart.
+  enabled: false
+
+indexd:
+  enabled: false
+
+hatchery:
+  enabled: false
+
+cohort-middleware:
+  enabled: false

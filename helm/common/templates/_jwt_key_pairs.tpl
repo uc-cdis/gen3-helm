@@ -54,6 +54,7 @@ spec:
       containers:
       - name: public-key-gen
         image: bitnamisecure/kubectl:latest
+        imagePullPolicy: IfNotPresent
         env:
           - name: PRIVATE_KEY_PEM
             valueFrom:
