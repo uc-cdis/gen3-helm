@@ -407,7 +407,8 @@ access-backend:
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
-    repository: bitnamilegacy/postgresql
+    repository: bitnami/postgresql
+    tag: 16.8.0-debian-12-r0
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
