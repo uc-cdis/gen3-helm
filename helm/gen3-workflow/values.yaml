@@ -465,12 +465,17 @@ funnel:
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
 
-  # Uncomment this once funnel is updated to a latest version say > 0.1.78 with STDOUT fix
-  # resources:
-  #   requests:
-  #     memory: "2Gi"
-  #     ephemeral_storage: "2Gi"
+  resources:
+    requests:
+      memory: "2Gi"
+      ephemeral_storage: "2Gi"
 
+  Database: mongodb
+  EventWriters:
+    - mongodb
+    - log
+  postgresql:
+    enabled: false
   mongodb:
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
     # uncomment this if you're running it on an ARM chipset machine
@@ -478,6 +483,7 @@ funnel:
     #   registry: docker.io
     #   repository: dlavrenuek/bitnami-mongodb-arm
     #   tag: 6.0.13
+    enabled: true
     readinessProbe:
       enabled: true
       initialDelaySeconds: 20
