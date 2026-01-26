@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.129](https://img.shields.io/badge/Version-0.2.129-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.130](https://img.shields.io/badge/Version-0.2.130-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -54,7 +54,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sower | sower | 0.1.40 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.39 |
 | file://../wts | wts | 0.1.35 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| https://charts.bitnami.com/bitnami | postgresql | 16.7.27 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
 ## Values
