@@ -6,8 +6,8 @@ global:
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
-    # -- (string) Name of external secret. Disabled if empty
-    externalSecret: "" # name of master Postgres secret in Secrets Manager
+    # -- (string) Name of master Postgres secret in Secrets Manager. Disabled if empty
+    externalSecret: ""
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
@@ -50,6 +50,8 @@ externalSecrets:
   createFunnelOidcClientSecret: true
   # -- (string) Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client".
   funnelOidcClient:
+  # -- (string) Name of the secret that will be created in secrets manager
+  dbcreds: ""
 
 # -- (map) Secret information for External Secrets.
 secrets:
