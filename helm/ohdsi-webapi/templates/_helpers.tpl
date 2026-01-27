@@ -60,3 +60,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+  WebAPI g3 Auto Secrets Manager Name
+*/}}
+{{- define "ohdsi-webapi-g3auto" -}}
+{{- default "ohdsi-webapi-g3auto" .Values.global.externalSecrets.webapiG3auto }}
+{{- end }}
