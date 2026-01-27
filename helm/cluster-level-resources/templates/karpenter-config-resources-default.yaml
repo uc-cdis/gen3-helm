@@ -69,6 +69,99 @@ spec:
 {{- end }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
+{{- if index .Values "karpenter-crds" "default" "capacityTypeWeights" }}
+{{- if gt (index .Values "karpenter-crds" "default" "capacityTypeWeights" "spot" | int) 0 }}
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: default-spot
+spec:
+  template:
+    metadata:
+      labels:
+        role: default
+        capacity-type: spot
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: default
+      expireAfter: 168h
+      terminationGracePeriod: 48h
+      requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - spot
+      {{- range (index .Values "karpenter-crds" "default" "requirements") }}
+      {{- if ne .key "karpenter.sh/capacity-type" }}
+      - key: {{ .key }}
+        operator: {{ .operator }}
+        values:
+        {{- range .values }}
+          - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+  disruption:
+    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
+    budgets:
+    - nodes: 10%
+
+  limits:
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: {{ index .Values "karpenter-crds" "default" "capacityTypeWeights" "spot" }}
+---
+{{- end }}
+{{- if gt (index .Values "karpenter-crds" "default" "capacityTypeWeights" "onDemand" | int) 0 }}
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: default-ondemand
+spec:
+  template:
+    metadata:
+      labels:
+        role: default
+        capacity-type: on-demand
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: default
+      expireAfter: 168h
+      terminationGracePeriod: 48h
+      requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      {{- range (index .Values "karpenter-crds" "default" "requirements") }}
+      {{- if ne .key "karpenter.sh/capacity-type" }}
+      - key: {{ .key }}
+        operator: {{ .operator }}
+        values:
+        {{- range .values }}
+          - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+  disruption:
+    consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
+    consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
+    budgets:
+    - nodes: 10%
+
+  limits:
+    cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
+    memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
+  weight: {{ index .Values "karpenter-crds" "default" "capacityTypeWeights" "onDemand" }}
+{{- end }}
+{{- else }}
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
@@ -98,6 +191,7 @@ spec:
     cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
     memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
   weight: 99
+{{- end }}
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
