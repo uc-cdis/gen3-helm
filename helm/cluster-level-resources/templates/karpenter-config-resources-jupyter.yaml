@@ -37,6 +37,9 @@ spec:
   subnetSelectorTerms:
   - tags:
       karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
+  {{- if and (index .Values "karpenter-crds" "jupyter" "staticProvisioning" "enabled") (index .Values "karpenter-crds" "jupyter" "staticProvisioning" "availabilityZone") }}
+      topology.kubernetes.io/zone: {{ index .Values "karpenter-crds" "jupyter" "staticProvisioning" "availabilityZone" }}
+  {{- end }}
 
   tags:
     Environment: {{ .Values.cluster }}
@@ -100,6 +103,31 @@ spec:
   limits:
     cpu: "1000"
     memory: 1000Gi
+{{- if and (index .Values "karpenter-crds" "jupyter" "staticProvisioning" "enabled") (semverCompare ">=1.8.0" .Values.karpenter.targetRevision) }}
+---
+apiVersion: karpenter.sh/v1
+kind: NodeClaim
+metadata:
+  name: jupyter-static-{{ index .Values "karpenter-crds" "jupyter" "staticProvisioning" "instanceIndex" | default "1" }}
+spec:
+  nodeClassRef:
+    group: karpenter.k8s.aws
+    kind: EC2NodeClass
+    name: jupyter
+  requirements:
+  {{- range (index .Values "karpenter-crds" "jupyter" "staticProvisioning" "requirements") }}
+  - key: {{ .key }}
+    operator: {{ .operator }}
+    values:
+    {{- range .values }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  taints:
+    - effect: NoSchedule
+      key: role
+      value: jupyter
+{{- end }}
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
