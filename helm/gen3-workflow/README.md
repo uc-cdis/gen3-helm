@@ -45,12 +45,6 @@ A Helm chart for Kubernetes
 | extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
-| gen3WorkflowConfig.db.database | string | `"gen3workflow_test"` | Name of the database to connect to. |
-| gen3WorkflowConfig.db.driver | string | `"postgresql+asyncpg"` | SQLAlchemy-compatible database driver. |
-| gen3WorkflowConfig.db.host | string | `"localhost"` | Hostname of the database server. |
-| gen3WorkflowConfig.db.password | string | `"postgres"` | Password used to authenticate with the database. |
-| gen3WorkflowConfig.db.port | int | `5432` | Port number on which the database listens. |
-| gen3WorkflowConfig.db.user | string | `"postgres"` | Username used to authenticate with the database. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | gen3WorkflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
 | gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
@@ -85,13 +79,6 @@ A Helm chart for Kubernetes
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
-| global.postgres.dbCreate | bool | `false` | Whether the database should be created. |
-| global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
-| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
-| global.postgres.master.host | string | `nil` | hostname of postgres server |
-| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
-| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
-| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 | global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |

@@ -27,21 +27,6 @@ global:
     oidcProviderUrl: ""
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-  postgres:
-    # -- (bool) Whether the database should be created.
-    dbCreate: false
-    # -- (string) Name of external secret. Disabled if empty
-    externalSecret: ""
-    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
-    master:
-      # -- (string) hostname of postgres server
-      host:
-      # -- (string) username of superuser in postgres. This is used to create or restore databases
-      username: postgres
-      # -- (string) password for superuser in postgres. This is used to create or restore databases
-      password:
-      # -- (string) Port for Postgres.
-      port: "5432"
   environment: default
   # -- (string) Kubernetes cluster name.
   clusterName: default
@@ -325,19 +310,6 @@ gen3WorkflowConfig:
   s3SecretAccessKey: ""
   # -- (bool) Enables KMS encryption for S3 uploads.
   kmsEncryptionEnabled: true
-  db:
-    # -- (string) SQLAlchemy-compatible database driver.
-    driver: postgresql+asyncpg
-    # -- (string) Hostname of the database server.
-    host: localhost
-    # -- (int) Port number on which the database listens.
-    port: 5432
-    # -- (string) Username used to authenticate with the database.
-    user: postgres
-    # -- (string) Password used to authenticate with the database.
-    password: postgres
-    # -- (string) Name of the database to connect to.
-    database: gen3workflow_test
   # -- (string) TES server URL to which workflow tasks are forwarded.
   tesServerUrl: http://funnel:8000
   # -- (list) Whitelist of container image patterns allowed for workflow tasks.
