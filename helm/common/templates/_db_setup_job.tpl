@@ -216,13 +216,6 @@ data:
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-
-  {{- $_ := set $.Values "debugger" dict }}
-  {{- merge $.Values.debugger (dict "global.dev" .Values.global.dev) }}
-  {{- merge $.Values.debugger (dict "postgres.host" .Values.postgres.host) }}
-  {{- merge $.Values.debugger (dict "global.postgres.master.host" .Values.global.postgres.master.host) }}
-  {{ fail (toYaml $.Values.debugger) }}
-
   {{- if $.Values.global.dev }}
   host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
   {{- else }}
