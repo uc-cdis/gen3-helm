@@ -52,7 +52,7 @@ spec:
                 fi
 
                 echo -e "\n\n>>========== CREATING NEW Fence oidc client for $atlas_hostname ... ============\n\n"
-                local secrets=$(fence-create client-create --client $client_name --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --username atlas --allowed-scopes openid user | tail -1)
+                local secrets=$(fence-create client-create --client $client_name --urls https://${atlas_hostname}/WebAPI/user/oauth/callback?client_name=OidcClient --auto_approve true --username atlas --allowed-scopes openid user | tail -1)
                 # secrets looks like ('CLIENT_ID', 'CLIENT_SECRET')
                 if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
                   echo -e "\n\n>>========== FAILED generating oidc client for $client_name  ============\n\n"
