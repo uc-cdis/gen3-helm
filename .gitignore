@@ -5,6 +5,6 @@ Chart.lock
 .DS_Store
 _sample-*/
 
-# exception: do not ignore the `helm/gen3-workflow/charts/funnel*` file
-!helm/gen3-workflow/charts
-helm/gen3-workflow/charts/common*
+# exception: do not ignore the `helm/funnel/charts/funnel*` file
+!helm/funnel/charts
+helm/funnel/charts/common*

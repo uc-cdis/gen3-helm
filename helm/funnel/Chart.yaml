@@ -1,5 +1,5 @@
 apiVersion: v2
-name: gen3-workflow
+name: funnel
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.11
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -26,3 +26,13 @@ dependencies:
   - name: common
     version: 0.1.29
     repository: file://../common
+  - name: funnel
+    # NOTE:
+    # When updating this version:
+    # 1) Run `helm dependency update` in this directory to generate a new .tgz file
+    # 2) Commit the updated .tgz file into gen3-helm in the same PR
+    #
+    # ArgoCD relies on this checked-in .tgz reference — if it's missing,
+    # Funnel will not be deployed as a dependency.
+    version: 0.1.82
+    repository: "https://ohsu-comp-bio.github.io/helm-charts"
