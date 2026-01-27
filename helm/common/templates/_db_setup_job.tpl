@@ -216,9 +216,6 @@ data:
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-
-  {{- .Values.postgres.host | toYaml | printf "\nDEBUG -- postgres.host:\n%s" | fail }}
-
   {{- if $.Values.global.dev }}
   host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
   {{- else }}
