@@ -140,6 +140,13 @@ karpenter-crds:
       memory: 1000Gi
     volumeSize: 50Gi
     additionalTags: {}
+    # Optional: Configure spot/on-demand capacity balancing with weights
+    # When capacityTypeWeights is set, separate NodePools are created for spot and on-demand
+    # The weight determines the preference ratio (e.g., spot: 80, onDemand: 20 = 80/20 split)
+    # If not set, uses the default requirements below
+    capacityTypeWeights: {}
+      # spot: 80
+      # onDemand: 20
     requirements:
       - key: karpenter.sh/capacity-type
         operator: In
@@ -198,6 +205,37 @@ karpenter-crds:
     expireAfter: "168h"
     volumeSize: 50Gi
     additionalTags: {}
+    # Static provisioning configuration for Karpenter 1.8+
+    # Creates a NodeClaim that ensures a node is always available
+    staticProvisioning:
+      enabled: false
+      # Index number for the static node (useful for creating multiple static nodes)
+      instanceIndex: 1
+      # Availability zone where the static node should be created
+      # This should match the zone where PVCs are located
+      availabilityZone: ""  # e.g., "us-east-1a"
+      # Requirements for the static node
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - amd64
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values:
+            - m
+            - t
+            - c
+        - key: karpenter.k8s.aws/instance-size
+          operator: In
+          values:
+            - large
+            - xlarge
+            - 2xlarge
     requirements:
       - key: karpenter.sh/capacity-type
         operator: In
@@ -291,7 +329,7 @@ alloy-configmap-data: |
   otelcol.processor.batch "default" {
     output {
       metrics = [otelcol.exporter.prometheus.default.input]
-      traces  = [otelcol.exporter.otlphttp.tempo.input]
+      traces  = [otelcol.exporter.otlp.tempo.input]
     }
   }
 
@@ -299,10 +337,15 @@ alloy-configmap-data: |
     forward_to = [prometheus.remote_write.default.receiver]
   }
 
-  otelcol.exporter.otlphttp "tempo" {
+  otelcol.exporter.otlp "tempo" {
     client {
-      endpoint = "https://tempo.planx-pla.net:443"
+      endpoint = "http://monitoring-tempo-distributor.monitoring:4317"
+      // Configure TLS settings for communicating with the endpoint.
       tls {
+          // The connection is insecure.
+          insecure = true
+          // Do not verify TLS certificates when connecting.
+          insecure_skip_verify = true
       }
     }
   }
