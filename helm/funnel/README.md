@@ -25,7 +25,7 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
-| funnel.Kubernetes.JobsNamespace | string | `"FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER"` |  |
+| funnel.Logger.Level | string | `"info"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.S3Url | string | `"FUNNEL_PLUGIN_S3URL_PLACEHOLDER"` |  |
