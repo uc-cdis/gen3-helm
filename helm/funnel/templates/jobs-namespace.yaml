@@ -1,9 +1,6 @@
 {{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
 
 {{- $overrideJobsNamespace := .Values.Kubernetes.JobsNamespace -}}
-
-{{- .Values.Kubernetes.JobsNamespace | toYaml | printf "\nDEBUG -- overrideJobsNamespace:\n%s" | fail }}
-
 {{- if and $overrideJobsNamespace (ne $overrideJobsNamespace "FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER") -}}
     {{- $jobsNamespace = $overrideJobsNamespace -}}
 {{- end -}}
