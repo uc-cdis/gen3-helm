@@ -66,6 +66,7 @@ spec:
       memory.available: 10%
     evictionSoftGracePeriod:
       memory.available: 5m
+    maxPods: 2000
 {{- end }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
