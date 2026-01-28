@@ -267,7 +267,7 @@ funnel:
       User: FUNNEL_POSTGRES_USER_PLACEHOLDER
       Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
   Kubernetes:
-    JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER_THISONE
+    JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
   Plugins:
     Path: plugin-binaries/auth-plugin
     Params:
