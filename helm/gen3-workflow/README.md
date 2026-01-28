@@ -72,9 +72,8 @@ A Helm chart for Kubernetes
 | global.crossplane.oidcProviderUrl | string | `""` | OIDC provider URL for the EKS cluster. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.environment | string | `"default"` |  |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"pushFunnelOidcClientToExternalSecrets":true,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
-| global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` | Will push secrets to External Secrets Store. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |

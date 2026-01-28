@@ -36,9 +36,10 @@ A Helm chart for Kubernetes
 | externalSecrets.funnelOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client". |
 | global.clusterName | string | `"default"` |  |
 | global.environment | string | `"default"` |  |
-| global.externalSecrets.createLocalK8sSecret | bool | `false` |  |
-| global.externalSecrets.deploy | bool | `true` |  |
-| global.externalSecrets.pushSecret | bool | `true` |  |
+| global.externalSecrets.clusterSecretStoreRef | string | `""` |  |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+| global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |

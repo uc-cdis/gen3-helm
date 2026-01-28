@@ -20,13 +20,13 @@ global:
       port: "5432"
   environment: default
   clusterName: default
-
-  # configuring as documented in https://github.com/uc-cdis/gen3-helm/blob/3640fd1/docs/databases.md#values-for-enabling-pushsecret-bootstrap
   externalSecrets:
-    deploy: true
-    createLocalK8sSecret: false
-    pushSecret: true
-
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+    clusterSecretStoreRef: ""
+    pushFunnelOidcClientToExternalSecrets: true
   # -- (string) Hostname for the deployment.
   hostname: ""
   # -- (map) Network policy settings.

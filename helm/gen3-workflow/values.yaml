@@ -37,8 +37,6 @@ global:
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
     clusterSecretStoreRef: ""
-    # -- (bool) Will push secrets to External Secrets Store.
-    pushFunnelOidcClientToExternalSecrets: true
   # -- (string) Hostname for the deployment.
   hostname: ""
   # -- (map) Network policy settings.
