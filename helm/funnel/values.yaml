@@ -86,6 +86,8 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+  # ------- above this line are gen3-helm psql settings, below are funnel psql settings -------
+  enabled: false # default bitnami postgres pod
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -95,334 +97,331 @@ criticalService: "false"
 # -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
 partOf: "Workflow_Execution"
 
-funnel:
-  # -- (map) Configuration for the Funnel container image.
-  image:
-    # -- (string) The Docker image repository for the Funnel service.
-    repository: quay.io/ohsu-comp-bio/funnel
-    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+# -- (map) Configuration for the Funnel container image.
+image:
+  # -- (string) The Docker image repository for the Funnel service.
+  repository: quay.io/ohsu-comp-bio/funnel
+  # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+  pullPolicy: Always
 
-    # -- (map) Configuration for the Funnel init container.
-    initContainers:
-      - name: plugin
-        # -- (string) The Docker image repository for the Funnel init/plugin container.
-        image: quay.io/cdis/funnel-gen3-plugin
-        # -- (string) The Docker image tag for the Funnel init/plugin container.
-        tag: main-gen3
-        # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-        pullPolicy: Always
-        # -- (list) Arguments to pass to the init container.
-        command:
-          - cp
-          - /app/build/plugins/authorizer
-          - /opt/funnel/plugin-binaries/auth-plugin
-        volumeMounts:
-          - name: plugin-volume
-            mountPath: /opt/funnel/plugin-binaries
-      - name: secrets-updater
-        image: quay.io/cdis/awshelper
-        tag: master
-        env:
-          - name: FUNNEL_OIDC_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: funnel-oidc-client
-                key: client_id
-                optional: false
-          - name: FUNNEL_OIDC_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: funnel-oidc-client
-                key: client_secret
-                optional: false
-          - name: DB_HOST
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: host
-                optional: false
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: username
-                optional: false
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: password
-                optional: false
-          - name: DB_DATABASE
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: database
-                optional: false
-        volumeMounts:
-          - name: funnel-patched-config-volume
-            mountPath: /tmp
-          - name: funnel-config-volume
-            mountPath: /etc/config/funnel.conf
-            subPath: funnel-server.yaml
-        command: ["/bin/bash"]
-        args:
-          - "-c"
-          - |
-            echo "Debug: FUNNEL_OIDC_CLIENT_ID = $FUNNEL_OIDC_CLIENT_ID"
-            echo "Debug:  DB_DATABASE = $DB_DATABASE"
+  # -- (map) Configuration for the Funnel init container.
+  initContainers:
+    - name: plugin
+      # -- (string) The Docker image repository for the Funnel init/plugin container.
+      image: quay.io/cdis/funnel-gen3-plugin
+      # -- (string) The Docker image tag for the Funnel init/plugin container.
+      tag: main-gen3
+      # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+      pullPolicy: Always
+      # -- (list) Arguments to pass to the init container.
+      command:
+        - cp
+        - /app/build/plugins/authorizer
+        - /opt/funnel/plugin-binaries/auth-plugin
+      volumeMounts:
+        - name: plugin-volume
+          mountPath: /opt/funnel/plugin-binaries
+    - name: secrets-updater
+      image: quay.io/cdis/awshelper
+      tag: master
+      env:
+        - name: FUNNEL_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: funnel-oidc-client
+              key: client_id
+              optional: false
+        - name: FUNNEL_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: funnel-oidc-client
+              key: client_secret
+              optional: false
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: host
+              optional: false
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: username
+              optional: false
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: password
+              optional: false
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: database
+              optional: false
+      volumeMounts:
+        - name: funnel-patched-config-volume
+          mountPath: /tmp
+        - name: funnel-config-volume
+          mountPath: /etc/config/funnel.conf
+          subPath: funnel-server.yaml
+      command: ["/bin/bash"]
+      args:
+        - "-c"
+        - |
+          echo "Debug: FUNNEL_OIDC_CLIENT_ID = $FUNNEL_OIDC_CLIENT_ID"
+          echo "Debug:  DB_DATABASE = $DB_DATABASE"
 
-            namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+          namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
-            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
-            cp /etc/config/funnel.conf /tmp/funnel-patched.conf
+          # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
+          cp /etc/config/funnel.conf /tmp/funnel-patched.conf
 
-            export JOBS_NAMESPACE=workflow-pods-$namespace
-            export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
+          export JOBS_NAMESPACE=workflow-pods-$namespace
+          export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
 
-            echo "=== Patching Funnel Plugin values ==="
-            echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
-            echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
-            echo "  Plugins.Params.S3Url       : $S3_URL"
-            echo "  Postgres.Database          : $DB_DATABASE"
-            echo "===================================="
+          echo "=== Patching Funnel Plugin values ==="
+          echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
+          echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
+          echo "  Plugins.Params.S3Url       : $S3_URL"
+          echo "  Postgres.Database          : $DB_DATABASE"
+          echo "===================================="
 
-            # Replace placeholders with actual values (in-place)
-            sed -i "s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" /tmp/funnel-patched.conf
+          # Replace placeholders with actual values (in-place)
+          sed -i "s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g" /tmp/funnel-patched.conf
+          sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
+          sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
+          sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
+          sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" /tmp/funnel-patched.conf
+          sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" /tmp/funnel-patched.conf
+          sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" /tmp/funnel-patched.conf
+          sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" /tmp/funnel-patched.conf
 
-  volumes:
-  - name: funnel-config-volume
-    configMap:
-      name: funnel-server-config
-  - name: funnel-oidc-volume
-    secret:
-      secretName: "funnel-oidc-client"
-      items:
-        - key: client_id
-          path: client_id
-        - key: client_secret
-          path: client_secret
+volumes:
+- name: funnel-config-volume
+  configMap:
+    name: funnel-server-config
+- name: funnel-oidc-volume
+  secret:
+    secretName: "funnel-oidc-client"
+    items:
+      - key: client_id
+        path: client_id
+      - key: client_secret
+        path: client_secret
+
+- name: worker-templates-volume
+  configMap:
+    name: funnel-worker-templates
+
+- name: plugin-volume
+  emptyDir: {}  # Shared volume
+
+- name: funnel-patched-config-volume
+  emptyDir: {}  # Shared volume for config data
+
+volumeMounts:
+  - name: funnel-patched-config-volume
+    mountPath: /etc/config/funnel-server.yaml
+    subPath: funnel-patched.conf
+
+  - name: "funnel-oidc-volume"
+    readOnly: true
+    mountPath: "/etc/config/oidc"
 
   - name: worker-templates-volume
-    configMap:
-      name: funnel-worker-templates
+    mountPath: /etc/funnel/templates
 
   - name: plugin-volume
-    emptyDir: {}  # Shared volume
+    mountPath: /opt/funnel/plugin-binaries
 
-  - name: funnel-patched-config-volume
-    emptyDir: {}  # Shared volume for config data
+resources:
+  requests:
+    memory: "2Gi"
+    ephemeral_storage: "2Gi"
 
-  volumeMounts:
-    - name: funnel-patched-config-volume
-      mountPath: /etc/config/funnel-server.yaml
-      subPath: funnel-patched.conf
+Database: postgres
+EventWriters:
+  - postgres
+  - log
+mongodb:  # default mongodb pod
+  # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
+  # uncomment this if you're running it on an ARM chipset machine
+  # image:
+  #   registry: docker.io
+  #   repository: dlavrenuek/bitnami-mongodb-arm
+  #   tag: 6.0.13
+  enabled: false
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 20
+    timeoutSeconds: 10
+    periodSeconds: 10
+    failureThreshold: 10
+Postgres:
+    Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
+    Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
+    User: FUNNEL_POSTGRES_USER_PLACEHOLDER
+    Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
+Kubernetes:
+  JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
+Plugins:
+  Path: plugin-binaries/auth-plugin
+  Params:
+    OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
+    OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
+    S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
 
-    - name: "funnel-oidc-volume"
-      readOnly: true
-      mountPath: "/etc/config/oidc"
-
-    - name: worker-templates-volume
-      mountPath: /etc/funnel/templates
-
-    - name: plugin-volume
-      mountPath: /opt/funnel/plugin-binaries
-
-  resources:
-    requests:
-      memory: "2Gi"
-      ephemeral_storage: "2Gi"
-
-  Database: postgres
-  EventWriters:
-    - postgres
-    - log
-  postgresql:  # default bitnami postgres pod
-    enabled: false
-  mongodb:  # default mongodb pod
-    # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
-    # uncomment this if you're running it on an ARM chipset machine
-    # image:
-    #   registry: docker.io
-    #   repository: dlavrenuek/bitnami-mongodb-arm
-    #   tag: 6.0.13
-    enabled: false
-    readinessProbe:
-      enabled: true
-      initialDelaySeconds: 20
-      timeoutSeconds: 10
-      periodSeconds: 10
-      failureThreshold: 10
-  Postgres:
-      Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
-      Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
-      User: FUNNEL_POSTGRES_USER_PLACEHOLDER
-      Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
-  Kubernetes:
-    JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
-  Plugins:
-    Path: plugin-binaries/auth-plugin
-    Params:
-      OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
-      OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
-      S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
-
-  nodeclass.yaml: |
-    apiVersion: karpenter.k8s.aws/v1
-    kind: EC2NodeClass
-    metadata:
-      name: gen3-workflow-user-USER_ID
-    spec:
-      amiFamily: AL2
-      amiSelectorTerms:
-      - name: 1-31-EKS-FIPS*
-        owner: "143731057154"
-      blockDeviceMappings:
-      - deviceName: /dev/xvda
-        ebs:
-          deleteOnTermination: true
-          encrypted: true
-          volumeSize: 100Gi
-          volumeType: gp2
-      metadataOptions:
-        httpEndpoint: enabled
-        httpProtocolIPv6: disabled
-        httpPutResponseHopLimit: 2
-        httpTokens: optional
-      role: eks_ENVIRONMENT_workers_role
-      securityGroupSelectorTerms:
-      - tags:
-          karpenter.sh/discovery: ENVIRONMENT-workflow
-      subnetSelectorTerms:
-      - tags:
-          karpenter.sh/discovery: ENVIRONMENT
-      tags:
-        Environment: ENVIRONMENT
-        Name: eks-ENVIRONMENT-workflow-karpenter
-        gen3service: argo-workflows
-        gen3username: GEN3_USERNAME
-        gen3teamproject: "GEN3_TEAMNAME"
+nodeclass.yaml: |
+  apiVersion: karpenter.k8s.aws/v1
+  kind: EC2NodeClass
+  metadata:
+    name: gen3-workflow-user-USER_ID
+  spec:
+    amiFamily: AL2
+    amiSelectorTerms:
+    - name: 1-31-EKS-FIPS*
+      owner: "143731057154"
+    blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        deleteOnTermination: true
+        encrypted: true
+        volumeSize: 100Gi
+        volumeType: gp2
+    metadataOptions:
+      httpEndpoint: enabled
+      httpProtocolIPv6: disabled
+      httpPutResponseHopLimit: 2
+      httpTokens: optional
+    role: eks_ENVIRONMENT_workers_role
+    securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ENVIRONMENT-workflow
+    subnetSelectorTerms:
+    - tags:
         karpenter.sh/discovery: ENVIRONMENT
-        purpose: gen3-workflow-task
-        "vadc:cost-type": user-based-variable
-        "vadc:usage-type": user-infrastructure
-        "vadc:environment-type": "ENVIRONMENT_TYPE_CODE"
-      userData: |
-        MIME-Version: 1.0
-        Content-Type: multipart/mixed; boundary="BOUNDARY"
+    tags:
+      Environment: ENVIRONMENT
+      Name: eks-ENVIRONMENT-workflow-karpenter
+      gen3service: argo-workflows
+      gen3username: GEN3_USERNAME
+      gen3teamproject: "GEN3_TEAMNAME"
+      karpenter.sh/discovery: ENVIRONMENT
+      purpose: gen3-workflow-task
+      "vadc:cost-type": user-based-variable
+      "vadc:usage-type": user-infrastructure
+      "vadc:environment-type": "ENVIRONMENT_TYPE_CODE"
+    userData: |
+      MIME-Version: 1.0
+      Content-Type: multipart/mixed; boundary="BOUNDARY"
 
-        --BOUNDARY
-        Content-Type: text/x-shellscript; charset="us-ascii"
+      --BOUNDARY
+      Content-Type: text/x-shellscript; charset="us-ascii"
 
-        #!/bin/bash -x
-        instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
-        curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
+      #!/bin/bash -x
+      instanceId=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+      curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys
 
-        echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+      echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
 
-        sysctl -w fs.inotify.max_user_watches=12000
+      sysctl -w fs.inotify.max_user_watches=12000
 
-        --BOUNDARY--
-  nodepool.yaml: |
-    apiVersion: karpenter.sh/v1
-    kind: NodePool
-    metadata:
-      name: gen3-workflow-USER_ID
-    spec:
-      disruption:
-        consolidateAfter: 10s
-        consolidationPolicy: WhenEmpty
-      limits:
-        cpu: 4k
-      template:
-        metadata:
-          labels:
-            purpose: workflow
-            role: WORKFLOW_NAME
-        spec:
-          nodeClassRef:
-            group: karpenter.k8s.aws
-            kind: EC2NodeClass
-            name: gen3-workflow-USER_ID
-          requirements:
-          - key: karpenter.sh/capacity-type
-            operator: In
-            values:
-            - on-demand
-          - key: kubernetes.io/arch
-            operator: In
-            values:
-            - amd64
-          - key: node.kubernetes.io/instance-type
-            operator: In
-            values:
-            - c6a.large
-            - c6a.xlarge
-            - c6a.2xlarge
-            - c6a.4xlarge
-            - c6a.8xlarge
-            - c6a.12xlarge
-            - c7a.large
-            - c7a.xlarge
-            - c7a.2xlarge
-            - c7a.4xlarge
-            - c7a.8xlarge
-            - c7a.12xlarge
-            - c6i.large
-            - c6i.xlarge
-            - c6i.2xlarge
-            - c6i.4xlarge
-            - c6i.8xlarge
-            - c6i.12xlarge
-            - c7i.large
-            - c7i.xlarge
-            - c7i.2xlarge
-            - c7i.4xlarge
-            - c7i.8xlarge
-            - c7i.12xlarge
-            - m6a.2xlarge
-            - m6a.4xlarge
-            - m6a.8xlarge
-            - m6a.12xlarge
-            - m6a.16xlarge
-            - m6a.24xlarge
-            - m7a.2xlarge
-            - m7a.4xlarge
-            - m7a.8xlarge
-            - m7a.12xlarge
-            - m7a.16xlarge
-            - m7a.24xlarge
-            - m6i.2xlarge
-            - m6i.4xlarge
-            - m6i.8xlarge
-            - m6i.12xlarge
-            - m6i.16xlarge
-            - m6i.24xlarge
-            - m7i.2xlarge
-            - m7i.4xlarge
-            - m7i.8xlarge
-            - m7i.12xlarge
-            - m7i.16xlarge
-            - m7i.24xlarge
-            - r7iz.2xlarge
-            - r7iz.4xlarge
-            - r7iz.8xlarge
-            - r7iz.12xlarge
-            - r7iz.16xlarge
-            - r7iz.24xlarge
-          - key: kubernetes.io/os
-            operator: In
-            values:
-            - linux
-          taints:
-          - effect: NoSchedule
-            key: role
-            value: WORKFLOW_NAME
+      --BOUNDARY--
+nodepool.yaml: |
+  apiVersion: karpenter.sh/v1
+  kind: NodePool
+  metadata:
+    name: gen3-workflow-USER_ID
+  spec:
+    disruption:
+      consolidateAfter: 10s
+      consolidationPolicy: WhenEmpty
+    limits:
+      cpu: 4k
+    template:
+      metadata:
+        labels:
+          purpose: workflow
+          role: WORKFLOW_NAME
+      spec:
+        nodeClassRef:
+          group: karpenter.k8s.aws
+          kind: EC2NodeClass
+          name: gen3-workflow-USER_ID
+        requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+          - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+          - amd64
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+          - c6a.large
+          - c6a.xlarge
+          - c6a.2xlarge
+          - c6a.4xlarge
+          - c6a.8xlarge
+          - c6a.12xlarge
+          - c7a.large
+          - c7a.xlarge
+          - c7a.2xlarge
+          - c7a.4xlarge
+          - c7a.8xlarge
+          - c7a.12xlarge
+          - c6i.large
+          - c6i.xlarge
+          - c6i.2xlarge
+          - c6i.4xlarge
+          - c6i.8xlarge
+          - c6i.12xlarge
+          - c7i.large
+          - c7i.xlarge
+          - c7i.2xlarge
+          - c7i.4xlarge
+          - c7i.8xlarge
+          - c7i.12xlarge
+          - m6a.2xlarge
+          - m6a.4xlarge
+          - m6a.8xlarge
+          - m6a.12xlarge
+          - m6a.16xlarge
+          - m6a.24xlarge
+          - m7a.2xlarge
+          - m7a.4xlarge
+          - m7a.8xlarge
+          - m7a.12xlarge
+          - m7a.16xlarge
+          - m7a.24xlarge
+          - m6i.2xlarge
+          - m6i.4xlarge
+          - m6i.8xlarge
+          - m6i.12xlarge
+          - m6i.16xlarge
+          - m6i.24xlarge
+          - m7i.2xlarge
+          - m7i.4xlarge
+          - m7i.8xlarge
+          - m7i.12xlarge
+          - m7i.16xlarge
+          - m7i.24xlarge
+          - r7iz.2xlarge
+          - r7iz.4xlarge
+          - r7iz.8xlarge
+          - r7iz.12xlarge
+          - r7iz.16xlarge
+          - r7iz.24xlarge
+        - key: kubernetes.io/os
+          operator: In
+          values:
+          - linux
+        taints:
+        - effect: NoSchedule
+          key: role
+          value: WORKFLOW_NAME
