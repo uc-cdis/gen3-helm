@@ -103,9 +103,6 @@ nameOverride: ""
 # -- (string) Override the full name of the chart, which is used as the name of resources created by the chart
 fullnameOverride: ""
 
-# -- (bool) Whether to create a job to generate the OIDC client for Funnel.
-oidc_job_enabled: true
-
 # -- (map) Service account to use or create.
 serviceAccount:
   # Specifies whether a service account should be created

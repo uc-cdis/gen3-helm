@@ -95,6 +95,9 @@ criticalService: "false"
 # -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
 partOf: "Workflow_Execution"
 
+# -- (bool) Whether to create a job to generate the OIDC client for Funnel.
+oidc_job_enabled: true
+
 funnel:
   # -- (map) Configuration for the Funnel container image.
   image:

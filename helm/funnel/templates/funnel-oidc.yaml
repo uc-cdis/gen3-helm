@@ -1,4 +1,3 @@
-{{- .Values.oidc_job_enabledt | toYaml | printf "\nDEBUG -- oidc_job_enabled:\n%s" | fail }}
 {{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createFunnelOidcClientSecret) }}
 apiVersion: batch/v1
 kind: Job
