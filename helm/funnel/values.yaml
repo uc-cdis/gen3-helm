@@ -120,7 +120,7 @@ funnel:
         volumeMounts:
           - name: plugin-volume
             mountPath: /opt/funnel/plugin-binaries
-      - name: secrets-updater
+      - name: config-updater
         image: quay.io/cdis/awshelper
         tag: master
         env:
@@ -170,18 +170,23 @@ funnel:
         args:
           - "-c"
           - |
-            echo "Debug: FUNNEL_OIDC_CLIENT_ID = $FUNNEL_OIDC_CLIENT_ID"
-            echo "Debug:  DB_DATABASE = $DB_DATABASE"
+            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
+            CONFIG=/tmp/funnel-patched.conf
+            cp /etc/config/funnel.conf $CONFIG
 
             namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-
-            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
-            cp /etc/config/funnel.conf /tmp/funnel-patched.conf
-
             export JOBS_NAMESPACE=workflow-pods-$namespace
             export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
 
-            echo "=== Patching Funnel Plugin values ==="
+            # `Kubernetes.JobsNamespace` has to be configured manually because of templating
+            # limitations. This ensures it is configured to the value that is hardcoded elsewhere.
+            configured=$(yq -r '.Kubernetes.JobsNamespace' "$CONFIG")
+            if [[ "$configured" != "$JOBS_NAMESPACE" ]]; then
+              echo "ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration" >&2
+              exit 1
+            fi
+
+            echo "======= Funnel configuration ======="
             echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
             echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
             echo "  Plugins.Params.S3Url       : $S3_URL"
@@ -189,14 +194,13 @@ funnel:
             echo "===================================="
 
             # Replace placeholders with actual values (in-place)
-            sed -i "s|FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER|${JOBS_NAMESPACE}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" /tmp/funnel-patched.conf
-            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" /tmp/funnel-patched.conf
-            sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" /tmp/funnel-patched.conf
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" $CONFIG
+            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" $CONFIG
+            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" $CONFIG
+            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" $CONFIG
+            sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" $CONFIG
+            sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" $CONFIG
+            sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" $CONFIG
 
   volumes:
   - name: funnel-config-volume
@@ -266,8 +270,6 @@ funnel:
       Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
       User: FUNNEL_POSTGRES_USER_PLACEHOLDER
       Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
-  # Kubernetes:
-  #   JobsNamespace: FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER
   Logger:
     Level: info
   Plugins:

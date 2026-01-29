@@ -13,12 +13,6 @@
 
 {{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
 
-# TODO move JobsNamespace logic to funnel chart
-{{- $overrideJobsNamespace := .Values.funnelJobsNamespace -}}
-{{- if and $overrideJobsNamespace (ne $overrideJobsNamespace "FUNNEL_K8S_JOBS_NAMESPACE_PLACEHOLDER") -}}
-    {{- $jobsNamespace = $overrideJobsNamespace -}}
-{{- end -}}
-
 
 ---
 # Funnel needs both ingress and egress to/from gen3-workflow and funnel-mongodb
