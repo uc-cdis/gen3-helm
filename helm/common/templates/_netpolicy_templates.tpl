@@ -10,6 +10,11 @@ metadata:
   name: {{ .Chart.Name }}-db-netpolicy
 spec:
   egress:
+  {{- if not .Values.global.postgres.dbCreate }}
+  - ports:
+      - protocol: TCP
+        port: 5432
+  {{- end }}
   {{- range .Values.global.netPolicy.dbSubnets }}
   - to:
     - ipBlock:
