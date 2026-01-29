@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -108,7 +108,10 @@ A Helm chart for gen3 ssjdispatcher
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"ssjdispatcher-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| ssjcreds | map | `{"jobName":"indexing","jobPassword":"replace_with_password","jobPattern":"s3://test-12345678901234-upload/*","jobRequestCpu":"500m","jobRequestMem":"0.5Gi","jobUrl":"http://indexd-service/index","jobUser":"ssj","metadataservicePassword":"replace_with_password","metadataserviceUrl":"http://revproxy-service/mds","metadataserviceUsername":"gateway","sqsUrl":"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"}` | Values for ssjdispatcher secret. |
+| ssjcreds | map | `{"awsAccessKeyId":null,"awsRegion":null,"awsSecretAccessKey":null,"jobName":"indexing","jobPassword":"replace_with_password","jobPattern":"s3://test-12345678901234-upload/*","jobRequestCpu":"500m","jobRequestMem":"0.5Gi","jobUrl":"http://indexd-service/index","jobUser":"ssj","metadataservicePassword":"replace_with_password","metadataserviceUrl":"http://revproxy-service/mds","metadataserviceUsername":"gateway","sqsUrl":"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"}` | Values for ssjdispatcher secret. |
+| ssjcreds.awsAccessKeyId | string | `nil` | AWS Access Key for user if not using IRSA. |
+| ssjcreds.awsRegion | string | `nil` | AWS region to use. |
+| ssjcreds.awsSecretAccessKey | string | `nil` | AWS Secret Access Key for user if not using IRSA. |
 | ssjcreds.jobName | string | `"indexing"` | Name of the ssj job. |
 | ssjcreds.jobPassword | string | `"replace_with_password"` | Password for the job. |
 | ssjcreds.jobPattern | string | `"s3://test-12345678901234-upload/*"` | URL upload pattern that will trigger an event in S3 to send a message to SQS. |
