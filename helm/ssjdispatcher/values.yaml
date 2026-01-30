@@ -192,7 +192,7 @@ gen3Namespace: ""
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
-indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10
+indexing: quay.io/cdis/indexs3client:2025.12
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -219,6 +219,12 @@ automountServiceAccountToken: true
 
 # -- (map) Values for ssjdispatcher secret.
 ssjcreds:
+  # -- (string) AWS region to use.
+  awsRegion:
+  # -- (string) AWS Access Key for user if not using IRSA.
+  awsAccessKeyId:
+  # -- (string) AWS Secret Access Key for user if not using IRSA.
+  awsSecretAccessKey:
   # -- (string) Sqs queue to monitor.
   sqsUrl: "https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"
   # -- (string) Name of the ssj job.
