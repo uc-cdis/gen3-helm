@@ -53,7 +53,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../revproxy | revproxy | 0.1.50 |
 | file://../sheepdog | sheepdog | 0.1.37 |
 | file://../sower | sower | 0.1.40 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.39 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.40 |
 | file://../wts | wts | 0.1.35 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
