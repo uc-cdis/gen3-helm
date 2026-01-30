@@ -1,0 +1,98 @@
+{{- if .Values.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "dataUploadCron.fullname" . }}
+  labels:
+    {{- include "dataUploadCron.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  suspend: {{ .Values.suspend }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.backoffLimit }}
+      template:
+        metadata:
+          labels:
+            {{- include "dataUploadCron.labels" . | nindent 12 }}
+        spec:
+          serviceAccountName: {{ include "dataUploadCron.serviceAccountName" . }}
+          restartPolicy: Never
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: data-upload-cron
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              env:
+                - name: BUCKET
+                  value: {{ .Values.env.bucket | quote }}
+                - name: PREFIX
+                  value: {{ .Values.env.prefix | quote }}
+                - name: DISPATCHER_URL
+                  value: {{ .Values.env.dispatcherUrl | quote }}
+                - name: INDEXD_URL
+                  value: {{ .Values.env.indexdUrl | quote }}
+
+                - name: STATE_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: STATE_CONFIGMAP
+                  value: {{ include "dataUploadCron.stateConfigMapName" . | quote }}
+                - name: LAST_RUN_KEY
+                  value: {{ .Values.configmaps.state.lastRunKey | quote }}
+
+                - name: PENDING_CONFIGMAP
+                  value: {{ include "dataUploadCron.pendingConfigMapName" . | quote }}
+                - name: PENDING_KEY
+                  value: {{ .Values.configmaps.pending.pendingKey | quote }}
+
+                - name: DISPATCHER_TIMEOUT
+                  value: {{ .Values.env.dispatcherTimeout | quote }}
+                - name: INDEXD_TIMEOUT
+                  value: {{ .Values.env.indexdTimeout | quote }}
+                - name: ALERT_ON_EVERY_RESUBMIT
+                  value: {{ .Values.env.alertOnEveryResubmit | quote }}
+                - name: MAX_ATTEMPTS_BEFORE_ALERT
+                  value: {{ .Values.env.maxAttemptsBeforeAlert | quote }}
+
+                {{- if .Values.slack.enabled }}
+                - name: SLACK_WEBHOOK
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "dataUploadCron.slackSecretName" . }}
+                      key: {{ .Values.slack.secretKey }}
+                {{- end }}
+
+                {{- with .Values.extraEnv }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+
+              {{- with .Values.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end -}}
