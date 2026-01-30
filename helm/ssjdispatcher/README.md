@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -29,6 +30,9 @@
 =======
 ![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 1e8e98d2 (updating ssjdispatcher to allow the user of IAM keys. (#501))
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -151,10 +155,14 @@ A Helm chart for gen3 ssjdispatcher
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | indexing | string | `"quay.io/cdis/indexs3client:2025.12"` | Image to use for the "indexing" job. |
 =======
 | indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10"` | Image to use for the "indexing" job. |
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
+=======
+| indexing | string | `"quay.io/cdis/indexs3client:2025.12"` | Image to use for the "indexing" job. |
+>>>>>>> 1e8e98d2 (updating ssjdispatcher to allow the user of IAM keys. (#501))
 | jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
 | jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |

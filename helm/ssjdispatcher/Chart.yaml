@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.43
 =======
 version: 0.1.33
@@ -44,6 +45,9 @@ version: 0.1.38
 =======
 version: 0.1.39
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+version: 0.1.40
+>>>>>>> 1e8e98d2 (updating ssjdispatcher to allow the user of IAM keys. (#501))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
