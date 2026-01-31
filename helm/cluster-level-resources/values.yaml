@@ -291,7 +291,7 @@ alloy-configmap-data: |
   otelcol.processor.batch "default" {
     output {
       metrics = [otelcol.exporter.prometheus.default.input]
-      traces  = [otelcol.exporter.otlp.tempo.input]
+      traces  = [otelcol.exporter.otlphttp.tempo.input]
     }
   }
 
@@ -299,15 +299,10 @@ alloy-configmap-data: |
     forward_to = [prometheus.remote_write.default.receiver]
   }
 
-  otelcol.exporter.otlp "tempo" {
+  otelcol.exporter.otlphttp "tempo" {
     client {
-      endpoint = "http://monitoring-tempo-distributor.monitoring:4317"
-      // Configure TLS settings for communicating with the endpoint.
+      endpoint = "https://tempo.planx-pla.net:443"
       tls {
-          // The connection is insecure.
-          insecure = true
-          // Do not verify TLS certificates when connecting.
-          insecure_skip_verify = true
       }
     }
   }

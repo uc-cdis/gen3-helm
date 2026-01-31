@@ -18,12 +18,25 @@ data:
   {{ "portal-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
 {{- end }}
+{{- if .Values.enableRobotsTxt }}
+  {{ "robots-txt.conf" }}: |
+  {{- .Files.Get "gen3.nginx.conf/robots/robots-txt.conf" | nindent 4}}
+{{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
+        {{- if .csrfCheck -}}
         if ($csrf_check !~ ^ok-\S.+$) {
           return 403 "failed csrf check";
         }
+        {{- end }}
+        {{- if and .authzPolicy .authzService -}}
+        set $authz_resource "/{{ .authzPolicy }}";
+        set $authz_method "access";
+        set $authz_service "{{ .authzService }}";
+        # be careful - sub-request runs in same context as this request
+        auth_request /gen3-authz;
+        {{- end }}
 
         set $proxy_service "{{ .name }}";
         set $upstream http://{{ .serviceName }}$des_domain;
@@ -38,7 +51,14 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-conf
 data:
+{{- if .Values.enableRobotsTxt }}
+{{- range $path, $bytes := .Files.Glob "nginxPrivate/*" }}
+  {{ ($a := split "/" $path)._1 }}: |
+  {{- $bytes | toString | nindent 4 }}
+{{- end}}
+{{- else }}
 {{- range $path, $bytes := .Files.Glob "nginx/*" }}
   {{ ($a := split "/" $path)._1 }}: |
   {{- tpl ($bytes | toString) $ | nindent 4 }}
 {{- end}}
+{{- end }}

@@ -144,13 +144,11 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Pod-level security context.
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
 # -- (map) Container-level security context.
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -188,8 +186,7 @@ ingress:
   # -- (string) The ingress class name.
   className: ""
   # -- (map) Annotations to add to the ingress.
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # -- (list) Where to route the traffic.
@@ -284,6 +281,12 @@ extraServices:
 #  - name: "protein-paint"
 #    path: /protein-paint
 #    serviceName: protein-paint
+#    authzPolicy: "protein-paint"
+#    authzService: "protein-paint"
+#    csrfCheck: true
+
+# -- (bool) Whether to enable robots.txt generation and serving.
+enableRobotsTxt: false
 
 nginx:
   user: nginx
