@@ -27,7 +27,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: gitops-sa
-    namespace: default
+    namespace: "{{ .Release.Namespace }}"
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -74,6 +74,12 @@ spec:
                 echo $ESHOST
                 if gen3 klock lock es-garbage-job gitops 900; then
                     repoList="$(gen3 es garbage)"
+                    # The command "gen3 es garbage":
+                    #   - Select indices not referenced by an alias, ignoring time_ aliases
+                    #   - Select indices that look like an ETL index: NAME_NUMBER
+                    #   - Group the remaining NAME_NUMBER indices by NAME
+                    #   - Remove the largest NUMBER index from each group
+                    #   - Return the remaining indices
                     for indexName in $repoList; do
                     echo "deleting index $indexName"
                     gen3 es delete "$indexName"
