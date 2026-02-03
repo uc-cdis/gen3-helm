@@ -69,9 +69,9 @@ spec:
               # Fetch the branch
               git fetch origin ${GIT_BRANCH}:config_branch
               git switch config_branch
-              {{- if .Values.configDir }}
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/{{ .Values.configDir }}/public/* /gen3/public
+              {{- if .Values.customConfig.dir }}
+              cp -r /tmp/repo/siteconfig/{{ .Values.customConfig.dir }}/config/* /gen3/config
+              cp -r /tmp/repo/siteconfig/{{ .Values.customConfig.dir }}/public/* /gen3/public
               {{- else }}
               cp -r /tmp/repo/siteconfig/config/* /gen3/config
               cp -r /tmp/repo/siteconfig/public/* /gen3/public
