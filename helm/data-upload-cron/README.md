@@ -21,9 +21,9 @@ A Helm chart for the data upload cronjob
 | configmaps.state.lastRunKey | string | `"current.json"` |  |
 | configmaps.state.name | string | `"current-state"` |  |
 | enabled | bool | `true` |  |
-| env.INDEXD_URL | string | `"http://indexd-service"` |  |
 | env.bucket | string | `"test"` |  |
-| env.dispatcherUrl | string | `"http://ssjdispatcher-service"` |  |
+| env.dispatcherUrl | string | `"http://ssjdispatcher-service/dispatchJob"` |  |
+| env.indexdUrl | string | `"http://indexd-service"` |  |
 | externalSecrets | map | `{"awsCredsSecret":null,"dcfDataserviceSettingsSecret":null,"deploy":true,"googleCredsSecret":null}` | external secrets for datareplicate jobs |
 | global.externalSecrets | map | `{"deploy":true}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `true` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
