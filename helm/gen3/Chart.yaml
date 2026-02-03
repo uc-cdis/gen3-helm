@@ -270,7 +270,11 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.27
+=======
+    version: 0.1.20
+>>>>>>> c253475a (change .Values.dir to .Values.customConfig.dir)
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
