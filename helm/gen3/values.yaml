@@ -35,6 +35,13 @@ global:
       enabled: false
       # -- (string) Name of the local secret.
       localSecretName:
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
   # -- (map) Kubernetes configuration
   crossplane:
     # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.

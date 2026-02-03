@@ -57,17 +57,6 @@ Selector labels
 {{- end }}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "arborist.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default "arborist-sa" .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
  Postgres Password lookup
 */}}
 {{- define "arborist.postgres.password" -}}
