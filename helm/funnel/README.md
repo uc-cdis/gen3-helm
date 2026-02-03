@@ -75,6 +75,13 @@ A Helm chart for Kubernetes
 | funnel.volumes[3].name | string | `"plugin-volume"` |  |
 | funnel.volumes[4].emptyDir | object | `{}` |  |
 | funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
+| global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
+| global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
+| global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+| global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
 | global.clusterName | string | `"default"` |  |
 | global.environment | string | `"default"` |  |
 | global.externalSecrets.clusterSecretStoreRef | string | `""` |  |
@@ -86,8 +93,8 @@ A Helm chart for Kubernetes
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of master Postgres secret in Secrets Manager. Disabled if empty |
-| global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
-| global.postgres.master.host | string | `nil` | hostname of postgres server |
+| global.postgres.master | map | `{"host":"test","password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `"test"` | hostname of postgres server |
 | global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
