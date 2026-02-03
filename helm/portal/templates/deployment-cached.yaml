@@ -1,0 +1,229 @@
+{{- if .Values.mountpointCacheEnabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-deployment
+  labels:
+    {{- include "portal.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "portal.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      labels:
+        public: "yes"
+        {{- include "portal.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "portal.serviceAccountName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      volumes:
+      - name: cache-mountpoint
+        persistentVolumeClaim:
+          claimName: portal-pvc-{{ .Release.Name }}
+      - name: config-volume
+        secret:
+          secretName: "portal-config"
+      - name: sponsor-img-volume
+        secret:
+          secretName: "portal-sponsor-config"
+      - name: privacy-policy
+        configMap:
+          name: "privacy-policy"
+          optional: true
+      {{- if .Values.extraImages }}
+      - name: extra-images-config
+        configMap:
+          name: portal-extra-images
+      - name: extra-images
+        emptyDir: {}
+      initContainers:
+        - name: init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: cache-mountpoint
+            mountPath: /data-portal/cache
+          - name: extra-images-config
+            mountPath: /data-portal/custom/config.txt
+            subPath: config.txt
+          - name: extra-images
+            mountPath: /data-portal/custom/images
+          command:
+          - sh
+          - -c
+          - | 
+            if [ ! -f /data-portal/cache/index.html ]; then
+              echo "Cache not found. Building..."
+              cd /data-portal
+              npm install
+              bash runWebpack.sh
+              echo "Copying build output to cache..."
+              cp -r *.js *.html static/ /data-portal/cache/
+            else
+              echo "Cache already exists. Skipping build."
+      {{- end }}
+      containers:
+        - name: portal
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            httpGet:
+              {{- if eq "gen3ff" .Values.global.frontendRoot }}
+              path: /portal
+              {{- else }}
+              path: /
+              {{- end }}
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting NGINX with cached assets."
+              cp -r /data-portal/cache/* /usr/share/nginx/html/
+              exec /usr/sbin/nginx -g 'daemon off;'
+          env:
+            - name: HOSTNAME
+              value: revproxy-service
+            # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
+            # see https://github.com/npm/cli/issues/3163
+            - name: NPM_CONFIG_UPDATE_NOTIFIER
+              value: "false"
+            - name: NODE_ENV
+              value: "dev"
+            - name: APP
+              value: {{ .Values.global.portalApp | quote }}
+            {{- if .Values.gitops.gen3Bundle }}
+            - name: GEN3_BUNDLE
+              value: {{ .Values.gitops.gen3Bundle | quote }}
+            {{- end }}
+            - name: LOGOUT_INACTIVE_USERS
+              value: {{ .Values.global.logoutInactiveUsers | quote }}
+              optional: true
+            - name: WORKSPACE_TIMEOUT_IN_MINUTES
+              value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
+              optional: true
+            - name: TIER_ACCESS_LEVEL
+              value: {{ .Values.global.tierAccessLevel | quote }}
+              optional: true
+            - name: TIER_ACCESS_LIMIT
+              value: {{ .Values.global.tierAccessLimit | quote }}
+              optional: true
+            {{- if .Values.global.fenceURL }}
+            - name: FENCE_URL
+              value: {{ .Values.global.fenceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.indexdURL }}
+            - name: INDEXD_URL
+              value: {{ .Values.global.indexdURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.workspaceURL }}
+            - name: WORKSPACE_URL
+              value: {{ .Values.global.workspaceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.manifestServiceURL }}
+            - name: MANIFEST_SERVICE_URL
+              value: {{ .Values.global.manifestServiceURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.wtsURL }}
+            - name: WTS_URL
+              value: {{ .Values.global.wtsURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.privacyPolicyURL }}
+            - name: PRIVACY_POLICY_URL
+              value: {{ .Values.global.privacyPolicyURL | quote }}
+              optional: true
+            {{- end }}
+            {{- if .Values.global.mapboxToken }}
+            - name: MAPBOX_API_TOKEN
+              # Optional token for mapbox api
+              value: {{ .Values.global.mapboxToken | quote }}
+              optional: true
+            {{- end }}
+            {{- with .Values.datadogApplicationId  }}      
+            - name: DATADOG_APPLICATION_ID
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.datadogClientToken  }}      
+            - name: DATADOG_CLIENT_TOKEN
+              # Optional client token for Datadog
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.dataUploadBucket  }}
+            - name: DATA_UPLOAD_BUCKET
+              value: {{ . }}
+            {{- end }}
+            {{- if eq "gen3ff" .Values.global.frontendRoot }}
+            - name: BASENAME
+              value: /portal
+            {{- end }}
+              # S3 bucket name for data upload, for setting up CSP
+              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
+            # - name: BASENAME
+          volumeMounts:
+            {{- if .Values.extraImages  }}
+            - name: extra-images
+              mountPath: /data-portal/custom/images
+            {{- end }}
+            - name: cache-mountpoint
+              mountPath: /data-portal/cache
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/logo/gitops-logo.png"
+              subPath: "gitops-logo.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/createdby/gitops.png"
+              subPath: "gitops-createdby.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+              subPath: "gitops-favicon.ico"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/css/gitops.css"
+              subPath: "gitops.css"
+            - name: "sponsor-img-volume"
+              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/data-portal/custom/privacy_policy.md"
+              subPath: "privacy_policy.md"
+{{- end }}
+              
