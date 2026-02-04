@@ -35,7 +35,7 @@ rbac:
 env:
   bucket: 'test'
   dispatcherUrl: "http://ssjdispatcher-service/dispatchJob"
-  indexdUrl:  "http://indexd-service"
+  indexdUrl: "http://indexd-service"
 
 configmaps:
   state:
