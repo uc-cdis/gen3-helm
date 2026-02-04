@@ -56,7 +56,7 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
@@ -181,7 +181,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.131
+version: 0.2.132
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
