@@ -75,6 +75,8 @@ spec:
           args:
             - "-c"
             - |
+              # Merge the private and public configs into a single `fence-config.yaml` file.
+              # NOTE: in case of conflict, the value in the PUBLIC config takes precedence.
               mkdir -p /fence/keys/key
               cp /tmp/keys/readonly/jwt_private_key.pem /fence/keys/key/jwt_private_key.pem
               python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
