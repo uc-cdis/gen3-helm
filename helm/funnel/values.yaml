@@ -3,6 +3,22 @@
 # Declare variables to be passed into your templates.
 
 global:
+  aws:
+    # -- (string) AWS region for this deployment
+    region: us-east-1
+    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
+    enabled: false
+    # -- (string) Credentials for AWS stuff.
+    awsAccessKeyId:
+    # -- (string) Credentials for AWS stuff.
+    awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
+      # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+      pushSecret: false
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
@@ -11,7 +27,7 @@ global:
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
-      host:
+      host: "test"
       # -- (string) username of superuser in postgres. This is used to create or restore databases
       username: postgres
       # -- (string) password for superuser in postgres. This is used to create or restore databases
@@ -269,10 +285,10 @@ funnel:
       periodSeconds: 10
       failureThreshold: 10
   Postgres:
-      Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
-      Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
-      User: FUNNEL_POSTGRES_USER_PLACEHOLDER
-      Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
+    Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
+    Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
+    User: FUNNEL_POSTGRES_USER_PLACEHOLDER
+    Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
   Logger:
     Level: info
   Plugins:
