@@ -1,0 +1,29 @@
+{{- if .Values.global.gcp.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: revproxy-gcp
+  annotations:
+    networking.gke.io/managed-certificates: gen3-cert
+spec:
+  ingressClassName: ""
+  tls: []
+  rules:
+    - host: {{ default .Values.global.hostname .Values.hostname }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: revproxy-service
+                port:
+                  number: 80
+---
+kind: ManagedCertificate
+metadata:
+  name: gen3-cert
+spec:
+  domains:
+    - {{ default .Values.global.hostname .Values.hostname }}
+{{- end }}
