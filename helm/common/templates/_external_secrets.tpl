@@ -24,7 +24,7 @@ metadata:
 spec:
   refreshInterval: 5m
   secretStoreRef:
-    name: "gen3-secret-store"
+    name: {{include "common.SecretStore" .}}
     kind: SecretStore
   target:
     name: {{ $.Chart.Name }}-dbcreds
@@ -66,3 +66,18 @@ spec:
       #       key: secret-access-key
       #   {{- end}}
 {{- end }}
+
+
+
+{{/*
+  #  Name of the SecretStore
+  #  We want to allow override here, in case a chart is being deployed without the umbrella chart, 
+  #  or any other needs to deploy a separate secret store per service.
+*/}}
+
+{{/*
+  Cluster Secret Store for External Secrets
+*/}}
+{{- define "common.SecretStore" -}}
+{{- default "gen3-secret-store"}}
+{{- end -}}
