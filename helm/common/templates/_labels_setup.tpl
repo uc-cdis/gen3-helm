@@ -58,19 +58,6 @@ prometheus.io/scrape: "true"
 {{- end -}}
 {{- end -}}
 
-{{- define "app.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
 {{- define "app.selectorLabels" -}}
 {{- if .Values.selectorLabels }}
     {{- with .Values.selectorLabels }}
@@ -78,21 +65,5 @@ prometheus.io/scrape: "true"
     {{- end }}
 {{- else }}
   {{- (include "common.selectorLabels" .)}}
-{{- end }}
-{{- end }}
-
-{{- define "app.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "gen3.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{- define "app.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (printf "%s-sa" $.Chart.Name) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}

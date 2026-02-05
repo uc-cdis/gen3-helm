@@ -27,7 +27,3 @@ dependencies:
   - name: common
     version: 0.1.30
     repository: file://../common
-  - name: postgresql
-    version: 11.9.13
-    repository: "https://charts.bitnami.com/bitnami"
-    condition: postgres.separate
