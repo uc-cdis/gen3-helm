@@ -27,7 +27,7 @@ spec:
     name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
     kind: ClusterSecretStore
   {{- else }}
-    name: {{include "common.SecretStore" .}}
+    name: {{include "common.secretstore" .}}
     kind: SecretStore
   {{- end  }}
   target:
