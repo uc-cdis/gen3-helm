@@ -65,7 +65,6 @@ spec:
                   value: {{ .Values.env.alertOnEveryResubmit | quote }}
                 - name: MAX_ATTEMPTS_BEFORE_ALERT
                   value: {{ .Values.env.maxAttemptsBeforeAlert | quote }}
-
                 {{- if .Values.slack.enabled }}
                 - name: SLACK_WEBHOOK
                   valueFrom:
@@ -73,7 +72,22 @@ spec:
                       name: {{ include "dataUploadCron.slackSecretName" . }}
                       key: {{ .Values.slack.secretKey }}
                 {{- end }}
-
+                - name: S3_ENDPOINT_URL
+                  value: {{ .Values.env.s3EndpointUrl | quote }}
+                - name: S3_REGION
+                  value: {{ .Values.env.s3Region | quote }}
+                - name: S3_FORCE_PATH_STYLE
+                  value: {{ .Values.env.s3ForcePathStyle | quote }} 
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ .Values.awsCredsSecret.accessKey }}
+                      name: {{ .Values.awsCredsSecret.secretName }}
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ .Values.awsCredsSecret.secretKey }}
+                      name: {{ .Values.awsCredsSecret.secretName }}
                 {{- with .Values.extraEnv }}
                 {{- toYaml . | nindent 16 }}
                 {{- end }}
