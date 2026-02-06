@@ -1,5 +1,5 @@
 {{- if .Values.enabled -}}
-{{- $existing := lookup "v1" "ConfigMap" .Release.Namespace $cmName -}}
+{{- $existing := lookup "v1" "ConfigMap" .Release.Namespace (include "dataUploadCron.stateConfigMapName" .) -}}
 {{- if not $existing }}
 apiVersion: v1
 kind: ConfigMap
