@@ -51,18 +51,14 @@ spec:
                   value: {{ include "dataUploadCron.stateConfigMapName" . | quote }}
                 - name: LAST_RUN_KEY
                   value: {{ .Values.configmaps.state.lastRunKey | quote }}
-
                 - name: PENDING_CONFIGMAP
                   value: {{ include "dataUploadCron.pendingConfigMapName" . | quote }}
                 - name: PENDING_KEY
                   value: {{ .Values.configmaps.pending.pendingKey | quote }}
-
                 - name: DISPATCHER_TIMEOUT
                   value: {{ .Values.env.dispatcherTimeout | quote }}
                 - name: INDEXD_TIMEOUT
                   value: {{ .Values.env.indexdTimeout | quote }}
-                - name: ALERT_ON_EVERY_RESUBMIT
-                  value: {{ .Values.env.alertOnEveryResubmit | quote }}
                 - name: MAX_ATTEMPTS_BEFORE_ALERT
                   value: {{ .Values.env.maxAttemptsBeforeAlert | quote }}
                 {{- if .Values.slack.enabled }}
