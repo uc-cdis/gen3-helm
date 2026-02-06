@@ -1,4 +1,6 @@
 {{- if .Values.enabled -}}
+{{- $existing := lookup "v1" "ConfigMap" .Release.Namespace $cmName -}}
+{{- if not $existing }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,6 +9,7 @@ metadata:
     {{- include "dataUploadCron.labels" . | nindent 4 }}
 data:
   {{ .Values.configmaps.state.lastRunKey }}: {{ .Values.configmaps.state.initialLastRun | quote }}
+{{- end }}
 {{- end }}
 ---
 {{ if .Values.enabled -}}
