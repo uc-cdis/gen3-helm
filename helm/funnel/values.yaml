@@ -194,8 +194,18 @@ funnel:
             cp /etc/config/funnel.conf $CONFIG
 
             namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-            export JOBS_NAMESPACE=workflow-pods-$namespace
-            export S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
+            JOBS_NAMESPACE=workflow-pods-$namespace
+            S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
+            DB_HOST=$DB_HOST:5432
+
+            # when the DB is running as a pod in the main namespace (e.g. in CI) instead of in RDS,
+            # add the namespace to the host so funnel worker pods can find the DB
+            if [[ "$DB_HOST" == *"$rds.amazonaws.com" ]]; then
+              echo "Database in RDS"
+            else
+              echo "Database not in RDS"
+              DB_HOST=$DB_HOST.$namespace
+            fi
 
             # `Kubernetes.JobsNamespace` has to be configured manually because of templating
             # limitations. This ensures it is configured to the value that is hardcoded elsewhere.
@@ -209,14 +219,16 @@ funnel:
             echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
             echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
             echo "  Plugins.Params.S3Url       : $S3_URL"
+            echo "  Postgres.Host              : $DB_HOST"
             echo "  Postgres.Database          : $DB_DATABASE"
+            echo "  Postgres.User              : $DB_USER"
             echo "===================================="
 
             # Replace placeholders with actual values (in-place)
             sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" $CONFIG
             sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" $CONFIG
             sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" $CONFIG
-            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}:5432/g" $CONFIG
+            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g" $CONFIG
             sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" $CONFIG
             sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" $CONFIG
             sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" $CONFIG
@@ -272,7 +284,7 @@ funnel:
     enabled: false
   mongodb:  # default mongodb pod
     # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
-    # uncomment this if you're running it on an ARM chipset machine
+    # use this if you're running it on an ARM chipset machine:
     # image:
     #   registry: docker.io
     #   repository: dlavrenuek/bitnami-mongodb-arm
