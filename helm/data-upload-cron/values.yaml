@@ -32,9 +32,9 @@ env:
   # -- (string) The prefix to use for files uploaded to S3. This is used by the data-upload-cron container to determine how to organize files in the S3 bucket.
   prefix: ""
   # -- (string) The URL for the ssjdispatcher service. This is used by the data-upload-cron container to send requests to the ssjdispatcher service.
-  dispatcherUrl: "ssjdispatcher-service"
+  dispatcherUrl: "http://ssjdispatcher-service/dispatchJob"
   # -- (string) The URL for the indexd service. This is used by the data-upload-cron container to send requests to the indexd service.
-  indexdUrl: "indexd-service"
+  indexdUrl: "http://indexd-service"
   # -- (string) Whether to send an alert on every resubmit. This is used by the data-upload-cron container to determine whether to send an alert every time a job is resubmitted.
   maxAttemptsBeforeAlert: "10"
   # -- (string) The timeout for requests to the indexd service, in seconds. This is used by the data-upload-cron container to determine how long to wait for a response from the indexd service before timing out.
@@ -60,48 +60,19 @@ awsCredsSecret:
 configmaps:
   # -- (map) Keys for tracking the state of the cronjob. This is used by the data-upload-cron container to store and retrieve information about the last run of the cronjob.
   state:
+    # -- (string) The name of the ConfigMap to use for tracking the state of the cronjob. This is used by the data-upload-cron container to determine where to store information about the last run of the cronjob.
+    name: "current-state"
     # -- (string) The key to use for storing the timestamp of the last run of the cronjob. This is used by the data-upload-cron container to determine when the cronjob was last run.
     lastRunKey: "last_run"
+    # -- (string) The initial value for the last run key. This is used by the data-upload-cron container to initialize the last run state.
+    initialLastRun: "1970-01-01T00:00:00Z"
   # -- (map) Keys for tracking pending jobs. This is used by the data-upload-cron container to store and retrieve information about any pending jobs that have not yet been completed.
   pending:
+    name: "pending-state"
     # -- (string) The name of the ConfigMap to use for tracking pending jobs. This is used by the data-upload-cron container to determine where to store information about pending jobs.
     pendingKey: "pending"
-
-
-# -- (map) external secrets for datareplicate jobs
-externalSecrets:
-  deploy: true
-  googleCredsSecret:
-  awsCredsSecret:
-  dcfDataserviceSettingsSecret:
-
-schedule: "*/15 * * * *"
-
-suspend: false
-
-slack:
-  enabled: false
-
-serviceAccount:
-  create: true
-
-rbac:
-  create: true
-
-env:
-  bucket: 'test'
-  dispatcherUrl: "http://ssjdispatcher-service/dispatchJob"
-  indexdUrl: "http://indexd-service"
-
-configmaps:
-  state:
-    name: "current-state"
-    lastRunKey: "current.json"
-    initialLastRun: {}
-  pending:
-    name: "pending-state"
-    pendingKey: "pending.json"
-    initialPending: {}
+    # -- (string) The initial value for the pending jobs key. This is used by the data-upload-cron container to initialize the pending jobs state.
+    initialPending: "{}"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
