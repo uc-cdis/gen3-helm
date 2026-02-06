@@ -20,6 +20,7 @@ spec:
                 port:
                   number: 80
 ---
+apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
   name: gen3-cert
