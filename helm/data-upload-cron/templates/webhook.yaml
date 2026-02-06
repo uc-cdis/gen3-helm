@@ -1,0 +1,11 @@
+{{- if and .Values.enabled .Values.slack.enabled .Values.slack.webhook -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "dataUploadCron.slackSecretName" . }}
+  labels:
+    {{- include "dataUploadCron.labels" . | nindent 4 }}
+type: Opaque
+stringData:
+  {{ .Values.slack.secretKey }}: {{ .Values.slack.webhook | quote }}
+{{- end -}}

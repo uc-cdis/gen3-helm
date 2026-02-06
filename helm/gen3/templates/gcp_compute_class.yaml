@@ -1,0 +1,17 @@
+{{- if .Values.global.gcp.enabled }}
+apiVersion: cloud.google.com/v1
+kind: ComputeClass
+metadata:
+  name: elasticsearch
+spec:
+  whenUnsatisfiable: "DoNotScaleUp"
+  nodePoolAutoCreation:
+    enabled: true
+  priorityDefaults:
+    nodeSystemConfig:
+      linuxNodeConfig:
+        sysctls:
+          vm.max_map_count: 262144
+  priorities:
+    - machineFamily: n2
+{{- end }}

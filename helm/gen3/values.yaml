@@ -4,6 +4,9 @@
 
 # Global configuration
 global:
+  # -- (map) GCP configuration
+  gcp:
+    enabled: false
   # -- (map) AWS configuration
   aws:
     # -- (string) AWS region for this deployment
