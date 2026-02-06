@@ -11,7 +11,7 @@ global:
 # -- (bool) Whether to suspend the cronjob. Setting this to true will prevent the cronjob from scheduling new jobs, but will not affect already scheduled jobs.
 suspendCronjob: false
 # -- (string) Cron schedule for the cronjob. This follows standard cron syntax. For example, "0 0 * * *" would run the job every day at midnight.
-schedule: "15/* * * * *"
+schedule: "*/15 * * * *"
 # -- (string) Concurrency policy for the cronjob. This determines how to handle concurrent executions of the job. Valid values are "Allow", "Forbid", and "Replace". "Allow" allows concurrent runs, "Forbid" prevents new runs if the previous run is still active, and "Replace" cancels the currently running job and replaces it with a new one.
 concurrencyPolicy: "Forbid"
 # -- (int) The number of successful job runs to keep in history. This is used by Kubernetes to determine how many old job objects to retain after they have completed successfully.

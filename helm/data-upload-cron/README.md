@@ -53,7 +53,7 @@ A Helm chart for the data upload cronjob
 | resources.requests | map | `{"cpu":"2","memory":"512Mi"}` | The amount of resources that the container requests |
 | resources.requests.cpu | string | `"2"` | The amount of CPU requested |
 | resources.requests.memory | string | `"512Mi"` | The amount of memory requested |
-| schedule | string | `"15/* * * * *"` | Cron schedule for the cronjob. This follows standard cron syntax. For example, "0 0 * * *" would run the job every day at midnight. |
+| schedule | string | `"*/15 * * * *"` | Cron schedule for the cronjob. This follows standard cron syntax. For example, "0 0 * * *" would run the job every day at midnight. |
 | securityContext | map | `{}` | Security context for the containers in the pod. This is used to specify security settings such as user ID, group ID, and capabilities for the containers. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
