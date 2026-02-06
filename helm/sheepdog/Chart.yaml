@@ -37,6 +37,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.34
 =======
     version: 0.1.24
@@ -62,6 +63,9 @@ dependencies:
 =======
     version: 0.1.29
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+    version: 0.1.30
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
     repository: file://../common
   - name: postgresql
     version: 11.9.13

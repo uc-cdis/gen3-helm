@@ -19,6 +19,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.13
 =======
 version: 0.1.7
@@ -32,6 +33,9 @@ version: 0.1.9
 =======
 version: 0.1.10
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+version: 0.1.11
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -40,6 +44,7 @@ version: 0.1.10
 appVersion: "main"
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -69,6 +74,9 @@ dependencies:
 =======
     version: 0.1.29
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+    version: 0.1.30
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
     repository: file://../common
   - name: postgresql
     version: 11.9.13

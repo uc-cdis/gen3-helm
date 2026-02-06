@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -17,6 +18,9 @@
 =======
 ![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for gen3 Ohif Viewer
 
@@ -24,6 +28,7 @@ A Helm chart for gen3 Ohif Viewer
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -53,6 +58,9 @@ A Helm chart for gen3 Ohif Viewer
 =======
 | file://../common | common | 0.1.29 |
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 

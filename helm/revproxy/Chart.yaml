@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.45
@@ -44,6 +45,9 @@ version: 0.1.50
 =======
 version: 0.1.51
 >>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
+=======
+version: 0.1.52
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -53,6 +57,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -78,4 +83,7 @@ dependencies:
 =======
     version: 0.1.28
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.30
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
     repository: file://../common

@@ -45,6 +45,7 @@ A Helm chart for gen3 datareplicate
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.33 |
 =======
 | file://../common | common | 0.1.24 |
@@ -61,6 +62,9 @@ A Helm chart for gen3 datareplicate
 =======
 | file://../common | common | 0.1.26 |
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 

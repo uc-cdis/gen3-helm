@@ -8,6 +8,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.66](https://img.shields.io/badge/Version-0.1.66-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.54](https://img.shields.io/badge/Version-0.1.54-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -33,6 +34,9 @@
 =======
 ![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 84e852e7 (Bump charts..)
+=======
+![Version: 0.1.62](https://img.shields.io/badge/Version-0.1.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for gen3 Hatchery
 
@@ -40,6 +44,7 @@ A Helm chart for gen3 Hatchery
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -61,6 +66,9 @@ A Helm chart for gen3 Hatchery
 =======
 | file://../common | common | 0.1.26 |
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 

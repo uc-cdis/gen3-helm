@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.56](https://img.shields.io/badge/Version-0.1.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.45](https://img.shields.io/badge/Version-0.1.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -29,6 +30,9 @@
 =======
 ![Version: 0.1.51](https://img.shields.io/badge/Version-0.1.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
+=======
+![Version: 0.1.52](https://img.shields.io/badge/Version-0.1.52-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for gen3 revproxy
 
@@ -36,6 +40,7 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -61,6 +66,9 @@ A Helm chart for gen3 revproxy
 =======
 | file://../common | common | 0.1.28 |
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 

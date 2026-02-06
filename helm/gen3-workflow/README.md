@@ -11,6 +11,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -45,6 +46,9 @@
 =======
 ![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
+=======
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for Kubernetes
 
@@ -52,6 +56,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -94,6 +99,9 @@ A Helm chart for Kubernetes
 | file://../common | common | 0.1.29 |
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.80 |
 >>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 
@@ -124,6 +132,7 @@ A Helm chart for Kubernetes
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | env | list | `[{"name":"DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
+<<<<<<< HEAD
 <<<<<<< HEAD
 | externalSecrets | map | `{"createK8sGen3WorkflowSecret":true,"gen3workflowG3auto":""}` | External Secrets settings. |
 | externalSecrets.createK8sGen3WorkflowSecret | string | `true` | Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -187,6 +196,13 @@ A Helm chart for Kubernetes
 | funnel.volumes[4].emptyDir | object | `{}` |  |
 | funnel.volumes[4].name | string | `"funnel-patched-config-volume"` |  |
 >>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
+=======
+| externalSecrets | map | `{"createK8sGen3WorkflowSecret":true,"gen3workflowG3auto":""}` | External Secrets settings. |
+| externalSecrets.createK8sGen3WorkflowSecret | string | `true` | Will create the Helm "gen3workflow-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets.gen3workflowG3auto | string | `""` | Will override the name of the aws secrets manager secret. Default is "gen3workflow-g3auto" |
+| extraLabels | map | `{"dbgen3workflow":"yes","netnolimit":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
+| fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
@@ -295,6 +311,7 @@ A Helm chart for Kubernetes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 =======
 | global.externalSecrets | map | `{"deploy":false,"pushGen3WorkflowSecretsToExternalSecret":false,"separateSecretStore":false}` | External Secrets settings. |
@@ -308,10 +325,15 @@ A Helm chart for Kubernetes
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` | Will push secrets to External Secrets Store. |
 >>>>>>> 5d63219c (Rename`pushGen3WorkflowSecretsToExternalSecret` to `pushFunnelOidcClientToExternalSecrets`)
+=======
+| global.externalSecrets | map | `{"clusterSecretStoreRef":"","deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
 | global.netPolicy | map | `{"dbSubnets":[],"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 | global.postgres.dbCreate | bool | `false` | Whether the database should be created. |
@@ -322,6 +344,8 @@ A Helm chart for Kubernetes
 | global.postgres.master.port | string | `"5432"` | Port for Postgres. |
 | global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |

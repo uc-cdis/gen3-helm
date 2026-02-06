@@ -26,6 +26,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -60,6 +61,9 @@ version: 0.1.9
 =======
 version: 0.1.10
 >>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
+=======
+version: 0.1.11
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -68,6 +72,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -116,3 +121,7 @@ dependencies:
 >>>>>>> 9e2b9ff6 (Update funnel to 0.1.80)
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
 >>>>>>> 10573193 (Update funnel to 0.1.53 and update netpols accordingly)
+=======
+    version: 0.1.30
+    repository: file://../common
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))

@@ -8,6 +8,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.75](https://img.shields.io/badge/Version-0.1.75-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -33,6 +34,9 @@
 =======
 ![Version: 0.1.68](https://img.shields.io/badge/Version-0.1.68-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> c1da8f28 (Add ALLOW_NEW_USER_ON_LOGIN to fence config (#496))
+=======
+![Version: 0.1.69](https://img.shields.io/badge/Version-0.1.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for gen3 Fence
 
@@ -40,6 +44,7 @@ A Helm chart for gen3 Fence
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -65,6 +70,9 @@ A Helm chart for gen3 Fence
 =======
 | file://../common | common | 0.1.28 |
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+| file://../common | common | 0.1.30 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

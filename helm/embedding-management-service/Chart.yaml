@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.5
 =======
 version: 0.1.1
@@ -32,6 +33,9 @@ version: 0.1.1
 =======
 version: 0.1.2
 >>>>>>> f639072d (hardcode embedding management service name)
+=======
+version: 0.1.3
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -61,7 +65,7 @@ dependencies:
 
 dependencies:
   - name: common
-    version: 0.1.29
+    version: 0.1.30
     repository: file://../common
 <<<<<<< HEAD
 >>>>>>> 84e852e7 (Bump charts..)

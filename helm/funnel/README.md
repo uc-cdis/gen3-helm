@@ -1,6 +1,10 @@
 # funnel
 
+<<<<<<< HEAD
 ![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+=======
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 A Helm chart for Kubernetes
 
@@ -8,8 +12,13 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.31 |
+=======
+| file://../common | common | 0.1.30 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.85 |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 ## Values
 
@@ -23,10 +32,13 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
+<<<<<<< HEAD
 | funnel.Kubernetes.DisableJobCleanup | bool | `true` |  |
 | funnel.Kubernetes.DisableReconciler | bool | `true` |  |
 | funnel.Kubernetes.ReconcileRate | string | `"120s"` |  |
 | funnel.Kubernetes.Timeout.duration | string | `"300s"` |  |
+=======
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | funnel.Logger.Level | string | `"info"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
@@ -36,7 +48,10 @@ A Helm chart for Kubernetes
 | funnel.Postgres.Host | string | `"FUNNEL_POSTGRES_HOST_PLACEHOLDER"` |  |
 | funnel.Postgres.Password | string | `"FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER"` |  |
 | funnel.Postgres.User | string | `"FUNNEL_POSTGRES_USER_PLACEHOLDER"` |  |
+<<<<<<< HEAD
 | funnel.Worker.LeaveWorkDir | bool | `true` |  |
+=======
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | funnel.image | map | `{"initContainers":[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"main-gen3","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","# Create a funnel-patched.conf since /etc/config/funnel.conf is readonly\nCONFIG=/tmp/funnel-patched.conf\ncp /etc/config/funnel.conf $CONFIG\n\nnamespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\nJOBS_NAMESPACE=workflow-pods-$namespace\nS3_URL=gen3-workflow-service.$namespace.svc.cluster.local\nDB_HOST=$DB_HOST:5432\n\n# `Kubernetes.JobsNamespace` has to be configured manually because of templating\n# limitations. This ensures it is configured to the value that is hardcoded elsewhere.\nconfigured=$(yq -r '.Kubernetes.JobsNamespace' \"$CONFIG\")\nif [[ \"$configured\" != \"$JOBS_NAMESPACE\" ]]; then\n  echo \"ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration\" >&2\n  exit 1\nfi\n\necho \"======= Funnel configuration =======\"\necho \"  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE\"\necho \"  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID\"\necho \"  Plugins.Params.S3Url       : $S3_URL\"\necho \"  Postgres.Host              : $DB_HOST\"\necho \"  Postgres.Database          : $DB_DATABASE\"\necho \"  Postgres.User              : $DB_USER\"\necho \"====================================\"\n\n# Replace placeholders with actual values (in-place)\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g\" $CONFIG\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}},{"name":"DB_HOST","valueFrom":{"secretKeyRef":{"key":"host","name":"funnel-dbcreds","optional":false}}},{"name":"DB_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"funnel-dbcreds","optional":false}}},{"name":"DB_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"funnel-dbcreds","optional":false}}},{"name":"DB_DATABASE","valueFrom":{"secretKeyRef":{"key":"database","name":"funnel-dbcreds","optional":false}}}],"image":"quay.io/cdis/awshelper","name":"config-updater","tag":"master","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-config-volume","subPath":"funnel-server.yaml"}]}],"pullPolicy":"Always","repository":"quay.io/ohsu-comp-bio/funnel"}` | Configuration for the Funnel container image. |
 | funnel.image.initContainers | map | `[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"main-gen3","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","# Create a funnel-patched.conf since /etc/config/funnel.conf is readonly\nCONFIG=/tmp/funnel-patched.conf\ncp /etc/config/funnel.conf $CONFIG\n\nnamespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\nJOBS_NAMESPACE=workflow-pods-$namespace\nS3_URL=gen3-workflow-service.$namespace.svc.cluster.local\nDB_HOST=$DB_HOST:5432\n\n# `Kubernetes.JobsNamespace` has to be configured manually because of templating\n# limitations. This ensures it is configured to the value that is hardcoded elsewhere.\nconfigured=$(yq -r '.Kubernetes.JobsNamespace' \"$CONFIG\")\nif [[ \"$configured\" != \"$JOBS_NAMESPACE\" ]]; then\n  echo \"ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration\" >&2\n  exit 1\nfi\n\necho \"======= Funnel configuration =======\"\necho \"  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE\"\necho \"  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID\"\necho \"  Plugins.Params.S3Url       : $S3_URL\"\necho \"  Postgres.Host              : $DB_HOST\"\necho \"  Postgres.Database          : $DB_DATABASE\"\necho \"  Postgres.User              : $DB_USER\"\necho \"====================================\"\n\n# Replace placeholders with actual values (in-place)\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g\" $CONFIG\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}},{"name":"DB_HOST","valueFrom":{"secretKeyRef":{"key":"host","name":"funnel-dbcreds","optional":false}}},{"name":"DB_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"funnel-dbcreds","optional":false}}},{"name":"DB_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"funnel-dbcreds","optional":false}}},{"name":"DB_DATABASE","valueFrom":{"secretKeyRef":{"key":"database","name":"funnel-dbcreds","optional":false}}}],"image":"quay.io/cdis/awshelper","name":"config-updater","tag":"master","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-config-volume","subPath":"funnel-server.yaml"}]}]` | Configuration for the Funnel init container. |
 | funnel.image.initContainers[0].command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
@@ -45,6 +60,15 @@ A Helm chart for Kubernetes
 | funnel.image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
+<<<<<<< HEAD
+=======
+| funnel.mongodb.enabled | bool | `false` |  |
+| funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
+| funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
+| funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
+| funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
+| funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | funnel.postgresql.enabled | bool | `false` |  |
 | funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
 | funnel.resources.requests.memory | string | `"2Gi"` |  |
@@ -86,7 +110,10 @@ A Helm chart for Kubernetes
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
+<<<<<<< HEAD
 | global.kubeapi_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
+=======
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -101,9 +128,12 @@ A Helm chart for Kubernetes
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | metricsEnabled | bool | `false` |  |
+<<<<<<< HEAD
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
+=======
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 | oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
 | partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |

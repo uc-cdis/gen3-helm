@@ -23,6 +23,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.66
 =======
 version: 0.1.54
@@ -47,6 +48,9 @@ version: 0.1.60
 =======
 version: 0.1.61
 >>>>>>> 84e852e7 (Bump charts..)
+=======
+version: 0.1.62
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 
 >>>>>>> 5db5f7c4 (Updating HPAs for all of our services. (#414))
 
@@ -58,6 +62,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -79,4 +84,7 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 14bf12cf ( Setup PushSecret for DB init (#433))
+=======
+    version: 0.1.30
+>>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
     repository: file://../common
