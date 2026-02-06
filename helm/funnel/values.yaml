@@ -198,15 +198,6 @@ funnel:
             S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
             DB_HOST=$DB_HOST:5432
 
-            # when the DB is running as a pod in the main namespace (e.g. in CI) instead of in RDS,
-            # add the namespace to the host so funnel worker pods can find the DB
-            if [[ "$DB_HOST" == *"$rds.amazonaws.com" ]]; then
-              echo "Database in RDS"
-            else
-              echo "Database not in RDS"
-              DB_HOST=$DB_HOST.$namespace
-            fi
-
             # `Kubernetes.JobsNamespace` has to be configured manually because of templating
             # limitations. This ensures it is configured to the value that is hardcoded elsewhere.
             configured=$(yq -r '.Kubernetes.JobsNamespace' "$CONFIG")
