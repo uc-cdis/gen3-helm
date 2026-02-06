@@ -6,7 +6,6 @@ metadata:
   annotations:
     networking.gke.io/managed-certificates: gen3-cert
 spec:
-  ingressClassName: ""
   tls: []
   rules:
     - host: {{ default .Values.global.hostname .Values.hostname }}
