@@ -15,7 +15,7 @@
 
 
 ---
-# Funnel needs both ingress and egress to/from gen3-workflow and funnel-mongodb
+# Funnel needs both ingress and egress to/from gen3-workflow
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -32,7 +32,6 @@ spec:
               operator: In
               values:
                 - gen3-workflow
-                - funnel-mongodb
   policyTypes:
     - Ingress
 ---
@@ -47,7 +46,6 @@ spec:
         operator: In
         values:
           - gen3-workflow
-          - funnel-mongodb
   egress:
     - to:
       - podSelector:
@@ -77,57 +75,6 @@ spec:
           matchLabels:
             app: funnel-worker
 ---
-# MongoDB needs to allow ingress from funnel in current namespace
-# and funnel worker in $jobsNamespace
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: mongodb-ingress-netpolicy
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel-mongodb
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-            app: funnel
-    ports:
-    - protocol: TCP
-      port: 27017
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: {{ $jobsNamespace }}
-      podSelector:
-        matchLabels:
-          app: funnel-worker
-    ports:
-      - protocol: TCP
-        port: 27017
----
-# Funnel egress to mongodb
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: mongodb-egress-netpolicy
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel
-  policyTypes:
-  - Egress
-  egress:
-    - to:
-      - podSelector:
-          matchLabels:
-            app: funnel-mongodb
-      ports:
-      - protocol: TCP
-        port: 27017
----
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -139,7 +86,6 @@ spec:
       - key: app
         operator: In
         values:
-          - funnel-mongodb
           - gen3-workflow
   policyTypes:
   - Egress
@@ -155,7 +101,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-worker-egress-to-mongo-and-gen3workflow
+  name: funnel-worker-egress-to-gen3workflow
   namespace: {{ $jobsNamespace }}
 spec:
   podSelector:
@@ -174,9 +120,6 @@ spec:
             operator: In
             values:
               - gen3-workflow
-              - funnel-mongodb
-
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -200,7 +143,6 @@ spec:
             operator: In
             values:
               - gen3-workflow
-              - funnel-mongodb
 ---
 # Funnel needs to be able to access the Kube API to launch jobs in a different namespace
 apiVersion: networking.k8s.io/v1
