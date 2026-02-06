@@ -51,21 +51,16 @@ spec:
                   value: {{ include "dataUploadCron.stateConfigMapName" . | quote }}
                 - name: LAST_RUN_KEY
                   value: {{ .Values.configmaps.state.lastRunKey | quote }}
-
                 - name: PENDING_CONFIGMAP
                   value: {{ include "dataUploadCron.pendingConfigMapName" . | quote }}
                 - name: PENDING_KEY
                   value: {{ .Values.configmaps.pending.pendingKey | quote }}
-
                 - name: DISPATCHER_TIMEOUT
                   value: {{ .Values.env.dispatcherTimeout | quote }}
                 - name: INDEXD_TIMEOUT
                   value: {{ .Values.env.indexdTimeout | quote }}
-                - name: ALERT_ON_EVERY_RESUBMIT
-                  value: {{ .Values.env.alertOnEveryResubmit | quote }}
                 - name: MAX_ATTEMPTS_BEFORE_ALERT
                   value: {{ .Values.env.maxAttemptsBeforeAlert | quote }}
-
                 {{- if .Values.slack.enabled }}
                 - name: SLACK_WEBHOOK
                   valueFrom:
@@ -73,7 +68,22 @@ spec:
                       name: {{ include "dataUploadCron.slackSecretName" . }}
                       key: {{ .Values.slack.secretKey }}
                 {{- end }}
-
+                - name: S3_ENDPOINT_URL
+                  value: {{ .Values.env.s3EndpointUrl | quote }}
+                - name: S3_REGION
+                  value: {{ .Values.env.s3Region | quote }}
+                - name: S3_FORCE_PATH_STYLE
+                  value: {{ .Values.env.s3ForcePathStyle | quote }} 
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ .Values.awsCredsSecret.accessKey }}
+                      name: {{ .Values.awsCredsSecret.secretName }}
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ .Values.awsCredsSecret.secretKey }}
+                      name: {{ .Values.awsCredsSecret.secretName }}
                 {{- with .Values.extraEnv }}
                 {{- toYaml . | nindent 16 }}
                 {{- end }}
