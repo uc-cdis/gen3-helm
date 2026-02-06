@@ -219,8 +219,13 @@ dependencies:
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
 <<<<<<< HEAD
+<<<<<<< HEAD
   - name: data-upload-cron
     version: 0.1.4
+=======
+  - name: data-upload-cron
+    version: 0.1.1
+>>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
@@ -466,6 +471,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.47
 >>>>>>> d0be3cc5 (Update versions to meet with Lint changes)
 =======
@@ -477,6 +483,9 @@ dependencies:
 =======
     version: 0.1.50
 >>>>>>> 7e079f32 (Made csrf check optional for extra services)
+=======
+    version: 0.1.51
+>>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog

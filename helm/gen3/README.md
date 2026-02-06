@@ -277,7 +277,11 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
+<<<<<<< HEAD
 | global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
+=======
+| global.gcp | map | `{"enabled":false}` | GCP configuration |
+>>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |

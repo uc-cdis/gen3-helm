@@ -21,6 +21,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.45
@@ -40,6 +41,9 @@ version: 0.1.49
 =======
 version: 0.1.50
 >>>>>>> 7e079f32 (Made csrf check optional for extra services)
+=======
+version: 0.1.51
+>>>>>>> d5cac752 (SSJDispatcher Indexing Cronjob and GCP Resource Creation (#504))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
