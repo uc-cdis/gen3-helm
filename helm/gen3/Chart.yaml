@@ -47,6 +47,10 @@ dependencies:
     version: 0.1.16
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+  - name: data-upload-cron
+    version: 0.1.1
+    repository: "file://../data-upload-cron"
+    condition: data-upload-cron.enabled
   - name: embedding-management-service
     version: 0.1.3
     repository: file://../embedding-management-service

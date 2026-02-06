@@ -28,6 +28,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.18 |
 | file://../common | common | 0.1.30 |
 | file://../dashboard | dashboard | 0.1.15 |
+| file://../data-upload-cron | data-upload-cron | 0.1.1 |
 | file://../datareplicate | datareplicate | 0.1.16 |
 | file://../dicom-server | dicom-server | 0.1.25 |
 | file://../embedding-management-service | embedding-management-service | 0.1.3 |
@@ -86,6 +87,7 @@ Helm chart to deploy Gen3 Data Commons
 | dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
+| data-upload-cron.enabled | bool | `false` |  |
 | datareplicate.enabled | bool | `false` | Whether to deploy the datareplicate subchart. |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
@@ -155,6 +157,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
+| global.gcp | map | `{"enabled":false}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |
