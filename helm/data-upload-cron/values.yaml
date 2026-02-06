@@ -75,6 +75,34 @@ externalSecrets:
   awsCredsSecret:
   dcfDataserviceSettingsSecret:
 
+schedule: "*/15 * * * *"
+
+suspend: false
+
+slack:
+  enabled: false
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+
+env:
+  bucket: 'test'
+  dispatcherUrl: "http://ssjdispatcher-service/dispatchJob"
+  indexdUrl: "http://indexd-service"
+
+configmaps:
+  state:
+    name: "current-state"
+    lastRunKey: "current.json"
+    initialLastRun: {}
+  pending:
+    name: "pending-state"
+    pendingKey: "pending.json"
+    initialPending: {}
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
