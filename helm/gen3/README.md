@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.131](https://img.shields.io/badge/Version-0.2.131-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.132](https://img.shields.io/badge/Version-0.2.132-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -28,6 +28,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.17 |
 | file://../common | common | 0.1.29 |
 | file://../dashboard | dashboard | 0.1.14 |
+| file://../data-upload-cron | data-upload-cron | 0.1.1 |
 | file://../datareplicate | datareplicate | 0.1.15 |
 | file://../dicom-server | dicom-server | 0.1.24 |
 | file://../embedding-management-service | embedding-management-service | 0.1.2 |
@@ -49,7 +50,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.37 |
 | file://../portal | portal | 0.1.52 |
 | file://../requestor | requestor | 0.1.29 |
-| file://../revproxy | revproxy | 0.1.50 |
+| file://../revproxy | revproxy | 0.1.51 |
 | file://../sheepdog | sheepdog | 0.1.37 |
 | file://../sower | sower | 0.1.40 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.40 |
@@ -85,6 +86,7 @@ Helm chart to deploy Gen3 Data Commons
 | dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
+| data-upload-cron.enabled | bool | `false` |  |
 | datareplicate.enabled | bool | `false` | Whether to deploy the datareplicate subchart. |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
@@ -154,6 +156,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
+| global.gcp | map | `{"enabled":false}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |

@@ -47,6 +47,10 @@ dependencies:
     version: 0.1.15
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
+  - name: data-upload-cron
+    version: 0.1.1
+    repository: "file://../data-upload-cron"
+    condition: data-upload-cron.enabled
   - name: embedding-management-service
     version: 0.1.2
     repository: file://../embedding-management-service
@@ -104,7 +108,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.50
+    version: 0.1.51
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -177,7 +181,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.131
+version: 0.2.132
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
