@@ -7,7 +7,7 @@ The bundled version of postgres, that is used for development purposes, is deplo
 
 ## Database credentials
 
-Every service that requires a postgres database, has the it's credentials stored in a kubernetes secret. 
+Every service that requires a postgres database, has its credentials stored in a kubernetes secret.
 
 Example (The secret values have been base64 decoded for documentation purposes): 
 
