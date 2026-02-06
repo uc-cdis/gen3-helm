@@ -28,7 +28,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../cohort-middleware | cohort-middleware | 0.1.18 |
 | file://../common | common | 0.1.30 |
 | file://../dashboard | dashboard | 0.1.15 |
-| file://../data-upload-cron | data-upload-cron | 0.1.1 |
+| file://../data-upload-cron | data-upload-cron | 0.1.2 |
 | file://../datareplicate | datareplicate | 0.1.16 |
 | file://../dicom-server | dicom-server | 0.1.25 |
 | file://../embedding-management-service | embedding-management-service | 0.1.3 |
@@ -51,7 +51,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.38 |
 | file://../portal | portal | 0.1.53 |
 | file://../requestor | requestor | 0.1.30 |
-| file://../revproxy | revproxy | 0.1.51 |
+| file://../revproxy | revproxy | 0.1.52 |
 | file://../sheepdog | sheepdog | 0.1.38 |
 | file://../sower | sower | 0.1.41 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.41 |

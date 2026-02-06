@@ -48,7 +48,7 @@ dependencies:
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
-    version: 0.1.1
+    version: 0.1.2
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
@@ -112,7 +112,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.51
+    version: 0.1.52
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
