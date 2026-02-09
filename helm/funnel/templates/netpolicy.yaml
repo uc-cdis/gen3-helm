@@ -15,46 +15,7 @@
 
 
 ---
-# Funnel needs both ingress and egress to/from gen3-workflow
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: funnel-ingress-netpolicy
-spec:
-  podSelector:
-    matchLabels:
-      app: funnel
-  ingress:
-    - from:
-      - podSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - gen3-workflow
-  policyTypes:
-    - Ingress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: funnel-egress-netpolicy
-spec:
-  podSelector:
-    matchExpressions:
-      - key: app
-        operator: In
-        values:
-          - gen3-workflow
-  egress:
-    - to:
-      - podSelector:
-          matchLabels:
-            app: funnel
-  policyTypes:
-    - Egress
----
-# Gen3-workflow needs to allow ingress from funnel workers in $jobsNamespace
+# Gen3-workflow needs to allow ingress and egress from funnel workers in $jobsNamespace
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
