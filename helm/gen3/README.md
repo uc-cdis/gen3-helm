@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.133](https://img.shields.io/badge/Version-0.2.133-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.134](https://img.shields.io/badge/Version-0.2.134-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -26,7 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.37 |
 | file://../cedar | cedar | 0.1.20 |
 | file://../cohort-middleware | cohort-middleware | 0.1.18 |
-| file://../common | common | 0.1.30 |
+| file://../common | common | 0.1.31 |
 | file://../dashboard | dashboard | 0.1.15 |
 | file://../data-upload-cron | data-upload-cron | 0.1.2 |
 | file://../datareplicate | datareplicate | 0.1.16 |
@@ -157,7 +157,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
-| global.gcp | map | `{"enabled":false}` | GCP configuration |
+| global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |
