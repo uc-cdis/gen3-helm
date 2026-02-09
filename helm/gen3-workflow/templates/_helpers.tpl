@@ -74,11 +74,3 @@ Create the name of the service account to use
 {{- define "gen3workflow-g3auto" -}}
 {{- default "gen3workflow-g3auto" .Values.externalSecrets.gen3workflowG3auto }}
 {{- end }}
-
-
-{{/*
-  Funnel OIDC client Secrets Manager Name
-*/}}
-{{- define "funnel-oidc-client" -}}
-{{- default "funnel-oidc-client" .Values.externalSecrets.funnelOidcClient }}
-{{- end }}
