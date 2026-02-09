@@ -131,6 +131,12 @@ spec:
               value: /portal
             {{- end }}
           {{- if .Values.customConfig.enabled }}
+            - name: NEXT_PUBLIC_DATADOG_APPLICATION_ID
+              value: {{ .Values.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID | quote }}
+            - name: NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
+              value: {{ .Values.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN | quote }}
+            - name: NEXT_PUBLIC_DATACOMMONS
+              value: {{ .Values.env.NEXT_PUBLIC_DATACOMMONS | quote }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
