@@ -301,4 +301,5 @@ funnel:
       OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
       S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
   Worker:
-    LeaveWorkDir: true # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
+    # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
+    LeaveWorkDir: true
