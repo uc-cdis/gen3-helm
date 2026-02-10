@@ -57,12 +57,14 @@ spec:
         image: quay.io/cdis/awshelper:master
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         env:
           - name: PGPASSWORD
             {{- if $.Values.global.dev }}
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-postgresql
+                name: {{ .Values.postgres.host | default (printf "%s-postgresql" .Release.Name) }}
                 key: postgres-password
                 optional: false
             {{- else if $.Values.global.postgres.externalSecret }}
@@ -72,7 +74,7 @@ spec:
                 key: password
                 optional: false
             {{- else }}
-            value:  {{ .Values.global.postgres.master.password | quote}}
+            value: {{ .Values.global.postgres.master.password | quote }}
             {{- end }}
           - name: PGUSER
           {{- if $.Values.global.postgres.externalSecret }}
@@ -96,7 +98,7 @@ spec:
           {{- end }}
           - name: PGHOST
             {{- if $.Values.global.dev }}
-            value: "{{ .Release.Name }}-postgresql"
+            value: {{ .Values.postgres.host | default (printf "%s-postgresql" .Release.Name) }}
             {{- else if $.Values.global.postgres.externalSecret }}
             valueFrom:
               secretKeyRef:
@@ -131,8 +133,8 @@ spec:
             #!/bin/bash
             set -e
 
-            source "${GEN3_HOME}/gen3/lib/utils.sh"
-            gen3_load "gen3/gen3setup"
+            #source "${GEN3_HOME}/gen3/lib/utils.sh"
+            #gen3_load "gen3/gen3setup"
 
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
@@ -149,7 +151,7 @@ spec:
             >&2 echo "Postgres is up - executing command"
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-              gen3_log_info "Database exists"
+              #gen3_log_info "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
@@ -186,15 +188,32 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $.Chart.Name }}-dbcreds
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+  labels:
+    app: gen3-created-by-hook
 data:
-  database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
-  port: {{ $.Values.postgres.port | b64enc | quote }}
-  password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s.%s" $.Release.Name "postgresql" $.Release.Namespace ) | b64enc | quote }}
+  {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-dbcreds" .Chart.Name)) }}
+  {{- if $existingSecret }}
+    database: {{ index $existingSecret.data "database" | quote }}
+    username: {{ index $existingSecret.data "username" | quote }}
+    port: {{ index $existingSecret.data "port" | quote }}
+    password: {{ index $existingSecret.data "password" | quote }}
+    host: {{ index $existingSecret.data "host" | quote }}
+    {{- if index $existingSecret.data "dbcreated" }}
+    dbcreated: {{ index $existingSecret.data "dbcreated" | quote }}
+    {{- end }}
   {{- else }}
-  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    database: {{ ( $.Values.postgres.database | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote }}
+    port: {{ $.Values.postgres.port | b64enc | quote }}
+    password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
+    {{- if $.Values.global.dev }}
+    host: {{ ($.Values.postgres.host | default (printf "%s-%s.%s" $.Release.Name "postgresql" $.Release.Namespace ) ) | b64enc | quote }}
+    {{- else }}
+    host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

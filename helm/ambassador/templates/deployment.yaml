@@ -71,7 +71,7 @@ spec:
             value: "true"
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.targetPort }}
             - name: https
               containerPort: 8443
             - name: admin

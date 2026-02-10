@@ -89,7 +89,6 @@ global:
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
 
-
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
@@ -148,13 +147,11 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Pod-level security context.
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
 # -- (map) Container-level security context.
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -166,6 +163,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: NodePort
+  targetPort: 80
   # -- (int) The port number that the service exposes.
   port: 80
 
@@ -191,8 +189,7 @@ ingress:
   # -- (string) The ingress class name.
   className: ""
   # -- (map) Annotations to add to the ingress.
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # -- (list) Where to route the traffic.
@@ -206,6 +203,27 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+# -- (map) Configuration for OpenShift Route.
+openshiftRoute:
+  # -- (bool) Whether to create an OpenShift Route
+  enabled: false
+  # -- (map) Annotations to add to the Route.
+  annotations: {}
+  # -- (string) Hostname for the Route. Leave empty to let OpenShift auto-generate
+  host: ""
+  # -- (string) Path for the Route.
+  path: "/"
+  # -- (string) Target port for the Route.
+  targetPort: "http"
+  # -- (map) TLS configuration for the Route.
+  tls:
+    # -- (string) Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt".
+    termination: "edge"
+    # -- (string) Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect".
+    insecureEdgeTerminationPolicy: "Redirect"
+  # -- (string) Wildcard policy for the Route. Valid options are "None" and "Subdomain".
+  wildcardPolicy: "None"
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -272,3 +290,8 @@ extraServices:
 
 # -- (bool) Whether to enable robots.txt generation and serving.
 enableRobotsTxt: false
+
+nginx:
+  user: nginx
+  resolver: kube-dns.kube-system.svc.cluster.local
+  pidFile: /var/run/nginx.pid

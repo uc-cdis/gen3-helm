@@ -22,7 +22,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: http
     name: proxy
   selector:
     {{- include "ambassador.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amanuensis-deployment
+  labels:
+    {{- include "amanuensis.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "amanuensis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+      labels:
+        authprovider: "yes"
+        netnolimit: "yes"
+        userhelper: "yes"
+        {{- include "amanuensis.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      enableServiceLinks: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "amanuensis.serviceAccountName" . }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      containers:
+        - name: amanuensis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.command }}
+          command:
+          {{- toYaml .Values.command | nindent 12 }}
+          {{- end }}
+          {{- if .Values.args }}
+          args:
+          {{- toYaml .Values.args | nindent 12 }}
+          {{- end }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

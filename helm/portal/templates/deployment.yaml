@@ -42,6 +42,8 @@ spec:
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "portal.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -67,12 +69,19 @@ spec:
           name: "privacy-policy"
           optional: true
       {{- end }}
+      - name: nginx-config
+        configMap:
+          name: portal-nginx
       - name: extra-images-config
         configMap:
           name: portal-extra-images
           optional: true
       - name: extra-images
         emptyDir: {}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
       {{- if .Values.extraImages }}
         - name: init
@@ -212,6 +221,8 @@ spec:
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
@@ -228,14 +239,15 @@ spec:
               {{- else }}
               path: /
               {{- end }}
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 30
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           # command:
           #   - /bin/bash
@@ -249,6 +261,8 @@ spec:
               value: "false"
             - name: NODE_ENV
               value: "dev"
+            - name: DICTIONARY_URL
+              value: {{ .Values.global.dictionaryUrl }}
             - name: APP
               value: {{ .Values.global.portalApp | quote }}
             {{- if .Values.gitops.gen3Bundle }}
@@ -327,6 +341,10 @@ spec:
             - name: DATA_UPLOAD_BUCKET
               value: {{ .Values.global.dataUploadBucket }}
             {{- end }}
+            {{- with .Values.gearboxS3Bucket  }}
+            - name: GEARBOX_S3_BUCKET
+              value: {{ . }}
+            {{- end }}
           volumeMounts:
             {{- if .Values.extraImages  }}
             - name: extra-images
@@ -340,8 +358,14 @@ spec:
               mountPath: /data-portal/custom/
             {{-  else }}
             - name: "config-volume"
-              mountPath: "/data-portal/data/config/gitops.json"
+              mountPath: "/data-portal/data/config/pcdc.json"
               subPath: "gitops.json"
+            # - name: "nginx-config"
+            #   mountPath: "/etc/nginx/conf.d/nginx.conf"
+            #   subPath: "nginx.conf"
+            # - name: "nginx-config"
+            #   mountPath: "/etc/nginx/nginx.conf"
+            #   subPath: "main"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"
               subPath: "gitops-logo.png"

@@ -1,9 +1,32 @@
-postgres.txt
+# --- Folders ---
 **/charts/
 notes/
-Chart.lock
-.DS_Store
+CA/
+gen3_scripts/
+gen3_etl/
 _sample-*/
+
+# --- Files ---
+Chart.lock
+# macOS system file (usually ignored)
+.DS_Store  
+# Helm secrets/values file                                 
+secret-values.yaml                          
+# Environment variables
+.env                                        
+# Instance generated service account or credentials
+credentials.json                            
+temp.yaml
+# Main Helm values file
+/values.yaml                               
+postgres.txt
+# External reference data file for PCDC
+pcdc_data/external/external_reference.json  
+# Script that creates external secrets IAM user
+external_secrets.bash
+secret-gearbox-default-values.yaml
+secret-openshift-gearbox-default-values.yaml
+secret-pcdc-default-values.yaml
 
 # exception: do not ignore the `helm/funnel/charts/funnel*` file
 !helm/funnel/charts
