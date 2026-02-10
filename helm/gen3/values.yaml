@@ -4,6 +4,9 @@
 
 # Global configuration
 global:
+  # -- (map) GCP configuration
+  gcp:
+    enabled: false
   # -- (map) AWS configuration
   aws:
     # -- (string) AWS region for this deployment
@@ -243,6 +246,9 @@ dashboard:
 # -- (map) Configurations for gen3-analysis chart.
 gen3-analysis:
   # -- (bool) Whether to deploy the gen3-analysis subchart.
+  enabled: false
+
+data-upload-cron:
   enabled: false
 
 # -- (map) Configurations for gen3-user-data-library chart.
