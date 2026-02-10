@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.50](https://img.shields.io/badge/Version-0.1.50-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.52](https://img.shields.io/badge/Version-0.1.52-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.29 |
+| file://../common | common | 0.1.30 |
 
 ## Values
 
@@ -38,6 +38,7 @@ A Helm chart for gen3 revproxy
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too. |
+| global.gcp | map | `{"enabled":false}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |

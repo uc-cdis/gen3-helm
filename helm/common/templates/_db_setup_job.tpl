@@ -210,7 +210,7 @@ data:
     port: {{ $.Values.postgres.port | b64enc | quote }}
     password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
     {{- if $.Values.global.dev }}
-    host: {{ ($.Values.postgres.host | default (printf "%s-%s" $.Release.Name "postgresql") ) | b64enc | quote }}
+    host: {{ ($.Values.postgres.host | default (printf "%s-%s.%s" $.Release.Name "postgresql" $.Release.Namespace ) ) | b64enc | quote }}
     {{- else }}
     host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
     {{- end }}

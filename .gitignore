@@ -27,3 +27,7 @@ external_secrets.bash
 secret-gearbox-default-values.yaml
 secret-openshift-gearbox-default-values.yaml
 secret-pcdc-default-values.yaml
+
+# exception: do not ignore the `helm/funnel/charts/funnel*` file
+!helm/funnel/charts
+helm/funnel/charts/common*
