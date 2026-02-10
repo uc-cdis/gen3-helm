@@ -19,7 +19,7 @@ A Helm chart for gen3 arborist
 | args[1] | string | `"set -e\n# set env vars\nexport PGSSLMODE=\"disable\"\n\n# bring the database schema up to the latest version\n/go/src/github.com/uc-cdis/arborist/migrations/latest\n\n# run arborist\n/go/src/github.com/uc-cdis/arborist/bin/arborist\n"` |  |
 | autoscaling | object | `{}` |  |
 | command[0] | string | `"sh"` |  |
-| commonLabels | map | `{"test":"test"}` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
+| commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | cronjob | bool | `{"enabled":true}` | Whether the arborist rm exipred access cronjob is enabled. |
 | cronjobs[0].affinityOverride | object | `{}` |  |
