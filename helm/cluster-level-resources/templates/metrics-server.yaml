@@ -23,7 +23,6 @@ spec:
           hostNetwork:
             enabled: {{ index .Values "metrics-server" "hostNetworkEnabled" }}
           args:
-            - --secure-port=4443
             - --kubelet-insecure-tls
             - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
             - --kubelet-use-node-status-port
