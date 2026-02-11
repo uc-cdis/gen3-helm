@@ -8,7 +8,7 @@ spec:
   project: default
   sources:
     - chart: cilium
-      repoURL: oci://quay.io/cilium/charts/cilium
+      repoURL: https://helm.cilium.io/
       targetRevision: {{ index .Values "cilium" "targetRevision" }}
       helm:
         releaseName: cilium
