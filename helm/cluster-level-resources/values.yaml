@@ -265,6 +265,13 @@ kube-state-metrics:
     enabled: false
   targetRevision: 6.3.0
 
+metrics-server:
+  enabled: false
+  targetRevision: "3.13.0"
+  hostNetworkEnabled: false
+  configuration:
+    enabled: false
+
 nvidia-device-plugin:
   enabled: false
   configuration:
