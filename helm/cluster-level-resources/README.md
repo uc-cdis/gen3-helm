@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.31](https://img.shields.io/badge/Version-0.6.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.32](https://img.shields.io/badge/Version-0.6.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -32,6 +32,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | cert-manager.configuration.enabled | bool | `false` |  |
 | cert-manager.enabled | bool | `false` |  |
 | cert-manager.targetRevision | string | `"v1.17.2"` |  |
+| cilium.configuration.enabled | bool | `false` |  |
+| cilium.enabled | bool | `false` |  |
+| cilium.targetRevision | string | `"1.18.4"` |  |
 | cluster | string | `"unfunded"` |  |
 | configuration.configurationRepo | string | `"https://github.com/uc-cdis/gen3-gitops"` |  |
 | configuration.configurationRevision | string | `"master"` |  |

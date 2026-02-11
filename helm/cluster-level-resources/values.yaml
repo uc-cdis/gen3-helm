@@ -77,6 +77,12 @@ argo-workflows:
   configuration:
     enabled: false
 
+cilium:
+  enabled: false
+  targetRevision: "1.18.4"
+  configuration:
+    enabled: false
+
 custom-objects:
   enabled: false
 
