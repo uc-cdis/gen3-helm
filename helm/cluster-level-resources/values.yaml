@@ -17,6 +17,7 @@ configuration:
 alb-controller:
   enabled: false
   targetRevision: "1.13.4"
+  hostNetworkEnabled: false
   configuration:
     enabled: false
 
