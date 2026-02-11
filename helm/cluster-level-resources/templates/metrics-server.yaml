@@ -22,6 +22,8 @@ spec:
         values: |
           hostNetwork:
             enabled: {{ index .Values "metrics-server" "hostNetworkEnabled" }}
+          args:
+            - --secure-port=4443            
       {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
