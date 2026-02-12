@@ -79,9 +79,5 @@ spec:
   Cluster Secret Store for External Secrets
 */}}
 {{- define "common.SecretStore" -}}
-{{- if .Values.global.externalSecrets.separateSecretStore }}
-  {{- .Chart.Name }}-secret-store
-{{- else }}
 {{- default "gen3-secret-store"}}
-{{- end -}}
 {{- end -}}

@@ -49,3 +49,21 @@ hostname: {{ .Values.global.hostname }}
 prometheus.io/path: /metrics
 prometheus.io/scrape: "true"
 {{- end }}
+
+{{- define "app.labels" -}}
+{{- if .Values.commonLabels -}}
+{{- toYaml .Values.commonLabels -}}
+{{- else -}}
+{{- include "common.commonLabels" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "app.selectorLabels" -}}
+{{- if .Values.selectorLabels }}
+    {{- with .Values.selectorLabels }}
+    {{- toYaml . }}
+    {{- end }}
+{{- else }}
+  {{- (include "common.selectorLabels" .)}}
+{{- end }}
+{{- end }}
