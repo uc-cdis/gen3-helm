@@ -75,6 +75,10 @@ dependencies:
     version: 0.1.11
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
+  - name: gen3-discovery-ai
+    version: 0.1.0
+    repository: "file://../gen3-discovery-ai"
+    condition: gen3-discovery-ai.enabled
   - name: gen3-workflow
     version: 0.1.11
     repository: "file://../gen3-workflow"
@@ -185,7 +189,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.135
+version: 0.2.136
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
