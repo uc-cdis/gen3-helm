@@ -20,6 +20,8 @@ args:
     # run arborist
     /go/src/github.com/uc-cdis/arborist/bin/arborist
 
+dbService: true
+
 # -- (bool) Whether the arborist rm exipred access cronjob is enabled.
 cronjob:
   enabled: true

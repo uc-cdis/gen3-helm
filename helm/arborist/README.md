@@ -33,6 +33,7 @@ A Helm chart for gen3 arborist
 | cronjobs[0].envFromApp | bool | `true` |  |
 | cronjobs[0].name | string | `"arborist-rm-expired-access"` |  |
 | cronjobs[0].schedule | string | `"*/5 * * * *"` |  |
+| dbService | bool | `true` |  |
 | env | list | `[{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"},{"name":"PGSSLMODE","value":"disable"}]` | Environment variables to pass to the container |
 | env[0] | string | `{"name":"JWKS_ENDPOINT","value":"http://fence-service/.well-known/jwks"}` | The URL of the JSON Web Key Set (JWKS) endpoint for authentication |
 | externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
