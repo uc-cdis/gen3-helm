@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.134](https://img.shields.io/badge/Version-0.2.134-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.135](https://img.shields.io/badge/Version-0.2.135-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -227,7 +227,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"image":{"repository":"bitnamilegacy/postgresql"},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"repository":"bitnamilegacy/postgresql","tag":"16.6.0-debian-12-r2"},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
