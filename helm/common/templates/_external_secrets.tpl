@@ -42,7 +42,27 @@ spec:
   External Secrets Secret Store will allow all charts to allow for authentication to AWS Secrets Manager
 */}}
 {{- define "common.secretstore" -}}
-{{- if .Values.global.aws.enabled }}
+{{- if .Values.global.gcp.enabled }}
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: {{.Chart.Name}}-secret-store
+spec:
+  provider:
+    gcpsm:
+      projectID: {{ .Values.global.gcp.projectID | quote }}
+      auth:
+        workloadIdentity:
+          serviceAccountRef:
+            name: gcp-secret-store-sa
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gcp-secret-store-sa
+  annotations:
+    iam.gke.io/gcp-service-account: {{ .Values.global.gcp.secretStoreServiceAccount | quote }}
+{{- else }}
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
@@ -66,27 +86,6 @@ spec:
             name: {{.Chart.Name}}-aws-config
             key: secret-access-key
         {{- end}}
-{{- else if .Values.global.gcp.enabled }}
-apiVersion: external-secrets.io/v1beta1
-kind: SecretStore
-metadata:
-  name: {{.Chart.Name}}-secret-store
-spec:
-  provider:
-    gcpsm:
-      projectID: {{ .Values.global.gcp.projectID | quote }}
-      auth:
-        workloadIdentity:
-          serviceAccountRef:
-            name: gcp-secret-store-sa
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: gcp-secret-store-sa
-  annotations:
-    iam.gke.io/gcp-service-account: {{ .Values.global.gcp.secretStoreServiceAccount | quote }}
-{{- end }}
 {{- end }}
 
 
