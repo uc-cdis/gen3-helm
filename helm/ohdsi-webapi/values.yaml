@@ -24,7 +24,7 @@ nginx:
 global:
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally.
-    deploy: true
+    deploy: false
     # -- (string) Will override the name of the aws secrets manager secret. Default is "ohdsi-webapi-g3auto".
     webapiG3auto:
   # -- (string) Hostname for the deployment.
@@ -33,10 +33,10 @@ global:
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 webapiConfig:
-  dbUser: ""
-  dbPass: ""
-  dbHost: ""
-  dbName: ""
+  dbUser: "setifnotusingexternalsecrets"
+  dbPass: "setifnotusingexternalsecrets"
+  dbHost: "setifnotusingexternalsecrets"
+  dbName: "setifnotusingexternalsecrets"
   dbPort: 5432
 
 # -- (bool) Whether to automatically create a OIDC a client in Fence.
