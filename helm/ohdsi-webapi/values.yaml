@@ -23,8 +23,8 @@ nginx:
 # Global configuration
 global:
   externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any fence secrets you have deployed.
-    deploy: false
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally.
+    deploy: true
     # -- (string) Will override the name of the aws secrets manager secret. Default is "ohdsi-webapi-g3auto".
     webapiG3auto:
   # -- (string) Hostname for the deployment.
