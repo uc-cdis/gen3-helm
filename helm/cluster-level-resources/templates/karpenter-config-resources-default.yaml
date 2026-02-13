@@ -93,12 +93,12 @@ spec:
     consolidateAfter: {{ index .Values "karpenter-crds" "default" "consolidateAfter" }}
     consolidationPolicy: {{ index .Values "karpenter-crds" "default" "consolidationPolicy" }}
     budgets:
-    - nodes: 10%
+    - nodes: {{ index .Values "karpenter-crds" "default" "disruptionBudget" }}
 
   limits:
     cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
     memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
-  weight: 99
+  weight: {{ index .Values "karpenter-crds" "default" "weight" }}
 {{- else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -114,7 +114,7 @@ spec:
   limits:
     cpu: {{ index .Values "karpenter-crds" "default" "limits" "cpu" }}
     memory: {{ index .Values "karpenter-crds" "default" "limits" "memory" }}
-  weight: 99
+  weight: {{ index .Values "karpenter-crds" "default" "weight" }}
   template:
     metadata:
       labels:
