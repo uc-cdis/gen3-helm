@@ -414,6 +414,7 @@ access-backend:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
+    tag: 16.6.0-debian-12-r2
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
