@@ -16,4 +16,4 @@ service:
 global:
   # -- (string) URL for the WebAPI, e.g. "https://atlas.mywebapi.com"
   webapiHost: ""
-  hostname: "" # set this to parent portal URL when running Atlas in iframe of a parent portal
+  hostname: ""  # set this to parent portal URL when running Atlas in iframe of a parent portal
