@@ -62,6 +62,7 @@ spec:
         - name: gen3-analysis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
+            {{- toYaml .Values.env | nindent 12 }}
             - name: HOSTNAME
               value: {{ .Values.global.hostname | quote }}
             - name: GUNICORN_WORKERS
@@ -75,6 +76,14 @@ spec:
             {{- with .Values.arboristUrl }}
             - name: ARBORIST_URL
               value: {{ . }}
+            {{- end }}
+            {{- if .Values.geneExpressionDataDir }}
+            - name: GENE_EXPRESSION_DATA_DIR
+              value: {{ .Values.geneExpressionDataDir | quote }}
+            {{- end }}
+            {{- if .Values.geneExpressionSQLitePath }}
+            - name: GENE_EXPRESSION_SQLITE_PATH
+              value: {{ .Values.geneExpressionSQLitePath | quote }}
             {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
