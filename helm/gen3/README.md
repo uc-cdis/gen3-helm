@@ -29,7 +29,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../common | common | 0.1.31 |
 | file://../dashboard | dashboard | 0.1.15 |
 | file://../data-upload-cron | data-upload-cron | 0.1.2 |
-| file://../datareplicate | datareplicate | 0.1.16 |
+| file://../datareplicate | datareplicate | 0.1.17 |
 | file://../dicom-server | dicom-server | 0.1.25 |
 | file://../embedding-management-service | embedding-management-service | 0.1.3 |
 | file://../etl | etl | 0.1.21 |
