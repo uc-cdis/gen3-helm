@@ -13,6 +13,8 @@ data:
   "tier_access_limit": {{ .Values.global.tierAccessLimit | quote }}
   "netpolicy": {{ .Values.global.netPolicy | quote }}
   "dispatcher_job_num": {{ .Values.global.dispatcherJobNum | quote }}
+  "dd_enabled": {{ .Values.global.ddEnabled | quote }}
+  "authz_entity_name": {{.Values.global.authz_entity_name | quote }}
   "frontend_root": {{ .Values.global.frontendRoot | quote }}
   "logout_inactive_users": {{ .Values.global.logoutInactiveUsers | quote }}
   "workspace_timeout_in_minutes": {{ .Values.global.workspaceTimeoutInMinutes | quote }}

@@ -194,6 +194,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 80
   # -- (int) Port on which the service is exposed
   httpPort: 80
   # -- (int) Secure port on which the service is exposed
@@ -268,3 +269,12 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) Fence docker image information.
+fenceImage:
+  # -- (string) Docker repository.
+  repository: quay.io/pcdc/fence
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: "master"

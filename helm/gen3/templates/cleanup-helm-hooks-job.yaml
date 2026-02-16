@@ -1,0 +1,98 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "gen3.fullname" . }}-cleanup
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gen3.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-20"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+automountServiceAccountToken: true
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "gen3.fullname" . }}-cleanup-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gen3.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-20"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "gen3.fullname" . }}-cleanup-rolebinding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gen3.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-20"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+subjects:
+- kind: ServiceAccount
+  name: {{ include "gen3.fullname" . }}-cleanup
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "gen3.fullname" . }}-cleanup-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "gen3.fullname" . }}-cleanup-{{ randAlphaNum 8 | lower }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "gen3.fullname" . }}-cleanup
+      containers:
+      - name: cleanup
+        image: bitnamisecure/kubectl:latest
+        imagePullPolicy: IfNotPresent    
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Cleaning up hook resources for release: {{ .Release.Name }}"
+          
+          # Clean up jobs created by hooks
+          kubectl delete jobs -l app=gen3-created-by-hook   
+          
+          # Clean up cronjobs created by hooks
+          kubectl delete cronjobs -l app=gen3-created-by-hook
+
+          # Clean up secrets created by hooks (if any)
+          kubectl delete secrets -l app=gen3-created-by-hook   
+          echo "Cleanup completed"
+        resources:
+          requests:
+            memory: 12Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m

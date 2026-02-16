@@ -37,6 +37,8 @@ spec:
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "audit.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: config-volume
           secret:
@@ -49,20 +51,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 80
+          - containerPort: {{ .Values.service.targetPort }}
             name: http
             protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

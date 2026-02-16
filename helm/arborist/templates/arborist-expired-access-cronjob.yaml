@@ -33,12 +33,18 @@ spec:
                     values:
                     - ONDEMAND
           automountServiceAccountToken: false
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
           - name: arborist
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: Always
             env:
+            {{- if .Values.env }}
             {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
@@ -77,6 +83,10 @@ spec:
                   name: arborist-dbcreds
                   key: dbcreated
                   optional: false
+            {{- if .Values.resources }}
+            resources:
+              {{- toYaml .Values.resources | nindent 14 }}
+            {{- end }}
             command: ["sh"]
             args:
             - "-c"

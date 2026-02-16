@@ -254,7 +254,6 @@ gen3-workflow:
   # -- (bool) Whether to deploy the gen3-workflow subchart.
   enabled: false
 
-
 # -- (map) Configurations for guppy chart.
 guppy:
   # -- (bool) Whether to deploy the guppy subchart.
@@ -412,6 +411,7 @@ access-backend:
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
+  enabled: true
   image:
     repository: bitnamilegacy/postgresql
     tag: 16.6.0-debian-12-r2
@@ -466,6 +466,14 @@ neuvector:
   DB_HOST: development-gen3-postgresql
   # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
   ES_HOST: gen3-elasticsearch-master
+
+pcdcanalysistools:
+  # -- (bool) Whether to deploy the pcdcanalysistools subchart.
+  enabled: true
+
+amanuensis:
+  # -- (bool) Whether to deploy the amanuensis subchart.
+  enabled: true
 
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
