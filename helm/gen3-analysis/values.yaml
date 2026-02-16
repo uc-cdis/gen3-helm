@@ -208,6 +208,11 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
+env:
+
+geneExpressionDataDir: ""
+geneExpressionSQLitePath: ""
+
 s3DataMount:
   enabled: false
   s3Path: ""
