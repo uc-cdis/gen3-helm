@@ -81,7 +81,7 @@ spec:
                   optional: false
             - name: DATASOURCE_URL
               value: jdbc:postgresql://$(PGHOST):5432/$(PGDB)
-            - name: FLYWAY_DATASOURCE_URL  
+            - name: FLYWAY_DATASOURCE_URL
               value: $(DATASOURCE_URL)
             - name: FLYWAY_DATASOURCE_USERNAME
               value: $(DATASOURCE_USERNAME)
