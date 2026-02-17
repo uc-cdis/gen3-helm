@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.3
+    version: 0.1.4
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
