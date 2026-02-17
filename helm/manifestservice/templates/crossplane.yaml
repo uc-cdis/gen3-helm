@@ -29,6 +29,7 @@ spec:
         ]
       }
 ---
+{{- $bucketName := .Values.bucketNameOverride | default (printf "%s-%s-manifestservice-bucket" .Values.global.environment .Release.Namespace ) -}}
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Policy
 metadata:
@@ -47,14 +48,14 @@ spec:
             "Effect":"Allow",
             "Action":["s3:List*","s3:Get*"],
             "Resource":[
-              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*",
-              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket"
+              "arn:aws:s3:::{{ $bucketName }}/*",
+              "arn:aws:s3:::{{ $bucketName }}"
             ]
           },
           {
             "Effect":"Allow",
             "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
-            "Resource":"arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-manifestservice-bucket/*"
+            "Resource":"arn:aws:s3:::{{ $bucketName }}/*"
           }
         ]
       }
