@@ -29,14 +29,6 @@ global:
   hostname: "host.docker.internal"
   atlasUrl: http://localhost:8889
 
-# Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
-webapiConfig:
-  dbUser: "postgres"
-  dbPass: "mypass"
-  dbHost: "host.docker.internal"
-  dbName: "postgres"
-  dbPort: 5436
-
 # -- (bool) Whether to automatically create a OIDC a client in Fence.
 createFenceClientJobEnabled: true
 

@@ -48,6 +48,52 @@ spec:
           envFrom:
             - secretRef:
                 name: ohdsi-webapi-config
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: host
+                  optional: false
+            - name: DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: username
+                  optional: false
+            - name: DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: dbcreated
+                  optional: false
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://$(PGHOST):5432/$(PGDB)
+            - name: FLYWAY_DATASOURCE_URL  
+              value: $(DATASOURCE_URL)
+            - name: FLYWAY_DATASOURCE_USERNAME
+              value: $(DATASOURCE_USERNAME)
+            - name: FLYWAY_DATASOURCE_PASSWORD
+              value: $(DATASOURCE_PASSWORD)
+            - name: SECURITY_DB_DATASOURCE_URL
+              value: $(DATASOURCE_URL)
+            - name: SECURITY_DB_DATASOURCE_USERNAME
+              value: $(DATASOURCE_USERNAME)
+            - name: SECURITY_DB_DATASOURCE_PASSWORD
+              value: $(DATASOURCE_PASSWORD)
+
           resources:
             requests:
               memory: 1500Mi

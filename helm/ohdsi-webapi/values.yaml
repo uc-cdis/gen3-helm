@@ -31,13 +31,6 @@ global:
   hostname: localhost
   atlasUrl: https://localhost
 
-# Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
-webapiConfig:
-  dbUser: "setifnotusingexternalsecrets"
-  dbPass: "setifnotusingexternalsecrets"
-  dbHost: "setifnotusingexternalsecrets"
-  dbName: "setifnotusingexternalsecrets"
-  dbPort: 5432
 
 # -- (bool) Whether to automatically create a OIDC a client in Fence.
 createFenceClientJobEnabled: true
