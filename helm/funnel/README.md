@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -9,6 +10,9 @@
 =======
 ![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 71b536c3 (Lint check)
+=======
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 14944ef0 (Update funnel to 0.1.91)
 
 A Helm chart for Kubernetes
 
@@ -21,8 +25,12 @@ A Helm chart for Kubernetes
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.31 |
 =======
 | file://../common | common | 0.1.30 |
+<<<<<<< HEAD
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.85 |
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.91 |
+>>>>>>> 14944ef0 (Update funnel to 0.1.91)
 
 ## Values
 
