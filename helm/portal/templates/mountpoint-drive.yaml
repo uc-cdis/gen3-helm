@@ -1,4 +1,4 @@
-{{- if .Values.mountpointCacheEnabled }}
+{{- if and (.Values.portalBuild.s3csi.enabled) (.Values.portalBuild.enabled) -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -12,14 +12,18 @@ spec:
   claimRef: # To ensure no other PVCs can claim this PV
     namespace: {{ .Release.Namespace }}
     name: portal-pvc-{{ .Release.Name }} # Name of your PVC
+  {{- with .Values.portalBuild.s3csi.mountOptions }}
   mountOptions:
-    - allow-delete
-    - region us-east-1
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
   csi:
     driver: s3.csi.aws.com # required
-    volumeHandle: s3-csi-driver-volume # Must be unique
+    volumeHandle: portal-volume-{{ .Release.Name }}-{{ .Release.Namespace }} # Must be unique
     volumeAttributes:
       bucketName: {{ .Values.mountpointCacheBucketName }} # Name of your S3 bucket
+      authenticationSource: pod
+      cache: emptyDir
+      cacheEmptyDirSizeLimit: {{ default "500Mi" .Values.portalBuild.s3csi.cache.emptyDirSizeLimit | quote }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

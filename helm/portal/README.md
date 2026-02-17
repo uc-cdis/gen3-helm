@@ -104,7 +104,7 @@ A Helm chart for gen3 data-portal
 | portalBuild.job.ttlSecondsAfterFinished | int | `600` |  |
 | portalBuild.rbac.enabled | bool | `true` |  |
 | portalBuild.s3csi.bucketName | string | `""` |  |
-| portalBuild.s3csi.cacheEmptyDirSizeLimit | string | `"500Mi"` |  |
+| portalBuild.s3csi.cache.emptyDirSizeLimit | string | `"500Mi"` |  |
 | portalBuild.s3csi.createPV | bool | `true` |  |
 | portalBuild.s3csi.enabled | bool | `true` |  |
 | portalBuild.s3csi.kmsKeyArn | string | `""` |  |

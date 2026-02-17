@@ -225,6 +225,7 @@ extraImages:
 # Requires mountpoint to be enabled in the cluster.
 mountpointCacheEnabled: false
 mountpointCacheBucketName: ""   # <vpc name>-<namespace>-portal-build-bucket is the standard
+
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string)
@@ -551,7 +552,8 @@ portalBuild:
     region: us-east-1
     kmsKeyArn: ""
     size: 1Gi
-    cacheEmptyDirSizeLimit: 500Mi
+    cache:
+      emptyDirSizeLimit: 500Mi
 
   images:
     builder: quay.io/cdis/data-portal:2024.12
