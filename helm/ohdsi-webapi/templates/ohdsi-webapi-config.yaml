@@ -36,7 +36,7 @@ stringData:
   security_db_datasource_schema: security
   security_db_datasource_driverClassName: org.postgresql.Driver
 
- # the xxx below are replaced by the client-create-job (see ./ohdsi-webapi-client-create-job.yaml) 
+ # the xxx below are replaced by the client-create-job (see ./ohdsi-webapi-client-create-job.yaml)
   security_oid_clientId: xxx
   security_oid_apiSecret: xxx
   security_oid_url: "{{ .Values.fenceUrl }}/.well-known/openid-configuration"
