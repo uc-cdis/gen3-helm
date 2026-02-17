@@ -169,9 +169,6 @@ spec:
               echo "Creating ltree extension..."
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 
-              echo "Creating vector extension..."
-              psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS vector;"
-
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
