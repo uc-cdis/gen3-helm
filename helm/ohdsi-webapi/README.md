@@ -17,10 +17,12 @@ are passed back into the respective WebAPI config items.
 
 3. Install chart with:
 ```
+helm uninstall my-release-name
 helm install my-release-name . 
 ```
 OR for testing locally:
 ```
+helm uninstall my-release-name
 helm install my-release-name . --values ./values_local.yaml
 ```
 

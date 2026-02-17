@@ -1,7 +1,4 @@
 {{- if (not .Values.global.externalSecrets.deploy) }}
-{{- if or (not .Values.webapiConfig.dbUser) (not .Values.webapiConfig.dbPass) (not .Values.webapiConfig.dbHost) (not .Values.webapiConfig.dbName) }}
-{{- fail "You must set webapiConfig.dbUser, dbPass, dbHost, and dbName in your values.yaml!" }}
-{{- end }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -9,19 +6,13 @@ metadata:
 type: Opaque
 stringData:
   datasource_driverClassName: org.postgresql.Driver
-  datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   datasource_ohdsi_schema: ohdsi
-  datasource_username: {{ .Values.webapiConfig.dbUser }}
-  datasource_password: {{ .Values.webapiConfig.dbPass }}
   spring_jpa_properties_hibernate_default_schema: ohdsi
   spring_jpa_properties_hibernate_dialect: org.hibernate.dialect.PostgreSQLDialect
   spring_batch_repository_tableprefix: ohdsi.BATCH_
   flyway_datasource_driverClassName: org.postgresql.Driver
-  flyway_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   flyway_schemas: ohdsi
   flyway_placeholders_ohdsiSchema: ohdsi
-  flyway_datasource_username: {{ .Values.webapiConfig.dbUser }}
-  flyway_datasource_password: {{ .Values.webapiConfig.dbPass }}
   flyway_locations: classpath:db/migration/postgresql
 
   security_cors_enabled: "true"
@@ -43,13 +34,11 @@ stringData:
   security_auth_cas_enabled: "false"
 
   security_db_datasource_schema: security
-  security_db_datasource_url: jdbc:postgresql://{{ .Values.webapiConfig.dbHost }}:{{ .Values.webapiConfig.dbPort }}/{{ .Values.webapiConfig.dbName }}
   security_db_datasource_driverClassName: org.postgresql.Driver
-  security_db_datasource_username: {{ .Values.webapiConfig.dbUser }}
-  security_db_datasource_password: {{ .Values.webapiConfig.dbPass }}
 
-  security_oid_clientId: $FENCE_CLIENT_ID
-  security_oid_apiSecret: $FENCE_CLIENT_SECRET
+ # the xxx below are replaced by the client-create-job (see ./ohdsi-webapi-client-create-job.yaml) 
+  security_oid_clientId: xxx
+  security_oid_apiSecret: xxx
   security_oid_url: "{{ .Values.fenceUrl }}/.well-known/openid-configuration"
   security_oid_redirectUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/welcome
   security_oid_logoutUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/home
