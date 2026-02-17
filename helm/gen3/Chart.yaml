@@ -11,6 +11,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.18
 =======
     version: 0.1.11
@@ -52,21 +53,25 @@ dependencies:
 =======
     version: 0.1.16
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.17
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.25
+    version: 0.1.26
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -114,6 +119,13 @@ dependencies:
   - name: aws-es-proxy
     version: 0.1.37
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.38
+    repository: "file://../audit"
+    condition: audit.enabled
+  - name: aws-es-proxy
+    version: 0.1.38
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: aws-sigv4-proxy
@@ -121,6 +133,7 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -212,17 +225,20 @@ dependencies:
 =======
     version: 0.1.20
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.21
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.18
+    version: 0.1.19
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
     version: 0.1.31
     repository: file://../common
   - name: dashboard
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
@@ -237,6 +253,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
   - name: data-upload-cron
+<<<<<<< HEAD
     version: 0.1.4
 =======
   - name: data-upload-cron
@@ -266,6 +283,13 @@ dependencies:
   - name: embedding-management-service
     version: 0.1.3
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.3
+    repository: "file://../data-upload-cron"
+    condition: data-upload-cron.enabled
+  - name: embedding-management-service
+    version: 0.1.4
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
@@ -293,6 +317,7 @@ dependencies:
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -456,10 +481,13 @@ dependencies:
 >>>>>>> 74d94533 (Setting "useAggMds" to a bool. (#487))
 =======
     version: 0.1.21
+=======
+    version: 0.1.22
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.69
+    version: 0.1.70
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -467,47 +495,52 @@ dependencies:
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
+<<<<<<< HEAD
     version: 0.1.11
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.12
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.11
+    version: 0.1.12
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.32
+    version: 0.1.33
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.62
+    version: 0.1.63
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.38
+    version: 0.1.39
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.38
+    version: 0.1.39
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.53
+    version: 0.1.54
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.30
+    version: 0.1.31
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -530,6 +563,9 @@ dependencies:
 =======
     version: 0.1.52
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.53
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -541,6 +577,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -585,13 +622,17 @@ dependencies:
 =======
     version: 0.1.41
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.42
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.41
+    version: 0.1.42
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -632,6 +673,9 @@ dependencies:
 =======
     version: 0.1.36
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.37
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -639,6 +683,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -653,17 +698,21 @@ dependencies:
 =======
     version: 0.1.25
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.26
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.10
+    version: 0.1.11
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -678,6 +727,9 @@ dependencies:
 =======
     version: 0.1.6
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.7
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas

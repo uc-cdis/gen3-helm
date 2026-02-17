@@ -21,6 +21,7 @@ A Helm chart for gen3 Sheepdog Service
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.24 |
@@ -49,6 +50,9 @@ A Helm chart for gen3 Sheepdog Service
 =======
 | file://../common | common | 0.1.30 |
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+| file://../common | common | 0.1.31 |
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

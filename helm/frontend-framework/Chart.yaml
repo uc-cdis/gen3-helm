@@ -23,6 +23,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.27
 =======
 version: 0.1.14
@@ -48,6 +49,9 @@ version: 0.1.20
 =======
 version: 0.1.21
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+version: 0.1.22
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -57,6 +61,7 @@ appVersion: "develop"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -94,4 +99,7 @@ dependencies:
 =======
     version: 0.1.30
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+    version: 0.1.31
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
     repository: file://../common

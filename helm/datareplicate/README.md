@@ -46,6 +46,7 @@ A Helm chart for gen3 datareplicate
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.33 |
 =======
 | file://../common | common | 0.1.24 |
@@ -65,6 +66,9 @@ A Helm chart for gen3 datareplicate
 =======
 | file://../common | common | 0.1.30 |
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+| file://../common | common | 0.1.31 |
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
 
 ## Values
 

@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -9,6 +10,9 @@
 =======
 ![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
 
 A Helm chart for the data upload cronjob
 
@@ -18,6 +22,7 @@ A Helm chart for the data upload cronjob
 |------------|------|---------|
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 =======
 | file://../common | common | 0.1.29 |
@@ -25,6 +30,9 @@ A Helm chart for the data upload cronjob
 =======
 | file://../common | common | 0.1.30 |
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+| file://../common | common | 0.1.31 |
+>>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
 
 ## Values
 
