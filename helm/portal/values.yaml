@@ -528,3 +528,39 @@ customConfig:
   repo: https://github.com/uc-cdis/cdis-manifest.git
   # -- (string) Branch name to set config from
   branch: master
+
+
+portalBuild:
+  enabled: false
+
+  serviceAccount:
+    name: "" # empty => reuse existing portal SA name
+    annotations:
+      eks.amazonaws.com/role-arn: ""
+
+  rbac:
+    enabled: true
+
+  s3csi:
+    enabled: true
+    pvcName: webpack-pvc
+    pvName: webpack-pv
+    createPV: true
+    volumeHandle: ""
+    bucketName: ""
+    region: us-east-1
+    kmsKeyArn: ""
+    size: 1Gi
+    cacheEmptyDirSizeLimit: 500Mi
+
+  images:
+    builder: quay.io/cdis/data-portal:2024.12
+    kubectl: bitnami/kubectl:latest
+    alpine: alpine:3.20
+
+  job:
+    lockTtlSeconds: 1800
+    ttlSecondsAfterFinished: 600
+
+  extraction:
+    stripComponents: true

@@ -47,7 +47,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ohif-viewer | ohif-viewer | 0.1.8 |
 | file://../orthanc | orthanc | 0.1.9 |
 | file://../peregrine | peregrine | 0.1.37 |
-| file://../portal | portal | 0.1.53 |
+| file://../portal | portal | 0.1.54 |
 | file://../requestor | requestor | 0.1.29 |
 | file://../revproxy | revproxy | 0.1.50 |
 | file://../sheepdog | sheepdog | 0.1.37 |
