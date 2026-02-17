@@ -63,24 +63,24 @@ spec:
         {{- end }}
 
       - name: build-out
-      persistentVolumeClaim:
-          claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
+        persistentVolumeClaim:
+            claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
       - name: scripts-compute
-      secret:
-          secretName: compute-signature
-          defaultMode: 0755
+        secret:
+            secretName: compute-signature
+            defaultMode: 0755
       - name: scripts-trigger
-      secret:
-          secretName: check-and-trigger
-          defaultMode: 0755
+        secret:
+            secretName: check-and-trigger
+            defaultMode: 0755
       - name: portal-overrides
-      secret:
-          secretName: portal-overrides
-          defaultMode: 0755
+        secret:
+            secretName: portal-overrides
+            defaultMode: 0755
       - name: sigshare
-      emptyDir: {}
+         emptyDir: {}
       - name: docroot
-      emptyDir: {}
+         emptyDir: {}
 
       initContainers:
         - name: sig-compute
