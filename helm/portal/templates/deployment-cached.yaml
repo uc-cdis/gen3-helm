@@ -60,28 +60,23 @@ spec:
           name: portal-extra-images
       - name: extra-images
         emptyDir: {}
-        {{- end }}
-
+      {{- end }}
       - name: build-out
         persistentVolumeClaim:
-            claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
+          claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
       - name: scripts-compute
         secret:
-            secretName: compute-signature
-            defaultMode: 0755
+          secretName: compute-signature
       - name: scripts-trigger
         secret:
-            secretName: check-and-trigger
-            defaultMode: 0755
+          secretName: check-and-trigger
       - name: portal-overrides
         secret:
-            secretName: portal-overrides
-            defaultMode: 0755
+          secretName: portal-overrides
       - name: sigshare
-         emptyDir: {}
+        emptyDir: {}
       - name: docroot
-         emptyDir: {}
-
+        emptyDir: {}
       initContainers:
         - name: sig-compute
           image: {{ .Values.portalBuild.images.builder | quote }}
@@ -154,7 +149,6 @@ spec:
           - name: sigshare
             mountPath: /etc/portal-build
             readOnly: true
-
         - name: untar
           image: {{ .Values.portalBuild.images.alpine | quote }}
           imagePullPolicy: IfNotPresent
@@ -165,24 +159,19 @@ spec:
             SIG_FILE="/etc/portal-build/sig"
             CACHE="/cache"
             DOCROOT="/usr/share/nginx/html"
-
             for i in $(seq 1 120); do [ -s "${SIG_FILE}" ] && break; sleep 1; done
             [ -s "${SIG_FILE}" ] || exit 0
             SIG="$(tr -d '\n' < "${SIG_FILE}")"
             TARBALL="${CACHE}/${SIG}.tar.gz"
-
             for i in $(seq 1 600); do [ -f "${TARBALL}" ] && break; sleep 1; done
             [ -f "${TARBALL}" ] || exit 0
-
             mkdir -p "${DOCROOT}"
             rm -rf "${DOCROOT:?}/"* "${DOCROOT:?}"/.[!.]* "${DOCROOT:?}"/..?* 2>/dev/null || true
-
             {{- if .Values.portalBuild.extraction.stripComponents }}
             tar -C "${DOCROOT}" --strip-components=1 -xzf "${TARBALL}"
             {{- else }}
             tar -C "${DOCROOT}" -xzf "${TARBALL}"
             {{- end }}
-
             echo "${SIG}" > "${DOCROOT}/.extracted_sig"
           volumeMounts:
           - name: build-out
@@ -375,7 +364,7 @@ spec:
               mountPath: /data-portal/custom/images
             {{- end }}
             - name: docroot
-            mountPath: /usr/share/nginx/html            
+              mountPath: /usr/share/nginx/html            
             - name: cache-mountpoint
               mountPath: /data-portal/cache
             - name: "config-volume"

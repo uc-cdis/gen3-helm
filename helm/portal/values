@@ -1,0 +1,40 @@
+enabled: true
+serviceAccount:
+  annotations: 
+    eks.amazonaws.com/role-arn: arn:aws:iam::707767160287:role/emalinowskiv1--emalinowskiv1-helm--manifest-service-sa
+mountpointCacheEnabled: true
+mountpointCacheBucketName: "test-gen3-portal-build-bucket"  
+portalWebpackBuild:
+  s3csi:
+    createPV: true    
+
+portalBuild:
+  enabled: true
+
+  rbac:
+    enabled: true
+
+  s3csi:
+    enabled: true
+    pvcName: portal-pvc-emalinowskiv1
+    pvName: portal-pv-emalinowskiv1
+    createPV: true
+    #volumeHandle: ""
+    bucketName: "test-gen3-portal-build-bucket"
+    region: us-east-1
+    kmsKeyArn: "arn:aws:kms:us-east-1:707767160287:key/387b8ebf-c8b8-4887-9b2c-639aee77654c"
+    size: 1Gi
+    cacheEmptyDirSizeLimit: 500Mi
+
+  images:
+    builder: quay.io/cdis/data-portal:2024.12
+    kubectl: bitnami/kubectl:latest
+    alpine: alpine:3.20
+
+  job:
+    lockTtlSeconds: 1800
+    ttlSecondsAfterFinished: 600
+
+  extraction:
+    stripComponents: true
+
