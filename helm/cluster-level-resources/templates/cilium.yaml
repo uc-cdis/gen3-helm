@@ -1,0 +1,73 @@
+{{ if index .Values "cilium" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: cilium
+      repoURL: https://helm.cilium.io/
+      targetRevision: {{ index .Values "cilium" "targetRevision" }}
+      helm:
+        releaseName: cilium
+      {{- if index .Values "cilium" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/cilium.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: eks.amazonaws.com/compute-type
+                    operator: NotIn
+                    values:
+                    - fargate
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    k8s-app: cilium
+                topologyKey: kubernetes.io/hostname
+          eni:
+            enabled: false
+          envoy:
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: eks.amazonaws.com/compute-type
+                      operator: NotIn
+                      values:
+                      - fargate
+          hubble:
+            relay:
+              enabled: true
+            ui:
+              enabled: true
+          ipam:
+            mode: cluster-pool
+          k8sServiceHostRef:
+            key: hostname
+            name: cluster-info
+          k8sServiceLookupConfigMapName: kube-system
+          k8sServicePort: 443
+          kubeProxyReplacement: true
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+      prune: true
+{{ end }}

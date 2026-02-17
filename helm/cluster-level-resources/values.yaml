@@ -17,6 +17,7 @@ configuration:
 alb-controller:
   enabled: false
   targetRevision: "1.13.4"
+  hostNetworkEnabled: false
   configuration:
     enabled: false
 
@@ -74,6 +75,12 @@ argo-workflows:
   GEN3_ARGO_DB_HOST: ""
   GEN3_ARGO_DB_NAME: ""
   GEN3_ARGO_BUCKET: ""
+  configuration:
+    enabled: false
+
+cilium:
+  enabled: false
+  targetRevision: "1.18.4"
   configuration:
     enabled: false
 
@@ -257,6 +264,13 @@ kube-state-metrics:
   configuration:
     enabled: false
   targetRevision: 6.3.0
+
+metrics-server:
+  enabled: false
+  targetRevision: "3.13.0"
+  hostNetworkEnabled: false
+  configuration:
+    enabled: false
 
 nvidia-device-plugin:
   enabled: false
