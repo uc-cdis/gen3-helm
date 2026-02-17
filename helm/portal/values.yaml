@@ -564,3 +564,8 @@ portalBuild:
 
   extraction:
     stripComponents: true
+
+#portalWebpackBuild:
+#  enabled: true
+#  s3csi:
+#    enabled: true
