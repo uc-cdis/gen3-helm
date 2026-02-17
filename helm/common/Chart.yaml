@@ -24,6 +24,7 @@ type: library
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.34
 =======
 version: 0.1.25
@@ -52,6 +53,9 @@ version: 0.1.30
 =======
 version: 0.1.31
 >>>>>>> dffc3bd5 (update db-init job to create vector extension)
+=======
+version: 0.1.32
+>>>>>>> 14747378 (Revertting Vector Extension Creation in db setup. (#523))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
