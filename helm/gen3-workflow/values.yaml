@@ -249,6 +249,7 @@ volumeMounts:
     mountPath: "/src/gen3-workflow-config.yaml"
     subPath: "gen3-workflow-config.yaml"
   # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  # TODO: remove later
   - name: "config-volume"
     readOnly: true
     mountPath: "/gen3-workflow/gen3-workflow-config.yaml"
