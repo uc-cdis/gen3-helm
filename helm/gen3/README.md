@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.140](https://img.shields.io/badge/Version-0.2.140-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.142](https://img.shields.io/badge/Version-0.2.142-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -20,13 +20,13 @@ Helm chart to deploy Gen3 Data Commons
 |------------|------|---------|
 | file://../access-backend | access-backend | 0.1.17 |
 | file://../ambassador | ambassador | 0.1.32 |
-| file://../arborist | arborist | 0.1.32 |
+| file://../arborist | arborist | 0.1.31 |
 | file://../argo-wrapper | argo-wrapper | 0.1.26 |
 | file://../audit | audit | 0.1.38 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.38 |
 | file://../cedar | cedar | 0.1.21 |
 | file://../cohort-middleware | cohort-middleware | 0.1.19 |
-| file://../common | common | 0.1.32 |
+| file://../common | common | 0.1.33 |
 | file://../dashboard | dashboard | 0.1.16 |
 | file://../data-upload-cron | data-upload-cron | 0.1.3 |
 | file://../datareplicate | datareplicate | 0.1.17 |
@@ -44,13 +44,13 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.63 |
 | file://../indexd | indexd | 0.1.40 |
 | file://../manifestservice | manifestservice | 0.1.39 |
-| file://../metadata | metadata | 0.1.40 |
+| file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohif-viewer | ohif-viewer | 0.1.10 |
 | file://../orthanc | orthanc | 0.1.11 |
 | file://../peregrine | peregrine | 0.1.39 |
 | file://../portal | portal | 0.1.54 |
-| file://../requestor | requestor | 0.1.32 |
+| file://../requestor | requestor | 0.1.31 |
 | file://../revproxy | revproxy | 0.1.53 |
 | file://../sheepdog | sheepdog | 0.1.39 |
 | file://../sower | sower | 0.1.42 |
@@ -157,7 +157,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
-| global.gcp | map | `{"enabled":false}` | GCP configuration |
+| global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |

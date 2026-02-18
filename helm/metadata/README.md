@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Metadata Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.31 |
+| file://../common | common | 0.1.32 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.17.1 |
 
@@ -125,6 +125,6 @@ A Helm chart for gen3 Metadata Service
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
-| suspendCronjob | bool | `false` |  |
+| suspendCronjob | bool | `true` |  |
 | useAggMds | bool | `false` | Set to true to aggregate metadata from multiple other Metadata Service instances. |
 | volumeMounts | list | `[{"mountPath":"/src/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/mds/.env","name":"config-volume-g3auto","readOnly":true,"subPath":"metadata.env"},{"mountPath":"/aggregate_config.json","name":"config-volume","readOnly":true,"subPath":"aggregate_config.json"}]` | Volumes to mount to the container. |

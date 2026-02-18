@@ -13,7 +13,7 @@ dependencies:
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.32
+    version: 0.1.31
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
@@ -37,7 +37,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.32
+    version: 0.1.33
     repository: file://../common
   - name: dashboard
     version: 0.1.16
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.40
+    version: 0.1.41
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -108,7 +108,7 @@ dependencies:
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.32
+    version: 0.1.31
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
@@ -185,7 +185,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.2.140
+version: 0.2.142
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
