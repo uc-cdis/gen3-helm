@@ -1,6 +1,6 @@
 # arborist
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 arborist
 
@@ -8,11 +8,7 @@ A Helm chart for gen3 arborist
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.31 |
-<<<<<<< feat/GPE-2284
-=======
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
->>>>>>> master
+| file://../common | common | 0.1.33 |
 
 ## Values
 

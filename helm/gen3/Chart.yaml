@@ -13,7 +13,7 @@ dependencies:
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
