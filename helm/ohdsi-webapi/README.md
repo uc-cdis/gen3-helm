@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # ohdsi-webapi
 
 ![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.15.0](https://img.shields.io/badge/AppVersion-2.15.0-informational?style=flat-square)
@@ -53,22 +54,13 @@ A Helm chart for OHDSI WebAPI
 | service.type | string | `"ClusterIP"` |  |
 =======
 # Steps to test this WebAPI chart locally
+=======
+# ohdsi-webapi
+>>>>>>> e88a0d1d (Set default empty value for host)
 
-1. Adjust `webapiConfig` DB connection settings in `values.yaml`
-2. Add a "fence-config" secret based on your local Fence config yaml:
-```
-kubectl create secret generic fence-config \
-  --from-file=fence-config.yaml
-```
-e.g. 
-```
-kubectl create secret generic fence-config \
-  --from-file=/Users/myuser/dev/fence/fence-config.yaml
-```
-This will ensure your WebAPI is registered as a client
-in this Fence instance, and the Fence clientID and client secret
-are passed back into the respective WebAPI config items.
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.15.0](https://img.shields.io/badge/AppVersion-2.15.0-informational?style=flat-square)
 
+<<<<<<< HEAD
 3. Install chart with:
 ```
 helm install my-release-name . 
@@ -77,15 +69,20 @@ OR for testing locally:
 ```
 helm install my-release-name . --values ./values_local.yaml
 ```
+=======
+A Helm chart for OHDSI WebAPI
+>>>>>>> e88a0d1d (Set default empty value for host)
 
-4. Monitor the most complex step (creating a Fence client for WebAPI) with:
-```
-kubectl describe job ohdsi-webapi-client-job
+## Requirements
 
-and then
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common | common | 0.1.33 |
+| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
-kubectl describe pod ohdsi-webapi-client-job-<SOME_UID>
+## Values
 
+<<<<<<< HEAD
 and each job step with:
 
 kubectl logs -f ohdsi-webapi-client-job-<SOME_UID> -c wait-for-fence
@@ -108,3 +105,39 @@ http://localhost:8888/WebAPI/conceptset
 or 
 http://atlas.localhost:8888/WebAPI/conceptset
 >>>>>>> 76517a99 (feat: add ohdsi-atlas and ohdsi-webapi helm charts)
+=======
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| arboristUrl | string | `"http://arborist-service"` |  |
+| createFenceClientJobEnabled | bool | `true` | Whether to automatically create a OIDC a client in Fence. |
+| fenceUrl | string | `"http://fence-service"` |  |
+| global.atlasUrl | string | `"https://localhost"` |  |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. |
+| global.externalSecrets.webapiG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "ohdsi-webapi-g3auto". |
+| global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
+| global.postgres.master | map | `{"host":"","password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `""` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| image.pullPolicy | string | `"Always"` |  |
+| image.repository | string | `"quay.io/cdis/ohdsi-webapi"` |  |
+| image.tag | string | `"2.15.0-DEV"` |  |
+| nginx.repository | string | `"quay.io/cdis/nginx"` |  |
+| nginx.tag | string | `"master"` |  |
+| postgres | map | `{"database":null,"dbCreate":null,"host":"","password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set to true then these databases will be created for you |
+| postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
+| postgres.host | string | `""` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
+| postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
+| postgres.port | string | `"5432"` | Port for Postgres. |
+| postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
+| postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| replicaCount | int | `1` |  |
+| service.port | int | `80` |  |
+| service.type | string | `"ClusterIP"` |  |
+>>>>>>> e88a0d1d (Set default empty value for host)
