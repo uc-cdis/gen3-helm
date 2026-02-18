@@ -25,7 +25,7 @@ appVersion: "2.15.0"
 
 dependencies:
   - name: common
-    version: 0.1.32
+    version: 0.1.33
     repository: file://../common
   - name: postgresql
     version: 11.9.13
