@@ -23,7 +23,6 @@ version: 0.1.4
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
 
-
 dependencies:
   - name: common
     version: 0.1.31
