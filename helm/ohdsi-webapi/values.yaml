@@ -38,7 +38,7 @@ global:
     # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
     master:
       # -- (string) hostname of postgres server
-      host:
+      host: ""
       # -- (string) username of superuser in postgres. This is used to create or restore databases
       username: postgres
       # -- (string) password for superuser in postgres. This is used to create or restore databases
@@ -53,7 +53,7 @@ postgres:
   # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
   dbCreate:
   # -- (string) Hostname for postgres server. This is a service override, defaults to global.postgres.host
-  host:
+  host: ""
   # -- (string) Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName>
   database:
   # -- (string) Username for postgres. This is a service override, defaults to <serviceName>-<releaseName>
