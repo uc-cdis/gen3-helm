@@ -7,6 +7,9 @@ global:
   # -- (map) GCP configuration
   gcp:
     enabled: false
+    secretStoreServiceAccount: "GCP_SA@PROJECT_ID.iam.gserviceaccount.com"
+    projectID: "project-name"
+
   # -- (map) AWS configuration
   aws:
     # -- (string) AWS region for this deployment
