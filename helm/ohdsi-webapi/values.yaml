@@ -23,8 +23,6 @@ nginx:
 # Global configuration
 global:
   externalSecrets:
-    # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
-    pushSecret: false
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally.
     deploy: false
     # -- (string) Will override the name of the aws secrets manager secret. Default is "ohdsi-webapi-g3auto".
@@ -47,6 +45,10 @@ global:
       password:
       # -- (string) Port for Postgres.
       port: "5432"
+
+externalSecrets:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 
