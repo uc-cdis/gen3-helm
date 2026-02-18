@@ -8,7 +8,7 @@ A Helm chart for gen3 arborist
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.33 |
+| file://../common | common | 0.1.34 |
 
 ## Values
 
