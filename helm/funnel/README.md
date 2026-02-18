@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -17,6 +18,9 @@
 =======
 ![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 7c5b2135 (Funnel version bump)
+=======
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
 
 A Helm chart for Kubernetes
 
@@ -24,6 +28,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 | file://../common | common | 0.1.34 |
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.31 |
@@ -33,6 +38,9 @@ A Helm chart for Kubernetes
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.85 |
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 =======
+=======
+| file://../common | common | 0.1.33 |
+>>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.91 |
 >>>>>>> 14944ef0 (Update funnel to 0.1.91)
 
@@ -149,11 +157,17 @@ A Helm chart for Kubernetes
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | metricsEnabled | bool | `false` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
 =======
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
+=======
+| netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
+>>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
 | oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
 | partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |

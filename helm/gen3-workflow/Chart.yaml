@@ -28,6 +28,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -68,6 +69,9 @@ version: 0.1.11
 =======
 version: 0.1.12
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+version: 0.1.13
+>>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -76,6 +80,7 @@ appVersion: "master"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -103,6 +108,9 @@ dependencies:
 =======
     version: 0.1.28
 >>>>>>> 54d92d69 (Karpenter Tology Spread  (#460))
+=======
+    version: 0.1.33
+>>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
     repository: file://../common
 <<<<<<< HEAD
 =======
