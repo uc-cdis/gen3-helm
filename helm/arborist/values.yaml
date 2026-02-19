@@ -2,95 +2,50 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Global configuration
-global:
-  # -- (map) AWS configuration
-  aws:
-    # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.
-    enabled: false
-    # -- (string) Credentials for AWS stuff.
-    awsAccessKeyId:
-    # -- (string) Credentials for AWS stuff.
-    awsSecretAccessKey:
-    externalSecrets:
-      # -- (bool) Whether to use External Secrets for aws config.
-      enabled: false
-      # -- (String) Name of Secrets Manager secret.
-      externalSecretAwsCreds:
-  # -- (bool) Whether the deployment is for development purposes.
-  dev: true
+livenessProbe:
+  path: "/health"
+readinessProbe:
+  path: "/health"
+command: ["sh"]
+args:
+  - "-c"
+  - |
+    set -e
+    # set env vars
+    export PGSSLMODE="disable"
 
-  postgres:
-    # -- (bool) Whether the database should be created.
-    dbCreate: true
-    # -- (string) Name of external secret. Disabled if empty
-    externalSecret: ""
-    # -- (map) Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres
-    master:
-      # -- (string) hostname of postgres server
-      host:
-      # -- (string) username of superuser in postgres. This is used to create or restore databases
-      username: postgres
-      # -- (string) password for superuser in postgres. This is used to create or restore databases
-      password:
-      # -- (string) Port for Postgres.
-      port: "5432"
-  # -- (string) Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces. Might be used other places too.
-  environment: default
-  # -- (string) Hostname for the deployment.
-  hostname: localhost
-  # -- (string) ARN of the reverse proxy certificate.
-  revproxyArn: arn:aws:acm:us-east-1:123456:certificate
-  # -- (string) URL of the data dictionary.
-  dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
-  # -- (string) Portal application name.
-  portalApp: gitops
-  # -- (string) S3 bucket name for Kubernetes manifest files.
-  kubeBucket: kube-gen3
-  # -- (string) S3 bucket name for log files.
-  logsBucket: logs-gen3
-  # -- (bool) Whether public datasets are enabled.
-  publicDataSets: true
-  # -- (string) Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private`
-  tierAccessLevel: libre
-  # -- (map) Controls network policy settings
-  netPolicy:
-    enabled: false
-  # -- (int) Number of dispatcher jobs.
-  dispatcherJobNum: "10"
-  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
-  pdb: false
-  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvailable: 1
-  # -- (map) External Secrets settings.
-  externalSecrets:
-    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any arborist secrets you have deployed.
-    deploy: false
-    # -- (string) Will deploy a separate External Secret Store for this service.
-    separateSecretStore: false
-  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 10
-    averageCPUValue: 500m
-    averageMemoryValue: 500Mi
-  # -- (map) Karpenter topology spread configuration.
-  topologySpread:
-    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
-    enabled: false
-    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
-    topologyKey: "topology.kubernetes.io/zone"
-    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
-    maxSkew: 1
+    # bring the database schema up to the latest version
+    /go/src/github.com/uc-cdis/arborist/migrations/latest
 
+    # run arborist
+    /go/src/github.com/uc-cdis/arborist/bin/arborist
 
-#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-autoscaling: {}
+dbService: true
 
 # -- (bool) Whether the arborist rm exipred access cronjob is enabled.
 cronjob:
   enabled: true
+cronjobs:
+  - name: arborist-rm-expired-access
+    schedule: "*/5 * * * *"
+    envFromApp: true
+    dbSecretName: arborist-dbcreds
+    affinityOverride: {}     # if empty, use default nodeAffinity
+    automountServiceAccountToken: false
+    command: ["sh"]
+    args:
+      - "-c"
+      - |
+        # run job to remove expired access from the database
+        /go/src/github.com/uc-cdis/arborist/jobs/delete_expired_access
+    dnsConfig:
+      options:
+        - name: use-vc
+        - name: single-request-reopen
+
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
@@ -122,16 +77,6 @@ postgres:
   port: "5432"
   # -- (string) Password for Postgres. Will be autogenerated if left empty.
   password:
-  # -- (string) Will create a Database for the individual service to help with developing it.
-  separate: false
-
-# -- (map) Postgresql subchart settings if deployed separately option is set to "true".
-# Disable persistence by default so we can spin up and down ephemeral environments
-postgresql:
-  primary:
-    persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: false
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -225,9 +170,11 @@ volumeMounts: []
 
 # -- (list) Environment variables to pass to the container
 env:
-  # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
-  - name: JWKS_ENDPOINT
-    value: "http://fence-service/.well-known/jwks"
+# -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
+- name: JWKS_ENDPOINT
+  value: "http://fence-service/.well-known/jwks"
+- name: PGSSLMODE
+  value: disable
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -240,3 +187,8 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+# -- (map) Will completely override the extraLabels defined in the common chart's _label_setup.tpl
+extraLabels:
+  authprovider: "yes"
+  dbarborist: "yes"
+  public: "yes"

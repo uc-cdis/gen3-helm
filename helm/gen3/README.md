@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.142](https://img.shields.io/badge/Version-0.2.142-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.143](https://img.shields.io/badge/Version-0.2.143-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -20,13 +20,13 @@ Helm chart to deploy Gen3 Data Commons
 |------------|------|---------|
 | file://../access-backend | access-backend | 0.1.17 |
 | file://../ambassador | ambassador | 0.1.32 |
-| file://../arborist | arborist | 0.1.31 |
+| file://../arborist | arborist | 0.1.32 |
 | file://../argo-wrapper | argo-wrapper | 0.1.26 |
 | file://../audit | audit | 0.1.38 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.38 |
 | file://../cedar | cedar | 0.1.21 |
 | file://../cohort-middleware | cohort-middleware | 0.1.19 |
-| file://../common | common | 0.1.33 |
+| file://../common | common | 0.1.34 |
 | file://../dashboard | dashboard | 0.1.16 |
 | file://../data-upload-cron | data-upload-cron | 0.1.3 |
 | file://../datareplicate | datareplicate | 0.1.17 |
@@ -122,6 +122,11 @@ Helm chart to deploy Gen3 Data Commons
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
 | gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
