@@ -14,13 +14,24 @@ spec:
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "app.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
+        {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -33,7 +44,7 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      serviceAccountName: {{ include "app.serviceAccountName" . }}-sa
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -69,15 +80,20 @@ spec:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           {{- end }}
           command:
-            {{- if .Values.command }}
-            {{- range .Values.command }}
-            - {{ . | quote }}
-            {{- end }}
+            {{- if .Values.command}}
+            - {{ .Values.command | quote }}
             {{- end }}
           args:
             {{- if .Values.args }}
-            {{- range .Values.args }}
-            - {{ . | quote }}
+            {{- if kindIs "string" .Values.args }}
+            {{- if contains "\n" .Values.args }}
+            - |-
+{{ .Values.args | nindent 14 -}}
+            {{- else }}
+            - {{ .Values.args | quote }}
+            {{- end }}
+            {{- else }}
+{{ toYaml .Values.args | nindent 12 }}
             {{- end }}
             {{- end }}
       {{- with .Values.nodeSelector }}

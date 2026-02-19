@@ -24,7 +24,7 @@ A Helm chart for gen3 arborist
 | cronjob | bool | `{"enabled":true}` | Whether the arborist rm exipred access cronjob is enabled. |
 | cronjobs[0].affinityOverride | object | `{}` |  |
 | cronjobs[0].args[0] | string | `"-c"` |  |
-| cronjobs[0].args[1] | string | `"/go/src/github.com/uc-cdis/arborist/jobs/delete_expired_access\n"` |  |
+| cronjobs[0].args[1] | string | `"# run job to remove expired access from the database\n/go/src/github.com/uc-cdis/arborist/jobs/delete_expired_access\n"` |  |
 | cronjobs[0].automountServiceAccountToken | bool | `false` |  |
 | cronjobs[0].command[0] | string | `"sh"` |  |
 | cronjobs[0].dbSecretName | string | `"arborist-dbcreds"` |  |
@@ -39,6 +39,7 @@ A Helm chart for gen3 arborist
 | externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+| extraLabels | map | `{"authprovider":"yes","dbarborist":"yes","public":"yes"}` | Will completely override the extraLabels defined in the common chart's _label_setup.tpl |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/arborist","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |

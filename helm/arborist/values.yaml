@@ -36,6 +36,7 @@ cronjobs:
     args:
       - "-c"
       - |
+        # run job to remove expired access from the database
         /go/src/github.com/uc-cdis/arborist/jobs/delete_expired_access
     dnsConfig:
       options:
@@ -169,11 +170,11 @@ volumeMounts: []
 
 # -- (list) Environment variables to pass to the container
 env:
-  # -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
-  - name: JWKS_ENDPOINT
-    value: "http://fence-service/.well-known/jwks"
-  - name: PGSSLMODE
-    value: disable
+# -- (string) The URL of the JSON Web Key Set (JWKS) endpoint for authentication
+- name: JWKS_ENDPOINT
+  value: "http://fence-service/.well-known/jwks"
+- name: PGSSLMODE
+  value: disable
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -186,3 +187,8 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+# -- (map) Will completely override the extraLabels defined in the common chart's _label_setup.tpl
+extraLabels:
+  authprovider: "yes"
+  dbarborist: "yes"
+  public: "yes"
