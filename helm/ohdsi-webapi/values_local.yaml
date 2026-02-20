@@ -44,6 +44,10 @@ global:
       # -- (string) Port for Postgres.
       port: "5432"
 
+externalSecrets:
+  # -- (string) Override flag: will create the Helm "ohdsi-webapi-config" secret even if Secrets Manager is enabled (see global.ExternalSecrets.deploy). This is for when we need to override the global Secrets Manager flag for this service.
+  createK8sOhdsiWebApiConfigSecret: true
+
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set to true then these databases will be created for you
