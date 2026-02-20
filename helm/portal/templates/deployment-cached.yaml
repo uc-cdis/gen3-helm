@@ -39,11 +39,11 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
+      automountServiceAccountToken: true
       volumes:
       - name: cache-mountpoint
         persistentVolumeClaim:
-          claimName: portal-pvc-{{ .Release.Name }}
+          claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -61,9 +61,6 @@ spec:
       - name: extra-images
         emptyDir: {}
       {{- end }}
-      - name: build-out
-        persistentVolumeClaim:
-          claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
       - name: scripts-compute
         secret:
           secretName: compute-signature
@@ -174,7 +171,7 @@ spec:
             {{- end }}
             echo "${SIG}" > "${DOCROOT}/.extracted_sig"
           volumeMounts:
-          - name: build-out
+          - name: cache-mountpoint
             mountPath: /cache
             readOnly: true
           - name: docroot
@@ -240,7 +237,7 @@ spec:
               sleep 5
             done
           volumeMounts:
-          - name: build-out
+          - name: cache-mountpoint
             mountPath: /cache
             readOnly: true
           - name: docroot
