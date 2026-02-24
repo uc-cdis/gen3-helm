@@ -69,9 +69,11 @@ spec:
       - name: scripts-compute
         secret:
           secretName: compute-signature
+          defaultMode: 0755
       - name: scripts-trigger
         secret:
           secretName: check-and-trigger
+          defaultMode: 0755
       - name: portal-overrides
         secret:
           secretName: portal-overrides
