@@ -84,12 +84,12 @@ spec:
         - name: config-puller
           image: alpine/git
           env:
-            - name: CONFIG_DIR
-              value: {{ .Values.customConfig.dir }}
-            - name: GIT_REPO
-              value: {{ .Values.customConfig.repo  }}
-            - name: GIT_BRANCH
-              value: {{ .Values.customConfig.branch }}
+          - name: CONFIG_DIR
+            value: {{ .Values.customConfig.dir }}
+          - name: GIT_REPO
+            value: {{ .Values.customConfig.repo  }}
+          - name: GIT_BRANCH
+            value: {{ .Values.customConfig.branch }}
           command:
             - /bin/sh
             - -c
@@ -233,35 +233,35 @@ spec:
             mountPath: /data-portal/runWebpack.sh
             subPath: runWebpack.sh
             readOnly: true
-            {{- if .Values.customConfig.enabled }}
-            - name: config-volume
-              mountPath: /data-portal/data/config/gitops.json
-              subPath: gitops.json
-            - name: config-volume
-              mountPath: /data-portal/custom/
-            {{-  else }}
-            - name: "config-volume"
-              mountPath: "/data-portal/data/config/gitops.json"
-              subPath: "gitops.json"
-            - name: "config-volume"
-              mountPath: "/data-portal/custom/logo/gitops-logo.png"
-              subPath: "gitops-logo.png"
-            - name: "config-volume"
-              mountPath: "/data-portal/custom/createdby/gitops.png"
-              subPath: "gitops-createdby.png"
-            - name: "config-volume"
-              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
-              subPath: "gitops-favicon.ico"
-            - name: "config-volume"
-              mountPath: "/data-portal/custom/css/gitops.css"
-              subPath: "gitops.css"
-            - name: "sponsor-img-volume"
-              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
-            - name: "privacy-policy"
-              readOnly: true
-              mountPath: "/data-portal/custom/privacy_policy.md"
-              subPath: "privacy_policy.md"
-            {{- end }}            
+          {{- if .Values.customConfig.enabled }}
+          - name: config-volume
+            mountPath: /data-portal/data/config/gitops.json
+            subPath: gitops.json
+          - name: config-volume
+            mountPath: /data-portal/custom/
+          {{-  else }}
+          - name: "config-volume"
+            mountPath: "/data-portal/data/config/gitops.json"
+            subPath: "gitops.json"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/logo/gitops-logo.png"
+            subPath: "gitops-logo.png"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/createdby/gitops.png"
+            subPath: "gitops-createdby.png"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+            subPath: "gitops-favicon.ico"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/css/gitops.css"
+            subPath: "gitops.css"
+          - name: "sponsor-img-volume"
+            mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+          - name: "privacy-policy"
+            readOnly: true
+            mountPath: "/data-portal/custom/privacy_policy.md"
+            subPath: "privacy_policy.md"
+          {{- end }}            
         - name: job-launcher
           image: {{ .Values.portalBuild.images.kubectl | quote }}
           imagePullPolicy: IfNotPresent
