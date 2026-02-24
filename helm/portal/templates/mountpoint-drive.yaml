@@ -36,5 +36,5 @@ spec:
   resources:
     requests:
       storage: 100Gi # Ignored, required
-  volumeName:{{ .Values.portalBuild.s3csi.pvName | quote }} # Name of your PV
+  volumeName: {{ .Values.portalBuild.s3csi.pvName | quote }} # Name of your PV
 {{- end }}
