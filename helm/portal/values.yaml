@@ -221,11 +221,6 @@ commonLabels:
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
 
-# -- (bool) Whether to enable the v2 portal where it is built in s3 using mountpoint.
-# Requires mountpoint to be enabled in the cluster.
-mountpointCacheEnabled: false
-mountpointCacheBucketName: ""   # <vpc name>-<namespace>-portal-build-bucket is the standard
-
 # -- (map) GitOps configuration for portal
 gitops:
   # -- (string)
@@ -546,19 +541,22 @@ portalBuild:
     enabled: true
     pvcName: webpack-pvc
     pvName: webpack-pv
-    createPV: true
+    createPV: false
     volumeHandle: ""
     bucketName: ""
-    region: us-east-1
+    mountOptions:
+    - allow-delete
+    - region us-east-1
     kmsKeyArn: ""
     size: 1Gi
     cache:
       emptyDirSizeLimit: 500Mi
 
   images:
-    builder: quay.io/cdis/data-portal:2024.12
+    builder: quay.io/cdis/data-portal:master
     kubectl: bitnami/kubectl:latest
     alpine: alpine:3.20
+    nginx: nginx:alpine
 
   job:
     lockTtlSeconds: 1800
@@ -566,8 +564,3 @@ portalBuild:
 
   extraction:
     stripComponents: true
-
-#portalWebpackBuild:
-#  enabled: true
-#  s3csi:
-#    enabled: true

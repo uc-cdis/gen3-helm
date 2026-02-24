@@ -88,8 +88,6 @@ A Helm chart for gen3 data-portal
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
-| mountpointCacheBucketName | string | `""` |  |
-| mountpointCacheEnabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -98,19 +96,21 @@ A Helm chart for gen3 data-portal
 | portalBuild.enabled | bool | `false` |  |
 | portalBuild.extraction.stripComponents | bool | `true` |  |
 | portalBuild.images.alpine | string | `"alpine:3.20"` |  |
-| portalBuild.images.builder | string | `"quay.io/cdis/data-portal:2024.12"` |  |
+| portalBuild.images.builder | string | `"quay.io/cdis/data-portal:master"` |  |
 | portalBuild.images.kubectl | string | `"bitnami/kubectl:latest"` |  |
+| portalBuild.images.nginx | string | `"nginx:alpine"` |  |
 | portalBuild.job.lockTtlSeconds | int | `1800` |  |
 | portalBuild.job.ttlSecondsAfterFinished | int | `600` |  |
 | portalBuild.rbac.enabled | bool | `true` |  |
 | portalBuild.s3csi.bucketName | string | `""` |  |
 | portalBuild.s3csi.cache.emptyDirSizeLimit | string | `"500Mi"` |  |
-| portalBuild.s3csi.createPV | bool | `true` |  |
+| portalBuild.s3csi.createPV | bool | `false` |  |
 | portalBuild.s3csi.enabled | bool | `true` |  |
 | portalBuild.s3csi.kmsKeyArn | string | `""` |  |
+| portalBuild.s3csi.mountOptions[0] | string | `"allow-delete"` |  |
+| portalBuild.s3csi.mountOptions[1] | string | `"region us-east-1"` |  |
 | portalBuild.s3csi.pvName | string | `"webpack-pv"` |  |
 | portalBuild.s3csi.pvcName | string | `"webpack-pvc"` |  |
-| portalBuild.s3csi.region | string | `"us-east-1"` |  |
 | portalBuild.s3csi.size | string | `"1Gi"` |  |
 | portalBuild.s3csi.volumeHandle | string | `""` |  |
 | portalBuild.serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `""` |  |

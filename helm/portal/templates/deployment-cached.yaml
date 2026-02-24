@@ -1,4 +1,4 @@
-{{- if .Values.mountpointCacheEnabled }}
+{{- if (.Values.portalBuild.enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,6 +44,10 @@ spec:
       - name: cache-mountpoint
         persistentVolumeClaim:
           claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
+      {{- if .Values.customConfig.enabled }}
+      - name: config-volume
+        emptyDir: {}
+      {{- else }}
       - name: config-volume
         secret:
           secretName: "portal-config"
@@ -54,6 +58,7 @@ spec:
         configMap:
           name: "privacy-policy"
           optional: true
+      {{- end }}
       {{- if .Values.extraImages }}
       - name: extra-images-config
         configMap:
@@ -75,6 +80,123 @@ spec:
       - name: docroot
         emptyDir: {}
       initContainers:
+      {{- if .Values.customConfig.enabled }}
+        - name: config-puller
+          image: alpine/git
+          env:
+            - name: CONFIG_DIR
+              value: {{ .Values.customConfig.dir }}
+            - name: GIT_REPO
+              value: {{ .Values.customConfig.repo  }}
+            - name: GIT_BRANCH
+              value: {{ .Values.customConfig.branch }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+
+              log() { echo "[$(date -u +'%Y-%m-%dT%H:%M:%SZ')] $*"; }
+              die() { log "ERROR: $*"; exit 1; }
+
+              REPO_DIR="/tmp/repo"
+              CLONE_DIR="${REPO_DIR}/custom"
+              SRC_DIR="{{ .Values.customConfig.dir }}"
+              DEST_DIR="/gen3/config"
+
+              # Retry settings (tune as desired)
+              MAX_ATTEMPTS="${MAX_ATTEMPTS:-8}"     # total tries
+              SLEEP_SECONDS="${SLEEP_SECONDS:-5}"   # initial backoff
+              MAX_SLEEP="${MAX_SLEEP:-40}"          # cap backoff
+
+              retry() {
+                attempt=1
+                sleep_s="$SLEEP_SECONDS"
+                while :; do
+                  log "Attempt ${attempt}/${MAX_ATTEMPTS}: $*"
+                  if "$@"; then
+                    return 0
+                  fi
+                  if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+                    return 1
+                  fi
+                  log "Command failed. Sleeping ${sleep_s}s before retry..."
+                  sleep "$sleep_s"
+                  attempt=$((attempt + 1))
+                  # exponential backoff with cap
+                  sleep_s=$((sleep_s * 2))
+                  if [ "$sleep_s" -gt "$MAX_SLEEP" ]; then
+                    sleep_s="$MAX_SLEEP"
+                  fi
+                done
+              }
+
+              log "Preparing repo dir: ${REPO_DIR}"
+              rm -rf "$REPO_DIR"
+              mkdir -p "$REPO_DIR"
+              cd "$REPO_DIR" || die "Failed to cd to ${REPO_DIR}"
+
+              : "${GIT_REPO:?GIT_REPO is not set}"
+              : "${GIT_BRANCH:?GIT_BRANCH is not set}"
+
+              log "Cloning repo (branch=${GIT_BRANCH}) from ${GIT_REPO}"
+              retry git clone \
+                --depth 1 \
+                --single-branch \
+                --branch "${GIT_BRANCH}" \
+                --filter=blob:none \
+                --sparse \
+                "${GIT_REPO}" custom \
+                || die "git clone failed after ${MAX_ATTEMPTS} attempts (likely DNS/network)."
+
+              cd "$CLONE_DIR" || die "Clone dir missing: ${CLONE_DIR}"
+
+              log "Setting sparse checkout: ${SRC_DIR}"
+              git sparse-checkout set "$SRC_DIR" \
+                || die "sparse-checkout failed for path: ${SRC_DIR}"
+
+              if [ ! -d "$SRC_DIR" ]; then
+                log "Repo tree at $(pwd):"
+                ls -la
+                die "Expected directory not found after sparse checkout: ${SRC_DIR}"
+              fi
+
+              cd "$SRC_DIR" || die "Failed to cd to ${SRC_DIR}"
+
+              log "Copying config to ${DEST_DIR}"
+              mkdir -p "$DEST_DIR"
+              # copy dotfiles too
+              cp -R . "$DEST_DIR"/ || die "Copy to ${DEST_DIR} failed"
+
+              log "Final contents of ${DEST_DIR}:"
+              ls -la "$DEST_DIR"
+
+              log "Init container completed successfully."
+                  
+              # mkdir -p /tmp/repo
+              # cd /tmp/repo
+              # # Clone only the specific branch with minimal history and sparse checkout
+              # git clone \
+              #   --depth 1 \
+              #   --single-branch \
+              #   --branch ${GIT_BRANCH} \
+              #   --filter=blob:none \
+              #   --sparse \
+              #   ${GIT_REPO} custom
+              # cd custom
+
+              # git sparse-checkout set {{ .Values.customConfig.dir }}
+              # cd {{ .Values.customConfig.dir }}
+              # ls
+              # echo 'cp -r * /gen3/config'
+              # cp -r * /gen3/config
+              # echo 'ls /gen3/config'
+              # ls /gen3/config
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gen3/config
+          {{- end }}
+
         - name: sig-compute
           image: {{ .Values.portalBuild.images.builder | quote }}
           imagePullPolicy: IfNotPresent
@@ -179,13 +301,12 @@ spec:
           - name: sigshare
             mountPath: /etc/portal-build
             readOnly: true
-        {{- if .Values.extraImages }}
+      {{- if .Values.extraImages }}
         - name: init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/prometheus/busybox:latest"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-          - name: cache-mountpoint
-            mountPath: /data-portal/cache
           - name: extra-images-config
             mountPath: /data-portal/custom/config.txt
             subPath: config.txt
@@ -195,17 +316,12 @@ spec:
           - sh
           - -c
           - | 
-            if [ ! -f /data-portal/cache/index.html ]; then
-              echo "Cache not found. Building..."
-              cd /data-portal
-              npm install
-              bash runWebpack.sh
-              echo "Copying build output to cache..."
-              cp -r *.js *.html static/ /data-portal/cache/
-            else
-              echo "Cache already exists. Skipping build."
+            cd /data-portal/custom/images/;
+            cat /data-portal/custom/config.txt;
+            xargs -a /data-portal/custom/config.txt -I {} wget {}
       {{- end }}
       containers:
+      {{- if .Values.portalBuild.hotReapply }}
         - name: hot-reapply
           image: {{ .Values.portalBuild.images.alpine | quote }}
           imagePullPolicy: IfNotPresent
@@ -245,8 +361,9 @@ spec:
           - name: sigshare
             mountPath: /etc/portal-build
             readOnly: true
+        {{- end }}
         - name: portal
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ .Values.portalBuild.images.nginx | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           readinessProbe:
             httpGet:
@@ -264,13 +381,6 @@ spec:
           ports:
             - containerPort: 80
             - containerPort: 443
-          command:
-            - /bin/sh
-            - -c
-            - |
-              echo "Starting NGINX with cached assets."
-              cp -r /data-portal/cache/* /usr/share/nginx/html/
-              exec /usr/sbin/nginx -g 'daemon off;'
           env:
             - name: HOSTNAME
               value: revproxy-service

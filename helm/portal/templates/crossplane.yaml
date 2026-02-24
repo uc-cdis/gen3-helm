@@ -1,4 +1,4 @@
-{{- if and (.Values.global.crossplane.enabled) (.Values.mountpointCacheEnabled) }}
+{{- if and (.Values.global.crossplane.enabled) (.Values.portalBuild.enabled) }}
 apiVersion: iam.aws.crossplane.io/v1beta1
 kind: Role
 metadata:
@@ -47,14 +47,14 @@ spec:
             "Effect":"Allow",
             "Action":["s3:List*","s3:Get*"],
             "Resource":[
-              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-bucket/*",
-              "arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-bucket"
+              "arn:aws:s3:::{{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}/*",
+              "arn:aws:s3:::{{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}"
             ]
           },
           {
             "Effect":"Allow",
             "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
-            "Resource":"arn:aws:s3:::{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-bucket/*"
+            "Resource":"arn:aws:s3:::{{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}/*"
           }
         ]
       }
@@ -75,12 +75,12 @@ spec:
 apiVersion: s3.aws.crossplane.io/v1beta1
 kind: Bucket
 metadata:
-  name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-bucket"
+  name: "{{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}"
 spec:
   providerConfigRef:
     name: provider-aws
   forProvider:
-    bucketName: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-portal-bucket"
+    bucketName: "{{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}"
     acl: private
     forceDestroy: false
     locationConstraint: {{ .Values.global.aws.region }}
@@ -94,8 +94,13 @@ spec:
     serverSideEncryptionConfiguration:
       rules:
         - applyServerSideEncryptionByDefault:
+            {{- if .Values.portalBuild.s3csi.kmsKeyId }}
             sseAlgorithm: aws:kms
-            {{- if .Values.global.crossplane.s3.kmsKeyId }}
+            kmsMasterKeyID: {{ .Values.portalBuild.s3csi.kmsKeyId }}
+            {{- else if .Values.global.crossplane.s3.kmsKeyId }}
+            sseAlgorithm: aws:kms
             kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
+            {{- else }}
+            sseAlgorithm: AES256
             {{- end }}
 {{- end}}            

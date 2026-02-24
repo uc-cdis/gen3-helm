@@ -1,4 +1,4 @@
-{{- if not .Values.mountpointCacheEnabled }}
+{{- if not .Values.portalBuild.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -185,26 +185,6 @@ spec:
               ls -la "$DEST_DIR"
 
               log "Init container completed successfully."
-                  
-              # mkdir -p /tmp/repo
-              # cd /tmp/repo
-              # # Clone only the specific branch with minimal history and sparse checkout
-              # git clone \
-              #   --depth 1 \
-              #   --single-branch \
-              #   --branch ${GIT_BRANCH} \
-              #   --filter=blob:none \
-              #   --sparse \
-              #   ${GIT_REPO} custom
-              # cd custom
-
-              # git sparse-checkout set {{ .Values.customConfig.dir }}
-              # cd {{ .Values.customConfig.dir }}
-              # ls
-              # echo 'cp -r * /gen3/config'
-              # cp -r * /gen3/config
-              # echo 'ls /gen3/config'
-              # ls /gen3/config
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
