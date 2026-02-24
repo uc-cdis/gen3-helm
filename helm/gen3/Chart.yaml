@@ -516,7 +516,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.41
+    version: 0.1.42
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -744,8 +744,12 @@ dependencies:
     repository: file://../ohdsi-atlas
     condition: ohdsi-atlas.enabled
   - name: ohdsi-webapi
+<<<<<<< HEAD
     version: 0.1.0
 >>>>>>> 76517a99 (feat: add ohdsi-atlas and ohdsi-webapi helm charts)
+=======
+    version: 0.1.1
+>>>>>>> d13e30f7 (adding db override name for external secrets to ohdsi chart. (#530))
     repository: file://../ohdsi-webapi
     condition: ohdsi-webapi.enabled
 

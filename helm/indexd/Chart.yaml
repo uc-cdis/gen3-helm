@@ -22,6 +22,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.44
 =======
 version: 0.1.35
@@ -44,6 +45,9 @@ version: 0.1.40
 =======
 version: 0.1.41
 >>>>>>> 10609911 (Advise uses that the indexd prefix requires a trailing slash (#528))
+=======
+version: 0.1.42
+>>>>>>> d13e30f7 (adding db override name for external secrets to ohdsi chart. (#530))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

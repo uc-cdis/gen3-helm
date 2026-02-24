@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.44](https://img.shields.io/badge/Version-0.1.44-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.35](https://img.shields.io/badge/Version-0.1.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -29,6 +30,9 @@
 =======
 ![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> 10609911 (Advise uses that the indexd prefix requires a trailing slash (#528))
+=======
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> d13e30f7 (adding db override name for external secrets to ohdsi chart. (#530))
 
 A Helm chart for gen3 indexd
 
@@ -36,6 +40,7 @@ A Helm chart for gen3 indexd
 
 | Repository | Name | Version |
 |------------|------|---------|
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -73,6 +78,9 @@ A Helm chart for gen3 indexd
 =======
 | file://../common | common | 0.1.31 |
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+| file://../common | common | 0.1.33 |
+>>>>>>> d13e30f7 (adding db override name for external secrets to ohdsi chart. (#530))
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
