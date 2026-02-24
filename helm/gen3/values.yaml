@@ -346,6 +346,14 @@ metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
 
+ohdsi-atlas:
+  # -- (bool) Whether to deploy the ohdsi-atlas subchart.
+  enabled: false
+
+ohdsi-webapi:
+  # -- (bool) Whether to deploy the ohdsi-webapi subchart.
+  enabled: false
+
 orthanc:
   # -- (bool) Whether to deploy the orthanc subchart.
   enabled: false
