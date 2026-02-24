@@ -51,6 +51,8 @@ externalSecrets:
   pushSecret: false
   # -- (string) Override flag: will create the Helm "ohdsi-webapi-config" secret even if Secrets Manager is enabled (see global.ExternalSecrets.deploy). This is for when we need to override the global Secrets Manager flag for this service.
   createK8sOhdsiWebApiConfigSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
+  dbcreds:
 
 # Set these ohdsi-atlas DB connection details (if global.externalSecrets.deploy == false above):
 

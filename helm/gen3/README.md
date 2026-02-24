@@ -217,6 +217,8 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.ingress.namespace | string | `"nginx"` |  |
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
+| ohdsi-atlas.enabled | bool | `false` | Whether to deploy the ohdsi-atlas subchart. |
+| ohdsi-webapi.enabled | bool | `false` | Whether to deploy the ohdsi-webapi subchart. |
 | ohif-viewer.enabled | bool | `false` | Whether to deploy the ohif-viewer subchart. |
 | orthanc.enabled | bool | `false` | Whether to deploy the orthanc subchart. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
