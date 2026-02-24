@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.144](https://img.shields.io/badge/Version-0.2.144-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.2.145](https://img.shields.io/badge/Version-0.2.145-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -19,7 +19,7 @@ Helm chart to deploy Gen3 Data Commons
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../access-backend | access-backend | 0.1.17 |
-| file://../ambassador | ambassador | 0.1.32 |
+| file://../ambassador | ambassador | 0.1.33 |
 | file://../arborist | arborist | 0.1.31 |
 | file://../argo-wrapper | argo-wrapper | 0.1.26 |
 | file://../audit | audit | 0.1.38 |
@@ -42,7 +42,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-workflow | gen3-workflow | 0.1.13 |
 | file://../guppy | guppy | 0.1.33 |
 | file://../hatchery | hatchery | 0.1.63 |
-| file://../indexd | indexd | 0.1.40 |
+| file://../indexd | indexd | 0.1.42 |
 | file://../manifestservice | manifestservice | 0.1.39 |
 | file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
