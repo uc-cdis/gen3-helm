@@ -95,6 +95,7 @@ A Helm chart for gen3 data-portal
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
 | portalBuild.enabled | bool | `false` |  |
 | portalBuild.extraction.stripComponents | bool | `true` |  |
+| portalBuild.hotReapply | bool | `false` |  |
 | portalBuild.images.alpine | string | `"alpine:3.20"` |  |
 | portalBuild.images.builder | string | `"quay.io/cdis/data-portal:master"` |  |
 | portalBuild.images.kubectl | string | `"bitnami/kubectl:latest"` |  |

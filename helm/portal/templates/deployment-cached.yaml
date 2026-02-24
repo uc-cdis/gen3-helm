@@ -196,7 +196,6 @@ spec:
             - name: config-volume
               mountPath: /gen3/config
           {{- end }}
-
         - name: sig-compute
           image: {{ .Values.portalBuild.images.builder | quote }}
           imagePullPolicy: IfNotPresent
@@ -226,7 +225,6 @@ spec:
             readOnly: true
           - name: sigshare
             mountPath: /etc/portal-build
-          # mounts required for signature correctness if your signature reads these:
           - name: portal-overrides
             mountPath: /data-portal/webpack.config.js
             subPath: webpack.config.js
@@ -235,6 +233,35 @@ spec:
             mountPath: /data-portal/runWebpack.sh
             subPath: runWebpack.sh
             readOnly: true
+            {{- if .Values.customConfig.enabled }}
+            - name: config-volume
+              mountPath: /data-portal/data/config/gitops.json
+              subPath: gitops.json
+            - name: config-volume
+              mountPath: /data-portal/custom/
+            {{-  else }}
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/logo/gitops-logo.png"
+              subPath: "gitops-logo.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/createdby/gitops.png"
+              subPath: "gitops-createdby.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+              subPath: "gitops-favicon.ico"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/css/gitops.css"
+              subPath: "gitops.css"
+            - name: "sponsor-img-volume"
+              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/data-portal/custom/privacy_policy.md"
+              subPath: "privacy_policy.md"
+            {{- end }}            
         - name: job-launcher
           image: {{ .Values.portalBuild.images.kubectl | quote }}
           imagePullPolicy: IfNotPresent
@@ -474,6 +501,13 @@ spec:
               mountPath: /usr/share/nginx/html            
             - name: cache-mountpoint
               mountPath: /data-portal/cache
+            {{- if .Values.customConfig.enabled }}
+            - name: config-volume
+              mountPath: /data-portal/data/config/gitops.json
+              subPath: gitops.json
+            - name: config-volume
+              mountPath: /data-portal/custom/
+            {{-  else }}
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -495,6 +529,7 @@ spec:
               readOnly: true
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
+            {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
