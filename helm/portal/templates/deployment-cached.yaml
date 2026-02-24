@@ -425,60 +425,46 @@ spec:
             {{- end }}
             - name: LOGOUT_INACTIVE_USERS
               value: {{ .Values.global.logoutInactiveUsers | quote }}
-              optional: true
             - name: WORKSPACE_TIMEOUT_IN_MINUTES
               value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
-              optional: true
             - name: TIER_ACCESS_LEVEL
               value: {{ .Values.global.tierAccessLevel | quote }}
-              optional: true
             - name: TIER_ACCESS_LIMIT
               value: {{ .Values.global.tierAccessLimit | quote }}
-              optional: true
             {{- if .Values.global.fenceURL }}
             - name: FENCE_URL
               value: {{ .Values.global.fenceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.indexdURL }}
             - name: INDEXD_URL
               value: {{ .Values.global.indexdURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.workspaceURL }}
             - name: WORKSPACE_URL
               value: {{ .Values.global.workspaceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.manifestServiceURL }}
             - name: MANIFEST_SERVICE_URL
               value: {{ .Values.global.manifestServiceURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.wtsURL }}
             - name: WTS_URL
               value: {{ .Values.global.wtsURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.privacyPolicyURL }}
             - name: PRIVACY_POLICY_URL
               value: {{ .Values.global.privacyPolicyURL | quote }}
-              optional: true
             {{- end }}
             {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN
-              # Optional token for mapbox api
               value: {{ .Values.global.mapboxToken | quote }}
-              optional: true
             {{- end }}
             {{- with .Values.datadogApplicationId  }}      
             - name: DATADOG_APPLICATION_ID
-              # Optional client token for Datadog
               value: {{ . }}
             {{- end }}
             {{- with .Values.datadogClientToken  }}      
             - name: DATADOG_CLIENT_TOKEN
-              # Optional client token for Datadog
               value: {{ . }}
             {{- end }}
             {{- with .Values.dataUploadBucket  }}
@@ -489,9 +475,6 @@ spec:
             - name: BASENAME
               value: /portal
             {{- end }}
-              # S3 bucket name for data upload, for setting up CSP
-              #GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
-            # - name: BASENAME
           volumeMounts:
             {{- if .Values.extraImages  }}
             - name: extra-images
