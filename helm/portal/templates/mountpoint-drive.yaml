@@ -20,11 +20,7 @@ spec:
     driver: s3.csi.aws.com # required
     volumeHandle: portal-volume-{{ .Release.Name }}-{{ .Release.Namespace }} # Must be unique
     volumeAttributes:
-      {{- if and (.Values.global.crossplane.enabled) (.Values.portalBuild.enabled) }}
-      bucketName: {{ .Values.portalBuild.s3csi.bucketName | default (printf "%s-%s-portal-bucket" .Values.global.environment .Release.Namespace) }}
-      {{- else -}}
       bucketName: {{ .Values.portalBuild.s3csi.bucketName }} # Name of your S3 bucket
-      {{- end-}}
       authenticationSource: pod
       cache: emptyDir
       cacheEmptyDirSizeLimit: {{ default "500Mi" .Values.portalBuild.s3csi.cache.emptyDirSizeLimit | quote }}
