@@ -46,8 +46,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.39 |
 | file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.0 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.0 |
+| file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
+| file://../ohdsi-webapi | ohdsi-webapi | 0.1.1 |
 | file://../ohif-viewer | ohif-viewer | 0.1.10 |
 | file://../orthanc | orthanc | 0.1.11 |
 | file://../peregrine | peregrine | 0.1.39 |

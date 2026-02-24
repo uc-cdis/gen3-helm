@@ -152,11 +152,11 @@ dependencies:
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
-    version: 0.1.0
+    version: 0.1.1
     repository: file://../ohdsi-atlas
     condition: ohdsi-atlas.enabled
   - name: ohdsi-webapi
-    version: 0.1.0
+    version: 0.1.1
     repository: file://../ohdsi-webapi
     condition: ohdsi-webapi.enabled
 
