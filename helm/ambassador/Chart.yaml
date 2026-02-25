@@ -21,6 +21,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.35
 =======
 version: 0.1.27
@@ -40,6 +41,9 @@ version: 0.1.31
 =======
 version: 0.1.32
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+version: 0.1.33
+>>>>>>> 4c840741 (Update default ambassador version to 1.14.4 (#529))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -49,6 +53,7 @@ appVersion: "1.4.2"
 
 dependencies:
   - name: common
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -86,4 +91,7 @@ dependencies:
 =======
     version: 0.1.31
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.33
+>>>>>>> 4c840741 (Update default ambassador version to 1.14.4 (#529))
     repository: file://../common
