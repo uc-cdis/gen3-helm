@@ -28,7 +28,6 @@ global:
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
-
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
@@ -42,7 +41,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "1.4.2"
+  tag: "1.14.4"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
