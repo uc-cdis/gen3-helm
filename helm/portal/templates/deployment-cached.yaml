@@ -81,6 +81,9 @@ spec:
         emptyDir: {}
       - name: docroot
         emptyDir: {}
+      - name: portal-nginx-config
+        configMap:
+          name: portal-nginx-config
       initContainers:
       {{- if .Values.customConfig.enabled }}
         - name: config-puller
@@ -486,6 +489,10 @@ spec:
               mountPath: /usr/share/nginx/html            
             - name: cache-mountpoint
               mountPath: /data-portal/cache
+            - name: portal-nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
             {{- if .Values.customConfig.enabled }}
             - name: config-volume
               mountPath: /data-portal/data/config/gitops.json
