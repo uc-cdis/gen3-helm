@@ -324,6 +324,25 @@ spec:
             tar -C "${DOCROOT}" -xzf "${TARBALL}"
             {{- end }}
             echo "${SIG}" > "${DOCROOT}/.extracted_sig"
+            APP="${APP:-gitops}"
+            if [ -f /data-portal/custom/logo/${APP}-logo.png ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/logo/${APP}-logo.png "${DOCROOT}/src/img/logo.png"
+            fi
+            if [ -f /data-portal/custom/favicon/${APP}-favicon.ico ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/favicon/${APP}-favicon.ico "${DOCROOT}/favicon.ico"
+              cp -f /data-portal/custom/favicon/${APP}-favicon.ico "${DOCROOT}/src/img/favicon.ico"
+            fi
+            if [ -f /data-portal/custom/createdby/${APP}.png ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/createdby/${APP}.png "${DOCROOT}/src/img/createdby.png"
+            fi
+            if [ -d /data-portal/custom/sponsors/${APP}-sponsors ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              rm -rf "${DOCROOT}/src/img/sponsors"
+              cp -R /data-portal/custom/sponsors/${APP}-sponsors "${DOCROOT}/src/img/sponsors"
+            fi            
           volumeMounts:
           - name: cache-mountpoint
             mountPath: /cache
@@ -333,6 +352,8 @@ spec:
           - name: sigshare
             mountPath: /etc/portal-build
             readOnly: true
+          - name: config-volume
+            mountPath: /data-portal/custom
       {{- if .Values.extraImages }}
         - name: init
           # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
