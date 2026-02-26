@@ -29,6 +29,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.18
 =======
 version: 0.1.11
@@ -72,6 +73,9 @@ version: 0.1.12
 =======
 version: 0.1.13
 >>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
+=======
+version: 0.1.14
+>>>>>>> f9570c4e (MIDRC-1228 gen3-workflow AbortMultipartUpload access (#533))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
