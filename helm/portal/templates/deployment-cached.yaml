@@ -210,14 +210,6 @@ spec:
             readOnly: true
           - name: sigshare
             mountPath: /etc/portal-build
-          - name: portal-overrides
-            mountPath: /data-portal/webpack.config.js
-            subPath: webpack.config.js
-            readOnly: true
-          - name: portal-overrides
-            mountPath: /data-portal/runWebpack.sh
-            subPath: runWebpack.sh
-            readOnly: true
           {{- if .Values.customConfig.enabled }}
           - name: config-volume
             mountPath: /data-portal/data/config/gitops.json
