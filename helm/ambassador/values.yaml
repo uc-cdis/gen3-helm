@@ -41,7 +41,7 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "1.14.4"
+  tag: "1.4.2"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
