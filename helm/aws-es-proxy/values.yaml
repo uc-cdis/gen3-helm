@@ -101,7 +101,7 @@ volumes:
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: quay.io/cdis/aws-es-proxy
+  repository: quay.io/cdis/aws-sigv4-proxy
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
@@ -113,7 +113,8 @@ ports:
 
 # -- (str) Elasticsearch endpoint in AWS
 esEndpoint: test.us-east-1.es.amazonaws.com
-
+# -- (str) AWS Region for ES
+awsRegion: us-east-1
 # -- (list) Volumes to mount to the pod.
 volumeMounts:
   - name: credentials

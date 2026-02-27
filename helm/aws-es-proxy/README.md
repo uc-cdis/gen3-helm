@@ -1,6 +1,6 @@
 # aws-es-proxy
 
-![Version: 0.1.38](https://img.shields.io/badge/Version-0.1.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for AWS ES Proxy Service for gen3
 
@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.31 |
+| file://../common | common | 0.1.33 |
 
 ## Values
 
@@ -16,6 +16,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 |-----|------|---------|-------------|
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | object | `{}` |  |
+| awsRegion | str | `"us-east-1"` | AWS Region for ES |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
@@ -47,9 +48,9 @@ A Helm chart for AWS ES Proxy Service for gen3
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-es-proxy","tag":""}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-sigv4-proxy","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
-| image.repository | string | `"quay.io/cdis/aws-es-proxy"` | Docker repository. |
+| image.repository | string | `"quay.io/cdis/aws-sigv4-proxy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | netPolicy | map | `{"egressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"],"ingressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
