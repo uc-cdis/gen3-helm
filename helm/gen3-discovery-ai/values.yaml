@@ -2,8 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-googleAdc: |-
-  {}
+llmBackend:
+  google: 
+    enabled: true
+    adc: |-
+      {}
+  openai:
+    enabled: false
+    apiKey: ""
 
 global:
   # -- (map) AWS configuration
@@ -42,6 +48,10 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  
+    createLocalK8sSecret: false
+
+  metricsEnabled: true
   #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
   autoscaling:
     enabled: false
@@ -124,9 +134,6 @@ env:
         name: manifest-global
         key: arborist_url
         optional: true
-  # Add GOOGLE_APPLICATION_CREDENTIALS env var so discovery-ai can find them
-  - name: GOOGLE_APPLICATION_CREDENTIALS
-    value: /home/gen3/.config/gcloud/application_default_credentials.json
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   httpGet:
@@ -206,3 +213,16 @@ secrets:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 gunicornWorkers: 1
+
+
+# -- (int) Number of old revisions to retain
+revisionHistoryLimit: 2
+
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0

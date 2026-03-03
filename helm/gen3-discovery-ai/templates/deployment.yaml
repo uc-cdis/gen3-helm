@@ -51,12 +51,14 @@ spec:
         - name: gen3-discovery-ai-g3auto-volume
           secret:
             secretName: gen3discoveryai-g3auto
+        {{- if .Values.llmBackend.google.enabled }}
         - name: google-adc-volume
           secret:
             secretName: gen3discoveryai-google-adc
             items:
               - key: application_default_credentials.json
                 path: application_default_credentials.json
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -64,6 +66,17 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
             - name: URL_PREFIX
               value: '/ai'
+            {{- if .Values.llmBackend.google.enabled }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /home/gen3/.config/gcloud/application_default_credentials.json
+            {{- end }}
+            {{- if .Values.llmBackend.openai.enabled }}
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gen3discoveryai-openai-key
+                  key: OPENAI_API_KEY
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
@@ -83,10 +96,12 @@ spec:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+            {{- if .Values.llmBackend.google.enabled }}
             - name: google-adc-volume
               mountPath: /home/gen3/.config/gcloud/application_default_credentials.json
               subPath: application_default_credentials.json
               readOnly: true
+            {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

@@ -21,7 +21,7 @@ A Helm chart for Kubernetes
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
-| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"GOOGLE_APPLICATION_CREDENTIALS","value":"/home/gen3/.config/gcloud/application_default_credentials.json"}]` | Environment variables to pass to the container |
+| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sGen3DiscoveryAiSecret":false,"dbcreds":null,"gen3DiscoveryAiG3auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sGen3DiscoveryAiSecret | string | `false` | Will create the Helm "gen3discoveryai-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
@@ -40,9 +40,10 @@ A Helm chart for Kubernetes
 | global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
 | global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
-| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets | map | `{"createLocalK8sSecret":false,"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.metricsEnabled | bool | `true` |  |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
 | global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
@@ -54,7 +55,6 @@ A Helm chart for Kubernetes
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| googleAdc | string | `"{}"` |  |
 | gunicornWorkers | int | `1` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3-discovery-ai"` |  |
@@ -68,6 +68,10 @@ A Helm chart for Kubernetes
 | ingress.tls | list | `[]` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | string | `"http"` |  |
+| llmBackend.google.adc | string | `"{}"` |  |
+| llmBackend.google.enabled | bool | `true` |  |
+| llmBackend.openai.apiKey | string | `""` |  |
+| llmBackend.openai.enabled | bool | `false` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` |  |
 | partOf | string | `"Discovery_Ai"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
@@ -86,12 +90,16 @@ A Helm chart for Kubernetes
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+| revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
+| strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
+| strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
+| strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
 | volumeMounts[0].mountPath | string | `"/gen3discoveryai/.env"` |  |
 | volumeMounts[0].name | string | `"gen3-discovery-ai-g3auto-volume"` |  |
 | volumeMounts[0].readOnly | bool | `true` |  |
