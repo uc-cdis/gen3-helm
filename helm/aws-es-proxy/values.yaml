@@ -113,8 +113,10 @@ ports:
 
 # -- (str) Elasticsearch endpoint in AWS
 esEndpoint: test.us-east-1.es.amazonaws.com
-# -- (str) AWS Region for ES
+# -- (str) AWS Region for ES, required for the aws-sigv4-proxy
 awsRegion: us-east-1
+# -- (boolean) Set to true to use the aws-sigv4-proxy (recommended), false to use the default proxy.
+useSigv4Proxy: false
 # -- (list) Volumes to mount to the pod.
 volumeMounts:
   - name: credentials

@@ -16,7 +16,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 |-----|------|---------|-------------|
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | object | `{}` |  |
-| awsRegion | str | `"us-east-1"` | AWS Region for ES |
+| awsRegion | str | `"us-east-1"` | AWS Region for ES, required for the aws-sigv4-proxy |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
@@ -81,5 +81,6 @@ A Helm chart for AWS ES Proxy Service for gen3
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| useSigv4Proxy | boolean | `false` | Set to true to use the aws-sigv4-proxy (recommended), false to use the default proxy. |
 | volumeMounts | list | `[{"mountPath":"/root/.aws","name":"credentials","readOnly":true}]` | Volumes to mount to the pod. |
 | volumes | list | `nil` | Volumes to attach to the pod |
