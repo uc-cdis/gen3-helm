@@ -101,12 +101,20 @@ volumes:
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
-  repository: quay.io/cdis/aws-sigv4-proxy
+  repository: quay.io/cdis/aws-es-proxy
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- (map) Docker aws-sigv4-proxy image information.
+sigv4Image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/aws-sigv4-proxy
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 # -- (list) List of container ports
 ports:
   - containerPort: 9200

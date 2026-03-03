@@ -45,8 +45,8 @@ spec:
             optional: true
       containers:
         - name: "esproxy"
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.sigv4Image.repository }}:{{ .Values.sigv4Image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.sigv4Image.pullPolicy }}
           {{- with .Values.ports}}
           ports:
             {{- toYaml . | nindent 12}}
