@@ -290,3 +290,35 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: true
+
+
+qdrant:
+  extraEnv:
+    - name: QDRANT__SERVICE__API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: qdrant-api-key-secret  # Name of the Kubernetes Secret from Step 1
+          key: api-key
+  enabled: true
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 4
+      memory: 8Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  persistence:
+    enabled: true
+    storageClass: "qdrant-manual-storage"
+    size: 26Gi
+    accessModes:
+      - ReadWriteOnce
+  service:
+    type: ClusterIP
+    port: 6333
+    grpcPort: 6334
+  image:
+    repository: qdrant/qdrant
+    tag: v1.15
+    pullPolicy: IfNotPresent

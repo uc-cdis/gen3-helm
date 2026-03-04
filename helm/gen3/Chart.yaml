@@ -111,6 +111,9 @@ dependencies:
   version: 0.1.0
   repository: "file://../viv"
   condition: viv.enabled
+- name: qdrant
+  version: 1.15.4
+  repository: "https://qdrant.github.io/qdrant-helm"
 
 # A chart can be either an 'application' or a 'library' chart.
 #

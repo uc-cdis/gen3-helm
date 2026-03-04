@@ -52,13 +52,13 @@ spec:
                 secretKeyRef:
                   name: indexd-dbcreds
                   key: host
-                  optional: false  
+                  optional: false
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
                   name: indexd-dbcreds
                   key: username
-                  optional: false 
+                  optional: false
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:

@@ -17,6 +17,13 @@ jobs:
         with:
           version: v3.10.0
 
+      - name: Add Helm repos
+        run: |
+          helm repo add elastic https://helm.elastic.co
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add qdrant https://qdrant.github.io/qdrant-helm
+          helm repo update
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'

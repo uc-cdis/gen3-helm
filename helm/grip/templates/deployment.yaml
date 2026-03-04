@@ -41,6 +41,10 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+
+            - name: rpc
+              protocol: TCP
+              containerPort: 8202
           livenessProbe:
             httpGet:
               path: /writer/_status
@@ -66,7 +70,9 @@ spec:
             - -w
             - graphql=gql-gen.so
             - -l
-            - graphql:graph=CALIPER
+            - graphql:graph=CALYPR
+            - --log-level
+            - debug
           env:
             - name: GOMAXPROCS
               value: "4"

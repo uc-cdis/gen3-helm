@@ -1,0 +1,106 @@
+{
+  "headerProps": {
+    "topBar": {
+      "items": [
+        {
+          "href": "https://www.ohsu.edu/knight-cancer-institute",
+          "name": "CBDS",
+          "classNames": {
+            "root": "",
+            "label": "",
+            "button": ""
+          }
+        }
+      ],
+      "loginButtonVisibility": "hidden"
+    },
+    "navigation": {
+      "classNames": {
+        "root": "bg-base-max text-primary opacity-100 hover:opacity-100",
+        "item": "py-2 px-4 hover:bg-base-lightest hover:text-base-contrast",
+        "navigationPanel": "bg-base-max text-primary"
+      },
+      "logo": {
+        "src": "/icons/ohsu.svg",
+        "width": 52.5,
+        "height": 40,
+        "href": "/Apps",
+        "title": "CALYPR"
+      },
+      "items": [
+        {
+          "icon": "gen3:exploration",
+          "href": "/Explorer",
+          "name": "Exploration",
+          "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder.",
+          "title": "Explorer"
+        },
+        {
+          "icon": "gen3:profile",
+          "href": "/Profile",
+          "name": "Profile",
+          "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services.",
+          "title": "Profile"
+        }
+      ]
+    },
+    "leftnav": [
+      {
+        "title": "Home",
+        "description": "Home Apps page",
+        "icon": "/icons/home.svg",
+        "href": "/Apps",
+        "perms": null
+      },
+      {
+        "title": "Directory Structure",
+        "description": "Search for files via a tree based interactive search",
+        "icon": "/icons/binary-tree.svg",
+        "href": "/Miller",
+        "perms": null
+      },
+      {
+        "title": "File Summary",
+        "description": "Overview of file system usage",
+        "icon": "/icons/file.svg",
+        "href": "/Filesummary",
+        "perms": null
+      },
+      {
+        "title": "Image Viewer",
+        "description": "View available .ome.tif images using Avivator",
+        "icon": "/icons/layers-intersect.svg",
+        "href": "/AvailableImages",
+        "perms": null
+      }
+    ]
+  },
+  "footerProps": {
+    "classNames": {
+      "root": "",
+      "layout": "flex items-center justify-center"
+    },
+    "rightSection": {
+      "columns": [
+        {
+          "rows": [
+            {
+              "Icon": {
+                "logo": "/icons/knight.svg",
+                "logolight": "/icons/knight_white.svg",
+                "width": 100,
+                "height": 47,
+                "description": "Knight Cancer Institute"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "headerMetadata": {
+    "title": "CALYPR",
+    "content": "Cancer Analytics Platform",
+    "key": "calypr-main"
+  }
+}

@@ -7,16 +7,18 @@ spec:
 {{- if .Values.global.dev }}
   tls:
   - secretName: gen3-certs
+    hosts:
+      - {{ default .Values.global.hostname .Values.hostname | quote }} # <--- This maps the cert to the domain
   {{- end  }}
   rules:
-    - host: {{ default .Values.global.hostname .Values.hostname }}
+    - host: {{ default .Values.global.hostname .Values.hostname | quote }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name:  revproxy-service
+                name: revproxy-service
                 port:
                   number: 80
-  {{- end  }}
+{{- end }}

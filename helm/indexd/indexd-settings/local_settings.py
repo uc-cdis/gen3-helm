@@ -62,4 +62,8 @@ else:
         )
     )
 
+rbac = environ.get("RBAC", "false").lower() == "true"
+if rbac:
+    CONFIG["RBAC"] = True
+
 settings = {"config": CONFIG, "auth": AUTH}

@@ -1,0 +1,25 @@
+{
+  "config": {
+    "document_reference_title": {
+      "title": "Title",
+      "field": "document_reference_title"
+    },
+    "document_reference_size": {
+      "cellRenderFunction": "HumanReadableString",
+      "type": "string",
+      "title": "File Size",
+      "field": "document_reference_size"
+    },
+    "document_reference_source_path": {
+      "title": "Source Path",
+      "field": "document_reference_source_path"
+    }
+  },
+  "binslicePoints": [
+    0, 1048576, 524288000, 1073741824, 107374182400, 9007199254740991
+  ],
+  "barChartColor": "#e9724d",
+  "defaultProject": "gdc-esca",
+  "idField": "document_reference_id",
+  "index": "document_reference"
+}

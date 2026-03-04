@@ -1,0 +1,25 @@
+{
+  "appCards": [
+    {
+      "title": "Explore BForePC",
+      "description": "Explore BForePC data in the CALYPR system",
+      "icon": "/icons/binoculars.svg",
+      "href": "/Explorer/HTAN_INT-BForePC",
+      "perms": "HTAN_INT-BForePC"
+    },
+    {
+      "title": "Explore MMTERT SMMART Data",
+      "description": "Explore MMTERT SMMART data in the CALYPR system",
+      "icon": "/icons/binoculars.svg",
+      "href": "/Explorer/cbds-smmart_labkey_demo",
+      "perms": "cbds-smmart_labkey_demo"
+    },
+    {
+      "title": "SMMART Report",
+      "description": "A clinical research study measuring tumor evolution and its resistance to therapy to deliver better cancer treatment. Overview of SMMART data processing",
+      "icon": "/icons/chart-bar.svg",
+      "href": "/SMCLICK",
+      "perms": "cbds-smmart_labkey_demo"
+    }
+  ]
+}

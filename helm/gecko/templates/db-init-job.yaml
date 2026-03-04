@@ -19,19 +19,73 @@ spec:
             - |
               #!/bin/bash
               set -e
+
+              INIT_DATA_PATH="/mnt/db-init-data"
+
               echo "Waiting for database to be ready..."
               until psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT 1"; do
                 echo "Database not ready yet, waiting..."
                 sleep 5
               done
+
               echo "Database ready, initializing..."
+
               psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" <<EOF
               \c gecko_local
-              CREATE TABLE IF NOT EXISTS documents (
-                  name VARCHAR(255) PRIMARY KEY,
-                  content JSONB
-              );
+
+              CREATE SCHEMA IF NOT EXISTS config_schema;
+              CREATE OR REPLACE FUNCTION create_config_table(table_name TEXT)
+              RETURNS void AS '
+              BEGIN
+                  EXECUTE format(''
+                      CREATE TABLE IF NOT EXISTS config_schema.%I (
+                          name VARCHAR(255) PRIMARY KEY,
+                          content JSONB
+                      );
+                  '', table_name);
+              END;
+              ' LANGUAGE plpgsql;
+
+              SELECT create_config_table('explorer');
+              SELECT create_config_table('nav');
+              SELECT create_config_table('file_summary');
+              SELECT create_config_table('apps_page');
+
+              DROP FUNCTION create_config_table(TEXT);
               EOF
+
+              echo "Inserting initial configuration data from ConfigMap..."
+
+              # Insert NAV config (using $(cat FILE) to read JSON content)
+              psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "
+                INSERT INTO config_schema.nav (name, content)
+                VALUES (
+                  '1',
+                  '$(cat ${INIT_DATA_PATH}/nav.json)'::jsonb
+                )
+                ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content;
+              "
+
+              # Insert FILE_SUMMARY config
+              psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "
+                INSERT INTO config_schema.file_summary (name, content)
+                VALUES (
+                  '1',
+                  '$(cat ${INIT_DATA_PATH}/file_summary.json)'::jsonb
+                )
+                ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content;
+              "
+
+              # Insert APPS_PAGE config
+              psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "
+                INSERT INTO config_schema.apps_page (name, content)
+                VALUES (
+                  '1',
+                  '$(cat ${INIT_DATA_PATH}/apps_page.json)'::jsonb
+                )
+                ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content;
+              "
+
               echo "Database initialization complete."
           env:
             - name: PGHOST
@@ -66,6 +120,19 @@ spec:
                   optional: false
             - name: PGSSLMODE
               value: "disable"
+          volumeMounts:
+            # Mount the ConfigMap containing the JSON files
+            - name: db-init-data-volume
+              mountPath: /mnt/db-init-data
+              readOnly: true
+
+      # Define the volume that pulls content from the ConfigMap
+      volumes:
+        - name: db-init-data-volume
+          configMap:
+            name: {{ include "gecko.fullname" . }}-db-init-data
+            optional: false
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

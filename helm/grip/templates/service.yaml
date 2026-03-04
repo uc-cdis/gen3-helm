@@ -11,6 +11,11 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+
+    - port: 8202
+      targetPort: rpc
+      protocol: TCP
+      name: rpc
   selector:
     {{- include "grip.selectorLabels" . | nindent 4 }}
 
