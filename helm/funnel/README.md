@@ -1,6 +1,6 @@
 # funnel
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -48,6 +48,7 @@ A Helm chart for Kubernetes
 | funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
 | funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
 | funnel.postgresql.enabled | bool | `false` |  |
+| funnel.replicaCount | int | `1` | Number of desired replicas |
 | funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
 | funnel.resources.requests.memory | string | `"2Gi"` |  |
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
@@ -118,7 +119,6 @@ A Helm chart for Kubernetes
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
-| replicaCount | int | `1` | Number of desired replicas |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
