@@ -20,6 +20,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.20
 =======
 version: 0.1.1
@@ -36,6 +37,9 @@ version: 0.1.4
 =======
 version: 0.1.5
 >>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
+=======
+version: 0.1.6
+>>>>>>> 43a7b0a1 (Add funnel replicaCount field (#537))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
