@@ -60,6 +60,9 @@ global:
 
 metricsEnabled: false
 
+# -- (int) Number of desired replicas
+replicaCount: 1
+
 # -- (map) External Secrets settings.
 externalSecrets:
   # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
@@ -102,6 +105,15 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - gen3-workflow
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - gen3-workflow
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
