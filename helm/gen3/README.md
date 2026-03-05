@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.5](https://img.shields.io/badge/Version-0.3.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -19,7 +19,7 @@ Helm chart to deploy Gen3 Data Commons
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../access-backend | access-backend | 0.1.17 |
-| file://../ambassador | ambassador | 0.1.32 |
+| file://../ambassador | ambassador | 0.1.34 |
 | file://../arborist | arborist | 0.1.31 |
 | file://../argo-wrapper | argo-wrapper | 0.1.26 |
 | file://../audit | audit | 0.1.38 |
@@ -35,18 +35,18 @@ Helm chart to deploy Gen3 Data Commons
 | file://../etl | etl | 0.1.21 |
 | file://../fence | fence | 0.1.70 |
 | file://../frontend-framework | frontend-framework | 0.1.22 |
-| file://../funnel | funnel | 0.1.5 |
-| file://../gen3-analysis | gen3-analysis | 0.1.7 |
+| file://../funnel | funnel | 0.1.6 |
+| file://../gen3-analysis | gen3-analysis | 0.1.9 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.12 |
-| file://../gen3-workflow | gen3-workflow | 0.1.13 |
+| file://../gen3-workflow | gen3-workflow | 0.1.14 |
 | file://../guppy | guppy | 0.1.33 |
 | file://../hatchery | hatchery | 0.1.63 |
 | file://../indexd | indexd | 0.1.42 |
 | file://../manifestservice | manifestservice | 0.1.39 |
 | file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.0 |
+| file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.1 |
 | file://../ohif-viewer | ohif-viewer | 0.1.10 |
 | file://../orthanc | orthanc | 0.1.11 |

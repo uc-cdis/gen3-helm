@@ -18,6 +18,7 @@ A Helm chart for OHDSI WebAPI
 | arboristUrl | string | `"http://arborist-service"` |  |
 | createFenceClientJobEnabled | bool | `true` | Whether to automatically create a OIDC a client in Fence. |
 | externalSecrets.createK8sOhdsiWebApiConfigSecret | string | `false` | Override flag: will create the Helm "ohdsi-webapi-config" secret even if Secrets Manager is enabled (see global.ExternalSecrets.deploy). This is for when we need to override the global Secrets Manager flag for this service. |
+| externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fenceUrl | string | `"http://fence-service"` |  |
 | global.atlasUrl | string | `"https://localhost"` |  |

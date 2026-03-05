@@ -9,7 +9,7 @@ dependencies:
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.32
+    version: 0.1.34
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.5
+    version: 0.1.6
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.13
+    version: 0.1.14
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
@@ -148,11 +148,11 @@ dependencies:
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
-    version: 0.1.7
+    version: 0.1.9
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
-    version: 0.1.0
+    version: 0.1.1
     repository: file://../ohdsi-atlas
     condition: ohdsi-atlas.enabled
   - name: ohdsi-webapi
@@ -193,7 +193,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.1
+version: 0.3.5
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
