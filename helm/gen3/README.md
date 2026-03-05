@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../fence | fence | 0.1.70 |
 | file://../frontend-framework | frontend-framework | 0.1.22 |
 | file://../funnel | funnel | 0.1.6 |
-| file://../gen3-analysis | gen3-analysis | 0.1.7 |
+| file://../gen3-analysis | gen3-analysis | 0.1.8 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.12 |
 | file://../gen3-workflow | gen3-workflow | 0.1.14 |

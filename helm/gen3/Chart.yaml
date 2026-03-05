@@ -148,7 +148,7 @@ dependencies:
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
-    version: 0.1.7
+    version: 0.1.8
     repository: file://../gen3-analysis
     condition: gen3-analysis.enabled
   - name: ohdsi-atlas
