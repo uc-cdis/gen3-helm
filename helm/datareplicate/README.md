@@ -62,7 +62,7 @@ A Helm chart for gen3 datareplicate
 | replicateValidationJob.OUT_FILES | string | `nil` |  |
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
-| replicateValidationJob.VALIDATE_PLATFORM | string | `nil` |  |
+| replicateValidationJob.VALIDATE_PLATFORM | string | `"AWS"` |  |
 | replicateValidationJob.enabled | bool | `true` |  |
 | replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
 | replicateValidationJob.suspendCronjob | bool | `true` |  |
