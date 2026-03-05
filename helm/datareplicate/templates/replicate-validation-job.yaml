@@ -66,7 +66,7 @@ spec:
                 value: "{{ .Values.replicateValidationJob.MAP_FILE }}"
               - name: SAVE_COPIED_OBJECTS
                 value: "{{ .Values.replicateValidationJob.SAVE_COPIED_OBJECTS }}"
-              - name: $VALIDATE_PLATFORM
+              - name: VALIDATE_PLATFORM
                 value: "{{ .Values.replicateValidationJob.VALIDATE_PLATFORM }}"
             volumeMounts:
               - name: aws-cred-volume
