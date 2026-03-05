@@ -83,7 +83,7 @@ removeObjectsFromCloudsJob:
   MANIFEST_FILE:
   IGNORED_FILE:
   LOG_BUCKET:
-  ONLY_REDACT:
+  ONLY_REDACT: 
 
 replicateValidationJob:
   enabled: true
@@ -97,7 +97,7 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
-  VALIDATE_PLATFORM:
+  VALIDATE_PLATFORM: "AWS"
 
 batchServiceAccount:
   annotations: {}
