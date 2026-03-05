@@ -163,6 +163,9 @@ A Helm chart for gen3 datareplicate
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0b04f82d (add default)
 | replicateValidationJob.VALIDATE_PLATFORM | string | `"AWS"` |  |
 | replicateValidationJob.enabled | bool | `true` |  |
 | replicateValidationJob.schedule | string | `"*/30 * * * *"` |  |
