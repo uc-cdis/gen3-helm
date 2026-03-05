@@ -7,6 +7,9 @@ global:
   tls:
     cert:
     key:
+  # -- (map) GCP configuration
+  gcp:
+    enabled: false
   # -- (map) AWS configuration
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.

@@ -60,6 +60,7 @@ spec:
               "s3:GetObject",
               "s3:PutObject",
               "s3:DeleteObject",
+              "s3:AbortMultipartUpload",
               "s3:DeleteBucketPolicy",
               "s3:PutEncryptionConfiguration",
               "s3:PutBucketPolicy",
@@ -79,7 +80,8 @@ spec:
                 "iam:PutRolePolicy",
                 "iam:GetRole",
                 "iam:GetRolePolicy",
-                "iam:TagRole"
+                "iam:TagRole",
+                "iam:UpdateAssumeRolePolicy"
             ],
             "Resource": [
                 "arn:aws:iam::*:role/gen3wf-*",

@@ -26,7 +26,7 @@ spec:
       containers:
         - name: fence-client
           image: "quay.io/cdis/fence:master"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: Always
           command: ["/bin/bash"]
           args:
             - "-c"
@@ -76,7 +76,7 @@ spec:
 
               secrets=$(fence-create client-create --client $funnel_client_name --grant-types client_credentials | tail -1)
               if [[ ! $secrets =~ (\'(.*)\', \'(.*)\') ]]; then
-                echo "Failed generating oidc client for gen3-workflow: $secrets"
+                echo "Failed generating oidc client for funnel: $secrets"
                 exit 1
               fi
 

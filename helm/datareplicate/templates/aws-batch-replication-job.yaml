@@ -72,7 +72,7 @@ spec:
             volumeMounts:
             - name: cred-volume
               mountPath: "/root/.aws/credentials"
-              subPath: dcf-aws-fence-bot-secret
+              subPath: credentials
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
@@ -80,7 +80,6 @@ spec:
             args:
             - -c
             - |
-              mkdir ~/.aws
               echo """
               [default]
               region: $REGION

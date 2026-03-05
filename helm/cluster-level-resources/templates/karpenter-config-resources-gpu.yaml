@@ -62,10 +62,6 @@ spec:
       memory.available: 10%
     evictionSoftGracePeriod:
       memory.available: 5m
-    kubeReserved:
-      cpu: 480m
-      ephemeral-storage: 3Gi
-      memory: 1632Mi
 {{- end }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
@@ -94,9 +90,6 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
-      - key: "topology.kubernetes.io/zone"
-        operator: In
-        values: ["us-east-1c"]
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
@@ -145,10 +138,6 @@ spec:
           memory.available: 10%
         evictionSoftGracePeriod:
           memory.available: 5m
-        kubeReserved:
-          cpu: 480m
-          ephemeral-storage: 3Gi
-          memory: 1632Mi
       nodeClassRef:
         apiVersion: karpenter.k8s.aws/v1beta1
         kind: EC2NodeClass
