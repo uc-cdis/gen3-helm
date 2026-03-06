@@ -60,9 +60,6 @@ global:
 
 metricsEnabled: false
 
-# -- (int) Number of desired replicas
-replicaCount: 1
-
 # -- (map) External Secrets settings.
 externalSecrets:
   # -- (bool) Whether to create the Funnel OIDC client secret using the oidc job.
