@@ -1,4 +1,4 @@
-# Default values for aws-sigv4-proxy.
+# Default values for aws-es-proxy.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -99,7 +99,7 @@ automountServiceAccountToken: false
 volumes:
 
 # -- (map) Docker aws-sigv4-proxy image information.
-image:
+sigv4Image:
   # -- (string) Docker repository.
   repository: quay.io/cdis/aws-sigv4-proxy
   # -- (string) Docker pull policy.
@@ -181,4 +181,4 @@ serviceAccount:
   annotations: {}
   # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "aws-sigv4-proxy-sa"
+  name: "aws-es-proxy-sa"

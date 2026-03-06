@@ -7,14 +7,14 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "aws-sigv4-proxy.labels" . | nindent 4 }}
+    {{- include "aws-es-proxy.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 6 }}
+      {{- include "aws-es-proxy.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
       {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
@@ -34,7 +34,7 @@ spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
-      serviceAccountName: {{ include "aws-sigv4-proxy.serviceAccountName" . }}
+      serviceAccountName: {{ include "aws-es-proxy.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
         - name: credentials
@@ -68,7 +68,7 @@ spec:
             - "--sign-host"
             - {{ .Values.esEndpoint | quote }}
             - "--port"
-            - {{ printf "%v" (.Values.service.port | default 9200) | quote }}
+            - {{ printf ":%v" (.Values.service.port | default 9200) | quote }}
             - "--region"
             - {{ .Values.awsRegion | quote }}
           resources:
