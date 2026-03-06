@@ -14,7 +14,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "aws-es-proxy.selectorLabels" . | nindent 6 }}
+      {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "aws-es-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         netvpc: "yes"
       {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
@@ -34,7 +34,7 @@ spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
-      serviceAccountName: {{ include "aws-es-proxy.serviceAccountName" . }}
+      serviceAccountName: {{ include "aws-sigv4-proxy.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes:
         - name: credentials
