@@ -48,6 +48,10 @@ A Helm chart for AWS ES Proxy Service for gen3
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-sigv4-proxy","tag":""}` | Docker aws-sigv4-proxy image information. |
+| image.pullPolicy | string | `"Always"` | Docker pull policy. |
+| image.repository | string | `"quay.io/cdis/aws-sigv4-proxy"` | Docker repository. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | netPolicy | map | `{"egressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"],"ingressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]` | List of apps that this app requires egress to |
@@ -74,10 +78,6 @@ A Helm chart for AWS ES Proxy Service for gen3
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"aws-es-proxy-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| sigv4Image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-sigv4-proxy","tag":""}` | Docker aws-sigv4-proxy image information. |
-| sigv4Image.pullPolicy | string | `"Always"` | Docker pull policy. |
-| sigv4Image.repository | string | `"quay.io/cdis/aws-sigv4-proxy"` | Docker repository. |
-| sigv4Image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |

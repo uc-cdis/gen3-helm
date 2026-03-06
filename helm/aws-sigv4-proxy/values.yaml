@@ -99,7 +99,7 @@ automountServiceAccountToken: false
 volumes:
 
 # -- (map) Docker aws-sigv4-proxy image information.
-sigv4Image:
+image:
   # -- (string) Docker repository.
   repository: quay.io/cdis/aws-sigv4-proxy
   # -- (string) Docker pull policy.
