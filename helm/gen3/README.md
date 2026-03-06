@@ -83,6 +83,7 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| aws-sigv4-proxy.enabled | bool | `false` | Where to deploy the more up-to-date aws-sigv4-proxy |
 | cedar | map | `{"enabled":false}` | Configurations for cedar chart. |
 | cedar.enabled | bool | `false` | Whether to deploy the cedar subchart. |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
