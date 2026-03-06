@@ -1,6 +1,6 @@
-# aws-es-proxy
+# aws-sigv4-proxy
 
-![Version: 0.1.38](https://img.shields.io/badge/Version-0.1.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for AWS ES Proxy Service for gen3
 
@@ -8,7 +8,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.31 |
+| file://../common | common | 0.1.33 |
 
 ## Values
 
@@ -16,6 +16,7 @@ A Helm chart for AWS ES Proxy Service for gen3
 |-----|------|---------|-------------|
 | automountServiceAccountToken | bool | `false` | Automount the default service account token |
 | autoscaling | object | `{}` |  |
+| awsRegion | str | `"us-east-1"` | AWS Region for ES, required for the aws-sigv4-proxy |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | esEndpoint | str | `"test.us-east-1.es.amazonaws.com"` | Elasticsearch endpoint in AWS |
@@ -47,9 +48,9 @@ A Helm chart for AWS ES Proxy Service for gen3
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-es-proxy","tag":""}` | Docker image information. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/aws-sigv4-proxy","tag":""}` | Docker aws-sigv4-proxy image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
-| image.repository | string | `"quay.io/cdis/aws-es-proxy"` | Docker repository. |
+| image.repository | string | `"quay.io/cdis/aws-sigv4-proxy"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | netPolicy | map | `{"egressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"],"ingressApps":["arranger","arranger-server","arranger-dashboard","guppy","metadata","spark","tube"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
@@ -73,12 +74,13 @@ A Helm chart for AWS ES Proxy Service for gen3
 | service | map | `{"port":9200,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `9200` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
-| serviceAccount | map | `{"annotations":{},"create":true,"name":"aws-es-proxy-sa"}` | Service account to use or create. |
+| serviceAccount | map | `{"annotations":{},"create":true,"name":"aws-sigv4-proxy-sa"}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
-| serviceAccount.name | string | `"aws-es-proxy-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceAccount.name | string | `"aws-sigv4-proxy-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
+| useSigv4Proxy | boolean | `false` | Set to true to use the aws-sigv4-proxy (recommended), false to use the default proxy. |
 | volumeMounts | list | `[{"mountPath":"/root/.aws","name":"credentials","readOnly":true}]` | Volumes to mount to the pod. |
 | volumes | list | `nil` | Volumes to attach to the pod |
