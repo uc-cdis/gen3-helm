@@ -83,7 +83,7 @@ removeObjectsFromCloudsJob:
   MANIFEST_FILE:
   IGNORED_FILE:
   LOG_BUCKET:
-  ONLY_REDACT: 
+  ONLY_REDACT:
 
 replicateValidationJob:
   enabled: true
