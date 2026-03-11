@@ -247,6 +247,11 @@ gen3-analysis:
 data-upload-cron:
   enabled: false
 
+# -- (map) Configurations for gen3-fhir-proxy chart.
+gen3-fhir-proxy:
+  # -- (bool) Whether to deploy the gen3-fhir-proxy subchart.
+  enabled: false
+
 # -- (map) Configurations for gen3-user-data-library chart.
 gen3-user-data-library:
   # -- (bool) Whether to deploy the gen3-user-data-library subchart.

@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.8](https://img.shields.io/badge/Version-0.3.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.9](https://img.shields.io/badge/Version-0.3.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -37,6 +37,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.22 |
 | file://../funnel | funnel | 0.1.8 |
 | file://../gen3-analysis | gen3-analysis | 0.1.9 |
+| file://../gen3-fhir-proxy | gen3-fhir-proxy | 0.1.0 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.12 |
 | file://../gen3-workflow | gen3-workflow | 0.1.14 |
@@ -120,6 +121,8 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
+| gen3-fhir-proxy | map | `{"enabled":false}` | Configurations for gen3-fhir-proxy chart. |
+| gen3-fhir-proxy.enabled | bool | `false` | Whether to deploy the gen3-fhir-proxy subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
