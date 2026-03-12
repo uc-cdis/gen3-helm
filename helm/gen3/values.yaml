@@ -7,6 +7,9 @@ global:
   # -- (map) GCP configuration
   gcp:
     enabled: false
+    secretStoreServiceAccount: "GCP_SA@PROJECT_ID.iam.gserviceaccount.com"
+    projectID: "project-name"
+
   # -- (map) AWS configuration
   aws:
     # -- (string) AWS region for this deployment
@@ -343,6 +346,14 @@ metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
 
+ohdsi-atlas:
+  # -- (bool) Whether to deploy the ohdsi-atlas subchart.
+  enabled: false
+
+ohdsi-webapi:
+  # -- (bool) Whether to deploy the ohdsi-webapi subchart.
+  enabled: false
+
 orthanc:
   # -- (bool) Whether to deploy the orthanc subchart.
   enabled: false
@@ -414,6 +425,7 @@ access-backend:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
+    tag: 16.6.0-debian-12-r2
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
