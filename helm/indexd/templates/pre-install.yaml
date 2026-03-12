@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: gen3job
+      annotations:
+        argocd.argoproj.io/sync-options: Replace=true
     spec:
       automountServiceAccountToken: false
       {{- with .Values.volumes }}
