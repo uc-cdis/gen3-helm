@@ -12,6 +12,28 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
+
+  # -- (map) Kubernetes configuration
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: 123456789012
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -59,9 +81,27 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
@@ -129,18 +169,6 @@ netPolicy:
   egressApps:
     - pidgin
 
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 # -- (map) Node Selector for the pods
 nodeSelector: {}
 
@@ -200,8 +228,6 @@ gen3Namespace: default
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 100m
     # -- (string) The amount of memory requested
     memory: 20Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
@@ -220,6 +246,9 @@ strategy:
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: true
+
+# -- (list) Environment variables to pass to the container
+env:
 
 sowerConfig:
   - name: pelican-export
@@ -241,25 +270,26 @@ sowerConfig:
               key: hostname
         - name: ROOT_NODE
           value: subject
+        # TO DO- make a separate pelican user to access sheepdog.
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: host
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: database
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: username
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: password
         - name: SHEEPDOG
           valueFrom:
@@ -302,22 +332,22 @@ sowerConfig:
         - name: DB_HOST
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: host
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: database
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: username
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: peregrine-dbcreds
+              name: sheepdog-dbcreds
               key: password
         - name: SHEEPDOG
           valueFrom:
@@ -329,10 +359,6 @@ sowerConfig:
           readOnly: true
           mountPath: "/pelican-creds.json"
           subPath: config.json
-        - name: peregrine-creds-volume
-          readOnly: true
-          mountPath: "/peregrine-creds.json"
-          subPath: creds.json
       cpu-limit: "1"
       memory-limit: 12Gi
     volumes:
@@ -340,6 +366,9 @@ sowerConfig:
         secret:
           secretName: pelicanservice-g3auto
     restart_policy: Never
+
+pelican:
+  bucket: "sower-pfb-bucket"
 
 # -- (string) Additional configuration for Sower Jobs Passed in as a multiline string. This secret can be mounted in sowerConfig.
 sowerjobsG3auto: |

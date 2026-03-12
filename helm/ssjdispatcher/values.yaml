@@ -56,16 +56,49 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+
+  crossplane:
+    # -- (bool) Set to true if deploying to AWS and want to use crossplane for AWS resources.
+    enabled: false
+    # -- (string) The name of the crossplane provider config.
+    providerConfigName: provider-aws
+    # -- (string) OIDC provider URL. This is used for authentication of roles/service accounts.
+    oidcProviderUrl: oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890
+    # -- (string) The account ID of the AWS account.
+    accountId: "123456789012"
+    s3:
+      # -- (string) The kms key id for the s3 bucket.
+      kmsKeyId:
+      # -- (bool) Whether to use s3 bucket versioning.
+      versioningEnabled: false
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled:
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -89,8 +122,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # -- (map) Security context for the containers in the pod
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -104,18 +136,6 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
-
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # -- (map) Node Selector for the pods
 nodeSelector: {}
@@ -166,25 +186,21 @@ volumeMounts:
 awsRegion: us-east-1
 # -- (string) AWS STS to issue temporary credentials to users and roles that make an AWS STS request. Values regional or global.
 awsStsRegionalEndpoints: regional
-# -- (string) Namespace to deploy the job.
-gen3Namespace: default
+# -- (string) Namespace to deploy the job. Defaults to .Release.Namespace
+gen3Namespace: ""
 # -- (string) Ssjdispater job number.
 dispatcherJobNum: "10"
 # -- (string) Image to use for the "indexing" job.
-indexing: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2022.08
+indexing: quay.io/cdis/indexs3client:2025.12
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 128Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 2400Mi
 
@@ -202,6 +218,12 @@ automountServiceAccountToken: true
 
 # -- (map) Values for ssjdispatcher secret.
 ssjcreds:
+  # -- (string) AWS region to use.
+  awsRegion:
+  # -- (string) AWS Access Key for user if not using IRSA.
+  awsAccessKeyId:
+  # -- (string) AWS Secret Access Key for user if not using IRSA.
+  awsSecretAccessKey:
   # -- (string) Sqs queue to monitor.
   sqsUrl: "https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"
   # -- (string) Name of the ssj job.
@@ -233,7 +255,12 @@ serviceAccount:
   annotations: {}
   # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "ssjdispatcher-service-account"
+  name: "ssjdispatcher-sa"
+
+# -- (map) Service account to use for ssj jobs.
+jobServiceAccount:
+  # -- (map) Annotations to add to the service account.
+  annotations: {}
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
@@ -247,8 +274,11 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
-
 # -- (map) External secrets configuration
 externalSecrets:
+  # -- (string) Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sSsjdispatcherSecret: false
+  # -- (string) Will create the Helm "fence-jwt-keys" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sJwtKeysSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "credentials.json"
   credsFile:

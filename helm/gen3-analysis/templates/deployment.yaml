@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen3-analysis-deployment
+  labels:
+    {{- include "gen3-analysis.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gen3-analysis.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "gen3-analysis.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+      annotations:
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      volumes: 
+        - name: config-volume
+          secret:
+            secretName: "gen3-analysis-secret"
+        {{- if .Values.s3DataMount.enabled }}
+        - name: tmp-volume
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.s3DataMount.enabled }}
+      initContainers:
+        - name: data-mount-init
+          image: "{{ .Values.s3DataMount.image.repository }}:{{ .Values.s3DataMount.image.tag | default "master" }}"
+          imagePullPolicy: {{ .Values.s3DataMount.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /mnt/secrets
+            - name: tmp-volume
+              mountPath: /tmp
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              aws s3 cp s3://{{ .Values.s3DataMount.s3Path }} /tmp/{{ .Values.s3DataMount.localPath }}
+              tar -xvf /tmp/{{ .Values.s3DataMount.localPath }} -C /tmp/
+      {{- end }}
+      containers:
+        - name: gen3-analysis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            - name: HOSTNAME
+              value: {{ .Values.global.hostname | quote }}
+            - name: GUNICORN_WORKERS
+              value: {{ .Values.gunicornWorkers | quote }}
+            - name: DEPLOYMENT_TYPE
+              value: {{ .Values.deploymentType | quote }}
+            {{- if .Values.urlPrefix }}
+            - name: URL_PREFIX
+              value: {{ .Values.urlPrefix | quote }}
+            {{- end }}
+            {{- with .Values.arboristUrl }}
+            - name: ARBORIST_URL
+              value: {{ . }}
+            {{- end }}
+            {{- if .Values.geneExpressionDataDir }}
+            - name: GENE_EXPRESSION_DATA_DIR
+              value: {{ .Values.geneExpressionDataDir | quote }}
+            {{- end }}
+            {{- if .Values.geneExpressionSQLitePath }}
+            - name: GENE_EXPRESSION_SQLITE_PATH
+              value: {{ .Values.geneExpressionSQLitePath | quote }}
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 8000
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            {{- if .Values.s3DataMount.enabled }}
+            - name: tmp-volume
+              mountPath: /opt/mmrf_gene_expression_test_data
+            {{- end }}
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

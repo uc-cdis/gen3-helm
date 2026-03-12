@@ -1,0 +1,96 @@
+{{- if .Values.auditServiceExport.enabled -}}
+#################################################
+# CronJob to trigger audit-export-job           #
+# Uses a client-credential to authenticate      #
+# Triggers a Sower job to run audit-export      #
+#################################################
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: audit-service-export
+spec:
+  schedule: {{ .Values.auditServiceExport.schedule | quote }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: audit-service-export-job
+          volumes: []
+          containers:
+            - name: audit-export
+              image: "{{ .Values.auditServiceExport.image.repository }}:{{ .Values.auditServiceExport.image.tag }}"
+              imagePullPolicy: {{ .Values.auditServiceExport.image.pullPolicy }}
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                    echo "Starting audit-service-export job..."
+                    echo "Hit fence to get the access token... using OIDC_CLIENT_ID: $OIDC_CLIENT_ID"
+
+                    # Build base64-encoded client credential
+                    bearer_token=$(echo -n "$OIDC_CLIENT_ID:$OIDC_CLIENT_SECRET" | base64 -w 0)
+
+                    # Request access token
+                    access_token=$(curl -s -X POST "https://$HOSTNAME/user/oauth2/token?grant_type=client_credentials&scope=openid" \
+                      -H "Authorization: Basic $bearer_token" \
+                      -H "Content-Type: application/x-www-form-urlencoded" | jq -r '.access_token')
+                    if [ -z "$access_token" ] || [ "$access_token" == "null" ]; then
+                      echo "Failed to get access token"
+                      exit 1
+                    fi
+                    echo "Successfully obtained access token" 
+                    echo "Triggering the audit-export job via sower service /dispatch endpoint"
+                    
+                    last_run_timestamp=$(kubectl get cronjob audit-service-export -o jsonpath='{.status.lastSuccessfulTime}')
+                    if [ -n "$last_run_timestamp" ]; then
+                      echo "Last successful run was at: $last_run_timestamp. Getting audit records since then."
+                    else
+                      last_run_timestamp=$(date -d '1 month ago' --utc +%Y-%m-%dT%H:%M:%SZ)
+                      echo "This is the first run of the cronjob. Getting records for the last 30 days, i.e since $last_run_timestamp"
+                    fi
+
+                    # Send POST request
+                    status_code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X POST "https://$HOSTNAME/job/dispatch" \
+                      -H "Authorization: Bearer $access_token" \
+                      -H "Content-Type: application/json" \
+                      -d '{"action": "audit-export","input": {"category": "presigned_url","query": {"start": "'"$last_run_timestamp"'"}}}')
+
+                    # Read response body
+                    body=$(cat /tmp/resp.txt)
+
+                    echo "HTTP Status: $status_code"
+                    echo "Response Body: $body"
+
+                    # Check status code
+                    if [ "$status_code" -ne 200 ]; then
+                      echo "Error: Dispatch request failed with status $status_code. Please verify that the OIDC client is configured correctly and has the required permissions."
+                      exit 1  # Exit CronJob with error
+                    fi
+                    echo "Audit-export job dispatched successfully"
+              env:
+                - name: OIDC_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: audit-export-oidc-client
+                      key: client_id
+                      optional: false
+                - name: OIDC_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: audit-export-oidc-client
+                      key: client_secret
+                      optional: false
+                - name: HOSTNAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname
+{{- end }}

@@ -76,7 +76,6 @@ config['OAUTH2'] = {
 config['USER_API'] = environ.get('FENCE_URL') or 'http://fence-service/'
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config['FORCE_ISSUER'] = True
-print(config)
 app_init(app)
 application = app
 application.debug = (environ.get('GEN3_DEBUG') == "True")

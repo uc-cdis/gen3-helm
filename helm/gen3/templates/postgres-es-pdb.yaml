@@ -1,0 +1,21 @@
+{{- if and .Values.global.pdb (.Values.global.dev) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+       app.kubernetes.io/name: "postgresql"
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: elasticsearch-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: "gen3-elasticsearch-master"
+{{- end }}
