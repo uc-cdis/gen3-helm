@@ -1,0 +1,19 @@
+# Can probably hardcode this
+catch_all_cohort_id: 121
+worker_pool_size: 10
+arborist_endpoint: "http://arborist-service"
+batch_size: 30
+global_reader_role: "public"
+atlas_db:
+  host: "{{ .Values.postgres.host }}"
+  port: "{{ .Values.postgres.port }}"
+  username: "{{ .Values.postgres.username }}"
+  password: "{{ .Values.postgres.password }}"
+  db: "{{ .Values.postgres.db }}"
+  schema: ohdsi
+# optional validation config:
+validate:
+  # TODO need to get an explanation for this from VA team
+  single_observation_for_concept_ids:
+    # HARE concept id:
+    - "2000007027"

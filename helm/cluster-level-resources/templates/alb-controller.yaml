@@ -16,7 +16,7 @@ spec:
         valueFiles:
           - $values/{{ .Values.cluster }}/cluster-values/alb-controller.yaml
     - repoURL: {{ .Values.configuration.configurationRepo }}
-      targetRevision: {{ .Values.configurationRevision }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
       ref: values
       {{- else }}
         values: |
@@ -24,7 +24,7 @@ spec:
           serviceAccount:
             create: true
             annotations:
-              eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3-service/{{ .Values.eksClusterName | default .Values.cluster }}-aws-load-balancer-controller-sa
+              eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--default--ingress
             name: aws-load-balancer-controller
       {{- end }}
   destination:

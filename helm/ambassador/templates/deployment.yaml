@@ -17,9 +17,17 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         netnolimit: "yes"
         public: "yes"
@@ -27,6 +35,9 @@ spec:
         {{- include "ambassador.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -51,7 +62,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: AMBASSADOR_NAMESPACE
-            value: {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
+            value: {{- if .Values.jupyterNamespace }}
+              {{ .Values.jupyterNamespace | quote }}
+            {{- else }}
+              {{ printf "%s-%s" .Values.userNamespace .Release.Name | quote }}
+            {{- end }}          
           - name: AMBASSADOR_SINGLE_NAMESPACE
             value: "true"
           ports:

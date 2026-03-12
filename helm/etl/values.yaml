@@ -1,20 +1,23 @@
 # populate with normal values from a regular chart created by helm create
 
+global:
+  dictionaryUrl:
+
 image:
   tube:
     # -- (string) The Docker image repository for the fence service
     repository: quay.io/cdis/tube
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
     tag: "master"
   spark:
     # -- (string) The Docker image repository for the spark service
     repository: quay.io/cdis/gen3-spark
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # -- (string) Overrides the image tag whose default is the chart appVersion.
-    tag: "2024.11"
+    tag: "master"
 
 
 # -- (list) Docker image pull secrets.
@@ -29,17 +32,17 @@ resources:
   tube:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
-      # -- (string) The amount of CPU requested
-      cpu: 0.3
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
 
 
 esEndpoint: gen3-elasticsearch-master
@@ -138,7 +141,7 @@ etlMapping:
 # -- (map) Configuration options for es garbage cronjob.
 esGarbageCollect:
   # -- (bool) Whether to create es garbage collect cronjob.
-  enabled: false
+  enabled: true
   # -- (string) The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default.
   schedule: "0 0 * * *"
   # -- (string) To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image.

@@ -1,9 +1,0 @@
-portal:
-  image:
-    repository: quay.io/cdis/data-portal-prebuilt
-    tag: "toxcommons.com-master"
-
-  resources:
-    requests:
-      cpu: "0.2"
-      memory: 100Mi

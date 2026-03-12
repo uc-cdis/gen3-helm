@@ -78,3 +78,10 @@ Create the name of the service account to use
 {{- default .Values.secrets.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Orthanc g3 Auto Secrets Manager Name
+*/}}
+{{- define "orthanc-g3auto" -}}
+{{- default "orthanc-g3auto" .Values.externalSecrets.orthancG3Auto }}
+{{- end }}

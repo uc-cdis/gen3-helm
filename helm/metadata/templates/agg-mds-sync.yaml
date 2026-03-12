@@ -12,7 +12,8 @@ kind: CronJob
 metadata:
   name: metadata-aggregate-sync
 spec:
-  schedule: "0 0 1 1 */5"
+  suspend: {{ .Values.suspendCronjob }}
+  schedule: {{ .Values.schedule | quote }}
   jobTemplate:
     spec:
       template:
@@ -102,13 +103,15 @@ spec:
                   value: {{ (.Values.useAggMds | quote | default "True") }}
                 - name: AGG_MDS_NAMESPACE
                   value: {{ .Values.aggMdsNamespace | default .Release.Name }}
+                - name: AGG_MDS_DEFAULT_DATA_DICT_FIELD
+                  value: {{ .Values.aggMdsDefaultDataDictField}}
               imagePullPolicy: Always
               command: ["/bin/sh"]
               args:
                 - "-c"
                 - |
                   cat /aggregate_config.json
-                  /env/bin/python /src/src/mds/populate.py --config /aggregate_config.json
+                  /env/bin/python /src/src/mds/populate.py --config /aggregate_config.json || poetry run python /mds/src/mds/populate.py --config /aggregate_config.json
                   if [ $? -ne 0 ]; then
                     echo "WARNING: non zero exit code: $?"
                     echo "WARNING: non zero exit code: $?" > /mnt/shared/status
@@ -119,10 +122,10 @@ spec:
               env:
                 - name: slackWebHook
                   valueFrom:
-                      configMapKeyRef:
-                        name: global
-                        key: slack_webhook
-                        optional: true
+                    secretKeyRef:
+                      name: slack-webhook
+                      key: slack_webhook
+                      optional: true
                 - name: gen3Env
                   valueFrom:
                       configMapKeyRef:
@@ -145,7 +148,7 @@ spec:
                     echo "Waiting for status file..."
                     sleep 5
                   done
-                  if ! [[ $(cat /mnt/shared/status) =~ "Success" ]]; then
+                  if [[ $(cat /mnt/shared/status) = "Success" ]]; then
                     success="SUCCESS"
                     color="2EB67D"
                   else

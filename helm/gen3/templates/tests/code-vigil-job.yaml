@@ -1,0 +1,151 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fence-check
+  annotations:
+    "helm.sh/hook": test
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: fence-checker
+        image: curlimages/curl
+        command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for fence-service..."
+            until curl -s -o /dev/null -w "%{http_code}" http://fence-service | grep 200; do
+              echo "Fence-service not ready. Retrying..."
+              sleep 5
+            done
+            echo "Fence-service is available!"
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "gen3-integration-tests"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gen3.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        {{- include "gen3.labels" . | nindent 8 }}
+    spec:
+      hostNetwork: true
+      serviceAccountName: kubectl-access
+      restartPolicy: Never
+      volumes:
+        - name: kube-api-access
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3607
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace
+        - name: api-keys
+          emptyDir: {}
+      initContainers:
+        - name: run-usersync
+          image: bitnami/kubectl
+          command: ["/bin/sh","-c"]
+          args:
+            - "-c"
+            - |
+              set -e
+              echo "Waiting for fence-check to complete..."
+              kubectl wait --for=condition=complete --timeout=600s job/fence-check
+              if ! kubectl get job fence-check >/dev/null 2>&1; then
+                echo "Error: job 'fence-check' does not exist!"
+                exit 1
+              fi
+              echo "Fence-check completed. Starting main job."
+              kubectl create job --from=cronjob/usersync usersync-integration-test
+              echo "Waiting for usersync to complete..."
+              if ! kubectl get cronjob usersync >/dev/null 2>&1; then
+                echo "Error: cronjob 'usersync' does not exist!"
+                exit 1
+              fi
+              kubectl wait --for=condition=complete --timeout=600s job/usersync-integration-test
+              echo "Usersync completed."
+              kubectl delete job usersync-integration-test
+          volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+        - name: generate-api-keys
+          image: "quay.io/cdis/gen3-integration-tests:{{ .Values.tests.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: hostname
+            - name: GEN3_INSTANCE_TYPE
+              value: HELM_LOCAL
+          volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+            - name: api-keys
+              mountPath: /root/.gen3
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              bash scripts/helm/generate_api_keys.sh test_data/test_setup/users.csv $HOSTNAME
+      containers:
+        - name: code-vigil
+          image: "quay.io/cdis/gen3-integration-tests:{{ .Values.tests.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: manifest-global
+                  key: hostname
+            - name: GEN3_INSTANCE_TYPE
+              value: HELM_LOCAL
+            - name: TEST_LABEL
+              value: "{{ .Values.tests.TEST_LABEL }}"
+            - name: SERVICE_TO_TEST
+              value: "{{ .Values.tests.SERVICE_TO_TEST }}"
+          volumeMounts:
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+            - name: api-keys
+              mountPath: /root/.gen3
+          resources:
+            {{- toYaml .Values.tests.resources | nindent 12 }}
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              if [ -z "$SERVICE_TO_TEST" ]; then
+                  echo "Running the following tests..."
+                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto -m \"not wip\" --dist loadscope $TEST_LABEL"
+                  GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest --alluredir allure-results -n auto  -m "not wip" --dist loadscope $TEST_LABEL
+              else
+                  echo "Running tests pertaining to specific service..."
+                  echo "GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m \"$SERVICE_TO_TEST and not wip\" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL"
+                  GEN3_INSTANCE_TYPE=$GEN3_INSTANCE_TYPE poetry run pytest -n auto -m "$SERVICE_TO_TEST and not wip" --alluredir allure-results --no-header --dist loadscope $TEST_LABEL
+              fi
+      restartPolicy: Never

@@ -1,0 +1,24 @@
+{{- if .Values.enabled -}}
+{{- $existing := lookup "v1" "ConfigMap" .Release.Namespace (include "dataUploadCron.stateConfigMapName" .) -}}
+{{- $key := .Values.configmaps.state.lastRunKey -}}
+{{- $value := (default .Values.configmaps.state.initialLastRun (and $existing (index $existing.data $key))) | quote -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dataUploadCron.stateConfigMapName" . }}
+  labels:
+    {{- include "dataUploadCron.labels" . | nindent 4 }}
+data:
+  {{ $key }}: {{ $value }}
+{{- end }}
+---
+{{ if .Values.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dataUploadCron.pendingConfigMapName" . }}
+  labels:
+    {{- include "dataUploadCron.labels" . | nindent 4 }}
+data:
+  {{ .Values.configmaps.pending.pendingKey }}: {{ .Values.configmaps.pending.initialPending | quote }}
+{{- end -}}

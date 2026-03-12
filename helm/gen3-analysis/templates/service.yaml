@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "gen3-analysis-service"
+  labels:
+    {{- include "gen3-analysis.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "gen3-analysis.selectorLabels" . | nindent 4 }}
+  {{- with .Values.service.port }}
+  ports:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  type: {{ .Values.service.type }}

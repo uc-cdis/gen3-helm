@@ -45,6 +45,10 @@ spec:
                       values:
                       - kube-dns
                   topologyKey: kubernetes.io/hostname
+
+          prometheus:
+            service:
+              enabled: true
       {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
