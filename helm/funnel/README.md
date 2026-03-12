@@ -8,6 +8,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 =======
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
@@ -33,6 +34,9 @@
 =======
 ![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 >>>>>>> cc5e3304 (funnel-0.1.99-rc.2 (#543))
+=======
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+>>>>>>> c6421247 (funnel 0.1.99-rc.5 (#544))
 
 A Helm chart for Kubernetes
 
@@ -53,12 +57,16 @@ A Helm chart for Kubernetes
 =======
 | file://../common | common | 0.1.33 |
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b2d6fd08 (MIDRC-1193 Remove Funnel mongodb netpolicies (#512))
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.91 |
 >>>>>>> 14944ef0 (Update funnel to 0.1.91)
 =======
 | https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.2 |
 >>>>>>> cc5e3304 (funnel-0.1.99-rc.2 (#543))
+=======
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.5 |
+>>>>>>> c6421247 (funnel 0.1.99-rc.5 (#544))
 
 ## Values
 

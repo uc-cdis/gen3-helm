@@ -23,6 +23,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.20
 =======
 version: 0.1.1
@@ -48,6 +49,9 @@ version: 0.1.7
 =======
 version: 0.1.8
 >>>>>>> cc5e3304 (funnel-0.1.99-rc.2 (#543))
+=======
+version: 0.1.9
+>>>>>>> c6421247 (funnel 0.1.99-rc.5 (#544))
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -77,6 +81,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.99-rc.31
 =======
     version: 0.1.85
@@ -87,4 +92,7 @@ dependencies:
 =======
     version: 0.1.99-rc.2
 >>>>>>> cc5e3304 (funnel-0.1.99-rc.2 (#543))
+=======
+    version: 0.1.99-rc.5
+>>>>>>> c6421247 (funnel 0.1.99-rc.5 (#544))
     repository: "https://ohsu-comp-bio.github.io/helm-charts"
