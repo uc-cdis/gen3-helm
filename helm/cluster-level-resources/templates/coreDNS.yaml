@@ -20,6 +20,7 @@ spec:
       ref: values
       {{- else }}
         values: |
+          priorityClassName: system-cluster-critical
           service:
             clusterIP: "10.100.0.10"
             name: "kube-dns"
