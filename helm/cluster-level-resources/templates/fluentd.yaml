@@ -1,0 +1,43 @@
+{{ if index .Values "fluentd" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluentd
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: fluentd
+      repoURL: https://fluent.github.io/helm-charts
+      targetRevision: {{ index .Values "fluentd" "targetRevision" }}
+      helm:
+        releaseName: fluentd
+      {{- if index .Values "fluentd" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/fluentd.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          fileConfigs:
+            gen3.conf: | {{ index .Values "fluentd-configmap-data" | nindent 14 }}
+          env:
+            - name: "FLUENTD_CONF"
+              value: "../../../etc/fluent/config.d/gen3.conf"
+            - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
+              value: "cri"
+            - name: AWS_REGION
+              value: "us-east-1"
+          image:
+            tag: v1.15.3-debian-cloudwatch-1.0
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}

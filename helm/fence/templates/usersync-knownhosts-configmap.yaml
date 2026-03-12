@@ -1,0 +1,18 @@
+{{- if .Values.usersync.usersync }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fence.fullname" . }}-ssh-known-hosts
+  labels:
+    app: {{ include "fence.name" . }}
+    chart: {{ include "fence.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  known_hosts: |
+{{- if .Values.usersync.sshKnownHosts }}
+{{ .Values.usersync.sshKnownHosts | indent 4 }}
+{{- else }}
+    # (empty) Provide usersync.sshKnownHosts in values to enable strict host key checking.
+{{- end }}
+{{- end }}

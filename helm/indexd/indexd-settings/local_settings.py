@@ -1,4 +1,5 @@
 from indexd.index.drivers.alchemy import SQLAlchemyIndexDriver
+from indexd.index.drivers.single_table_alchemy import SingleTableSQLAlchemyIndexDriver
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
 
@@ -31,14 +32,35 @@ if dist:
 
 arborist = environ.get("ARBORIST", "false").lower() == "true"
 
-CONFIG["INDEX"] = {
-    "driver": SQLAlchemyIndexDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-            usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-        ),
-        index_config=index_config,
-    )
-}
+USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
+
+# - DEFAULT_PREFIX: prefix to be prepended.
+# - PREPEND_PREFIX: the prefix is preprended to the generated GUID when a
+#   new record is created WITHOUT a provided GUID.
+# - ADD_PREFIX_ALIAS: aliases are created for new records - "<PREFIX><GUID>".
+# Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
+# will be created as "<PREFIX><PREFIX><GUID>".
+if USE_SINGLE_TABLE:
+    CONFIG["INDEX"] = {
+        "driver": SingleTableSQLAlchemyIndexDriver(
+            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
+            ),
+            echo=True,
+            index_config=index_config
+        )
+    }
+else:
+    CONFIG["INDEX"] = {
+        "driver": SQLAlchemyIndexDriver(
+            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
+            ),
+            echo=True,
+            index_config=index_config
+        )
+    }
+
 
 CONFIG["ALIAS"] = {
     "driver": SQLAlchemyAliasDriver(

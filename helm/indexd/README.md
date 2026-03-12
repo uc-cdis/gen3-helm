@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 indexd
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
+| file://../common | common | 0.1.33 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -16,22 +16,27 @@ A Helm chart for gen3 indexd
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
-| autoscaling | map | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling options. |
-| autoscaling.maxReplicas | int | `100` | Maximum number of replicas |
-| autoscaling.minReplicas | int | `1` | Minimum number of replicas |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage |
+| autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| defaultPrefix | string | `"PREFIX/"` | default prefix for indexd |
+| defaultPrefix | string | `"PREFIX/"` | default prefix for indexd - must end in slash |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"pushSecret":false,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
+| global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
 | global.dev | bool | `true` | Whether the deployment is for development purposes. |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
@@ -42,7 +47,7 @@ A Helm chart for gen3 indexd
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -57,12 +62,16 @@ A Helm chart for gen3 indexd
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| metricsEnabled | bool | `false` | Whether Metrics are enabled. |
+| metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | netPolicy | map | `{"egressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"],"ingressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]` | List of apps that this app requires egress to |
@@ -83,14 +92,12 @@ A Helm chart for gen3 indexd
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
-| resources | map | `{"limits":{"cpu":1,"memory":"512Mi"},"requests":{"cpu":0.1,"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
-| resources.limits | map | `{"cpu":1,"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
-| resources.limits.cpu | string | `1` | The maximum amount of CPU the container can use |
+| resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
+| resources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
-| resources.requests | map | `{"cpu":0.1,"memory":"12Mi"}` | The amount of resources that the container requests |
-| resources.requests.cpu | string | `0.1` | The amount of CPU requested |
+| resources.requests | map | `{"memory":"12Mi"}` | The amount of resources that the container requests |
 | resources.requests.memory | string | `"12Mi"` | The amount of memory requested |
-| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"userdb":{"fence":null,"sheepdog":null}}` | Values for indexd secret. |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"userdb":{"fence":null,"gateway":null,"sheepdog":null,"ssj":null}}` | Values for indexd secret. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID to access the db restore job S3 bucket. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID to access the db restore job S3 bucket. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
@@ -103,6 +110,7 @@ A Helm chart for gen3 indexd
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
+| useSingleTable | string | `"False"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
-| volumeMounts | list | `[{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"}]` | Volumes to mount to the container. |
-| volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}}]` | Volumes to attach to the pod |
+| volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
+| volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}},{"configMap":{"name":"gunicorn-conf"},"name":"gunicorn-conf"}]` | Volumes to attach to the pod |

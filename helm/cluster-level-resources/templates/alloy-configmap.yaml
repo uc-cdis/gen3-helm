@@ -1,0 +1,9 @@
+{{ if index .Values "grafana-alloy" "enabled" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-gen3
+  namespace: monitoring
+data:
+  config: {{ tpl (index .Values "alloy-configmap-data") . | toYaml | indent 2}}
+{{ end }}

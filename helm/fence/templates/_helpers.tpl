@@ -16,6 +16,9 @@ a function to generate or get the jwt keys
 {{- $existingSecret := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
 {{- if $existingSecret }}
 {{- index $existingSecret.data "jwt_private_key.pem" }}
+{{- else if (and .Values.jwtKeys (hasKey .Values.jwtKeys "jwt_private_key.pem")) }}
+{{- $val := index .Values.jwtKeys "jwt_private_key.pem" }}
+{{- $val | b64enc }}
 {{- else }}
 {{- genPrivateKey "rsa" | b64enc }}
 {{- end }}
@@ -124,4 +127,11 @@ Create the name of the service account to use
 */}}
 {{- define "fence-config" -}}
 {{- default "fence-config" .Values.externalSecrets.fenceConfig }}
+{{- end }}
+
+{{/*
+  Fence SSH Keys Secrets Manager Name
+*/}}
+{{- define "fence-ssh-keys" -}}
+{{- default "fence-ssh-keys" .Values.externalSecrets.fenceSshKeys }}
 {{- end }}

@@ -1,0 +1,10 @@
+{{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
+
+{{- if ne $jobsNamespace .Release.Namespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: {{ $jobsNamespace | quote }}
+    labels:
+        app.kubernetes.io/name: {{ $jobsNamespace | quote }}
+{{- end }}

@@ -24,5 +24,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: usersync-job
-    namespace: default
 {{- end }}

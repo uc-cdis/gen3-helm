@@ -91,13 +91,13 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/*
-Define dictionaryUrl
-*/}}
-{{- define "sheepdog.dictionaryUrl" -}}
-{{- if .Values.global }}
-{{- .Values.global.dictionaryUrl }}
-{{- else}}
-{{- .Values.dictionaryUrl }}
-{{- end }}
-{{- end }}
+# {{/*
+# Define dictionaryUrl
+# */}}
+# {{- define "sheepdog.dictionaryUrl" -}}
+# {{- if .Values.global }}
+# {{- .Values.global.dictionaryUrl }}
+# {{- else}}
+# {{- .Values.dictionaryUrl }}
+# {{- end }}
+# {{- end }}
