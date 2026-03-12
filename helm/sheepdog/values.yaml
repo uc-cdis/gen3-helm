@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -56,19 +61,39 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any sheepdog secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 
@@ -104,17 +129,6 @@ releaseLabel: production
 
 # -- (map) Annotations to add to the pod
 podAnnotations: {"gen3.io/network-ingress": "sheepdog"}
-
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 100
-  # -- (int) The target CPU utilization percentage for autoscaling
-  targetCPUUtilizationPercentage: 80
 
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
@@ -169,17 +183,9 @@ image:
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "bug_auth-audience"
+  tag: "master"
 
 # Environment Variables
-# -- (string) URL of the data dictionary.
-dictionaryUrl: https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json
-# -- (string) URL for the indexd service
-indexdUrl: http://indexd-service
-# -- (string) URL for the fence service
-fenceUrl: http://fence-service
-# -- (string) URL for the arborist service
-arboristUrl: http://arborist-service
 authNamespace: ""
 
 # -- (list) Volumes to mount to the container.
@@ -197,14 +203,10 @@ volumeMounts:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.3
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
 

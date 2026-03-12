@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -56,21 +61,49 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any wts secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
-metricsEnabled: false
+metricsEnabled:
 
 # -- (map) External Secrets settings.
 externalSecrets:
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  # -- (bool) Will create the WTS secret or pull it from AWS Secrets Manager. Default is true.
+  createWtsOidcClientSecret: true
+  # -- (bool) Will create the WTS secret or pull it from AWS Secrets Manager. Default is false.
+  createK8sWtsSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "wts-g3auto".
+  wtsG3auto:
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "wts-oidc-client".
+  wtsOidcClient:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -105,10 +138,11 @@ replicaCount: 1
 image:
   # -- (string) Docker repository.
   repository: quay.io/cdis/workspace-token-service
+  utilImage: quay.io/cdis/utilities:master
   # -- (string) Docker pull policy.
   pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "feat_wts_internalfence"
+  tag: "master"
 
 # -- (list) Docker image pull secrets.
 imagePullSecrets: []
@@ -125,6 +159,8 @@ hostname:
 oidc_client_id:
 # -- (string) Secret for the OIDC client.
 oidc_client_secret:
+# -- (bool) Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created.
+oidc_job_enabled: true
 
 # -- (map) Service account to use or create.
 serviceAccount:
@@ -167,28 +203,12 @@ service:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.2
     # -- (string) The amount of memory requested
     memory: 120Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 0.5
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
-
-# -- (map) Configuration for autoscaling the number of replicas
-autoscaling:
-  # -- (bool) Whether autoscaling is enabled or not
-  enabled: false
-  # -- (int) The minimum number of replicas to scale down to
-  minReplicas: 1
-  # -- (int) The maximum number of replicas to scale up to
-  maxReplicas: 100
-  # -- (int) The target CPU utilization percentage for autoscaling
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # -- (map) Node Selector for the pods
 nodeSelector: {}

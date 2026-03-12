@@ -18,9 +18,17 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         netnolimit: "yes"
         public: "yes"
@@ -28,6 +36,9 @@ spec:
         {{- include "hatchery.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -62,7 +73,7 @@ spec:
             - name: GEN3_ENDPOINT
               value: {{ .Values.global.hostname }}
             - name: GEN3_VPCID
-              value: {{ .Values.global.environment }}
+              value: {{ default .Values.global.environment .Values.vpcId }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       {{- with .Values.nodeSelector }}

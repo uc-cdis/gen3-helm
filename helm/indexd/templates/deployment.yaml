@@ -17,14 +17,25 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        {{- if .Values.metricsEnabled }}
+      {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         public: "yes"
         {{- include "indexd.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -75,15 +86,13 @@ spec:
                   optional: false
             - name: DEFAULT_PREFIX
               value: {{ .Values.defaultPrefix }}
+            - name: USE_SINGLE_TABLE
+              value: {{ .Values.useSingleTable | quote }}
             {{- toYaml .Values.env | nindent 12  }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: "uwsgi-config"
-              mountPath: "/etc/uwsgi/uwsgi.ini"
-              subPath: uwsgi.ini
-            - name: "config-volume"
-              readOnly: true
-              mountPath: "/var/www/indexd/local_settings.py"
-              subPath: "local_settings.py"
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

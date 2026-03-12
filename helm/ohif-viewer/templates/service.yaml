@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "ohif-viewer-service"
+  labels:
+    {{- include "ohif-viewer.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: https
+      nodePort: null
+  selector:
+    {{- include "ohif-viewer.selectorLabels" . | nindent 4 }}

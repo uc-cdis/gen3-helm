@@ -1,6 +1,6 @@
 # cohort-middleware
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 cohort-middleware
 
@@ -8,8 +8,7 @@ A Helm chart for gen3 cohort-middleware
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.16 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| file://../common | common | 0.1.31 |
 
 ## Values
 
@@ -28,10 +27,7 @@ A Helm chart for gen3 cohort-middleware
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"cohort-middleware"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `25` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| autoscaling | object | `{}` |  |
 | config.arboristEndpoint | string | `"http://arborist-service"` |  |
 | config.atlasDbHost | string | `""` |  |
 | config.atlasDbPassword | string | `""` |  |
@@ -40,9 +36,15 @@ A Helm chart for gen3 cohort-middleware
 | config.db | string | `"atlas_default"` |  |
 | config.globalReaderRole | string | `"public"` |  |
 | config.schema | string | `"ohdsi"` |  |
-| externalSecrets | map | `{"cohortMiddlewareG3Auto":null}` | External Secrets settings. |
+| externalSecrets | map | `{"cohortMiddlewareG3Auto":null,"createK8sCohortMiddlewareSecret":false}` | External Secrets settings. |
 | externalSecrets.cohortMiddlewareG3Auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "cohort-middleware-g3auto" |
+| externalSecrets.createK8sCohortMiddlewareSecret | string | `false` | Will create the Helm "cohort-middleware-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | fullnameOverride | string | `""` |  |
+| global.autoscaling.averageCPUValue | string | `"500m"` |  |
+| global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
+| global.autoscaling.enabled | bool | `false` |  |
+| global.autoscaling.maxReplicas | int | `10` |  |
+| global.autoscaling.minReplicas | int | `1` |  |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -56,7 +58,7 @@ A Helm chart for gen3 cohort-middleware
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.kubeBucket | string | `"kube-gen3"` | S3 bucket name for Kubernetes manifest files. |
 | global.logsBucket | string | `"logs-gen3"` | S3 bucket name for log files. |
-| global.minAvialable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
+| global.minAvailable | int | `1` | The minimum amount of pods that are available at all times if the PDB is deployed. |
 | global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -71,6 +73,10 @@ A Helm chart for gen3 cohort-middleware
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/cdis/cohort-middleware"` |  |
 | image.tag | string | `""` |  |
@@ -96,7 +102,6 @@ A Helm chart for gen3 cohort-middleware
 | readinessProbe.httpGet.port | int | `8080` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.memory | string | `"4Gi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"128Mi"` |  |
 | securityContext | object | `{}` |  |
 | service.port | int | `80` |  |

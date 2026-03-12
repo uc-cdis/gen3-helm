@@ -1,0 +1,26 @@
+{{ if (index .Values "cert-manager" "enabled") }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.jetstack.io
+      targetRevision: {{ (index .Values "cert-manager" "targetRevision")}}
+      chart: cert-manager
+      helm:
+        releaseName: cert-manager
+        values: |
+          crds:
+            enabled: true
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: cert-manager
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+{{ end }}

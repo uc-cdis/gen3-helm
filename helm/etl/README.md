@@ -1,6 +1,6 @@
 # etl
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 etl
 
@@ -9,9 +9,9 @@ A Helm chart for gen3 etl
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | esEndpoint | string | `"gen3-elasticsearch-master"` |  |
-| esGarbageCollect | map | `{"custom_image":null,"enabled":false,"schedule":"0 0 * * *","slack_webhook":"None"}` | Configuration options for es garbage cronjob. |
+| esGarbageCollect | map | `{"custom_image":null,"enabled":true,"schedule":"0 0 * * *","slack_webhook":"None"}` | Configuration options for es garbage cronjob. |
 | esGarbageCollect.custom_image | string | `nil` | To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image. |
-| esGarbageCollect.enabled | bool | `false` | Whether to create es garbage collect cronjob. |
+| esGarbageCollect.enabled | bool | `true` | Whether to create es garbage collect cronjob. |
 | esGarbageCollect.schedule | string | `"0 0 * * *"` | The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default. |
 | esGarbageCollect.slack_webhook | string | `"None"` | Slack webhook endpoint to use for cronjob. |
 | etlForced | string | `"TRUE"` |  |
@@ -90,6 +90,7 @@ A Helm chart for gen3 etl
 | etlMapping.mappings[1].target_nodes[0].name | string | `"slide_image"` |  |
 | etlMapping.mappings[1].target_nodes[0].path | string | `"slides.samples.cases"` |  |
 | etlMapping.mappings[1].type | string | `"collector"` |  |
+| global.dictionaryUrl | string | `nil` |  |
 | image.spark.pullPolicy | string | `"IfNotPresent"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.spark.repository | string | `"quay.io/cdis/gen3-spark"` | The Docker image repository for the spark service |
 | image.spark.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
@@ -99,12 +100,12 @@ A Helm chart for gen3 etl
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | legacySupport | bool | `false` |  |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
-| resources | map | `{"spark":{"requests":{"cpu":0.3,"memory":"128Mi"}},"tube":{"requests":{"cpu":0.3,"memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
-| resources.spark.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.spark.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources | map | `{"spark":{"requests":{"cpu":"10m","memory":"128Mi"}},"tube":{"requests":{"cpu":"10m","memory":"128Mi"}}}` | Resource requests and limits for the containers in the pod |
+| resources.spark.requests | map | `{"cpu":"10m","memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.spark.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.spark.requests.memory | string | `"128Mi"` | The amount of memory requested |
-| resources.tube.requests | map | `{"cpu":0.3,"memory":"128Mi"}` | The amount of resources that the container requests |
-| resources.tube.requests.cpu | string | `0.3` | The amount of CPU requested |
+| resources.tube.requests | map | `{"cpu":"10m","memory":"128Mi"}` | The amount of resources that the container requests |
+| resources.tube.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
 | suspendCronjob | bool | `true` |  |

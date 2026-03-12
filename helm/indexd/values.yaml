@@ -12,6 +12,11 @@ global:
     awsAccessKeyId:
     # -- (string) Credentials for AWS stuff.
     awsSecretAccessKey:
+    externalSecrets:
+      # -- (bool) Whether to use External Secrets for aws config.
+      enabled: false
+      # -- (String) Name of Secrets Manager secret.
+      externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
 
@@ -58,15 +63,34 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any indexd secrets you have deployed.
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
+  #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+#  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling: {}
 
 # -- (bool) Whether Metrics are enabled.
+# indexd doesn't expose metrics yet.
 metricsEnabled: false
 
 # -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
@@ -99,6 +123,8 @@ netPolicy:
 externalSecrets:
   # -- (string) Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
   createK8sServiceCredsSecret: false
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
   serviceCreds: "indexd-service-creds"
@@ -108,7 +134,8 @@ secrets:
   userdb:
     fence:
     sheepdog:
-    # gateway:
+    ssj:
+    gateway:
   # -- (str) AWS access key ID to access the db restore job S3 bucket. Overrides global key.
   awsAccessKeyId:
   # -- (str) AWS secret access key ID to access the db restore job S3 bucket. Overrides global key.
@@ -201,27 +228,12 @@ service:
 resources:
   # -- (map) The amount of resources that the container requests
   requests:
-    # -- (string) The amount of CPU requested
-    cpu: 0.1
     # -- (string) The amount of memory requested
     memory: 12Mi
   # -- (map) The maximum amount of resources that the container is allowed to use
   limits:
-    # -- (string) The maximum amount of CPU the container can use
-    cpu: 1.0
     # -- (string) The maximum amount of memory the container can use
     memory: 512Mi
-
-# -- (map) Autoscaling options.
-autoscaling:
-  enabled: false
-  # -- (int) Minimum number of replicas
-  minReplicas: 1
-  # -- (int) Maximum number of replicas
-  maxReplicas: 100
-  # -- (int) Target CPU utilization percentage
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 # -- (map) Node Selector for the pods
 nodeSelector: {}
@@ -240,13 +252,23 @@ volumes:
   - name: config-volume
     secret:
       secretName: "indexd-settings"
+  - name: gunicorn-conf
+    configMap:
+      name: "gunicorn-conf"
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
+  - name: "uwsgi-config"
+    mountPath: "/etc/uwsgi/uwsgi.ini"
+    subPath: uwsgi.ini
   - name: "config-volume"
     readOnly: true
     mountPath: "/var/www/indexd/local_settings.py"
     subPath: "local_settings.py"
+  - name: "gunicorn-conf"
+    readOnly: true
+    mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
+    subPath: "gunicorn.conf.py"
 
 # -- (list) Environment variables to pass to the container
 env:
@@ -259,8 +281,9 @@ env:
 uwsgi:
   listen: 1024
 
-# -- (string) default prefix for indexd
+# -- (string) default prefix for indexd - must end in slash
 defaultPrefix: "PREFIX/"
+useSingleTable: "False"
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

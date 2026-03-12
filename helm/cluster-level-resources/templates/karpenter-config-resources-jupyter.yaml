@@ -1,5 +1,5 @@
 {{ if and (index .Values "karpenter-crds" "enabled") (index .Values "karpenter-crds" "jupyter" "enabled") }}
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.k8s.aws/v1
 {{- else }}
 apiVersion: karpenter.k8s.aws/v1beta1
@@ -8,7 +8,11 @@ kind: EC2NodeClass
 metadata:
   name: jupyter
 spec:
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
+  amiFamily: AL2023
+  {{- else }}
   amiFamily: AL2
+  {{- end }}
   amiSelectorTerms:
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
     owner: "143731057154"
@@ -17,7 +21,7 @@ spec:
     ebs:
       deleteOnTermination: true
       encrypted: true
-      volumeSize: 50Gi
+      volumeSize: {{ index .Values "karpenter-crds" "jupyter" "volumeSize" }}
       volumeType: gp3
   metadataOptions:
     httpEndpoint: enabled
@@ -53,7 +57,7 @@ spec:
     sysctl -w fs.inotify.max_user_watches=12000 &
 
     --BOUNDARY--
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
   kubelet:
     evictionHard:
       memory.available: 5%
@@ -61,13 +65,9 @@ spec:
       memory.available: 10%
     evictionSoftGracePeriod:
       memory.available: 5m
-    kubeReserved:
-      cpu: 480m
-      ephemeral-storage: 3Gi
-      memory: 1632Mi
 {{- end }}
 ---
-{{- if eq .Values.karpenter.targetRevision "1.0.8" }}
+{{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
@@ -127,10 +127,6 @@ spec:
           memory.available: 10%
         evictionSoftGracePeriod:
           memory.available: 5m
-        kubeReserved:
-          cpu: 480m
-          ephemeral-storage: 3Gi
-          memory: 1632Mi
       nodeClassRef:
         apiVersion: karpenter.k8s.aws/v1beta1
         kind: EC2NodeClass

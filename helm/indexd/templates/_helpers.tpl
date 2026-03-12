@@ -102,3 +102,10 @@ Create the name of the service account to use
 {{- define "indexd-gateway-creds" -}}
 {{- default (randAlphaNum 32) .Values.secrets.userdb.gateway }}
 {{- end }}
+
+{{/*
+  Indexd SSJ Creds
+*/}}
+{{- define "indexd-ssj-creds" -}}
+{{- default (randAlphaNum 32) .Values.secrets.userdb.ssj }}
+{{- end }}

@@ -13,6 +13,7 @@ spec:
           {{- with .Values.podAnnotations }}
           annotations:
             {{- toYaml . | nindent 12 }}
+            checksum/config: {{ include (print $.Template.BasePath "/etl-mapping.yaml") . | sha256sum }}
           {{- end }}
           labels:
             app: gen3job
@@ -43,12 +44,9 @@ spec:
                 secretName: etl-secret  
             {{- end }}  
             - name: emptydir
-              emptyDir: {}      
+              emptyDir: {}
             - name: signal-volume
               emptyDir: {}
-            - name: creds-volume
-              secret:
-                secretName: "peregrine-dbcreds"
             - name: etl-mapping
               configMap:
                 name: etl-mapping
@@ -77,10 +75,7 @@ spec:
                 periodSeconds: 10
               env:
               - name: DICTIONARY_URL
-                valueFrom:
-                  configMapKeyRef:
-                    name: manifest-global
-                    key: dictionary_url
+                value: {{ .Values.global.dictionaryUrl | quote }}
               - name: HADOOP_URL
                 value: hdfs://0.0.0.0:9000
               - name: HADOOP_HOST
@@ -92,7 +87,7 @@ spec:
               imagePullPolicy: {{ .Values.image.spark.pullPolicy }}
               resources:
                 requests:
-                  cpu: {{  .Values.resources.spark.requests.cpu }}
+                  cpu: {{ .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
               command: ["/bin/bash" ]
               args: 
@@ -111,7 +106,7 @@ spec:
                   /spark/sbin/start-all.sh
                   while true; do [ -f "/usr/share/pod/exit" ] && { exit_code=$(cat /usr/share/pod/exit); [[ "$exit_code" =~ ^[0-9]+$ ]] && echo "Exiting with exit code $exit_code" && exit $exit_code || exit 1; }; sleep 5; done
             - name: tube
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: {{ .Values.image.tube.pullPolicy | default "IfNotPresent" | quote }}
               image: {{ .Values.image.tube.repository }}:{{ .Values.image.tube.tag }}
               ports:
                 - containerPort: 80
@@ -119,7 +114,7 @@ spec:
                 - name: DB_HOST
                   valueFrom:
                     secretKeyRef:
-                      name: peregrine-dbcreds
+                      name: sheepdog-dbcreds
                       key: host
                 - name: DB_DATABASE
                   valueFrom:
@@ -142,10 +137,7 @@ spec:
                       name: sheepdog-dbcreds
                       key: port
                 - name: DICTIONARY_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-global
-                      key: dictionary_url
+                  value: {{ .Values.global.dictionaryUrl | quote }}
                 - name: HADOOP_URL
                   value: hdfs://localhost:9000
                 - name: ES_URL
@@ -155,22 +147,19 @@ spec:
                 - name: HADOOP_CLIENT_OPTS
                   value: -Xmx1g
                 - name: SPARK_EXECUTOR_MEMORY
-                  value: 4g
+                  value: 8g
                 - name: SPARK_DRIVER_MEMORY
-                  value: 6g
+                  value: 8g
                 - name: XDG_DATA_HOME
                   value: /tube
                 - name: ETL_FORCED
                   value: {{ .Values.etlForced | quote }}
                 - name: gen3Env
-                  valueFrom:
-                    configMapKeyRef:
-                      name: manifest-global
-                      key: hostname
+                  value: {{ .Values.global.hostname | quote }}
                 - name: slackWebHook
                   valueFrom:
-                    configMapKeyRef:
-                      name: global
+                    secretKeyRef:
+                      name: slack-webhook
                       key: slack_webhook
                       optional: true
               volumeMounts:
@@ -181,7 +170,6 @@ spec:
                 {{- end }}
                 - mountPath: /tube/gen3/tube
                   name: emptydir
-                  defaultMode: 0755
                 - mountPath: /usr/share/pod
                   name: signal-volume
                 - name: "etl-mapping"
@@ -191,14 +179,12 @@ spec:
                 - name: fence-usersync-yaml
                   mountPath: /tube/gen3/tube/fence-user.yaml
                   subPath: user.yaml
-                  defaultMode: 0755
                 - name: fence-useryaml
                   mountPath: /tube/gen3/tube/useryaml-user.yaml
                   subPath: useryaml
-                  defaultMode: 0755
               resources:
                 requests:
-                  cpu: {{  .Values.resources.tube.requests.cpu }}
+                  cpu: {{ .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
               command: ["/bin/bash"]
               args:
@@ -232,6 +218,14 @@ spec:
                   # Immediately write exit code to the shared file signalling to spark to die.
                   echo "Writing exit code to signal file to let spark die"
                   echo "$exitcode" > /usr/share/pod/exit
+
+                  if [[ "${slackWebHook}" != 'None' ]]; then
+                    if [[ $exitcode == 1 ]]; then
+                      curl -X POST --data-urlencode "payload={\"text\": \"JOBFAIL: ETL job on ${gen3Env}\"}" "${slackWebHook}"
+                    else
+                      curl -X POST --data-urlencode "payload={\"text\": \"SUCCESS: ETL job on ${gen3Env}\"}" "${slackWebHook}"
+                    fi
+                  fi
 
                   echo "Exit code: $exitcode"
                   exit "$exitcode"

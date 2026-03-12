@@ -1,0 +1,100 @@
+{{- if .Values.awsBatchReplicateJob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aws-batch-replicate
+  namespace: {{ default .Release.Namespace .Values.awsBatchReplicateJob.namespace }}
+spec:
+  schedule: {{ .Values.awsBatchReplicateJob.schedule | quote }}
+  suspend: {{ .Values.suspendCronjob }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: gen3job
+        spec:
+          serviceAccountName: aws-batch-replicate-job
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                    - on-demand
+              - weight: 99
+                preference:
+                  matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                    - ONDEMAND
+          volumes:
+            - name: cred-volume
+              secret:
+                secretName: "fence-bot-aws-creds"
+            - name: setting-volume
+              secret:
+                secretName: "dcf-dataservice-settings-secrets"
+          containers:
+          - name: aws-bucket-replicate
+            image: quay.io/cdis/gdc_copy:master
+            resources:
+            {{- toYaml .Values.resources | nindent 14 }}
+            imagePullPolicy: Always
+            env:
+              - name: REGION
+                value: "{{ .Values.awsBatchReplicateJob.REGION }}"
+              - name: THREAD_COUNT
+                value: "{{ .Values.awsBatchReplicateJob.THREAD_COUNT }}"
+              - name: MAX_RETRIES
+                value: "{{ .Values.awsBatchReplicateJob.MAX_RETRIES }}"
+              - name: MANIFEST_PATH
+                value: "{{ .Values.awsBatchReplicateJob.MANIFEST_PATH }}"
+              - name: JOB_QUEUE
+                value: "{{ .Values.awsBatchReplicateJob.JOB_QUEUE }}"
+              - name: JOB_DEFINITION
+                value: "{{ .Values.awsBatchReplicateJob.JOB_DEFINITION }}"
+              - name: OUTPUT_MANIFEST_BUCKET
+                value: "{{ .Values.awsBatchReplicateJob.OUTPUT_MANIFEST_BUCKET}}"
+              - name: AUTH_NAMESPACE
+                valueFrom:
+                  configMapKeyRef:
+                    name: manifest-global
+                    key: auth_namespace
+                    optional: true
+            volumeMounts:
+            - name: cred-volume
+              mountPath: "/root/.aws/credentials"
+              subPath: credentials
+            - name: "setting-volume"
+              mountPath: "/secrets/dcf_dataservice_settings.py"
+              subPath: "dcf-dataservice-settings-secrets"
+            command: ["/bin/bash"]
+            args:
+            - -c
+            - |
+              echo """
+              [default]
+              region: $REGION
+              """ > ~/.aws/config
+              cp /secrets/dcf_dataservice_settings.py /dcf_replication/batch_jobs/bin/settings.py
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
+            ports:
+            - containerPort: 80
+              protocol: TCP
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            
+          dnsPolicy: ClusterFirst
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          restartPolicy: Never
+{{- end }}
