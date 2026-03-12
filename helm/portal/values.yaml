@@ -530,7 +530,7 @@ portalBuild:
   enabled: false
 
   serviceAccount:
-    name: "" # empty => reuse existing portal SA name
+    name: ""
     annotations:
       eks.amazonaws.com/role-arn: ""
 

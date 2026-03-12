@@ -177,26 +177,6 @@ spec:
               ls -la "$DEST_DIR"
 
               log "Init container completed successfully."
-                  
-              # mkdir -p /tmp/repo
-              # cd /tmp/repo
-              # # Clone only the specific branch with minimal history and sparse checkout
-              # git clone \
-              #   --depth 1 \
-              #   --single-branch \
-              #   --branch ${GIT_BRANCH} \
-              #   --filter=blob:none \
-              #   --sparse \
-              #   ${GIT_REPO} custom
-              # cd custom
-
-              # git sparse-checkout set {{ .Values.customConfig.dir }}
-              # cd {{ .Values.customConfig.dir }}
-              # ls
-              # echo 'cp -r * /gen3/config'
-              # cp -r * /gen3/config
-              # echo 'ls /gen3/config'
-              # ls /gen3/config
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
@@ -230,14 +210,6 @@ spec:
             readOnly: true
           - name: sigshare
             mountPath: /etc/portal-build
-          - name: portal-overrides
-            mountPath: /data-portal/webpack.config.js
-            subPath: webpack.config.js
-            readOnly: true
-          - name: portal-overrides
-            mountPath: /data-portal/runWebpack.sh
-            subPath: runWebpack.sh
-            readOnly: true
           {{- if .Values.customConfig.enabled }}
           - name: config-volume
             mountPath: /data-portal/data/config/gitops.json
@@ -274,12 +246,6 @@ spec:
           args:
           - |
             set -euo pipefail
-            export NAMESPACE={{ .Release.Namespace | quote }}
-            export SIG_CONFIGMAP_NAME=webpack-build-sig
-            export LOCK_CONFIGMAP_NAME=webpack-build-lock
-            export JOB_NAME_PREFIX=webpack-build
-            export BUILDER_IMAGE={{ .Values.portalBuild.images.builder | quote }}
-            export PVC_NAME={{ .Values.portalBuild.s3csi.pvcName | quote }}
             /secret-trigger/check_and_trigger_build.sh
           env:
           - name: APP
@@ -293,6 +259,18 @@ spec:
                 name: manifest-portal
                 key: GEN3_BUNDLE
                 optional: true
+          - name: NAMESPACE
+            value: {{ .Release.Namespace | quote }}
+          - name: SIG_CONFIGMAP_NAME
+            value: webpack-build-sig
+          - name: LOCK_CONFIGMAP_NAME
+            value: webpack-build-lock
+          - name: JOB_NAME_PREFIX
+            value: webpack-build
+          - name: BUILDER_IMAGE
+            value: {{ .Values.portalBuild.images.builder | quote }}
+          - name: PVC_NAME
+            value: {{ .Values.portalBuild.s3csi.pvcName | quote }}
           volumeMounts:
           - name: scripts-trigger
             mountPath: /secret-trigger
