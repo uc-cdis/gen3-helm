@@ -281,7 +281,7 @@ env:
 uwsgi:
   listen: 1024
 
-# -- (string) default prefix for indexd
+# -- (string) default prefix for indexd - must end in slash
 defaultPrefix: "PREFIX/"
 useSingleTable: "False"
 

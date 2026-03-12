@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.30](https://img.shields.io/badge/Version-0.6.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.31](https://img.shields.io/badge/Version-0.6.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -70,6 +70,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.consolidateAfter | string | `"30s"` |  |
 | karpenter-crds.default.consolidation | bool | `true` |  |
 | karpenter-crds.default.consolidationPolicy | string | `"WhenEmpty"` |  |
+| karpenter-crds.default.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
 | karpenter-crds.default.limits.cpu | string | `"1000"` |  |
@@ -88,6 +89,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.requirements[2].values[2] | string | `"r"` |  |
 | karpenter-crds.default.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.default.volumeSize | string | `"50Gi"` |  |
+| karpenter-crds.default.weight | int | `99` |  |
 | karpenter-crds.enabled | bool | `false` |  |
 | karpenter-crds.gpu.additionalTags | object | `{}` |  |
 | karpenter-crds.gpu.consolidateAfter | string | `"30s"` |  |
@@ -120,6 +122,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.secondary.consolidateAfter | string | `"30s"` |  |
 | karpenter-crds.secondary.consolidation | bool | `true` |  |
 | karpenter-crds.secondary.consolidationPolicy | string | `"WhenEmpty"` |  |
+| karpenter-crds.secondary.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.secondary.enabled | bool | `false` |  |
 | karpenter-crds.secondary.expireAfter | string | `"168h"` |  |
 | karpenter-crds.secondary.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
@@ -136,6 +139,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.secondary.requirements[2].values[2] | string | `"r"` |  |
 | karpenter-crds.secondary.requirements[2].values[3] | string | `"t"` |  |
 | karpenter-crds.secondary.volumeSize | string | `"50Gi"` |  |
+| karpenter-crds.secondary.weight | int | `1` |  |
 | karpenter-crds.selectorTag | string | `""` |  |
 | karpenter-crds.targetRevision | string | `"master"` |  |
 | karpenter-crds.workflow.additionalTags | object | `{}` |  |

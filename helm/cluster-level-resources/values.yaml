@@ -131,6 +131,8 @@ karpenter-crds:
   migration: false
   default:
     enabled: true
+    weight: 99
+    disruptionBudget: "10%"
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
@@ -167,6 +169,8 @@ karpenter-crds:
     additionalTags: {}
   secondary:
     enabled: false
+    weight: 1
+    disruptionBudget: "10%"
     consolidation: true
     consolidateAfter: "30s"
     consolidationPolicy: "WhenEmpty"
