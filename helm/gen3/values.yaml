@@ -4,6 +4,12 @@
 
 # Global configuration
 global:
+  # -- (map) GCP configuration
+  gcp:
+    enabled: false
+    secretStoreServiceAccount: "GCP_SA@PROJECT_ID.iam.gserviceaccount.com"
+    projectID: "project-name"
+
   # -- (map) AWS configuration
   aws:
     # -- (string) AWS region for this deployment
@@ -19,6 +25,8 @@ global:
       enabled: false
       # -- (String) Name of Secrets Manager secret.
       externalSecretAwsCreds:
+      # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+      pushSecret: false
     # -- (map) Service account and AWS role for authentication to AWS Secrets Manager
     secretStoreServiceAccount:
       # -- (bool) Set true if deploying to AWS and want to use service account and IAM role instead of aws keys. Must provide role-arn.
@@ -69,6 +77,8 @@ global:
   # This should be the same as vpcname if you're doing an AWS deployment.
   # Currently this is being used to share ALB's if you have multiple namespaces in same cluster.
   environment: default
+  # -- (string) Kubernetes cluster name.
+  clusterName: default
   # -- (string) Hostname for the deployment.
   hostname: localhost
   # -- (string) ARN of the reverse proxy certificate.
@@ -123,12 +133,19 @@ global:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
-    dbCreate: false
+    createLocalK8sSecret: false
     clusterSecretStoreRef: ""
     # -- (bool) Will create a Kubernetes Secret for the slack webhook.
     createSlackWebhookSecret: false
     # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
     slackWebhookSecretName: ""
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
 
 # Dependancy Charts
 
@@ -163,6 +180,10 @@ aws-es-proxy:
 datareplicate:
   # -- (bool) Whether to deploy the datareplicate subchart.
   enabled: false
+
+embedding-management-service:
+  enabled: false
+
 
 etl:
   # -- (bool) Whether to deploy the etl subchart.
@@ -223,10 +244,19 @@ gen3-analysis:
   # -- (bool) Whether to deploy the gen3-analysis subchart.
   enabled: false
 
-# -- (map) Configurations for guppy chart.
-gen3-user-data-library:
-  # -- (bool) Whether to deploy the guppy subchart.
+data-upload-cron:
   enabled: false
+
+# -- (map) Configurations for gen3-user-data-library chart.
+gen3-user-data-library:
+  # -- (bool) Whether to deploy the gen3-user-data-library subchart.
+  enabled: false
+
+# -- (map) Configurations for gen3-workflow chart.
+gen3-workflow:
+  # -- (bool) Whether to deploy the gen3-workflow subchart.
+  enabled: false
+
 
 # -- (map) Configurations for guppy chart.
 guppy:
@@ -316,6 +346,14 @@ metadata:
   # -- (bool) Whether to deploy the metadata subchart.
   enabled: true
 
+ohdsi-atlas:
+  # -- (bool) Whether to deploy the ohdsi-atlas subchart.
+  enabled: false
+
+ohdsi-webapi:
+  # -- (bool) Whether to deploy the ohdsi-webapi subchart.
+  enabled: false
+
 orthanc:
   # -- (bool) Whether to deploy the orthanc subchart.
   enabled: false
@@ -387,12 +425,15 @@ access-backend:
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
+    tag: 16.6.0-debian-12-r2
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
 elasticsearch:
+  image: "quay.io/cdis/elasticsearch"
+  imageTag: "7.10.2"
   clusterName: gen3-elasticsearch
   maxUnavailable: 0
   singleNode: true

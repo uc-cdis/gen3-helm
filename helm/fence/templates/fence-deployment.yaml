@@ -37,6 +37,9 @@ spec:
         {{- include "fence.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       enableServiceLinks: false
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
@@ -72,11 +75,13 @@ spec:
           args:
             - "-c"
             - |
+              mkdir -p /fence/keys/key
+              cp /tmp/keys/readonly/jwt_private_key.pem /fence/keys/key/jwt_private_key.pem
               python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
-              bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
+              bash /fence/dockerrun.bash
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:

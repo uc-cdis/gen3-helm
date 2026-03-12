@@ -34,11 +34,15 @@ resources:
     requests:
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
   spark:
     # -- (map) The amount of resources that the container requests
     requests:
       # -- (string) The amount of memory requested
       memory: 128Mi
+      # -- (string) The amount of cpu requested
+      cpu: 10m
 
 
 esEndpoint: gen3-elasticsearch-master
@@ -137,7 +141,7 @@ etlMapping:
 # -- (map) Configuration options for es garbage cronjob.
 esGarbageCollect:
   # -- (bool) Whether to create es garbage collect cronjob.
-  enabled: false
+  enabled: true
   # -- (string) The cron schedule expression to use in the es garbage collect cronjob. Runs once a day by default.
   schedule: "0 0 * * *"
   # -- (string) To set a custom image for the es garbage collect cronjob. Default is the Gen3 Awshelper image.

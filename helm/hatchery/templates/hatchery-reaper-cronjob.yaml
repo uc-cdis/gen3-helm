@@ -8,6 +8,7 @@ metadata:
 spec:
   schedule: "{{ .Values.hatchery.reaper.schedule }}"
   suspend: {{ .Values.hatchery.reaper.suspendCronjob }}
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

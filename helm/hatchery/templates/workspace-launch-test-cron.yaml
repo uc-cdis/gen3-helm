@@ -1,11 +1,12 @@
 
-{{- if .Values.workspaceLaunchTest.enabled -}}
+{{- if .Values.workspaceLaunchTest.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: workspace-launch-test
 spec:
   schedule: {{ .Values.workspaceLaunchTest.schedule | quote }}
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

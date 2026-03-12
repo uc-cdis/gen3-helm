@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: fence-db-migrate-cronjob
+spec:
+  suspend: true
+  # Invalid schedule, feb 31st - we never want this to actually trigger itself. 
+  schedule: "0 0 31 2 *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            app: gen3job
+        spec:
+          shareProcessNamespace: true
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  preference:
+                    matchExpressions:
+                      - key: karpenter.sh/capacity-type
+                        operator: In
+                        values:
+                          - on-demand
+                - weight: 99
+                  preference:
+                    matchExpressions:
+                      - key: eks.amazonaws.com/capacityType
+                        operator: In
+                        values:
+                          - ONDEMAND
+          volumes:
+            {{- toYaml .Values.volumes | nindent 12 }}
+          containers:
+            - name: fence
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              livenessProbe:
+                httpGet:
+                  path: /_status
+                  port: http
+                initialDelaySeconds: 60
+                periodSeconds: 60
+                timeoutSeconds: 30
+              readinessProbe:
+                httpGet:
+                  path: /_status
+                  port: http
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
+                  cd /fence
+                  fence-create migrate
+              env:
+                {{- toYaml .Values.env | nindent 16 }}
+              volumeMounts:
+                {{- toYaml .Values.volumeMounts | nindent 16 }}  
+          restartPolicy: Never

@@ -1,8 +1,12 @@
-{{- if .Values.awsBucketReplicateJob.enabled -}}
+{{- if .Values.awsBucketReplicateJob.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: aws-bucket-replicate-job
+  {{- with .Values.replicateServiceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

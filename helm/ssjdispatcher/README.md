@@ -1,6 +1,6 @@
 # ssjdispatcher
 
-![Version: 0.1.33](https://img.shields.io/badge/Version-0.1.33-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 ssjdispatcher
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 ssjdispatcher
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.24 |
+| file://../common | common | 0.1.31 |
 
 ## Values
 
@@ -33,7 +33,7 @@ A Helm chart for gen3 ssjdispatcher
 | externalSecrets.createK8sSsjdispatcherSecret | string | `false` | Will create the Helm "fence-config" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.credsFile | string | `nil` | Will override the name of the aws secrets manager secret. Default is "credentials.json" |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| gen3Namespace | string | `"default"` | Namespace to deploy the job. |
+| gen3Namespace | string | `""` | Namespace to deploy the job. Defaults to .Release.Namespace |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -73,12 +73,16 @@ A Helm chart for gen3 ssjdispatcher
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/ssjdispatcher","tag":"2022.08"}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/ssjdispatcher"` | Docker repository. |
 | image.tag | string | `"2022.08"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| indexing | string | `"707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/indexs3client:2025.10"` | Image to use for the "indexing" job. |
+| indexing | string | `"quay.io/cdis/indexs3client:2025.12"` | Image to use for the "indexing" job. |
 | jobServiceAccount | map | `{"annotations":{}}` | Service account to use for ssj jobs. |
 | jobServiceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
@@ -104,7 +108,10 @@ A Helm chart for gen3 ssjdispatcher
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"ssjdispatcher-sa"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| ssjcreds | map | `{"jobName":"indexing","jobPassword":"replace_with_password","jobPattern":"s3://test-12345678901234-upload/*","jobRequestCpu":"500m","jobRequestMem":"0.5Gi","jobUrl":"http://indexd-service/index","jobUser":"ssj","metadataservicePassword":"replace_with_password","metadataserviceUrl":"http://revproxy-service/mds","metadataserviceUsername":"gateway","sqsUrl":"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"}` | Values for ssjdispatcher secret. |
+| ssjcreds | map | `{"awsAccessKeyId":null,"awsRegion":null,"awsSecretAccessKey":null,"jobName":"indexing","jobPassword":"replace_with_password","jobPattern":"s3://test-12345678901234-upload/*","jobRequestCpu":"500m","jobRequestMem":"0.5Gi","jobUrl":"http://indexd-service/index","jobUser":"ssj","metadataservicePassword":"replace_with_password","metadataserviceUrl":"http://revproxy-service/mds","metadataserviceUsername":"gateway","sqsUrl":"https://sqs.us-east-1.amazonaws.com/12345678901234/test-upload_data_upload"}` | Values for ssjdispatcher secret. |
+| ssjcreds.awsAccessKeyId | string | `nil` | AWS Access Key for user if not using IRSA. |
+| ssjcreds.awsRegion | string | `nil` | AWS region to use. |
+| ssjcreds.awsSecretAccessKey | string | `nil` | AWS Secret Access Key for user if not using IRSA. |
 | ssjcreds.jobName | string | `"indexing"` | Name of the ssj job. |
 | ssjcreds.jobPassword | string | `"replace_with_password"` | Password for the job. |
 | ssjcreds.jobPattern | string | `"s3://test-12345678901234-upload/*"` | URL upload pattern that will trigger an event in S3 to send a message to SQS. |

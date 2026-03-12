@@ -1,0 +1,150 @@
+{{ include "common.db_netpolicy" . }}
+
+---
+
+{{ include "common.ingress_netpolicy" . }}
+
+---
+
+{{ include "common.egress_netpolicy" . }}
+
+
+{{ if .Values.global.netPolicy.enabled }}
+
+{{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
+
+
+---
+# Gen3-workflow needs to allow ingress and egress from funnel workers in $jobsNamespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gen3-workflow-ingress-from-funnel-worker
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: gen3-workflow
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ $jobsNamespace }}
+        podSelector:
+          matchLabels:
+            app: funnel-worker
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-egress-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - gen3-workflow
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $jobsNamespace }}
+      podSelector:
+        matchLabels:
+          app: funnel-worker
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-egress-to-gen3workflow
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - gen3-workflow
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-ingress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - gen3-workflow
+---
+# Funnel needs to be able to access the Kube API to launch jobs in a different namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-to-kubeapi-egress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel
+  policyTypes:
+  - Egress
+  egress:
+  # Allow access to the Kubernetes API server in kube-system
+  - to: []
+    ports:
+      - protocol: TCP
+        port: 443
+---
+# Funnel workers need to be able to access DNS 
+# to interact with pods from different namespace
+# and the Kube API to create executor pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-to-dns-and-kubeapi-egress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: funnel-worker
+  egress:
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443  # Kubernetes API
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+  policyTypes:
+    - Egress
+{{- end }}

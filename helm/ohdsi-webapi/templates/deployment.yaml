@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ohdsi-webapi-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: ohdsi-webapi
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: ohdsi-webapi
+        dbohdsi: "yes"
+        dbomop-data: "yes"
+        internet: "yes"
+        public: "yes"
+    spec:
+      volumes:
+        - name: ohdsi-webapi-reverse-proxy-config
+          configMap:
+            name: ohdsi-webapi-reverse-proxy-config
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /WebAPI/info/
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /WebAPI/info/
+              port: 8080
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: ohdsi-webapi-config
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: host
+                  optional: false
+            - name: DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: username
+                  optional: false
+            - name: DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-webapi-dbcreds
+                  key: dbcreated
+                  optional: false
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://$(PGHOST):5432/$(PGDB)
+            - name: FLYWAY_DATASOURCE_URL
+              value: $(DATASOURCE_URL)
+            - name: FLYWAY_DATASOURCE_USERNAME
+              value: $(DATASOURCE_USERNAME)
+            - name: FLYWAY_DATASOURCE_PASSWORD
+              value: $(DATASOURCE_PASSWORD)
+            - name: SECURITY_DB_DATASOURCE_URL
+              value: $(DATASOURCE_URL)
+            - name: SECURITY_DB_DATASOURCE_USERNAME
+              value: $(DATASOURCE_USERNAME)
+            - name: SECURITY_DB_DATASOURCE_PASSWORD
+              value: $(DATASOURCE_PASSWORD)
+
+          resources:
+            requests:
+              memory: 1500Mi
+            limits:
+              memory: 4Gi
+        - name: ohdsi-webapi-reverse-proxy
+          image: "{{ .Values.nginx.repository }}:{{ .Values.nginx.tag }}"
+          ports:
+          - containerPort: 80
+          volumeMounts:
+            - name: ohdsi-webapi-reverse-proxy-config
+              readOnly: true
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 100Mi
+            limits:
+              memory: 500Mi
