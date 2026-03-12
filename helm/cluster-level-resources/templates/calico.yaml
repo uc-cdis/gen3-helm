@@ -33,6 +33,9 @@ spec:
                       role: default
             kubernetesProvider: EKS
             registry: quay.io/
+            tolerations:
+              - effect: NoExecute
+                operator: Exists          
       {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
