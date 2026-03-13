@@ -15,6 +15,7 @@ spec:
         metadata:
           labels:
             app: gen3job
+            app: {{ include "fence.name" . }}
         spec:
           serviceAccountName: fence-visa-update-job
           volumes:
