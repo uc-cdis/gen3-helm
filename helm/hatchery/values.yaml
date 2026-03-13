@@ -226,10 +226,10 @@ hatchery:
   # -- (list) Notebook configuration.
   containers:
     - target-port: 8888
-      cpu-limit: "1.0"
-      memory-limit: 2Gi
+      cpu-limit: "2"
+      memory-limit: 3Gi
       name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
-      image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+      image: quay.io/cdis/jupyter-superslim:2.1.0
       env:
         FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
       args:
@@ -249,7 +249,7 @@ hatchery:
         - "-c"
         - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
           ln -s /data /home/$IAM/pd/; true
-      user-uid: 1010
+      user-uid: 1000
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
