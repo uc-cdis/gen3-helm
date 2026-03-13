@@ -33,11 +33,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dicom-server | dicom-server | 0.1.26 |
 | file://../embedding-management-service | embedding-management-service | 0.1.4 |
 | file://../etl | etl | 0.1.21 |
-| file://../fence | fence | 0.1.69 |
-| file://../frontend-framework | frontend-framework | 0.1.21 |
-| file://../funnel | funnel | 0.1.2 |
-| file://../gen3-analysis | gen3-analysis | 0.1.6 |
-| file://../gen3-discovery-ai | gen3-discovery-ai | 0.1.0 |
 | file://../fence | fence | 0.1.70 |
 | file://../frontend-framework | frontend-framework | 0.1.22 |
 | file://../funnel | funnel | 0.1.9 |
@@ -126,6 +121,7 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
+| gen3-discovery-ai.enabled | bool | `false` | Whether to deploy the gen3 discovery ai subchart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |

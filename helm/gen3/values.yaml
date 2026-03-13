@@ -420,6 +420,10 @@ access-backend:
   # -- (bool) Whether to deploy the access backend subchart.
   enabled: false
 
+gen3-discovery-ai:
+  # -- (bool) Whether to deploy the gen3 discovery ai subchart.
+  enabled: false
+
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
