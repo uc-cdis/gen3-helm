@@ -16,9 +16,12 @@ spec:
         cidr: {{ . }}
   {{- end }}
   podSelector:
-    matchLabels: 
-      app: {{ .Chart.Name }}
-      app: gen3job
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - {{ .Chart.Name }}
+          - gen3job
   policyTypes:
   - Egress
   {{- end }}
