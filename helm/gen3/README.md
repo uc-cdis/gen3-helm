@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.9](https://img.shields.io/badge/Version-0.3.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.10](https://img.shields.io/badge/Version-0.3.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -41,7 +41,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.12 |
 | file://../gen3-workflow | gen3-workflow | 0.1.14 |
 | file://../guppy | guppy | 0.1.33 |
-| file://../hatchery | hatchery | 0.1.63 |
+| file://../hatchery | hatchery | 0.1.64 |
 | file://../indexd | indexd | 0.1.42 |
 | file://../manifestservice | manifestservice | 0.1.39 |
 | file://../metadata | metadata | 0.1.41 |
@@ -165,8 +165,8 @@ Helm chart to deploy Gen3 Data Commons
 | global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
 | global.metricsEnabled | bool | `true` |  |
-| global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
-| global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
+| global.netPolicy | bool | `{"dbSubnets":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
+| global.netPolicy.dbSubnets | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |

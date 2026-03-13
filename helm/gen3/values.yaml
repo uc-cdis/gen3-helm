@@ -114,7 +114,7 @@ global:
     enabled: false
 
     # -- (array) A CIDR range representing a database subnet, that services with a database need access to
-    dbSubnet: ""
+    dbSubnets: ""
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
