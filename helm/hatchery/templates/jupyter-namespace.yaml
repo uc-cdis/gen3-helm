@@ -65,14 +65,14 @@ spec:
     - from:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: {{ include "hatchery.fullname" . }}
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
         podSelector:
           matchLabels:
             app: "hatchery"
     - from:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: {{ include "hatchery.fullname" . }}
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
         podSelector:
           matchLabels:
             app: "ambassador"
