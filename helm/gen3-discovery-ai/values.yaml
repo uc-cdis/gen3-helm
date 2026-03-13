@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 llmBackend:
-  google: 
+  google:
     enabled: true
     adc: |-
       {}
@@ -48,7 +48,7 @@ global:
     deploy: false
     # -- (string) Will deploy a separate External Secret Store for this service.
     separateSecretStore: false
-  
+
     createLocalK8sSecret: false
 
   metricsEnabled: true
