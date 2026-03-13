@@ -21,7 +21,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:
@@ -157,7 +156,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:
@@ -293,7 +291,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:
@@ -429,7 +426,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:
@@ -571,7 +567,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:
@@ -706,7 +701,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           affinity:
             nodeAffinity:

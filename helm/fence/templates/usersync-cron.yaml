@@ -27,7 +27,6 @@ spec:
         metadata:
           labels:
             app: gen3job
-            app: {{ include "fence.name" . }}
         spec:
           dnsConfig:
             options:

@@ -18,6 +18,7 @@ spec:
   podSelector:
     matchLabels: 
       app: {{ .Chart.Name }}
+      app: gen3job
   policyTypes:
   - Egress
   {{- end }}

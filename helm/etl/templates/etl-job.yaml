@@ -17,7 +17,6 @@ spec:
           {{- end }}
           labels:
             app: gen3job
-            app: sheepdog
         spec:
           shareProcessNamespace: true
           affinity:
