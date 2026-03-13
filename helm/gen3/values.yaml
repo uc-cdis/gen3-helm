@@ -97,7 +97,7 @@ global:
   workspaceTimeoutInMinutes: 480
   maintenanceMode: "off"
   dataUploadBucket:
-  # fenceURL:
+  fenceURL: "http://fence-service"
   # arboristURL:
   # indexdURL:
   # workspaceURL:
@@ -112,9 +112,8 @@ global:
   netPolicy:
     # -- (bool) Whether network policies are enabled
     enabled: false
-
     # -- (array) A CIDR range representing a database subnet, that services with a database need access to
-    dbSubnet: ""
+    dbSubnets: ""
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -293,17 +292,11 @@ hatchery:
         - "/bin/sh"
         - root
     containers:
-      # -- (int) port to proxy traffic to in docker contaniner
       - target-port: 8888
-        # -- (string) cpu limit of workspace container
-        cpu-limit: "1.0"
-        # -- (string) memory limit of workspace container
-        memory-limit: 2Gi
-        # -- (string) name of workspace
+        cpu-limit: "2"
+        memory-limit: 3Gi
         name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
-        # -- (string) docker image for workspace
-        image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
-        # -- environment variables for workspace container
+        image: quay.io/cdis/jupyter-superslim:2.1.0
         env:
           FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
         args:

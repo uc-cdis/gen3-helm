@@ -226,10 +226,10 @@ hatchery:
   # -- (list) Notebook configuration.
   containers:
     - target-port: 8888
-      cpu-limit: "1.0"
-      memory-limit: 2Gi
+      cpu-limit: "2"
+      memory-limit: 3Gi
       name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
-      image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+      image: quay.io/cdis/jupyter-superslim:2.1.0
       env:
         FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
       args:
