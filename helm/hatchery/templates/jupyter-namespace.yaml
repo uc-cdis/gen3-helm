@@ -97,4 +97,24 @@ spec:
             userhelper: "yes"
   policyTypes:
     - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-jupyter-namespace
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - ambassador
+          - hatchery
+  policyTypes:
+    - Egress
+  egress:
+      - to:
+          - namespaceSelector:
+              matchLabels:
+                name: "{{ include "hatchery.jupyterNamespace" . }}"
 {{- end }}
