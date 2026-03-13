@@ -112,7 +112,6 @@ global:
   netPolicy:
     # -- (bool) Whether network policies are enabled
     enabled: false
-
     # -- (array) A CIDR range representing a database subnet, that services with a database need access to
     dbSubnets: ""
   # -- (int) Number of dispatcher jobs.

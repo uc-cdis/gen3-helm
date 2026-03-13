@@ -10,10 +10,26 @@ metadata:
   name: {{ .Chart.Name }}-db-netpolicy
 spec:
   egress:
+  {{- if .Values.global.dev }}
+  - to:
+    - podSelector:
+        matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+              - "postgresql"
+    - podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - "gen3-elasticsearch-master"
+  {{- else }}
   {{- range .Values.global.netPolicy.dbSubnets }}
   - to:
     - ipBlock:
         cidr: {{ . }}
+  {{- end }}
   {{- end }}
   podSelector:
     matchExpressions:
