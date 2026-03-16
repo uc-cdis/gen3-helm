@@ -233,12 +233,12 @@ hatchery:
       env:
         FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
       args:
-        - "--NotebookApp.base_url=/lw-workspace/proxy/"
-        - "--NotebookApp.default_url=/lab"
-        - "--NotebookApp.password=''"
-        - "--NotebookApp.token=''"
-        - "--NotebookApp.shutdown_no_activity_timeout=5400"
-        - "--NotebookApp.quit_button=False"
+        - "--JupyterNotebookApp.base_url=/lw-workspace/proxy/"
+        - "--JupyterNotebookApp.default_url=/lab"
+        - "--JupyterNotebookApp.password=''"
+        - "--JupyterNotebookApp.token=''"
+        - "--JupyterNotebookApp.shutdown_no_activity_timeout=5400"
+        - "--JupyterNotebookApp.quit_button=False"
       command:
         - start-notebook.sh
       path-rewrite: "/lw-workspace/proxy/"
