@@ -97,7 +97,7 @@ global:
   workspaceTimeoutInMinutes: 480
   maintenanceMode: "off"
   dataUploadBucket:
-  fenceURL: "http://fence-service"
+  # fenceURL: "http://fence-service"
   # arboristURL:
   # indexdURL:
   # workspaceURL:
