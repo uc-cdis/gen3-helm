@@ -249,7 +249,7 @@ hatchery:
         - "-c"
         - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
           ln -s /data /home/$IAM/pd/; true
-      user-uid: 1000
+      user-uid: 1010
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
