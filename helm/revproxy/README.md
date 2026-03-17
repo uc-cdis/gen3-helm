@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.53](https://img.shields.io/badge/Version-0.1.53-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.54](https://img.shields.io/badge/Version-0.1.54-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -79,8 +79,6 @@ A Helm chart for gen3 revproxy
 | netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
-| nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
-| nginx.user | string | `"nginx"` |  |
 | nodeSelector | map | `{}` | Node selector labels. |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |

@@ -346,16 +346,16 @@ spec:
               subPath: gitops.json
             - name: config-volume
               mountPath: /data-portal/custom/
-            {{-  else }}
-            - name: "config-volume"
-              mountPath: "/data-portal/data/config/gitops.json"
-              subPath: "gitops.json"
             - name: "nginx-config"
               mountPath: "/etc/nginx/conf.d/nginx.conf"
               subPath: "nginx.conf"
             - name: "nginx-config"
               mountPath: "/etc/nginx/nginx.conf"
               subPath: "main"
+            {{-  else }}
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
             - name: "config-volume"
               mountPath: "/data-portal/custom/logo/gitops-logo.png"
               subPath: "gitops-logo.png"
