@@ -23,6 +23,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.44
 =======
 version: 0.1.35
@@ -48,6 +49,9 @@ version: 0.1.41
 =======
 version: 0.1.42
 >>>>>>> d13e30f7 (adding db override name for external secrets to ohdsi chart. (#530))
+=======
+version: 0.1.43
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

@@ -20,6 +20,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.22
 =======
 version: 0.1.17
@@ -36,6 +37,9 @@ version: 0.1.20
 =======
 version: 0.1.21
 >>>>>>> 7fff5bc5 (Updating ES Garbage Cronjob to Always be Enabled. (#494))
+=======
+version: 0.1.22
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

@@ -21,6 +21,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.28
 =======
 version: 0.1.21
@@ -40,6 +41,9 @@ version: 0.1.25
 =======
 version: 0.1.26
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+version: 0.1.27
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

@@ -12,6 +12,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.18
 =======
     version: 0.1.11
@@ -56,21 +57,25 @@ dependencies:
 =======
     version: 0.1.17
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.18
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
-    version: 0.1.34
+    version: 0.1.35
     repository: "file://../ambassador"
     condition: ambassador.enabled
   - name: arborist
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -121,6 +126,9 @@ dependencies:
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 =======
     version: 0.1.38
+=======
+    version: 0.1.39
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -133,6 +141,7 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -228,10 +237,13 @@ dependencies:
 =======
     version: 0.1.21
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.22
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
@@ -298,6 +310,7 @@ dependencies:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.22
 =======
     version: 0.1.17
@@ -314,6 +327,9 @@ dependencies:
 =======
     version: 0.1.21
 >>>>>>> 7fff5bc5 (Updating ES Garbage Cronjob to Always be Enabled. (#494))
+=======
+    version: 0.1.22
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -487,7 +503,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.70
+    version: 0.1.71
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -496,11 +512,15 @@ dependencies:
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
 <<<<<<< HEAD
+<<<<<<< HEAD
     version: 0.1.11
 >>>>>>> df289989 (MIDRC-1193 Postgres DB for Funnel (#503))
 =======
     version: 0.1.12
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.13
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
@@ -508,38 +528,39 @@ dependencies:
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.33
+    version: 0.1.34
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.63
+    version: 0.1.64
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.42
+    version: 0.1.43
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.41
+    version: 0.1.42
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.55
+    version: 0.1.56
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
-    version: 0.1.31
+    version: 0.1.32
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -566,6 +587,9 @@ dependencies:
 =======
     version: 0.1.53
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.54
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -577,6 +601,7 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -625,13 +650,17 @@ dependencies:
 =======
     version: 0.1.42
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.43
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.42
+    version: 0.1.43
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -676,6 +705,9 @@ dependencies:
 =======
     version: 0.1.37
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.38
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -683,6 +715,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -701,14 +734,17 @@ dependencies:
 =======
     version: 0.1.26
 >>>>>>> 60329e41 (Allow overriding bucket name for manifestservice (#522))
+=======
+    version: 0.1.27
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.10
+    version: 0.1.11
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.11
+    version: 0.1.12
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis

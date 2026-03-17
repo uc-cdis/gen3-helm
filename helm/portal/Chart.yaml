@@ -24,6 +24,7 @@ type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.1.56
 =======
 version: 0.1.47
@@ -52,6 +53,9 @@ version: 0.1.54
 =======
 version: 0.1.55
 >>>>>>> 40b4aaea (lint fix)
+=======
+version: 0.1.56
+>>>>>>> de72d53d (Refactor FENCE_URL configuration in deployment templates for consistency)
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
