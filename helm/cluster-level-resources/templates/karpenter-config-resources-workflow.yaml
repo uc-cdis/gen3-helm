@@ -36,7 +36,7 @@ spec:
     {{- if ne (index .Values "karpenter-crds" "workflow" "sgSelector") "" }}
       karpenter.sh/discovery: {{ index .Values "karpenter-crds" "workflow" "sgSelector" }}
     {{- else }}
-      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-workflow
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
     {{- end }}
 
   subnetSelectorTerms:

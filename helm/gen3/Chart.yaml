@@ -136,7 +136,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.26
+    version: 0.1.27
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
