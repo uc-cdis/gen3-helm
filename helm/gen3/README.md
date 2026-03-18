@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.10](https://img.shields.io/badge/Version-0.3.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.11](https://img.shields.io/badge/Version-0.3.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -50,7 +50,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.1 |
 | file://../ohif-viewer | ohif-viewer | 0.1.10 |
 | file://../orthanc | orthanc | 0.1.11 |
-| file://../peregrine | peregrine | 0.1.39 |
+| file://../peregrine | peregrine | 0.1.40 |
 | file://../portal | portal | 0.1.55 |
 | file://../requestor | requestor | 0.1.31 |
 | file://../revproxy | revproxy | 0.1.54 |
@@ -158,7 +158,6 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
-| global.fenceURL | string | `"http://fence-service"` |  |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
@@ -210,7 +209,7 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.containers[0].ready-probe | string | `"/lw-workspace/proxy/"` |  |
 | hatchery.hatchery.containers[0].target-port | int | `8888` |  |
 | hatchery.hatchery.containers[0].use-tls | string | `"false"` |  |
-| hatchery.hatchery.containers[0].user-uid | int | `1000` |  |
+| hatchery.hatchery.containers[0].user-uid | int | `1010` |  |
 | hatchery.hatchery.containers[0].user-volume-location | string | `"/home/jovyan/pd"` |  |
 | hatchery.hatchery.reaper.enabled | bool | `true` |  |
 | hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
