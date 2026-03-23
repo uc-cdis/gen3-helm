@@ -1,6 +1,6 @@
 # fence
 
-![Version: 0.1.71](https://img.shields.io/badge/Version-0.1.71-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.72](https://img.shields.io/badge/Version-0.1.72-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Fence
 
@@ -201,7 +201,7 @@ A Helm chart for gen3 Fence
 | secrets.awsSecretAccessKey | str | `nil` | AWS access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"fence-sa"}` | Service account to use or create. |

@@ -49,20 +49,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 80
+          - containerPort: {{ .Values.service.targetPort }}
             name: http
             protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: {{ .Values.service.targetPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

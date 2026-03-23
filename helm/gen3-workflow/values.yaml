@@ -138,6 +138,7 @@ service:
   type: ClusterIP
   # -- (int) Port on which the service is exposed
   port: 80
+  targetPort: 8000
 
 # -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
 netPolicy:

@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -106,7 +106,7 @@ A Helm chart for Kubernetes
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
+| service | map | `{"port":80,"targetPort":8000,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":"gen3-workflow-sa"}` | Service account to use or create. |
