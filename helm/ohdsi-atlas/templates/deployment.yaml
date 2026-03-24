@@ -69,7 +69,7 @@ spec:
               path: /
               port: http
           ports:
-          - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: {{ .Values.service.targetPort }}
               name: http
           volumeMounts:
             - name: ohdsi-atlas-config
