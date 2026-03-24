@@ -8,7 +8,7 @@ A Helm chart for gen3 cedar wrapper
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.31 |
+| file://../common | common | 0.1.34 |
 
 ## Values
 
