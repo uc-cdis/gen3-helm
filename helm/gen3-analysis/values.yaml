@@ -221,3 +221,10 @@ s3DataMount:
     repository: quay.io/cdis/awshelper
     tag: "master"
     pullPolicy: IfNotPresent
+
+
+
+redis:
+  sidecar:
+    enabled: false
+  url: ""  # set to "redis://localhost:6379" when sidecar is enabled

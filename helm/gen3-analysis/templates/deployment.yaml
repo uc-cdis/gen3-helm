@@ -87,6 +87,13 @@ spec:
             - name: GENE_EXPRESSION_SQLITE_PATH
               value: {{ .Values.geneExpressionSQLitePath | quote }}
             {{- end }}
+            {{- if .Values.redis.sidecar.enabled }}
+              name: REDIS_URL
+              value: "redis://localhost:6379"
+            {{- else if .Values.redis.url }}
+              name: REDIS_URL
+              value: {{ .Values.redis.url | quote }}
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           livenessProbe:
             httpGet:
@@ -113,3 +120,14 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- if .Values.redis.sidecar.enabled }}
+        - name: redis
+          image: redis:7-alpine
+          args: [ "--save", "" ]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+        {{- end }}

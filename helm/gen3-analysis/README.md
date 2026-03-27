@@ -1,6 +1,6 @@
 # gen3-analysis
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 gen3-analysis Service
 
@@ -78,6 +78,8 @@ A Helm chart for gen3 gen3-analysis Service
 | image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| redis.sidecar.enabled | bool | `false` |  |
+| redis.url | string | `""` |  |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
