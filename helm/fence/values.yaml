@@ -342,6 +342,12 @@ env:
 
 # -- (list) Volumes to attach to the container.
 volumes:
+  - name: config-workdir
+    emptyDir: {}
+
+  - name: fence-keys-workdir
+    emptyDir: {}
+
   - name: old-config-volume
     secret:
       secretName: "fence-secret"
@@ -385,10 +391,14 @@ volumeMounts:
     readOnly: true
     mountPath: /var/run/fence-secrets/fence-config-secret.yaml
     subPath: fence-config.yaml
+  - name: config-workdir
+    mountPath: /var/www/fence
   - name: fence-jwt-keys
     readOnly: true
     mountPath: /var/run/fence-secrets/jwt_private_key.pem
     subPath: jwt_private_key.pem
+  - name: fence-keys-workdir
+    mountPath: /fence/keys/key
   - name: "old-config-volume"
     readOnly: true
     mountPath: "/var/www/fence/local_settings.py"

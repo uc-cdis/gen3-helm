@@ -6,7 +6,7 @@ update: ## Update from the local helm chart repository
 local: DEPLOY=local
 local: local-context deploy ## Deploy the Local commons
 local-context: change-context # Change to the Local context
-local local-context: CONTEXT=rancher-desktop
+local local-context: CONTEXT=kind-kind-multi-node
 
 development: DEPLOY=development
 development: development-context deploy ## Deploy the Development commons
@@ -82,7 +82,7 @@ create-venv:
 clean: check-clean ## Delete all existing deployments, configmaps, and secrets
 	@$(eval ACTUAL=$(shell kubectl config current-context))
 	@$(eval DEPLOY=$(shell case $(ACTUAL) in \
-		(rancher-desktop) echo "local";; \
+		(kind-kind-multi-node) echo "local";; \
 		(*development) 		echo "development";; \
 		(*staging) 				echo "staging";; \
 		(*production) 		echo "production";; \
