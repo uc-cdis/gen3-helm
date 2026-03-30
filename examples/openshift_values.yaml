@@ -28,10 +28,6 @@ fence:
   enabled: true
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 300Mi
 
 cedar:
   enabled: false
@@ -67,10 +63,6 @@ hatchery:
   enabled: true
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
 
 indexd:
   enabled: true
@@ -106,19 +98,11 @@ peregrine:
   enabled: true
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
 
 portal:
   enabled: true
   service:
     targetPort: 80
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
   image:
       repository: quay.io/cdis/data-portal-prebuilt
       tag: dev
@@ -130,10 +114,6 @@ requestor:
 
 revproxy:
   enabled: true
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
   nginx:
     resolver: "dns-default.openshift-dns.svc.cluster.local"
   # -- (map) Configuration for OpenShift Route.
@@ -205,10 +185,6 @@ postgresql:
     persistence:
       # -- (bool) Option to persist the dbs data.
       enabled: false
-    resources:
-      requests:
-        cpu: 100m
-        memory: 56Mi
     podSecurityContext:
       enabled: false
       fsGroup: 1000660001
@@ -230,8 +206,6 @@ elasticsearch:
   esConfig:
     elasticsearch.yml: |
       # Here we can add elasticsearch config
-  resources:
-    requests:
   podSecurityContext:
     enabled: false
     fsGroup: 1000
