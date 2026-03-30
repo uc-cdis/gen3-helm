@@ -26,7 +26,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-es-proxy | aws-es-proxy | 0.1.39 |
 | file://../cedar | cedar | 0.1.22 |
 | file://../cohort-middleware | cohort-middleware | 0.1.20 |
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.35 |
 | file://../dashboard | dashboard | 0.1.17 |
 | file://../data-upload-cron | data-upload-cron | 0.1.4 |
 | file://../datareplicate | datareplicate | 0.1.20 |

@@ -8,7 +8,7 @@ A Helm chart for the data upload cronjob
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.35 |
 
 ## Values
 

@@ -268,8 +268,7 @@ serviceAccount:
 podAnnotations: {}
 
 # -- (map) Security context for the pod
-podSecurityContext:
-  fsGroup: 101
+podSecurityContext: {}
 
 # -- (map) Security context for the containers in the pod
 securityContext:

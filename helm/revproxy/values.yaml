@@ -274,6 +274,28 @@ extraServices:
 nginx:
   user: nginx
   resolver: kube-dns.kube-system.svc.cluster.local
+  pidFile: /var/run/nginx.pid
 
 # -- (bool) Whether to enable robots.txt generation and serving.
 enableRobotsTxt: false
+
+# -- (map) Configuration for OpenShift Route.
+openshiftRoute:
+  # -- (bool) Whether to create an OpenShift Route
+  enabled: false
+  # -- (map) Annotations to add to the Route.
+  annotations: {}
+  # -- (string) Hostname for the Route. Leave empty to let OpenShift auto-generate
+  host: ""
+  # -- (string) Path for the Route.
+  path: "/"
+  # -- (string) Target port for the Route.
+  targetPort: "http"
+  # -- (map) TLS configuration for the Route.
+  tls:
+    # -- (string) Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt".
+    termination: "edge"
+    # -- (string) Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect".
+    insecureEdgeTerminationPolicy: "Redirect"
+  # -- (string) Wildcard policy for the Route. Valid options are "None" and "Subdomain".
+  wildcardPolicy: "None"

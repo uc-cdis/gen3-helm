@@ -8,7 +8,7 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.35 |
 
 ## Values
 
@@ -79,9 +79,20 @@ A Helm chart for gen3 revproxy
 | netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
+| nginx.pidFile | string | `"/var/run/nginx.pid"` |  |
 | nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
 | nginx.user | string | `"nginx"` |  |
 | nodeSelector | map | `{}` | Node selector labels. |
+| openshiftRoute | map | `{"annotations":{},"enabled":false,"host":"","path":"/","targetPort":"http","tls":{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"},"wildcardPolicy":"None"}` | Configuration for OpenShift Route. |
+| openshiftRoute.annotations | map | `{}` | Annotations to add to the Route. |
+| openshiftRoute.enabled | bool | `false` | Whether to create an OpenShift Route |
+| openshiftRoute.host | string | `""` | Hostname for the Route. Leave empty to let OpenShift auto-generate |
+| openshiftRoute.path | string | `"/"` | Path for the Route. |
+| openshiftRoute.targetPort | string | `"http"` | Target port for the Route. |
+| openshiftRoute.tls | map | `{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"}` | TLS configuration for the Route. |
+| openshiftRoute.tls.insecureEdgeTerminationPolicy | string | `"Redirect"` | Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect". |
+| openshiftRoute.tls.termination | string | `"edge"` | Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt". |
+| openshiftRoute.wildcardPolicy | string | `"None"` | Wildcard policy for the Route. Valid options are "None" and "Subdomain". |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Pod-level security context. |

@@ -8,7 +8,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.35 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -78,6 +78,7 @@ A Helm chart for gen3 workspace token service
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
 | oidc_client_secret | string | `nil` | Secret for the OIDC client. |
 | oidc_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
+| oidc_job_openshift | bool | `false` | Whether to run the OpenShift version of the OIDC job. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |
