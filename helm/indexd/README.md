@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -17,6 +17,9 @@ A Helm chart for gen3 indexd
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
+| cloudProviderMap.az | string | `"azure"` |  |
+| cloudProviderMap.gs | string | `"gcp"` |  |
+| cloudProviderMap.s3 | string | `"aws"` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | defaultPrefix | string | `"PREFIX/"` | default prefix for indexd - must end in slash |

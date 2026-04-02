@@ -84,4 +84,14 @@ else:
         )
     )
 
+cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
+if cloud_provider_map:
+    CONFIG["CLOUD_PROVIDER_MAP"] = json.loads(cloud_provider_map)
+else:
+    CONFIG["CLOUD_PROVIDER_MAP"] = {
+        "s3": "aws",
+        "gs": "gcp",
+        "az": "azure"
+    }
+
 settings = {"config": CONFIG, "auth": AUTH}
