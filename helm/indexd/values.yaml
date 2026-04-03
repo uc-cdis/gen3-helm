@@ -284,6 +284,7 @@ uwsgi:
 # -- (string) default prefix for indexd - must end in slash
 defaultPrefix: "PREFIX/"
 useSingleTable: "False"
+fenceUrl: "http://fence-service/" 
 cloudProviderMap:
   s3: "aws"
   gs: "gcp"
