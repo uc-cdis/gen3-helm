@@ -7,3 +7,28 @@ type: Opaque
 data:
     jwt_private_key.pem: {{ include "getOrCreatePrivateKey" . }}
 {{- end }}
+---
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: fence-jwt-keys
+spec:
+  updatePolicy: IfNotExists
+  refreshInterval: 2m
+  secretStoreRefs:
+    {{- if ne .Values.global.externalSecrets.clusterSecretStoreRef "" }}
+    - name: {{ .Values.global.externalSecrets.clusterSecretStoreRef }}
+      kind: ClusterSecretStore
+    {{- else }}
+    - name: {{include "common.SecretStore" .}}
+      kind: SecretStore
+    {{- end }}
+  selector:
+    secret:
+      name: fence-jwt-keys
+  data:
+    - match:
+        remoteRef:
+          remoteKey: {{include "fence-jwt-keys" .}}
+{{- end }}

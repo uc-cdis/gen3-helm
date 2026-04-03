@@ -136,7 +136,6 @@ service:
 
 port: 3000
 
-
 customConfig:
   enabled: false
   # -- (string) directory to pull to the configuration from (e.g. gen3.datacommons.io/gen3ff)
@@ -147,7 +146,12 @@ customConfig:
   branch: main
 
 # -- (list) List of environment variables to add to the deployment.
-env: []
+env:
+  DATADOG_APPLICATION_ID: ""
+  DATADOG_CLIENT_TOKEN: ""
+  DATACOMMONS: ""
+  HOSTNAME: "0.0.0.0"
+  PORT: "3000"
 
 # -- (map) Node selector to apply to the pod
 nodeSelector: {}
