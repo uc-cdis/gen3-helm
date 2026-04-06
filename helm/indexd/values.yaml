@@ -284,6 +284,11 @@ uwsgi:
 # -- (string) default prefix for indexd - must end in slash
 defaultPrefix: "PREFIX/"
 useSingleTable: "False"
+fenceUrl: "http://fence-service/" 
+cloudProviderMap:
+  s3: "aws"
+  gs: "gcp"
+  az: "azure"
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

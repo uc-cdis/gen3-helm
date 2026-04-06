@@ -88,6 +88,10 @@ spec:
               value: {{ .Values.defaultPrefix }}
             - name: USE_SINGLE_TABLE
               value: {{ .Values.useSingleTable | quote }}
+            - name: FENCE_SERVICE_URL
+              value: {{ .Values.fenceUrl }}
+            - name: CLOUD_PROVIDER_MAP
+              value: {{ .Values.cloudProviderMap | toJson | quote }}
             {{- toYaml .Values.env | nindent 12  }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
