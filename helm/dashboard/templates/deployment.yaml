@@ -25,6 +25,7 @@ spec:
         s3: "yes"
         netvpc: "yes"
         app: "dashboard"
+        internet: "yes"
         {{- include "dashboard.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
