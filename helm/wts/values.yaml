@@ -162,6 +162,13 @@ oidc_client_secret:
 # -- (bool) Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created.
 oidc_job_enabled: true
 
+oidc_job:
+  fence:
+    image:
+      repository: quay.io/cdis/fence
+      tag: master
+    resources: {}
+
 # -- (map) Service account to use or create.
 serviceAccount:
   # -- (bool) Specifies whether a service account should be created.
@@ -238,24 +245,7 @@ secrets:
     #       params:
     #         idp:
 
-  # wts-g3auto:
-  #   appcreds.json: |
-  #     {
-  #       "wts_base_url": "https://HOSTNAME.REPLACE/wts/",
-  #       "encryption_key": "ENCRYPTION KEY HERE",
-  #       "secret_key": "SECRET KEY HERE",
-  #       "fence_base_url": "https://HOSTNAME.REPLACE/user/",
-  #       "oidc_client_id": "OIDC_CLIENT_ID.REPLACE",
-  #       "oidc_client_sucrut": "OIDC_CLIENT_SECRET.REPLACE",
-  #       "external_oidc": []
-  #     }
-  #   dbcreds.json: |
-  #     {
-  #       "db_host": "FENCE_DB_HOST.REPLACE",
-  #       "db_username": "wts_default",
-  #       "db_passwurd": "WTS_DB_PWD.REPLACE",
-  #       "db_database": "wts_default"
-  #     }
+  
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

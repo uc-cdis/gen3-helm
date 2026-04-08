@@ -28,11 +28,13 @@ spec:
           args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
       containers:
         - name: fence-client
-          # TODO: Make this configurable
-          image: "quay.io/cdis/fence:master"
+          # Pulling repository and tag from oidc_job.fence.image
+          image: "{{ .Values.oidc_job.fence.image.repository }}:{{ .Values.oidc_job.fence.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # TODO: ADD RESOURCES
-          # resources:
+          {{- with .Values.oidc_job.fence.resources }}
+          resources:
+            {{- toYaml . | nindent 6 }}
+          {{- end }}
           command: ["/bin/bash"]
           args:
             - "-c"
