@@ -70,9 +70,9 @@ spec:
                     key: auth_namespace
                     optional: true
             volumeMounts:
-            - name: cred-volume
+            - name: "cred-volume"
               mountPath: "/root/.aws/credentials"
-              subPath: credentials
+              subPath: "credentials"
             - name: "setting-volume"
               mountPath: "/secrets/dcf_dataservice_settings.py"
               subPath: "dcf-dataservice-settings-secrets"
