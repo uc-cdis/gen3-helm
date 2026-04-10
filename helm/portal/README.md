@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.55](https://img.shields.io/badge/Version-0.1.55-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.56](https://img.shields.io/badge/Version-0.1.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 data-portal
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.33 |
+| file://../common | common | 0.1.34 |
 
 ## Values
 
@@ -88,13 +88,34 @@ A Helm chart for gen3 data-portal
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
-| mountpointCacheBucketName | string | `""` |  |
-| mountpointCacheEnabled | bool | `false` | Whether to enable the v2 portal where it is built in s3 using mountpoint. Requires mountpoint to be enabled in the cluster. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod |
 | podSecurityContext | map | `{}` | Security context to apply to the pod |
+| portalBuild.enabled | bool | `false` |  |
+| portalBuild.extraction.stripComponents | bool | `true` |  |
+| portalBuild.hotReapply | bool | `false` |  |
+| portalBuild.images.alpine | string | `"alpine:3.20"` |  |
+| portalBuild.images.builder | string | `"quay.io/cdis/data-portal:master"` |  |
+| portalBuild.images.kubectl | string | `"bitnami/kubectl:latest"` |  |
+| portalBuild.images.nginx | string | `"nginx:alpine"` |  |
+| portalBuild.job.lockTtlSeconds | int | `1800` |  |
+| portalBuild.job.ttlSecondsAfterFinished | int | `600` |  |
+| portalBuild.rbac.enabled | bool | `true` |  |
+| portalBuild.s3csi.bucketName | string | `""` |  |
+| portalBuild.s3csi.cache.emptyDirSizeLimit | string | `"500Mi"` |  |
+| portalBuild.s3csi.createPV | bool | `false` |  |
+| portalBuild.s3csi.enabled | bool | `true` |  |
+| portalBuild.s3csi.kmsKeyArn | string | `""` |  |
+| portalBuild.s3csi.mountOptions[0] | string | `"allow-delete"` |  |
+| portalBuild.s3csi.mountOptions[1] | string | `"region us-east-1"` |  |
+| portalBuild.s3csi.pvName | string | `"webpack-pv"` |  |
+| portalBuild.s3csi.pvcName | string | `"webpack-pvc"` |  |
+| portalBuild.s3csi.size | string | `"1Gi"` |  |
+| portalBuild.s3csi.volumeHandle | string | `""` |  |
+| portalBuild.serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `""` |  |
+| portalBuild.serviceAccount.name | string | `""` |  |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"requests":{"memory":"4096Mi"}}` | Resource requests and limits for the containers in the pod |

@@ -147,4 +147,44 @@ spec:
           port: 53
   policyTypes:
     - Egress
+
+---
+# Funnel workers need to be able to access the database
+# which would be a local postgresql instance in dev 
+# and the database subnets that reach AWS RDS in prod
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-worker-db-netpolicy
+  namespace: {{ $jobsNamespace }}
+spec:
+  egress:
+  {{- if .Values.global.dev }}
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+      podSelector:
+        matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+              - "postgresql"
+  {{- else }}
+  {{- range .Values.global.netPolicy.dbSubnets }}
+  - to:
+    - ipBlock:
+        cidr: {{ . }}
+  {{- end }}
+  {{- end }}
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - funnel-worker
+  policyTypes:
+  - Egress
+
 {{- end }}
+

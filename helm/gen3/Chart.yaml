@@ -41,14 +41,14 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.33
+    version: 0.1.34
     repository: file://../common
   - name: dashboard
     version: 0.1.16
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.1.17
+    version: 0.1.19
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -60,19 +60,19 @@ dependencies:
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
-    version: 0.1.21
+    version: 0.1.22
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
-    version: 0.1.22
+    version: 0.1.27
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.70
+    version: 0.1.73
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.7
+    version: 0.1.13
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
@@ -80,7 +80,7 @@ dependencies:
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
-    version: 0.1.14
+    version: 0.1.15
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
@@ -88,7 +88,7 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.63
+    version: 0.1.65
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -104,11 +104,11 @@ dependencies:
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../peregrine"
     condition: peregrine.enabled
   - name: portal
-    version: 0.1.55
+    version: 0.1.56
     repository: "file://../portal"
     condition: portal.enabled
   - name: requestor
@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.53
+    version: 0.1.55
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -140,7 +140,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.26
+    version: 0.1.27
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
@@ -197,7 +197,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.7
+version: 0.3.26
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

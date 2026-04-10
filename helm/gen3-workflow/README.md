@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.33 |
+| file://../common | common | 0.1.34 |
 
 ## Values
 
@@ -76,7 +76,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
-| global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
+| global.netPolicy | map | `{"dbSubnets":[],"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |

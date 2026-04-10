@@ -43,6 +43,7 @@ global:
   netPolicy:
     # -- (bool) Whether network policies are enabled
     enabled: false
+    dbSubnets: []
   # -- (map) Karpenter topology spread configuration.
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
