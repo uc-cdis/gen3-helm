@@ -18,7 +18,15 @@ kind: NetworkPolicy
 metadata:
   name: dev-postgres-egress-netpolicy
 spec:
-  podSelector: {}
+  - namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: {{ .Release.Namespace }}
+  - namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: {{ printf "workflow-pods-%s" .Release.Namespace }}
+    podSelector:
+      matchLabels:
+        app: funnel-worker
   policyTypes:
     - Egress
   egress:
