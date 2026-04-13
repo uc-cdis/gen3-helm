@@ -48,7 +48,7 @@ dependencies:
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.1.19
+    version: 0.1.20
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
