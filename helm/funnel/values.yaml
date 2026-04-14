@@ -48,7 +48,7 @@ global:
   # -- (map) Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster.
   kubeapi_endpoints:
     enabled: false
-    ip : []
+    ip: []
   # -- (map) Network policy settings.
   netPolicy:
     # -- (bool) Whether network policies are enabled

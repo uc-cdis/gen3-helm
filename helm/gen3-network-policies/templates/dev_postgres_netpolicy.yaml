@@ -11,22 +11,22 @@ spec:
   - Ingress
   ingress:
   - from:
-    - podSelector: {}
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ printf "workflow-pods-%s" .Release.Namespace }}
+      podSelector:
+        matchLabels:
+          app: funnel-worker
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: dev-postgres-egress-netpolicy
 spec:
-  - namespaceSelector:
-      matchLabels:
-        kubernetes.io/metadata.name: {{ .Release.Namespace }}
-  - namespaceSelector:
-      matchLabels:
-        kubernetes.io/metadata.name: {{ printf "workflow-pods-%s" .Release.Namespace }}
-    podSelector:
-      matchLabels:
-        app: funnel-worker
+  podSelector: {}
   policyTypes:
     - Egress
   egress:
