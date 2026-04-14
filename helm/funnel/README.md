@@ -1,6 +1,6 @@
 # funnel
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -9,12 +9,16 @@ A Helm chart for Kubernetes
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.34 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.8 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.26 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| Kubernetes.Executor.backoffLimit | int | `0` |  |
+| Kubernetes.Executor.restartPolicy | string | `"OnFailure"` |  |
+| Kubernetes.Worker.backoffLimit | int | `1` |  |
+| Kubernetes.Worker.restartPolicy | string | `"OnFailure"` |  |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null}` | External Secrets settings. |
 | externalSecrets.createFunnelOidcClientSecret | bool | `true` | Whether to create the Funnel OIDC client secret using the oidc job. |

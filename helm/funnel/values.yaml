@@ -312,3 +312,10 @@ funnel:
   Worker:
     # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
     LeaveWorkDir: true
+Kubernetes:
+  Executor:
+    restartPolicy: OnFailure
+    backoffLimit: 0
+  Worker:
+    restartPolicy: OnFailure
+    backoffLimit: 1
