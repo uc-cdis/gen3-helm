@@ -246,10 +246,6 @@ funnel:
         - key: client_secret
           path: client_secret
 
-  - name: worker-templates-volume
-    configMap:
-      name: funnel-worker-templates
-
   - name: plugin-volume
     emptyDir: {}  # Shared volume
 
@@ -264,9 +260,6 @@ funnel:
     - name: "funnel-oidc-volume"
       readOnly: true
       mountPath: "/etc/config/oidc"
-
-    - name: worker-templates-volume
-      mountPath: /etc/funnel/templates
 
     - name: plugin-volume
       mountPath: /opt/funnel/plugin-binaries
