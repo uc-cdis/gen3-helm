@@ -14,6 +14,10 @@ data:
       "sub-dir": "/lw-workspace",
       "user-volume-size": "10Gi",
       "sidecar": {{ tpl (.Values.hatchery.sidecarContainer | toJson) . }},
-      "containers": {{ tpl (.Values.hatchery.containers | toJson) . }}
+      "containers": {{ tpl (.Values.hatchery.containers | toJson) . }},
+      "shared-workspace": {
+        "enabled": {{ tpl (.Values.hatchery.sharedWorkspaceEnabled | toJson )}},
+        "oidc-provider-arn": {{ tpl (.Values.hatchery.sharedWorkspaceEnabled | toJson }}
+      }
     }
     {{- end }}
