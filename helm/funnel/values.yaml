@@ -283,20 +283,6 @@ funnel:
     - log
   postgresql:  # default bitnami postgres pod
     enabled: false
-  mongodb:  # default mongodb pod
-    # This overrides the default mongodb image used by Funnel which doesn't support ARM architecture,
-    # use this if you're running it on an ARM chipset machine:
-    # image:
-    #   registry: docker.io
-    #   repository: dlavrenuek/bitnami-mongodb-arm
-    #   tag: 6.0.13
-    enabled: false
-    readinessProbe:
-      enabled: true
-      initialDelaySeconds: 20
-      timeoutSeconds: 10
-      periodSeconds: 10
-      failureThreshold: 10
   Postgres:
     Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
     Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
@@ -313,3 +299,7 @@ funnel:
   Worker:
     # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
     LeaveWorkDir: true
+  Kubernetes:
+    # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
+    Timeout:
+      duration: 300s
