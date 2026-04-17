@@ -300,5 +300,6 @@ funnel:
     # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
     LeaveWorkDir: true
   Kubernetes:
+    # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
     Timeout:
       duration: 300s
