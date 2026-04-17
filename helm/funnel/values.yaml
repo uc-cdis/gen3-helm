@@ -303,3 +303,5 @@ funnel:
     # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
     Timeout:
       duration: 300s
+    DisbaleReconciler: true
+    ReconcileRate: 120s
