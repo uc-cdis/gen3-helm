@@ -418,7 +418,8 @@ access-backend:
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
-    repository: quay.io/cdis/postgresql
+    registry: quay.io
+    repository: cdis/postgresql
     tag: 16.6.0-debian-12-r2
   primary:
     persistence:
