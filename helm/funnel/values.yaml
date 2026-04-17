@@ -300,5 +300,5 @@ funnel:
     # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
     LeaveWorkDir: true
   Kubernetes:
-    Timeout: 
+    Timeout:
       duration: 300s
