@@ -23,7 +23,8 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
-| funnel.Kubernetes.DisbaleReconciler | bool | `true` |  |
+| funnel.Kubernetes.DisableJobCleanup | bool | `true` |  |
+| funnel.Kubernetes.DisableReconciler | bool | `true` |  |
 | funnel.Kubernetes.ReconcileRate | string | `"120s"` |  |
 | funnel.Kubernetes.Timeout.duration | string | `"300s"` |  |
 | funnel.Logger.Level | string | `"info"` |  |
