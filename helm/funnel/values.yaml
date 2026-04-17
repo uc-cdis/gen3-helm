@@ -128,6 +128,7 @@ funnel:
   image:
     # -- (string) The Docker image repository for the Funnel service.
     repository: quay.io/ohsu-comp-bio/funnel
+    tag: "2026-04-16"
     # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
     pullPolicy: Always
 
