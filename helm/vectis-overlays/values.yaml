@@ -7,7 +7,7 @@ guppyCompat:
   replicaCount: 1
   image:
     repository: quay.io/cdis/gen3-vectis
-    tag: guppy-compat-service
+    tag: guppy-compat-v1
     pullPolicy: Always
   resources:
     requests:
@@ -24,7 +24,7 @@ siemService:
   replicaCount: 1
   image:
     repository: quay.io/cdis/gen3-vectis
-    tag: siem-service
+    tag: siem-service-v1
     pullPolicy: Always
   resources:
     requests:
@@ -43,7 +43,7 @@ searchAuthProxy:
   serviceName: search-auth-proxy
   image:
     repository: quay.io/cdis/gen3-vectis
-    tag: search-auth-proxy-service
+    tag: search-auth-proxy-v1
     pullPolicy: Always
   resources:
     requests:
