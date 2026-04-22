@@ -13,7 +13,7 @@ replicaCount: 2
 
 image:
   repository: quay.io/cdis/gen3-vectis
-  tag: latest
+  tag: qa-goproxy
   pullPolicy: Always
 
 listenAddr: ":8080"

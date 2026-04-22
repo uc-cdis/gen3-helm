@@ -8,9 +8,9 @@ workspaceNamespace: jupyter-pods
 replicaCount: 1
 
 image:
-  repository: elyra/enterprise-gateway
-  tag: "3.2.3"
-  pullPolicy: IfNotPresent
+  repository: quay.io/cdis/gen3-vectis
+  tag: qa-jeg
+  pullPolicy: Always
 
 env:
   EG_NAMESPACE: jupyter-pods
