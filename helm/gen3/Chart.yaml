@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.55
+    version: 0.1.56
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
