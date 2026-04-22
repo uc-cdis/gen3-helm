@@ -1,0 +1,61 @@
+{{- if .Values.guppyCompat.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guppy-compat-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: guppy-compat-service
+spec:
+  replicas: {{ .Values.guppyCompat.replicaCount }}
+  selector:
+    matchLabels:
+      app: guppy-compat-service
+  template:
+    metadata:
+      labels:
+        app: guppy-compat-service
+    spec:
+      containers:
+        - name: guppy-compat-service
+          image: "{{ .Values.guppyCompat.image.repository }}:{{ .Values.guppyCompat.image.tag }}"
+          imagePullPolicy: {{ .Values.guppyCompat.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SEARCH_BASE
+              value: "http://search-auth-proxy.{{ .Release.Namespace }}.svc.cluster.local:8000/search"
+            - name: GUPPY_COMPAT_MAX_LIMIT
+              value: {{ .Values.guppyCompat.env.GUPPY_COMPAT_MAX_LIMIT | quote }}
+            - name: ARBORIST_URL
+              value: "http://arborist-service.{{ .Release.Namespace }}.svc.cluster.local"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.guppyCompat.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: guppy-compat-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: guppy-compat-service
+spec:
+  selector:
+    app: guppy-compat-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+{{- end }}

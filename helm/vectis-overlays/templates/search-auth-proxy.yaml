@@ -1,0 +1,64 @@
+{{- if .Values.searchAuthProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.searchAuthProxy.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.searchAuthProxy.serviceName }}
+spec:
+  replicas: {{ .Values.searchAuthProxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.searchAuthProxy.serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.searchAuthProxy.serviceName }}
+    spec:
+      containers:
+        - name: {{ .Values.searchAuthProxy.serviceName }}
+          image: "{{ .Values.searchAuthProxy.image.repository }}:{{ .Values.searchAuthProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.searchAuthProxy.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.searchAuthProxy.postgresDsnSecretRef.name }}
+                  key: {{ .Values.searchAuthProxy.postgresDsnSecretRef.key }}
+            - name: SEARCH_PROXY_DEFAULT_LIMIT
+              value: {{ .Values.searchAuthProxy.env.SEARCH_PROXY_DEFAULT_LIMIT | quote }}
+            - name: SEARCH_PROXY_MAX_LIMIT
+              value: {{ .Values.searchAuthProxy.env.SEARCH_PROXY_MAX_LIMIT | quote }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.searchAuthProxy.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.searchAuthProxy.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.searchAuthProxy.serviceName }}
+spec:
+  selector:
+    app: {{ .Values.searchAuthProxy.serviceName }}
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+{{- end }}

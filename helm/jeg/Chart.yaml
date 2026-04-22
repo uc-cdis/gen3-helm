@@ -1,0 +1,14 @@
+apiVersion: v2
+name: jeg
+description: >
+  Jupyter Enterprise Gateway for gen3 vectis workspaces.
+  Launches ephemeral kernel pods in the workspace namespace on behalf of
+  user Jupyter sessions proxied through workspace-proxy.
+type: application
+version: 0.1.0
+appVersion: "3.2.3"
+
+dependencies:
+  - name: common
+    version: 0.1.34
+    repository: file://../common

@@ -1,0 +1,68 @@
+# vectis-overlays default values.
+# All service-internal URLs use .Release.Namespace so the chart is env-agnostic.
+# Override image tags per-environment in gitops values.
+
+guppyCompat:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: guppy-compat-service
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    GUPPY_COMPAT_MAX_LIMIT: "5000"
+
+siemService:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: siem-service
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    SIEM_DEFAULT_LIMIT: "250"
+    SIEM_MAX_LIMIT: "2000"
+
+searchAuthProxy:
+  enabled: true
+  replicaCount: 1
+  serviceName: search-auth-proxy
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: search-auth-proxy-service
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    SEARCH_PROXY_DEFAULT_LIMIT: "50"
+    SEARCH_PROXY_MAX_LIMIT: "1000"
+  postgresDsnSecretRef:
+    name: vectis-search-auth-proxy
+    key: postgres_dsn
+
+# CDK RDS secret in Secrets Manager — used to build the postgres DSN ExternalSecret.
+# Set per-environment in gitops values.
+rds:
+  secretName: ""
+  endpoint: ""
+  port: "5432"
+  database: postgres

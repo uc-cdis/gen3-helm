@@ -1,0 +1,31 @@
+# workspace-proxy default values.
+# Override via your environment's workspace-proxy-values.yaml
+
+# Namespace where the workspace-proxy pod runs (same as gen3 helm release).
+# Must be set per-environment in gitops values.
+deploymentNamespace: ""
+
+# Namespace where Hatchery creates user workspace pods and services.
+# CRITICAL: must match hatchery user-namespace and jeg workspaceNamespace exactly.
+workspaceNamespace: ""
+
+replicaCount: 2
+
+image:
+  repository: quay.io/cdis/gen3-vectis
+  tag: latest
+  pullPolicy: Always
+
+listenAddr: ":8080"
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+# NetworkPolicy: restrict ingress to revproxy only.
+networkPolicy:
+  enabled: true

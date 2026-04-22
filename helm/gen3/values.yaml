@@ -472,6 +472,21 @@ neuvector:
   # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
   ES_HOST: gen3-elasticsearch-master
 
+# -- (map) Jupyter Enterprise Gateway for vectis workspaces.
+jeg:
+  # -- (bool) Whether to deploy the jeg subchart.
+  enabled: false
+
+# -- (map) workspace-proxy — per-user workspace HTTP/WebSocket router.
+workspace-proxy:
+  # -- (bool) Whether to deploy the workspace-proxy subchart.
+  enabled: false
+
+# -- (map) vectis-overlays — guppy-compat, siem-service, search-auth-proxy.
+vectis-overlays:
+  # -- (bool) Whether to deploy the vectis-overlays subchart.
+  enabled: false
+
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
