@@ -270,5 +270,11 @@ extraServices:
 #    authzService: "protein-paint"
 #    csrfCheck: true
 
+# -- (map) Raw nginx location blocks to add or override entries in the revproxy-nginx-subconf ConfigMap.
+# Keys are the conf filename (e.g. "guppy-service.conf"). A key matching a built-in static conf file
+# will replace that file's content, allowing disabled services to be suppressed or routes
+# redirected to alternative upstreams without modifying the chart.
+additionalConfigs: {}
+
 # -- (bool) Whether to enable robots.txt generation and serving.
 enableRobotsTxt: false

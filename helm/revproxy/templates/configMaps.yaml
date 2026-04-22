@@ -3,9 +3,13 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-subconf
 data:
+{{- $additionalConfigs := .Values.additionalConfigs | default dict }}
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
-  {{ ($a := split "/" $path)._1 }}: |
+{{- $filename := ($a := split "/" $path)._1 }}
+{{- if not (hasKey $additionalConfigs $filename) }}
+  {{ $filename }}: |
   {{- $bytes | toString | nindent 4 }}
+{{- end }}
 {{- end}}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
   {{ "frontend-framework-service.conf" }}: |
@@ -21,6 +25,10 @@ data:
 {{- if .Values.enableRobotsTxt }}
   {{ "robots-txt.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/robots/robots-txt.conf" | nindent 4}}
+{{- end }}
+{{- range $filename, $content := $additionalConfigs }}
+  {{ $filename }}: |
+  {{- $content | nindent 4 }}
 {{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |

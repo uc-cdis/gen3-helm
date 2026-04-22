@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-proxy
+  namespace: {{ .Values.deploymentNamespace }}
+  labels:
+    app: workspace-proxy
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: workspace-proxy
+  template:
+    metadata:
+      labels:
+        app: workspace-proxy
+    spec:
+      serviceAccountName: workspace-proxy
+      automountServiceAccountToken: true
+      containers:
+        - name: workspace-proxy
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --listen={{ .Values.listenAddr }}
+            - --workspace-namespace={{ .Values.workspaceNamespace }}
+          env:
+            - name: JEG_GATEWAY_URL
+              value: "http://jupyter-enterprise-gateway.{{ .Values.workspaceNamespace }}.svc.cluster.local:8888"
+            - name: WORKSPACE_NAMESPACE
+              value: "{{ .Values.workspaceNamespace }}"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

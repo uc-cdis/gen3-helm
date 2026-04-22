@@ -1,0 +1,63 @@
+{{- if .Values.siemService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: siem-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: siem-service
+spec:
+  replicas: {{ .Values.siemService.replicaCount }}
+  selector:
+    matchLabels:
+      app: siem-service
+  template:
+    metadata:
+      labels:
+        app: siem-service
+    spec:
+      containers:
+        - name: siem-service
+          image: "{{ .Values.siemService.image.repository }}:{{ .Values.siemService.image.tag }}"
+          imagePullPolicy: {{ .Values.siemService.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SEARCH_BASE
+              value: "http://search-auth-proxy.{{ .Release.Namespace }}.svc.cluster.local:8000/search"
+            - name: ARBORIST_URL
+              value: "http://arborist-service.{{ .Release.Namespace }}.svc.cluster.local"
+            - name: SIEM_DEFAULT_LIMIT
+              value: {{ .Values.siemService.env.SIEM_DEFAULT_LIMIT | quote }}
+            - name: SIEM_MAX_LIMIT
+              value: {{ .Values.siemService.env.SIEM_MAX_LIMIT | quote }}
+          readinessProbe:
+            httpGet:
+              path: /siem/health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /siem/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.siemService.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: siem-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: siem-service
+spec:
+  selector:
+    app: siem-service
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+{{- end }}

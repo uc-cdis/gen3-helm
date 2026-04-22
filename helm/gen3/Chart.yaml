@@ -182,6 +182,18 @@ dependencies:
     version: "0.1.2"
     repository: "file://../neuvector"
     condition: neuvector.enabled
+  - name: jeg
+    version: 0.1.0
+    repository: "file://../jeg"
+    condition: jeg.enabled
+  - name: workspace-proxy
+    version: 0.1.0
+    repository: "file://../workspace-proxy"
+    condition: workspace-proxy.enabled
+  - name: vectis-overlays
+    version: 0.1.0
+    repository: "file://../vectis-overlays"
+    condition: vectis-overlays.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #
