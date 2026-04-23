@@ -66,3 +66,8 @@ rds:
   endpoint: ""
   port: "5432"
   database: postgres
+
+# Database migrations — one-time Job to bootstrap the vectis schema and RLS views.
+# Set migrations.enabled: true in gitops values to trigger the Job, then flip back to false.
+migrations:
+  enabled: false

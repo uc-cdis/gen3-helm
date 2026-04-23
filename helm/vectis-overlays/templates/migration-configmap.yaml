@@ -1,0 +1,235 @@
+{{- if .Values.migrations.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vectis-db-migrations
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: vectis-db-migrations
+data:
+  000_create_schema.sql: |
+    CREATE SCHEMA IF NOT EXISTS vectis;
+    CREATE TABLE IF NOT EXISTS "vectis"."program" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "name" TEXT NOT NULL,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."project" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "code" TEXT NOT NULL,
+      "name" TEXT,
+      "cloud_account_id" TEXT,
+      "cloud_provider" TEXT,
+      "program_id" UUID NOT NULL,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."subject" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "asset_type" TEXT,
+      "cloud_account_id" TEXT,
+      "cloud_provider" TEXT,
+      "hostname" TEXT,
+      "environment" TEXT,
+      "project_id" UUID,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_event" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "timestamp" TEXT NOT NULL,
+      "action" TEXT NOT NULL,
+      "severity" TEXT,
+      "finding_type" TEXT,
+      "src_ip" TEXT,
+      "user_id" TEXT,
+      "http_request" TEXT,
+      "http_verb" TEXT,
+      "http_status_code" BIGINT,
+      "http_user_agent" TEXT,
+      "user_country_name" TEXT,
+      "resource_id" TEXT,
+      "rule_id" TEXT,
+      "cloud_account_id" TEXT,
+      "event_source" TEXT,
+      "subject_id" UUID,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."audit_event" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "timestamp" TEXT NOT NULL,
+      "user_id" TEXT,
+      "src_ip" TEXT,
+      "http_user_agent" TEXT,
+      "action_name" TEXT,
+      "resource" TEXT,
+      "result" TEXT,
+      "is_read_only" BOOLEAN,
+      "cloud_region" TEXT,
+      "event_type" TEXT,
+      "request_parameters" TEXT,
+      "response_elements" TEXT,
+      "cloud_account_id" TEXT,
+      "event_source" TEXT,
+      "subject_id" UUID,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."telemetry_event" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "timestamp" TEXT NOT NULL,
+      "src_ip" TEXT,
+      "dest_ip" TEXT,
+      "src_port" BIGINT,
+      "dest_port" BIGINT,
+      "protocol" TEXT,
+      "bytes_in" BIGINT,
+      "bytes_out" BIGINT,
+      "http_request" TEXT,
+      "http_status_code" BIGINT,
+      "http_user_agent" TEXT,
+      "packets" BIGINT,
+      "duration" DOUBLE PRECISION,
+      "disposition" TEXT,
+      "log_level" TEXT,
+      "cloud_account_id" TEXT,
+      "event_source" TEXT,
+      "subject_id" UUID,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."threat_indicator" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "name" TEXT,
+      "description" TEXT,
+      "indicator_types" JSONB,
+      "pattern" TEXT NOT NULL,
+      "pattern_type" TEXT NOT NULL,
+      "valid_from" TEXT NOT NULL,
+      "valid_until" TEXT,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_incident" (
+      "id" UUID NOT NULL,
+      "submitter_id" TEXT NOT NULL,
+      "incident_name" TEXT NOT NULL,
+      "description" TEXT,
+      "severity" TEXT,
+      PRIMARY KEY ("id") ,
+      UNIQUE ("submitter_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_incident_security_event" (
+      "security_incident_id" UUID NOT NULL,
+      "security_event_id" UUID NOT NULL,
+      PRIMARY KEY ("security_incident_id", "security_event_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_incident_audit_event" (
+      "security_incident_id" UUID NOT NULL,
+      "audit_event_id" UUID NOT NULL,
+      PRIMARY KEY ("security_incident_id", "audit_event_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_incident_telemetry_event" (
+      "security_incident_id" UUID NOT NULL,
+      "telemetry_event_id" UUID NOT NULL,
+      PRIMARY KEY ("security_incident_id", "telemetry_event_id")
+    );
+    CREATE TABLE IF NOT EXISTS "vectis"."security_incident_threat_indicator" (
+      "security_incident_id" UUID NOT NULL,
+      "threat_indicator_id" UUID NOT NULL,
+      PRIMARY KEY ("security_incident_id", "threat_indicator_id")
+    );
+
+  001_rls_and_masked_views.sql: |
+    -- Migration 001: Row-Level Security + Masked Views for Vectis Search
+    BEGIN;
+    ALTER TABLE vectis.security_event
+      ADD COLUMN IF NOT EXISTS auth_resource_path TEXT
+      DEFAULT '/programs/vectis/projects/siem';
+    ALTER TABLE vectis.audit_event
+      ADD COLUMN IF NOT EXISTS auth_resource_path TEXT
+      DEFAULT '/programs/vectis/projects/siem';
+    ALTER TABLE vectis.threat_indicator
+      ADD COLUMN IF NOT EXISTS auth_resource_path TEXT
+      DEFAULT '/programs/vectis/projects/siem';
+    ALTER TABLE vectis.subject
+      ADD COLUMN IF NOT EXISTS auth_resource_path TEXT
+      DEFAULT '/programs/vectis/projects/siem';
+    UPDATE vectis.security_event    SET auth_resource_path = '/programs/vectis/projects/siem' WHERE auth_resource_path IS NULL;
+    UPDATE vectis.audit_event       SET auth_resource_path = '/programs/vectis/projects/siem' WHERE auth_resource_path IS NULL;
+    UPDATE vectis.threat_indicator  SET auth_resource_path = '/programs/vectis/projects/siem' WHERE auth_resource_path IS NULL;
+    UPDATE vectis.subject           SET auth_resource_path = '/programs/vectis/projects/siem' WHERE auth_resource_path IS NULL;
+    ALTER TABLE vectis.security_event   ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.audit_event      ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.threat_indicator ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.subject          ENABLE ROW LEVEL SECURITY;
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='security_event' AND policyname='siem_row_access') THEN
+        CREATE POLICY siem_row_access ON vectis.security_event FOR SELECT
+          USING (auth_resource_path = ANY(string_to_array(current_setting('app.allowed_paths', true), ',')));
+      END IF;
+      IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='audit_event' AND policyname='siem_row_access') THEN
+        CREATE POLICY siem_row_access ON vectis.audit_event FOR SELECT
+          USING (auth_resource_path = ANY(string_to_array(current_setting('app.allowed_paths', true), ',')));
+      END IF;
+      IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='threat_indicator' AND policyname='siem_row_access') THEN
+        CREATE POLICY siem_row_access ON vectis.threat_indicator FOR SELECT
+          USING (auth_resource_path = ANY(string_to_array(current_setting('app.allowed_paths', true), ',')));
+      END IF;
+      IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='subject' AND policyname='siem_row_access') THEN
+        CREATE POLICY siem_row_access ON vectis.subject FOR SELECT
+          USING (auth_resource_path = ANY(string_to_array(current_setting('app.allowed_paths', true), ',')));
+      END IF;
+    END $$;
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'vectis_search_user') THEN
+        CREATE ROLE vectis_search_user WITH LOGIN PASSWORD 'vectis_search_dev';
+      END IF;
+    END $$;
+    GRANT USAGE ON SCHEMA vectis TO vectis_search_user;
+    GRANT SELECT ON ALL TABLES IN SCHEMA vectis TO vectis_search_user;
+    ALTER TABLE vectis.security_event   FORCE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.audit_event      FORCE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.threat_indicator FORCE ROW LEVEL SECURITY;
+    ALTER TABLE vectis.subject          FORCE ROW LEVEL SECURITY;
+    CREATE SCHEMA IF NOT EXISTS vectis_search;
+    GRANT USAGE ON SCHEMA vectis_search TO vectis_search_user;
+    CREATE OR REPLACE VIEW vectis_search.security_event WITH (security_invoker = true) AS
+      SELECT id, submitter_id, "timestamp", action, severity, finding_type, src_ip,
+        CASE WHEN current_setting('app.can_unmask', true) = 'true' THEN user_id ELSE '***' END AS user_id,
+        http_request, http_verb, http_status_code, http_user_agent, user_country_name,
+        resource_id, rule_id, cloud_account_id, event_source, subject_id
+      FROM vectis.security_event;
+    CREATE OR REPLACE VIEW vectis_search.audit_event WITH (security_invoker = true) AS
+      SELECT id, submitter_id, "timestamp", action_name, event_source, result, cloud_region,
+        cloud_account_id, src_ip,
+        CASE WHEN current_setting('app.can_unmask', true) = 'true' THEN user_id ELSE '***' END AS user_id,
+        resource, event_type, http_user_agent
+      FROM vectis.audit_event;
+    CREATE OR REPLACE VIEW vectis_search.threat_indicator WITH (security_invoker = true) AS
+      SELECT id, submitter_id, name, description, pattern, pattern_type, valid_from
+      FROM vectis.threat_indicator;
+    CREATE OR REPLACE VIEW vectis_search.subject WITH (security_invoker = true) AS
+      SELECT id, submitter_id, asset_type, cloud_account_id, cloud_provider, environment
+      FROM vectis.subject;
+    GRANT SELECT ON ALL TABLES IN SCHEMA vectis_search TO vectis_search_user;
+    COMMIT;
+
+  002_drs_auth_resource_path.sql: |
+    -- Migration 002: Add auth_resource_path to drs_object (idempotent).
+    DO $$ BEGIN
+      IF EXISTS (SELECT 1 FROM information_schema.tables
+                 WHERE table_schema = 'drs' AND table_name = 'drs_object') THEN
+        ALTER TABLE drs.drs_object ADD COLUMN IF NOT EXISTS auth_resource_path TEXT;
+      END IF;
+    END $$;
+{{- end }}
