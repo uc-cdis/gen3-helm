@@ -1,0 +1,67 @@
+{{- if .Values.migrations.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vectis-db-migration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: vectis-db-migration
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      restartPolicy: OnFailure
+      automountServiceAccountToken: false
+      volumes:
+        - name: sql
+          configMap:
+            name: vectis-db-migrations
+      containers:
+        - name: migrate
+          image: postgres:15-alpine
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: sql
+              mountPath: /sql
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: vectis-db-migration-creds
+                  key: host
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: vectis-db-migration-creds
+                  key: username
+                  optional: false
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vectis-db-migration-creds
+                  key: password
+                  optional: false
+            - name: PGDATABASE
+              value: {{ .Values.rds.database }}
+            - name: PGPORT
+              value: {{ .Values.rds.port | quote }}
+            - name: PGSSLMODE
+              value: require
+          command: ["/bin/sh"]
+          args:
+            - "-ec"
+            - |
+              echo "==> Running vectis DB migrations against $PGHOST"
+              echo "==> [000] Base schema (idempotent — CREATE IF NOT EXISTS)..."
+              psql -f /sql/000_create_schema.sql
+              echo "==> [001] RLS + masked views..."
+              psql -f /sql/001_rls_and_masked_views.sql
+              echo "==> [002] DRS auth_resource_path column..."
+              psql -f /sql/002_drs_auth_resource_path.sql
+              echo "==> All migrations complete."
+{{- end }}
