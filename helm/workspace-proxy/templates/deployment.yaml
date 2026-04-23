@@ -29,6 +29,8 @@ spec:
               value: "http://jupyter-enterprise-gateway.{{ .Values.workspaceNamespace }}.svc.cluster.local:8888"
             - name: WORKSPACE_NAMESPACE
               value: "{{ .Values.workspaceNamespace }}"
+            - name: JEG_KERNEL_SPEC_POLICY
+              value: {{ .Values.jegKernelSpecPolicy | quote }}
           ports:
             - name: http
               containerPort: 8080
