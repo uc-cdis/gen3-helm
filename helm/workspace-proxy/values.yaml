@@ -18,6 +18,10 @@ image:
 
 listenAddr: ":8080"
 
+# Optional JSON policy controlling which JEG kernelspecs are visible/launchable.
+# Example: {"allowedSpecs":["python3"],"costPerHour":{"python3":0.0}}
+jegKernelSpecPolicy: ""
+
 resources:
   requests:
     cpu: "50m"
