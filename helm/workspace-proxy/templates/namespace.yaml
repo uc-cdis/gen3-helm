@@ -1,7 +1,2 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.workspaceNamespace }}
-  labels:
-    app: workspace
-    kubernetes.io/metadata.name: {{ .Values.workspaceNamespace }}
+{{- /* Namespace owned by the hatchery chart (jupyter-namespace.yaml).
+     workspace-proxy deploys into it but does not create it. */ -}}
