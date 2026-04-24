@@ -21,7 +21,8 @@ spec:
       {{- else }}
         values: |
           nodeAgent:
-            region: us-east-1
+            image:
+              region: us-east-1
           eniConfig:
             region: us-east-1
           init:
