@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -47,6 +47,7 @@ A Helm chart for Kubernetes
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
 | gen3WorkflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
+| gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
 | gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
 | gen3WorkflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
 | gen3WorkflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
@@ -56,6 +57,7 @@ A Helm chart for Kubernetes
 | gen3WorkflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
 | gen3WorkflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
 | gen3WorkflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
+| gen3WorkflowConfig.s3UpstreamEndpoint | string | `""` | Connect to another S3-compatible service than AWS S3 (default: AWS S3) |
 | gen3WorkflowConfig.taskImageWhitelist | list | `[]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
 | gen3WorkflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
 | gen3WorkflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
