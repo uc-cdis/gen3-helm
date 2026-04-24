@@ -318,3 +318,6 @@ gen3WorkflowConfig:
   enablePrometheusMetrics: false
   # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
   prometheusMultiprocDir: /var/tmp/prometheus_metrics
+  # -- (bool) When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector
+  # and Tolerations. Disable this if using a cluster that does not support nodepools.
+  enableOptimizedNodeScheduling: true
