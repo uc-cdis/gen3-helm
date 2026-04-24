@@ -13,6 +13,22 @@
 
 {{- $jobsNamespace := printf "workflow-pods-%s" .Release.Namespace -}}
 
+---
+
+# Do not allow any traffic to or from pods unless explicitly allowed by the other policies in the jobs namespace
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-nothing-netpolicy
+  namespace: {{ $jobsNamespace }}
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector: {}
+  ingress: []
+  egress: []
+
 
 ---
 # Gen3-workflow needs to allow ingress and egress from funnel workers in $jobsNamespace
@@ -130,25 +146,70 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: funnel-worker-to-dns-and-kubeapi-egress
+  name: funnel-worker-to-kubeapi-egress
   namespace: {{ $jobsNamespace }}
 spec:
   podSelector:
     matchLabels:
       app: funnel-worker
   egress:
-    - to: []
+    {{- if .Values.global.kubeapi_endpoints.enabled }}
+    - to:
+      {{- range .Values.global.kubeapi_endpoints.ip }}
+      - ipBlock:
+          cidr: {{ . }}/32
+      {{- end }}
+    {{- else }}
+      # Regular (non-argo) helm installations can perform a lookup to get the kubeapi endpoints and allow access to those
+      {{- range (lookup "v1" "Endpoints" "default" "kubernetes").subsets }} 
+    - to:
+        {{- range .addresses }}
+        - ipBlock:
+            cidr: {{ .ip }}/32
+        {{- end }}
+      {{- end }}
+    {{- end }}
       ports:
-        - protocol: TCP
-          port: 443  # Kubernetes API
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+      - protocol: TCP
+        port: 443  # Kubernetes API
   policyTypes:
     - Egress
 
 ---
+# Funnel pods need to be able to access DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: funnel-pods-to-dns-egress
+  namespace: {{ $jobsNamespace }}
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - funnel-executor
+          - funnel-worker
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+        podSelector:
+          matchExpressions:
+            - key: k8s-app
+              operator: In
+              values:
+                - kube-dns
+      ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+  policyTypes:
+    - Egress
+
+--- 
 # Funnel workers need to be able to access the database
 # which would be a local postgresql instance in dev 
 # and the database subnets that reach AWS RDS in prod
@@ -183,6 +244,31 @@ spec:
         operator: In
         values:
           - funnel-worker
+  policyTypes:
+  - Egress
+
+---
+
+# Add egress to internet for funnel executors
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: external-egress-netpolicy
+  namespace: {{ $jobsNamespace}}
+spec:
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        # Private IP ranges that should not be accessed by funnel executors
+        - 169.254.0.0/16
+        - 172.16.0.0/12
+        - 10.0.0.0/8
+  podSelector:
+    matchLabels:
+      app: "funnel-executor"
   policyTypes:
   - Egress
 
