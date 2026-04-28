@@ -70,6 +70,9 @@ spec:
       memory.available: 10%
     evictionSoftGracePeriod:
       memory.available: 5m
+    {{- if .Values.cilium.enabled }}
+    maxPods: 2000
+    {{- end }}
 {{- end }}
 ---
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}

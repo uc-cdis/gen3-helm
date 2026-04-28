@@ -297,6 +297,8 @@ gen3WorkflowConfig:
   mockAuth: false
   # -- (string) AWS region used for creating user S3 buckets.
   userBucketsRegion: us-east-1
+  # -- (string) Connect to another S3-compatible service than AWS S3 (default: AWS S3)
+  s3UpstreamEndpoint: ""
   # -- (int) Number of days after which workflow-generated S3 objects are deleted.
   s3ObjectsExpirationDays: 30
   # -- (string) AWS Access Key ID used to make S3 requests on behalf of users.
@@ -316,3 +318,6 @@ gen3WorkflowConfig:
   enablePrometheusMetrics: false
   # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
   prometheusMultiprocDir: /var/tmp/prometheus_metrics
+  # -- (bool) When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector
+  # and Tolerations. Disable this if using a cluster that does not support nodepools.
+  enableOptimizedNodeScheduling: true
