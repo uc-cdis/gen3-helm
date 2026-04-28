@@ -1,6 +1,6 @@
 # portal
 
-![Version: 0.1.56](https://img.shields.io/badge/Version-0.1.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.57](https://img.shields.io/badge/Version-0.1.57-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 data-portal
 
@@ -110,6 +110,7 @@ A Helm chart for gen3 data-portal
 | portalBuild.s3csi.kmsKeyArn | string | `""` |  |
 | portalBuild.s3csi.mountOptions[0] | string | `"allow-delete"` |  |
 | portalBuild.s3csi.mountOptions[1] | string | `"region us-east-1"` |  |
+| portalBuild.s3csi.mountOptions[2] | string | `"allow-other"` |  |
 | portalBuild.s3csi.pvName | string | `"webpack-pv"` |  |
 | portalBuild.s3csi.pvcName | string | `"webpack-pvc"` |  |
 | portalBuild.s3csi.size | string | `"1Gi"` |  |
