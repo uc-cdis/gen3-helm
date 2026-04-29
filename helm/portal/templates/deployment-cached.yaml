@@ -4,7 +4,6 @@ kind: Deployment
 metadata:
   name: portal-deployment
   labels:
-    netnolimit: "yes"
     {{- include "portal.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -28,6 +27,7 @@ spec:
         {{- end }}
       labels:
         public: "yes"
+        netnolimit: "yes"
         {{- include "portal.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
