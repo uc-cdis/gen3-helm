@@ -92,7 +92,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.43
+    version: 0.1.44
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
