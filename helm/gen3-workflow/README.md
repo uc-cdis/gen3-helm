@@ -1,6 +1,6 @@
 # gen3-workflow
 
-![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -46,7 +46,6 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
-| gen3WorkflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
 | gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
 | gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
 | gen3WorkflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
@@ -54,6 +53,7 @@ A Helm chart for Kubernetes
 | gen3WorkflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
 | gen3WorkflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
 | gen3WorkflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
+| gen3WorkflowConfig.proxyPrefix | string | `"/workflows"` | For deployments that run the app behind a proxy. The value should start with a slash. |
 | gen3WorkflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
 | gen3WorkflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
 | gen3WorkflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |

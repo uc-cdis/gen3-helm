@@ -159,6 +159,12 @@ usersync:
   onlyDbgap: false
   # -- (string) Path to the user.yaml file in S3.
   userYamlS3Path: s3://cdis-gen3-users/helm-test/user.yaml
+  # -- (string) Get the user.yaml from another S3-compatible service than AWS S3 (default: AWS S3)
+  userYamlS3Endpoint:
+  # -- (string) If `userYamlS3Endpoint` is specified, a key ID and secret can be provided
+  userYamlS3AccessKeyId:
+  # -- (string) If `userYamlS3Endpoint` is specified, a key ID and secret can be provided
+  userYamlS3SecretAccessKey:
   # -- (string) Slack webhook endpoint used with certain jobs.
   slack_webhook: None
   # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
