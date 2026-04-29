@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.35](https://img.shields.io/badge/Version-0.6.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.36](https://img.shields.io/badge/Version-0.6.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -68,6 +68,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | grafana-alloy.configuration.enabled | bool | `false` |  |
 | grafana-alloy.enabled | bool | `false` |  |
 | grafana-alloy.targetRevision | string | `"0.4.0"` |  |
+| karpenter-crds.alias | string | `"al2023@latest"` |  |
 | karpenter-crds.amiOwner | string | `"143731057154"` |  |
 | karpenter-crds.amiSelectorName | string | `"EKS-FIPS*"` |  |
 | karpenter-crds.default.additionalTags | object | `{}` |  |
@@ -146,6 +147,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.secondary.weight | int | `1` |  |
 | karpenter-crds.selectorTag | string | `""` |  |
 | karpenter-crds.targetRevision | string | `"master"` |  |
+| karpenter-crds.useAlias | bool | `false` |  |
 | karpenter-crds.workflow.additionalTags | object | `{}` |  |
 | karpenter-crds.workflow.consolidateAfter | string | `"30s"` |  |
 | karpenter-crds.workflow.consolidation | bool | `true` |  |

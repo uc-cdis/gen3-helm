@@ -14,8 +14,12 @@ spec:
   amiFamily: AL2
   {{- end }}
   amiSelectorTerms:
+  {{- if not index .Values "karpenter-crds" "useAlias" }}
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
-    owner: "143731057154"
+    owner: {{ index .Values "karpenter-crds" "amiOwner" | quote }}
+  {{- else }}
+  - alias: {{ index .Values "karpenter-crds" "alias" | quote }}
+  {{- end }}    
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
