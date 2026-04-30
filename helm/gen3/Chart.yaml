@@ -33,7 +33,7 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
-    version: 0.1.23
+    version: 0.1.24
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
