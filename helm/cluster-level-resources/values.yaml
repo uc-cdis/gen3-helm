@@ -134,6 +134,8 @@ karpenter-crds:
   targetRevision: master
   amiSelectorName: "EKS-FIPS*"
   amiOwner: "143731057154"
+  useAlias: false
+  alias: "al2023@latest"
   selectorTag: ""
   migration: false
   default:
