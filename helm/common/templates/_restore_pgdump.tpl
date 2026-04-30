@@ -25,7 +25,7 @@ spec:
             {{ end }}
       containers:
         - name: restore-dbs
-          image: quay.io/cdis/awshelper:master
+          image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
           imagePullPolicy: Always
           env:
             - name: PGPASSWORD

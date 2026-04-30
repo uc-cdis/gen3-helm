@@ -29,7 +29,7 @@ spec:
       containers:
         - name: fence-client
           # TODO: Make this configurable
-          image: "quay.io/cdis/fence:master"
+          image: {{ .Values.global.fence_container_image | default "quay.io/cdis/fence:master" }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # TODO: ADD RESOURCES
           # resources:
