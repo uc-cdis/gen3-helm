@@ -4,6 +4,6 @@ description: An app-of-apps Helm chart that allows for flexible deployment of re
 
 type: application
 
-version: 0.6.35
+version: 0.6.37
 
 appVersion: "1.17.0"

@@ -289,8 +289,8 @@ gen3WorkflowConfig:
   debug: false
   # -- (bool) Enables verbose logging specifically for httpx requests.
   httpxDebug: false
-  # -- (string) URL prefix used for serving OpenAPI documentation.
-  docsUrlPrefix: /gen3workflow
+  # -- (string) For deployments that run the app behind a proxy. The value should start with a slash.
+  proxyPrefix: /workflows
   # -- (string) Custom Arborist URL. Ignored if already set via environment variable.
   arboristUrl: ""
   # -- (bool) Enables mock authentication, bypassing Arborist. Use only for development.

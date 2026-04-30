@@ -105,6 +105,12 @@ spec:
                       key: hostname
                 - name: userYamlS3Path
                   value: {{ .Values.usersync.userYamlS3Path | quote }}
+                - name: userYamlS3Endpoint
+                  value: {{ .Values.usersync.userYamlS3Endpoint | quote }}
+                - name: userYamlS3AccessKeyId
+                  value: {{ .Values.usersync.userYamlS3AccessKeyId | quote }}
+                - name: userYamlS3SecretAccessKey
+                  value: {{ .Values.usersync.userYamlS3SecretAccessKey | quote }}
                 - name: slackWebHook
                   valueFrom:
                     secretKeyRef:
@@ -135,6 +141,15 @@ spec:
                     cp /var/www/fence/user.yaml /mnt/shared/user.yaml
                   else
                     # -----------------
+                    if [ "${userYamlS3Endpoint}" != "none" ]; then
+                      echo "Configuring AWS_ENDPOINT_URL: ${userYamlS3Endpoint}"
+                      export AWS_ENDPOINT_URL="${userYamlS3Endpoint}"
+                      if [[ "${userYamlS3AccessKeyId}" != "none" &&"${userYamlS3SecretAccessKey}" != "none" ]]; then
+                        echo "Configuring AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"
+                        export AWS_ACCESS_KEY_ID="${userYamlS3AccessKeyId}"
+                        export AWS_SECRET_ACCESS_KEY="${userYamlS3SecretAccessKey}"
+                      fi
+                    fi
                     echo "awshelper downloading ${userYamlS3Path} to /mnt/shared/user.yaml"
                     n=0
                     until [ $n -ge 5 ]; do
