@@ -1,6 +1,6 @@
 # sower
 
-![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.44](https://img.shields.io/badge/Version-0.1.44-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 sower
 
@@ -178,7 +178,7 @@ A Helm chart for gen3 sower
 | sowerConfig[1].container.env[8].name | string | `"SHEEPDOG"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.key | string | `"sheepdog"` |  |
 | sowerConfig[1].container.env[8].valueFrom.secretKeyRef.name | string | `"indexd-service-creds"` |  |
-| sowerConfig[1].container.image | string | `"quay.io/cdis/pelican-export:master"` |  |
+| sowerConfig[1].container.image. | string | `nil` |  |
 | sowerConfig[1].container.memory-limit | string | `"12Gi"` |  |
 | sowerConfig[1].container.name | string | `"job-task"` |  |
 | sowerConfig[1].container.pull_policy | string | `"Always"` |  |
