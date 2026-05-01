@@ -45,7 +45,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../hatchery | hatchery | 0.1.67 |
 | file://../indexd | indexd | 0.1.45 |
 | file://../manifestservice | manifestservice | 0.1.41 |
-| file://../metadata | metadata | 0.1.42 |
+| file://../metadata | metadata | 0.1.43 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.4 |
