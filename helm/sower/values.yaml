@@ -255,7 +255,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: "{{ .Values.global.pelican_export_container_image | default "quay.io/cdis/pelican-export:master" }}"
+      image: '{{ .Values.global.pelican_export_container_image | default "quay.io/cdis/pelican-export:master" }}'
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
