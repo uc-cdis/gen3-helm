@@ -16,14 +16,25 @@ metadata:
     {{- end }}
     `}}
 spec:
-  backoffLimit: {{ .Values.backoffLimit}}
-  completions: {{ .Values.completions }}
+  backoffLimit: {{ .Values.Kubernetes.Worker.backoffLimit}}
+  completions: {{ .Values.Kubernetes.Worker.completions }}
   template:
     metadata:
       labels:
         app: funnel-worker
         task-id: {{`{{.TaskId}}`}}
+
+    # Annotations
+    {{- with .Values.Kubernetes.Worker.Annotations }}
+      annotations:
+      {{ toYaml . | indent 2 }}
+    {{- end }}
+
     spec:
+    
+    {{ if .Values.Kubernetes.Worker.PriorityClassName }}
+      priorityClassName: {{ .Values.Kubernetes.Worker.PriorityClassName }}
+    {{ end }}
       # NodeSelectors
       # https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#create-a-pod-that-gets-scheduled-to-your-chosen-node
       {{`
@@ -63,24 +74,26 @@ spec:
       `}}
 
       serviceAccountName: {{`{{.ServiceAccountName}}`}}
-      restartPolicy: OnFailure
+      restartPolicy: {{ .Values.Kubernetes.Worker.restartPolicy }}
       containers:
       - name: funnel-worker-{{`{{.TaskId}}`}}
-        # TODO: Make the image + tag configurable
         image: {{`{{.Image}}`}}
         imagePullPolicy: Always
+        command:
+        - /bin/sh
+        - -c
         args:
-          - "worker"
-          - "run"
-          - "--config"
-          - "/etc/config/funnel-worker.yaml"
-          - "--taskID"
-          - {{`{{.TaskId}}`}}
+        - |
+          funnel worker run --config /etc/config/funnel-worker.yaml --taskID {{`{{.TaskId}}`}}
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
             ephemeral-storage: {{ .Values.resources.requests.ephemeral_storage }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+            ephemeral-storage: {{ .Values.resources.limits.ephemeral_storage }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/config

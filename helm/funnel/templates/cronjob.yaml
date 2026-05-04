@@ -1,0 +1,52 @@
+# This template defines background tasks that fall outside the main TES submission lifecycle
+# e.g. cleanup of old Jobs, PVCs, and other resources
+#
+# Any CronJob here should be non-blocking and safe to run concurrently with the main Server, Worker, and Executor Jobs
+{{- if .Values.cleanup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: funnel-cleanup-{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "funnel.labels" . | nindent 4 }}
+spec:
+  # Set cleanup.schedule per deployment to stagger runs across namespaces and
+  # avoid simultaneous bursts of K8s API calls (e.g. "5 */1 * * *" vs "17 */1 * * *").
+  schedule: {{ .Values.cleanup.schedule | quote }}
+  # Forbid concurrent runs — if a cleanup job is still running when the next
+  # trigger fires, the new run is skipped rather than overlapping.
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "funnel.labels" . | nindent 12 }}
+        spec:
+          serviceAccountName: funnel-sa-{{ .Release.Namespace }}
+          restartPolicy: OnFailure
+          containers:
+            - name: funnel-cleanup
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: Always
+              command:
+                - funnel
+                - kubernetes
+                - cleanup
+                - --config
+                - /etc/config/funnel-server.yaml
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "128Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "256Mi"
+              volumeMounts:
+              {{- toYaml .Values.volumeMounts | nindent 14 }}
+          volumes:
+          {{- toYaml .Values.volumes | nindent 10 }}
+{{- end }}

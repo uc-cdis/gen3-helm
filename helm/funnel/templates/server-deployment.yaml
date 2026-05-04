@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "funnel.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.Kubernetes.ReplicaCount }}
   strategy:
     type: RollingUpdate
     rollingUpdate:

@@ -1,0 +1,11 @@
+# This is the config containing the templates used by the Funnel Worker
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: funnel-worker-config-{{`{{ .TaskId }}`}}
+  namespace: {{ .Release.Namespace }} 
+  labels:
+    app: funnel
+data:
+  funnel-worker.yaml: |
+{{`{{ .Data | indent 4 }}`}}

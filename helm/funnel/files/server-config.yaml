@@ -1,13 +1,27 @@
 Compute: {{ .Values.Compute }}
 
 Kubernetes:
-  Executor: {{ .Values.Kubernetes.Executor }}
   DisableReconciler: {{ .Values.Kubernetes.DisableReconciler }}
   DisableJobCleanup: {{ .Values.Kubernetes.DisableJobCleanup }}
   ReconcileRate: {{ .Values.Kubernetes.ReconcileRate }}
   Namespace: {{ .Release.Namespace }}
   JobsNamespace: {{ .Values.Kubernetes.JobsNamespace }}
   ServiceAccount: {{ .Values.Kubernetes.ServiceAccount }}
+
+  Resources:
+    Defaults:
+      Cpus: {{ .Values.Kubernetes.Resources.Defaults.Cpus }}
+      RamGb: {{ .Values.Kubernetes.Resources.Defaults.RamGb }}
+      DiskGb: {{ .Values.Kubernetes.Resources.Defaults.DiskGb }}
+    Limits:
+      Cpus: {{ .Values.Kubernetes.Resources.Limits.Cpus }}
+      RamGb: {{ .Values.Kubernetes.Resources.Limits.RamGb }}
+      DiskGb: {{ .Values.Kubernetes.Resources.Limits.DiskGb }}
+  
+  {{- if .Values.Kubernetes.Timeout }}
+  Timeout:
+    duration: {{ .Values.Kubernetes.Timeout.duration }}
+  {{- end }}
 
   NodeSelector:
     {{- if .Values.Kubernetes.NodeSelector }}
@@ -33,11 +47,11 @@ Kubernetes:
 
   # Worker Job
   WorkerTemplate: |
-{{ tpl (.Files.Get "files/worker-job.yaml") . | indent 4 }}
+{{ tpl ((.Values.Kubernetes.WorkerTemplate | default (.Files.Get "files/worker-job.yaml"))) . | indent 4 }}
 
   # Executor Job
   ExecutorTemplate: |
-{{ tpl (.Files.Get "files/executor-job.yaml") . | indent 4 }}
+{{ tpl ((.Values.Kubernetes.ExecutorTemplate | default (.Files.Get "files/executor-job.yaml"))) . | indent 4 }}
 
   # PV template
   PVTemplate: |
@@ -65,14 +79,19 @@ EventWriters:
   {{- end }}
 
 Logger:
-  level: {{ .Values.Logger.level }}
-  outputFile: {{ .Values.Logger.outputFile }}
+  Level: {{ .Values.Logger.Level }}
+  OutputFile: "{{ .Values.Logger.OutputFile }}"
+  Formatter: {{ .Values.Logger.Formatter }}
+  TextFormat:
+    ForceColors: {{ .Values.Logger.TextFormat.ForceColors }}
+    FullTimestamp: {{ .Values.Logger.TextFormat.FullTimestamp }}
+    TimestampFormat: {{ .Values.Logger.TextFormat.TimestampFormat }}
 
 Server:
   HostName: "{{ .Values.Server.HostName }}"
   HTTPPort: "{{ .Values.Server.HTTPPort }}"
   RPCPort: "{{ .Values.Server.RPCPort }}"
-  DisableHTTPCache: {{ .Values.Server.DisableHttpCache }}
+  DisableHTTPCache: {{ .Values.Server.DisableHTTPCache }}
 
 RPCClient:
   ServerAddress: {{ .Values.RPCClient.ServerAddress }}

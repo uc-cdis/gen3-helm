@@ -1,6 +1,3 @@
-# Kubernetes-specifc Settings
-replicaCount: 1
-
 image:
   repository: quay.io/ohsu-comp-bio/funnel
   pullPolicy: Always
@@ -25,6 +22,9 @@ labels:
 # Note: This is a non-persistent database for testing/demo purposes.
 postgresql:
   enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 11.9.0
   global:
     postgresql:
       auth:
@@ -55,11 +55,17 @@ mongodb:
 rbac:
   create: true
 
-# Backoff/Completions for Worker + Executor Jobs
-backoffLimit: 1
-completions: 1
+# Periodic cleanup CronJob for orphaned Funnel-managed Kubernetes resources.
+# Replaces the startup goroutine so multiple server replicas don't race to
+# clean the same resources simultaneously.
+cleanup:
+  enabled: true
+  # Standard cron expression. Stagger this value across namespaces to spread
+  # K8s API load (e.g. "5 * * * *" in one namespace, "17 * * * *" in another).
+  schedule: "*/30 * * * *"
 
-# Resource Requests/Limits for Worker + Executor Jobs
+# Resource Requests/Limits for Worker Jobs
+# Executor resource defaults/limits are in Kubernetes.Resources
 resources:
   requests:
     cpu: 100m
@@ -107,13 +113,24 @@ Compute: kubernetes
 # Available backends: log, boltdb, badger, datastore, dynamodb, elastic, mongodb, kafka
 EventWriters:
   - postgres
+  - mongodb
   - log
 
 Logger:
   # Logging levels: debug, info, error
-  level: debug
+  Level: info
   # Write logs to this path. If empty, logs are written to stderr.
-  outputFile: ""
+  OutputFile: ""
+  # Log format: json or text
+  Formatter: json
+  # Text format settings
+  TextFormat:
+    # Try to force colors/rich format in text output
+    ForceColors: true
+    # Include full timestamps in text output
+    FullTimestamp: true
+    # Format for timestamps. RFC3339 is default.
+    TimestampFormat: "2006-01-02T15:04:05Z07:00"
 
 Server:
   # Hostname of the Funnel server.
@@ -209,8 +226,8 @@ Worker:
   # after the executor exits.
   LogUpdateRate: 5s
 
-  # Max bytes to store for stdout/err in the task log (10 KB)
-  LogTailSize: 10000
+  # Max bytes to store for stdout/err in the task log.
+  LogTailSize: 10000 # 10 KB
 
   # Normally the worker deletes its working directory after executing.
   # This option disables that behavior.
@@ -219,9 +236,9 @@ Worker:
   # Limit the number of concurrent downloads/uploads
   MaxParallelTransfers: 10
 
-# -------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Databases and/or Event Writers/Handlers
-# -------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 BoltDB:
   # Path to the database file
@@ -268,6 +285,7 @@ MongoDB:
   # Username and Password inform the credentials for the initial authentication
   # done on the database defined by the Database field.
   Username: example
+  Password: example
 
 Postgres:
   Host: funnel-postgresql.default.svc.cluster.local
@@ -282,9 +300,9 @@ Postgres:
 Kafka:
   Topic: funnel
 
-# -------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Compute Backends
-# -------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 HTCondor:
   # Turn off task state reconciler. When enabled, Funnel communicates with the HPC
@@ -409,8 +427,25 @@ AWSBatch:
 
 # Kubernetes describes the configuration for the Kubernetes compute backend.
 Kubernetes:
-  # The executor used to execute tasks. Available executors: docker, kubernetes
-  Executor: "kubernetes"
+  Executor:
+    # Note: This value is not currently saved in the Funnel Server config and only visible by describing the Executor Pod itself (e.g. `kubectl describe pod <pod-name>`).
+    # Ref: executor-job.yaml#spec.template.metadata.annotations
+    Annotations: {}
+    PriorityClassName: ""
+    restartPolicy: OnFailure
+    # Setting `backoffLimit` to 0 means no retries
+    # Setting `completions` to 1 means the job will be marked as complete after a single successful execution.
+    # Funnel should not be restarting jobs (by default) so that clients can choose their preferred retry behavior
+    # TODO: Should Funnel offer a built-in retry mechanism that users can configure on a per-task basis?
+    backoffLimit: 0
+    completions: 1
+  Worker:
+    Annotations: {}
+    PriorityClassName: ""
+    restartPolicy: Never
+    backoffLimit: 0
+    completions: 1
+
   # Turn off task state reconciler. When enabled, Funnel communicates with Kubernetes
   # to find tasks that are stuck in a queued state or errored and
   # updates the task state accordingly.
@@ -419,6 +454,8 @@ Kubernetes:
   # ReconcileRate is how often the compute backend compares states in Funnel's backend
   # to those reported by the backend
   ReconcileRate: 10s
+  # Number of funnel-server replicas to run.
+  ReplicaCount: 1
   # Kubernetes Namespace to spawn jobs within
   Namespace: ""
   # Kubernetes Namespace to spawn jobs within
@@ -431,15 +468,28 @@ Kubernetes:
   NodeSelector: {}
   # Tolerations (scheduling)
   Tolerations: []
+  Timeout:
+    duration: 30s
 
   # Job template used for executing the tasks.
   ExecutorTemplate: ""
   PVTemplate: ""
   PVCTemplate: ""
 
-# -------------------------------------------------------------------------------
+  # Resource Requests/Limits for Executor Jobs
+  Resources:
+    Defaults:
+      Cpus: 1000m
+      RamGb: 512Mi
+      DiskGb: 512Mi
+    Limits:
+      Cpus: 8000m
+      RamGb: 4096Mi
+      DiskGb: 4096Mi
+
+#-------------------------------------------------------------------------------
 # Storage
-# -------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 # If possible, credentials will be automatically discovered
 # from the environment.

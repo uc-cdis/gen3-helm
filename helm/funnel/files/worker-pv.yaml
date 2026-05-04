@@ -5,6 +5,7 @@ metadata:
   labels:
     app: funnel
     taskId: {{`{{.TaskId}}`}}
+    namespace: {{`{{.Namespace}}`}}
 spec:
   storageClassName: "" # Required for static provisioning
   capacity:
@@ -13,19 +14,32 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   mountOptions:
-    - allow-delete
-    - allow-overwrite
+    # Testing:
+    # - allow-delete
+    - allow-overwrite # allow overwriting existing files
+    - incremental-upload # allow appending to existing files
+    - allow-other # allow non-root users to access the mounted directory
     - region={{`{{.Region}}`}}
     - file-mode=0755
+    - prefix=funnel-temp-files/
     {{`{{- if .KmsKeyID}}`}}
     - sse aws:kms
     - sse-kms-key-id={{`{{.KmsKeyID}}`}}
     {{`{{- end}}`}}
+    {{- if .Values.endpoint_url }}
+    - endpoint-url={{ .Values.endpoint_url }}
+    # https://github.com/awslabs/mountpoint-s3/blob/v1.22.2/doc/TROUBLESHOOTING.md#invalid-hostname-for-dns-resolution
+    - force-path-style
+    {{- end }}
   csi:
     driver: s3.csi.aws.com
     volumeHandle: s3-csi-{{`{{.TaskId}}`}}
     volumeAttributes:
       bucketName: {{`{{.Bucket}}`}}
+      {{- if .Values.authenticationSource }}
+      authenticationSource: {{ .Values.authenticationSource }}
+      stsRegion: {{ .Values.stsRegion }}
+      {{- end }}
   claimRef:
     namespace: {{`{{.Namespace}}`}}
     name: funnel-worker-pvc-{{`{{.TaskId}}`}}

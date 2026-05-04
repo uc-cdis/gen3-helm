@@ -1,6 +1,6 @@
 # funnel
 
-![Version: 0.1.75](https://img.shields.io/badge/Version-0.1.75-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2025-12-22](https://img.shields.io/badge/AppVersion-2025--12--22-informational?style=flat-square)
+![Version: 0.1.99-rc.31](https://img.shields.io/badge/Version-0.1.99--rc.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2026-04-27.1](https://img.shields.io/badge/AppVersion-2026--04--27.1-informational?style=flat-square)
 
 A toolkit for distributed task execution ⚙️
 
@@ -9,7 +9,7 @@ A toolkit for distributed task execution ⚙️
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | mongodb | 13.9.4 |
-| https://charts.bitnami.com/bitnami | postgresql | 18.1.15 |
+| oci://registry-1.docker.io/bitnamicharts | postgresql | 11.9.13 |
 
 ## Values
 
@@ -40,7 +40,8 @@ A toolkit for distributed task execution ⚙️
 | Elastic.IndexPrefix | string | `"funnel"` |  |
 | Elastic.URL | string | `"http://localhost:9200"` |  |
 | EventWriters[0] | string | `"postgres"` |  |
-| EventWriters[1] | string | `"log"` |  |
+| EventWriters[1] | string | `"mongodb"` |  |
+| EventWriters[2] | string | `"log"` |  |
 | FTPStorage.Disabled | bool | `false` |  |
 | FTPStorage.Password | string | `"anonymous"` |  |
 | FTPStorage.Timeout | string | `"10s"` |  |
@@ -57,7 +58,11 @@ A toolkit for distributed task execution ⚙️
 | Kafka.Topic | string | `"funnel"` |  |
 | Kubernetes.DisableJobCleanup | bool | `false` |  |
 | Kubernetes.DisableReconciler | bool | `false` |  |
-| Kubernetes.Executor | string | `"kubernetes"` |  |
+| Kubernetes.Executor.Annotations | object | `{}` |  |
+| Kubernetes.Executor.PriorityClassName | string | `""` |  |
+| Kubernetes.Executor.backoffLimit | int | `0` |  |
+| Kubernetes.Executor.completions | int | `1` |  |
+| Kubernetes.Executor.restartPolicy | string | `"OnFailure"` |  |
 | Kubernetes.ExecutorTemplate | string | `""` |  |
 | Kubernetes.JobsNamespace | string | `""` |  |
 | Kubernetes.Namespace | string | `""` |  |
@@ -65,14 +70,32 @@ A toolkit for distributed task execution ⚙️
 | Kubernetes.PVCTemplate | string | `""` |  |
 | Kubernetes.PVTemplate | string | `""` |  |
 | Kubernetes.ReconcileRate | string | `"10s"` |  |
+| Kubernetes.ReplicaCount | int | `1` |  |
+| Kubernetes.Resources.Defaults.Cpus | string | `"1000m"` |  |
+| Kubernetes.Resources.Defaults.DiskGb | string | `"512Mi"` |  |
+| Kubernetes.Resources.Defaults.RamGb | string | `"512Mi"` |  |
+| Kubernetes.Resources.Limits.Cpus | string | `"8000m"` |  |
+| Kubernetes.Resources.Limits.DiskGb | string | `"4096Mi"` |  |
+| Kubernetes.Resources.Limits.RamGb | string | `"4096Mi"` |  |
 | Kubernetes.ServiceAccount | string | `""` |  |
+| Kubernetes.Timeout.duration | string | `"30s"` |  |
 | Kubernetes.Tolerations | list | `[]` |  |
+| Kubernetes.Worker.Annotations | object | `{}` |  |
+| Kubernetes.Worker.PriorityClassName | string | `""` |  |
+| Kubernetes.Worker.backoffLimit | int | `0` |  |
+| Kubernetes.Worker.completions | int | `1` |  |
+| Kubernetes.Worker.restartPolicy | string | `"Never"` |  |
 | Kubernetes.WorkerTemplate | string | `""` |  |
 | LocalStorage.AllowedDirs[0] | string | `"./"` |  |
-| Logger.level | string | `"debug"` |  |
-| Logger.outputFile | string | `""` |  |
+| Logger.Formatter | string | `"json"` |  |
+| Logger.Level | string | `"info"` |  |
+| Logger.OutputFile | string | `""` |  |
+| Logger.TextFormat.ForceColors | bool | `true` |  |
+| Logger.TextFormat.FullTimestamp | bool | `true` |  |
+| Logger.TextFormat.TimestampFormat | string | `"2006-01-02T15:04:05Z07:00"` |  |
 | MongoDB.Addrs | list | `[]` |  |
 | MongoDB.Database | string | `"funnel"` |  |
+| MongoDB.Password | string | `"example"` |  |
 | MongoDB.Timeout.duration | string | `"300s"` |  |
 | MongoDB.Username | string | `"example"` |  |
 | Node.ID | string | `""` |  |
@@ -121,8 +144,7 @@ A toolkit for distributed task execution ⚙️
 | Worker.MaxParallelTransfers | int | `10` |  |
 | Worker.PollingRate | string | `"5s"` |  |
 | Worker.WorkDir | string | `"./funnel-work-dir"` |  |
-| backoffLimit | int | `1` |  |
-| completions | int | `1` |  |
+| authenticationSource | string | `"pod"` |  |
 | image.initContainers[0].command[0] | string | `"cp"` |  |
 | image.initContainers[0].command[1] | string | `"/app/build/plugins/authorizer"` |  |
 | image.initContainers[0].command[2] | string | `"/opt/funnel/plugin-binaries/auth-plugin"` |  |
@@ -150,9 +172,10 @@ A toolkit for distributed task execution ⚙️
 | postgresql.global.postgresql.auth.password | string | `"example"` |  |
 | postgresql.global.postgresql.auth.postgresPassword | string | `"example"` |  |
 | postgresql.global.postgresql.auth.username | string | `"funnel"` |  |
+| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` |  |
+| postgresql.image.tag | string | `"11.9.0"` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
 | rbac.create | bool | `true` |  |
-| replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"1000m"` |  |
 | resources.limits.ephemeral_storage | string | `"2048Mi"` |  |
 | resources.limits.memory | string | `"2048Mi"` |  |
@@ -168,6 +191,7 @@ A toolkit for distributed task execution ⚙️
 | storage.driver | string | `"aws-s3"` |  |
 | storage.provisioner | string | `"s3.csi.aws.com"` |  |
 | storage.size | string | `"10Mi"` |  |
+| stsRegion | string | `"us-east-1"` |  |
 | volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | volumeMounts[0].name | string | `"funnel-server-config-volume"` |  |
 | volumeMounts[0].subPath | string | `"funnel-server.yaml"` |  |
