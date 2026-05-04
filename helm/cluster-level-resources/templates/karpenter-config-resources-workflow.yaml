@@ -64,6 +64,8 @@ spec:
     echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
     curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys &
     sysctl -w fs.inotify.max_user_watches=12000 &
+    systemctl stop firewalld
+    systemctl disable firewalld
 
     --BOUNDARY--
 
