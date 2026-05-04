@@ -1,6 +1,6 @@
 # funnel
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.20](https://img.shields.io/badge/Version-0.1.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,8 +8,8 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.30 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.85 |
+| file://../common | common | 0.1.34 |
+| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.31 |
 
 ## Values
 
@@ -23,6 +23,10 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
+| funnel.Kubernetes.DisableJobCleanup | bool | `true` |  |
+| funnel.Kubernetes.DisableReconciler | bool | `true` |  |
+| funnel.Kubernetes.ReconcileRate | string | `"120s"` |  |
+| funnel.Kubernetes.Timeout.duration | string | `"300s"` |  |
 | funnel.Logger.Level | string | `"info"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
@@ -41,12 +45,6 @@ A Helm chart for Kubernetes
 | funnel.image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
-| funnel.mongodb.enabled | bool | `false` |  |
-| funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
-| funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
-| funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
-| funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
-| funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
 | funnel.postgresql.enabled | bool | `false` |  |
 | funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
 | funnel.resources.requests.memory | string | `"2Gi"` |  |
@@ -88,6 +86,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
+| global.kubeapi_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -102,6 +101,9 @@ A Helm chart for Kubernetes
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | metricsEnabled | bool | `false` |  |
+| netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
 | oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
 | partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |

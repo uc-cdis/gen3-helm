@@ -1,0 +1,551 @@
+{{- if (.Values.portalBuild.enabled) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-deployment
+  labels:
+    {{- include "portal.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "portal.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 8 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+      labels:
+        public: "yes"
+        {{- include "portal.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "portal.serviceAccountName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: true
+      volumes:
+      - name: cache-mountpoint
+        persistentVolumeClaim:
+          claimName: {{ .Values.portalBuild.s3csi.pvcName | quote }}
+      {{- if .Values.customConfig.enabled }}
+      - name: config-volume
+        emptyDir: {}
+      {{- else }}
+      - name: config-volume
+        secret:
+          secretName: "portal-config"
+      - name: sponsor-img-volume
+        secret:
+          secretName: "portal-sponsor-config"
+      - name: privacy-policy
+        configMap:
+          name: "privacy-policy"
+          optional: true
+      {{- end }}
+      {{- if .Values.extraImages }}
+      - name: extra-images-config
+        configMap:
+          name: portal-extra-images
+      - name: extra-images
+        emptyDir: {}
+      {{- end }}
+      - name: scripts-compute
+        secret:
+          secretName: compute-signature
+          defaultMode: 0755
+      - name: scripts-trigger
+        secret:
+          secretName: check-and-trigger
+          defaultMode: 0755
+      - name: portal-overrides
+        secret:
+          secretName: portal-overrides
+      - name: sigshare
+        emptyDir: {}
+      - name: docroot
+        emptyDir: {}
+      - name: portal-nginx-config
+        configMap:
+          name: portal-nginx-config
+      initContainers:
+      {{- if .Values.customConfig.enabled }}
+        - name: config-puller
+          image: alpine/git
+          env:
+          - name: CONFIG_DIR
+            value: {{ .Values.customConfig.dir }}
+          - name: GIT_REPO
+            value: {{ .Values.customConfig.repo  }}
+          - name: GIT_BRANCH
+            value: {{ .Values.customConfig.branch }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+
+              log() { echo "[$(date -u +'%Y-%m-%dT%H:%M:%SZ')] $*"; }
+              die() { log "ERROR: $*"; exit 1; }
+
+              REPO_DIR="/tmp/repo"
+              CLONE_DIR="${REPO_DIR}/custom"
+              SRC_DIR="{{ .Values.customConfig.dir }}"
+              DEST_DIR="/gen3/config"
+
+              # Retry settings (tune as desired)
+              MAX_ATTEMPTS="${MAX_ATTEMPTS:-8}"     # total tries
+              SLEEP_SECONDS="${SLEEP_SECONDS:-5}"   # initial backoff
+              MAX_SLEEP="${MAX_SLEEP:-40}"          # cap backoff
+
+              retry() {
+                attempt=1
+                sleep_s="$SLEEP_SECONDS"
+                while :; do
+                  log "Attempt ${attempt}/${MAX_ATTEMPTS}: $*"
+                  if "$@"; then
+                    return 0
+                  fi
+                  if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+                    return 1
+                  fi
+                  log "Command failed. Sleeping ${sleep_s}s before retry..."
+                  sleep "$sleep_s"
+                  attempt=$((attempt + 1))
+                  # exponential backoff with cap
+                  sleep_s=$((sleep_s * 2))
+                  if [ "$sleep_s" -gt "$MAX_SLEEP" ]; then
+                    sleep_s="$MAX_SLEEP"
+                  fi
+                done
+              }
+
+              log "Preparing repo dir: ${REPO_DIR}"
+              rm -rf "$REPO_DIR"
+              mkdir -p "$REPO_DIR"
+              cd "$REPO_DIR" || die "Failed to cd to ${REPO_DIR}"
+
+              : "${GIT_REPO:?GIT_REPO is not set}"
+              : "${GIT_BRANCH:?GIT_BRANCH is not set}"
+
+              log "Cloning repo (branch=${GIT_BRANCH}) from ${GIT_REPO}"
+              retry git clone \
+                --depth 1 \
+                --single-branch \
+                --branch "${GIT_BRANCH}" \
+                --filter=blob:none \
+                --sparse \
+                "${GIT_REPO}" custom \
+                || die "git clone failed after ${MAX_ATTEMPTS} attempts (likely DNS/network)."
+
+              cd "$CLONE_DIR" || die "Clone dir missing: ${CLONE_DIR}"
+
+              log "Setting sparse checkout: ${SRC_DIR}"
+              git sparse-checkout set "$SRC_DIR" \
+                || die "sparse-checkout failed for path: ${SRC_DIR}"
+
+              if [ ! -d "$SRC_DIR" ]; then
+                log "Repo tree at $(pwd):"
+                ls -la
+                die "Expected directory not found after sparse checkout: ${SRC_DIR}"
+              fi
+
+              cd "$SRC_DIR" || die "Failed to cd to ${SRC_DIR}"
+
+              log "Copying config to ${DEST_DIR}"
+              mkdir -p "$DEST_DIR"
+              # copy dotfiles too
+              cp -R . "$DEST_DIR"/ || die "Copy to ${DEST_DIR} failed"
+
+              log "Final contents of ${DEST_DIR}:"
+              ls -la "$DEST_DIR"
+
+              log "Init container completed successfully."
+          volumeMounts:
+            - name: config-volume
+              mountPath: /gen3/config
+          {{- end }}
+        - name: sig-compute
+          image: {{ .Values.portalBuild.images.builder | quote }}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash","-lc"]
+          args:
+          - |
+            set -e
+            mkdir -p /etc/portal-build
+            APP="${APP:-dev}" GEN3_BUNDLE="${GEN3_BUNDLE:-commons}" BASENAME="${BASENAME:-}" NODE_ENV="production" \
+              /secret-scripts/compute_signature.sh > /etc/portal-build/sig
+            echo "[INFO] precomputed signature: $(cat /etc/portal-build/sig)"
+          env:
+          - name: APP
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: portal_app
+          - name: GEN3_BUNDLE
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-portal
+                key: GEN3_BUNDLE
+                optional: true
+          volumeMounts:
+          - name: scripts-compute
+            mountPath: /secret-scripts
+            readOnly: true
+          - name: sigshare
+            mountPath: /etc/portal-build
+          {{- if .Values.customConfig.enabled }}
+          - name: config-volume
+            mountPath: /data-portal/data/config/gitops.json
+            subPath: gitops.json
+          - name: config-volume
+            mountPath: /data-portal/custom/
+          {{-  else }}
+          - name: "config-volume"
+            mountPath: "/data-portal/data/config/gitops.json"
+            subPath: "gitops.json"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/logo/gitops-logo.png"
+            subPath: "gitops-logo.png"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/createdby/gitops.png"
+            subPath: "gitops-createdby.png"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+            subPath: "gitops-favicon.ico"
+          - name: "config-volume"
+            mountPath: "/data-portal/custom/css/gitops.css"
+            subPath: "gitops.css"
+          - name: "sponsor-img-volume"
+            mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+          - name: "privacy-policy"
+            readOnly: true
+            mountPath: "/data-portal/custom/privacy_policy.md"
+            subPath: "privacy_policy.md"
+          {{- end }}            
+        - name: job-launcher
+          image: {{ .Values.portalBuild.images.kubectl | quote }}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash","-lc"]
+          args:
+          - |
+            set -euo pipefail
+            /secret-trigger/check_and_trigger_build.sh
+          env:
+          - name: APP
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: portal_app
+          - name: GEN3_BUNDLE
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-portal
+                key: GEN3_BUNDLE
+                optional: true
+          - name: NAMESPACE
+            value: {{ .Release.Namespace | quote }}
+          - name: SIG_CONFIGMAP_NAME
+            value: webpack-build-sig
+          - name: LOCK_CONFIGMAP_NAME
+            value: webpack-build-lock
+          - name: JOB_NAME_PREFIX
+            value: webpack-build
+          - name: BUILDER_IMAGE
+            value: {{ .Values.portalBuild.images.builder | quote }}
+          - name: PVC_NAME
+            value: {{ .Values.portalBuild.s3csi.pvcName | quote }}
+          volumeMounts:
+          - name: scripts-trigger
+            mountPath: /secret-trigger
+            readOnly: true
+          - name: sigshare
+            mountPath: /etc/portal-build
+            readOnly: true
+        - name: untar
+          image: {{ .Values.portalBuild.images.alpine | quote }}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-lc"]
+          args:
+          - |
+            set -eu
+            SIG_FILE="/etc/portal-build/sig"
+            CACHE="/cache"
+            DOCROOT="/usr/share/nginx/html"
+            for i in $(seq 1 120); do [ -s "${SIG_FILE}" ] && break; sleep 1; done
+            [ -s "${SIG_FILE}" ] || exit 0
+            SIG="$(tr -d '\n' < "${SIG_FILE}")"
+            TARBALL="${CACHE}/${SIG}.tar.gz"
+            for i in $(seq 1 600); do [ -f "${TARBALL}" ] && break; sleep 1; done
+            [ -f "${TARBALL}" ] || exit 0
+            mkdir -p "${DOCROOT}"
+            rm -rf "${DOCROOT:?}/"* "${DOCROOT:?}"/.[!.]* "${DOCROOT:?}"/..?* 2>/dev/null || true
+            {{- if .Values.portalBuild.extraction.stripComponents }}
+            tar -C "${DOCROOT}" --strip-components=1 -xzf "${TARBALL}"
+            {{- else }}
+            tar -C "${DOCROOT}" -xzf "${TARBALL}"
+            {{- end }}
+            echo "${SIG}" > "${DOCROOT}/.extracted_sig"
+            APP="${APP:-gitops}"
+            if [ -f /data-portal/custom/logo/${APP}-logo.png ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/logo/${APP}-logo.png "${DOCROOT}/src/img/logo.png"
+            fi
+            if [ -f /data-portal/custom/favicon/${APP}-favicon.ico ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/favicon/${APP}-favicon.ico "${DOCROOT}/favicon.ico"
+              cp -f /data-portal/custom/favicon/${APP}-favicon.ico "${DOCROOT}/src/img/favicon.ico"
+            fi
+            if [ -f /data-portal/custom/createdby/${APP}.png ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              cp -f /data-portal/custom/createdby/${APP}.png "${DOCROOT}/src/img/createdby.png"
+            fi
+            if [ -d /data-portal/custom/sponsors/${APP}-sponsors ]; then
+              mkdir -p "${DOCROOT}/src/img"
+              rm -rf "${DOCROOT}/src/img/sponsors"
+              cp -R /data-portal/custom/sponsors/${APP}-sponsors "${DOCROOT}/src/img/sponsors"
+            fi            
+          volumeMounts:
+          - name: cache-mountpoint
+            mountPath: /cache
+            readOnly: true
+          - name: docroot
+            mountPath: /usr/share/nginx/html
+          - name: sigshare
+            mountPath: /etc/portal-build
+            readOnly: true
+          - name: config-volume
+            mountPath: /data-portal/custom
+      {{- if .Values.extraImages }}
+        - name: init
+          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "quay.io/prometheus/busybox:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: extra-images-config
+            mountPath: /data-portal/custom/config.txt
+            subPath: config.txt
+          - name: extra-images
+            mountPath: /data-portal/custom/images
+          command:
+          - sh
+          - -c
+          - | 
+            cd /data-portal/custom/images/;
+            cat /data-portal/custom/config.txt;
+            xargs -a /data-portal/custom/config.txt -I {} wget {}
+      {{- end }}
+      containers:
+      {{- if .Values.portalBuild.hotReapply }}
+        - name: hot-reapply
+          image: {{ .Values.portalBuild.images.alpine | quote }}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-lc"]
+          args:
+          - |
+            set -eu
+            SIG_FILE="/etc/portal-build/sig"
+            CACHE="/cache"
+            DOCROOT="/usr/share/nginx/html"
+            MARK="${DOCROOT}/.extracted_sig"
+            cur_sig=""
+            [ -f "${MARK}" ] && cur_sig="$(cat "${MARK}" 2>/dev/null || true)"
+
+            while true; do
+              if [ -s "${SIG_FILE}" ]; then
+                new_sig="$(tr -d '\n' < "${SIG_FILE}")"
+                if [ "${new_sig}" != "${cur_sig}" ] && [ -f "${CACHE}/${new_sig}.tar.gz" ]; then
+                  echo "[hot] new tar ${new_sig} detected; extracting"
+                  {{- if .Values.portalBuild.extraction.stripComponents }}
+                  tar -C "${DOCROOT}" --overwrite --strip-components=1 -xzf "${CACHE}/${new_sig}.tar.gz"
+                  {{- else }}
+                  tar -C "${DOCROOT}" --overwrite -xzf "${CACHE}/${new_sig}.tar.gz"
+                  {{- end }}
+                  echo "${new_sig}" > "${MARK}"
+                  cur_sig="${new_sig}"
+                fi
+              fi
+              sleep 5
+            done
+          volumeMounts:
+          - name: cache-mountpoint
+            mountPath: /cache
+            readOnly: true
+          - name: docroot
+            mountPath: /usr/share/nginx/html
+          - name: sigshare
+            mountPath: /etc/portal-build
+            readOnly: true
+        {{- end }}
+        - name: portal
+          image: {{ .Values.portalBuild.images.nginx | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            httpGet:
+              {{- if eq "gen3ff" .Values.global.frontendRoot }}
+              path: /portal
+              {{- else }}
+              path: /
+              {{- end }}
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: HOSTNAME
+              value: revproxy-service
+            # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
+            # see https://github.com/npm/cli/issues/3163
+            - name: NPM_CONFIG_UPDATE_NOTIFIER
+              value: "false"
+            - name: NODE_ENV
+              value: "dev"
+            - name: APP
+              value: {{ .Values.global.portalApp | quote }}
+            {{- if .Values.gitops.gen3Bundle }}
+            - name: GEN3_BUNDLE
+              value: {{ .Values.gitops.gen3Bundle | quote }}
+            {{- end }}
+            - name: LOGOUT_INACTIVE_USERS
+              value: {{ .Values.global.logoutInactiveUsers | quote }}
+            - name: WORKSPACE_TIMEOUT_IN_MINUTES
+              value: {{ .Values.global.workspaceTimeoutInMinutes | quote }}
+            - name: TIER_ACCESS_LEVEL
+              value: {{ .Values.global.tierAccessLevel | quote }}
+            - name: TIER_ACCESS_LIMIT
+              value: {{ .Values.global.tierAccessLimit | quote }}
+            {{- if .Values.global.fenceURL }}
+            - name: FENCE_URL
+              value: {{ .Values.global.fenceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.indexdURL }}
+            - name: INDEXD_URL
+              value: {{ .Values.global.indexdURL | quote }}
+            {{- end }}
+            {{- if .Values.global.workspaceURL }}
+            - name: WORKSPACE_URL
+              value: {{ .Values.global.workspaceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.manifestServiceURL }}
+            - name: MANIFEST_SERVICE_URL
+              value: {{ .Values.global.manifestServiceURL | quote }}
+            {{- end }}
+            {{- if .Values.global.wtsURL }}
+            - name: WTS_URL
+              value: {{ .Values.global.wtsURL | quote }}
+            {{- end }}
+            {{- if .Values.global.privacyPolicyURL }}
+            - name: PRIVACY_POLICY_URL
+              value: {{ .Values.global.privacyPolicyURL | quote }}
+            {{- end }}
+            {{- if .Values.global.mapboxToken }}
+            - name: MAPBOX_API_TOKEN
+              value: {{ .Values.global.mapboxToken | quote }}
+            {{- end }}
+            {{- with .Values.datadogApplicationId  }}      
+            - name: DATADOG_APPLICATION_ID
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.datadogClientToken  }}      
+            - name: DATADOG_CLIENT_TOKEN
+              value: {{ . }}
+            {{- end }}
+            {{- with .Values.dataUploadBucket  }}
+            - name: DATA_UPLOAD_BUCKET
+              value: {{ . }}
+            {{- end }}
+            {{- if eq "gen3ff" .Values.global.frontendRoot }}
+            - name: BASENAME
+              value: /portal
+            {{- end }}
+          volumeMounts:
+            {{- if .Values.extraImages  }}
+            - name: extra-images
+              mountPath: /data-portal/custom/images
+            {{- end }}
+            - name: docroot
+              mountPath: /usr/share/nginx/html            
+            - name: cache-mountpoint
+              mountPath: /data-portal/cache
+            - name: portal-nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+            {{- if .Values.customConfig.enabled }}
+            - name: config-volume
+              mountPath: /data-portal/data/config/gitops.json
+              subPath: gitops.json
+            - name: config-volume
+              mountPath: /data-portal/custom/
+            {{-  else }}
+            - name: "config-volume"
+              mountPath: "/data-portal/data/config/gitops.json"
+              subPath: "gitops.json"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/logo/gitops-logo.png"
+              subPath: "gitops-logo.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/createdby/gitops.png"
+              subPath: "gitops-createdby.png"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/favicon/gitops-favicon.ico"
+              subPath: "gitops-favicon.ico"
+            - name: "config-volume"
+              mountPath: "/data-portal/custom/css/gitops.css"
+              subPath: "gitops.css"
+            - name: "sponsor-img-volume"
+              mountPath: "/data-portal/custom/sponsors/gitops-sponsors"
+            - name: "privacy-policy"
+              readOnly: true
+              mountPath: "/data-portal/custom/privacy_policy.md"
+              subPath: "privacy_policy.md"
+            {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: webpack-build-role
+  namespace: {{ .Release.Namespace }}
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get","list","create","update","patch","delete"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["create","get","list","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webpack-build-rb
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "portal.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: webpack-build-role 
+{{- end }}
+              

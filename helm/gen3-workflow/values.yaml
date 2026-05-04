@@ -43,6 +43,7 @@ global:
   netPolicy:
     # -- (bool) Whether network policies are enabled
     enabled: false
+    dbSubnets: []
   # -- (map) Karpenter topology spread configuration.
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
@@ -249,6 +250,7 @@ volumeMounts:
     mountPath: "/src/gen3-workflow-config.yaml"
     subPath: "gen3-workflow-config.yaml"
   # Added an additional volume mount for new images using the /<app-name> directory, while retaining the 'src' mount for backward compatibility.
+  # TODO: remove later
   - name: "config-volume"
     readOnly: true
     mountPath: "/gen3-workflow/gen3-workflow-config.yaml"
@@ -287,14 +289,16 @@ gen3WorkflowConfig:
   debug: false
   # -- (bool) Enables verbose logging specifically for httpx requests.
   httpxDebug: false
-  # -- (string) URL prefix used for serving OpenAPI documentation.
-  docsUrlPrefix: /gen3workflow
+  # -- (string) For deployments that run the app behind a proxy. The value should start with a slash.
+  proxyPrefix: /workflows
   # -- (string) Custom Arborist URL. Ignored if already set via environment variable.
   arboristUrl: ""
   # -- (bool) Enables mock authentication, bypassing Arborist. Use only for development.
   mockAuth: false
   # -- (string) AWS region used for creating user S3 buckets.
   userBucketsRegion: us-east-1
+  # -- (string) Connect to another S3-compatible service than AWS S3 (default: AWS S3)
+  s3UpstreamEndpoint: ""
   # -- (int) Number of days after which workflow-generated S3 objects are deleted.
   s3ObjectsExpirationDays: 30
   # -- (string) AWS Access Key ID used to make S3 requests on behalf of users.
@@ -314,3 +318,6 @@ gen3WorkflowConfig:
   enablePrometheusMetrics: false
   # -- (string) Filesystem directory used for Prometheus multi-process metrics collection.
   prometheusMultiprocDir: /var/tmp/prometheus_metrics
+  # -- (bool) When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector
+  # and Tolerations. Disable this if using a cluster that does not support nodepools.
+  enableOptimizedNodeScheduling: true

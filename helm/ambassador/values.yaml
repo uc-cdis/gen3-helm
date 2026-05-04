@@ -28,7 +28,6 @@ global:
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
 
-
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 

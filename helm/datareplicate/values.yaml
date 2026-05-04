@@ -97,6 +97,7 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
+  VALIDATE_PLATFORM: "AWS"
 
 batchServiceAccount:
   annotations: {}

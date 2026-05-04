@@ -60,22 +60,44 @@ spec:
             - /bin/sh
             - -c
             - |
+              echo "Starting config puller initContainer"
+
               mkdir -p /tmp/repo
               cd /tmp/repo
-              # Clone with sparse checkout and filter
-              git clone --depth 1 ${GIT_REPO} siteconfig
-              cd siteconfig
 
-              # Fetch the branch
-              git fetch origin ${GIT_BRANCH}:config_branch
-              git switch config_branch
+              echo "Cloning repo: ${GIT_REPO} (branch: ${GIT_BRANCH}) into /tmp/repo"
+              git clone --depth 1 --branch ${GIT_BRANCH} --filter=blob:none --sparse ${GIT_REPO} /tmp/repo
+
+              cd /tmp/repo
+
+              # Handle empty CONFIG_DIR (root checkout)
+              if [ -z "${CONFIG_DIR}" ]; then
+                echo "CONFIG_DIR is empty → disabling sparse checkout (full repo will be used)"
+                git sparse-checkout disable
+              else
+                echo "CONFIG_DIR='${CONFIG_DIR}' → enabling sparse checkout for this path"
+                git sparse-checkout set ${CONFIG_DIR}
+              fi
+
+              echo "Repository ready, starting file copy"
+
               {{- if .Values.customConfig.dir }}
-              cp -r /tmp/repo/siteconfig/{{ .Values.customConfig.dir }}/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/{{ .Values.customConfig.dir }}/public/* /gen3/public
+              echo "Using customConfig.dir='{{ .Values.customConfig.dir }}'"
+              echo "Copying config from /tmp/repo/{{ .Values.customConfig.dir }}/config → /gen3/config"
+              cp -r /tmp/repo/{{ .Values.customConfig.dir }}/config/* /gen3/config
+
+              echo "Copying public from /tmp/repo/{{ .Values.customConfig.dir }}/public → /gen3/public"
+              cp -r /tmp/repo/{{ .Values.customConfig.dir }}/public/* /gen3/public
               {{- else }}
-              cp -r /tmp/repo/siteconfig/config/* /gen3/config
-              cp -r /tmp/repo/siteconfig/public/* /gen3/public
+              echo "No customConfig.dir set → using repo root directories"
+              echo "Copying config from /tmp/repo/config → /gen3/config"
+              cp -r /tmp/repo/config/* /gen3/config
+
+              echo "Copying public from /tmp/repo/public → /gen3/public"
+              cp -r /tmp/repo/public/* /gen3/public
               {{- end }}
+
+              echo "Config puller completed successfully"
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
@@ -119,10 +141,10 @@ spec:
                 name: {{ include "frontend-framework.fullname" . }}-configmap
                 optional: true
           env:
-            - name: PORT
-              value: {{ .Values.port | quote }}
-            - name: HOSTNAME
-              value: revproxy-service
+              {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
             {{- if eq "portal" .Values.global.frontendRoot }}
             - name: BASE_PATH
               value: /ff
@@ -131,6 +153,12 @@ spec:
               value: /portal
             {{- end }}
           {{- if .Values.customConfig.enabled }}
+            - name: DATADOG_APPLICATION_ID
+              value: {{ .Values.env.DATADOG_APPLICATION_ID | quote }}
+            - name: DATADOG_CLIENT_TOKEN
+              value: {{ .Values.env.DATADOG_CLIENT_TOKEN | quote }}
+            - name: DATACOMMONS
+              value: {{ .Values.env.DATACOMMONS | quote }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config

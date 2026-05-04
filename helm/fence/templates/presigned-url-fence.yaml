@@ -31,7 +31,7 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
       labels:
-        app: "presigned-url-fence" 
+        app: "presigned-url-fence"
         authprovder: "yes"
         netnolimit: "yes"
         public: "yes"
@@ -94,3 +94,42 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- if .Values.global.netPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: presigned-url-fence-db-netpolicy
+spec:
+  egress:
+  {{- if .Values.global.dev }}
+  - to:
+    - podSelector:
+        matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+              - "postgresql"
+    - podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - "gen3-elasticsearch-master"
+  {{- else }}
+  {{- range .Values.global.netPolicy.dbSubnets }}
+  - to:
+    - ipBlock:
+        cidr: {{ . }}
+  {{- end }}
+  {{- end }}
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - presigned-url-fence
+          - gen3job
+  policyTypes:
+  - Egress
+{{- end }}

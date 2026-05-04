@@ -17,6 +17,7 @@ configuration:
 alb-controller:
   enabled: false
   targetRevision: "1.13.4"
+  hostNetworkEnabled: false
   configuration:
     enabled: false
 
@@ -77,6 +78,12 @@ argo-workflows:
   configuration:
     enabled: false
 
+cilium:
+  enabled: false
+  targetRevision: "1.18.4"
+  configuration:
+    enabled: false
+
 custom-objects:
   enabled: false
 
@@ -127,6 +134,8 @@ karpenter-crds:
   targetRevision: master
   amiSelectorName: "EKS-FIPS*"
   amiOwner: "143731057154"
+  useAlias: false
+  alias: "al2023@latest"
   selectorTag: ""
   migration: false
   default:
@@ -257,6 +266,13 @@ kube-state-metrics:
   configuration:
     enabled: false
   targetRevision: 6.3.0
+
+metrics-server:
+  enabled: false
+  targetRevision: "3.13.0"
+  hostNetworkEnabled: false
+  configuration:
+    enabled: false
 
 nvidia-device-plugin:
   enabled: false

@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.44](https://img.shields.io/badge/Version-0.1.44-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 indexd
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.30 |
+| file://../common | common | 0.1.34 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -19,7 +19,7 @@ A Helm chart for gen3 indexd
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| defaultPrefix | string | `"PREFIX/"` | default prefix for indexd |
+| defaultPrefix | string | `"PREFIX/"` | default prefix for indexd - must end in slash |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"pushSecret":false,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -72,6 +72,7 @@ A Helm chart for gen3 indexd
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
+| migrateToSingleTable.args | string | `nil` |  |
 | nameOverride | string | `""` | Override the name of the chart. |
 | netPolicy | map | `{"egressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"],"ingressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]` | List of apps that this app requires egress to |

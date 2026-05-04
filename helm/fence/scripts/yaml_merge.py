@@ -35,7 +35,7 @@ def merge_dicts(dict1, dict2):
 
 def save_merged_file(merged_data, output_file_path):
     with open(output_file_path, 'w') as output_file:
-        yaml.dump(merged_data, output_file, default_flow_style=False)
+        yaml.dump(merged_data, output_file, default_flow_style=False, sort_keys=False)
 
 if __name__ == "__main__":
     # Check if at least two arguments are provided (including the script name)

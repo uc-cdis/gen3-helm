@@ -2,3 +2,119 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: "{{ include "hatchery.jupyterNamespace" . }}"
+  labels:
+    role: "usercode"
+{{- if .Values.global.netPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpolicy-allow-nothing
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+spec:
+  ingress: []
+  egress: []
+  podSelector: {}
+  policyTypes:
+    - Egress
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+spec:
+  egress:
+  - ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+    to:
+    - namespaceSelector: {}
+  podSelector: {}
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpolicy-metrics
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      # let alloy scrape metrics
+      - namespaceSelector:
+          matchLabels:
+            app.kubernetes.io/instance: alloy
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpolicy-notebook
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+  # Note - deploy to the usercode namespace
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app: "hatchery"
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app: "ambassador"
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpolicy-usercode
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+  # Note - deploy to the usercode namespace
+spec:
+  podSelector: {}
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ include "hatchery.fullname" . }}
+        podSelector:
+          matchLabels:
+            userhelper: "yes"
+  policyTypes:
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-jupyter-namespace
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - ambassador
+          - hatchery
+  policyTypes:
+    - Egress
+  egress:
+      - to:
+          - namespaceSelector:
+              matchLabels:
+                name: "{{ include "hatchery.jupyterNamespace" . }}"
+{{- end }}

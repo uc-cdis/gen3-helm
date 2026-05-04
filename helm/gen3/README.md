@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.2.135](https://img.shields.io/badge/Version-0.2.135-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.39](https://img.shields.io/badge/Version-0.3.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,44 +18,47 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.16 |
-| file://../ambassador | ambassador | 0.1.31 |
-| file://../arborist | arborist | 0.1.30 |
-| file://../argo-wrapper | argo-wrapper | 0.1.25 |
-| file://../audit | audit | 0.1.37 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.37 |
-| file://../cedar | cedar | 0.1.20 |
-| file://../cohort-middleware | cohort-middleware | 0.1.18 |
-| file://../common | common | 0.1.30 |
-| file://../dashboard | dashboard | 0.1.15 |
-| file://../data-upload-cron | data-upload-cron | 0.1.2 |
-| file://../datareplicate | datareplicate | 0.1.16 |
-| file://../dicom-server | dicom-server | 0.1.25 |
-| file://../embedding-management-service | embedding-management-service | 0.1.3 |
-| file://../etl | etl | 0.1.21 |
-| file://../fence | fence | 0.1.69 |
-| file://../frontend-framework | frontend-framework | 0.1.21 |
-| file://../funnel | funnel | 0.1.2 |
-| file://../gen3-analysis | gen3-analysis | 0.1.6 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.11 |
-| file://../gen3-workflow | gen3-workflow | 0.1.11 |
-| file://../guppy | guppy | 0.1.32 |
-| file://../hatchery | hatchery | 0.1.62 |
-| file://../indexd | indexd | 0.1.39 |
-| file://../manifestservice | manifestservice | 0.1.38 |
-| file://../metadata | metadata | 0.1.39 |
+| file://../access-backend | access-backend | 0.1.18 |
+| file://../ambassador | ambassador | 0.1.35 |
+| file://../arborist | arborist | 0.1.32 |
+| file://../argo-wrapper | argo-wrapper | 0.1.27 |
+| file://../audit | audit | 0.1.39 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.39 |
+| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.0 |
+| file://../cedar | cedar | 0.1.22 |
+| file://../cohort-middleware | cohort-middleware | 0.1.20 |
+| file://../common | common | 0.1.34 |
+| file://../dashboard | dashboard | 0.1.17 |
+| file://../data-upload-cron | data-upload-cron | 0.1.4 |
+| file://../datareplicate | datareplicate | 0.1.19 |
+| file://../dicom-server | dicom-server | 0.1.28 |
+| file://../embedding-management-service | embedding-management-service | 0.1.5 |
+| file://../etl | etl | 0.1.22 |
+| file://../fence | fence | 0.1.75 |
+| file://../frontend-framework | frontend-framework | 0.1.27 |
+| file://../funnel | funnel | 0.1.20 |
+| file://../gen3-analysis | gen3-analysis | 0.1.10 |
+| file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.13 |
+| file://../gen3-workflow | gen3-workflow | 0.1.18 |
+| file://../guppy | guppy | 0.1.35 |
+| file://../hatchery | hatchery | 0.1.66 |
+| file://../indexd | indexd | 0.1.44 |
+| file://../manifestservice | manifestservice | 0.1.40 |
+| file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohif-viewer | ohif-viewer | 0.1.9 |
-| file://../orthanc | orthanc | 0.1.10 |
-| file://../peregrine | peregrine | 0.1.38 |
-| file://../portal | portal | 0.1.53 |
-| file://../requestor | requestor | 0.1.30 |
-| file://../revproxy | revproxy | 0.1.52 |
-| file://../sheepdog | sheepdog | 0.1.38 |
-| file://../sower | sower | 0.1.41 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.41 |
-| file://../wts | wts | 0.1.36 |
+| file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
+| file://../ohdsi-webapi | ohdsi-webapi | 0.1.3 |
+| file://../ohif-viewer | ohif-viewer | 0.1.11 |
+| file://../orthanc | orthanc | 0.1.12 |
+| file://../peregrine | peregrine | 0.1.40 |
+| file://../portal | portal | 0.1.56 |
+| file://../requestor | requestor | 0.1.32 |
+| file://../revproxy | revproxy | 0.1.56 |
+| file://../sheepdog | sheepdog | 0.1.40 |
+| file://../sower | sower | 0.1.43 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
+| file://../wts | wts | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -80,6 +83,7 @@ Helm chart to deploy Gen3 Data Commons
 | aws-es-proxy.secrets | map | `{"awsAccessKeyId":"","awsSecretAccessKey":""}` | Secret information |
 | aws-es-proxy.secrets.awsAccessKeyId | str | `""` | AWS access key ID for aws-es-proxy |
 | aws-es-proxy.secrets.awsSecretAccessKey | str | `""` | AWS secret access key for aws-es-proxy |
+| aws-sigv4-proxy.enabled | bool | `false` | Where to deploy the more up-to-date aws-sigv4-proxy |
 | cedar | map | `{"enabled":false}` | Configurations for cedar chart. |
 | cedar.enabled | bool | `false` | Whether to deploy the cedar subchart. |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
@@ -157,14 +161,14 @@ Helm chart to deploy Gen3 Data Commons
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
-| global.gcp | map | `{"enabled":false}` | GCP configuration |
+| global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
 | global.metricsEnabled | bool | `true` |  |
-| global.netPolicy | bool | `{"dbSubnet":"","enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
-| global.netPolicy.dbSubnet | array | `""` | A CIDR range representing a database subnet, that services with a database need access to |
+| global.netPolicy | bool | `{"dbSubnets":[],"enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
+| global.netPolicy.dbSubnets | array | `[]` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
@@ -186,12 +190,29 @@ Helm chart to deploy Gen3 Data Commons
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |
 | hatchery.enabled | bool | `true` | Whether to deploy the hatchery subchart. |
-| hatchery.hatchery.containers[0] | int | `{"args":["--NotebookApp.base_url=/lw-workspace/proxy/","--NotebookApp.default_url=/lab","--NotebookApp.password=''","--NotebookApp.token=''","--NotebookApp.shutdown_no_activity_timeout=5400","--NotebookApp.quit_button=False"],"command":["start-notebook.sh"],"cpu-limit":"1.0","env":{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"},"fs-gid":100,"gen3-volume-location":"/home/jovyan/.gen3","image":"quay.io/cdis/heal-notebooks:combined_tutorials__latest","lifecycle-post-start":["/bin/sh","-c","export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"],"memory-limit":"2Gi","name":"(Tutorials) Example Analysis Jupyter Lab Notebooks","path-rewrite":"/lw-workspace/proxy/","ready-probe":"/lw-workspace/proxy/","target-port":8888,"use-tls":"false","user-uid":1000,"user-volume-location":"/home/jovyan/pd"}` | port to proxy traffic to in docker contaniner |
-| hatchery.hatchery.containers[0].cpu-limit | string | `"1.0"` | cpu limit of workspace container |
-| hatchery.hatchery.containers[0].env | object | `{"FRAME_ANCESTORS":"https://{{ .Values.global.hostname }}"}` | environment variables for workspace container |
-| hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/heal-notebooks:combined_tutorials__latest"` | docker image for workspace |
-| hatchery.hatchery.containers[0].memory-limit | string | `"2Gi"` | memory limit of workspace container |
-| hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` | name of workspace |
+| hatchery.hatchery.containers[0].args[0] | string | `"--NotebookApp.base_url=/lw-workspace/proxy/"` |  |
+| hatchery.hatchery.containers[0].args[1] | string | `"--NotebookApp.default_url=/lab"` |  |
+| hatchery.hatchery.containers[0].args[2] | string | `"--NotebookApp.password=''"` |  |
+| hatchery.hatchery.containers[0].args[3] | string | `"--NotebookApp.token=''"` |  |
+| hatchery.hatchery.containers[0].args[4] | string | `"--NotebookApp.shutdown_no_activity_timeout=5400"` |  |
+| hatchery.hatchery.containers[0].args[5] | string | `"--NotebookApp.quit_button=False"` |  |
+| hatchery.hatchery.containers[0].command[0] | string | `"start-notebook.sh"` |  |
+| hatchery.hatchery.containers[0].cpu-limit | string | `"2"` |  |
+| hatchery.hatchery.containers[0].env.FRAME_ANCESTORS | string | `"https://{{ .Values.global.hostname }}"` |  |
+| hatchery.hatchery.containers[0].fs-gid | int | `100` |  |
+| hatchery.hatchery.containers[0].gen3-volume-location | string | `"/home/jovyan/.gen3"` |  |
+| hatchery.hatchery.containers[0].image | string | `"quay.io/cdis/jupyter-superslim:2.1.0"` |  |
+| hatchery.hatchery.containers[0].lifecycle-post-start[0] | string | `"/bin/sh"` |  |
+| hatchery.hatchery.containers[0].lifecycle-post-start[1] | string | `"-c"` |  |
+| hatchery.hatchery.containers[0].lifecycle-post-start[2] | string | `"export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found; ln -s /data /home/$IAM/pd/; true"` |  |
+| hatchery.hatchery.containers[0].memory-limit | string | `"3Gi"` |  |
+| hatchery.hatchery.containers[0].name | string | `"(Tutorials) Example Analysis Jupyter Lab Notebooks"` |  |
+| hatchery.hatchery.containers[0].path-rewrite | string | `"/lw-workspace/proxy/"` |  |
+| hatchery.hatchery.containers[0].ready-probe | string | `"/lw-workspace/proxy/"` |  |
+| hatchery.hatchery.containers[0].target-port | int | `8888` |  |
+| hatchery.hatchery.containers[0].use-tls | string | `"false"` |  |
+| hatchery.hatchery.containers[0].user-uid | int | `1010` |  |
+| hatchery.hatchery.containers[0].user-volume-location | string | `"/home/jovyan/pd"` |  |
 | hatchery.hatchery.reaper.enabled | bool | `true` |  |
 | hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
 | hatchery.hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
@@ -222,6 +243,8 @@ Helm chart to deploy Gen3 Data Commons
 | neuvector.ingress.namespace | string | `"nginx"` |  |
 | neuvector.policies.include | bool | `false` |  |
 | neuvector.policies.policyMode | string | `"Monitor"` |  |
+| ohdsi-atlas.enabled | bool | `false` | Whether to deploy the ohdsi-atlas subchart. |
+| ohdsi-webapi.enabled | bool | `false` | Whether to deploy the ohdsi-webapi subchart. |
 | ohif-viewer.enabled | bool | `false` | Whether to deploy the ohif-viewer subchart. |
 | orthanc.enabled | bool | `false` | Whether to deploy the orthanc subchart. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
