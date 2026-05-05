@@ -113,7 +113,7 @@ global:
     # -- (bool) Whether network policies are enabled
     enabled: false
     # -- (array) A CIDR range representing a database subnet, that services with a database need access to
-    dbSubnets: ""
+    dbSubnets: []
   # -- (int) Number of dispatcher jobs.
   dispatcherJobNum: "10"
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
@@ -164,6 +164,10 @@ audit:
   # -- (bool) Whether to deploy the audit subchart.
   enabled: true
 
+aws-sigv4-proxy:
+  # -- (bool) Where to deploy the more up-to-date aws-sigv4-proxy
+  enabled: false
+
 aws-es-proxy:
   # -- (bool) Whether to deploy the aws-es-proxy subchart.
   enabled: false
@@ -182,7 +186,6 @@ datareplicate:
 
 embedding-management-service:
   enabled: false
-
 
 etl:
   # -- (bool) Whether to deploy the etl subchart.
@@ -255,7 +258,6 @@ gen3-user-data-library:
 gen3-workflow:
   # -- (bool) Whether to deploy the gen3-workflow subchart.
   enabled: false
-
 
 # -- (map) Configurations for guppy chart.
 guppy:
@@ -375,8 +377,7 @@ revproxy:
     # -- (bool) Whether to create the custom revproxy ingress
     enabled: false
     # -- (map) Annotations to add to the ingress.
-    annotations:
-      {}
+    annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     # -- (list) Where to route the traffic.

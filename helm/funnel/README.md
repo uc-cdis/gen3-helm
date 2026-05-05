@@ -23,6 +23,10 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
+| funnel.Kubernetes.DisableJobCleanup | bool | `true` |  |
+| funnel.Kubernetes.DisableReconciler | bool | `true` |  |
+| funnel.Kubernetes.ReconcileRate | string | `"120s"` |  |
+| funnel.Kubernetes.Timeout.duration | string | `"300s"` |  |
 | funnel.Logger.Level | string | `"info"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
@@ -41,12 +45,6 @@ A Helm chart for Kubernetes
 | funnel.image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
-| funnel.mongodb.enabled | bool | `false` |  |
-| funnel.mongodb.readinessProbe.enabled | bool | `true` |  |
-| funnel.mongodb.readinessProbe.failureThreshold | int | `10` |  |
-| funnel.mongodb.readinessProbe.initialDelaySeconds | int | `20` |  |
-| funnel.mongodb.readinessProbe.periodSeconds | int | `10` |  |
-| funnel.mongodb.readinessProbe.timeoutSeconds | int | `10` |  |
 | funnel.postgresql.enabled | bool | `false` |  |
 | funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
 | funnel.resources.requests.memory | string | `"2Gi"` |  |
@@ -88,6 +86,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
+| global.kubeapi_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |

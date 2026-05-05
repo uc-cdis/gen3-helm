@@ -72,6 +72,7 @@ A Helm chart for gen3 indexd
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
+| migrateToSingleTable.args | string | `nil` |  |
 | nameOverride | string | `""` | Override the name of the chart. |
 | netPolicy | map | `{"egressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"],"ingressApps":["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["fence","presigned-url-fence","fenceshib","peregrine","sheepdog","ssjdispatcherjob","metadata","mariner","mariner-engine"]` | List of apps that this app requires egress to |

@@ -285,7 +285,9 @@ uwsgi:
 # -- (string) default prefix for indexd - must end in slash
 defaultPrefix: "PREFIX/"
 useSingleTable: "False"
-
+migrateToSingleTable:
+  # -- (string) non-credential args for the migrate-to-single-table indexd job. Example: --start-did dg.4503/04de0c66-150b-4b8c-8043-c5ed7bbf04a4
+  args:
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"

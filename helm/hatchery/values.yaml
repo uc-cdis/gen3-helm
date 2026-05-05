@@ -198,6 +198,9 @@ volumeMounts:
 
 hatchery:
   json: ""
+  sharedWorkspaceEnabled: false
+  # ARN of the OIDC provider for shared workspace.
+  oidcProviderArn: ""
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
     cpu-limit: "0.1"

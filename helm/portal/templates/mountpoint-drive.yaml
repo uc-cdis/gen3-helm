@@ -1,8 +1,8 @@
-{{- if .Values.mountpointCacheEnabled }}
+{{- if and (.Values.portalBuild.s3csi.enabled) (.Values.portalBuild.enabled) -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: portal-pv-{{ .Release.Name }}
+  name: {{ .Values.portalBuild.s3csi.pvName | quote }}
 spec:
   capacity:
     storage: 1200Gi # ignored, required
@@ -11,26 +11,30 @@ spec:
   storageClassName: "" # Required for static provisioning
   claimRef: # To ensure no other PVCs can claim this PV
     namespace: {{ .Release.Namespace }}
-    name: portal-pvc-{{ .Release.Name }} # Name of your PVC
+    name: {{ .Values.portalBuild.s3csi.pvcName | quote }} # Name of your PVC
+  {{- with .Values.portalBuild.s3csi.mountOptions }}
   mountOptions:
-    - allow-delete
-    - region us-east-1
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
   csi:
     driver: s3.csi.aws.com # required
-    volumeHandle: s3-csi-driver-volume # Must be unique
+    volumeHandle: portal-volume-{{ .Release.Name }}-{{ .Release.Namespace }} # Must be unique
     volumeAttributes:
-      bucketName: {{ .Values.mountpointCacheBucketName }} # Name of your S3 bucket
+      bucketName: {{ .Values.portalBuild.s3csi.bucketName }} # Name of your S3 bucket
+      authenticationSource: pod
+      cache: emptyDir
+      cacheEmptyDirSizeLimit: {{ default "500Mi" .Values.portalBuild.s3csi.cache.emptyDirSizeLimit | quote }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: portal-pvc-{{ .Release.Name }}
+  name: {{ .Values.portalBuild.s3csi.pvcName | quote }}
 spec:
   accessModes:
-    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
-  storageClassName: "" # Required for static provisioning
+    - ReadWriteMany
+  storageClassName: ""
   resources:
     requests:
-      storage: 1200Gi # Ignored, required
-  volumeName: portal-pv-{{ .Release.Name }} # Name of your PV
+      storage: 100Gi # Ignored, required
+  volumeName: {{ .Values.portalBuild.s3csi.pvName | quote }} # Name of your PV
 {{- end }}

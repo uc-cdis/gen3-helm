@@ -46,16 +46,18 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
-| gen3WorkflowConfig.docsUrlPrefix | string | `"/gen3workflow"` | URL prefix used for serving OpenAPI documentation. |
+| gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
 | gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
 | gen3WorkflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
 | gen3WorkflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
 | gen3WorkflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
 | gen3WorkflowConfig.mockAuth | bool | `false` | Enables mock authentication, bypassing Arborist. Use only for development. |
 | gen3WorkflowConfig.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` | Filesystem directory used for Prometheus multi-process metrics collection. |
+| gen3WorkflowConfig.proxyPrefix | string | `"/workflows"` | For deployments that run the app behind a proxy. The value should start with a slash. |
 | gen3WorkflowConfig.s3AccessKeyId | string | `""` | AWS Access Key ID used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
 | gen3WorkflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
 | gen3WorkflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
+| gen3WorkflowConfig.s3UpstreamEndpoint | string | `""` | Connect to another S3-compatible service than AWS S3 (default: AWS S3) |
 | gen3WorkflowConfig.taskImageWhitelist | list | `[]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
 | gen3WorkflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
 | gen3WorkflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
@@ -76,7 +78,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
-| global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
+| global.netPolicy | map | `{"dbSubnets":[],"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
