@@ -140,9 +140,8 @@ spec:
       - protocol: TCP
         port: 443
 ---
-# Funnel workers need to be able to access DNS 
-# to interact with pods from different namespace
-# and the Kube API to create executor pods
+# Funnel workers need to be able to access
+# the Kube API to create executor pods
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -249,8 +248,9 @@ spec:
 
 ---
 
-# Add egress to internet for funnel executors
-
+# Add egress to internet for funnel pods.
+# Funnel executor - to download external data 
+# and funnel worker -- to download presigned_urls.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -262,13 +262,17 @@ spec:
     - ipBlock:
         cidr: 0.0.0.0/0
         except:
-        # Private IP ranges that should not be accessed by funnel executors
+        # Private IP ranges that should not be accessed by funnel pods
         - 169.254.0.0/16
         - 172.16.0.0/12
         - 10.0.0.0/8
   podSelector:
-    matchLabels:
-      app: "funnel-executor"
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - funnel-worker
+          - funnel-executor
   policyTypes:
   - Egress
 
