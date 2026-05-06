@@ -304,6 +304,8 @@ spec:
                   else
                     curl -X POST --data-urlencode "payload={\"text\": \"JOBFAIL: User sync failed on ${gen3Env}\"}" "${slackWebHook}"
                   fi
+                else
+                  curl -X POST --data-urlencode "payload={\"text\": \"JOBSUCCESS: User sync on ${gen3Env}\"}" "${slackWebHook}"
                 fi
                 echo "Exit code: $exitcode"
                 exit "$exitcode"

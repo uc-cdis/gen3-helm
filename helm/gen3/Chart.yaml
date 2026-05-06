@@ -60,7 +60,7 @@ dependencies:
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
-    version: 0.1.22
+    version: 0.1.23
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
