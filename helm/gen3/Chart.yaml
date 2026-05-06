@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.76
+    version: 0.1.77
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
