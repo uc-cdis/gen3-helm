@@ -8,8 +8,8 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
-| https://ohsu-comp-bio.github.io/helm-charts | funnel | 0.1.99-rc.31 |
+| file://../common | common | 0.1.34 |
+| https://calypr.github.io/helm-charts | funnel | 0.1.99-rc.31 |
 
 ## Values
 
@@ -23,10 +23,15 @@ A Helm chart for Kubernetes
 | funnel.Database | string | `"postgres"` |  |
 | funnel.EventWriters[0] | string | `"postgres"` |  |
 | funnel.EventWriters[1] | string | `"log"` |  |
-| funnel.Kubernetes.DisableJobCleanup | bool | `true` |  |
-| funnel.Kubernetes.DisableReconciler | bool | `true` |  |
+| funnel.Kubernetes.Executor.Annotations."karpenter.sh/do-not-disrupt" | string | `"true"` |  |
+| funnel.Kubernetes.Executor.backoffLimit | int | `0` |  |
+| funnel.Kubernetes.Executor.restartPolicy | string | `"Never"` |  |
 | funnel.Kubernetes.ReconcileRate | string | `"120s"` |  |
 | funnel.Kubernetes.Timeout.duration | string | `"300s"` |  |
+| funnel.Kubernetes.Worker.Annotations."karpenter.sh/do-not-disrupt" | string | `"true"` |  |
+| funnel.Kubernetes.Worker.PriorityClassName | string | `"system-cluster-critical"` |  |
+| funnel.Kubernetes.Worker.backoffLimit | int | `1` |  |
+| funnel.Kubernetes.Worker.restartPolicy | string | `"Never"` |  |
 | funnel.Logger.Level | string | `"info"` |  |
 | funnel.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
 | funnel.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
