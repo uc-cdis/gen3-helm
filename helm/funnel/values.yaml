@@ -306,6 +306,17 @@ funnel:
     # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
     Timeout:
       duration: 300s
-    DisableReconciler: true
-    DisableJobCleanup: true
     ReconcileRate: 120s
+    Executor:
+      restartPolicy: Never
+      backoffLimit: 0
+      Annotations:
+        karpenter.sh/do-not-disrupt: "true"
+    Worker:
+      restartPolicy: Never
+      backoffLimit: 1
+      Annotations:
+        karpenter.sh/do-not-disrupt: "true"
+      # When a new node is ready, worker pods may start before system-level pods do. This ensures
+      # worker pods are not preempted by new system-level pods on that node.
+      PriorityClassName: "system-cluster-critical"
