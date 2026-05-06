@@ -156,7 +156,7 @@ spec:
     - to:
       {{- range .Values.global.kubeapi_endpoints.ip }}
       - ipBlock:
-          cidr: {{ . }}/32
+          cidr: {{ . }}/16
       {{- end }}
     {{- else }}
       # Regular (non-argo) helm installations can perform a lookup to get the kubeapi endpoints and allow access to those
@@ -164,7 +164,7 @@ spec:
     - to:
         {{- range .addresses }}
         - ipBlock:
-            cidr: {{ .ip }}/32
+            cidr: {{ .ip }}/16
         {{- end }}
       {{- end }}
     {{- end }}
