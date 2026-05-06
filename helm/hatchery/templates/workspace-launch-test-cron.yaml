@@ -138,7 +138,7 @@ spec:
                 value: {{ .Values.workspaceLaunchTest.hostname | quote}}
               - name: WORKSPACE_LAUNCH_IMAGES
                 value: {{ .Values.workspaceLaunchTest.workspaceImages | default "(Generic) Jupyter Lab Image with R Kernel" | quote }}
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             imagePullPolicy: Always
             volumeMounts:
               - name: shared-data

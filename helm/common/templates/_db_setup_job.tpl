@@ -54,7 +54,7 @@ spec:
       containers:
       - name: db-setup
         # TODO: READ THIS IMAGE FROM GLOBAL VALUES?
-        image: quay.io/cdis/awshelper:master
+        image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         env:
