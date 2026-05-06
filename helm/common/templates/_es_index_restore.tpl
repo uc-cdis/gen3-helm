@@ -24,7 +24,7 @@ spec:
             secretName: {{.Chart.Name}}-aws-config
       containers:
         - name: create-indices
-          image: quay.io/cdis/awshelper:master
+          image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
           env:
             - name: GEN3_HOME
               value: /home/ubuntu/cloud-automation

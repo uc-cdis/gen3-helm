@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.40](https://img.shields.io/badge/Version-0.3.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.41](https://img.shields.io/badge/Version-0.3.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,47 +18,47 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.18 |
-| file://../ambassador | ambassador | 0.1.35 |
-| file://../arborist | arborist | 0.1.32 |
-| file://../argo-wrapper | argo-wrapper | 0.1.27 |
-| file://../audit | audit | 0.1.39 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.39 |
-| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.0 |
-| file://../cedar | cedar | 0.1.22 |
-| file://../cohort-middleware | cohort-middleware | 0.1.20 |
-| file://../common | common | 0.1.34 |
-| file://../dashboard | dashboard | 0.1.17 |
-| file://../data-upload-cron | data-upload-cron | 0.1.4 |
+| file://../access-backend | access-backend | 0.1.19 |
+| file://../ambassador | ambassador | 0.1.36 |
+| file://../arborist | arborist | 0.1.33 |
+| file://../argo-wrapper | argo-wrapper | 0.1.28 |
+| file://../audit | audit | 0.1.40 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.40 |
+| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.1 |
+| file://../cedar | cedar | 0.1.25 |
+| file://../cohort-middleware | cohort-middleware | 0.1.21 |
+| file://../common | common | 0.1.35 |
+| file://../dashboard | dashboard | 0.1.18 |
+| file://../data-upload-cron | data-upload-cron | 0.1.5 |
 | file://../datareplicate | datareplicate | 0.1.19 |
-| file://../dicom-server | dicom-server | 0.1.28 |
-| file://../embedding-management-service | embedding-management-service | 0.1.5 |
-| file://../etl | etl | 0.1.22 |
-| file://../fence | fence | 0.1.75 |
-| file://../frontend-framework | frontend-framework | 0.1.27 |
-| file://../funnel | funnel | 0.1.21 |
-| file://../gen3-analysis | gen3-analysis | 0.1.10 |
+| file://../dicom-server | dicom-server | 0.1.29 |
+| file://../embedding-management-service | embedding-management-service | 0.1.6 |
+| file://../etl | etl | 0.1.23 |
+| file://../fence | fence | 0.1.77 |
+| file://../frontend-framework | frontend-framework | 0.1.28 |
+| file://../funnel | funnel | 0.1.22 |
+| file://../gen3-analysis | gen3-analysis | 0.1.11 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.13 |
-| file://../gen3-workflow | gen3-workflow | 0.1.18 |
-| file://../guppy | guppy | 0.1.35 |
-| file://../hatchery | hatchery | 0.1.66 |
-| file://../indexd | indexd | 0.1.44 |
-| file://../manifestservice | manifestservice | 0.1.40 |
-| file://../metadata | metadata | 0.1.41 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.14 |
+| file://../gen3-workflow | gen3-workflow | 0.1.19 |
+| file://../guppy | guppy | 0.1.36 |
+| file://../hatchery | hatchery | 0.1.67 |
+| file://../indexd | indexd | 0.1.45 |
+| file://../manifestservice | manifestservice | 0.1.41 |
+| file://../metadata | metadata | 0.1.43 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.3 |
-| file://../ohif-viewer | ohif-viewer | 0.1.11 |
-| file://../orthanc | orthanc | 0.1.12 |
-| file://../peregrine | peregrine | 0.1.40 |
-| file://../portal | portal | 0.1.56 |
-| file://../requestor | requestor | 0.1.32 |
-| file://../revproxy | revproxy | 0.1.56 |
-| file://../sheepdog | sheepdog | 0.1.40 |
-| file://../sower | sower | 0.1.43 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
-| file://../wts | wts | 0.1.38 |
+| file://../ohdsi-webapi | ohdsi-webapi | 0.1.4 |
+| file://../ohif-viewer | ohif-viewer | 0.1.12 |
+| file://../orthanc | orthanc | 0.1.13 |
+| file://../peregrine | peregrine | 0.1.41 |
+| file://../portal | portal | 0.1.57 |
+| file://../requestor | requestor | 0.1.33 |
+| file://../revproxy | revproxy | 0.1.57 |
+| file://../sheepdog | sheepdog | 0.1.41 |
+| file://../sower | sower | 0.1.44 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.44 |
+| file://../wts | wts | 0.1.39 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 

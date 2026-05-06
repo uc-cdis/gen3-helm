@@ -25,7 +25,7 @@ spec:
           args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
       containers:
         - name: fence-client
-          image: "quay.io/cdis/fence:master"
+          image: {{ .Values.global.fence_container_image | default "quay.io/cdis/fence:master" }}
           imagePullPolicy: Always
           command: ["/bin/bash"]
           args:
@@ -140,7 +140,7 @@ spec:
               mountPath: "/var/www/fence/fence-config.yaml"
               subPath: fence-config.yaml
         - name: funnel-oidc-secret-updater
-          image: quay.io/cdis/awshelper:master
+          image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
           env:
             - name: FUNNEL_OIDC_CLIENT_ID
               valueFrom:
