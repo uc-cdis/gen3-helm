@@ -21,6 +21,7 @@ spec:
       {{- else }}
         values: |
           clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
+          hostNetwork: true
           serviceAccount:
             create: true
             annotations:
