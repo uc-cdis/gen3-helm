@@ -114,7 +114,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -249,7 +249,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -384,7 +384,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -525,7 +525,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname       
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -660,7 +660,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
@@ -794,7 +794,7 @@ spec:
                     configMapKeyRef:
                       name: manifest-global
                       key: hostname
-            image: quay.io/cdis/awshelper:master
+            image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
             volumeMounts:
               - name: shared-data
                 mountPath: /mnt/shared
