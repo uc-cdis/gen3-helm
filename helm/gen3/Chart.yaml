@@ -60,7 +60,7 @@ dependencies:
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
-    version: 0.1.22
+    version: 0.1.23
     repository: file://../etl
     condition: etl.enabled
   - name: frontend-framework
@@ -68,11 +68,11 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.75
+    version: 0.1.76
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
@@ -197,7 +197,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.39
+version: 0.3.40
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
