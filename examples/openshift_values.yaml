@@ -1,11 +1,12 @@
-# Dependancy Charts
 ambassador:
-  enabled: true
+  enabled: false
   service:
     targetPort: 8080
 
 arborist:
   enabled: true
+  image:
+    tag: openshift
   service:
     targetPort: 8080
 
@@ -28,10 +29,6 @@ fence:
   enabled: true
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 300Mi
 
 cedar:
   enabled: false
@@ -64,13 +61,9 @@ guppy:
     targetPort: 8080
 
 hatchery:
-  enabled: true
+  enabled: false
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
 
 indexd:
   enabled: true
@@ -106,22 +99,24 @@ peregrine:
   enabled: true
   service:
     targetPort: 8000
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
 
 portal:
   enabled: true
-  service:
-    targetPort: 80
   resources:
     requests:
-      cpu: 100m
-      memory: 56Mi
+      memory: 750Mi
+  service:
+    targetPort: 8000
   image:
       repository: quay.io/cdis/data-portal-prebuilt
       tag: dev
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
 
 requestor:
   enabled: false
@@ -130,49 +125,43 @@ requestor:
 
 revproxy:
   enabled: true
-  resources:
-    requests:
-      cpu: 100m
-      memory: 56Mi
   nginx:
-    resolver: "dns-default.openshift-dns.svc.cluster.local"
-  # -- (map) Configuration for OpenShift Route.
+    resolver: "172.30.0.10"
+    user: nginx
+  service:
+    targetPort: 8000
   openshiftRoute:
-    # -- (bool) Whether to create an OpenShift Route
     enabled: true
-    # -- (map) Annotations to add to the Route.
     annotations: {}
-    # -- (string) Hostname for the Route. Leave empty to let OpenShift auto-generate
     host: "gen3.apps-crc.testing"
-    # -- (string) Path for the Route.
     path: "/"
-    # -- (string) Target port for the Route.
     targetPort: "http"
-    # -- (map) TLS configuration for the Route.
     tls:
-      # -- (string) Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt".
       termination: "edge"
-      # -- (string) Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect".
       insecureEdgeTerminationPolicy: "Redirect"
-    # -- (string) Wildcard policy for the Route. Valid options are "None" and "Subdomain".
     wildcardPolicy: "None"
+
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
 
 
 sheepdog:
-  # -- (bool) Whether to deploy the sheepdog subchart.
   enabled: true
   service:
     targetPort: 8000
 
 ssjdispatcher:
-  # -- (bool) Whether to deploy the ssjdispatcher subchart.
   enabled: false
   service:
     targetPort: 8080
 
 wts:
-  # -- (bool) Whether to deploy the wts subchart.
-  enabled: true
+  enabled: false
   oidc_job_openshift: true
   service:
     targetPort: 8000
@@ -203,12 +192,7 @@ postgresql:
     tag: 16.6.0-debian-12-r2
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data.
       enabled: false
-    resources:
-      requests:
-        cpu: 100m
-        memory: 56Mi
     podSecurityContext:
       enabled: false
       fsGroup: 1000660001
@@ -229,9 +213,6 @@ elasticsearch:
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   esConfig:
     elasticsearch.yml: |
-      # Here we can add elasticsearch config
-  resources:
-    requests:
   podSecurityContext:
     enabled: false
     fsGroup: 1000
@@ -242,7 +223,6 @@ elasticsearch:
     capabilities:
       drop:
       - ALL
-    # readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
 
