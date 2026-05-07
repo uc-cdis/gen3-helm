@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.42](https://img.shields.io/badge/Version-0.3.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.43](https://img.shields.io/badge/Version-0.3.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -22,7 +22,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../ambassador | ambassador | 0.1.36 |
 | file://../arborist | arborist | 0.1.33 |
 | file://../argo-wrapper | argo-wrapper | 0.1.28 |
-| file://../audit | audit | 0.1.40 |
+| file://../audit | audit | 0.1.41 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.40 |
 | file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.1 |
 | file://../cedar | cedar | 0.1.25 |
