@@ -42,7 +42,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
             - kube-proxy
-            - --v=2
+            - --v=0
             - --config=/var/lib/kube-proxy-config/config
             - --hostname-override=$(NODE_NAME)
           env:
