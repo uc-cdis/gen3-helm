@@ -33,3 +33,7 @@ resources:
 # NetworkPolicy: restrict ingress to revproxy only.
 networkPolicy:
   enabled: true
+
+# Egress destinations for the in-cluster Kubernetes API service
+# (kubernetes.default.svc -> service ClusterIP). Must be set per environment.
+kubernetesApiServerCIDRs: []
