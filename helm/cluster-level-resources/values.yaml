@@ -626,6 +626,12 @@ alloy-configmap-data: |
       regex  = "__meta_kubernetes_pod_label_(.+)"
     }
 
+    // drop high-cardinality rollout labels
+    rule {
+      action = "labeldrop"
+      regex = "pod_template_hash|controller_revision_hash|apps_kubernetes_io_pod_index"
+    }
+
   }
 
   loki.source.kubernetes "pods" {
