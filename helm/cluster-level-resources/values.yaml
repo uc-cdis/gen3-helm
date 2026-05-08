@@ -629,7 +629,7 @@ alloy-configmap-data: |
     // drop high-cardinality rollout labels
     rule {
       action = "labeldrop"
-      regex = "pod_template_hash|controller_revision_hash|apps_kubernetes_io_pod_index"
+      regex = "pod_template_hash|controller_revision_hash|controller_uid|batch_kubernetes_io_controller_uid|job_name|task_id|pod_uid|hostname|app_kubernetes_io_instance|topology_kubernetes_io_region|topology_kubernetes_io_zone"
     }
 
   }
