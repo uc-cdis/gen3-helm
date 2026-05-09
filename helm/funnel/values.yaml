@@ -45,10 +45,6 @@ global:
     pushFunnelOidcClientToExternalSecrets: true
   # -- (string) Hostname for the deployment.
   hostname: ""
-  # -- (map) Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster.
-  kubeapi_endpoints:
-    enabled: false
-    ip: []
   # -- (map) Network policy settings.
   netPolicy:
     # -- (bool) Whether network policies are enabled

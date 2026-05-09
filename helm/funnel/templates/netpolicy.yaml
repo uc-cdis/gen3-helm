@@ -135,8 +135,10 @@ spec:
   - Egress
   egress:
   # Allow access to the Kubernetes API server in kube-system
-  - to: []
-    ports:
+    - to:
+      - ipBlock:
+          cidr: 172.0.0.0/8
+      ports:
       - protocol: TCP
         port: 443
 ---
@@ -152,22 +154,9 @@ spec:
     matchLabels:
       app: funnel-worker
   egress:
-    {{- if .Values.global.kubeapi_endpoints.enabled }}
     - to:
-      {{- range .Values.global.kubeapi_endpoints.ip }}
       - ipBlock:
-          cidr: {{ . }}/16
-      {{- end }}
-    {{- else }}
-      # Regular (non-argo) helm installations can perform a lookup to get the kubeapi endpoints and allow access to those
-      {{- range (lookup "v1" "Endpoints" "default" "kubernetes").subsets }} 
-    - to:
-        {{- range .addresses }}
-        - ipBlock:
-            cidr: {{ .ip }}/16
-        {{- end }}
-      {{- end }}
-    {{- end }}
+          cidr: 172.0.0.0/8
       ports:
       - protocol: TCP
         port: 443  # Kubernetes API
@@ -275,4 +264,3 @@ spec:
   - Egress
 
 {{- end }}
-
