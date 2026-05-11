@@ -32,6 +32,8 @@ spec:
       labels:
         {{- include "audit.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
+        internet: "yes"
+        netvpc: "yes"
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
