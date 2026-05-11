@@ -21,7 +21,7 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.40
+    version: 0.1.41
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -44,7 +44,7 @@ dependencies:
     version: 0.1.35
     repository: file://../common
   - name: dashboard
-    version: 0.1.18
+    version: 0.1.19
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
