@@ -598,6 +598,13 @@ alloy-configmap-data: |
   // Logs from all pods
   discovery.relabel "all_pods" {
     targets = discovery.kubernetes.pods.targets
+
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      regex = "calico-apiserver|calico-system|argocd"
+      action = "drop"
+    }
+
     rule {
       source_labels = ["__meta_kubernetes_namespace"]
       target_label = "namespace"
