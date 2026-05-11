@@ -604,7 +604,7 @@ alloy-configmap-data: |
       regex = "calico-apiserver|calico-system|argocd"
       action = "drop"
     }
-    
+
     rule {
       source_labels = ["__meta_kubernetes_namespace"]
       target_label = "namespace"
