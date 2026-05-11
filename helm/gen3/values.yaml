@@ -126,6 +126,7 @@ global:
   createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
+  awshelper_container_image: quay.io/cdis/awshelper:master
   metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
