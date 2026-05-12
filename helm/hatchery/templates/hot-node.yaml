@@ -119,7 +119,7 @@ spec:
       serviceAccountName: hot-node-prepuller
       initContainers:
       - name: init-hot-node
-        image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
+        image: {{ $.Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
         command: ["/bin/bash","-c"]
         env:
           - name: NODE_NAME
