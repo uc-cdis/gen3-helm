@@ -58,6 +58,9 @@ searchAuthProxy:
   postgresDsnSecretRef:
     name: vectis-search-auth-proxy
     key: postgres_dsn
+  # Optional separate AWS secret name for the search-role credentials.
+  # Falls back to rds.secretName for backward compatibility.
+  appDsnSecretName: ""
 
 # CDK RDS secret in Secrets Manager — used to build the postgres DSN ExternalSecret.
 # Set per-environment in gitops values.
