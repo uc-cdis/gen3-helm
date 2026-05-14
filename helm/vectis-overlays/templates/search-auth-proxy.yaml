@@ -26,6 +26,14 @@ spec:
           env:
             - name: SEARCH_API_BASE
               value: "https://{{ .Values.searchAuthProxy.apiGateway.apiId }}.execute-api.{{ .Values.searchAuthProxy.apiGateway.region }}.amazonaws.com/search"
+            - name: SIEM_SEARCH_BASE
+              value: {{ default (printf "https://%s.execute-api.%s.amazonaws.com/search" .Values.searchAuthProxy.apiGateway.apiId .Values.searchAuthProxy.apiGateway.region) .Values.searchAuthProxy.siemBackend.baseUrl | quote }}
+            - name: SEARCH_API_REQUIRE_SIGV4
+              value: {{ .Values.searchAuthProxy.siemBackend.searchApiRequireSigv4 | quote }}
+            - name: SIEM_SEARCH_REQUIRE_SIGV4
+              value: {{ .Values.searchAuthProxy.siemBackend.siemRequireSigv4 | quote }}
+            - name: SIEM_INDEXES
+              value: {{ .Values.searchAuthProxy.siemBackend.indexes | quote }}
             - name: ARBORIST_URL
               value: "http://arborist-service.{{ .Release.Namespace }}.svc.cluster.local"
             - name: SEARCH_PROXY_DEFAULT_LIMIT

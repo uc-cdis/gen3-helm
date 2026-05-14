@@ -70,6 +70,14 @@ searchAuthProxy:
   apiGateway:
     apiId: ""
     region: "us-east-1"
+  # Dual-route backend configuration:
+  # - Discovery/Guppy traffic uses SEARCH_API_BASE (API Gateway/Lambda path)
+  # - SIEM index traffic can use SIEM_SEARCH_BASE (RDS/ES-backed path)
+  siemBackend:
+    baseUrl: ""
+    searchApiRequireSigv4: "true"
+    siemRequireSigv4: "auto"
+    indexes: "security_event,audit_event,threat_indicator"
   postgresDsnSecretRef:
     name: vectis-search-auth-proxy
     key: postgres_dsn

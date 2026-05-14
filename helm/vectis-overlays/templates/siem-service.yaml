@@ -24,14 +24,23 @@ spec:
           ports:
             - containerPort: 8000
           env:
-            - name: SEARCH_BASE
-              value: "http://search-auth-proxy.{{ .Release.Namespace }}.svc.cluster.local:8000/search"
             - name: ARBORIST_URL
               value: "http://arborist-service.{{ .Release.Namespace }}.svc.cluster.local"
             - name: SIEM_DEFAULT_LIMIT
               value: {{ .Values.siemService.env.SIEM_DEFAULT_LIMIT | quote }}
             - name: SIEM_MAX_LIMIT
               value: {{ .Values.siemService.env.SIEM_MAX_LIMIT | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: vectis-search-auth-proxy
+                  key: postgres_dsn
+            - name: DB_SCHEMA
+              value: {{ .Values.siemService.env.DB_SCHEMA | default "vectis_ingestion" | quote }}
+            - name: SIEM_BACKEND
+              value: {{ .Values.siemService.env.SIEM_BACKEND | default "postgres" | quote }}
+            - name: SIEM_INDEX_BACKENDS
+              value: {{ .Values.siemService.env.SIEM_INDEX_BACKENDS | default "" | quote }}
           readinessProbe:
             httpGet:
               path: /siem/health
