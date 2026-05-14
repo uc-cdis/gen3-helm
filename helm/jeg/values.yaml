@@ -24,6 +24,7 @@ env:
   EG_KERNEL_IMAGE_PULL_POLICY: IfNotPresent
   EG_SHARED_NAMESPACE: "False"
   EG_MIRROR_WORKING_DIRS: "False"
+  EG_KERNEL_WHITELIST_ENVS: "ACCESS_TOKEN"  # propagate workspace token into kernel pods
 
 resources:
   requests:
