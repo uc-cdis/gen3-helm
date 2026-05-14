@@ -128,7 +128,7 @@ dependencies:
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.44
+    version: 0.1.45
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
