@@ -16,6 +16,7 @@ spec:
       labels:
         app: siem-service
     spec:
+      serviceAccountName: {{ .Values.siemService.serviceAccount.name }}
       containers:
         - name: siem-service
           image: "{{ .Values.siemService.image.repository }}:{{ .Values.siemService.image.tag }}"

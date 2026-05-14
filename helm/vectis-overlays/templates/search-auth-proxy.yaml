@@ -16,6 +16,7 @@ spec:
       labels:
         app: {{ .Values.searchAuthProxy.serviceName }}
     spec:
+      serviceAccountName: {{ .Values.searchAuthProxy.serviceAccount.name }}
       containers:
         - name: {{ .Values.searchAuthProxy.serviceName }}
           image: "{{ .Values.searchAuthProxy.image.repository }}:{{ .Values.searchAuthProxy.image.tag }}"
@@ -23,11 +24,10 @@ spec:
           ports:
             - containerPort: 8000
           env:
-            - name: POSTGRES_DSN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.searchAuthProxy.postgresDsnSecretRef.name }}
-                  key: {{ .Values.searchAuthProxy.postgresDsnSecretRef.key }}
+            - name: SEARCH_API_BASE
+              value: "https://{{ .Values.searchAuthProxy.apiGateway.apiId }}.execute-api.{{ .Values.searchAuthProxy.apiGateway.region }}.amazonaws.com/search"
+            - name: ARBORIST_URL
+              value: "http://arborist-service.{{ .Release.Namespace }}.svc.cluster.local"
             - name: SEARCH_PROXY_DEFAULT_LIMIT
               value: {{ .Values.searchAuthProxy.env.SEARCH_PROXY_DEFAULT_LIMIT | quote }}
             - name: SEARCH_PROXY_MAX_LIMIT
