@@ -35,6 +35,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | cert-manager.targetRevision | string | `"v1.17.2"` |  |
 | cilium.configuration.enabled | bool | `false` |  |
 | cilium.enabled | bool | `false` |  |
+| cilium.k8sServiceHost | string | `""` |  |
 | cilium.targetRevision | string | `"1.18.4"` |  |
 | cluster | string | `"unfunded"` |  |
 | configuration.configurationRepo | string | `"https://github.com/uc-cdis/gen3-gitops"` |  |

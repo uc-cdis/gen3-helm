@@ -56,9 +56,13 @@ spec:
               enabled: true
           ipam:
             mode: cluster-pool
+          {{- if index .Values "cilium" "k8sServiceHost" }}
+          k8sServiceHost: {{ index .Values "cilium" "k8sServiceHost" | quote }}
+          {{- else }}
           k8sServiceHostRef:
             key: hostname
             name: cluster-info
+          {{- end }}
           k8sServiceLookupConfigMapName: kube-system
           k8sServicePort: 443
           kubeProxyReplacement: true

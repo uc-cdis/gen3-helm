@@ -81,6 +81,7 @@ argo-workflows:
 cilium:
   enabled: false
   targetRevision: "1.18.4"
+  k8sServiceHost: ""  # set to override k8sServiceHostRef
   configuration:
     enabled: false
 
