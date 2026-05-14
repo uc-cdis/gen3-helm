@@ -1,0 +1,69 @@
+{{- $global := .Values.global | default dict }}
+{{- $crossplane := get $global "crossplane" | default dict }}
+{{- $crossplaneEnabled := get $crossplane "enabled" | default false }}
+{{- if and .Values.searchAuthProxy.enabled $crossplaneEnabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.searchAuthProxy.serviceAccount.name }}"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.searchAuthProxy.serviceAccount.name }}"
+    description: "Role for search-auth-proxy service account for {{ get $global "environment" }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Sid":"",
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ get $crossplane "accountId" }}:oidc-provider/{{ get $crossplane "oidcProviderUrl" }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ get $crossplane "oidcProviderUrl" }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.searchAuthProxy.serviceAccount.name }}",
+                "{{ get $crossplane "oidcProviderUrl" }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-search-auth-proxy-role-policy"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-search-auth-proxy-role-policy"
+    document: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["execute-api:Invoke"],
+            "Resource":[
+              "arn:aws:execute-api:{{ .Values.searchAuthProxy.apiGateway.region }}:{{ get $crossplane "accountId" }}:{{ .Values.searchAuthProxy.apiGateway.apiId }}/*/*/search",
+              "arn:aws:execute-api:{{ .Values.searchAuthProxy.apiGateway.region }}:{{ get $crossplane "accountId" }}:{{ .Values.searchAuthProxy.apiGateway.apiId }}/*/*/search/*"
+            ]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ .Values.searchAuthProxy.serviceAccount.name }}-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    roleName: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.searchAuthProxy.serviceAccount.name }}"
+    policyArnRef:
+      name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-search-auth-proxy-role-policy"
+{{- end }}

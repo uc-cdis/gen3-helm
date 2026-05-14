@@ -5,6 +5,10 @@
 guppyCompat:
   enabled: true
   replicaCount: 1
+  serviceAccount:
+    create: true
+    name: guppy-compat-service
+    annotations: {}
   image:
     repository: quay.io/cdis/gen3-vectis
     tag: guppy-compat-v1
@@ -22,6 +26,10 @@ guppyCompat:
 siemService:
   enabled: true
   replicaCount: 1
+  serviceAccount:
+    create: true
+    name: siem-service
+    annotations: {}
   image:
     repository: quay.io/cdis/gen3-vectis
     tag: siem-service-v1
@@ -41,6 +49,10 @@ searchAuthProxy:
   enabled: true
   replicaCount: 1
   serviceName: search-auth-proxy
+  serviceAccount:
+    create: true
+    name: search-auth-proxy
+    annotations: {}
   image:
     repository: quay.io/cdis/gen3-vectis
     tag: search-auth-proxy-v1
@@ -55,6 +67,9 @@ searchAuthProxy:
   env:
     SEARCH_PROXY_DEFAULT_LIMIT: "50"
     SEARCH_PROXY_MAX_LIMIT: "1000"
+  apiGateway:
+    apiId: ""
+    region: "us-east-1"
   postgresDsnSecretRef:
     name: vectis-search-auth-proxy
     key: postgres_dsn

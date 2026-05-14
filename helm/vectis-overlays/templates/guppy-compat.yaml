@@ -16,6 +16,7 @@ spec:
       labels:
         app: guppy-compat-service
     spec:
+      serviceAccountName: {{ .Values.guppyCompat.serviceAccount.name }}
       containers:
         - name: guppy-compat-service
           image: "{{ .Values.guppyCompat.image.repository }}:{{ .Values.guppyCompat.image.tag }}"
