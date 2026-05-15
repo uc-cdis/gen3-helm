@@ -88,6 +88,9 @@ spec:
         - effect: NoSchedule
           key: role
           value: jupyter
+      startupTaints:
+        - effect: NoSchedule
+          key: node.kubernetes.io/not-ready
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
