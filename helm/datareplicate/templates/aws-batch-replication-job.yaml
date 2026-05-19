@@ -53,6 +53,10 @@ spec:
                 value: "{{ .Values.awsBatchReplicateJob.REGION }}"
               - name: THREAD_COUNT
                 value: "{{ .Values.awsBatchReplicateJob.THREAD_COUNT }}"
+              - name: MULTIPART_THRESHOLD
+                value: "{{ .Values.awsBatchReplicateJob.MULTIPART_THRESHOLD }}"
+              - name: CHUNK_SIZE
+                value: "{{ .Values.awsBatchReplicateJob.CHUNK_SIZE }}"
               - name: MAX_RETRIES
                 value: "{{ .Values.awsBatchReplicateJob.MAX_RETRIES }}"
               - name: MANIFEST_PATH
@@ -85,7 +89,7 @@ spec:
               region: $REGION
               """ > ~/.aws/config
               cp /secrets/dcf_dataservice_settings.py /dcf_replication/batch_jobs/bin/settings.py
-              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET
+              python3 batch_jobs/bin/run_dcf_replication_job.py dcf_replication --manifest_path $MANIFEST_PATH --job_queue $JOB_QUEUE --job_definition $JOB_DEFINITION --thread_count $THREAD_COUNT --max_retries $MAX_RETRIES --output_manifest_bucket $OUTPUT_MANIFEST_BUCKET --multi_part_threshold $MULTIPART_THRESHOLD --chunk_size $CHUNK_SIZE
             ports:
             - containerPort: 80
               protocol: TCP
