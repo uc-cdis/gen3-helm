@@ -40,6 +40,14 @@ spec:
               value: {{ .Values.searchAuthProxy.env.SEARCH_PROXY_DEFAULT_LIMIT | quote }}
             - name: SEARCH_PROXY_MAX_LIMIT
               value: {{ .Values.searchAuthProxy.env.SEARCH_PROXY_MAX_LIMIT | quote }}
+            {{- if .Values.searchAuthProxy.snapshotsBucket }}
+            - name: SNAPSHOTS_BUCKET
+              value: {{ .Values.searchAuthProxy.snapshotsBucket | quote }}
+            {{- end }}
+            {{- if .Values.searchAuthProxy.snapshotsKeyPrefix }}
+            - name: SNAPSHOTS_KEY_PREFIX
+              value: {{ .Values.searchAuthProxy.snapshotsKeyPrefix | quote }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /health
