@@ -42,6 +42,7 @@ siemService:
       cpu: "500m"
       memory: "512Mi"
   env:
+    DB_SCHEMA: "vectis"
     SIEM_DEFAULT_LIMIT: "250"
     SIEM_MAX_LIMIT: "2000"
 
