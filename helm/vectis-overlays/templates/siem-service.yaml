@@ -36,7 +36,7 @@ spec:
                   name: vectis-search-auth-proxy
                   key: postgres_dsn
             - name: DB_SCHEMA
-              value: {{ .Values.siemService.env.DB_SCHEMA | default "vectis_ingestion" | quote }}
+              value: {{ .Values.siemService.env.DB_SCHEMA | default "vectis" | quote }}
             - name: SIEM_BACKEND
               value: {{ .Values.siemService.env.SIEM_BACKEND | default "postgres" | quote }}
             - name: SIEM_INDEX_BACKENDS
