@@ -3,7 +3,7 @@
 # Override image tags per-environment in gitops values.
 
 guppyCompat:
-  enabled: true
+  enabled: false
   replicaCount: 1
   serviceAccount:
     create: true
