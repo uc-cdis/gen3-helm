@@ -31,15 +31,15 @@ spec:
       }
 ---
 apiVersion: iam.aws.crossplane.io/v1beta1
-kind: RolePolicy
+kind: Policy
 metadata:
-  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-s3-views"
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
 spec:
   providerConfigRef:
     name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
   forProvider:
-    roleName: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service"
-    policyDocument: |
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
+    document: |
       {
         "Version":"2012-10-17",
         "Statement":[
@@ -53,4 +53,16 @@ spec:
           }
         ]
       }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "siem-service-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    roleName: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service"
+    policyArnRef:
+      name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
 {{- end }}
