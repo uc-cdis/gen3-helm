@@ -45,6 +45,9 @@ siemService:
     DB_SCHEMA: "vectis"
     SIEM_DEFAULT_LIMIT: "250"
     SIEM_MAX_LIMIT: "2000"
+    SIEM_VIEWS_S3_BUCKET: ""
+    SIEM_VIEWS_S3_KEY: "siem/views.json"
+    SIEM_VIEWS_S3_ENABLED: "false"
 
 searchAuthProxy:
   enabled: true
