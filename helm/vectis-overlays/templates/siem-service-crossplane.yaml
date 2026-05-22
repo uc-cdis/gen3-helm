@@ -47,8 +47,9 @@ spec:
             "Effect":"Allow",
             "Action":["s3:GetObject","s3:PutObject"],
             "Resource":[
-              "arn:aws:s3:::{{ .Values.siemService.env.SIEM_VIEWS_S3_BUCKET }}/siem/views.json",
-              "arn:aws:s3:::{{ .Values.siemService.env.SIEM_VIEWS_S3_BUCKET }}/siem/default-views.json"
+              {{- $bucket := .Values.siemService.env.SIEM_VIEWS_S3_BUCKET | default "" }}
+              "arn:aws:s3:::{{ $bucket }}/siem/views.json",
+              "arn:aws:s3:::{{ $bucket }}/siem/default-views.json"
             ]
           }
         ]
