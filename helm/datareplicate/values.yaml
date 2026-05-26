@@ -52,7 +52,6 @@ awsBatchReplicateJob:
   OUTPUT_MANIFEST_BUCKET:
   MULTIPART_THRESHOLD:
   CHUNK_SIZE:
-  
 awsBucketReplicateJob:
   enabled: true
   schedule: "*/30 * * * *"
