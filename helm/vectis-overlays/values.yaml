@@ -79,6 +79,11 @@ searchAuthProxy:
   apiGateway:
     apiId: ""
     region: "us-east-1"
+  # Override DNS for the execute-api hostname to bypass the VPC endpoint.
+  # Set per-environment to the public API Gateway IPs when the execute-api
+  # VPC endpoint causes 403s (HTTP APIs are not routable through private
+  # execute-api VPC endpoints — they require a Private REST API).
+  hostAliases: []
   # Dual-route backend configuration:
   # - Discovery/Guppy traffic uses SEARCH_API_BASE (API Gateway/Lambda path)
   # - SIEM index traffic can use SIEM_SEARCH_BASE (RDS/ES-backed path)
