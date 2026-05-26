@@ -17,6 +17,10 @@ spec:
         app: {{ .Values.searchAuthProxy.serviceName }}
     spec:
       serviceAccountName: {{ .Values.searchAuthProxy.serviceAccount.name }}
+      {{- if .Values.searchAuthProxy.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.searchAuthProxy.hostAliases | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Values.searchAuthProxy.serviceName }}
           image: "{{ .Values.searchAuthProxy.image.repository }}:{{ .Values.searchAuthProxy.image.tag }}"
