@@ -34,6 +34,10 @@ spec:
               value: {{ default (printf "https://%s.execute-api.%s.amazonaws.com/search" .Values.searchAuthProxy.apiGateway.apiId .Values.searchAuthProxy.apiGateway.region) .Values.searchAuthProxy.siemBackend.baseUrl | quote }}
             - name: SEARCH_API_REQUIRE_SIGV4
               value: {{ .Values.searchAuthProxy.siemBackend.searchApiRequireSigv4 | quote }}
+            {{- if .Values.searchAuthProxy.env.SEARCH_API_TLS_VERIFY }}
+            - name: SEARCH_API_TLS_VERIFY
+              value: {{ .Values.searchAuthProxy.env.SEARCH_API_TLS_VERIFY | quote }}
+            {{- end }}
             - name: SIEM_SEARCH_REQUIRE_SIGV4
               value: {{ .Values.searchAuthProxy.siemBackend.siemRequireSigv4 | quote }}
             - name: SIEM_INDEXES
