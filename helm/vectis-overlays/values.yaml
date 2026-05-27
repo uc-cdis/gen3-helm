@@ -71,6 +71,7 @@ searchAuthProxy:
   env:
     SEARCH_PROXY_DEFAULT_LIMIT: "50"
     SEARCH_PROXY_MAX_LIMIT: "1000"
+    SEARCH_API_TLS_VERIFY: ""
   # S3 bucket for pre-baked /search/graphql snapshots, populated by the
   # snapshot-publisher Lambda (CDK SnapshotsBucketName output). Leave empty
   # to disable the /snapshots/* passthrough.
