@@ -62,7 +62,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: aurora-db-copy-container
-              image: {{ .Values.auroraRdsCopyJob.image }}
+              image: {{ $.Values.auroraRdsCopyJob.image }}
               command:
                 - /bin/bash
                 - -c
