@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.36 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
