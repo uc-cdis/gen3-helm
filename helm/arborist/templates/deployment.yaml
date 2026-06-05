@@ -84,7 +84,7 @@ spec:
               /go/src/github.com/uc-cdis/arborist/migrations/latest
 
               # run arborist
-              /go/src/github.com/uc-cdis/arborist/bin/arborist --port 8080
+              /go/src/github.com/uc-cdis/arborist/bin/arborist --port {{ .Values.service.targetPort }}
           env:
 
             {{- toYaml .Values.env | nindent 12 }}
