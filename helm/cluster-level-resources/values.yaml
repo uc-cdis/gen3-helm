@@ -115,6 +115,7 @@ karpenter:
   enabled: false
   awsRegion: "us-east-1"
   targetRevision: 1.0.8
+  interruptionQueue: ""
   configuration:
     enabled: false
   resources:

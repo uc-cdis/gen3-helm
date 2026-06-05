@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.43](https://img.shields.io/badge/Version-0.6.43-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.44](https://img.shields.io/badge/Version-0.6.44-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -173,6 +173,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter.controller.image.digest | string | `"sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"` |  |
 | karpenter.controller.image.tag | string | `"1.0.8"` |  |
 | karpenter.enabled | bool | `false` |  |
+| karpenter.interruptionQueue | string | `""` |  |
 | karpenter.resources.limits.cpu | string | `"1"` |  |
 | karpenter.resources.limits.memory | string | `"1Gi"` |  |
 | karpenter.resources.requests.cpu | string | `"1"` |  |
