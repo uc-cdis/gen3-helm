@@ -102,14 +102,14 @@ peregrine:
 
 portal:
   enabled: true
+  service:
+    targetPort: 8000
   resources:
     requests:
       memory: 750Mi
-  service:
-    targetPort: 8000
   image:
       repository: quay.io/cdis/data-portal-prebuilt
-      tag: dev
+      tag: caninedc.org-jawadqur-patch-1
   securityContext:
     capabilities:
       drop:
@@ -128,6 +128,7 @@ revproxy:
   nginx:
     resolver: "172.30.0.10"
     user: nginx
+    pidFile: /tmp/nginx.pid 
   service:
     targetPort: 8000
   openshiftRoute:
@@ -140,6 +141,9 @@ revproxy:
       termination: "edge"
       insecureEdgeTerminationPolicy: "Redirect"
     wildcardPolicy: "None"
+
+  podSecurityContext: 
+    fsGroup: 2000
 
   securityContext:
     capabilities:
@@ -194,10 +198,8 @@ postgresql:
     persistence:
       enabled: false
     podSecurityContext:
-      enabled: false
       fsGroup: 1000660001
     containerSecurityContext:
-      enabled: false
       runAsUser: 1000660001
       allowPrivilegeEscalation: false
       seccompProfile:
@@ -210,19 +212,19 @@ elasticsearch:
   maxUnavailable: 0
   singleNode: true
   replicas: 1
+  sysctlInitContainer:
+    enabled: false
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   esConfig:
     elasticsearch.yml: |
   podSecurityContext:
-    enabled: false
-    fsGroup: 1000
-    runAsUser: 1000
+    fsGroup: 1000950000
+    runAsUser: 1000950000
 
   securityContext:
-    enabled: false
     capabilities:
       drop:
       - ALL
     runAsNonRoot: true
-    runAsUser: 1000
+    runAsUser: 1000950000
 

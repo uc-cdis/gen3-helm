@@ -60,6 +60,10 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       automountServiceAccountToken: false
       volumes:
+        - name: nginx-tmp
+          emptyDir: {}
+        - name: nginx-cache
+          emptyDir: {}
         - emptyDir: {}
           name: nginx-logs
         - name: revproxy-conf
@@ -142,6 +146,10 @@ spec:
           - name: "revproxy-subconf"
             readOnly: true
             mountPath: "/etc/nginx/gen3.conf"
+          - name: nginx-tmp
+            mountPath: /tmp
+          - name: nginx-cache
+            mountPath: /var/cache/nginx
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"

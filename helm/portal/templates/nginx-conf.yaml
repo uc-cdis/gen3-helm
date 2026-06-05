@@ -8,13 +8,11 @@ data:
     #   * Official English Documentation: http://nginx.org/en/docs/
     #   * Official Russian Documentation: http://nginx.org/ru/docs/
 
-    user nginx;
     worker_processes auto;
-    error_log /var/log/nginx/error.log notice;
-    pid /run/nginx.pid;
+    error_log /dev/stderr notice;
+    pid /tmp/nginx.pid;
 
     # Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
-    include /usr/share/nginx/modules/*.conf;
 
     events {
         worker_connections 1024;
@@ -25,7 +23,13 @@ data:
                           '$status $body_bytes_sent "$http_referer" '
                           '"$http_user_agent" "$http_x_forwarded_for"';
 
-        access_log  /var/log/nginx/access.log  main;
+        access_log /dev/stdout main;
+
+        client_body_temp_path /tmp/client_temp;
+        proxy_temp_path /tmp/proxy_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
 
         sendfile            on;
         tcp_nopush          on;
@@ -38,7 +42,7 @@ data:
         # Load modular configuration files from the /etc/nginx/conf.d directory.
         # See http://nginx.org/en/docs/ngx_core_module.html#include
         # for more information.
-        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/conf.d/nginx.conf;
 
         server {
             listen       8000;
@@ -117,13 +121,10 @@ data:
     log_format aws   '$http_x_forwarded_for - $http_x_userid [$time_local] '
                 '"$request" $status $body_bytes_sent '
                 '"$http_referer" "$http_user_agent"';
-
     access_log /dev/stdout json;
 
     server {
         listen 8080 default_server;
-        ssl_certificate /mnt/ssl/nginx.crt;
-        ssl_certificate_key /mnt/ssl/nginx.key;
         server_tokens off;
 
         root /data-portal;

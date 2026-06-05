@@ -69,6 +69,8 @@ spec:
           name: "privacy-policy"
           optional: true
       {{- end }}
+      - name: nginx-tmp
+        emptyDir: {}
       - name: nginx-config
         configMap:
           name: portal-nginx
@@ -333,6 +335,12 @@ spec:
               mountPath: "/etc/nginx/nginx.conf"
               subPath: "main"
             {{-  else }}
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: main
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/nginx.conf
+              subPath: nginx.conf
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -355,4 +363,6 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
             {{- end }}
+            - name: nginx-tmp
+              mountPath: /tmp
 {{- end }}
