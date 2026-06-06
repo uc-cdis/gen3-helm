@@ -291,6 +291,8 @@ gen3WorkflowConfig:
   debug: false
   # -- (bool) Enables verbose logging specifically for httpx requests.
   httpxDebug: false
+  # -- (int) Number of gunicorn workers
+  nWorkers: 2
   # -- (string) For deployments that run the app behind a proxy. The value should start with a slash.
   proxyPrefix: /workflows
   # -- (string) Custom Arborist URL. Ignored if already set via environment variable.
