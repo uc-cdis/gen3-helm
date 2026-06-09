@@ -100,6 +100,12 @@ spec:
         name: workflow
       expireAfter: 168h
       terminationGracePeriod: 48h
+      {{- if .Values.cilium.enabled }}
+      startupTaints:
+      - key: node.cilium.io/agent-not-ready
+        value: "true"
+        effect: NoExecute
+     {{- end }}
       requirements:
       {{ toYaml (index .Values "karpenter-crds" "workflow" "requirements") | nindent 6 }}
 
