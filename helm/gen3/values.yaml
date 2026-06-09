@@ -418,12 +418,18 @@ access-backend:
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
-    repository: bitnamilegacy/postgresql
-    tag: 16.6.0-debian-12-r2
+    repository: pgvector/pgvector
+    tag: pg16
+    debug: true # FIXME11-debian-11-r45
+  volumePermissions:
+    enabled: true
+    image:
+      registry: bitnamilegacy
+      repository: bitnami-shell-archived
   primary:
     persistence:
-      # -- (bool) Option to persist the dbs data.
-      enabled: false
+      enabled: true # Needed to play nice with pgvector data
+      mountPath: /bitnami/postgres
 
 elasticsearch:
   image: "quay.io/cdis/elasticsearch"
