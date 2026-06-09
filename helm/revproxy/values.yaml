@@ -270,6 +270,7 @@ extraServices:
 #    authzPolicy: "protein-paint"
 #    authzService: "protein-paint"
 #    csrfCheck: true
+#    rewritePath: true
 #    customNginxConfigs: |
 #      proxy_buffering off;
 #      proxy_cache off;

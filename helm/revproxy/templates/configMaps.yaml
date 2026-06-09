@@ -51,7 +51,11 @@ data:
         {{- if .customNginxConfigs }}
 {{ "\n        " }}{{- .customNginxConfigs | trim | replace "\n" "\n        " }}
 {{- end }}
+
+        {{- if ne .rewritePath false }}
         rewrite ^{{ .path }}/(.*) /$1 break;
+        {{- end }}
+
         proxy_pass $upstream;
         proxy_redirect http://$host/ https://$host{{ .path }}/;
     }
