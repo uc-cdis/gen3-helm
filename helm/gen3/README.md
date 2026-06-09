@@ -250,7 +250,8 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"image":{"debug":true,"repository":"pgvector/pgvector","tag":"pg16"},"primary":{"persistence":{"enabled":true,"mountPath":"/bitnami/postgres"}},"volumePermissions":{"enabled":true,"image":{"registry":"bitnamilegacy","repository":"bitnami-shell-archived"}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"repository":"pgvector/pgvector","tag":"pg16"},"primary":{"persistence":{"enabled":true,"mountPath":"/bitnami/postgresql"}},"volumePermissions":{"enabled":true,"image":{"registry":"bitnamilegacy","repository":"bitnami-shell-archived"}}}` | To configure postgresql subchart |
+| postgresql.primary.persistence.enabled | bool | `true` | Whether to enable persistence, required to play nice with pgvector container. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
 | revproxy.ingress.annotations | map | `{}` | Annotations to add to the ingress. |

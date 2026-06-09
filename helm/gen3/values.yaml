@@ -415,12 +415,10 @@ access-backend:
   enabled: false
 
 # -- (map) To configure postgresql subchart
-# Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
     repository: pgvector/pgvector
     tag: pg16
-    debug: true # FIXME11-debian-11-r45
   volumePermissions:
     enabled: true
     image:
@@ -428,8 +426,9 @@ postgresql:
       repository: bitnami-shell-archived
   primary:
     persistence:
-      enabled: true # Needed to play nice with pgvector data
-      mountPath: /bitnami/postgres
+      # -- (bool) Whether to enable persistence, required to play nice with pgvector container.
+      enabled: true
+      mountPath: /bitnami/postgresql
 
 elasticsearch:
   image: "quay.io/cdis/elasticsearch"
