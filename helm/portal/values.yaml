@@ -547,7 +547,7 @@ portalBuild:
     mountOptions:
     - allow-delete
     - region us-east-1
-    - allow-other 
+    - allow-other
     kmsKeyArn: ""
     size: 1Gi
     cache:
