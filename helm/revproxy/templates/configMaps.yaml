@@ -40,7 +40,11 @@ data:
 
         set $proxy_service "{{ .name }}";
         set $upstream http://{{ .serviceName }}$des_domain;
+        
+        {{- if ne .rewritePath false }}
         rewrite ^{{ .path }}/(.*) /$1 break;
+        {{- end }}
+
         proxy_pass $upstream;
         proxy_redirect http://$host/ https://$host{{ .path }}/;
     }
