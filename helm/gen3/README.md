@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.51](https://img.shields.io/badge/Version-0.3.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.52](https://img.shields.io/badge/Version-0.3.52-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -39,26 +39,26 @@ Helm chart to deploy Gen3 Data Commons
 | file://../funnel | funnel | 0.1.25 |
 | file://../gen3-analysis | gen3-analysis | 0.1.11 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.13 |
-| file://../gen3-workflow | gen3-workflow | 0.1.17 |
-| file://../guppy | guppy | 0.1.35 |
-| file://../hatchery | hatchery | 0.1.66 |
-| file://../indexd | indexd | 0.1.44 |
-| file://../manifestservice | manifestservice | 0.1.40 |
-| file://../metadata | metadata | 0.1.41 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.14 |
+| file://../gen3-workflow | gen3-workflow | 0.1.21 |
+| file://../guppy | guppy | 0.1.36 |
+| file://../hatchery | hatchery | 0.1.68 |
+| file://../indexd | indexd | 0.1.45 |
+| file://../manifestservice | manifestservice | 0.1.41 |
+| file://../metadata | metadata | 0.1.43 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.3 |
-| file://../ohif-viewer | ohif-viewer | 0.1.11 |
-| file://../orthanc | orthanc | 0.1.12 |
-| file://../peregrine | peregrine | 0.1.40 |
+| file://../ohdsi-webapi | ohdsi-webapi | 0.1.4 |
+| file://../ohif-viewer | ohif-viewer | 0.1.12 |
+| file://../orthanc | orthanc | 0.1.13 |
+| file://../peregrine | peregrine | 0.1.41 |
 | file://../portal | portal | 0.1.58 |
-| file://../requestor | requestor | 0.1.32 |
-| file://../revproxy | revproxy | 0.1.56 |
-| file://../sheepdog | sheepdog | 0.1.40 |
-| file://../sower | sower | 0.1.43 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
-| file://../wts | wts | 0.1.38 |
+| file://../requestor | requestor | 0.1.33 |
+| file://../revproxy | revproxy | 0.1.58 |
+| file://../sheepdog | sheepdog | 0.1.41 |
+| file://../sower | sower | 0.1.45 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.46 |
+| file://../wts | wts | 0.1.39 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
