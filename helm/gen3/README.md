@@ -128,6 +128,7 @@ Helm chart to deploy Gen3 Data Commons
 | gen3-ai-model-repo.enabled | bool | `false` |  |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
+| gen3-embeddings | map | `{"enabled":false}` | Configurations for gen3-embeddings chart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |

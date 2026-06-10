@@ -79,6 +79,10 @@ dependencies:
     version: 0.1.29
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
+  - name: gen3-embeddings
+    version: 0.1.0
+    repository: "file://../gen3-embeddings"
+    condition: gen3-embeddings.enabled
   - name: gen3-user-data-library
     version: 0.1.17
     repository: "file://../gen3-user-data-library"
