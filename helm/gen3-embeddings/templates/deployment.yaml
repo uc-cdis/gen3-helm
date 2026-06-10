@@ -1,0 +1,210 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen3-embeddings-deployment
+  labels:
+    {{- include "gen3-embeddings.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gen3-embeddings.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "gen3-embeddings.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        # gen3 networkpolicy labels
+        netnolimit: 'yes'
+        public: 'yes'
+        userhelper: 'yes'
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+      {{- end }}
+      {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+      {{- end }}
+
+      {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      volumes:
+        - name: gen3-embeddings-g3auto-volume
+          secret:
+            secretName: gen3embeddings-g3auto
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: host
+                  optional: false
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: port
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: username
+                  optional: false
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: password
+                  optional: false
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: database
+                  optional: false
+            - name: CONFIG_PATH
+              value: /services/gen3_embeddings/.env
+            {{- if eq .Values.global.dev false }}
+            - name: FENCE_URL
+              value: https://{{ .Values.global.hostname }}/user
+            {{- else }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
+            {{- end }}
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: dbcreated
+                  optional: false
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 4142
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: 4142
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 4142
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      initContainers:
+        - name: gen3-embeddings-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: GEN3_DEBUG
+              value: "False"
+            # Admin/master connection – same pattern as db_setup_job
+            - name: PGPASSWORD
+              {{- if $.Values.global.dev }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql
+                  key: postgres-password
+                  optional: false
+              {{- else if $.Values.global.postgres.externalSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.postgres.externalSecret }}
+                  key: password
+                  optional: false
+              {{- else }}
+              value: {{ .Values.global.postgres.master.password | quote }}
+              {{- end }}
+            - name: PGUSER
+              {{- if $.Values.global.postgres.externalSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.postgres.externalSecret }}
+                  key: username
+                  optional: false
+              {{- else }}
+              value: {{ .Values.global.postgres.master.username | quote }}
+              {{- end }}
+            - name: PGPORT
+              {{- if $.Values.global.postgres.externalSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.postgres.externalSecret }}
+                  key: port
+                  optional: false
+              {{- else }}
+              value: {{ .Values.global.postgres.master.port | quote }}
+              {{- end }}
+            - name: PGHOST
+              {{- if $.Values.global.dev }}
+              value: "{{ .Release.Name }}-postgresql"
+              {{- else if $.Values.global.postgres.externalSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.postgres.externalSecret }}
+                  key: host
+                  optional: false
+              {{- else }}
+              value: {{ .Values.global.postgres.master.host | quote }}
+              {{- end }}
+
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: database
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-embeddings-dbcreds
+                  key: dbcreated
+                  optional: false
+
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              echo "Running gen3-embeddings migrations..."
+              /venv/bin/python -u /services/gen3_embeddings/db_migrations/run_sql_files.py
