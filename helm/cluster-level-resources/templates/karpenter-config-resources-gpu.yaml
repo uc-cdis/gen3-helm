@@ -86,6 +86,12 @@ spec:
       # v1: expireAfter & terminationGracePeriod live under template.spec
       expireAfter: 24h
       terminationGracePeriod: 48h
+      {{- if .Values.cilium.enabled }}
+      startupTaints:
+      - key: node.cilium.io/agent-not-ready
+        value: "true"
+        effect: NoExecute
+     {{- end }}
       taints:
       - key: "nvidia.com/gpu"
         operator: "Equal"

@@ -91,6 +91,12 @@ spec:
         name: secondary
       expireAfter: 168h
       terminationGracePeriod: 48h
+      {{- if .Values.cilium.enabled }}
+      startupTaints:
+      - key: node.cilium.io/agent-not-ready
+        value: "true"
+        effect: NoExecute
+     {{- end }}
       requirements:
       {{ toYaml (index .Values "karpenter-crds" "secondary" "requirements") | nindent 6 }}
 
