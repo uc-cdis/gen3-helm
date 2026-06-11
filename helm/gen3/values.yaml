@@ -418,8 +418,8 @@ access-backend:
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
-    repository: bitnamilegacy/postgresql
-    tag: 16.6.0-debian-12-r2
+    repository: gen3/docker-bitnami-pgvector
+    tag: 16
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
