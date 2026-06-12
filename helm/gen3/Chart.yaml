@@ -144,7 +144,7 @@ dependencies:
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
-    version: 0.1.13
+    version: 0.1.14
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
@@ -197,7 +197,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.54
+version: 0.3.55
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
