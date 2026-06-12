@@ -58,7 +58,7 @@ data:
 {{- end}}
 {{- else }}
 {{- range $path, $bytes := .Files.Glob "nginx/*" }}
-  {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}
-{{- end}}
+  {{ base $path }}: |
+{{ tpl ($bytes | toString) $ | nindent 4 }}
+{{- end }}
 {{- end }}
