@@ -199,5 +199,3 @@ secrets:
   awsSecretAccessKey:
 gunicornWorkers: 1
 
-# -- (bool) Whether to run database migrations on startup. If false, you will need to run the db-migrations Job manually after deployment.
-dbMigrationsEnabled: true

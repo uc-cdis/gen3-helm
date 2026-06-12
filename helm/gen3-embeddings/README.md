@@ -20,7 +20,6 @@ A Helm chart for Kubernetes
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| dbMigrationsEnabled | bool | `true` | Whether to run database migrations on startup. If false, you will need to run the db-migrations Job manually after deployment. |
 | debug | bool | `false` |  |
 | env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sGen3EmbeddingsSecret":false,"dbcreds":null,"gen3EmbeddingsG3auto":null,"pushSecret":false}` | External Secrets settings. |
