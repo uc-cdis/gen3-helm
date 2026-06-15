@@ -1,6 +1,11 @@
 # vectis-overlays default values.
 # All service-internal URLs use .Release.Namespace so the chart is env-agnostic.
 # Override image tags per-environment in gitops values.
+#Adding global value
+
+global:
+  externalSecrets:
+    clusterSecretStoreRef: ""
 
 guppyCompat:
   enabled: false
