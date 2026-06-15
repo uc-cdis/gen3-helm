@@ -3,6 +3,7 @@
 # Override image tags per-environment in gitops values.
 #Adding global value
 
+
 global:
   externalSecrets:
     clusterSecretStoreRef: ""
