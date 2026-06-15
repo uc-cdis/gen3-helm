@@ -176,7 +176,7 @@ image:
   # -- (string) The Docker image repository for the indexd service
   repository: quay.io/cdis/indexd
   # -- (string) When to pull the image.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -288,6 +288,30 @@ useSingleTable: "False"
 migrateToSingleTable:
   # -- (string) non-credential args for the migrate-to-single-table indexd job. Example: --start-did dg.4503/04de0c66-150b-4b8c-8043-c5ed7bbf04a4
   args:
+
+cloudProviderMap:
+  s3: aws
+  gs: gcp
+  az: azure
+
+
+# -- (map) Maps an arborist resource to the issuers for passports and bearer tokens.
+trustedIssuers:
+  # -- (string) The default issuer for bearer tokens to be used if a given auth resource isn't provided. Defaults to the fence token issuer
+  defaultBearerIssuer: ""
+  # -- (string) The default issuer for passports to be used if a given auth resource isn't provided.
+  defaultPassportIssuer: ""
+  # Example:
+  #   "/programs/parent":
+  #     passport_auth_issuers:
+  #       - "https://stsstg.nih.gov"
+  #     bearer_auth_issuers:
+  #       - "https://gen3.biodatacatalyst.nhlbi.nih.gov/user"
+  #
+  #   "/open":
+  #     supported_types:
+  #       - null
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"

@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.46](https://img.shields.io/badge/Version-0.1.46-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.47](https://img.shields.io/badge/Version-0.1.47-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -17,6 +17,9 @@ A Helm chart for gen3 indexd
 |-----|------|---------|-------------|
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
+| cloudProviderMap.az | string | `"azure"` |  |
+| cloudProviderMap.gs | string | `"gcp"` |  |
+| cloudProviderMap.s3 | string | `"aws"` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | defaultPrefix | string | `"PREFIX/"` | default prefix for indexd - must end in slash |
@@ -66,8 +69,8 @@ A Helm chart for gen3 indexd
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
-| image.pullPolicy | string | `"IfNotPresent"` | When to pull the image. |
+| image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
+| image.pullPolicy | string | `"Always"` | When to pull the image. |
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
@@ -111,6 +114,9 @@ A Helm chart for gen3 indexd
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
+| trustedIssuers | map | `{"defaultBearerIssuer":"","defaultPassportIssuer":""}` | Maps an arborist resource to the issuers for passports and bearer tokens. |
+| trustedIssuers.defaultBearerIssuer | string | `""` | The default issuer for bearer tokens to be used if a given auth resource isn't provided. Defaults to the fence token issuer |
+| trustedIssuers.defaultPassportIssuer | string | `""` | The default issuer for passports to be used if a given auth resource isn't provided. |
 | useSingleTable | string | `"False"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
 | volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
