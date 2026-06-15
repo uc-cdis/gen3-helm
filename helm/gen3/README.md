@@ -47,20 +47,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.42 |
 | file://../metadata | metadata | 0.1.44 |
 | file://../neuvector | neuvector | 0.1.2 |
-<<<<<<< HEAD
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.4 |
-| file://../ohif-viewer | ohif-viewer | 0.1.12 |
-| file://../orthanc | orthanc | 0.1.13 |
-| file://../peregrine | peregrine | 0.1.41 |
-| file://../portal | portal | 0.1.57 |
-| file://../requestor | requestor | 0.1.33 |
-| file://../revproxy | revproxy | 0.1.59 |
-| file://../sheepdog | sheepdog | 0.1.41 |
-| file://../sower | sower | 0.1.45 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.46 |
-| file://../wts | wts | 0.1.39 |
-=======
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.5 |
 | file://../ohif-viewer | ohif-viewer | 0.1.14 |
@@ -73,7 +59,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sower | sower | 0.1.46 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.47 |
 | file://../wts | wts | 0.1.40 |
->>>>>>> 0dae1a3a0e5825dabcc3eacc26d0c680f210a88a
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
