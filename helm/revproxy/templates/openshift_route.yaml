@@ -1,0 +1,27 @@
+{{- if .Values.openshiftRoute.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "revproxy.fullname" . }}
+  labels:
+    {{- include "revproxy.labels" . | nindent 4 }}
+  {{- if .Values.openshiftRoute.annotations }}
+  annotations:
+    {{- toYaml .Values.openshiftRoute.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.openshiftRoute.host }}
+  host: {{ .Values.openshiftRoute.host }}
+  {{- end }}
+  path: {{ .Values.openshiftRoute.path | default "/" }}
+  to:
+    kind: Service
+    name: revproxy-service
+    weight: 100
+  port:
+    targetPort: {{ .Values.openshiftRoute.targetPort | default "http" }}
+  tls:
+    termination: {{ .Values.openshiftRoute.tls.termination | default "edge" }}
+    insecureEdgeTerminationPolicy: {{ .Values.openshiftRoute.tls.insecureEdgeTerminationPolicy | default "Redirect" }}
+  wildcardPolicy: {{ .Values.openshiftRoute.wildcardPolicy | default "None" }}
+{{- end }}

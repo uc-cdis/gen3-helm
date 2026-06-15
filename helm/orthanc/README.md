@@ -1,6 +1,6 @@
 # orthanc
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Dicom Server
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.36 |
 
 ## Values
 
@@ -79,8 +79,8 @@ A Helm chart for gen3 Dicom Server
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"targetport":8042}` | Kubernetes service information. |
+| service | map | `{"port":80,"targetPort":8042}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
-| service.targetport | int | `8042` | The port on the host machine that traffic is directed to. |
+| service.targetPort | int | `8042` | The port on the host machine that traffic is directed to. |
 | volumeMounts | list | `[{"mountPath":"/etc/orthanc/orthanc_config_overwrites.json","name":"config-volume-g3auto","readOnly":true,"subPath":"orthanc_config_overwrites.json"}]` | Volumes to mount to the pod. |
 | volumes | list | `[{"name":"config-volume-g3auto","secret":{"secretName":"orthanc-s3-g3auto"}}]` | Volumes to attach to the pod. |
