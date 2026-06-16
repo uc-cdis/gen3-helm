@@ -187,7 +187,7 @@ dependencies:
     repository: "file://../jeg"
     condition: jeg.enabled
   - name: workspace-proxy
-    version: 0.1.0
+    version: 0.1.5
     repository: "file://../workspace-proxy"
     condition: workspace-proxy.enabled
   - name: vectis-overlays

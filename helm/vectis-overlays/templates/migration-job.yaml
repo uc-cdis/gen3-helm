@@ -63,5 +63,7 @@ spec:
               psql -f /sql/001_rls_and_masked_views.sql
               echo "==> [002] DRS auth_resource_path column..."
               psql -f /sql/002_drs_auth_resource_path.sql
+              echo "==> [003] s3-monitor role grants..."
+              psql -f /sql/003_s3_monitor_grants.sql
               echo "==> All migrations complete."
 {{- end }}

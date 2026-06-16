@@ -14,6 +14,7 @@ A Helm chart for gen3 revproxy
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| additionalConfigs | map | `{}` | Raw nginx location blocks to add or override entries in the revproxy-nginx-subconf ConfigMap. Keys are the conf filename (e.g. "guppy-service.conf"). A key matching a built-in static conf file will replace that file's content, allowing disabled services to be suppressed or routes redirected to alternative upstreams without modifying the chart. |
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
