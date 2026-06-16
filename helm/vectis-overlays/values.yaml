@@ -1,6 +1,12 @@
 # vectis-overlays default values.
 # All service-internal URLs use .Release.Namespace so the chart is env-agnostic.
 # Override image tags per-environment in gitops values.
+#Adding global value
+
+
+global:
+  externalSecrets:
+    clusterSecretStoreRef: ""
 
 guppyCompat:
   enabled: false
@@ -99,6 +105,44 @@ searchAuthProxy:
   # Optional separate AWS secret name for the search-role credentials.
   # Falls back to rds.secretName for backward compatibility.
   appDsnSecretName: ""
+
+s3Monitor:
+  enabled: false
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  serviceAccount:
+    create: true
+    name: s3-monitor-sa
+    annotations: {}
+  image:
+    repository: python
+    tag: "3.11-slim"
+    pullPolicy: IfNotPresent
+  initImage:
+    repository: busybox
+    tag: "1.36"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  aws:
+    region: "us-east-1"
+  s3:
+    bucket: ""
+    prefix: ""
+  db:
+    schema: "vectis"
+    table: "s3_metadata"
+    secretName: ""
+    secretTargetName: "s3-monitor-db-creds"
+    host: ""
+    port: "5432"
+    database: "postgres"
 
 # CDK RDS secret in Secrets Manager — used to build the postgres DSN ExternalSecret.
 # Set per-environment in gitops values.
