@@ -1,5 +1,5 @@
 remote: origin
-target-branch: master
+target-branch: feat_vectis
 chart-dirs:
   - helm
 chart-repos:
