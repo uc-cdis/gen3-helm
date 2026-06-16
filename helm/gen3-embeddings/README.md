@@ -56,7 +56,7 @@ A Helm chart for Kubernetes
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
 | gunicornWorkers | int | `1` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/cdis/gen3-embeddings"` |  |
+| image.repository | string | `"quay.io/cdis/gen3_embeddings"` |  |
 | image.tag | string | `"main"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
