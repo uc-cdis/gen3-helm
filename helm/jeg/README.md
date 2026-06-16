@@ -8,7 +8,7 @@ Jupyter Enterprise Gateway for gen3 vectis workspaces. Launches ephemeral kernel
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.36 |
+| file://../common | common | 0.1.34 |
 
 ## Values
 
