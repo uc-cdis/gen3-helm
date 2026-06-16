@@ -8,7 +8,7 @@ Per-user workspace HTTP/WebSocket router for gen3 vectis. Replaces Emissary/Amba
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.36 |
 
 ## Values
 
