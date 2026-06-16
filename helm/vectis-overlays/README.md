@@ -14,7 +14,6 @@ Vectis overlay API services (guppy-compat, siem, search-auth-proxy)
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| global.externalSecrets.clusterSecretStoreRef | string | `""` |  |
 | guppyCompat.enabled | bool | `false` |  |
 | guppyCompat.env.GUPPY_COMPAT_MAX_LIMIT | string | `"5000"` |  |
 | guppyCompat.image.pullPolicy | string | `"Always"` |  |
