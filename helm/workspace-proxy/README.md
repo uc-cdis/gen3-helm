@@ -1,8 +1,8 @@
 # workspace-proxy
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.15.0](https://img.shields.io/badge/AppVersion-2.15.0-informational?style=flat-square)
 
-Per-user workspace HTTP/WebSocket router for gen3 vectis. Replaces Emissary/Ambassador. Reads Service annotations written by Hatchery to resolve each user's workspace upstream, then proxies traffic from revproxy.
+Per-user workspace HTTP/WebSocket router for gen3 vectis.
 
 ## Requirements
 

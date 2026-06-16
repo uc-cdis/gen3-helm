@@ -60,7 +60,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sower | sower | 0.1.43 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
 | file://../vectis-overlays | vectis-overlays | 0.1.0 |
-| file://../workspace-proxy | workspace-proxy | 0.1.0 |
+| file://../workspace-proxy | workspace-proxy | 0.1.5 |
 | file://../wts | wts | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
