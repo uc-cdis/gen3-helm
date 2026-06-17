@@ -5,7 +5,7 @@ description: >
   Launches ephemeral kernel pods in the workspace namespace on behalf of
   user Jupyter sessions proxied through workspace-proxy.
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "3.2.3"
 
 dependencies:

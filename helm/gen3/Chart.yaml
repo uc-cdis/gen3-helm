@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.17
+    version: 0.1.27
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.55
+    version: 0.1.62
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -183,15 +183,15 @@ dependencies:
     repository: "file://../neuvector"
     condition: neuvector.enabled
   - name: jeg
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../jeg"
     condition: jeg.enabled
   - name: workspace-proxy
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../workspace-proxy"
     condition: workspace-proxy.enabled
   - name: vectis-overlays
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../vectis-overlays"
     condition: vectis-overlays.enabled
 
@@ -209,7 +209,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.31
+version: 0.3.60
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

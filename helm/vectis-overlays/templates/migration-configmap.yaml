@@ -232,4 +232,29 @@ data:
         ALTER TABLE drs.drs_object ADD COLUMN IF NOT EXISTS auth_resource_path TEXT;
       END IF;
     END $$;
+
+  003_s3_monitor_grants.sql: |
+    -- Migration 003: s3-monitor role grants on vectis schema.
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 's3_monitor_role') THEN
+        CREATE ROLE s3_monitor_role NOLOGIN;
+      END IF;
+    END $$;
+
+    GRANT USAGE ON SCHEMA vectis TO s3_monitor_role;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA vectis TO s3_monitor_role;
+    GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA vectis TO s3_monitor_role;
+
+    ALTER DEFAULT PRIVILEGES IN SCHEMA vectis
+      GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO s3_monitor_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA vectis
+      GRANT USAGE, SELECT ON SEQUENCES TO s3_monitor_role;
+
+    DO $$
+    BEGIN
+      IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 's3_monitor_user') THEN
+        GRANT s3_monitor_role TO s3_monitor_user;
+      END IF;
+    END $$;
 {{- end }}

@@ -1,0 +1,177 @@
+{{- if .Values.s3Monitor.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: s3-monitor
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.s3Monitor.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.s3Monitor.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.s3Monitor.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Values.s3Monitor.serviceAccount.name }}
+          restartPolicy: OnFailure
+          initContainers:
+            - name: download-rds-cert
+              image: "{{ .Values.s3Monitor.initImage.repository }}:{{ .Values.s3Monitor.initImage.tag }}"
+              imagePullPolicy: {{ .Values.s3Monitor.initImage.pullPolicy }}
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  wget -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -O /ssl/global-bundle.pem
+              volumeMounts:
+                - name: ssl-cert
+                  mountPath: /ssl
+          containers:
+            - name: s3-monitor
+              image: "{{ .Values.s3Monitor.image.repository }}:{{ .Values.s3Monitor.image.tag }}"
+              imagePullPolicy: {{ .Values.s3Monitor.image.pullPolicy }}
+              env:
+                - name: AWS_REGION
+                  value: {{ .Values.s3Monitor.aws.region | quote }}
+                - name: S3_BUCKET
+                  value: {{ .Values.s3Monitor.s3.bucket | quote }}
+                - name: S3_PREFIX
+                  value: {{ .Values.s3Monitor.s3.prefix | quote }}
+                - name: DB_SCHEMA
+                  value: {{ .Values.s3Monitor.db.schema | quote }}
+                - name: DB_TABLE
+                  value: {{ .Values.s3Monitor.db.table | quote }}
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.s3Monitor.db.secretTargetName }}
+                      key: PGHOST
+                      optional: false
+                - name: PGPORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.s3Monitor.db.secretTargetName }}
+                      key: PGPORT
+                      optional: false
+                - name: PGDATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.s3Monitor.db.secretTargetName }}
+                      key: PGDATABASE
+                      optional: false
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.s3Monitor.db.secretTargetName }}
+                      key: PGUSER
+                      optional: false
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.s3Monitor.db.secretTargetName }}
+                      key: PGPASSWORD
+                      optional: false
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  pip install -q boto3 psycopg2-binary
+                  python - <<'PYEOF'
+                  import os
+                  from datetime import datetime, timezone, timedelta
+
+                  import boto3
+                  import psycopg2
+                  from psycopg2 import sql
+
+                  region = os.environ["AWS_REGION"]
+                  bucket = os.environ["S3_BUCKET"]
+                  prefix = os.environ.get("S3_PREFIX", "")
+                  db_schema = os.environ.get("DB_SCHEMA", "vectis")
+                  db_table = os.environ.get("DB_TABLE", "s3_metadata")
+                  ssl_cert = "/ssl/global-bundle.pem"
+
+                  conn = psycopg2.connect(
+                      host=os.environ["PGHOST"],
+                      port=os.environ["PGPORT"],
+                      dbname=os.environ["PGDATABASE"],
+                      user=os.environ["PGUSER"],
+                      password=os.environ["PGPASSWORD"],
+                      sslmode="verify-full",
+                      sslrootcert=ssl_cert,
+                      connect_timeout=10,
+                  )
+                  conn.autocommit = True
+                  cur = conn.cursor()
+
+                  cur.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(sql.Identifier(db_schema)))
+                  cur.execute(
+                      sql.SQL(
+                          """
+                          CREATE TABLE IF NOT EXISTS {}.{} (
+                              id SERIAL PRIMARY KEY,
+                              bucket_name TEXT NOT NULL,
+                              file_key TEXT NOT NULL,
+                              current_size_bytes BIGINT NOT NULL,
+                              previous_size_bytes BIGINT,
+                              event_type TEXT NOT NULL,
+                              s3_last_modified TIMESTAMPTZ NOT NULL,
+                              detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                              UNIQUE (bucket_name, file_key, detected_at)
+                          );
+                          """
+                      ).format(sql.Identifier(db_schema), sql.Identifier(db_table))
+                  )
+
+                  s3 = boto3.client("s3", region_name=region)
+                  paginator = s3.get_paginator("list_objects_v2")
+                  all_objects = []
+                  for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+                      all_objects.extend(page.get("Contents", []))
+
+                  cutoff = datetime.now(timezone.utc) - timedelta(minutes=5)
+                  recent = [obj for obj in all_objects if obj["LastModified"] >= cutoff]
+
+                  for obj in recent:
+                      key = obj["Key"]
+                      size = obj["Size"]
+                      last_modified = obj["LastModified"]
+
+                      cur.execute(
+                          sql.SQL(
+                              """
+                              SELECT current_size_bytes FROM {}.{}
+                              WHERE bucket_name = %s AND file_key = %s
+                              ORDER BY detected_at DESC LIMIT 1
+                              """
+                          ).format(sql.Identifier(db_schema), sql.Identifier(db_table)),
+                          (bucket, key),
+                      )
+                      row = cur.fetchone()
+                      prev = row[0] if row else None
+                      event_type = "CREATED" if row is None else "UPDATED"
+
+                      cur.execute(
+                          sql.SQL(
+                              """
+                              INSERT INTO {}.{} (
+                                  bucket_name, file_key, current_size_bytes,
+                                  previous_size_bytes, event_type, s3_last_modified
+                              ) VALUES (%s, %s, %s, %s, %s, %s)
+                              """
+                          ).format(sql.Identifier(db_schema), sql.Identifier(db_table)),
+                          (bucket, key, size, prev, event_type, last_modified),
+                      )
+
+                  cur.close()
+                  conn.close()
+
+                  print(f"Processed {len(recent)} updated objects from s3://{bucket}/{prefix}")
+                  PYEOF
+              volumeMounts:
+                - name: ssl-cert
+                  mountPath: /ssl
+              resources:
+                {{- toYaml .Values.s3Monitor.resources | nindent 16 }}
+          volumes:
+            - name: ssl-cert
+              emptyDir: {}
+{{- end }}
