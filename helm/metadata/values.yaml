@@ -333,6 +333,7 @@ serviceAnnotations:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 80
   # -- (int) The port number that the service exposes.
   port:
     - protocol: TCP
@@ -363,4 +364,4 @@ elasticsearch:
       # Here we can add elasticsearch config
 
 schedule: "0 0 1 1 */5"
-suspendCronjob: false
+suspendCronjob: true

@@ -1,0 +1,81 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: migrate-to-single-table-indexd
+spec:
+  # Invalid schedule, feb 31st - we never want this to actually trigger itself.
+  schedule: 0 0 31 2 *
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: gen3job
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          {{- with .Values.volumes }}
+          volumes:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: indexd
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                    python - <<'PY'
+                    import json, os
+
+                    with open("/indexd/bin/creds.json", "w") as f:
+                        json.dump({
+                            "db_host": os.environ["PGHOST"],
+                            "db_username": os.environ["PGUSER"],
+                            "db_password": os.environ["PGPASSWORD"],
+                            "db_database": os.environ["PGDB"],
+                        }, f, indent=2)
+                    PY
+                    python /indexd/bin/migrate_to_single_table.py --creds-file /indexd/bin/creds.json {{.Values.migrateToSingleTable.args}}
+              env:
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: indexd-dbcreds
+                      key: host
+                      optional: false
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: indexd-dbcreds
+                      key: username
+                      optional: false
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: indexd-dbcreds
+                      key: password
+                      optional: false
+                - name: PGDB
+                  valueFrom:
+                    secretKeyRef:
+                      name: indexd-dbcreds
+                      key: database
+                      optional: false
+                - name: DBREADY
+                  valueFrom:
+                    secretKeyRef:
+                      name: indexd-dbcreds
+                      key: dbcreated
+                      optional: false
+                - name: DEFAULT_PREFIX
+                  value: {{ .Values.defaultPrefix }}
+                - name: USE_SINGLE_TABLE
+                  value: {{ .Values.useSingleTable | quote }}
+                {{- toYaml .Values.env | nindent 16  }}

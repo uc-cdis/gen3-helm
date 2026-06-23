@@ -1,4 +1,4 @@
-{{- if not .Values.mountpointCacheEnabled }}
+{{- if not .Values.portalBuild.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,6 +42,8 @@ spec:
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "portal.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -67,6 +69,11 @@ spec:
           name: "privacy-policy"
           optional: true
       {{- end }}
+      - name: nginx-tmp
+        emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: portal-nginx
       - name: extra-images-config
         configMap:
           name: portal-extra-images
@@ -185,26 +192,6 @@ spec:
               ls -la "$DEST_DIR"
 
               log "Init container completed successfully."
-                  
-              # mkdir -p /tmp/repo
-              # cd /tmp/repo
-              # # Clone only the specific branch with minimal history and sparse checkout
-              # git clone \
-              #   --depth 1 \
-              #   --single-branch \
-              #   --branch ${GIT_BRANCH} \
-              #   --filter=blob:none \
-              #   --sparse \
-              #   ${GIT_REPO} custom
-              # cd custom
-
-              # git sparse-checkout set {{ .Values.customConfig.dir }}
-              # cd {{ .Values.customConfig.dir }}
-              # ls
-              # echo 'cp -r * /gen3/config'
-              # cp -r * /gen3/config
-              # echo 'ls /gen3/config'
-              # ls /gen3/config
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
@@ -212,6 +199,8 @@ spec:
       containers:
         - name: portal
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
@@ -228,14 +217,15 @@ spec:
               {{- else }}
               path: /
               {{- end }}
-              port: 80
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           # command:
           #   - /bin/bash
@@ -338,7 +328,19 @@ spec:
               subPath: gitops.json
             - name: config-volume
               mountPath: /data-portal/custom/
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/conf.d/nginx.conf"
+              subPath: "nginx.conf"
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "main"
             {{-  else }}
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: main
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/nginx.conf
+              subPath: nginx.conf
             - name: "config-volume"
               mountPath: "/data-portal/data/config/gitops.json"
               subPath: "gitops.json"
@@ -361,4 +363,6 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
             {{- end }}
+            - name: nginx-tmp
+              mountPath: /tmp
 {{- end }}

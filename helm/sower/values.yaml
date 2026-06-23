@@ -156,6 +156,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 8000
   # -- (int) The port number that the service exposes.
   port: 80
 
@@ -255,7 +256,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: "quay.io/cdis/pelican-export:master"
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
@@ -312,7 +313,7 @@ sowerConfig:
     action: export-files
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: "quay.io/cdis/pelican-export:master"
       pull_policy: Always
       env:
         - name: DICTIONARY_URL

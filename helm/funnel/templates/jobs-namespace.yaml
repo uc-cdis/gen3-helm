@@ -7,4 +7,7 @@ metadata:
     name: {{ $jobsNamespace | quote }}
     labels:
         app.kubernetes.io/name: {{ $jobsNamespace | quote }}
+        # Enforce Baseline to allow root but block host escapes
+        pod-security.kubernetes.io/enforce: baseline
+
 {{- end }}

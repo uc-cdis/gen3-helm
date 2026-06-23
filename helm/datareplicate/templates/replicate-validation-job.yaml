@@ -66,6 +66,8 @@ spec:
                 value: "{{ .Values.replicateValidationJob.MAP_FILE }}"
               - name: SAVE_COPIED_OBJECTS
                 value: "{{ .Values.replicateValidationJob.SAVE_COPIED_OBJECTS }}"
+              - name: VALIDATE_PLATFORM
+                value: "{{ .Values.replicateValidationJob.VALIDATE_PLATFORM }}"
             volumeMounts:
               - name: aws-cred-volume
                 mountPath: "/root/.aws/credentials"
@@ -88,7 +90,6 @@ spec:
                 gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
                 export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
                 gsutil cp $IGNORED_FILE /dcf-dataservice/ignored_files_manifest.csv
-                python replicate.py validate --global_config "{\"release\": \"$RELEASE\", \"manifest_files\":\"$MANIFEST_FILES\", \"out_manifests\": \"$OUT_FILES\", \"FORCE_CREATE_MANIFEST\": \"$FORCE_CREATE_MANIFEST\", \"log_bucket\": \"$LOG_BUCKET\", \"map_file\": \"$MAP_FILE\", \"save_copied_objects\": \"$SAVE_COPIED_OBJECTS\"}"
-                sleep infinity
+                python replicate.py validate --global_config "{\"release\": \"$RELEASE\", \"manifest_files\":\"$MANIFEST_FILES\", \"out_manifests\": \"$OUT_FILES\", \"FORCE_CREATE_MANIFEST\": \"$FORCE_CREATE_MANIFEST\", \"log_bucket\": \"$LOG_BUCKET\", \"map_file\": \"$MAP_FILE\", \"save_copied_objects\": \"$SAVE_COPIED_OBJECTS\", \"validate_platform\": \"$VALIDATE_PLATFORM\" }"
           restartPolicy: Never
 {{- end }}

@@ -15,8 +15,12 @@ spec:
   amiFamily: AL2
   {{- end }}
   amiSelectorTerms:
+  {{- if not (index .Values "karpenter-crds" "useAlias") }}
   - name: {{ index .Values "karpenter-crds" "amiSelectorName" }}
-    owner: "143731057154"
+    owner: {{ index .Values "karpenter-crds" "amiOwner" | quote }}
+  {{- else }}
+  - alias: {{ index .Values "karpenter-crds" "alias" | quote }}
+  {{- end }}
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
@@ -36,7 +40,7 @@ spec:
     {{- if ne (index .Values "karpenter-crds" "workflow" "sgSelector") "" }}
       karpenter.sh/discovery: {{ index .Values "karpenter-crds" "workflow" "sgSelector" }}
     {{- else }}
-      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}-workflow
+      karpenter.sh/discovery: {{ index .Values "karpenter-crds" "selectorTag" }}
     {{- end }}
 
   subnetSelectorTerms:
@@ -60,6 +64,8 @@ spec:
     echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
     curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys &
     sysctl -w fs.inotify.max_user_watches=12000 &
+    systemctl stop firewalld
+    systemctl disable firewalld
 
     --BOUNDARY--
 

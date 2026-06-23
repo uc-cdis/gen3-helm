@@ -189,6 +189,7 @@ resources:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 8000
   # -- (int) The port number that the service exposes.
   port:
     - protocol: TCP
@@ -207,3 +208,17 @@ partOf: "Authentication"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+env:
+
+geneExpressionDataDir: ""
+geneExpressionSQLitePath: ""
+
+s3DataMount:
+  enabled: false
+  s3Path: ""
+  localPath: ""
+  image:
+    repository: quay.io/cdis/awshelper
+    tag: "master"
+    pullPolicy: IfNotPresent

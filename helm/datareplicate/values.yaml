@@ -50,7 +50,8 @@ awsBatchReplicateJob:
   JOB_QUEUE:
   JOB_DEFINITION:
   OUTPUT_MANIFEST_BUCKET:
-
+  MULTIPART_THRESHOLD:
+  CHUNK_SIZE:
 awsBucketReplicateJob:
   enabled: true
   schedule: "*/30 * * * *"
@@ -97,6 +98,7 @@ replicateValidationJob:
   MAP_FILE:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
+  VALIDATE_PLATFORM: "AWS"
 
 batchServiceAccount:
   annotations: {}

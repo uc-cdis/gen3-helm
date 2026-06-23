@@ -17,6 +17,7 @@ configuration:
 alb-controller:
   enabled: false
   targetRevision: "1.13.4"
+  hostNetworkEnabled: false
   configuration:
     enabled: false
 
@@ -77,6 +78,12 @@ argo-workflows:
   configuration:
     enabled: false
 
+cilium:
+  enabled: false
+  targetRevision: "1.18.4"
+  configuration:
+    enabled: false
+
 custom-objects:
   enabled: false
 
@@ -127,6 +134,8 @@ karpenter-crds:
   targetRevision: master
   amiSelectorName: "EKS-FIPS*"
   amiOwner: "143731057154"
+  useAlias: false
+  alias: "al2023@latest"
   selectorTag: ""
   migration: false
   default:
@@ -257,6 +266,13 @@ kube-state-metrics:
   configuration:
     enabled: false
   targetRevision: 6.3.0
+
+metrics-server:
+  enabled: false
+  targetRevision: "3.13.0"
+  hostNetworkEnabled: false
+  configuration:
+    enabled: false
 
 nvidia-device-plugin:
   enabled: false
@@ -582,6 +598,13 @@ alloy-configmap-data: |
   // Logs from all pods
   discovery.relabel "all_pods" {
     targets = discovery.kubernetes.pods.targets
+
+    rule {
+      source_labels = ["__meta_kubernetes_namespace"]
+      regex = "calico-apiserver|calico-system|argocd"
+      action = "drop"
+    }
+
     rule {
       source_labels = ["__meta_kubernetes_namespace"]
       target_label = "namespace"
@@ -608,6 +631,12 @@ alloy-configmap-data: |
     rule {
       action = "labelmap"
       regex  = "__meta_kubernetes_pod_label_(.+)"
+    }
+
+    // drop high-cardinality rollout labels
+    rule {
+      action = "labeldrop"
+      regex = "pod_template_hash|controller_revision_hash|controller_uid|batch_kubernetes_io_controller_uid|pod_uid|task_id|app_kubernetes_io_instance|topology_kubernetes_io_region|topology_kubernetes_io_zone"
     }
 
   }

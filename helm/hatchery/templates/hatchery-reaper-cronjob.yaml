@@ -37,7 +37,7 @@ spec:
                         values: ["ONDEMAND"]
           containers:
             - name: awshelper
-              image: quay.io/cdis/awshelper:master
+              image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
               imagePullPolicy: Always
               env:
                 - name: KUBECTL_NAMESPACE

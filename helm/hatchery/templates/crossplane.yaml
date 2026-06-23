@@ -73,6 +73,16 @@ spec:
             "Effect":"Allow",
             "Action":["ec2:*"],
             "Resource":"*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetRole",
+                "iam:CreateRole",
+                "iam:PutRolePolicy",
+                "iam:ListAccessKeys"
+            ],
+            "Resource": "*"
           }
         ]
       }
