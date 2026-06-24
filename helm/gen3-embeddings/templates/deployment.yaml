@@ -51,6 +51,9 @@ spec:
         - name: gen3-embeddings-g3auto-volume
           secret:
             secretName: gen3embeddings-g3auto
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -207,4 +210,6 @@ spec:
             - |
               set -euo pipefail
               echo "Running gen3-embeddings migrations..."
-              /venv/bin/python -u /services/gen3_embeddings/db_migrations/run_sql_files.py
+              DATABASE_URL="postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=disable"
+              dbmate -u "$DATABASE_URL" -d "/services/gen3_embeddings/db/migrations" migrate
+              echo "Migrations completed."
