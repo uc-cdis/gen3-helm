@@ -17,7 +17,7 @@ data:
   access-key: {{ .Values.secrets.awsAccessKeyId | default .Values.global.aws.awsAccessKeyId | b64enc }}
   secret-access-key: {{ .Values.secrets.awsSecretAccessKey | default .Values.global.aws.awsSecretAccessKey | b64enc }}
 {{- else }}
-apiVersion: external-secrets.io/v1
+apiVersion: {{ include "common.externalSecrets.apiVersion" . }}
 kind: ExternalSecret
 metadata:
   name: {{.Chart.Name}}-aws-config
