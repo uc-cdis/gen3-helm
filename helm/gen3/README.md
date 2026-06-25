@@ -172,7 +172,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
-| global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
+| global.postgres.dbCreate | bool | `false` | Whether the database create job should run. |
 | global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |
@@ -250,7 +250,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"global":{"imageRegistry":"quay.io/cdis"},"image":{"repository":"docker-bitnami-pgvector","tag":17},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"global":{"imageRegistry":"quay.io/cdis"},"image":{"repository":"docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |

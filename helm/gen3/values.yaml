@@ -61,7 +61,7 @@ global:
   dev: true
   postgres:
     # -- (bool) Whether the database create job should run.
-    dbCreate: true
+    dbCreate: false
     # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
     externalSecret: ""
     master:
@@ -421,7 +421,7 @@ postgresql:
     imageRegistry: "quay.io/cdis"
   image:
     repository: "docker-bitnami-pgvector"
-    tag: 17
+    tag: 16
   primary:
     persistence:
       # -- (bool) Option to persist the dbs data.
