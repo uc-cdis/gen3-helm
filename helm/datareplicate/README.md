@@ -1,6 +1,6 @@
 # datareplicate
 
-![Version: 0.1.19](https://img.shields.io/badge/Version-0.1.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
@@ -8,16 +8,18 @@ A Helm chart for gen3 datareplicate
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.33 |
+| file://../common | common | 0.1.36 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| awsBatchReplicateJob.CHUNK_SIZE | string | `nil` |  |
 | awsBatchReplicateJob.JOB_DEFINITION | string | `nil` |  |
 | awsBatchReplicateJob.JOB_QUEUE | string | `nil` |  |
 | awsBatchReplicateJob.MANIFEST_PATH | string | `nil` |  |
 | awsBatchReplicateJob.MAX_RETRIES | string | `nil` |  |
+| awsBatchReplicateJob.MULTIPART_THRESHOLD | string | `nil` |  |
 | awsBatchReplicateJob.OUTPUT_MANIFEST_BUCKET | string | `nil` |  |
 | awsBatchReplicateJob.REGION | string | `nil` |  |
 | awsBatchReplicateJob.THREAD_COUNT | string | `nil` |  |

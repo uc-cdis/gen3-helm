@@ -1,6 +1,6 @@
 # funnel
 
-![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.26](https://img.shields.io/badge/Version-0.1.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,8 +8,8 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
-| https://calypr.github.io/helm-charts | funnel | 0.1.99-rc.34 |
+| file://../common | common | 0.1.36 |
+| https://calypr.github.io/helm-charts | funnel | 0.1.99-rc.36 |
 
 ## Values
 
