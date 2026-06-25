@@ -418,7 +418,7 @@ access-backend:
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
   image:
-    repository: gen3/docker-bitnami-pgvector
+    repository: "quay.io/cdis/docker-bitnami-pgvector"
     tag: 16
   primary:
     persistence:
