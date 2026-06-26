@@ -43,7 +43,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-workflow | gen3-workflow | 0.1.22 |
 | file://../guppy | guppy | 0.1.37 |
 | file://../hatchery | hatchery | 0.1.69 |
-| file://../indexd | indexd | 0.1.46 |
+| file://../indexd | indexd | 0.1.47 |
 | file://../manifestservice | manifestservice | 0.1.42 |
 | file://../metadata | metadata | 0.1.44 |
 | file://../neuvector | neuvector | 0.1.2 |
