@@ -36,6 +36,15 @@ http
 {{- end -}}
 {{- end }}
 
+{{- define "common.nginxSidecar.upstreamScheme" -}}
+{{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
+{{- if and $nginx.enabled $nginx.tls.enabled -}}
+https
+{{- else -}}
+http
+{{- end -}}
+{{- end }}
+
 {{- define "common.nginxSidecar.annotations" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
 {{- if and $nginx.enabled $nginx.metrics.enabled }}
