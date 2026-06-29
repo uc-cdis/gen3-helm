@@ -27,7 +27,7 @@ http
 {{- end -}}
 {{- end }}
 
-{{- define "common.nginxSidecar.upstreamScheme" -}}
+{{- define "common.nginxSidecar.scheme" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
 {{- if and $nginx.enabled $nginx.tls.enabled -}}
 https
