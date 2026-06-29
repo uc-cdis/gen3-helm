@@ -16,6 +16,8 @@ spec:
           crds:
             enabled: true
           securePort: 10251
+          webhook:
+            securePort: 10251
   destination:
     server: "https://kubernetes.default.svc"
     namespace: cert-manager
