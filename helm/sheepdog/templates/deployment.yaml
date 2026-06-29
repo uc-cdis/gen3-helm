@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,6 +45,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -60,6 +66,9 @@ spec:
         - name: config-helper
           configMap:
             name: config-helper
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: sheepdog-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -254,3 +263,4 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}

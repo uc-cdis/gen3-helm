@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +23,9 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         dbohdsi: "yes"
         dbomop-data: "yes"
@@ -34,7 +40,10 @@ spec:
       volumes:
         - name: cohort-middleware-g3auto
           secret:
-            secretName: cohort-middleware-g3auto             
+            secretName: cohort-middleware-g3auto
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       #serviceAccountName: {{ include "cohort-middleware.serviceAccountName" . }}
       serviceAccountName: default
       automountServiceAccountToken: false
@@ -65,12 +74,9 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.volumes }}
-      volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}

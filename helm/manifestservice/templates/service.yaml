@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 80
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: http
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "manifestservice.selectorLabels" . | nindent 4 }}

@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
       nodePort: null
   selector:
     {{- include "ohif-viewer.selectorLabels" . | nindent 4 }}

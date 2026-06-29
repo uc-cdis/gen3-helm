@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +33,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         authprovider: "yes"
         netnolimit: "yes"
@@ -44,6 +50,9 @@ spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: fence
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -86,6 +95,7 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       initContainers:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

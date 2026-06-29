@@ -21,8 +21,9 @@ metadata:
   name: ambassador-service
 spec:
   ports:
-  - port: 80
-    targetPort: http
-    name: proxy
+    - port: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
+      name: {{ include "common.nginxSidecar.servicePortName" . }}  
   selector:
     {{- include "ambassador.selectorLabels" . | nindent 4 }}

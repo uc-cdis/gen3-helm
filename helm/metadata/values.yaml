@@ -334,12 +334,7 @@ service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   targetPort: 80
-  # -- (int) The port number that the service exposes.
-  port:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-      name: http
+  port: 80
 
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".

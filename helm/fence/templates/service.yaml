@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: http
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "fence.selectorLabels" . | nindent 4 }}
 ---
@@ -22,9 +22,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: http
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     app: presigned-url-fence
 

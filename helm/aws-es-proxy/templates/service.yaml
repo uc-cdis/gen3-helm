@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
 {{- if not .Values.global.dev }}
@@ -25,9 +25,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
 {{- end }}

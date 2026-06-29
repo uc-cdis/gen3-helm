@@ -7,7 +7,7 @@ spec:
   selector:
     app: ohdsi-atlas
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-      name: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
+      name: {{ include "common.nginxSidecar.servicePortName" . }}

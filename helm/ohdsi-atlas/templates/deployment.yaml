@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +22,10 @@ spec:
       labels:
         app: ohdsi-atlas
         public: "yes"
+      {{- if $nginxAnnotations }}
+      annotations:
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       affinity:
         podAntiAffinity:
@@ -53,6 +60,9 @@ spec:
         - name: ohdsi-atlas-config
           configMap:
             name: ohdsi-atlas-config
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -82,3 +92,4 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}

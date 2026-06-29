@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +19,9 @@ spec:
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         {{- include "embedding-management-service.labels" . | nindent 8 }}
@@ -75,12 +81,16 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       {{- with .Values.volumes }}
       volumes:
         - name: config-volume
           configMap:
             name: ems-config
             optional: false
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}

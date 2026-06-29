@@ -1,3 +1,5 @@
+{{ include "common.nginxSidecar.upstreamScheme" . }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,22 +7,22 @@ metadata:
 data:
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}
+  {{ tpl ($bytes | toString) $ | nindent 4 }}
 {{- end}}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
   {{ "frontend-framework-service.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf" | nindent 4}}
+  {{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf") . | nindent 4 }}
   {{ "portal-service.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf" | nindent 4}}
+  {{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf") . | nindent 4 }}
 {{- else }}
   {{ "frontend-framework-service.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf"| nindent 4}}
+  {{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf") . | nindent 4 }}
   {{ "portal-service.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf" | nindent 4}}
+  {{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf") . | nindent 4 }}
 {{- end }}
 {{- if .Values.enableRobotsTxt }}
   {{ "robots-txt.conf" }}: |
-  {{- .Files.Get "gen3.nginx.conf/robots/robots-txt.conf" | nindent 4}}
+  {{ tpl (.Files.Get "gen3.nginx.conf/robots/robots-txt.conf") . | nindent 4 }}
 {{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |

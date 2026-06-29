@@ -7,9 +7,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port.port }}
-      targetPort: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: http
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "embedding-management-service.selectorLabels" . | nindent 4 }}

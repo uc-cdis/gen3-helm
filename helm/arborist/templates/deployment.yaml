@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +31,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         authprovider: "yes"
         dbarborist: "yes"
@@ -41,6 +47,9 @@ spec:
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -131,6 +140,7 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}  
           {{- end }}
+      {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

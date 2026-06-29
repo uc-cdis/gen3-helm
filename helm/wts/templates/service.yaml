@@ -9,10 +9,10 @@ spec:
     app: wts
   type: {{ .Values.service.type }}
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.httpPort }}
-      targetPort: {{ .Values.service.httpPort }}
-      name: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
     - protocol: TCP
       port: {{ .Values.service.httpsPort }}
       targetPort: {{ .Values.service.httpsPort }}

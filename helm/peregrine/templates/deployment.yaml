@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,6 +32,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         public: "yes"
         s3: "yes"
@@ -40,6 +46,9 @@ spec:
       {{- end }}
       {{- with .Values.volumes }}
       volumes:
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
@@ -178,6 +187,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

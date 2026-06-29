@@ -145,6 +145,22 @@ global:
     topologyKey: "topology.kubernetes.io/zone"
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
+  nginxSidecar:
+    enabled: false
+    image: nginx:1.27-alpine
+    listenPort: 8443
+
+    metrics:
+      enabled: false
+      image: nginx/nginx-prometheus-exporter:1.4.2
+      stubStatusPort: 8081
+      port: 9113
+
+    tls:
+      enabled: false
+      issuerRef:
+        name: gen3-internal-ca
+        kind: ClusterIssuer
 
 # Dependancy Charts
 

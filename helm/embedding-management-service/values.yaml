@@ -142,12 +142,10 @@ service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   # -- (int) The port number that the service exposes.
-  port:
-    protocol: TCP
-    port: 80
-    targetPort: 8000
-    name: http
-
+  protocol: TCP
+  port: 80
+  targetPort: 8000
+  name: http  
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

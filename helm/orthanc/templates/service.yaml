@@ -7,9 +7,9 @@ metadata:
 spec:
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
       nodePort: null
   type: ClusterIP
   selector:

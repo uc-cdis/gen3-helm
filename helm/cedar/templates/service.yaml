@@ -10,10 +10,10 @@ spec:
     {{- include "cedar.selectorLabels" . | nindent 6 }}
   type: {{ .Values.service.type }}
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.httpPort }}
-      targetPort: {{ .Values.service.targetPort }}
-      name: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
       nodePort: null
     - protocol: TCP
       port: {{ .Values.service.httpsPort }}
