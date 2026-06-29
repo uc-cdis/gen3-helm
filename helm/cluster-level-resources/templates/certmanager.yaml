@@ -17,7 +17,7 @@ spec:
             enabled: true
           #securePort: 10251
           webhook:
-            securePort: 10251
+            securePort: 10252
   destination:
     server: "https://kubernetes.default.svc"
     namespace: cert-manager
