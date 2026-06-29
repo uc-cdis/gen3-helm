@@ -5,25 +5,25 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-subconf
 data:
-{{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
+{{ range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{ tpl ($bytes | toString) $ | nindent 4 }}
-{{- end}}
-{{- if eq "gen3ff" .Values.global.frontendRoot }}
-  {{ "frontend-framework-service.conf" }}: |
-  {{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf") . | nindent 4 }}
-  {{ "portal-service.conf" }}: |
-  {{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf") . | nindent 4 }}
-{{- else }}
-  {{ "frontend-framework-service.conf" }}: |
-  {{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf") . | nindent 4 }}
-  {{ "portal-service.conf" }}: |
-  {{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf") . | nindent 4 }}
-{{- end }}
-{{- if .Values.enableRobotsTxt }}
-  {{ "robots-txt.conf" }}: |
-  {{ tpl (.Files.Get "gen3.nginx.conf/robots/robots-txt.conf") . | nindent 4 }}
-{{- end }}
+{{ tpl ($bytes | toString) $ | nindent 4 }}
+{{ end }}
+{{ if eq "gen3ff" .Values.global.frontendRoot }}
+  frontend-framework-service.conf: |
+{{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf") . | nindent 4 }}
+  portal-service.conf: |
+{{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf") . | nindent 4 }}
+{{ else }}
+  frontend-framework-service.conf: |
+{{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf") . | nindent 4 }}
+  portal-service.conf: |
+{{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf") . | nindent 4 }}
+{{ end }}
+{{ if .Values.enableRobotsTxt }}
+  robots-txt.conf: |
+{{ tpl (.Files.Get "gen3.nginx.conf/robots/robots-txt.conf") . | nindent 4 }}
+{{ end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
@@ -53,14 +53,14 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-conf
 data:
-{{- if .Values.enableRobotsTxt }}
-{{- range $path, $bytes := .Files.Glob "nginxPrivate/*" }}
+{{ if .Values.enableRobotsTxt }}
+{{ range $path, $bytes := .Files.Glob "nginxPrivate/*" }}
   {{ ($a := split "/" $path)._1 }}: |
-  {{- $bytes | toString | nindent 4 }}
-{{- end}}
-{{- else }}
-{{- range $path, $bytes := .Files.Glob "nginx/*" }}
+  {{ $bytes | toString | nindent 4 }}
+{{ end}}
+{{ else }}
+{{ range $path, $bytes := .Files.Glob "nginx/*" }}
   {{ base $path }}: |
 {{ tpl ($bytes | toString) $ | nindent 4 }}
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}
