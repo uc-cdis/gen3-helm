@@ -13,9 +13,19 @@ alias a := host_aware_act
 lint_workflow:
     @just a --dryrun
 
+everclone *arg:
+    git clone git@github.com:uc-cdis/{{ arg }}.git deps/{{ arg }} || true
+
 # Buildthemall
-all: bin arkade net brew
-    earthly build .
+all:
+    mkdir -p deps
+    @just everclone base-images
+    @just everclone cloud-automation
+    @just everclone docker-bitnami-pgvector
+    @just everclone fence
+    @just everclone gen3-code-vigil
+    @just everclone gen3-helm
+    earthly build +all
 
 # Terragrunt supports this betterish
 bin:
