@@ -140,7 +140,7 @@ spec:
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}  
           {{- end }}
-      {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+      {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

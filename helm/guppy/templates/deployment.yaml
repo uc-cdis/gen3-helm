@@ -101,4 +101,4 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

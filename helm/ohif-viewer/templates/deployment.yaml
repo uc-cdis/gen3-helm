@@ -82,4 +82,4 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

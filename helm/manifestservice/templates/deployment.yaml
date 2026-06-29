@@ -112,4 +112,4 @@ spec:
             httpGet:
               path: /_status
               port: http
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

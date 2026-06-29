@@ -120,7 +120,7 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       initContainers:
         - name: gen3-user-data-library-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

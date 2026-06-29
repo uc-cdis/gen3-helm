@@ -84,4 +84,4 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-      {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+      {{- include "common.nginxSidecar.containers" . | nindent 8 }}

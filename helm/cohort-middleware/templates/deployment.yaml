@@ -74,7 +74,7 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+      {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

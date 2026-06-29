@@ -95,7 +95,7 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       initContainers:
         - name: fence-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

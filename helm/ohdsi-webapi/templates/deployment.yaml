@@ -123,4 +123,4 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
-        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
