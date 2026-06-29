@@ -82,16 +82,14 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
-      {{- with .Values.volumes }}
+      {{- if or .Values.volumes $nginxVolumes }}
       volumes:
-        - name: config-volume
-          configMap:
-            name: ems-config
-            optional: false
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if $nginxVolumes }}
         {{- $nginxVolumes | nindent 8 }}
         {{- end }}
-        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

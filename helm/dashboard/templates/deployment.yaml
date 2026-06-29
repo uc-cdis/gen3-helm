@@ -241,13 +241,15 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
-      {{- with .Values.volumes }}
+      {{- if or .Values.volumes $nginxVolumes }}
       volumes:
+        {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
         {{- if $nginxVolumes }}
         {{- $nginxVolumes | nindent 8 }}
         {{- end }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

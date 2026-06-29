@@ -52,9 +52,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
-      {{- with .Values.volumes}}
-      volumes: 
-        {{- toYaml . | nindent 8}}
+      {{- if or .Values.volumes $nginxVolumes }}
+      volumes:
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if $nginxVolumes }}
         {{- $nginxVolumes | nindent 8 }}
         {{- end }}

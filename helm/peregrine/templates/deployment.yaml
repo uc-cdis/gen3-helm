@@ -44,12 +44,14 @@ spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
-      {{- with .Values.volumes }}
+      {{- if or .Values.volumes $nginxVolumes }}
       volumes:
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if $nginxVolumes }}
         {{- $nginxVolumes | nindent 8 }}
         {{- end }}
-        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
