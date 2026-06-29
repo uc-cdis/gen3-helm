@@ -1,5 +1,3 @@
-{{ include "common.nginxSidecar.upstreamScheme" . }}
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
