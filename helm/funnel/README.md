@@ -51,7 +51,7 @@ A Helm chart for Kubernetes
 | funnel.image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | funnel.image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
 | funnel.postgresql.enabled | bool | `false` |  |
-| funnel.resources.requests.ephemeral_storage | string | `"2Gi"` |  |
+| funnel.resources.requests.ephemeral\_storage | string | `"2Gi"` |  |
 | funnel.resources.requests.memory | string | `"2Gi"` |  |
 | funnel.volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | funnel.volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
@@ -91,7 +91,7 @@ A Helm chart for Kubernetes
 | global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.hostname | string | `""` | Hostname for the deployment. |
-| global.kubeapi_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
+| global.kubeapi\_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
 | global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
@@ -109,8 +109,8 @@ A Helm chart for Kubernetes
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
-| oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
-| partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| oidc\_job\_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
+| partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use \_ or - to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
