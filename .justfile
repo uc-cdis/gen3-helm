@@ -14,7 +14,7 @@ lint_workflow:
 
 # run after tilt up
 helm_update:
-    helm dependency update .
+    helm dependency update
 
 make_lab:
     # Earthly populate registry

@@ -82,10 +82,10 @@ A Helm chart for gen3 data-portal
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal","tag":"dev"}` | Docker image information. |
+| image | map | `{"pullPolicy":"IfNotPresent","repository":"quay.io/cdis/data-portal","tag":"brh.data-commons.org-feat-pr_comment"}` | Docker image information. |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/data-portal"` | Docker repository. |
-| image.tag | string | `"dev"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"brh.data-commons.org-feat-pr_comment"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
