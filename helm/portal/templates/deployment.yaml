@@ -241,7 +241,7 @@ spec:
           #   - ./dockerStart.sh
           env:
             - name: HOSTNAME
-              value: revproxy-service
+              value: https://revproxy-service
             # disable npm 7's brand new update notifier to prevent Portal from stuck at starting up
             # see https://github.com/npm/cli/issues/3163
             - name: NPM_CONFIG_UPDATE_NOTIFIER
