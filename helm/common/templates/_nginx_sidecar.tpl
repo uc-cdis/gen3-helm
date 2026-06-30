@@ -64,6 +64,10 @@ k8s.grafana.com/metrics.path: "/metrics"
 - name: nginx-sidecar-tls
   secret:
     secretName: {{ default (printf "%s-nginx-sidecar-tls" .Chart.Name) $nginx.tls.secretName }}
+- name: nginx-sidecar-cache
+  emptyDir: {}
+- name: nginx-sidecar-run
+  emptyDir: {}    
 {{- end }}
 {{- end }}
 {{- end }}
@@ -91,6 +95,10 @@ k8s.grafana.com/metrics.path: "/metrics"
       mountPath: /etc/nginx/tls
       readOnly: true
     {{- end }}
+    - name: nginx-sidecar-cache
+     mountPath: /var/cache/nginx
+    - name: nginx-sidecar-run
+      mountPath: /var/run    
   {{- with $nginx.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
