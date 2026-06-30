@@ -71,7 +71,6 @@ k8s.grafana.com/metrics.path: "/metrics"
 {{- end }}
 {{- end }}
 {{- end }}
-{{- end }}
 
 {{- define "common.nginxSidecar.containers" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
