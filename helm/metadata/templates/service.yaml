@@ -12,7 +12,7 @@ spec:
   selector:
     {{- include "metadata.selectorLabels" . | nindent 4 }}
   ports:
-    - port: {{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}
+    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: {{ include "common.nginxSidecar.servicePortName" . }}
