@@ -161,7 +161,8 @@ global:
       issuerRef:
         name: gen3-internal-ca
         kind: ClusterIssuer
-
+      createIssuer: true
+      caSecretName: gen3-internal-ca
 # Dependancy Charts
 
 ambassador:
