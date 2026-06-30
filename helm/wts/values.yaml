@@ -196,6 +196,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  port: 80
   targetPort: 80
   # -- (int) Port on which the service is exposed
   httpPort: 80
