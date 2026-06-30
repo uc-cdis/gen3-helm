@@ -8,22 +8,28 @@ host_aware_act *args:
     act --container-architecture="{{ local_arch }}" {{ args }}
 
 alias a := host_aware_act
-alias t := tilt
 
 lint_workflow:
     @just a --dryrun
 
+# run after tilt up
+helm_update:
+    helm dependency update .
+
 make_lab:
     # Earthly populate registry
-    kind create cluster --name lab
+    kind create cluster --config ./wip/kind-config.yaml --name lab
     kubectl create namespace lab
 
 unmake_lab:
     kind delete clusters lab
 
 # up and down are good
-tilt *arg:
-    tilt {{ arg }} --legacy --
+tilt_up:
+    tilt up --legacy --
+
+tilt_down:
+    tilt down
 
 everclone *arg:
     git clone git@github.com:uc-cdis/{{ arg }}.git deps/{{ arg }} || true
