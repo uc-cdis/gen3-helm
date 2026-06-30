@@ -10,7 +10,7 @@ spec:
     - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: {{ include "common.nginxSidecar.servicePortName" . }}
+      name: http
   selector:
     {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 4 }}
 {{- if not .Values.global.dev }}
@@ -27,7 +27,7 @@ spec:
     - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: {{ include "common.nginxSidecar.servicePortName" . }}
+      name: http
   selector:
     {{- include "aws-sigv4-proxy.selectorLabels" . | nindent 4 }}
 {{- end }}

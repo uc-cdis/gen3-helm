@@ -10,7 +10,7 @@ spec:
     - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: {{ include "common.nginxSidecar.servicePortName" . }}
+      name: http
   selector:
     {{- include "fence.selectorLabels" . | nindent 4 }}
 ---
@@ -24,7 +24,7 @@ spec:
     - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: {{ include "common.nginxSidecar.servicePortName" . }}
+      name: http
   selector:
     app: presigned-url-fence
 
