@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "cohort-middleware.fullname" . }}:{{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}']
+      args: ['{{ include "cohort-middleware.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
