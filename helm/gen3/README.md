@@ -178,10 +178,10 @@ Helm chart to deploy Gen3 Data Commons
 | global.nginxSidecar.metrics.port | int | `9113` |  |
 | global.nginxSidecar.metrics.stubStatusPort | int | `8081` |  |
 | global.nginxSidecar.tls.caSecretName | string | `"gen3-internal-ca"` |  |
-| global.nginxSidecar.tls.createIssuer | bool | `true` |  |
 | global.nginxSidecar.tls.enabled | bool | `false` |  |
-| global.nginxSidecar.tls.issuerRef.kind | string | `"ClusterIssuer"` |  |
+| global.nginxSidecar.tls.issuerRef.kind | string | `"Issuer"` |  |
 | global.nginxSidecar.tls.issuerRef.name | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.selfSignedIssuerName | string | `"gen3-selfsigned"` |  |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |

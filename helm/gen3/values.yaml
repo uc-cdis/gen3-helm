@@ -158,10 +158,10 @@ global:
 
     tls:
       enabled: false
+      selfSignedIssuerName: gen3-selfsigned
       issuerRef:
         name: gen3-internal-ca
-        kind: ClusterIssuer
-      createIssuer: true
+        kind: Issuer
       caSecretName: gen3-internal-ca
 # Dependancy Charts
 

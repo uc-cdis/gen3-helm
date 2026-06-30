@@ -15,7 +15,7 @@ spec:
     - {{ $serviceName }}.{{ .Release.Namespace }}.svc
     - {{ $serviceName }}.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
-    name: {{ required "nginxSidecar.tls.issuerRef.name or global.nginxSidecar.tls.issuerRef.name is required" $nginx.tls.issuerRef.name }}
-    kind: {{ $nginx.tls.issuerRef.kind | default "ClusterIssuer" }}
+    name: {{ default "gen3-internal-ca" $nginx.tls.issuerRef.name }}
+    kind: {{ default "Issuer" $nginx.tls.issuerRef.kind }}
 {{- end }}
 {{- end }}

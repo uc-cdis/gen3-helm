@@ -15,6 +15,7 @@ db = environ.get("PGDB", "indexd")
 psw = environ.get("PGPASSWORD")
 pghost = environ.get("PGHOST")
 pgport = environ.get("PGPORT", 5432)
+INTERNAL_SERVICE_PROTOCOL = environ.get("INTERNAL_SERVICE_PROTOCOL", "http")
 
 # TODO: FIX THIS TO READ FROM ENV VARS
 index_config = {
@@ -75,7 +76,7 @@ if arborist:
         "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
             usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
         ),
-        arborist="http://arborist-service/",
+        arborist=f"{INTERNAL_SERVICE_PROTOCOL}://arborist-service/",
     )
 else:
     AUTH = SQLAlchemyAuthDriver(

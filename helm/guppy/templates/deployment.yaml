@@ -96,6 +96,8 @@ spec:
               value: {{ .Values.global.tierAccessLimit | quote }}
             - name: NODE_ENV
               value: production
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"              
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

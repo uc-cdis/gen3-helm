@@ -108,6 +108,8 @@ spec:
               value: {{ .Values.trustedIssuers.defaultPassportIssuer | quote }}
             - name: CLOUD_PROVIDER_MAP
               value: {{ .Values.cloudProviderMap | toJson | quote }}
+            - name: INTERNAL_SERVICE_PROTOCOL
+              value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}
             {{- toYaml .Values.env | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:

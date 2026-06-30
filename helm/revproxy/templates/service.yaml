@@ -10,6 +10,6 @@ spec:
     - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
       targetPort: {{ include "common.nginxSidecar.servicePortName" . }}
       protocol: TCP
-      name: http
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "revproxy.selectorLabels" . | nindent 4 }}

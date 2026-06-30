@@ -101,14 +101,14 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
               scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
             initialDelaySeconds: 5
             periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
               scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

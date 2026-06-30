@@ -165,6 +165,8 @@ CIRRUS_CFG[
 
 DEFAULT_LOGIN_URL_REDIRECT_PARAM = "redirect"
 
-INDEXD = "http://indexd-service/"
+INTERNAL_SERVICE_PROTOCOL = os.environ.get("INTERNAL_SERVICE_PROTOCOL", "http")
 
-ARBORIST = "http://arborist-service/"
+INDEXD = f"{INTERNAL_SERVICE_PROTOCOL}://indexd-service/"
+
+ARBORIST = f"{INTERNAL_SERVICE_PROTOCOL}://arborist-service/"

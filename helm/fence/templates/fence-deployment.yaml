@@ -93,6 +93,8 @@ spec:
               bash /fence/dockerrun.bash
           env:
             {{- toYaml .Values.env | nindent 12 }}
+            - name: INTERNAL_SERVICE_PROTOCOL
+              value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}            
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}

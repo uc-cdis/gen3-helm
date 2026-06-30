@@ -167,6 +167,8 @@ spec:
               value: "False"
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname | quote }}
+            - name: INTERNAL_SERVICE_PROTOCOL
+              value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}              
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

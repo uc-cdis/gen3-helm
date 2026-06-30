@@ -1,22 +1,35 @@
 {{- if .Values.global.nginxSidecar.tls.enabled }}
+---
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: {{ .Values.global.nginxSidecar.tls.issuerRef.name }}
+  name: {{ default "gen3-selfsigned" .Values.global.nginxSidecar.tls.selfSignedIssuerName }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  ca:
-    secretName: {{ .Values.global.nginxSidecar.tls.caSecretName }}
+  selfSigned: {}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: gen3-internal-ca
-  namespace: cert-manager
+  name: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.caSecretName }}
+  namespace: {{ .Release.Namespace }}
 spec:
   isCA: true
-  commonName: gen3 Internal CA
-  secretName: {{ .Values.global.nginxSidecar.tls.caSecretName }}
+  commonName: {{ default (printf "%s nginx sidecar internal CA" .Release.Name) .Values.global.nginxSidecar.tls.caCommonName | quote }}
+  secretName: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.caSecretName }}
+  privateKey:
+    algorithm: RSA
+    size: 2048
   issuerRef:
-    name: selfsigned
-    kind: ClusterIssuer
+    name: {{ default "gen3-selfsigned" .Values.global.nginxSidecar.tls.selfSignedIssuerName }}
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.issuerRef.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ca:
+    secretName: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.caSecretName }}
 {{- end }}

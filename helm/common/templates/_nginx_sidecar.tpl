@@ -60,14 +60,15 @@ k8s.grafana.com/metrics.path: "/metrics"
 - name: nginx-sidecar-config
   configMap:
     name: {{ default (printf "%s-nginx-sidecar" .Chart.Name) $nginx.configMapName }}
+- name: nginx-sidecar-cache
+  emptyDir: {}
+- name: nginx-sidecar-run
+  emptyDir: {}
 {{- if $nginx.tls.enabled }}
 - name: nginx-sidecar-tls
   secret:
     secretName: {{ default (printf "%s-nginx-sidecar-tls" .Chart.Name) $nginx.tls.secretName }}
-- name: nginx-sidecar-cache
-  emptyDir: {}
-- name: nginx-sidecar-run
-  emptyDir: {}    
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
