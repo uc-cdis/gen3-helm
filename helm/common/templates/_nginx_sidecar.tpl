@@ -96,7 +96,7 @@ k8s.grafana.com/metrics.path: "/metrics"
       readOnly: true
     {{- end }}
     - name: nginx-sidecar-cache
-     mountPath: /var/cache/nginx
+      mountPath: /var/cache/nginx
     - name: nginx-sidecar-run
       mountPath: /var/run    
   {{- with $nginx.resources }}
