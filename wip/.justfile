@@ -1,3 +1,4 @@
+# just --list
 default:
     @just --list
 
@@ -8,22 +9,9 @@ host_aware_act *args:
     act --container-architecture="{{ local_arch }}" {{ args }}
 
 alias a := host_aware_act
-alias t := tilt
 
 lint_workflow:
     @just a --dryrun
-
-make_lab:
-    # Earthly populate registry
-    kind create cluster --name lab
-    kubectl create namespace lab
-
-unmake_lab:
-    kind delete clusters lab
-
-# up and down are good
-tilt *arg:
-    tilt {{ arg }} --legacy --
 
 everclone *arg:
     git clone git@github.com:uc-cdis/{{ arg }}.git deps/{{ arg }} || true
@@ -58,7 +46,3 @@ brew:
     brew install arkade earthly
     earthly bootstrap
     docker ps
-
-install_tilt:
-    VERSION="0.37.4" ./.tiltinstall.sh
-

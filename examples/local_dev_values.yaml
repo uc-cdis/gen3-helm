@@ -1,6 +1,8 @@
 global:
   dev: true
   hostname: jbarno
+  externalSecrets:
+    createLocalK8sSecret: true
 
 # configuration for fence helm chart. You can add it for all our services.
 fence:
