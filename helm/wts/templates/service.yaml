@@ -9,7 +9,7 @@ spec:
     app: wts
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ default 80 .Values.service.port }}
+    - port: {{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: {{ include "common.nginxSidecar.servicePortName" . }}

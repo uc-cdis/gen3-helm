@@ -7,7 +7,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}
       targetPort: http
       protocol: TCP
       name: http

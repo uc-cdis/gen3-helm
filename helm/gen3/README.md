@@ -40,7 +40,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-analysis | gen3-analysis | 0.1.13 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.16 |
-| file://../gen3-workflow | gen3-workflow | 0.1.22 |
+| file://../gen3-workflow | gen3-workflow | 0.1.23 |
 | file://../guppy | guppy | 0.1.38 |
 | file://../hatchery | hatchery | 0.1.70 |
 | file://../indexd | indexd | 0.1.48 |
@@ -177,6 +177,8 @@ Helm chart to deploy Gen3 Data Commons
 | global.nginxSidecar.metrics.image | string | `"nginx/nginx-prometheus-exporter:1.4.2"` |  |
 | global.nginxSidecar.metrics.port | int | `9113` |  |
 | global.nginxSidecar.metrics.stubStatusPort | int | `8081` |  |
+| global.nginxSidecar.tls.caSecretName | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.createIssuer | bool | `true` |  |
 | global.nginxSidecar.tls.enabled | bool | `false` |  |
 | global.nginxSidecar.tls.issuerRef.kind | string | `"ClusterIssuer"` |  |
 | global.nginxSidecar.tls.issuerRef.name | string | `"gen3-internal-ca"` |  |

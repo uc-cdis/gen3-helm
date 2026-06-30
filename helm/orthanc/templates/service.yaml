@@ -6,7 +6,7 @@ metadata:
     {{- include "orthanc.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: {{ include "common.nginxSidecar.servicePortName" . }}

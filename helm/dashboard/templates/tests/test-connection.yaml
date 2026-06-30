@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "dashboard.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "dashboard.fullname" . }}:{{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}']
   restartPolicy: Never
