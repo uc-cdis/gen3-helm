@@ -13,7 +13,3 @@ spec:
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: {{ include "common.nginxSidecar.servicePortName" . }}
-    - protocol: TCP
-      port: {{ .Values.service.httpsPort }}
-      targetPort: {{ .Values.service.httpsPort }}
-      name: https
