@@ -154,7 +154,7 @@ spec:
             value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 6 }}
       initContainers:
       - name: wts-db-migrate
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
