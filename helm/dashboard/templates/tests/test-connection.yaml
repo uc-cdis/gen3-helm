@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "cohort-middleware.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "daashboard.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
