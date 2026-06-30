@@ -372,6 +372,11 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
             {{- end }}
+            {{- if .Values.global.nginxSidecar }}
+            - name: "config-volume"
+              mountPath: "/data-portal/data/getSchema.js"
+              subPath: "getSchema.js"
+            {{- end }}
             - name: nginx-tmp
               mountPath: /tmp
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
