@@ -39,7 +39,7 @@ net:
 
 # get linters and vcluster
 arkade:
-    arkade get vcluster tflint terragrunt
+    arkade get vcluster tflint terragrunt tilt
 
 # Installs arkade and earthly, bootstraps earthly and spits out docker ps
 brew:
