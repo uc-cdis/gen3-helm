@@ -1,5 +1,3 @@
-{{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
-
 apiVersion: v1
 kind: Service
 metadata:

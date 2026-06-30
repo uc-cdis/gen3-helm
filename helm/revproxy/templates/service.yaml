@@ -7,9 +7,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ ternary 443 .Values.service.port (and $nginx.enabled $nginx.tls.enabled) }}
-      targetPort: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
+    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+      targetPort: {{ include "common.nginxSidecar.servicePortName" . }}
       protocol: TCP
-      name: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
+      name: {{ include "common.nginxSidecar.servicePortName" . }}
   selector:
     {{- include "revproxy.selectorLabels" . | nindent 4 }}
