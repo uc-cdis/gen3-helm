@@ -16,6 +16,7 @@ spec:
           crds:
             enabled: true
           #securePort: 10251
+          hostNetwork: true
           webhook:
             securePort: 10252
   destination:
