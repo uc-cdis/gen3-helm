@@ -66,3 +66,11 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "revproxy.scheme" -}}
+{{- if Values.global.nginxSidecar.tls.enabled -}}
+https
+{{- else -}}
+http
+{{- end -}}
+{{- end }}
