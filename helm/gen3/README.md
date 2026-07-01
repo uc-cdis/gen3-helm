@@ -172,7 +172,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
-| global.postgres.dbCreate | bool | `false` | Whether the database create job should run. |
+| global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |
 | global.postgres.externalSecret | string | `""` | Name of external secret of the postgres master credentials. Disabled if empty |
 | global.postgres.master.host | string | `nil` | global postgres master host |
 | global.postgres.master.password | string | `nil` | global postgres master password |

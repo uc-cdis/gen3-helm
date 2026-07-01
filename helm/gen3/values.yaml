@@ -61,7 +61,7 @@ global:
   dev: true
   postgres:
     # -- (bool) Whether the database create job should run.
-    dbCreate: false
+    dbCreate: true
     # -- (string) Name of external secret of the postgres master credentials. Disabled if empty
     externalSecret: ""
     master:
