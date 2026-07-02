@@ -68,6 +68,10 @@ spec:
         configMap:
           name: "privacy-policy"
           optional: true
+      - name: fence-config
+        configMap:
+          name: "fence-config"
+          optional: true
       {{- end }}
       - name: nginx-tmp
         emptyDir: {}
@@ -256,6 +260,7 @@ spec:
             {{- if .Values.global.fenceURL }}
             - name: FENCE_URL
               value: {{ .Values.global.fenceURL | quote }}
+            - name: 
             {{- end }}
             {{- if .Values.global.indexdURL }}
             - name: INDEXD_URL
@@ -280,6 +285,14 @@ spec:
             {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN
               # Optional token for mapbox api
+              valueFrom:
+                configMapKeyRef:
+                  name: global
+                  key: mapbox_token
+                  optional: true
+            {{- end }}
+            {{- if .Values.fence.FENCE_CONFIG_PUBLIC }}
+            - name: SESSION_TIMEOUT
               valueFrom:
                 configMapKeyRef:
                   name: global
