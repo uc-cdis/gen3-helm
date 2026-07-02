@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.59](https://img.shields.io/badge/Version-0.3.59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.60](https://img.shields.io/badge/Version-0.3.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -34,7 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dicom-server | dicom-server | 0.1.31 |
 | file://../embedding-management-service | embedding-management-service | 0.1.7 |
 | file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.78 |
+| file://../fence | fence | 0.1.79 |
 | file://../frontend-framework | frontend-framework | 0.1.29 |
 | file://../funnel | funnel | 0.1.26 |
 | file://../gen3-analysis | gen3-analysis | 0.1.12 |

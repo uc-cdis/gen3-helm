@@ -798,7 +798,23 @@ USER_YAML: |
   groups: {}
 
 # -- (map) Public configuration settings for Fence app
-FENCE_CONFIG_PUBLIC: {}
+FENCE_CONFIG_PUBLIC: {
+  OAUTH2_TOKEN_EXPIRES_IN:
+    "authorization_code": 1200
+    "implicit": 1200
+
+  # The number of seconds after an access token is issued until it expires.
+  ACCESS_TOKEN_EXPIRES_IN: 1200
+
+  # The number of seconds after a refresh token is issued until it expires.
+  REFRESH_TOKEN_EXPIRES_IN: 2592000
+
+  # The number of seconds after which a browser session is considered stale.
+  SESSION_TIMEOUT: 1800
+
+  # The maximum session lifetime in seconds.
+  SESSION_LIFETIME: 28800
+}
 
 # -- (map) Private configuration settings for Fence app
 FENCE_CONFIG:
@@ -1175,23 +1191,6 @@ FENCE_CONFIG:
   # The domain of the browser cookie in which the session token will be stored.
   # Leave unset (not empty string!) for normal single-site deployment.
   SESSION_COOKIE_DOMAIN:
-
-  OAUTH2_TOKEN_EXPIRES_IN:
-    "authorization_code": 1200
-    "implicit": 1200
-
-  # The number of seconds after an access token is issued until it expires.
-  ACCESS_TOKEN_EXPIRES_IN: 1200
-
-  # The number of seconds after a refresh token is issued until it expires.
-  REFRESH_TOKEN_EXPIRES_IN: 2592000
-
-  # The number of seconds after which a browser session is considered stale.
-  SESSION_TIMEOUT: 1800
-
-  # The maximum session lifetime in seconds.
-  SESSION_LIFETIME: 28800
-
   # The number of seconds the user's Google service account key used for
   # url signing will last before being expired/rotated
   # 30 days: 2592000 seconds
