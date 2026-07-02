@@ -291,14 +291,6 @@ spec:
                   key: mapbox_token
                   optional: true
             {{- end }}
-            {{- if .Values.fence.FENCE_CONFIG_PUBLIC }}
-            - name: SESSION_TIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: global
-                  key: mapbox_token
-                  optional: true
-            {{- end }}
             {{- if .Values.datadogApplicationId }}
             - name: DATADOG_APPLICATION_ID
               value: {{ .Values.datadogApplicationId | quote }}
@@ -329,6 +321,11 @@ spec:
               # S3 bucket name for data upload, for setting up CSP
             - name: DATA_UPLOAD_BUCKET
               value: {{ .Values.global.dataUploadBucket }}
+            {{- end }}
+            {{- if .Values.global.fenceURL }}
+          envFrom:
+            - configMapRef:
+                name: mainifest-fence
             {{- end }}
           volumeMounts:
             {{- if .Values.extraImages  }}
