@@ -4,6 +4,8 @@
 
 # Global configuration
 global:
+  sharedConfig:
+    configMapName: "
   # -- (map) GCP configuration
   gcp:
     enabled: false
