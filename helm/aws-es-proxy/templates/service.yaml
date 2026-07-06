@@ -7,7 +7,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+    - port: 9200
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: http
@@ -24,7 +24,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+    - port: 9200
       targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
       name: http
