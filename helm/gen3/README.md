@@ -54,7 +54,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.42 |
 | file://../portal | portal | 0.1.60 |
 | file://../requestor | requestor | 0.1.34 |
-| file://../revproxy | revproxy | 0.1.61 |
+| file://../revproxy | revproxy | 0.1.62 |
 | file://../sheepdog | sheepdog | 0.1.42 |
 | file://../sower | sower | 0.1.46 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.47 |
@@ -269,3 +269,4 @@ Helm chart to deploy Gen3 Data Commons
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
+| zendesk-wrapper.enabled | bool | `false` | Whether to deploy the zendesk-wrapper subchart. |

@@ -55,7 +55,10 @@ spec:
             - name: GEN3_ZENDESK_URL
               value: {{ .Values.env.GEN3_ZENDESK_URL | quote }}
             - name: ZENDESK_API_EMAIL
-              value: {{ .Values.env.ZENDESK_API_EMAIL | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: {{ .Values.secrets.apiEmail }}
             - name: ZENDESK_API_TOKEN
               valueFrom:
                 secretKeyRef:
