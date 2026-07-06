@@ -52,8 +52,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: GEN3_ZENDESK_URL
-              value: {{ .Values.env.GEN3_ZENDESK_URL | quote }}
+            {{- toYaml .Values.env | nindent 12 }}
             - name: ZENDESK_API_EMAIL
               valueFrom:
                 secretKeyRef:
