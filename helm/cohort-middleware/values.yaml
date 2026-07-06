@@ -234,3 +234,7 @@ config:
   atlasDbPassword: ""
   db: "atlas_default"
   schema: "ohdsi"
+  # Optional pseudonyms section; omit entirely / leave commented out when not needed
+  # pseudonyms:
+  #   pseudonym_field: "some field from person table, e.g. person.person_source_value - MAKE SURE IT DOES NOT CONTAIN SENSITIVE DATA BEFORE ADDING SUCH A FIELD TO THIS CONFIG"
+  #   pseudonym_external_name: "my_pseudonym_id"
