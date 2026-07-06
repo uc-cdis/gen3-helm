@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.59](https://img.shields.io/badge/Version-0.3.59-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.60](https://img.shields.io/badge/Version-0.3.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,47 +18,47 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.20 |
-| file://../ambassador | ambassador | 0.1.37 |
-| file://../arborist | arborist | 0.1.34 |
-| file://../argo-wrapper | argo-wrapper | 0.1.30 |
-| file://../audit | audit | 0.1.42 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.41 |
-| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.2 |
-| file://../cedar | cedar | 0.1.26 |
-| file://../cohort-middleware | cohort-middleware | 0.1.22 |
-| file://../common | common | 0.1.36 |
-| file://../dashboard | dashboard | 0.1.20 |
+| file://../access-backend | access-backend | 0.1.21 |
+| file://../ambassador | ambassador | 0.1.38 |
+| file://../arborist | arborist | 0.1.35 |
+| file://../argo-wrapper | argo-wrapper | 0.1.31 |
+| file://../audit | audit | 0.1.43 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.42 |
+| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.3 |
+| file://../cedar | cedar | 0.1.27 |
+| file://../cohort-middleware | cohort-middleware | 0.1.23 |
+| file://../common | common | 0.1.37 |
+| file://../dashboard | dashboard | 0.1.21 |
 | file://../data-upload-cron | data-upload-cron | 0.1.6 |
 | file://../datareplicate | datareplicate | 0.1.21 |
-| file://../dicom-server | dicom-server | 0.1.31 |
-| file://../embedding-management-service | embedding-management-service | 0.1.7 |
+| file://../dicom-server | dicom-server | 0.1.32 |
+| file://../embedding-management-service | embedding-management-service | 0.1.8 |
 | file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.78 |
-| file://../frontend-framework | frontend-framework | 0.1.29 |
+| file://../fence | fence | 0.1.79 |
+| file://../frontend-framework | frontend-framework | 0.1.30 |
 | file://../funnel | funnel | 0.1.26 |
-| file://../gen3-analysis | gen3-analysis | 0.1.12 |
+| file://../gen3-analysis | gen3-analysis | 0.1.13 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.15 |
-| file://../gen3-workflow | gen3-workflow | 0.1.22 |
-| file://../guppy | guppy | 0.1.37 |
-| file://../hatchery | hatchery | 0.1.69 |
-| file://../indexd | indexd | 0.1.47 |
-| file://../manifestservice | manifestservice | 0.1.42 |
-| file://../metadata | metadata | 0.1.44 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.16 |
+| file://../gen3-workflow | gen3-workflow | 0.1.23 |
+| file://../guppy | guppy | 0.1.38 |
+| file://../hatchery | hatchery | 0.1.70 |
+| file://../indexd | indexd | 0.1.48 |
+| file://../manifestservice | manifestservice | 0.1.43 |
+| file://../metadata | metadata | 0.1.45 |
 | file://../neuvector | neuvector | 0.1.2 |
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.5 |
-| file://../ohif-viewer | ohif-viewer | 0.1.14 |
-| file://../orthanc | orthanc | 0.1.15 |
-| file://../peregrine | peregrine | 0.1.42 |
-| file://../portal | portal | 0.1.60 |
-| file://../requestor | requestor | 0.1.34 |
-| file://../revproxy | revproxy | 0.1.61 |
-| file://../sheepdog | sheepdog | 0.1.42 |
-| file://../sower | sower | 0.1.46 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.47 |
-| file://../wts | wts | 0.1.40 |
+| file://../ohdsi-atlas | ohdsi-atlas | 0.1.3 |
+| file://../ohdsi-webapi | ohdsi-webapi | 0.1.6 |
+| file://../ohif-viewer | ohif-viewer | 0.1.15 |
+| file://../orthanc | orthanc | 0.1.16 |
+| file://../peregrine | peregrine | 0.1.43 |
+| file://../portal | portal | 0.1.61 |
+| file://../requestor | requestor | 0.1.35 |
+| file://../revproxy | revproxy | 0.1.62 |
+| file://../sheepdog | sheepdog | 0.1.43 |
+| file://../sower | sower | 0.1.47 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.48 |
+| file://../wts | wts | 0.1.41 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -170,6 +170,18 @@ Helm chart to deploy Gen3 Data Commons
 | global.netPolicy | bool | `{"dbSubnets":[],"enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnets | array | `[]` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.nginxSidecar.enabled | bool | `false` |  |
+| global.nginxSidecar.image | string | `"nginx:1.27-alpine"` |  |
+| global.nginxSidecar.listenPort | int | `8443` |  |
+| global.nginxSidecar.metrics.enabled | bool | `false` |  |
+| global.nginxSidecar.metrics.image | string | `"nginx/nginx-prometheus-exporter:1.4.2"` |  |
+| global.nginxSidecar.metrics.port | int | `9113` |  |
+| global.nginxSidecar.metrics.stubStatusPort | int | `8081` |  |
+| global.nginxSidecar.tls.caSecretName | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.enabled | bool | `false` |  |
+| global.nginxSidecar.tls.issuerRef.kind | string | `"Issuer"` |  |
+| global.nginxSidecar.tls.issuerRef.name | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.selfSignedIssuerName | string | `"gen3-selfsigned"` |  |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |

@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 {{- if not .Values.portalBuild.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -32,6 +35,9 @@ spec:
 
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         public: "yes"
@@ -80,6 +86,9 @@ spec:
           optional: true
       - name: extra-images
         emptyDir: {}
+      {{- if $nginxVolumes }}
+      {{- $nginxVolumes | nindent 6 }}
+      {{- end }}
       initContainers:
       {{- if .Values.extraImages }}
         - name: init
@@ -363,6 +372,12 @@ spec:
               mountPath: "/data-portal/custom/privacy_policy.md"
               subPath: "privacy_policy.md"
             {{- end }}
+            {{- if .Values.global.nginxSidecar }}
+            - name: "config-volume"
+              mountPath: "/data-portal/data/getSchema.js"
+              subPath: "getSchema.js"
+            {{- end }}
             - name: nginx-tmp
               mountPath: /tmp
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
 {{- end }}

@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +31,9 @@ spec:
         {{- if coalesce .Values.metricsEnabled .Values.global.metricsEnabled true }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
         {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
@@ -41,6 +47,9 @@ spec:
         {{- if .Values.s3DataMount.enabled }}
         - name: tmp-volume
           emptyDir: {}
+        {{- end }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
         {{- end }}
       {{- if .Values.s3DataMount.enabled }}
       initContainers:
@@ -114,3 +123,4 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

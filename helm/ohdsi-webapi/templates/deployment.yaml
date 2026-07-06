@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,11 +24,17 @@ spec:
         dbomop-data: "yes"
         internet: "yes"
         public: "yes"
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       volumes:
         - name: ohdsi-webapi-reverse-proxy-config
           configMap:
             name: ohdsi-webapi-reverse-proxy-config
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -114,3 +123,4 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

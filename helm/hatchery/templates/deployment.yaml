@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,6 +32,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         netnolimit: "yes"
         public: "yes"
@@ -45,6 +51,9 @@ spec:
       {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       serviceAccountName: hatchery-service-account
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -76,6 +85,7 @@ spec:
               value: {{ default .Values.global.environment .Values.vpcId }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -7,10 +7,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - port: 9200
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: http
   selector:
     {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
 {{- if not .Values.global.dev }}
@@ -24,10 +24,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - port: 9200
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: http
   selector:
     {{- include "aws-es-proxy.selectorLabels" . | nindent 4 }}
 {{- end }}

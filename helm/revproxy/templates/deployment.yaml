@@ -1,3 +1,6 @@
+{{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +39,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "revproxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
@@ -72,6 +78,11 @@ spec:
         - name: revproxy-subconf
           configMap:
             name: revproxy-nginx-subconf
+      {{- if and $nginx.enabled $nginx.tls.enabled }}
+        - name: nginx-sidecar-tls
+          secret:
+            secretName: revproxy-nginx-sidecar-tls 
+      {{- end}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -83,20 +94,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.service.targetPort }}
-            name: http
-          - containerPort: 443
+          - containerPort: {{ ternary 443 .Values.service.targetPort (and $nginx.enabled $nginx.tls.enabled) }}
+            name: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
           - containerPort: 6567
+            name: metrics
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
             initialDelaySeconds: 5
             periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
+              scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -150,6 +163,11 @@ spec:
             mountPath: /tmp
           - name: nginx-cache
             mountPath: /var/cache/nginx
+          {{- if and $nginx.enabled $nginx.tls.enabled }}
+          - name: nginx-sidecar-tls
+            mountPath: /etc/nginx/tls
+            readOnly: true
+          {{- end}}
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"
@@ -200,6 +218,17 @@ spec:
               fi
 
               exec nginx -g 'daemon off;'
+        {{- if and $nginx.enabled $nginx.metrics.enabled }}
+        - name: nginx-prometheus-exporter
+          image: {{ default "nginx/nginx-prometheus-exporter:1.4.2" $nginx.metrics.image | quote }}
+          imagePullPolicy: {{ default "IfNotPresent" $nginx.metrics.imagePullPolicy }}
+          args:
+            - -nginx.scrape-uri=http://127.0.0.1:{{ default 8081 $nginx.metrics.stubStatusPort }}/stub_status
+          ports:
+            - name: nginx-metrics
+              containerPort: {{ default 9113 $nginx.metrics.port }}
+              protocol: TCP
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

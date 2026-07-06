@@ -1,6 +1,6 @@
 # metadata
 
-![Version: 0.1.44](https://img.shields.io/badge/Version-0.1.44-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.45](https://img.shields.io/badge/Version-0.1.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Metadata Service
 
@@ -118,8 +118,7 @@ A Helm chart for gen3 Metadata Service
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
+| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAnnotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nambassador_id: \"gen3\"\nkind:  Mapping\nname:  metadata_mapping\nprefix: /index/\nservice: http://metadata-service:80\n"` |  |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |

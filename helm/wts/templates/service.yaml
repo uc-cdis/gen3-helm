@@ -9,11 +9,7 @@ spec:
     app: wts
   type: {{ .Values.service.type }}
   ports:
-    - protocol: TCP
-      port: {{ .Values.service.httpPort }}
-      targetPort: {{ .Values.service.httpPort }}
+    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
       name: http
-    - protocol: TCP
-      port: {{ .Values.service.httpsPort }}
-      targetPort: {{ .Values.service.httpsPort }}
-      name: https

@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -36,6 +39,9 @@ spec:
 
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         netnolimit: "yes"
@@ -84,6 +90,9 @@ spec:
         - name: privacy-policy
           configMap:
             name: privacy-policy
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -126,6 +135,7 @@ spec:
               value: {{ .Values.debug | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

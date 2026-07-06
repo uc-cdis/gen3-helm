@@ -6,6 +6,7 @@ data:
   useryaml: {{ .Values.USER_YAML | toYaml | nindent 4}}
 ---
 {{ if not .Values.usersync.usersync }}
+{{- $internalScheme := include "common.nginxSidecar.upstreamScheme" . -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -44,6 +45,6 @@ spec:
           - "-c"
           # Script always succeeds if it runs (echo exits with 0)
           - |
-            fence-create sync --arborist http://arborist-service --yaml /var/www/fence/user.yaml
+            fence-create sync --arborist {{ $internalScheme }}://arborist-service --yaml /var/www/fence/user.yaml
       restartPolicy: OnFailure
 {{ end }}

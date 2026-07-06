@@ -1,6 +1,6 @@
 # embedding-management-service
 
-![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -78,8 +78,8 @@ A Helm chart for Kubernetes
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
-| service | map | `{"port":{"name":"http","port":80,"protocol":"TCP","targetPort":8000},"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000}` | The port number that the service exposes. |
+| service | map | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.protocol | int | `"TCP"` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |

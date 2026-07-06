@@ -183,12 +183,8 @@ service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   targetPort: 8000
-  # -- (int) The port number that the service exposes.
-  port:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
-      name: http
+  port: 80
+
 
 # Configmap
 # -- (list) Elasticsearch index configurations

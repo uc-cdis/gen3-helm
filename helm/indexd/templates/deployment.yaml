@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,9 +27,11 @@ spec:
       {{- if eq $metricsEnabled nil }}
         {{- $metricsEnabled = true }}
       {{- end }}
-
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         public: "yes"
@@ -36,10 +41,17 @@ spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
       {{- end }}
-      {{- with .Values.volumes }}
+
+      {{- if or .Values.volumes $nginxVolumes }}
       volumes:
+        {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       {{- end }}
+
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -59,13 +71,13 @@ spec:
                 secretKeyRef:
                   name: indexd-dbcreds
                   key: host
-                  optional: false  
+                  optional: false
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
                   name: indexd-dbcreds
                   key: username
-                  optional: false 
+                  optional: false
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
@@ -96,7 +108,9 @@ spec:
               value: {{ .Values.trustedIssuers.defaultPassportIssuer | quote }}
             - name: CLOUD_PROVIDER_MAP
               value: {{ .Values.cloudProviderMap | toJson | quote }}
-            {{- toYaml .Values.env | nindent 12  }}
+            - name: INTERNAL_SERVICE_PROTOCOL
+              value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}
+            {{- toYaml .Values.env | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
@@ -117,6 +131,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
