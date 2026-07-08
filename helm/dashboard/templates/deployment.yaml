@@ -24,12 +24,16 @@ spec:
         public: "yes"
         s3: "yes"
         netvpc: "yes"
+        internet: "yes"
         app: "dashboard"
         {{- include "dashboard.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

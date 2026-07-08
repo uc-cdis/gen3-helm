@@ -6,6 +6,7 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "ssjdispatcher.serviceAccountName" . }}
   apiGroup: ""
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: admin

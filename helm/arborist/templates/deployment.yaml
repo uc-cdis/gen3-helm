@@ -35,6 +35,9 @@ spec:
         {{- include "arborist.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -54,7 +57,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -81,7 +84,7 @@ spec:
               /go/src/github.com/uc-cdis/arborist/migrations/latest
 
               # run arborist
-              /go/src/github.com/uc-cdis/arborist/bin/arborist
+              /go/src/github.com/uc-cdis/arborist/bin/arborist --port {{ .Values.service.targetPort }}
           env:
 
             {{- toYaml .Values.env | nindent 12 }}

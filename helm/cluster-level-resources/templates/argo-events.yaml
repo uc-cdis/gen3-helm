@@ -1,0 +1,58 @@
+{{ if index .Values "argo-events" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-events
+  namespace: argocd
+spec:
+  project: default
+  sources:
+  - repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-events
+    targetRevision: {{ index .Values "argo-events" "targetRevision" }}
+    helm:
+      {{- if index .Values "argo-events" "configuration" "enabled" }}
+      valueFiles:
+        - "$values/{{ .Values.cluster }}/cluster-values/argo-events.yaml"
+  - repoURL: {{ .Values.configuration.configurationRepo }}
+    targetRevision: {{ .Values.configuration.configurationRevision }}
+    ref: values
+      {{- else }}
+      values: |      
+        extraObjects:
+        - apiVersion: argoproj.io/v1alpha1
+          kind: EventBus
+          metadata:
+            name: default
+            namespace: argo-events
+          spec:
+            nats:
+              native:
+                replicas: 3
+                auth: token
+      {{- end }}
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-events
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+  revisionHistoryLimit: 10
+{{ end }}

@@ -35,6 +35,9 @@ spec:
         {{- include "peregrine.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -140,13 +143,13 @@ spec:
                   name: manifest-peregrine
                   key: peregrine_timeout
                   optional: true
-            {{- if eq .Values.global.dev false }}
-            - name: FENCE_URL
-              value: https://{{ .Values.global.hostname }}/user
-            {{- else }}
-            - name: FENCE_URL
-              value: {{ .Values.global.fenceURL | quote }}
-            {{- end }}
+            # {{- if eq .Values.global.dev false }}
+            # - name: FENCE_URL
+            #   value: https://{{ .Values.global.hostname }}/user
+            # {{- else }}
+            # - name: FENCE_URL
+            #   value: {{ .Values.global.fenceURL | quote }}
+            # {{- end }}
             - name: ARBORIST_URL
               value: {{ .Values.arborist_url }}
             - name: GEN3_SIDECAR
@@ -159,7 +162,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:

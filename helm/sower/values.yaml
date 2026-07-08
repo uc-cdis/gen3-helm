@@ -85,9 +85,17 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -148,6 +156,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 8000
   # -- (int) The port number that the service exposes.
   port: 80
 
@@ -247,7 +256,7 @@ sowerConfig:
     action: export
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: "quay.io/cdis/pelican-export:master"
       pull_policy: Always
       env:
         - name: DICTIONARY_URL
@@ -304,7 +313,7 @@ sowerConfig:
     action: export-files
     container:
       name: job-task
-      image: quay.io/cdis/pelican-export:master
+      image: "quay.io/cdis/pelican-export:master"
       pull_policy: Always
       env:
         - name: DICTIONARY_URL

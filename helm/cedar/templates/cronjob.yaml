@@ -8,6 +8,7 @@ metadata:
 spec:
   schedule: "0 8,15 * * *"
   suspend: false
+  concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -50,7 +51,7 @@ spec:
                 secretName: cedar-g3auto
           initContainers:
             - name: cedar
-              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
+              image: {{ .Values.global.awshelper_container_image | default .Values.ingestion.image }}
               imagePullPolicy: Always
               env:
                 - name: HOSTNAME
@@ -109,7 +110,7 @@ spec:
                   fi
           containers:
             - name: awshelper
-              image: {{ .Values.ingestion.image | default "quay.io/cdis/awshelper:master" }}
+              image: {{ .Values.global.awshelper_container_image | default .Values.ingestion.image }}
               imagePullPolicy: Always
               env:
                 - name: slackWebHook

@@ -28,7 +28,12 @@ spec:
           labels:
             app: gen3job
         spec:
+          dnsConfig:
+            options:
+              - name: use-vc
           serviceAccountName: usersync-job
+          securityContext:
+              fsGroup: 1000
           volumes:
             - name: yaml-merge
               configMap:
@@ -85,7 +90,7 @@ spec:
                 defaultMode: 0400
           initContainers:
             - name: wait-for-fence
-              image: curlimages/curl:latest
+              image: quay.io/curl/curl:latest
               imagePullPolicy: IfNotPresent
               command: ["/bin/sh","-c"]
               args: ["while [ $(curl -sw '%{http_code}' http://fence-service -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for fence...'; done"]
@@ -100,6 +105,12 @@ spec:
                       key: hostname
                 - name: userYamlS3Path
                   value: {{ .Values.usersync.userYamlS3Path | quote }}
+                - name: userYamlS3Endpoint
+                  value: {{ .Values.usersync.userYamlS3Endpoint | quote }}
+                - name: userYamlS3AccessKeyId
+                  value: {{ .Values.usersync.userYamlS3AccessKeyId | quote }}
+                - name: userYamlS3SecretAccessKey
+                  value: {{ .Values.usersync.userYamlS3SecretAccessKey | quote }}
                 - name: slackWebHook
                   valueFrom:
                     secretKeyRef:
@@ -117,21 +128,6 @@ spec:
                 - name: cred-volume
                   mountPath: "/home/ubuntu/.aws/credentials"
                   subPath: credentials
-                - name: fence-ssh-keys
-                  mountPath: /root/.ssh/id_rsa
-                  readOnly: true
-                  subPath: id_rsa
-                - name: fence-ssh-keys
-                  mountPath: /root/.ssh/id_rsa.pub
-                  readOnly: true
-                  subPath: id_rsa.pub
-                - name: fence-sshconfig
-                  mountPath: /root/.ssh/config
-                  subPath: config
-                - name: fence-known-hosts
-                  mountPath: /root/.ssh/known_hosts
-                  subPath: known_hosts
-                  readOnly: true
               command: ["/bin/bash" ]
               args:
                 - "-c"
@@ -145,6 +141,15 @@ spec:
                     cp /var/www/fence/user.yaml /mnt/shared/user.yaml
                   else
                     # -----------------
+                    if [ "${userYamlS3Endpoint}" != "none" ]; then
+                      echo "Configuring AWS_ENDPOINT_URL: ${userYamlS3Endpoint}"
+                      export AWS_ENDPOINT_URL="${userYamlS3Endpoint}"
+                      if [[ "${userYamlS3AccessKeyId}" != "none" &&"${userYamlS3SecretAccessKey}" != "none" ]]; then
+                        echo "Configuring AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"
+                        export AWS_ACCESS_KEY_ID="${userYamlS3AccessKeyId}"
+                        export AWS_SECRET_ACCESS_KEY="${userYamlS3SecretAccessKey}"
+                      fi
+                    fi
                     echo "awshelper downloading ${userYamlS3Path} to /mnt/shared/user.yaml"
                     n=0
                     until [ $n -ge 5 ]; do
@@ -226,18 +231,18 @@ spec:
                 mountPath: "/var/www/fence/fence_google_storage_creds_secret.json"
                 subPath: fence_google_storage_creds_secret.json
               - name: fence-ssh-keys
-                mountPath: /root/.ssh/id_rsa
+                mountPath: /secret/.ssh/id_rsa
                 readOnly: true
                 subPath: id_rsa
               - name: fence-ssh-keys
-                mountPath: /root/.ssh/id_rsa.pub
+                mountPath: /secret/.ssh/id_rsa.pub
                 readOnly: true
                 subPath: id_rsa.pub
               - name: fence-sshconfig
-                mountPath: /root/.ssh/config
+                mountPath: /secret/.ssh/config
                 subPath: config
               - name: fence-known-hosts
-                mountPath: /root/.ssh/known_hosts
+                mountPath: /secret/.ssh/known_hosts
                 subPath: known_hosts
                 readOnly: true
 
@@ -246,10 +251,19 @@ spec:
               - "-c"
               # Script always succeeds if it runs (echo exits with 0)
               - |
-                sed -i 's/KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,/KexAlgorithms ecdh-sha2-nistp256,/g' /etc/crypto-policies/back-ends/openssh.config
-                sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' /fence/.venv/lib/python3.9/site-packages/paramiko/pkey.py
+                PKEY_PATH=$(python - <<'EOF'
+                import paramiko, inspect, os
+                print(os.path.abspath(inspect.getsourcefile(paramiko.pkey)))
+                EOF
+                )
+                sed -i 's/md5(self.asbytes()/md5(self.asbytes(),usedforsecurity=False/g' $PKEY_PATH
+                
+                # Backwards compatible solution to mount the fence-ssh-keys
+                mkdir -p ~/.ssh && cp /secret/.ssh/* ~/.ssh/
+                #Change the file permissions to current user
+                chmod 400 ~/.ssh/id*
+                
                 python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
-                echo 'options use-vc' >> /etc/resolv.conf
                 if [[ "$SYNC_FROM_DBGAP" != "true" && "$ADD_DBGAP" != "true" ]]; then
                   if [[ -f /mnt/shared/user.yaml ]]; then
                     echo "running fence-create"
@@ -290,6 +304,8 @@ spec:
                   else
                     curl -X POST --data-urlencode "payload={\"text\": \"JOBFAIL: User sync failed on ${gen3Env}\"}" "${slackWebHook}"
                   fi
+                else
+                  curl -X POST --data-urlencode "payload={\"text\": \"JOBSUCCESS: User sync on ${gen3Env}\"}" "${slackWebHook}"
                 fi
                 echo "Exit code: $exitcode"
                 exit "$exitcode"

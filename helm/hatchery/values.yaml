@@ -61,7 +61,7 @@ global:
   # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
   pdb: false
   # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
-  minAvialable: 1
+  minAvailable: 1
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any audit secrets you have deployed.
@@ -91,9 +91,17 @@ global:
   autoscaling:
     enabled: false
     minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -106,7 +114,9 @@ externalSecrets:
   stataG3auto:
 
 fence:
-  image: quay.io/cdis/fence:master
+  image:
+    repository: quay.io/cdis/fence
+    tag: master
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
@@ -138,6 +148,7 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
+  targetPort: 8000
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -187,6 +198,9 @@ volumeMounts:
 
 hatchery:
   json: ""
+  sharedWorkspaceEnabled: false
+  # ARN of the OIDC provider for shared workspace.
+  oidcProviderArn: ""
   sidecarContainer:
     # -- (string) The maximum amount of CPU the sidecar container can use
     cpu-limit: "0.1"
@@ -216,19 +230,19 @@ hatchery:
   # -- (list) Notebook configuration.
   containers:
     - target-port: 8888
-      cpu-limit: "1.0"
-      memory-limit: 2Gi
+      cpu-limit: "2"
+      memory-limit: 3Gi
       name: "(Tutorials) Example Analysis Jupyter Lab Notebooks"
-      image: quay.io/cdis/heal-notebooks:combined_tutorials__latest
+      image: quay.io/cdis/jupyter-superslim:2.1.0
       env:
         FRAME_ANCESTORS: https://{{ .Values.global.hostname }}
       args:
-        - "--NotebookApp.base_url=/lw-workspace/proxy/"
-        - "--NotebookApp.default_url=/lab"
-        - "--NotebookApp.password=''"
-        - "--NotebookApp.token=''"
-        - "--NotebookApp.shutdown_no_activity_timeout=5400"
-        - "--NotebookApp.quit_button=False"
+        - "--JupyterNotebookApp.base_url=/lw-workspace/proxy/"
+        - "--JupyterNotebookApp.default_url=/lab"
+        - "--JupyterNotebookApp.password=''"
+        - "--JupyterNotebookApp.token=''"
+        - "--JupyterNotebookApp.shutdown_no_activity_timeout=5400"
+        - "--JupyterNotebookApp.quit_button=False"
       command:
         - start-notebook.sh
       path-rewrite: "/lw-workspace/proxy/"
@@ -239,7 +253,7 @@ hatchery:
         - "-c"
         - export IAM=`whoami`; rm -rf /home/$IAM/pd/dockerHome; rm -rf /home/$IAM/pd/lost+found;
           ln -s /data /home/$IAM/pd/; true
-      user-uid: 1000
+      user-uid: 1010
       fs-gid: 100
       user-volume-location: "/home/jovyan/pd"
       gen3-volume-location: "/home/jovyan/.gen3"
@@ -257,7 +271,7 @@ hatchery:
 # -- (map) Configuration for workspace launch test crobjob
 workspaceLaunchTest:
   # -- (bool) Whether the workspace launch test cron job is enabled.
-  enabled: true
+  enabled: false
   # -- (string) The schedule for the workspace launch test cron job.
   schedule: "*/20 * * * *"
   # -- (string) Images to test in the workspace launch test cron job.
@@ -283,6 +297,9 @@ commonLabels:
 
 hotNode:
   enabled: false
+
+  gpu: false
+  jupyter: true
 
   availabilityZones:
     - us-east-1a

@@ -38,6 +38,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
@@ -49,7 +52,7 @@ spec:
           readinessProbe: 
             httpGet:
               path: /system
-              port: 8042
+              port: http
               httpHeaders:
                 - name: Authorization
                   value: Basic cHVibGljOmhlbGxv
@@ -59,7 +62,7 @@ spec:
           livenessProbe: 
             httpGet:
               path: /system
-              port: 8042
+              port: http
               httpHeaders:
                 - name: Authorization
                   value: Basic cHVibGljOmhlbGxv
@@ -67,7 +70,8 @@ spec:
             periodSeconds: 60
             timeoutSeconds: 30
           ports:
-            - containerPort: 8042
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
           env:
             - name: PGHOST
               valueFrom:

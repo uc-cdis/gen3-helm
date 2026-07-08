@@ -1,4 +1,4 @@
-{{ if and (index .Values "karpenter" "enabled") (eq (index .Values "karpenter" "targetRevision") "1.0.8") }}
+{{ if and (index .Values "karpenter" "enabled") (semverCompare ">=1.0.8" .Values.karpenter.targetRevision) }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

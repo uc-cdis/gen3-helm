@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "ssjdispatcher.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
       matchLabels:
         {{- include "ssjdispatcher.selectorLabels" . | nindent 8 }}
@@ -33,6 +36,9 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.affinity }}
@@ -58,10 +64,8 @@ spec:
             - name: AWS_STS_REGIONAL_ENDPOINTS
               value: {{ . }}
             {{- end }}
-            {{- with .Values.gen3Namespace  }}
             - name: GEN3_NAMESPACE
-              value: {{ . }}
-            {{- end }}
+              value: {{ .Values.gen3Namespace | default .Release.Namespace }}
             - name: JOB_IMAGES
               valueFrom:
                 configMapKeyRef:
@@ -69,19 +73,19 @@ spec:
                   key: job_images
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 8000
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 8000
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

@@ -46,7 +46,7 @@ spec:
             "Effect":"Allow",
             "Action": "es:*",
             "Resource":[
-                "arn:aws:es:us-east-1:{{ .Values.global.crossplane.accountId }}:domain/{{ include "aws-es-proxy.esEndpointName" . }},
+                "arn:aws:es:us-east-1:{{ .Values.global.crossplane.accountId }}:domain/{{ include "aws-es-proxy.esEndpointName" . }}",
                 "arn:aws:es:us-east-1:{{ .Values.global.crossplane.accountId }}:domain/{{ include "aws-es-proxy.esEndpointName" . }}/*"
             ]
           }

@@ -8,6 +8,7 @@ metadata:
 spec:
   schedule: "{{ .Values.hatchery.reaper.schedule }}"
   suspend: {{ .Values.hatchery.reaper.suspendCronjob }}
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
@@ -36,7 +37,7 @@ spec:
                         values: ["ONDEMAND"]
           containers:
             - name: awshelper
-              image: quay.io/cdis/awshelper:master
+              image: {{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
               imagePullPolicy: Always
               env:
                 - name: KUBECTL_NAMESPACE

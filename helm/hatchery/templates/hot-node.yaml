@@ -41,6 +41,7 @@ roleRef:
   kind: Role
   name: hot-node-prepuller
 ---
+{{- if .Values.hotNode.jupyter }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -118,7 +119,7 @@ spec:
       serviceAccountName: hot-node-prepuller
       initContainers:
       - name: init-hot-node
-        image: quay.io/cdis/awshelper:master
+        image: {{ $.Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}
         command: ["/bin/bash","-c"]
         env:
           - name: NODE_NAME
@@ -181,5 +182,6 @@ spec:
         configMap:
           name: hot-node-job
 ---
+{{- end }}
 {{- end }}
 {{- end }}

@@ -46,6 +46,9 @@ spec:
         {{- include "wts.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -79,18 +82,18 @@ spec:
             subPath: appcreds.json
           ports:
             - name: http
-              containerPort: 80
+              containerPort:  {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             failureThreshold: 10
             initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           env:
           - name: OIDC_CLIENT_ID
             valueFrom:

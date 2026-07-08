@@ -31,7 +31,7 @@ spec:
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
       labels:
-        app: "presigned-url-fence" 
+        app: "presigned-url-fence"
         authprovder: "yes"
         netnolimit: "yes"
         public: "yes"
@@ -46,7 +46,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
             - name: https
               containerPort: 443
@@ -71,11 +71,13 @@ spec:
           args:
             - "-c"
             - |
+              mkdir -p /fence/keys/key
+              cp /tmp/keys/readonly/jwt_private_key.pem /fence/keys/key/jwt_private_key.pem
               python /var/www/fence/yaml_merge.py /var/www/fence/fence-config-public.yaml /var/www/fence/fence-config-secret.yaml /var/www/fence/fence-config.yaml
               if [[ -f /fence/keys/key/jwt_private_key.pem ]]; then
                 openssl rsa -in /fence/keys/key/jwt_private_key.pem -pubout > /fence/keys/key/jwt_public_key.pem
               fi
-              bash /fence/dockerrun.bash && if [[ -f /dockerrun.sh ]]; then bash /dockerrun.sh; fi
+              bash /fence/dockerrun.bash
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
@@ -92,3 +94,42 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- if .Values.global.netPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: presigned-url-fence-db-netpolicy
+spec:
+  egress:
+  {{- if .Values.global.dev }}
+  - to:
+    - podSelector:
+        matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+              - "postgresql"
+    - podSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - "gen3-elasticsearch-master"
+  {{- else }}
+  {{- range .Values.global.netPolicy.dbSubnets }}
+  - to:
+    - ipBlock:
+        cidr: {{ . }}
+  {{- end }}
+  {{- end }}
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - presigned-url-fence
+          - gen3job
+  policyTypes:
+  - Egress
+{{- end }}
