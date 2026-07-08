@@ -83,13 +83,12 @@ A Helm chart for Kubernetes
 | Kubernetes.Worker.restartPolicy | string | `"Never"` |  |
 | Kubernetes.WorkerTemplate | string | `""` |  |
 | LocalStorage | object | `{"AllowedDirs":["./"]}` | Local file system storage configuration. |
-| Logger.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
-| Logger.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
-| Logger.Plugins.Params.S3Url | string | `"FUNNEL_PLUGIN_S3URL_PLACEHOLDER"` |  |
-| Logger.Plugins.Path | string | `"plugin-binaries/auth-plugin"` |  |
-| Logger.Worker.LeaveWorkDir | bool | `true` |  |
-| Logger.level | string | `"debug"` |  |
-| Logger.outputFile | string | `""` |  |
+| Logger.Formatter | string | `"json"` |  |
+| Logger.Level | string | `"debug"` |  |
+| Logger.OutputFile | string | `""` |  |
+| Logger.TextFormat.ForceColors | bool | `true` |  |
+| Logger.TextFormat.FullTimestamp | bool | `true` |  |
+| Logger.TextFormat.TimestampFormat | string | `"2006-01-02T15:04:05Z07:00"` |  |
 | Node.ID | string | `""` |  |
 | Node.Resources.Cpus | int | `0` |  |
 | Node.Resources.DiskGb | float | `0` |  |
@@ -100,6 +99,10 @@ A Helm chart for Kubernetes
 | PBS.ReconcileRate | string | `"10s"` |  |
 | PBS.Template | string | `"#!bin/bash\n#PBS -N {{.TaskId}}\n#PBS -o {{.WorkDir}}/funnel-stdout\n#PBS -e {{.WorkDir}}/funnel-stderr\n{{if ne .Cpus 0 -}}\n{{printf \"#PBS -l nodes=1:ppn=%d\" .Cpus}}\n{{- end}}\n{{if ne .RamGb 0.0 -}}\n{{printf \"#PBS -l mem=%.0fgb\" .RamGb}}\n{{- end}}\n{{if ne .DiskGb 0.0 -}}\n{{printf \"#PBS -l file=%.0fgb\" .DiskGb}}\n{{- end}}\n\n{{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}\n"` |  |
 | PBS.TemplateFile | string | `""` |  |
+| Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
+| Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
+| Plugins.Params.S3Url | string | `"FUNNEL_PLUGIN_S3URL_PLACEHOLDER"` |  |
+| Plugins.Path | string | `"plugin-binaries/auth-plugin"` |  |
 | Postgres.AdminPassword | string | `"example"` |  |
 | Postgres.AdminUser | string | `"postgres"` |  |
 | Postgres.Database | string | `"FUNNEL_POSTGRES_DATABASE_PLACEHOLDER"` |  |
@@ -130,6 +133,7 @@ A Helm chart for Kubernetes
 | Swift.TenantID | string | `""` |  |
 | Swift.TenantName | string | `""` |  |
 | Swift.UserName | string | `""` |  |
+| Worker.LeaveWorkDir | bool | `true` |  |
 | Worker.LeaveWorkDir | bool | `false` |  |
 | Worker.LogTailSize | int | `10000` |  |
 | Worker.LogUpdateRate | string | `"5s"` |  |
@@ -180,6 +184,7 @@ A Helm chart for Kubernetes
 | image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
+| image.tag | string | `"2026-06-22"` |  |
 | labels.app | string | `"funnel"` |  |
 | metricsEnabled | bool | `false` |  |
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |

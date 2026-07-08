@@ -79,8 +79,13 @@ EventWriters:
   {{- end }}
 
 Logger:
-  level: {{ .Values.Logger.level }}
-  outputFile: {{ .Values.Logger.outputFile }}
+  Level: {{ .Values.Logger.Level }}
+  OutputFile: "{{ .Values.Logger.OutputFile }}"
+  Formatter: {{ .Values.Logger.Formatter }}
+  TextFormat:
+    ForceColors: {{ .Values.Logger.TextFormat.ForceColors }}
+    FullTimestamp: {{ .Values.Logger.TextFormat.FullTimestamp }}
+    TimestampFormat: {{ .Values.Logger.TextFormat.TimestampFormat }}
 
 Server:
   HostName: "{{ .Values.Server.HostName }}"

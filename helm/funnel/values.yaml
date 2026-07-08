@@ -128,8 +128,11 @@ oidc_job_enabled: true
 image:
   # -- (string) The Docker image repository for the Funnel service.
   repository: quay.io/ohsu-comp-bio/funnel
+  tag: 2026-06-22
+
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
+
 
   # -- (map) Configuration for the Funnel init container.
   initContainers:
@@ -342,18 +345,28 @@ Postgres:
     duration: 300s
 Logger:
   # Logging levels: debug, info, error
-  level: debug
+  Level: debug
   # Write logs to this path. If empty, logs are written to stderr.
-  outputFile: ""
-  Plugins:
-    Path: plugin-binaries/auth-plugin
-    Params:
-      OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
-      OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
-      S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
-  Worker:
-    # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
-    LeaveWorkDir: true
+  OutputFile: ""
+  # Log format: json or text
+  Formatter: json
+  # Text format settings
+  TextFormat:
+    # Try to force colors/rich format in text output
+    ForceColors: true
+    # Include full timestamps in text output
+    FullTimestamp: true
+    # Format for timestamps. RFC3339 is default.
+    TimestampFormat: "2006-01-02T15:04:05Z07:00"
+Plugins:
+  Path: plugin-binaries/auth-plugin
+  Params:
+    OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
+    OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
+    S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
+Worker:
+  # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
+  LeaveWorkDir: true
 
 # Kubernetes describes the configuration for the Kubernetes compute backend.
 Kubernetes:
