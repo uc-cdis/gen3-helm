@@ -100,9 +100,12 @@ A Helm chart for Kubernetes
 | PBS.ReconcileRate | string | `"10s"` |  |
 | PBS.Template | string | `"#!bin/bash\n#PBS -N {{.TaskId}}\n#PBS -o {{.WorkDir}}/funnel-stdout\n#PBS -e {{.WorkDir}}/funnel-stderr\n{{if ne .Cpus 0 -}}\n{{printf \"#PBS -l nodes=1:ppn=%d\" .Cpus}}\n{{- end}}\n{{if ne .RamGb 0.0 -}}\n{{printf \"#PBS -l mem=%.0fgb\" .RamGb}}\n{{- end}}\n{{if ne .DiskGb 0.0 -}}\n{{printf \"#PBS -l file=%.0fgb\" .DiskGb}}\n{{- end}}\n\n{{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}\n"` |  |
 | PBS.TemplateFile | string | `""` |  |
+| Postgres.AdminPassword | string | `"example"` |  |
+| Postgres.AdminUser | string | `"postgres"` |  |
 | Postgres.Database | string | `"FUNNEL_POSTGRES_DATABASE_PLACEHOLDER"` |  |
 | Postgres.Host | string | `"FUNNEL_POSTGRES_HOST_PLACEHOLDER"` |  |
 | Postgres.Password | string | `"FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER"` |  |
+| Postgres.Timeout.duration | string | `"300s"` |  |
 | Postgres.User | string | `"FUNNEL_POSTGRES_USER_PLACEHOLDER"` |  |
 | RPCClient.MaxRetries | int | `10` |  |
 | RPCClient.ServerAddress | string | `"localhost:9090"` |  |
