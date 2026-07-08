@@ -56,10 +56,10 @@ spec:
             - name: ZENDESK_API_EMAIL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.name }}
-                  key: {{ .Values.secrets.apiEmail }}
+                  name: {{ .Values.externalSecrets.name }}
+                  key: {{ .Values.externalSecrets.apiEmail }}
             - name: ZENDESK_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.name }}
-                  key: {{ .Values.secrets.tokenKey }}
+                  name: {{ .Values.externalSecrets.name }}
+                  key: {{ .Values.externalSecrets.tokenKey }}
