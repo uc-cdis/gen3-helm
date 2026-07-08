@@ -134,7 +134,6 @@ A Helm chart for Kubernetes
 | Swift.TenantName | string | `""` |  |
 | Swift.UserName | string | `""` |  |
 | Worker.LeaveWorkDir | bool | `true` |  |
-| Worker.LeaveWorkDir | bool | `false` |  |
 | Worker.LogTailSize | int | `10000` |  |
 | Worker.LogUpdateRate | string | `"5s"` |  |
 | Worker.MaxParallelTransfers | int | `10` |  |
