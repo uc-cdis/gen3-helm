@@ -1436,6 +1436,19 @@ FENCE_CONFIG:
   # this is the password which fence uses to make authenticated requests to indexd
   INDEXD_PASSWORD: ""
 
+  # allowlist for Gen3 Embeddings URL resolutions.
+  # use this to provide the prefix for allowed URLs for Gen3 Embeddings
+  # for example, if you want to be able to resolve Gen3 Embeddings from
+  # https://example.com/ai/vectorstore/collections/...
+  # you need to add "https://example.com/ai" to the allowlist here
+  # basically, everything BEFORE "/vectorstore/collections/..."
+  ALLOWED_GEN3_EMBEDDINGS_BULK_URL_PREFIXES:
+  #  - 'https://example.com/ai'
+
+  # this is used to identify indexed record URLs which are pointing to embeddings, and thus support bulk content retrieval
+  # unless the Gen3 Embeddings API changes, you should NOT change this default
+  GEN3_EMBEDDINGS_API_REGEX: '/vectorstore/collections/(?P<collection_name>[^/]+)/embeddings/(?P<embedding_uuid>[^/]+)'
+
   # //////////////////////////////////////////////////////////////////////////////////////
   # AZURE STORAGE BLOB CONFIGURATION
   #   - Support Azure Blob Data Access Methods
