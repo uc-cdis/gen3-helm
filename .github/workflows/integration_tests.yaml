@@ -8,6 +8,7 @@ jobs:
     uses: uc-cdis/.github/.github/workflows/integration_tests.yaml@master
     with:
       HELM_BRANCH: ${{ github.event.pull_request.head.ref }}
+      TEST_REPO_BRANCH: chore/fix_setup_script_for_funnel
     secrets:
       CI_TEST_ORCID_USERID: ${{ secrets.CI_TEST_ORCID_USERID }}
       CI_TEST_ORCID_PASSWORD: ${{ secrets.CI_TEST_ORCID_PASSWORD }}
