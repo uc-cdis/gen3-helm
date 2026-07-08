@@ -32,6 +32,7 @@ A Helm chart for Kubernetes
 | Database | string | `"postgres"` |  |
 | Datastore.CredentialsFile | string | `""` |  |
 | Datastore.Project | string | `""` |  |
+| Datastore.Timeout.duration | string | `"300s"` |  |
 | DynamoDB.AWSConfig.Key | string | `""` |  |
 | DynamoDB.AWSConfig.Region | string | `""` |  |
 | DynamoDB.AWSConfig.Secret | string | `""` |  |
@@ -53,11 +54,11 @@ A Helm chart for Kubernetes
 | Kafka.Topic | string | `"funnel"` |  |
 | Kubernetes.DisableJobCleanup | bool | `false` |  |
 | Kubernetes.DisableReconciler | bool | `false` |  |
-| Kubernetes.Executor.Annotations | object | `{}` |  |
+| Kubernetes.Executor.Annotations."karpenter.sh/do-not-disrupt" | string | `"true"` |  |
 | Kubernetes.Executor.PriorityClassName | string | `""` |  |
 | Kubernetes.Executor.backoffLimit | int | `0` |  |
 | Kubernetes.Executor.completions | int | `1` |  |
-| Kubernetes.Executor.restartPolicy | string | `"OnFailure"` |  |
+| Kubernetes.Executor.restartPolicy | string | `"Never"` |  |
 | Kubernetes.ExecutorTemplate | string | `""` |  |
 | Kubernetes.ForbiddenPathPrefixes | list | `[]` | Path prefixes that Funnel's Kubernetes backend must reject when creating worker pods. |
 | Kubernetes.JobsNamespace | string | `""` |  |
@@ -65,7 +66,7 @@ A Helm chart for Kubernetes
 | Kubernetes.NodeSelector | object | `{}` |  |
 | Kubernetes.PVCTemplate | string | `""` |  |
 | Kubernetes.PVTemplate | string | `""` |  |
-| Kubernetes.ReconcileRate | string | `"10s"` |  |
+| Kubernetes.ReconcileRate | string | `"120s"` |  |
 | Kubernetes.Resources.Defaults.Cpus | string | `"1000m"` |  |
 | Kubernetes.Resources.Defaults.DiskGb | string | `"512Mi"` |  |
 | Kubernetes.Resources.Defaults.RamGb | string | `"512Mi"` |  |
@@ -73,15 +74,20 @@ A Helm chart for Kubernetes
 | Kubernetes.Resources.Limits.DiskGb | string | `"4096Mi"` |  |
 | Kubernetes.Resources.Limits.RamGb | string | `"4096Mi"` |  |
 | Kubernetes.ServiceAccount | string | `""` |  |
-| Kubernetes.Timeout.duration | string | `"30s"` |  |
+| Kubernetes.Timeout.duration | string | `"300s"` |  |
 | Kubernetes.Tolerations | list | `[]` |  |
-| Kubernetes.Worker.Annotations | object | `{}` |  |
-| Kubernetes.Worker.PriorityClassName | string | `""` |  |
+| Kubernetes.Worker.Annotations."karpenter.sh/do-not-disrupt" | string | `"true"` |  |
+| Kubernetes.Worker.PriorityClassName | string | `"system-cluster-critical"` |  |
 | Kubernetes.Worker.backoffLimit | int | `0` |  |
 | Kubernetes.Worker.completions | int | `1` |  |
 | Kubernetes.Worker.restartPolicy | string | `"Never"` |  |
 | Kubernetes.WorkerTemplate | string | `""` |  |
 | LocalStorage | object | `{"AllowedDirs":["./"]}` | Local file system storage configuration. |
+| Logger.Plugins.Params.OidcClientId | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER"` |  |
+| Logger.Plugins.Params.OidcClientSecret | string | `"FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER"` |  |
+| Logger.Plugins.Params.S3Url | string | `"FUNNEL_PLUGIN_S3URL_PLACEHOLDER"` |  |
+| Logger.Plugins.Path | string | `"plugin-binaries/auth-plugin"` |  |
+| Logger.Worker.LeaveWorkDir | bool | `true` |  |
 | Logger.level | string | `"debug"` |  |
 | Logger.outputFile | string | `""` |  |
 | Node.ID | string | `""` |  |
@@ -94,13 +100,10 @@ A Helm chart for Kubernetes
 | PBS.ReconcileRate | string | `"10s"` |  |
 | PBS.Template | string | `"#!bin/bash\n#PBS -N {{.TaskId}}\n#PBS -o {{.WorkDir}}/funnel-stdout\n#PBS -e {{.WorkDir}}/funnel-stderr\n{{if ne .Cpus 0 -}}\n{{printf \"#PBS -l nodes=1:ppn=%d\" .Cpus}}\n{{- end}}\n{{if ne .RamGb 0.0 -}}\n{{printf \"#PBS -l mem=%.0fgb\" .RamGb}}\n{{- end}}\n{{if ne .DiskGb 0.0 -}}\n{{printf \"#PBS -l file=%.0fgb\" .DiskGb}}\n{{- end}}\n\n{{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}\n"` |  |
 | PBS.TemplateFile | string | `""` |  |
-| Postgres.AdminPassword | string | `"example"` |  |
-| Postgres.AdminUser | string | `"postgres"` |  |
-| Postgres.Database | string | `"funnel"` |  |
-| Postgres.Host | string | `"funnel-postgresql.default.svc.cluster.local"` |  |
-| Postgres.Password | string | `"example"` |  |
-| Postgres.Timeout.duration | string | `"300s"` |  |
-| Postgres.User | string | `"funnel"` |  |
+| Postgres.Database | string | `"FUNNEL_POSTGRES_DATABASE_PLACEHOLDER"` |  |
+| Postgres.Host | string | `"FUNNEL_POSTGRES_HOST_PLACEHOLDER"` |  |
+| Postgres.Password | string | `"FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER"` |  |
+| Postgres.User | string | `"FUNNEL_POSTGRES_USER_PLACEHOLDER"` |  |
 | RPCClient.MaxRetries | int | `10` |  |
 | RPCClient.ServerAddress | string | `"localhost:9090"` |  |
 | RPCClient.Timeout.duration | string | `"60s"` |  |
@@ -134,51 +137,75 @@ A Helm chart for Kubernetes
 | cleanup.enabled | bool | `false` |  |
 | cleanup.schedule | string | `""` |  |
 | cleanup.scheduleOffsetMinutes | int | `0` |  |
-| global.aws.awsAccessKeyId | string | `nil` |  |
-| global.aws.awsSecretAccessKey | string | `nil` |  |
-| global.aws.enabled | bool | `false` |  |
-| global.aws.externalSecrets.enabled | bool | `false` |  |
-| global.aws.externalSecrets.externalSecretAwsCreds | string | `nil` |  |
-| global.aws.externalSecrets.pushSecret | bool | `false` |  |
-| global.aws.region | string | `"us-east-1"` |  |
-| global.dev | bool | `true` |  |
-| global.externalSecrets.dbCreate | bool | `false` |  |
-| global.externalSecrets.deploy | bool | `false` |  |
-| global.netPolicy.enabled | bool | `false` |  |
-| global.postgres.dbCreate | bool | `true` |  |
-| global.postgres.externalSecret | string | `""` |  |
-| global.postgres.master.host | string | `nil` |  |
-| global.postgres.master.password | string | `nil` |  |
-| global.postgres.master.port | string | `"5432"` |  |
-| global.postgres.master.username | string | `"postgres"` |  |
-| image.initContainers[0].command[0] | string | `"cp"` |  |
-| image.initContainers[0].command[1] | string | `"/app/build/plugins/authorizer"` |  |
-| image.initContainers[0].command[2] | string | `"/opt/funnel/plugin-binaries/auth-plugin"` |  |
-| image.initContainers[0].image | string | `"quay.io/ohsu-comp-bio/funnel-plugins"` |  |
-| image.initContainers[0].name | string | `"plugins"` |  |
-| image.initContainers[0].pullPolicy | string | `"Always"` |  |
-| image.initContainers[0].tag | string | `"pr-1"` |  |
-| image.initContainers[0].volumeMounts[0].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
-| image.initContainers[0].volumeMounts[0].name | string | `"plugin-volume"` |  |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` |  |
+| criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
+| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null}` | External Secrets settings. |
+| externalSecrets.createFunnelOidcClientSecret | bool | `true` | Whether to create the Funnel OIDC client secret using the oidc job. |
+| externalSecrets.dbcreds | string | `""` | Name of the secret that will be created in secrets manager |
+| externalSecrets.funnelOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client". |
+| global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
+| global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
+| global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
+| global.aws.externalSecrets.enabled | bool | `false` | Whether to use External Secrets for aws config. |
+| global.aws.externalSecrets.externalSecretAwsCreds | String | `nil` | Name of Secrets Manager secret. |
+| global.aws.externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+| global.aws.region | string | `"us-east-1"` | AWS region for this deployment |
+| global.clusterName | string | `"default"` |  |
+| global.environment | string | `"default"` |  |
+| global.externalSecrets.clusterSecretStoreRef | string | `""` |  |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any gen3-workflow secrets you have deployed. |
+| global.externalSecrets.pushFunnelOidcClientToExternalSecrets | bool | `true` |  |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.hostname | string | `""` | Hostname for the deployment. |
+| global.kubeapi_endpoints | map | `{"enabled":false,"ip":[]}` | Configuration for kubeapi endpoints if you want to allowlist specific IPs for egress instead of allowing access to the entire cluster. |
+| global.netPolicy | map | `{"enabled":false}` | Network policy settings. |
+| global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
+| global.postgres.externalSecret | string | `""` | Name of master Postgres secret in Secrets Manager. Disabled if empty |
+| global.postgres.master | map | `{"host":"test","password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
+| global.postgres.master.host | string | `"test"` | hostname of postgres server |
+| global.postgres.master.password | string | `nil` | password for superuser in postgres. This is used to create or restore databases |
+| global.postgres.master.port | string | `"5432"` | Port for Postgres. |
+| global.postgres.master.username | string | `"postgres"` | username of superuser in postgres. This is used to create or restore databases |
+| global.topologySpread | map | `{"enabled":false,"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone"}` | Karpenter topology spread configuration. |
+| global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
+| global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
+| global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
+| image.initContainers | map | `[{"command":["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"],"image":"quay.io/cdis/funnel-gen3-plugin","name":"plugin","pullPolicy":"Always","tag":"main-gen3","volumeMounts":[{"mountPath":"/opt/funnel/plugin-binaries","name":"plugin-volume"}]},{"args":["-c","# Create a funnel-patched.conf since /etc/config/funnel.conf is readonly\nCONFIG=/tmp/funnel-patched.conf\ncp /etc/config/funnel.conf $CONFIG\n\nnamespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\nJOBS_NAMESPACE=workflow-pods-$namespace\nS3_URL=gen3-workflow-service.$namespace.svc.cluster.local\nDB_HOST=$DB_HOST:5432\n\n# `Kubernetes.JobsNamespace` has to be configured manually because of templating\n# limitations. This ensures it is configured to the value that is hardcoded elsewhere.\nconfigured=$(yq -r '.Kubernetes.JobsNamespace' \"$CONFIG\")\nif [[ \"$configured\" != \"$JOBS_NAMESPACE\" ]]; then\n  echo \"ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration\" >&2\n  exit 1\nfi\n\necho \"======= Funnel configuration =======\"\necho \"  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE\"\necho \"  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID\"\necho \"  Plugins.Params.S3Url       : $S3_URL\"\necho \"  Postgres.Host              : $DB_HOST\"\necho \"  Postgres.Database          : $DB_DATABASE\"\necho \"  Postgres.User              : $DB_USER\"\necho \"====================================\"\n\n# Replace placeholders with actual values (in-place)\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g\" $CONFIG\nsed -i \"s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g\" $CONFIG\nsed -i \"s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g\" $CONFIG\n"],"command":["/bin/bash"],"env":[{"name":"FUNNEL_OIDC_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"funnel-oidc-client","optional":false}}},{"name":"FUNNEL_OIDC_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"funnel-oidc-client","optional":false}}},{"name":"DB_HOST","valueFrom":{"secretKeyRef":{"key":"host","name":"funnel-dbcreds","optional":false}}},{"name":"DB_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"funnel-dbcreds","optional":false}}},{"name":"DB_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"funnel-dbcreds","optional":false}}},{"name":"DB_DATABASE","valueFrom":{"secretKeyRef":{"key":"database","name":"funnel-dbcreds","optional":false}}}],"image":"quay.io/cdis/awshelper","name":"config-updater","tag":"master","volumeMounts":[{"mountPath":"/tmp","name":"funnel-patched-config-volume"},{"mountPath":"/etc/config/funnel.conf","name":"funnel-config-volume","subPath":"funnel-server.yaml"}]}]` | Configuration for the Funnel init container. |
+| image.initContainers[0].command | list | `["cp","/app/build/plugins/authorizer","/opt/funnel/plugin-binaries/auth-plugin"]` | Arguments to pass to the init container. |
+| image.initContainers[0].image | string | `"quay.io/cdis/funnel-gen3-plugin"` | The Docker image repository for the Funnel init/plugin container. |
+| image.initContainers[0].pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
+| image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
+| image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
 | labels.app | string | `"funnel"` |  |
-| postgres.database | string | `"funnel"` | Database name for Funnel. |
-| postgres.dbCreate | bool | `nil` | Whether the database should be created. Defaults to global.postgres.dbCreate. |
-| postgres.host | string | `nil` | Hostname for Postgres. Defaults to global.postgres.master.host. |
-| postgres.password | string | `"example"` | Password for Postgres. Override this for production deployments. |
+| metricsEnabled | bool | `false` |  |
+| netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["gen3-workflow"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["gen3-workflow"]` | List of app labels that require ingress to this service |
+| oidc_job_enabled | bool | `true` | Whether to create a job to generate the OIDC client for Funnel. |
+| partOf | string | `"Workflow_Execution"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
+| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
+| postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
+| postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
 | postgres.port | string | `"5432"` | Port for Postgres. |
-| postgres.username | string | `"funnel"` | Username for Funnel. |
+| postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
+| postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
+| postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | rbac.create | bool | `true` |  |
+| release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"1000m"` |  |
-| resources.limits.ephemeral_storage | string | `"2048Mi"` |  |
-| resources.limits.memory | string | `"2048Mi"` |  |
+| resources.limits.ephemeral_storage | string | `"2Gi"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
 | resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.ephemeral_storage | string | `"512Mi"` |  |
-| resources.requests.memory | string | `"512Mi"` |  |
-| secrets.awsAccessKeyId | string | `nil` |  |
-| secrets.awsSecretAccessKey | string | `nil` |  |
+| resources.requests.ephemeral_storage | string | `"2Gi"` |  |
+| resources.requests.memory | string | `"2Gi"` |  |
+| secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets. |
+| secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
+| secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | service.httpPort | int | `8000` |  |
 | service.rpcPort | int | `9090` |  |
 | service.type | string | `"ClusterIP"` |  |
@@ -190,11 +217,26 @@ A Helm chart for Kubernetes
 | storage.size | string | `"10Mi"` |  |
 | stsRegion | string | `"us-east-1"` |  |
 | volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
-| volumeMounts[0].name | string | `"funnel-server-config-volume"` |  |
-| volumeMounts[0].subPath | string | `"funnel-server.yaml"` |  |
-| volumeMounts[1].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
-| volumeMounts[1].name | string | `"plugin-volume"` |  |
+| volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
+| volumeMounts[0].subPath | string | `"funnel-patched.conf"` |  |
+| volumeMounts[1].mountPath | string | `"/etc/config/oidc"` |  |
+| volumeMounts[1].name | string | `"funnel-oidc-volume"` |  |
+| volumeMounts[1].readOnly | bool | `true` |  |
+| volumeMounts[2].mountPath | string | `"/etc/funnel/templates"` |  |
+| volumeMounts[2].name | string | `"worker-templates-volume"` |  |
+| volumeMounts[3].mountPath | string | `"/opt/funnel/plugin-binaries"` |  |
+| volumeMounts[3].name | string | `"plugin-volume"` |  |
 | volumes[0].configMap.name | string | `"funnel-server-config"` |  |
-| volumes[0].name | string | `"funnel-server-config-volume"` |  |
-| volumes[1].emptyDir | object | `{}` |  |
-| volumes[1].name | string | `"plugin-volume"` |  |
+| volumes[0].name | string | `"funnel-config-volume"` |  |
+| volumes[1].name | string | `"funnel-oidc-volume"` |  |
+| volumes[1].secret.items[0].key | string | `"client_id"` |  |
+| volumes[1].secret.items[0].path | string | `"client_id"` |  |
+| volumes[1].secret.items[1].key | string | `"client_secret"` |  |
+| volumes[1].secret.items[1].path | string | `"client_secret"` |  |
+| volumes[1].secret.secretName | string | `"funnel-oidc-client"` |  |
+| volumes[2].configMap.name | string | `"funnel-worker-templates"` |  |
+| volumes[2].name | string | `"worker-templates-volume"` |  |
+| volumes[3].emptyDir | object | `{}` |  |
+| volumes[3].name | string | `"plugin-volume"` |  |
+| volumes[4].emptyDir | object | `{}` |  |
+| volumes[4].name | string | `"funnel-patched-config-volume"` |  |
