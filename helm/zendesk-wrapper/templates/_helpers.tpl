@@ -52,11 +52,11 @@ Selector labels
 {{- else }}
   {{- (include "common.selectorLabels" .)}}
 {{- end }}
+{{- end }}
 
 {{/*
   Zendesk Wrapper Secrets Manager Name
 */}}
 {{- define "zendesk-wrapper-secret" -}}
 {{- default "zendesk-wrapper-secret" .Values.externalSecrets.name }}
-{{- end }}
 {{- end }}
