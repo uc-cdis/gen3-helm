@@ -154,16 +154,10 @@ Datastore:
   CredentialsFile: {{ .Values.Datastore.CredentialsFile }}
 
 Postgres:
-  {{- if .Values.postgres.host }}
-  Host: {{ .Values.postgres.host }}
-  {{- else if .Values.global.dev }}
-  Host: {{ .Release.Name }}-postgresql
-  {{- else }}
-  Host: {{ .Values.global.postgres.master.host }}
-  {{- end }}
-  Database: {{ include "gen3.service-postgres" (dict "key" "database" "service" .Chart.Name "context" $) }}
-  User: {{ include "gen3.service-postgres" (dict "key" "username" "service" .Chart.Name "context" $) }}
-  Password: {{ include "gen3.service-postgres" (dict "key" "password" "service" .Chart.Name "context" $) }}
+  Host: {{ .Values.Postgres.Host }}
+  Database: {{ .Values.Postgres.Database }}
+  User: {{ .Values.Postgres.User }}
+  Password: {{ .Values.Postgres.Password }}
   AdminUser: {{ .Values.Postgres.AdminUser }}
   AdminPassword: {{ .Values.Postgres.AdminPassword }}
   Timeout:
