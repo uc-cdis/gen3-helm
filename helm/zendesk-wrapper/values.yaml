@@ -76,6 +76,10 @@ env:
 externalSecrets:
   # -- (string) Name of the Kubernetes secret containing the Zendesk API token
   name: "zendesk-wrapper-secret"
+  # -- (string) Key within the secret for the API token
+  tokenKey: "ZENDESK_API_TOKEN"
+   # -- (string) Email of the agent account used with the API token 
+  apiEmailKey: "ZENDESK_API_EMAIL"
 
 release: "production"
 criticalService: "false"

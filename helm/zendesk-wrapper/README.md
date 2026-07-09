@@ -24,8 +24,8 @@ A Helm chart for gen3 Zendesk Wrapper Service
 | criticalService | string | `"false"` |  |
 | env | map | `{"GEN3_ZENDESK_URL":""}` | Environment variables for the Zendesk wrapper service |
 | env.GEN3_ZENDESK_URL | string | `""` | Zendesk instance URL (e.g., https://gen3support.zendesk.com) |
-| externalSecrets | map | `{"apiEmail":"ZENDESK_API_EMAIL","name":"zendesk-wrapper-secret","tokenKey":"ZENDESK_API_TOKEN"}` | Secret environment variables (referenced from Kubernetes secrets) |
-| externalSecrets.apiEmail | string | `"ZENDESK_API_EMAIL"` | Email of the agent account used with the API token  |
+| externalSecrets | map | `{"apiEmailKey":"ZENDESK_API_EMAIL","name":"zendesk-wrapper-secret","tokenKey":"ZENDESK_API_TOKEN"}` | Secret environment variables (referenced from Kubernetes secrets) |
+| externalSecrets.apiEmailKey | string | `"ZENDESK_API_EMAIL"` | Email of the agent account used with the API token  |
 | externalSecrets.name | string | `"zendesk-wrapper-secret"` | Name of the Kubernetes secret containing the Zendesk API token |
 | externalSecrets.tokenKey | string | `"ZENDESK_API_TOKEN"` | Key within the secret for the API token |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
