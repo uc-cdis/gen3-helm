@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.60](https://img.shields.io/badge/Version-0.3.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.61](https://img.shields.io/badge/Version-0.3.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -27,8 +27,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.2 |
 | file://../cedar | cedar | 0.1.26 |
 | file://../cohort-middleware | cohort-middleware | 0.1.22 |
-| file://../dashboard | dashboard | 0.1.21 |
 | file://../common | common | 0.1.37 |
+| file://../dashboard | dashboard | 0.1.21 |
 | file://../data-upload-cron | data-upload-cron | 0.1.6 |
 | file://../datareplicate | datareplicate | 0.1.21 |
 | file://../dicom-server | dicom-server | 0.1.31 |
