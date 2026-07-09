@@ -127,8 +127,8 @@ partOf: "Workflow_Execution"
 oidc_job_enabled: true
 image:
   # -- (string) The Docker image repository for the Funnel service.
-  repository: quay.io/cdis/funnel
-  tag: chore_remove_debug_log
+  repository: quay.io/ohsu-comp-bio/funnel
+  tag: develop-2026-07-09-19-49-55Z-97d1df55
 
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
