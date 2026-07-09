@@ -26,13 +26,3 @@ dependencies:
   - name: common
     version: 0.1.36
     repository: file://../common
-  - name: funnel
-    # NOTE:
-    # When updating this version:
-    # 1) Run `helm dependency update` in this directory to generate a new .tgz file
-    # 2) Commit the updated .tgz file into gen3-helm in the same PR
-    #
-    # ArgoCD relies on this checked-in .tgz reference — if it's missing,
-    # Funnel will not be deployed as a dependency.
-    version: 0.1.99-rc.36
-    repository: "https://calypr.github.io/helm-charts"

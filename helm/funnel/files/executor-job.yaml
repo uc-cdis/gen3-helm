@@ -1,0 +1,144 @@
+# Task Executor
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{`{{.TaskId}}`}}-{{`{{.JobId}}`}}
+  namespace: {{`{{.JobsNamespace}}`}}
+  labels:
+    app: funnel-executor
+    job-name: {{`{{.TaskId}}-{{.JobId}}`}}
+spec:
+  backoffLimit: {{ .Values.Kubernetes.Executor.backoffLimit}}
+  completions: {{ .Values.Kubernetes.Executor.completions }}
+  template:
+    metadata:
+
+    # Annotations
+    {{- with .Values.Kubernetes.Executor.Annotations }}
+      annotations:
+      {{ toYaml . | indent 2 }}
+    {{- end }}
+    
+      labels:
+        app: funnel-executor
+        job-name: {{`{{.TaskId}}`}}-{{`{{.JobId}}`}}
+    spec:
+    
+    # If priorityClassName is set for the Executor, use that. 
+    # Otherwise, if it's set for the Worker, use that. 
+    # This allows users to set a default priority class for all jobs by setting it for the Worker,
+    # but also override it for the Executor if needed.
+    {{- $pc := ""}}
+    {{- if .Values.Kubernetes.Executor.PriorityClassName }}
+      {{- $pc = .Values.Kubernetes.Executor.PriorityClassName }}
+    {{- else if .Values.Kubernetes.Worker.PriorityClassName }}
+      {{- $pc = .Values.Kubernetes.Worker.PriorityClassName }}
+    {{- end }}
+
+    {{- if $pc }}
+      priorityClassName: {{ $pc }}
+    {{- end }}
+
+      # NodeSelectors
+      # https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#create-a-pod-that-gets-scheduled-to-your-chosen-node
+      {{`
+      {{- if .NodeSelector }}
+      nodeSelector:
+        {{- range $key, $value := .NodeSelector }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      `}}
+
+      # Tolerations
+      # https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      {{`
+      {{- if .Tolerations }}
+      tolerations:
+        {{- range .Tolerations }}
+        - key: {{ .Key }}
+          operator: {{ .Operator }}
+          effect: {{ .Effect }}
+          {{if .Value}}value: {{ .Value }}{{end}}
+          {{if .TolerationSeconds}}tolerationSeconds: {{ .TolerationSeconds }}{{end}}
+        {{- end }}
+      {{- end }}
+      `}}
+
+      securityContext:
+        # Use the default seccomp profile, which should block several dangerous syscalls that could be used for privilege escalation or container escape
+        seccompProfile:
+          type: RuntimeDefault
+      
+      # Kubernetes service account token is not needed for the Executor, and disabling it can help reduce the risk of token theft and misuse.
+      automountServiceAccountToken: false
+      restartPolicy: {{ .Values.Kubernetes.Executor.restartPolicy }}
+      serviceAccountName: {{`{{.ServiceAccountName}}`}}
+      containers:
+      - name: funnel-executor-{{`{{.TaskId}}`}}
+        image: {{`{{.Image}}`}}
+        imagePullPolicy: Always
+        securityContext:
+          # Block the ability to gain more privileges
+          allowPrivilegeEscalation: false
+          privileged: false
+
+          # Block all capabilities and then add back only the ones we need
+          capabilities:
+            drop: ["ALL"]
+            add: ["CHOWN", "DAC_OVERRIDE", "SETUID", "SETGID"]
+        # Command
+        {{`
+        {{- if .UseShell}}
+        command:
+          - "/bin/sh"
+          - "-c"
+        args:
+          - {{printf "%q" (index .Command 0)}}
+        {{- else}}
+        command:
+          {{- range .Command}}
+          - {{printf "%q" .}}
+          {{- end}}
+        {{- end}}
+        `}}
+
+        workingDir: {{`{{.Workdir}}`}}
+
+        env:
+        {{`
+        {{- range $key, $value := .Env }}
+        - name: {{ $key }}
+          value: "{{ $value }}"
+        {{- end }}
+        `}}
+        
+        resources:
+          requests:
+            cpu: {{`{{ .Cpus }}`}}
+            memory: {{`{{ .RamGb }}`}}Gi
+            ephemeral-storage: {{`{{ .DiskGb }}`}}Gi
+          limits:
+            cpu: {{`{{ .CpusLimit }}`}}
+            memory: {{`{{ .RamGbLimit }}`}}Gi
+            ephemeral-storage: {{`{{ .DiskGbLimit }}`}}Gi
+
+        volumeMounts:
+        {{`
+        {{- if .NeedsPVC }}
+          {{- range $idx, $item := .Volumes}}
+          - name: funnel-storage-{{$.TaskId}}
+            mountPath: {{$item.ContainerPath}}
+            subPath: {{$.TaskId}}{{$item.ContainerPath}}
+          {{- end}}
+        {{- end }}
+        `}}
+
+      volumes:
+      {{`
+      {{- if .NeedsPVC }}
+      - name: funnel-storage-{{.TaskId}}
+        persistentVolumeClaim:
+          claimName: funnel-worker-pvc-{{.TaskId}}
+      {{- end }}
+      `}}
