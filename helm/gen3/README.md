@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.60](https://img.shields.io/badge/Version-0.3.60-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.61](https://img.shields.io/badge/Version-0.3.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -18,47 +18,47 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../access-backend | access-backend | 0.1.20 |
+| file://../access-backend | access-backend | 0.1.21 |
 | file://../ambassador | ambassador | 0.1.37 |
 | file://../arborist | arborist | 0.1.34 |
 | file://../argo-wrapper | argo-wrapper | 0.1.30 |
-| file://../audit | audit | 0.1.43 |
+| file://../audit | audit | 0.1.44 |
 | file://../aws-es-proxy | aws-es-proxy | 0.1.41 |
 | file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.2 |
-| file://../cedar | cedar | 0.1.26 |
-| file://../cohort-middleware | cohort-middleware | 0.1.22 |
-| file://../common | common | 0.1.36 |
+| file://../cedar | cedar | 0.1.27 |
+| file://../cohort-middleware | cohort-middleware | 0.1.23 |
+| file://../common | common | 0.1.37 |
 | file://../dashboard | dashboard | 0.1.21 |
 | file://../data-upload-cron | data-upload-cron | 0.1.6 |
-| file://../datareplicate | datareplicate | 0.1.21 |
-| file://../dicom-server | dicom-server | 0.1.31 |
+| file://../datareplicate | datareplicate | 0.1.22 |
+| file://../dicom-server | dicom-server | 0.1.32 |
 | file://../embedding-management-service | embedding-management-service | 0.1.7 |
 | file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.78 |
+| file://../fence | fence | 0.1.79 |
 | file://../frontend-framework | frontend-framework | 0.1.29 |
 | file://../funnel | funnel | 0.1.26 |
 | file://../gen3-analysis | gen3-analysis | 0.1.12 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.15 |
+| file://../gen3-user-data-library | gen3-user-data-library | 0.1.16 |
 | file://../gen3-workflow | gen3-workflow | 0.1.22 |
 | file://../guppy | guppy | 0.1.37 |
-| file://../hatchery | hatchery | 0.1.69 |
-| file://../indexd | indexd | 0.1.47 |
-| file://../manifestservice | manifestservice | 0.1.42 |
-| file://../metadata | metadata | 0.1.44 |
+| file://../hatchery | hatchery | 0.1.70 |
+| file://../indexd | indexd | 0.1.48 |
+| file://../manifestservice | manifestservice | 0.1.43 |
+| file://../metadata | metadata | 0.1.45 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.5 |
 | file://../ohif-viewer | ohif-viewer | 0.1.14 |
-| file://../orthanc | orthanc | 0.1.15 |
+| file://../orthanc | orthanc | 0.1.16 |
 | file://../peregrine | peregrine | 0.1.42 |
 | file://../portal | portal | 0.1.60 |
 | file://../requestor | requestor | 0.1.34 |
 | file://../revproxy | revproxy | 0.1.61 |
 | file://../sheepdog | sheepdog | 0.1.42 |
-| file://../sower | sower | 0.1.46 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.47 |
-| file://../wts | wts | 0.1.40 |
+| file://../sower | sower | 0.1.47 |
+| file://../ssjdispatcher | ssjdispatcher | 0.1.48 |
+| file://../wts | wts | 0.1.41 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -155,7 +155,8 @@ Helm chart to deploy Gen3 Data Commons
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets | map | `{"apiVersion":"external-secrets.io/v1beta1","clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.apiVersion | string | `"external-secrets.io/v1beta1"` | API version to use for External Secrets resources. Defaults to v1beta1 when unset. |
 | global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |

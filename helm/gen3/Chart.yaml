@@ -5,7 +5,7 @@ description: Helm chart to deploy Gen3 Data Commons
 # Dependencies
 dependencies:
   - name: access-backend
-    version: 0.1.20
+    version: 0.1.21
     repository: "file://../access-backend"
     condition: access-backend.enabled
   - name: ambassador
@@ -21,7 +21,7 @@ dependencies:
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.43
+    version: 0.1.44
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
@@ -33,22 +33,22 @@ dependencies:
     repository: "file://../aws-sigv4-proxy"
     condition: aws-sigv4-proxy.enabled
   - name: cedar
-    version: 0.1.26
+    version: 0.1.27
     repository: "file://../cedar"
     condition: cedar.enabled
   - name: cohort-middleware
-    version: 0.1.22
+    version: 0.1.23
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: 0.1.36
+    version: 0.1.37
     repository: file://../common
   - name: dashboard
     version: 0.1.21
     repository: file://../dashboard
     condition: dashboard.enabled
   - name: datareplicate
-    version: 0.1.21
+    version: 0.1.22
     repository: "file://../datareplicate"
     condition: datareplicate.enabled
   - name: data-upload-cron
@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.78
+    version: 0.1.79
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -76,7 +76,7 @@ dependencies:
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-user-data-library
-    version: 0.1.15
+    version: 0.1.16
     repository: "file://../gen3-user-data-library"
     condition: gen3-user-data-library.enabled
   - name: gen3-workflow
@@ -88,19 +88,19 @@ dependencies:
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.69
+    version: 0.1.70
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.47
+    version: 0.1.48
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.42
+    version: 0.1.43
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.44
+    version: 0.1.45
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -124,15 +124,15 @@ dependencies:
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
-    version: 0.1.47
+    version: 0.1.48
     repository: "file://../ssjdispatcher"
     condition: ssjdispatcher.enabled
   - name: sower
-    version: 0.1.46
+    version: 0.1.47
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.40
+    version: 0.1.41
     repository: "file://../wts"
     condition: wts.enabled
   - name: gen3-network-policies
@@ -140,7 +140,7 @@ dependencies:
     repository: "file://../gen3-network-policies"
     condition: global.netPolicy.enabled
   - name: dicom-server
-    version: 0.1.31
+    version: 0.1.32
     repository: file://../dicom-server
     condition: dicom-server.enabled
   - name: ohif-viewer
@@ -148,7 +148,7 @@ dependencies:
     repository: file://../ohif-viewer
     condition: ohif-viewer.enabled
   - name: orthanc
-    version: 0.1.15
+    version: 0.1.16
     repository: file://../orthanc
     condition: orthanc.enabled
   - name: gen3-analysis
@@ -197,7 +197,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.60
+version: 0.3.61
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
