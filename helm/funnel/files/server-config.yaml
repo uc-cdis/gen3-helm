@@ -53,6 +53,10 @@ Kubernetes:
   ExecutorTemplate: |
 {{ tpl ((.Values.Kubernetes.ExecutorTemplate | default (.Files.Get "files/executor-job.yaml"))) . | indent 4 }}
 
+# ConfigMap template
+  ConfigMapTemplate: |
+{{ tpl (.Files.Get "files/worker-configmap.yaml") . | indent 4 }}
+
   # PV template
   PVTemplate: |
 {{ tpl (.Files.Get "files/worker-pv.yaml") . | indent 4 }}
