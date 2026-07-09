@@ -44,7 +44,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../guppy | guppy | 0.1.38 |
 | file://../hatchery | hatchery | 0.1.70 |
 | file://../indexd | indexd | 0.1.48 |
-| file://../jeg | jeg | 0.1.1 |
+| file://../jeg | jeg | 0.1.2 |
 | file://../manifestservice | manifestservice | 0.1.43 |
 | file://../metadata | metadata | 0.1.45 |
 | file://../neuvector | neuvector | 0.1.2 |
@@ -59,8 +59,8 @@ Helm chart to deploy Gen3 Data Commons
 | file://../sheepdog | sheepdog | 0.1.43 |
 | file://../sower | sower | 0.1.47 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.48 |
-| file://../vectis-overlays | vectis-overlays | 0.1.1 |
-| file://../workspace-proxy | workspace-proxy | 0.1.1 |
+| file://../vectis-overlays | vectis-overlays | 0.1.2 |
+| file://../workspace-proxy | workspace-proxy | 0.1.2 |
 | file://../wts | wts | 0.1.41 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
