@@ -1,0 +1,75 @@
+{{- $global := .Values.global | default dict }}
+{{- $crossplane := get $global "crossplane" | default dict }}
+{{- $crossplaneEnabled := get $crossplane "enabled" | default false }}
+{{- if and .Values.s3Monitor.enabled .Values.s3Monitor.serviceAccount.create $crossplaneEnabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.s3Monitor.serviceAccount.name }}"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.s3Monitor.serviceAccount.name }}"
+    description: "IRSA role for s3-monitor in {{ .Release.Namespace }}"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ get $crossplane "accountId" }}:oidc-provider/{{ get $crossplane "oidcProviderUrl" }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ get $crossplane "oidcProviderUrl" }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.s3Monitor.serviceAccount.name }}",
+                "{{ get $crossplane "oidcProviderUrl" }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-s3-monitor-role-policy"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-s3-monitor-role-policy"
+    document: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:ListBucket"],
+            "Resource":["arn:aws:s3:::{{ .Values.s3Monitor.s3.bucket }}"]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:GetObject"],
+            "Resource":["arn:aws:s3:::{{ .Values.s3Monitor.s3.bucket }}/*"]
+          },
+          {
+            "Effect":"Allow",
+            "Action":["secretsmanager:DescribeSecret","secretsmanager:GetSecretValue"],
+            "Resource":["arn:aws:secretsmanager:*:{{ get $crossplane "accountId" }}:secret:{{ .Values.s3Monitor.db.secretName }}*"]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "{{ .Values.s3Monitor.serviceAccount.name }}-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    roleName: "{{ get $global "environment" }}-{{ .Release.Namespace }}-{{ .Values.s3Monitor.serviceAccount.name }}"
+    policyArnRef:
+      name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-s3-monitor-role-policy"
+{{- end }}
