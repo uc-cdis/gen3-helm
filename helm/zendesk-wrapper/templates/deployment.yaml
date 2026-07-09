@@ -57,9 +57,9 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.externalSecrets.name }}
-                  key: {{ .Values.externalSecrets.apiEmail }}
+                  key: apiEmail
             - name: ZENDESK_API_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.externalSecrets.name }}
-                  key: {{ .Values.externalSecrets.tokenKey }}
+                  key: tokenKey
