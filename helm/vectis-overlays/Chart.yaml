@@ -1,0 +1,11 @@
+apiVersion: v2
+name: vectis-overlays
+description: Vectis overlay API services (guppy-compat, siem, search-auth-proxy)
+type: application
+version: 0.1.2
+appVersion: "1.0"
+
+dependencies:
+  - name: common
+    version: 0.1.37
+    repository: file://../common

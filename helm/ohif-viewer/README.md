@@ -1,6 +1,6 @@
 # ohif-viewer
 
-![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Ohif Viewer
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 Ohif Viewer
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.36 |
+| file://../common | common | 0.1.37 |
 
 ## Values
 
