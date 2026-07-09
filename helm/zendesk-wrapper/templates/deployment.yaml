@@ -56,10 +56,10 @@ spec:
             - name: ZENDESK_API_EMAIL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.externalSecrets.name }}
+                  name: zendesk-wrapper-secret
                   key: apiEmail
             - name: ZENDESK_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.externalSecrets.name }}
+                  name: zendesk-wrapper-secret
                   key: tokenKey
