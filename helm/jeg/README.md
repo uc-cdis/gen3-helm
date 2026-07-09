@@ -1,6 +1,6 @@
 # jeg
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.2.3](https://img.shields.io/badge/AppVersion-3.2.3-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.2.3](https://img.shields.io/badge/AppVersion-3.2.3-informational?style=flat-square)
 
 Jupyter Enterprise Gateway for gen3 vectis workspaces. Launches ephemeral kernel pods in the workspace namespace on behalf of user Jupyter sessions proxied through workspace-proxy.
 
@@ -8,7 +8,7 @@ Jupyter Enterprise Gateway for gen3 vectis workspaces. Launches ephemeral kernel
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.34 |
+| file://../common | common | 0.1.37 |
 
 ## Values
 
