@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.61
+    version: 0.1.62
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -182,6 +182,18 @@ dependencies:
     version: "0.1.2"
     repository: "file://../neuvector"
     condition: neuvector.enabled
+  - name: jeg
+    version: 0.1.1
+    repository: "file://../jeg"
+    condition: jeg.enabled
+  - name: workspace-proxy
+    version: 0.1.1
+    repository: "file://../workspace-proxy"
+    condition: workspace-proxy.enabled
+  - name: vectis-overlays
+    version: 0.1.1
+    repository: "file://../vectis-overlays"
+    condition: vectis-overlays.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #
