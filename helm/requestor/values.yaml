@@ -190,6 +190,17 @@ affinity:
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
 
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations:
+    # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
+    eks.amazonaws.com/role-arn:
+  # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account
+  name: "requestor-sa"
+
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
