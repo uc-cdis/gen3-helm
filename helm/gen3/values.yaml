@@ -129,6 +129,8 @@ global:
   metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
+    # -- (string) API version to use for External Secrets resources. Defaults to v1beta1 when unset.
+    apiVersion: "external-secrets.io/v1beta1"
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
@@ -473,6 +475,21 @@ neuvector:
   DB_HOST: development-gen3-postgresql
   # hostname/service name for our ElasitcSearch instance, used to allow egress from containers
   ES_HOST: gen3-elasticsearch-master
+
+# -- (map) Jupyter Enterprise Gateway for vectis workspaces.
+jeg:
+  # -- (bool) Whether to deploy the jeg subchart.
+  enabled: false
+
+# -- (map) workspace-proxy — per-user workspace HTTP/WebSocket router.
+workspace-proxy:
+  # -- (bool) Whether to deploy the workspace-proxy subchart.
+  enabled: false
+
+# -- (map) vectis-overlays — guppy-compat, siem-service, search-auth-proxy.
+vectis-overlays:
+  # -- (bool) Whether to deploy the vectis-overlays subchart.
+  enabled: false
 
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
