@@ -6,6 +6,7 @@ metadata:
   namespace: {{`{{.JobsNamespace}}`}}
   labels:
     app: funnel-executor
+    taskId: {{`{{.TaskId}}`}}
     job-name: {{`{{.TaskId}}-{{.JobId}}`}}
 spec:
   backoffLimit: {{ .Values.Kubernetes.Executor.backoffLimit}}
@@ -21,6 +22,7 @@ spec:
     
       labels:
         app: funnel-executor
+        taskId: {{`{{.TaskId}}`}}
         job-name: {{`{{.TaskId}}`}}-{{`{{.JobId}}`}}
     spec:
     
