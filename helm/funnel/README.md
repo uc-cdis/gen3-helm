@@ -183,7 +183,7 @@ A Helm chart for Kubernetes
 | image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.repository | string | `"quay.io/cdis/funnel"` | The Docker image repository for the Funnel service. |
-| image.tag | string | `"chore/remove_debug_log"` |  |
+| image.tag | string | `"chore_remove_debug_log"` |  |
 | labels.app | string | `"funnel"` |  |
 | metricsEnabled | bool | `false` |  |
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |

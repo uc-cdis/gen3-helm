@@ -128,7 +128,7 @@ oidc_job_enabled: true
 image:
   # -- (string) The Docker image repository for the Funnel service.
   repository: quay.io/cdis/funnel
-  tag: chore/remove_debug_log
+  tag: chore_remove_debug_log
 
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always
