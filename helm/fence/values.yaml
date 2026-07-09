@@ -1226,6 +1226,12 @@ FENCE_CONFIG:
   # The maximum lifetime of a Gen3 passport in seconds
   GEN3_PASSPORT_EXPIRES_IN: 43200
 
+  # Max number of GUIDs to request content retrieval for
+  # NOTE: This is limited by the MAX allowed for any underlying bulk content requests
+  #       e.g. if the Gen3 Embeddings service is configured to allow max 1000, then this
+  #            can't be more than that for embeddings content resolutions
+  MAX_BULK_CONTENT_GUIDS_COUNT: 500
+
   ########################################################################################
   #                               OPTIONAL CONFIGURATIONS                                #
   ########################################################################################
