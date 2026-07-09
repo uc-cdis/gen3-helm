@@ -8,7 +8,7 @@ A Helm chart for gen3 cohort-middleware
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.36 |
+| file://../common | common | 0.1.37 |
 
 ## Values
 
