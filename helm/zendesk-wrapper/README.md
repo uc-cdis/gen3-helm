@@ -52,8 +52,9 @@ A Helm chart for gen3 Zendesk Wrapper Service
 | resources.limits.memory | string | `"128Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
 | selectorLabels | string | `nil` |  |
-| service.port | int | `80` |  |
-| service.targetPort | int | `8000` |  |
+| service.httpPort | int | `80` | Port on which the service is exposed |
+| service.httpsPort | int | `443` | Secure port on which the service is exposed |
+| service.targetPort | int | `8000` | Port on which the service is exposed for Cedar API |
 | service.type | string | `"ClusterIP"` |  |
 | strategy.rollingUpdate.maxSurge | int | `1` |  |
 | strategy.rollingUpdate.maxUnavailable | int | `0` |  |

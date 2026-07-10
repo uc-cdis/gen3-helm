@@ -7,9 +7,15 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - protocol: TCP
+      port: {{ .Values.service.httpPort }}
       targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
       name: http
+      nodePort: null
+    - protocol: TCP
+      port: {{ .Values.service.httpsPort }}
+      targetPort: {{ .Values.service.targetPort }}
+      name: https
+      nodePort: null
   selector:
     {{- include "zendesk-wrapper.selectorLabels" . | nindent 4 }}

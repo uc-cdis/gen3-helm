@@ -58,7 +58,11 @@ resources:
 
 service:
   type: ClusterIP
-  port: 80
+  # -- (int) Port on which the service is exposed
+  httpPort: 80
+  # -- (int) Secure port on which the service is exposed
+  httpsPort: 443
+  # -- (int) Port on which the service is exposed for Cedar API
   targetPort: 8000
 
 netPolicy:
