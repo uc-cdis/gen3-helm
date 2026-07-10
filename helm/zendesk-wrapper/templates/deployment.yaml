@@ -54,6 +54,9 @@ spec:
             timeoutSeconds: 30
             failureThreshold: 6
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - /src/start.sh
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}

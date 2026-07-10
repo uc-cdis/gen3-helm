@@ -62,8 +62,8 @@ service:
   httpPort: 80
   # -- (int) Secure port on which the service is exposed
   httpsPort: 443
-  # -- (int) Port on which the service is exposed for Cedar API
-  targetPort: 8000
+  # -- (int) Port on which the service is exposed for Zendesk wrapper API
+  targetPort: 80
 
 netPolicy:
   ingressApps:
