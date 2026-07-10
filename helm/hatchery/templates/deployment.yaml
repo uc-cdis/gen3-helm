@@ -32,6 +32,7 @@ spec:
       labels:
         netnolimit: "yes"
         public: "yes"
+        netvpc: "yes"
         userhelper: "yes"
         {{- include "hatchery.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
