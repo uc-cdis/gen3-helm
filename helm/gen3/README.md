@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.63](https://img.shields.io/badge/Version-0.3.63-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.64](https://img.shields.io/badge/Version-0.3.64-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -56,7 +56,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../portal | portal | 0.1.61 |
 | file://../requestor | requestor | 0.1.35 |
 | file://../revproxy | revproxy | 0.1.63 |
-| file://../sheepdog | sheepdog | 0.1.43 |
+| file://../sheepdog | sheepdog | 0.1.44 |
 | file://../sower | sower | 0.1.47 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.48 |
 | file://../vectis-overlays | vectis-overlays | 0.1.2 |
