@@ -26,6 +26,7 @@ spec:
         netvpc: "yes"
         internet: "yes"
         linklocal: "yes"
+        internet: "yes"
         app: "dashboard"
         {{- include "dashboard.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
