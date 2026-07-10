@@ -1,6 +1,6 @@
 global:
   dev: true
-  hostname: localhost
+  hostname: localhost 
 
 # configuration for fence helm chart. You can add it for all our services.
 fence:
