@@ -35,6 +35,8 @@ spec:
         authprovder: "yes"
         netnolimit: "yes"
         public: "yes"
+        internet: "yes"
+        linklocal: "yes"        
         userhelper: "yes"
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
