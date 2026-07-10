@@ -85,6 +85,8 @@ spec:
                 {{- end }}
                   key: secret-access-key
             {{- end }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" (printf "https://%s/user" .Values.global.hostname) }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:
