@@ -8,7 +8,7 @@ A Helm chart for gen3 Zendesk Wrapper Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.38 |
 
 ## Values
 
