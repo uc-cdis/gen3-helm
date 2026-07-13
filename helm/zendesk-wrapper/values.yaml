@@ -7,6 +7,12 @@ global:
   netPolicy:
     enabled: false
     dbSubnet: ""
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any zendesk wrapper secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
   autoscaling:
     enabled: false
     minReplicas: 1

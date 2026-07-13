@@ -32,6 +32,9 @@ A Helm chart for gen3 Zendesk Wrapper Service
 | global.autoscaling.maxReplicas | int | `10` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
 | global.environment | string | `"default"` |  |
+| global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
+| global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any zendesk wrapper secrets you have deployed. |
+| global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
 | global.minAvailable | int | `1` |  |
 | global.netPolicy.dbSubnet | string | `""` |  |
 | global.netPolicy.enabled | bool | `false` |  |
