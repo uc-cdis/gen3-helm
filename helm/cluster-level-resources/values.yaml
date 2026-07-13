@@ -93,6 +93,12 @@ ebs-csi-driver:
   configuration:
     enabled: false
 
+efs-csi-driver:
+  enabled: false
+  targetRevision: "4.2.0"
+  configuration:
+    enabled: false
+
 external-secrets:
   enabled: false
   targetRevision: "0.9.13"

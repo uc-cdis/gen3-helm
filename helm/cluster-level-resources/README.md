@@ -1,6 +1,6 @@
 # cluster-level-resources
 
-![Version: 0.6.45](https://img.shields.io/badge/Version-0.6.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.46](https://img.shields.io/badge/Version-0.6.46-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
 
@@ -57,6 +57,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.48.0"` |  |
+| efs-csi-driver.configuration.enabled | bool | `false` |  |
+| efs-csi-driver.enabled | bool | `false` |  |
+| efs-csi-driver.targetRevision | string | `"4.2.0"` |  |
 | eksClusterEndpoint | string | `""` |  |
 | external-secrets.configuration.enabled | bool | `false` |  |
 | external-secrets.enabled | bool | `false` |  |
