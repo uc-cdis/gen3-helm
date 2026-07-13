@@ -1,6 +1,6 @@
 # gen3-user-data-library
 
-![Version: 0.1.14](https://img.shields.io/badge/Version-0.1.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: main](https://img.shields.io/badge/AppVersion-main-informational?style=flat-square)
+![Version: 0.1.17](https://img.shields.io/badge/Version-0.1.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: main](https://img.shields.io/badge/AppVersion-main-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -90,6 +90,7 @@ A Helm chart for Kubernetes
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service.port | int | `80` |  |
+| service.targetPort | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | volumeMounts[0].mountPath | string | `"/gen3userdatalibrary/.env"` |  |
 | volumeMounts[0].name | string | `"gen3-user-data-library-g3auto-volume"` |  |

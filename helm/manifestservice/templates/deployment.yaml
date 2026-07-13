@@ -85,20 +85,23 @@ spec:
                 {{- end }}
                   key: secret-access-key
             {{- end }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" (printf "https://%s/user" .Values.global.hostname) }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http

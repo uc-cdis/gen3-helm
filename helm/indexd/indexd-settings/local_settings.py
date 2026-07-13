@@ -84,4 +84,26 @@ else:
         )
     )
 
+cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
+if cloud_provider_map:
+    CONFIG["CLOUD_PROVIDER_MAP"] = json.loads(cloud_provider_map)
+else:
+    CONFIG["CLOUD_PROVIDER_MAP"] = {
+        "s3": "aws",
+        "gs": "gcp",
+        "az": "azure",
+    }
+
+drs_authorization_metadata = environ.get("DRS_AUTHORIZATION_METADATA", None)
+if drs_authorization_metadata:
+    CONFIG["DRS_AUTHORIZATION_METADATA"] = json.loads(drs_authorization_metadata)
+
+default_bearer_issuer = environ.get("DEFAULT_BEARER_ISSUER", None)
+if default_bearer_issuer:
+    CONFIG["DEFAULT_BEARER_ISSUER"] = default_bearer_issuer
+
+default_passport_issuer = environ.get("DEFAULT_PASSPORT_ISSUER", None)
+if default_passport_issuer:
+    CONFIG["DEFAULT_PASSPORT_ISSUER"] = default_passport_issuer
+
 settings = {"config": CONFIG, "auth": AUTH}

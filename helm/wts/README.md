@@ -1,6 +1,6 @@
 # wts
 
-![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 workspace token service
 
@@ -8,7 +8,7 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values
@@ -78,6 +78,7 @@ A Helm chart for gen3 workspace token service
 | oidc_client_id | string | `nil` | Id for the OIDC client. |
 | oidc_client_secret | string | `nil` | Secret for the OIDC client. |
 | oidc_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
+| oidc_job_openshift | bool | `false` | Whether to run the OpenShift version of the OIDC job. |
 | partOf | string | `"Authentication"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Security context for the pod |
@@ -103,7 +104,7 @@ A Helm chart for gen3 workspace token service
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"httpPort":80,"httpsPort":443,"type":"ClusterIP"}` | Configuration for the service |
+| service | map | `{"httpPort":80,"httpsPort":443,"targetPort":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.httpPort | int | `80` | Port on which the service is exposed |
 | service.httpsPort | int | `443` | Secure port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

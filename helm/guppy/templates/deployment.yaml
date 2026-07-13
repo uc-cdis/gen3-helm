@@ -56,7 +56,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /_status
-              port: 8000
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
@@ -64,9 +64,10 @@ spec:
           readinessProbe:
             httpGet:
               path: /_status
-              port: 8000
+              port: http
           ports:
-            - containerPort: 8000
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
           env: 
             - name: GUPPY_PORT
               value: "8000"

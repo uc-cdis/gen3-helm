@@ -1,6 +1,6 @@
 # revproxy
 
-![Version: 0.1.58](https://img.shields.io/badge/Version-0.1.58-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.64](https://img.shields.io/badge/Version-0.1.64-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
@@ -8,12 +8,13 @@ A Helm chart for gen3 revproxy
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.35 |
+| file://../common | common | 0.1.38 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| additionalConfigs | map | `{}` | Raw nginx location blocks to add or override entries in the revproxy-nginx-subconf ConfigMap. Keys are the conf filename (e.g. "guppy-service.conf"). A key matching a built-in static conf file will replace that file's content, allowing disabled services to be suppressed or routes redirected to alternative upstreams without modifying the chart. |
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
@@ -79,7 +80,20 @@ A Helm chart for gen3 revproxy
 | netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
 | netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
+| nginx.pidFile | string | `"/var/run/nginx.pid"` |  |
+| nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
+| nginx.user | string | `"nginx"` |  |
 | nodeSelector | map | `{}` | Node selector labels. |
+| openshiftRoute | map | `{"annotations":{},"enabled":false,"host":"","path":"/","targetPort":"http","tls":{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"},"wildcardPolicy":"None"}` | Configuration for OpenShift Route. |
+| openshiftRoute.annotations | map | `{}` | Annotations to add to the Route. |
+| openshiftRoute.enabled | bool | `false` | Whether to create an OpenShift Route |
+| openshiftRoute.host | string | `""` | Hostname for the Route. Leave empty to let OpenShift auto-generate |
+| openshiftRoute.path | string | `"/"` | Path for the Route. |
+| openshiftRoute.targetPort | string | `"http"` | Target port for the Route. |
+| openshiftRoute.tls | map | `{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"}` | TLS configuration for the Route. |
+| openshiftRoute.tls.insecureEdgeTerminationPolicy | string | `"Redirect"` | Insecure edge termination policy. Valid options are "None", "Allow", and "Redirect". |
+| openshiftRoute.tls.termination | string | `"edge"` | Termination type for the Route. Valid options are "edge", "passthrough", and "reencrypt". |
+| openshiftRoute.wildcardPolicy | string | `"None"` | Wildcard policy for the Route. Valid options are "None" and "Subdomain". |
 | partOf | string | `"Front-End"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{}` | Annotations to add to the pod. |
 | podSecurityContext | map | `{}` | Pod-level security context. |
@@ -101,7 +115,7 @@ A Helm chart for gen3 revproxy
 | revproxyElb | map | `{"gen3SecretsFolder":"Gen3Secrets","sslCert":"","targetPortHTTP":80,"targetPortHTTPS":443}` | Configuration for depricated revproxy service ELB. |
 | securityContext | map | `{}` | Container-level security context. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"type":"NodePort"}` | Kubernetes service information. |
+| service | map | `{"port":80,"targetPort":80,"type":"NodePort"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"NodePort"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |

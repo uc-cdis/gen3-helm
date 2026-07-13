@@ -10,6 +10,7 @@ image:
 service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   type: ClusterIP
+  targetPort: 8080
   port: 80
 
 # Global configuration
