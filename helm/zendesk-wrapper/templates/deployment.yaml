@@ -74,4 +74,4 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: zendesk-wrapper-secret
-                  key: tokenKey
+                  key: apiToken
