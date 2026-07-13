@@ -27,13 +27,13 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --config .github/ct.yaml --target-branch master)
+          changed=$(ct list-changed --config .github/ct.yaml)
           if [[ -n "$changed" ]]; then
             echo "changed=true >> $GITHUB_OUTPUT"
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --config .github/ct.yaml --target-branch ${{ github.base_ref || 'master' }}
+        run: ct lint --config .github/ct.yaml
 
       - name: Set up Kubeconform
         id: setup-kubeconform
