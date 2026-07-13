@@ -1,5 +1,4 @@
 remote: origin
-target-branch: master
 chart-dirs:
   - helm
 chart-repos:
