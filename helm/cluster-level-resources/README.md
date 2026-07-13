@@ -57,6 +57,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.48.0"` |  |
+| efs-csi-driver.configuration.enabled | bool | `false` |  |
+| efs-csi-driver.enabled | bool | `false` |  |
+| efs-csi-driver.targetRevision | string | `"4.2.0"` |  |
 | eksClusterEndpoint | string | `""` |  |
 | external-secrets.configuration.enabled | bool | `false` |  |
 | external-secrets.enabled | bool | `false` |  |

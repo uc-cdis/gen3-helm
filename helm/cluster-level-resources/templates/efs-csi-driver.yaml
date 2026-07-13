@@ -1,0 +1,44 @@
+{{ if index .Values "efs-csi-driver" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: efs-csi-driver
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-efs-csi-driver
+      repoURL: https://kubernetes-sigs.github.io/aws-efs-csi-driver
+      targetRevision: {{ index .Values "efs-csi-driver" "targetRevision" }}
+      helm:
+        releaseName: efs-csi-driver
+      {{- if index .Values "efs-csi-driver" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/efs-csi-driver.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          image:
+            tag: v3.2.0
+          useFIPS: true
+
+          controller:
+            serviceAccount:
+              annotations:
+                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-controller
+          node:
+            serviceAccount:
+              annotations:
+                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-node
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}
