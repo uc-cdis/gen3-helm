@@ -102,12 +102,16 @@ external-secrets:
 fluentd:
   enabled: false
   targetRevision: "0.5.2"
+  # -- (string) AWS region for fluentd CloudWatch logging
+  awsRegion: "us-east-1"
   configuration:
     enabled: false
 
 grafana-alloy:
   enabled: false
   targetRevision: 0.4.0
+  # -- (string) The availability zone to pin the grafana-alloy controller to.
+  availabilityZone: "us-east-1a"
   configuration:
     enabled: false
 

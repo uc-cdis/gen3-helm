@@ -520,3 +520,5 @@ auroraRdsCopyJob:
   writeToK8sSecret: false
   writeToAwsSecret: false
   services: []
+  # -- (string) Docker image for the aurora DB copy job. Override to use a different registry or region.
+  image: "707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/awshelper:master"
