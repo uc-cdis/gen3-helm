@@ -31,8 +31,9 @@ env:
 kernelPodTemplate:
   enabled: false
   name: jeg-kernel-pod-template
-  fileName: kernel-pod.yaml
-  mountPath: /etc/jeg/kernel-pod.yaml
+  fileName: kernel-pod.yaml.j2
+  # Enterprise Gateway's kubernetes launcher reads this file directly.
+  mountPath: /usr/local/share/jupyter/kernels/python_kubernetes/scripts/kernel-pod.yaml.j2
   workspaceMountPath: /home/jovyan/pd
   volumeName: workspace-data
   sidecar:
