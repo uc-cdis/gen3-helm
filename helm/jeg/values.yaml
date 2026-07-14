@@ -26,6 +26,32 @@ env:
   EG_MIRROR_WORKING_DIRS: "False"
   EG_KERNEL_WHITELIST_ENVS: "ACCESS_TOKEN"  # propagate workspace token into kernel pods
 
+# Optional kernel pod template used by Enterprise Gateway for all launched kernels.
+# Enable this to inject a FUSE sidecar and shared workspace mount into kernel pods.
+kernelPodTemplate:
+  enabled: false
+  name: jeg-kernel-pod-template
+  fileName: kernel-pod.yaml
+  mountPath: /etc/jeg/kernel-pod.yaml
+  workspaceMountPath: /home/jovyan/pd
+  volumeName: workspace-data
+  sidecar:
+    name: gen3-fuse
+    image: quay.io/cdis/gen3fuse-sidecar:2024.07
+    command:
+      - /bin/bash
+      - /sidecarDockerrun.sh
+    namespace: ""
+    hostnameConfigMapName: global
+    hostnameConfigMapKey: hostname
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+
 resources:
   requests:
     cpu: "100m"
