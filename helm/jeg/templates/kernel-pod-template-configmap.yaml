@@ -11,37 +11,37 @@ data:
     apiVersion: v1
     kind: Pod
     metadata:
-      name: {{ "{{ kernel_pod_name | yaml_safe }}" }}
-      namespace: {{ "{{ kernel_namespace | yaml_safe }}" }}
+      name: {{ "{{ kernel_pod_name | tojson }}" }}
+      namespace: {{ "{{ kernel_namespace | tojson }}" }}
       labels:
         app: enterprise-gateway
         component: kernel
-        kernel_id: {{ "{{ kernel_id | yaml_safe }}" }}
-        kernel_name: {{ "{{ kernel_name | yaml_safe }}" }}
+        kernel_id: {{ "{{ kernel_id | tojson }}" }}
+        kernel_name: {{ "{{ kernel_name | tojson }}" }}
         source: kernel-pod.yaml
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       restartPolicy: Never
-      serviceAccountName: {{ "{{ kernel_service_account_name | yaml_safe }}" }}
+      serviceAccountName: {{ "{{ kernel_service_account_name | tojson }}" }}
       securityContext:
         runAsUser: {{ "{{ kernel_uid | int }}" }}
         runAsGroup: {{ "{{ kernel_gid | int }}" }}
         fsGroup: {{ "{{ kernel_gid | int }}" }}
       containers:
         - name: kernel
-          image: {{ "{{ kernel_image | yaml_safe }}" }}
+          image: {{ "{{ kernel_image | tojson }}" }}
           env:
             - name: KERNEL_ID
-              value: {{ "{{ kernel_id | yaml_safe }}" }}
+              value: {{ "{{ kernel_id | tojson }}" }}
             - name: KERNEL_NAME
-              value: {{ "{{ kernel_name | yaml_safe }}" }}
+              value: {{ "{{ kernel_name | tojson }}" }}
             - name: KERNEL_LANGUAGE
-              value: {{ "{{ kernel_language | yaml_safe }}" }}
+              value: {{ "{{ kernel_language | tojson }}" }}
             - name: KERNEL_NAMESPACE
-              value: {{ "{{ kernel_namespace | yaml_safe }}" }}
+              value: {{ "{{ kernel_namespace | tojson }}" }}
             - name: KERNEL_USERNAME
-              value: {{ "{{ kernel_username | yaml_safe }}" }}
+              value: {{ "{{ kernel_username | tojson }}" }}
           volumeMounts:
             - name: {{ .Values.kernelPodTemplate.volumeName }}
               mountPath: {{ .Values.kernelPodTemplate.workspaceMountPath }}
