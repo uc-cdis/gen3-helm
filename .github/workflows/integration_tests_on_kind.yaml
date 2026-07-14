@@ -6,6 +6,7 @@ on:
       - .github/workflows/integration_tests_on_kind.yaml
       - helm/funnel/**
       - helm/gen3-workflow/**
+      - helm/revproxy/gen3.nginx.conf/gen3-workflow-service.conf
 
 permissions:
   id-token: write
