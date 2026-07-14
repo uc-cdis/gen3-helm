@@ -52,21 +52,19 @@ data:
           command:
 {{ toYaml .Values.kernelPodTemplate.sidecar.command | indent 12 }}
           env:
+            - name: GEN3_ENDPOINT
+              value: {{ "{{ env.get('GEN3_ENDPOINT', '') }}" }}
+            - name: ACCESS_TOKEN
+              value: {{ "{{ env.get('ACCESS_TOKEN', '') }}" }}
             - name: NAMESPACE
               value: {{ default .Release.Namespace .Values.kernelPodTemplate.sidecar.namespace | quote }}
-            - name: HOSTNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.kernelPodTemplate.sidecar.hostnameConfigMapName }}
-                  key: {{ .Values.kernelPodTemplate.sidecar.hostnameConfigMapKey }}
-                  optional: true
           resources:
 {{ toYaml .Values.kernelPodTemplate.sidecar.resources | indent 12 }}
           securityContext:
             privileged: true
           volumeMounts:
             - name: {{ .Values.kernelPodTemplate.volumeName }}
-              mountPath: {{ .Values.kernelPodTemplate.workspaceMountPath }}
+              mountPath: /data
               mountPropagation: Bidirectional
 
       volumes:
