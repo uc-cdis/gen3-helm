@@ -61,6 +61,8 @@ data:
           resources:
 {{ toYaml .Values.kernelPodTemplate.sidecar.resources | indent 12 }}
           securityContext:
+            runAsUser: 0
+            runAsGroup: 0
             privileged: true
           volumeMounts:
             - name: {{ .Values.kernelPodTemplate.volumeName }}
