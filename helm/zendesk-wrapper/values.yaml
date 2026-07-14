@@ -81,7 +81,7 @@ netPolicy:
 env:
   # -- (string) Zendesk instance URL (e.g., https://gen3support.zendesk.com)
   - name: GEN3_ZENDESK_URL
-    value: " "
+    value: ""
 
 # -- (map) Secret environment variables (referenced from Kubernetes secrets)
 externalSecrets:
