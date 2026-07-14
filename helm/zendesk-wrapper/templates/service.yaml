@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "zendesk-wrapper-service"
+  labels:
+    {{- include "zendesk-wrapper.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.service.targetPort }}
+      name: http
+      nodePort: null
+    - protocol: TCP
+      port: {{ .Values.service.httpsPort }}
+      targetPort: {{ .Values.service.targetPort }}
+      name: https
+      nodePort: null
+  selector:
+    {{- include "zendesk-wrapper.selectorLabels" . | nindent 4 }}

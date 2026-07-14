@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.66](https://img.shields.io/badge/Version-0.3.66-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.67](https://img.shields.io/badge/Version-0.3.67-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -55,13 +55,14 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.44 |
 | file://../portal | portal | 0.1.62 |
 | file://../requestor | requestor | 0.1.36 |
-| file://../revproxy | revproxy | 0.1.65 |
+| file://../revproxy | revproxy | 0.1.66 |
 | file://../sheepdog | sheepdog | 0.1.45 |
 | file://../sower | sower | 0.1.48 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.49 |
 | file://../vectis-overlays | vectis-overlays | 0.1.3 |
 | file://../workspace-proxy | workspace-proxy | 0.1.3 |
 | file://../wts | wts | 0.1.42 |
+| file://../zendesk-wrapper | zendesk-wrapper | 0.1.0 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -278,3 +279,4 @@ Helm chart to deploy Gen3 Data Commons
 | workspace-proxy | map | `{"enabled":false}` | workspace-proxy — per-user workspace HTTP/WebSocket router. |
 | workspace-proxy.enabled | bool | `false` | Whether to deploy the workspace-proxy subchart. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
+| zendesk-wrapper.enabled | bool | `false` | Whether to deploy the zendesk-wrapper subchart. |

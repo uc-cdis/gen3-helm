@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.65
+    version: 0.1.66
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -135,6 +135,10 @@ dependencies:
     version: 0.1.42
     repository: "file://../wts"
     condition: wts.enabled
+  - name: zendesk-wrapper
+    version: 0.1.0
+    repository: "file://../zendesk-wrapper"
+    condition: zendesk-wrapper.enabled
   - name: gen3-network-policies
     version: 0.1.4
     repository: "file://../gen3-network-policies"
@@ -209,7 +213,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.66
+version: 0.3.67
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
