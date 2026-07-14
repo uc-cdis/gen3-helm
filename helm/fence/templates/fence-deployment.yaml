@@ -33,6 +33,8 @@ spec:
       labels:
         authprovider: "yes"
         netnolimit: "yes"
+        internet: "yes"
+        linklocal: "yes"
         userhelper: "yes"
         {{- include "fence.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}

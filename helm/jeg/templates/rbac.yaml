@@ -1,0 +1,35 @@
+# JEG needs permission to create/delete kernel pods and services in the
+# workspace namespace. Scoped to a Role (not ClusterRole) for least-privilege.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: enterprise-gateway
+  namespace: {{ .Values.workspaceNamespace }}
+  labels:
+    app: enterprise-gateway
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: enterprise-gateway
+  namespace: {{ .Values.workspaceNamespace }}
+  labels:
+    app: enterprise-gateway
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: enterprise-gateway
+subjects:
+  - kind: ServiceAccount
+    name: enterprise-gateway
+    namespace: {{ .Values.workspaceNamespace }}
