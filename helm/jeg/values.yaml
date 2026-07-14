@@ -38,7 +38,7 @@ kernelPodTemplate:
   volumeName: workspace-data
   sidecar:
     name: gen3-fuse
-    image: quay.io/cdis/gen3fuse-sidecar:2024.07
+    image: quay.io/cdis/gen3fuse-sidecar:master
     command:
       - /bin/bash
       - /sidecarDockerrun.sh
