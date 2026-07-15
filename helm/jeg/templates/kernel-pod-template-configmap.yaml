@@ -21,6 +21,8 @@ data:
         source: kernel-pod.yaml
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+        gen3username: {{ "{{ kernel_username | tojson }}" }}
+        hub.jupyter.org/username: {{ "{{ kernel_username | tojson }}" }}
     spec:
       restartPolicy: Never
       serviceAccountName: {{ "{{ kernel_service_account_name | tojson }}" }}
