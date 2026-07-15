@@ -48,6 +48,10 @@ data:
             - name: {{ .Values.kernelPodTemplate.volumeName }}
               mountPath: {{ .Values.kernelPodTemplate.workspaceMountPath }}
               mountPropagation: HostToContainer
+{{- if .Values.kernelPodTemplate.sharedWorkspace.enabled }}
+            - name: {{ .Values.kernelPodTemplate.sharedWorkspace.volumeName }}
+              mountPath: {{ .Values.kernelPodTemplate.sharedWorkspace.mountPath }}
+{{- end }}
 
         - name: {{ .Values.kernelPodTemplate.sidecar.name }}
           image: {{ .Values.kernelPodTemplate.sidecar.image | quote }}
@@ -101,4 +105,9 @@ data:
         - name: {{ .Values.kernelPodTemplate.volumeName }}
           persistentVolumeClaim:
             claimName: {{ "{{ ('claim-' ~ (kernel_username | lower | replace('@', '-40') | replace('.', '-2e'))) | tojson }}" }}
+{{- if .Values.kernelPodTemplate.sharedWorkspace.enabled }}
+        - name: {{ .Values.kernelPodTemplate.sharedWorkspace.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.kernelPodTemplate.sharedWorkspace.claimName | quote }}
+{{- end }}
 {{- end }}

@@ -36,6 +36,11 @@ kernelPodTemplate:
   mountPath: /usr/local/share/jupyter/kernels/python_kubernetes/scripts/kernel-pod.yaml.j2
   workspaceMountPath: /home/jovyan/pd
   volumeName: workspace-data
+  sharedWorkspace:
+    enabled: false
+    volumeName: shared-workspace
+    claimName: jeg-shared-workspace
+    mountPath: /home/jovyan/shared
   sidecar:
     name: gen3-fuse
     image: quay.io/cdis/gen3fuse-sidecar:master
