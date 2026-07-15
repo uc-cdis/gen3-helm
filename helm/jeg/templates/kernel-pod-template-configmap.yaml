@@ -99,5 +99,6 @@ data:
 
       volumes:
         - name: {{ .Values.kernelPodTemplate.volumeName }}
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: {{ "{{ ('claim-' ~ (kernel_username | lower | replace('@', '-40') | replace('.', '-2e'))) | tojson }}" }}
 {{- end }}
