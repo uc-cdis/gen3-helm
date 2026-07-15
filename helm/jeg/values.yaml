@@ -35,6 +35,11 @@ kernelPodTemplate:
   mountPath: /etc/jeg/kernel-pod.yaml
   workspaceMountPath: /home/jovyan/pd
   volumeName: workspace-data
+  sharedWorkspace:
+    enabled: false
+    volumeName: shared-workspace
+    claimName: jeg-shared-workspace
+    mountPath: /home/jovyan/shared
   sidecar:
     name: gen3-fuse
     image: quay.io/cdis/gen3fuse-sidecar:2024.07
