@@ -65,8 +65,7 @@ data:
 
       volumes:
         - name: {{ .Values.kernelPodTemplate.volumeName }}
-          persistentVolumeClaim:
-            claimName: {{ "{{ ('claim-' ~ (kernel_username | lower | replace('@', '-40') | replace('.', '-2e'))) | tojson }}" }}
+          emptyDir: {}
 {{- if .Values.kernelPodTemplate.sharedWorkspace.enabled }}
         - name: {{ .Values.kernelPodTemplate.sharedWorkspace.volumeName }}
           persistentVolumeClaim:
