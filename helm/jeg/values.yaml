@@ -40,6 +40,7 @@ kernelPodTemplate:
     name: gen3-fuse
     image: quay.io/cdis/gen3fuse-sidecar:master
     gen3Endpoint: ""
+    wtsOverrideUrl: ""
     command:
       - /bin/bash
       - /sidecarDockerrun.sh

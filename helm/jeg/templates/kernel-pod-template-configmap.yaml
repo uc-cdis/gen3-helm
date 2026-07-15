@@ -58,6 +58,10 @@ data:
             - name: GEN3_ENDPOINT
               value: {{ .Values.kernelPodTemplate.sidecar.gen3Endpoint | quote }}
 {{- end }}
+{{- if .Values.kernelPodTemplate.sidecar.wtsOverrideUrl }}
+            - name: WTS_OVERRIDE_URL
+              value: {{ .Values.kernelPodTemplate.sidecar.wtsOverrideUrl | quote }}
+{{- end }}
             - name: HOSTNAME
               valueFrom:
                 configMapKeyRef:
