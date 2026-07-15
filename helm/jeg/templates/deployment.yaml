@@ -30,6 +30,10 @@ spec:
             - name: {{ $key }}
               value: {{ $val | quote }}
             {{- end }}
+            {{- if .Values.kernelPodTemplate.enabled }}
+            - name: EG_KERNEL_POD_TEMPLATE
+              value: {{ .Values.kernelPodTemplate.mountPath | quote }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /api
@@ -53,6 +57,19 @@ spec:
             capabilities:
               drop:
                 - ALL
+          {{- if .Values.kernelPodTemplate.enabled }}
+          volumeMounts:
+            - name: kernel-pod-template
+              mountPath: {{ .Values.kernelPodTemplate.mountPath | quote }}
+              subPath: {{ .Values.kernelPodTemplate.fileName | quote }}
+              readOnly: true
+          {{- end }}
+      {{- if .Values.kernelPodTemplate.enabled }}
+      volumes:
+        - name: kernel-pod-template
+          configMap:
+            name: {{ .Values.kernelPodTemplate.name }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         seccompProfile:
