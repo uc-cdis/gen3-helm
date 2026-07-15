@@ -62,6 +62,17 @@ data:
             - name: WTS_OVERRIDE_URL
               value: {{ .Values.kernelPodTemplate.sidecar.wtsOverrideUrl | quote }}
 {{- end }}
+            # Propagate auth material to the sidecar when present in kernel launch env.
+            - name: ACCESS_TOKEN
+              value: {{ "{{ kernel_access_token | default('', true) | tojson }}" }}
+            - name: GEN3_API_KEY_ID
+              value: {{ "{{ kernel_gen3_api_key_id | default('', true) | tojson }}" }}
+            - name: GEN3_API_KEY_SECRET
+              value: {{ "{{ kernel_gen3_api_key_secret | default('', true) | tojson }}" }}
+            - name: API_KEY_ID
+              value: {{ "{{ kernel_api_key_id | default('', true) | tojson }}" }}
+            - name: API_KEY
+              value: {{ "{{ kernel_api_key | default('', true) | tojson }}" }}
             - name: HOSTNAME
               valueFrom:
                 configMapKeyRef:
