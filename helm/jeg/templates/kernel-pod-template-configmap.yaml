@@ -75,12 +75,17 @@ data:
               value: {{ "{{ kernel_api_key_id | default('', true) | tojson }}" }}
             - name: API_KEY
               value: {{ "{{ kernel_api_key | default('', true) | tojson }}" }}
+{{- if .Values.kernelPodTemplate.sidecar.hostname }}
+            - name: HOSTNAME
+              value: {{ .Values.kernelPodTemplate.sidecar.hostname | quote }}
+{{- else }}
             - name: HOSTNAME
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.kernelPodTemplate.sidecar.hostnameConfigMapName }}
                   key: {{ .Values.kernelPodTemplate.sidecar.hostnameConfigMapKey }}
                   optional: true
+{{- end }}
           resources:
 {{ toYaml .Values.kernelPodTemplate.sidecar.resources | indent 12 }}
           securityContext:
