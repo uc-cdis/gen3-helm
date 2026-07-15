@@ -54,6 +54,10 @@ data:
           env:
             - name: NAMESPACE
               value: {{ default .Release.Namespace .Values.kernelPodTemplate.sidecar.namespace | quote }}
+{{- if .Values.kernelPodTemplate.sidecar.gen3Endpoint }}
+            - name: GEN3_ENDPOINT
+              value: {{ .Values.kernelPodTemplate.sidecar.gen3Endpoint | quote }}
+{{- end }}
             - name: HOSTNAME
               valueFrom:
                 configMapKeyRef:
