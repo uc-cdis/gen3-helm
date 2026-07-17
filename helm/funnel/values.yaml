@@ -255,6 +255,8 @@ service:
 
 # Funnel Worker + Executor storage (S3 bucket)
 storage:
+  # type: either "mountpoint_s3" or "s3files"
+  type: mountpoint_s3
   driver: aws-s3
   size: 10Mi
   accessMode: ReadWriteMany
