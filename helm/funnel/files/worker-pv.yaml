@@ -8,12 +8,14 @@ metadata:
     namespace: {{`{{.Namespace}}`}}
 spec:
   storageClassName: "" # Required for static provisioning
-  capacity:
+  capacity: # Note: capacity is effectively elastic and only serves as a placeholder
     storage: "10Mi"
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   mountOptions:
+    - tls
+    {{- if eq .Values.storage.type "mountpoint_s3" }}
     - allow-delete
     - allow-overwrite # allow overwriting existing files
     - incremental-upload # allow appending to existing files
@@ -21,6 +23,10 @@ spec:
     - region={{`{{.Region}}`}}
     - file-mode=0755
     - prefix=funnel-temp-files/
+    {{- end }}
+    {{- if eq .Values.storage.type "s3files" }}
+    - noresvport
+    {{- end }}
     {{`{{- if .KmsKeyID}}`}}
     - sse aws:kms
     - sse-kms-key-id={{`{{.KmsKeyID}}`}}
@@ -31,6 +37,7 @@ spec:
     - force-path-style
     {{- end }}
   csi:
+    {{- if eq .Values.storage.type "mountpoint_s3" }}
     driver: s3.csi.aws.com
     volumeHandle: s3-csi-{{`{{.TaskId}}`}}
     volumeAttributes:
@@ -39,6 +46,13 @@ spec:
       authenticationSource: {{ .Values.authenticationSource }}
       stsRegion: {{ .Values.stsRegion }}
       {{- end }}
+    {{- end }}
+    {{- if eq .Values.storage.type "s3files" }}
+    driver: efs.csi.aws.com
+    volumeHandle: s3files:{{`{{.S3FilesystemId}}`}}
+    volumeAttributes:
+      encryptInTransit: "true"
+    {{- end }}
   claimRef:
     namespace: {{`{{.Namespace}}`}}
     name: funnel-worker-pvc-{{`{{.TaskId}}`}}

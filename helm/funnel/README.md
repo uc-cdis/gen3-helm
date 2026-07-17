@@ -222,6 +222,7 @@ A Helm chart for Kubernetes
 | storage.driver | string | `"aws-s3"` |  |
 | storage.provisioner | string | `"s3.csi.aws.com"` |  |
 | storage.size | string | `"10Mi"` |  |
+| storage.type | string | `"mountpoint_s3"` |  |
 | stsRegion | string | `"us-east-1"` |  |
 | volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
