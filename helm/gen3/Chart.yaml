@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
