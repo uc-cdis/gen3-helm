@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
@@ -213,7 +213,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.67
+version: 0.3.68
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
