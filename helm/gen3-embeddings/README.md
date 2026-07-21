@@ -21,7 +21,7 @@ A Helm chart for Kubernetes
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
-| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
+| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"},{"name":"GUNICORN_WORKERS","value":"2"}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sGen3EmbeddingsSecret":false,"dbcreds":null,"gen3EmbeddingsG3auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sGen3EmbeddingsSecret | string | `false` | Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
