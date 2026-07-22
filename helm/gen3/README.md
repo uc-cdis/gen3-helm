@@ -62,7 +62,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../vectis-overlays | vectis-overlays | 0.1.3 |
 | file://../workspace-proxy | workspace-proxy | 0.1.3 |
 | file://../wts | wts | 0.1.42 |
-| file://../zendesk-wrapper | zendesk-wrapper | 0.1.0 |
+| file://../zendesk-wrapper | zendesk-wrapper | 0.1.1 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 

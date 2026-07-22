@@ -136,7 +136,7 @@ dependencies:
     repository: "file://../wts"
     condition: wts.enabled
   - name: zendesk-wrapper
-    version: 0.1.0
+    version: 0.1.1
     repository: "file://../zendesk-wrapper"
     condition: zendesk-wrapper.enabled
   - name: gen3-network-policies
