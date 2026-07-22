@@ -125,47 +125,59 @@ spec:
             "Resource": "*"
           },
           {
-              "Sid": "AllowPassRoleToS3FilesService",
-              "Effect": "Allow",
-              "Action": "iam:PassRole",
-              "Resource": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:role/Gen3WorkflowS3FilesPOC",
-              "Condition": {
-                  "StringEquals": {
-                      "iam:PassedToService": "elasticfilesystem.amazonaws.com"
-                  }
-              }
+            "Sid": "AllowPassRoleToS3FilesService",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "arn:aws:iam::{{ .Values.global.crossplane.accountId }}:role/Gen3WorkflowS3FilesPOC",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "elasticfilesystem.amazonaws.com"
+                }
+            }
           },
           {
-              "Sid": "S3FilesSystemAndMountManagement",
-              "Effect": "Allow",
-              "Action": [
-                  "s3files:CreateFileSystem",
-                  "s3files:GetFileSystem",
-                  "s3files:CreateMountTarget",
-                  "s3files:ListFileSystems",
-                  "s3files:TagResource",
-                  "s3files:ListMountTargets"
-              ],
-              "Resource": "*"
+            "Sid": "S3FilesSystemAndMountManagement",
+            "Effect": "Allow",
+            "Action": [
+                "s3files:CreateFileSystem",
+                "s3files:GetFileSystem",
+                "s3files:CreateMountTarget",
+                "s3files:ListFileSystems",
+                "s3files:TagResource",
+                "s3files:ListMountTargets"
+            ],
+            "Resource": "*"
           },
           {
-              "Sid": "EC2NetworkDiscoveryAndSecurityControlForS3Files",
-              "Effect": "Allow",
-              "Action": [
-                  "ec2:DescribeSecurityGroups",
-                  "ec2:DescribeSubnets",
-                  "ec2:DescribeTags",
-                  "ec2:CreateSecurityGroup",
-                  "ec2:AuthorizeSecurityGroupIngress",
-                  "ec2:AuthorizeSecurityGroupEgress",
-                  "ec2:CreateNetworkInterface",
-                  "ec2:DeleteNetworkInterface",
-                  "ec2:DescribeNetworkInterfaces",
-                  "ec2:DescribeSubnets",
-                  "ec2:DescribeSecurityGroups",
-                  "ec2:DescribeVpcs"
-              ],
-              "Resource": "*"
+            "Sid": "EC2NetworkDiscoveryAndSecurityControlForS3Files",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags",
+                "ec2:CreateSecurityGroup",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:CreateNetworkInterface",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeVpcs"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Sid": "AddEventBridgeRulesForS3Files",
+            "Effect": "Allow",
+            "Action": [
+              "events:ListRules",
+              "events:PutRule",
+              "events:PutTargets",
+              "events:DescribeRule",
+              "events:ListTargetsByRule"
+            ],
+            "Resource": "arn:aws:events:*:{{ .Values.global.crossplane.accountId }}:rule/*"
           },
         ]
       }
