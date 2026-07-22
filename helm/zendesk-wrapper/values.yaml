@@ -1,0 +1,95 @@
+# Default values for zendesk-wrapper.
+
+global:
+  environment: default
+  pdb: false
+  minAvailable: 1
+  netPolicy:
+    enabled: false
+    dbSubnet: ""
+  # -- (map) External Secrets settings.
+  externalSecrets:
+    # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any zendesk wrapper secrets you have deployed.
+    deploy: false
+    # -- (string) Will deploy a separate External Secret Store for this service.
+    separateSecretStore: false
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+  topologySpread:
+    enabled: false
+    topologyKey: "topology.kubernetes.io/zone"
+    maxSkew: 1
+
+autoscaling: {}
+
+metricsEnabled:
+
+podAnnotations: {"gen3.io/network-ingress": "zendesk-wrapper"}
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - zendesk-wrapper
+          topologyKey: "kubernetes.io/hostname"
+
+image:
+  repository: quay.io/cdis/zendesk-wrapper-service
+  pullPolicy: Always
+  tag: ""
+
+resources:
+  limits:
+    memory: 128Mi
+
+service:
+  type: ClusterIP
+  # -- (int) Port on which the service is exposed
+  httpPort: 80
+  # -- (int) Secure port on which the service is exposed
+  httpsPort: 443
+  # -- (int) Port on which the service is exposed for Zendesk wrapper API
+  targetPort: 80
+
+netPolicy:
+  ingressApps:
+    - zendesk-wrapper
+  egressApps:
+    - zendesk-wrapper
+
+# -- (map) Environment variables for the Zendesk wrapper service
+env:
+  # -- (string) Zendesk instance URL (e.g., https://gen3support.zendesk.com)
+  - name: GEN3_ZENDESK_URL
+    value: ""
+
+# -- (map) Secret environment variables (referenced from Kubernetes secrets)
+externalSecrets:
+  # -- (string) Name of the Kubernetes secret containing the Zendesk API token
+  name: "zendesk-wrapper-secret"
+
+release: "production"
+criticalService: "false"
+partOf: "Core-Service"
+selectorLabels:
+commonLabels:

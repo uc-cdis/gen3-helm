@@ -56,7 +56,7 @@ dependencies:
     repository: "file://../data-upload-cron"
     condition: data-upload-cron.enabled
   - name: embedding-management-service
-    version: 0.1.9
+    version: 0.1.10
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
   - name: etl
@@ -116,7 +116,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.65
+    version: 0.1.66
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -135,6 +135,10 @@ dependencies:
     version: 0.1.42
     repository: "file://../wts"
     condition: wts.enabled
+  - name: zendesk-wrapper
+    version: 0.1.1
+    repository: "file://../zendesk-wrapper"
+    condition: zendesk-wrapper.enabled
   - name: gen3-network-policies
     version: 0.1.4
     repository: "file://../gen3-network-policies"
