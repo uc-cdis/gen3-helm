@@ -78,3 +78,10 @@ Create the name of the service account to use
 {{- default .Values.secrets.password }}
 {{- end }}
 {{- end }}
+
+{{/*
+  Requestor g3auto Secrets Manager Name
+*/}}
+{{- define "requestor-g3auto" -}}
+{{- default "requestor-g3auto" .Values.externalSecrets.requestorG3auto }}
+{{- end }}
