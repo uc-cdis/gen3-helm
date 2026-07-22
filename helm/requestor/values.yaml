@@ -104,12 +104,23 @@ externalSecrets:
   pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  # -- (string) Will create the Helm "requestor-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
+  createK8sRequestorSecret: false
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "requestor-g3auto"
+  requestorG3auto:
 # -- (map) Secret information for External Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
+
+# -- (map) Requestor runtime configuration. leave enabled=false and provide the secret externally.
+requestorConfig:
+  # -- (bool) Create local Kubernetes secret from configYaml
+  enabled: false
+  # -- (str) ontents of requestor config.yaml
+  configYaml: ""
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
@@ -178,6 +189,17 @@ affinity:
 
 # -- (bool) Automount the default service account token
 automountServiceAccountToken: false
+
+serviceAccount:
+  # -- (bool) Specifies whether a service account should be created.
+  create: true
+  # -- (map) Annotations to add to the service account.
+  annotations:
+    # -- (string) The Amazon Resource Name (ARN) of the role to associate with the service account
+    eks.amazonaws.com/role-arn:
+  # If not set and create is true, a name is generated using the fullname template
+  # -- (string) The name of the service account
+  name: "requestor-sa"
 
 # -- (map) Docker image information.
 image:
