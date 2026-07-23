@@ -10,11 +10,11 @@ spec:
       backoffLimit: 0
       template:
         metadata:
-          {{- with .Values.podAnnotations }}
           annotations:
-            {{- toYaml . | nindent 12 }}
             checksum/config: {{ include (print $.Template.BasePath "/etl-mapping.yaml") . | sha256sum }}
-          {{- end }}
+            {{- with .Values.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           labels:
             app: gen3job
         spec:
