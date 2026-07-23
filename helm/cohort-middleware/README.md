@@ -114,3 +114,4 @@ A Helm chart for gen3 cohort-middleware
 | tolerations | list | `[]` |  |
 | volumeMounts | list | `[]` |  |
 | volumes | string | `nil` |  |
+
