@@ -17,15 +17,15 @@ dependencies:
     repository: "file://../arborist"
     condition: arborist.enabled
   - name: argo-wrapper
-    version: 0.1.32
+    version: 0.1.33
     repository: "file://../argo-wrapper"
     condition: argo-wrapper.enabled
   - name: audit
-    version: 0.1.45
+    version: 0.1.46
     repository: "file://../audit"
     condition: audit.enabled
   - name: aws-es-proxy
-    version: 0.1.43
+    version: 0.1.44
     repository: "file://../aws-es-proxy"
     condition: aws-es-proxy.enabled
   - name: aws-sigv4-proxy
@@ -68,7 +68,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-    version: 0.1.80
+    version: 0.1.81
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -84,11 +84,11 @@ dependencies:
     repository: "file://../gen3-workflow"
     condition: gen3-workflow.enabled
   - name: guppy
-    version: 0.1.39
+    version: 0.1.40
     repository: "file://../guppy"
     condition: guppy.enabled
   - name: hatchery
-    version: 0.1.71
+    version: 0.1.72
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
@@ -96,11 +96,11 @@ dependencies:
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
-    version: 0.1.44
+    version: 0.1.45
     repository: "file://../manifestservice"
     condition: manifestservice.enabled
   - name: metadata
-    version: 0.1.46
+    version: 0.1.47
     repository: "file://../metadata"
     condition: metadata.enabled
   - name: peregrine
@@ -120,7 +120,7 @@ dependencies:
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
-    version: 0.1.45
+    version: 0.1.46
     repository: "file://../sheepdog"
     condition: sheepdog.enabled
   - name: ssjdispatcher
@@ -132,7 +132,7 @@ dependencies:
     condition: sower.enabled
     repository: "file://../sower"
   - name: wts
-    version: 0.1.42
+    version: 0.1.43
     repository: "file://../wts"
     condition: wts.enabled
   - name: zendesk-wrapper
