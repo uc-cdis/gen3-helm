@@ -314,6 +314,8 @@ gen3WorkflowConfig:
   s3SecretAccessKey: ""
   # -- (bool) Enables KMS encryption for S3 uploads.
   kmsEncryptionEnabled: true
+  # -- (string) Could be one of EBS (default) or S3Files
+  storageType: EBS
   # -- (string) TES server URL to which workflow tasks are forwarded.
   tesServerUrl: http://funnel:8000
   # -- (list) Whitelist of container image patterns allowed for workflow tasks.

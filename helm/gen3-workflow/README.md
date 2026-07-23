@@ -55,6 +55,7 @@ A Helm chart for Kubernetes
 | gen3WorkflowConfig.s3ObjectsExpirationDays | int | `30` | Number of days after which workflow-generated S3 objects are deleted. |
 | gen3WorkflowConfig.s3SecretAccessKey | string | `""` | AWS Secret Access Key used to make S3 requests on behalf of users.    Leave empty to use credentials from an existing STS session. |
 | gen3WorkflowConfig.s3UpstreamEndpoint | string | `""` | Connect to another S3-compatible service than AWS S3 (default: AWS S3) |
+| gen3WorkflowConfig.storageType | string | `"EBS"` | Could be one of EBS (default) or S3Files |
 | gen3WorkflowConfig.taskImageWhitelist | list | `[]` | Whitelist of container image patterns allowed for workflow tasks.    Supports wildcards `*` and `{username}` placeholders. |
 | gen3WorkflowConfig.tesServerUrl | string | `"http://funnel:8000"` | TES server URL to which workflow tasks are forwarded. |
 | gen3WorkflowConfig.userBucketsRegion | string | `"us-east-1"` | AWS region used for creating user S3 buckets. |
