@@ -253,16 +253,6 @@ service:
   httpPort: 8000
   rpcPort: 9090
 
-# Funnel Worker + Executor storage (S3 bucket)
-storage:
-  # type: either "mountpoint_s3" or "s3files"
-  type: mountpoint_s3
-  driver: aws-s3
-  size: 10Mi
-  accessMode: ReadWriteMany
-  className: s3-csi-sc
-  provisioner: s3.csi.aws.com
-  createStorageClass: true
 
 # Funnel default settings configured for Gen3-managed PostgreSQL.
 #
@@ -432,6 +422,10 @@ Kubernetes:
       RamGb: 4096Mi
       DiskGb: 4096Mi
 
+  # Funnel Worker + Executor storage (S3 bucket)
+  Storage:
+    # type: either "mountpoint_s3" or "s3files"
+    type: mountpoint_s3
 # cleanup configures an optional CronJob that runs `funnel kubernetes cleanup`
 # to delete orphaned Funnel-managed Kubernetes resources. It is intentionally
 # turned off by default; set cleanup.enabled=true to enable it.

@@ -74,6 +74,7 @@ A Helm chart for Kubernetes
 | Kubernetes.Resources.Limits.DiskGb | string | `"4096Mi"` |  |
 | Kubernetes.Resources.Limits.RamGb | string | `"4096Mi"` |  |
 | Kubernetes.ServiceAccount | string | `""` |  |
+| Kubernetes.Storage.type | string | `"mountpoint_s3"` |  |
 | Kubernetes.Timeout.duration | string | `"300s"` |  |
 | Kubernetes.Tolerations | list | `[]` |  |
 | Kubernetes.Worker.Annotations."karpenter.sh/do-not-disrupt" | string | `"true"` |  |
@@ -216,13 +217,6 @@ A Helm chart for Kubernetes
 | service.httpPort | int | `8000` |  |
 | service.rpcPort | int | `9090` |  |
 | service.type | string | `"ClusterIP"` |  |
-| storage.accessMode | string | `"ReadWriteMany"` |  |
-| storage.className | string | `"s3-csi-sc"` |  |
-| storage.createStorageClass | bool | `true` |  |
-| storage.driver | string | `"aws-s3"` |  |
-| storage.provisioner | string | `"s3.csi.aws.com"` |  |
-| storage.size | string | `"10Mi"` |  |
-| storage.type | string | `"mountpoint_s3"` |  |
 | stsRegion | string | `"us-east-1"` |  |
 | volumeMounts[0].mountPath | string | `"/etc/config/funnel-server.yaml"` |  |
 | volumeMounts[0].name | string | `"funnel-patched-config-volume"` |  |
