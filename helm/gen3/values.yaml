@@ -400,6 +400,10 @@ wts:
   # -- (bool) Whether to deploy the wts subchart.
   enabled: true
 
+zendesk-wrapper:
+  # -- (bool) Whether to deploy the zendesk-wrapper subchart.
+  enabled: false
+
 sower:
   # -- (bool) Whether to deploy the sower subchart.
   enabled: false
