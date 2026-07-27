@@ -1,7 +1,3 @@
-# Default values for funnel.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 global:
   aws:
     # -- (string) AWS region for this deployment
@@ -116,6 +112,9 @@ netPolicy:
   egressApps:
     - gen3-workflow
 
+# Kubernetes-specific settings
+replicaCount: 1
+
 # Values to determine the labels that are used for the deployment, pod, etc.
 # -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
 release: "production"
@@ -126,118 +125,157 @@ partOf: "Workflow_Execution"
 
 # -- (bool) Whether to create a job to generate the OIDC client for Funnel.
 oidc_job_enabled: true
+image:
+  # -- (string) The Docker image repository for the Funnel service.
+  repository: quay.io/ohsu-comp-bio/funnel
+  tag: develop-2026-07-09-19-49-55Z-97d1df55
 
-funnel:
-  # -- (map) Configuration for the Funnel container image.
-  image:
-    # -- (string) The Docker image repository for the Funnel service.
-    repository: quay.io/ohsu-comp-bio/funnel
-    # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-    pullPolicy: Always
+  # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+  pullPolicy: Always
 
-    # -- (map) Configuration for the Funnel init container.
-    initContainers:
-      - name: plugin
-        # -- (string) The Docker image repository for the Funnel init/plugin container.
-        image: quay.io/cdis/funnel-gen3-plugin
-        # -- (string) The Docker image tag for the Funnel init/plugin container.
-        tag: main-gen3
-        # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
-        pullPolicy: Always
-        # -- (list) Arguments to pass to the init container.
-        command:
-          - cp
-          - /app/build/plugins/authorizer
-          - /opt/funnel/plugin-binaries/auth-plugin
-        volumeMounts:
-          - name: plugin-volume
-            mountPath: /opt/funnel/plugin-binaries
-      - name: config-updater
-        image: quay.io/cdis/awshelper
-        tag: master
-        env:
-          - name: FUNNEL_OIDC_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: funnel-oidc-client
-                key: client_id
-                optional: false
-          - name: FUNNEL_OIDC_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: funnel-oidc-client
-                key: client_secret
-                optional: false
-          - name: DB_HOST
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: host
-                optional: false
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: username
-                optional: false
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: password
-                optional: false
-          - name: DB_DATABASE
-            valueFrom:
-              secretKeyRef:
-                name: funnel-dbcreds
-                key: database
-                optional: false
-        volumeMounts:
-          - name: funnel-patched-config-volume
-            mountPath: /tmp
-          - name: funnel-config-volume
-            mountPath: /etc/config/funnel.conf
-            subPath: funnel-server.yaml
-        command: ["/bin/bash"]
-        args:
-          - "-c"
-          - |
-            # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
-            CONFIG=/tmp/funnel-patched.conf
-            cp /etc/config/funnel.conf $CONFIG
 
-            namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-            JOBS_NAMESPACE=workflow-pods-$namespace
-            S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
-            DB_HOST=$DB_HOST:5432
+  # -- (map) Configuration for the Funnel init container.
+  initContainers:
+    - name: plugin
+      # -- (string) The Docker image repository for the Funnel init/plugin container.
+      image: quay.io/cdis/funnel-gen3-plugin
+      # -- (string) The Docker image tag for the Funnel init/plugin container.
+      tag: main-gen3
+      # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
+      pullPolicy: Always
+      # -- (list) Arguments to pass to the init container.
+      command:
+        - cp
+        - /app/build/plugins/authorizer
+        - /opt/funnel/plugin-binaries/auth-plugin
+      volumeMounts:
+        - name: plugin-volume
+          mountPath: /opt/funnel/plugin-binaries
+    - name: config-updater
+      image: quay.io/cdis/awshelper
+      tag: master
+      env:
+        - name: FUNNEL_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: funnel-oidc-client
+              key: client_id
+              optional: false
+        - name: FUNNEL_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: funnel-oidc-client
+              key: client_secret
+              optional: false
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: host
+              optional: false
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: username
+              optional: false
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: password
+              optional: false
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: funnel-dbcreds
+              key: database
+              optional: false
+      volumeMounts:
+        - name: funnel-patched-config-volume
+          mountPath: /tmp
+        - name: funnel-config-volume
+          mountPath: /etc/config/funnel.conf
+          subPath: funnel-server.yaml
+      command: ["/bin/bash"]
+      args:
+        - "-c"
+        - |
+          # Create a funnel-patched.conf since /etc/config/funnel.conf is readonly
+          CONFIG=/tmp/funnel-patched.conf
+          cp /etc/config/funnel.conf $CONFIG
 
-            # `Kubernetes.JobsNamespace` has to be configured manually because of templating
-            # limitations. This ensures it is configured to the value that is hardcoded elsewhere.
-            configured=$(yq -r '.Kubernetes.JobsNamespace' "$CONFIG")
-            if [[ "$configured" != "$JOBS_NAMESPACE" ]]; then
-              echo "ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration" >&2
-              exit 1
-            fi
+          namespace=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+          JOBS_NAMESPACE=workflow-pods-$namespace
+          S3_URL=gen3-workflow-service.$namespace.svc.cluster.local
+          DB_HOST=$DB_HOST:5432
 
-            echo "======= Funnel configuration ======="
-            echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
-            echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
-            echo "  Plugins.Params.S3Url       : $S3_URL"
-            echo "  Postgres.Host              : $DB_HOST"
-            echo "  Postgres.Database          : $DB_DATABASE"
-            echo "  Postgres.User              : $DB_USER"
-            echo "===================================="
+          # `Kubernetes.JobsNamespace` has to be configured manually because of templating
+          # limitations. This ensures it is configured to the value that is hardcoded elsewhere.
+          configured=$(yq -r '.Kubernetes.JobsNamespace' "$CONFIG")
+          if [[ "$configured" != "$JOBS_NAMESPACE" ]]; then
+            echo "ERROR: funnel.Kubernetes.JobsNamespace is set to '$configured' instead of '$JOBS_NAMESPACE'. Please fix the configuration" >&2
+            exit 1
+          fi
 
-            # Replace placeholders with actual values (in-place)
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" $CONFIG
-            sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" $CONFIG
-            sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" $CONFIG
-            sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g" $CONFIG
-            sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" $CONFIG
-            sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" $CONFIG
-            sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" $CONFIG
+          echo "======= Funnel configuration ======="
+          echo "  Kubernetes.JobsNamespace   : $JOBS_NAMESPACE"
+          echo "  Plugins.Params.OidcClientId: $FUNNEL_OIDC_CLIENT_ID"
+          echo "  Plugins.Params.S3Url       : $S3_URL"
+          echo "  Postgres.Host              : $DB_HOST"
+          echo "  Postgres.Database          : $DB_DATABASE"
+          echo "  Postgres.User              : $DB_USER"
+          echo "===================================="
 
-  volumes:
+          # Replace placeholders with actual values (in-place)
+          sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_ID}|g" $CONFIG
+          sed -i "s|FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER|${FUNNEL_OIDC_CLIENT_SECRET}|g" $CONFIG
+          sed -i "s|FUNNEL_PLUGIN_S3URL_PLACEHOLDER|${S3_URL}|g" $CONFIG
+          sed -i "s/FUNNEL_POSTGRES_HOST_PLACEHOLDER/${DB_HOST}/g" $CONFIG
+          sed -i "s/FUNNEL_POSTGRES_DATABASE_PLACEHOLDER/${DB_DATABASE}/g" $CONFIG
+          sed -i "s/FUNNEL_POSTGRES_USER_PLACEHOLDER/${DB_USER}/g" $CONFIG
+          sed -i "s/FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER/${DB_PASSWORD}/g" $CONFIG
+
+
+labels:
+  app: funnel
+
+rbac:
+  create: true
+
+# AWS STS Source + Region for S3 CSI Driver
+authenticationSource: pod
+stsRegion: us-east-1
+
+# Kubernetes Service Settings
+service:
+  type: ClusterIP
+  httpPort: 8000
+  rpcPort: 9090
+
+# Funnel Worker + Executor storage (S3 bucket)
+storage:
+  driver: aws-s3
+  size: 10Mi
+  accessMode: ReadWriteMany
+  className: s3-csi-sc
+  provisioner: s3.csi.aws.com
+  createStorageClass: true
+
+# Funnel default settings configured for Gen3-managed PostgreSQL.
+#
+# These are passed into `files/server-config.yaml` and made available to the deployment via `server-configmap.yaml`
+#
+# - Ref: https://github.com/ohsu-comp-bio/funnel/blob/master/config/default-config.yaml
+
+# The name of the active compute backend
+# Available backends: local, htcondor, slurm, pbs, gridengine, manual, aws-batch, kubernetes
+Compute: kubernetes
+
+
+# Overrides the default volumes configured in the server deployment.
+# If custom volumes are specified, they will fully replace the default values.
+volumes:
   - name: funnel-config-volume
     configMap:
       name: funnel-server-config
@@ -260,63 +298,485 @@ funnel:
   - name: funnel-patched-config-volume
     emptyDir: {}  # Shared volume for config data
 
-  volumeMounts:
-    - name: funnel-patched-config-volume
-      mountPath: /etc/config/funnel-server.yaml
-      subPath: funnel-patched.conf
+# Overrides the default volumesMounts configured in the server deployment.
+# If custom volumesMounts are specified, they will fully replace the default values.
+volumeMounts:
+  - name: funnel-patched-config-volume
+    mountPath: /etc/config/funnel-server.yaml
+    subPath: funnel-patched.conf
 
-    - name: "funnel-oidc-volume"
-      readOnly: true
-      mountPath: "/etc/config/oidc"
+  - name: "funnel-oidc-volume"
+    readOnly: true
+    mountPath: "/etc/config/oidc"
 
-    - name: worker-templates-volume
-      mountPath: /etc/funnel/templates
+  - name: worker-templates-volume
+    mountPath: /etc/funnel/templates
 
-    - name: plugin-volume
-      mountPath: /opt/funnel/plugin-binaries
+  - name: plugin-volume
+    mountPath: /opt/funnel/plugin-binaries
 
-  resources:
-    requests:
-      memory: "2Gi"
-      ephemeral_storage: "2Gi"
+# Resource Requests/Limits for worker jobs and server pods.
+resources:
+  requests:
+    cpu: 100m
+    memory: "2Gi"
+    ephemeral_storage: "2Gi"
+  limits:
+    cpu: 1000m
+    memory: "2Gi"
+    ephemeral_storage: "2Gi"
 
-  Database: postgres
-  EventWriters:
-    - postgres
-    - log
-  postgresql:  # default bitnami postgres pod
-    enabled: false
-  Postgres:
-    Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
-    Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
-    User: FUNNEL_POSTGRES_USER_PLACEHOLDER
-    Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
-  Logger:
-    Level: info
-  Plugins:
-    Path: plugin-binaries/auth-plugin
-    Params:
-      OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
-      OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
-      S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
+# The name of the active server database backend
+# Available backends: boltdb, badger, datastore, dynamodb, elastic, mongodb, postgres
+Database: postgres
+# The name of the active event writer backend(s).
+# Available backends: log, boltdb, badger, datastore, dynamodb, elastic, mongodb, postgres, kafka
+EventWriters:
+  - postgres
+  - log
+Postgres:
+  Host: FUNNEL_POSTGRES_HOST_PLACEHOLDER
+  Database: FUNNEL_POSTGRES_DATABASE_PLACEHOLDER
+  User: FUNNEL_POSTGRES_USER_PLACEHOLDER
+  Password: FUNNEL_POSTGRES_PASSWORD_PLACEHOLDER
+  AdminUser: postgres
+  AdminPassword: example
+  Timeout:
+    duration: 300s
+Logger:
+  # Logging levels: debug, info, error
+  Level: debug
+  # Write logs to this path. If empty, logs are written to stderr.
+  OutputFile: ""
+  # Log format: json or text
+  Formatter: json
+  # Text format settings
+  TextFormat:
+    # Try to force colors/rich format in text output
+    ForceColors: true
+    # Include full timestamps in text output
+    FullTimestamp: true
+    # Format for timestamps. RFC3339 is default.
+    TimestampFormat: "2006-01-02T15:04:05Z07:00"
+Plugins:
+  Path: plugin-binaries/auth-plugin
+  Params:
+    OidcClientId: FUNNEL_PLUGIN_OIDC_CLIENT_ID_PLACEHOLDER
+    OidcClientSecret: FUNNEL_PLUGIN_OIDC_CLIENT_SECRET_PLACEHOLDER
+    S3Url: FUNNEL_PLUGIN_S3URL_PLACEHOLDER
+
+# Kubernetes describes the configuration for the Kubernetes compute backend.
+Kubernetes:
+  # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
+  Timeout:
+    duration: 300s
+  ReconcileRate: 120s
+  Executor:
+    PriorityClassName: ""
+    restartPolicy: Never
+    # Setting backoffLimit to 0 means no retries.
+    backoffLimit: 0
+    Annotations:
+      karpenter.sh/do-not-disrupt: "true"
+    # Setting completions to 1 means the job completes after one successful execution.
+    completions: 1
+
   Worker:
-    # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
-    LeaveWorkDir: true
-  Kubernetes:
-    # Timeout for task creation (worker pod creation). On timeout, tasks fail with SYSTEM_ERROR
-    Timeout:
-      duration: 300s
-    ReconcileRate: 120s
-    Executor:
-      restartPolicy: Never
-      backoffLimit: 0
-      Annotations:
-        karpenter.sh/do-not-disrupt: "true"
-    Worker:
-      restartPolicy: Never
-      backoffLimit: 1
-      Annotations:
-        karpenter.sh/do-not-disrupt: "true"
-      # When a new node is ready, worker pods may start before system-level pods do. This ensures
-      # worker pods are not preempted by new system-level pods on that node.
-      PriorityClassName: "system-cluster-critical"
+
+    restartPolicy: Never
+    backoffLimit: 0
+    completions: 1
+    Annotations:
+      karpenter.sh/do-not-disrupt: "true"
+    # When a new node is ready, worker pods may start before system-level pods do. This ensures
+    # worker pods are not preempted by new system-level pods on that node.
+    PriorityClassName: "system-cluster-critical"
+
+  # Turn off task state reconciler. When enabled, Funnel communicates with Kubernetes
+  # to find tasks that are stuck in a queued state or errored and
+  # updates the task state accordingly.
+  DisableReconciler: false
+  DisableJobCleanup: false
+  # -- Path prefixes that Funnel's Kubernetes backend must reject when creating worker pods.
+  ForbiddenPathPrefixes: []
+  # ReconcileRate is how often the compute backend compares states in Funnel's backend
+  # to those reported by the backend
+  # Kubernetes Namespace to spawn jobs within
+  Namespace: ""
+  # Kubernetes Namespace to spawn jobs within
+  JobsNamespace: ""
+  # Kubernetes ServiceAccount to use for the job
+  ServiceAccount: ""
+
+  # Master batch job template. See: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#job-v1-batch
+  WorkerTemplate: ""
+  # NodeSelector (scheduling)
+  NodeSelector: {}
+  # Tolerations (scheduling)
+  Tolerations: []
+
+  # Job template used for executing the tasks.
+  ExecutorTemplate: ""
+  PVTemplate: ""
+  PVCTemplate: ""
+
+  Resources:
+    Defaults:
+      Cpus: 1000m
+      RamGb: 512Mi
+      DiskGb: 512Mi
+    Limits:
+      Cpus: 8000m
+      RamGb: 4096Mi
+      DiskGb: 4096Mi
+
+# cleanup configures an optional CronJob that runs `funnel kubernetes cleanup`
+# to delete orphaned Funnel-managed Kubernetes resources. It is intentionally
+# turned off by default; set cleanup.enabled=true to enable it.
+cleanup:
+  enabled: false
+  # Leave empty to derive the schedule from Kubernetes.ReconcileRate. Set a
+  # standard 5-field cron expression to override, e.g. "*/15 * * * *".
+  schedule: ""
+  # Offset the start minute so cleanup jobs in different namespaces do not all
+  # fire at the same instant. Must be 0-59.
+  scheduleOffsetMinutes: 0
+
+# -------------------------------------------------------------------------------
+# Storage
+# -------------------------------------------------------------------------------
+
+# If possible, credentials will be automatically discovered
+# from the environment.
+
+# -- Local file system storage configuration.
+LocalStorage:
+  # Whitelist of local directory paths which Funnel is allowed to access.
+  AllowedDirs:
+    - ./
+
+# HTTPStorage is used to download public files on the web via a GET request.
+HTTPStorage:
+  # Timeout for http(s) GET requests.
+  Timeout: 30s
+
+AmazonS3:
+  Disabled: false
+  # The maximum number of times that a request will be retried for failures.
+  AWSConfig:
+    MaxRetries: 10
+    # AWS Access key ID
+    Key: ""
+    # AWS Secret Access Key
+    Secret: ""
+  # Server Side Encryption (SSE) settings
+  SSE:
+    # Customer Provided Key
+    # ref: https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html
+    CustomerKeyFile: ""
+    # KMS Key
+    # ref: https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
+    KMSKey: ""
+
+# Configure storage backends for S3 providers such as Minio and/or Ceph
+# GenericS3:
+#   - Disabled: true
+#     Endpoint: ""
+#     Key: ""
+#     Secret: ""
+#     KmsKeyID: ""
+
+GoogleStorage:
+  Disabled: false
+  # Path to account credentials file.
+  # Optional. If possible, credentials will be automatically discovered
+  # from the environment.
+  CredentialsFile: ""
+# Available backends: local, htcondor, slurm, pbs, gridengine, manual, aws-batch, kubernetes/Kube
+Swift:
+  Disabled: false
+  UserName: ""
+  Password: ""
+  AuthURL: ""
+  TenantName: ""
+  TenantID: ""
+  RegionName: ""
+  # 500 MB
+  ChunkSizeBytes: 500000000
+
+FTPStorage:
+  Disabled: false
+  Timeout: 10s
+  User: "anonymous"
+  Password: "anonymous"
+
+Server:
+  # Hostname of the Funnel server.
+  HostName: funnel
+
+  # Port used for HTTP communication and the web dashboard.
+  HTTPPort: "8000"
+
+  # Port used for RPC communication.
+  RPCPort: "9090"
+
+  # Require basic authentication for the server APIs using a password.
+  # If used, make sure to properly restrict access to the config file
+  # (e.g. chmod 600 funnel.config.yml)
+  # BasicAuth:
+  #   - User: user1
+  #     Password: abc123
+  #   - User: user2
+  #     Password: foobar
+
+  # Include a "Cache-Control: no-store" HTTP header in Get/List responses
+  # to prevent caching by intermediary services.
+  DisableHTTPCache: true
+
+RPCClient:
+  # RPC server address
+  ServerAddress: localhost:9090
+
+  # Credentials for Basic authentication for the server APIs using a password.
+  # If used, make sure to properly restrict access to the config file
+  # (e.g. chmod 600 funnel.config.yml)
+  # User: funnel
+  # Password: abc123
+
+  # connection timeout.
+  Timeout:
+    duration: 60s
+
+  # The maximum number of times that a request will be retried for failures.
+  # Time between retries follows an exponential backoff starting at 5 seconds
+  # up to 1 minute
+  MaxRetries: 10
+
+# The scheduler is used for the Manual compute backend.
+Scheduler:
+  # How often to run a scheduler iteration.
+  ScheduleRate: 1s
+  # How many tasks to schedule in one iteration.
+  ScheduleChunk: 10
+  # How long to wait between updates before marking a node dead.
+  NodePingTimeout:
+    duration: 60s
+  # How long to wait for a node to start, before marking the node dead.
+  NodeInitTimeout:
+    duration: 300s
+
+Node:
+  # If empty, a node ID will be automatically generated.
+  ID: ""
+
+  # If the node has been idle for longer than the timeout, it will shut down.
+  # -1 means there is no timeout. 0 means timeout immediately after the first task.
+  Timeout:
+    disabled: true
+
+  # A Node will automatically try to detect what resources are available to it.
+  # Defining Resources in the Node configuration overrides this behavior.
+  Resources:
+    # CPUs available.
+    Cpus: 0
+
+    # RAM available, in GB.
+    RamGb: 0.0
+
+    # Disk space available, in GB.
+    DiskGb: 0.0
+
+  # For low-level tuning.
+  # How often to sync with the Funnel server.
+  UpdateRate: 5s
+
+Worker:
+  # Files created during processing will be written in this directory.
+  WorkDir: ./funnel-work-dir
+
+  # For low-level tuning.
+  # How often to poll for cancel signals
+  PollingRate: 5s
+
+  # For low-level tuning.
+  # How often to send stdout/err task log updates to the Funnel server.
+  # Setting this to 0 will result in these fields being updated a single time
+  # after the executor exits.
+  LogUpdateRate: 5s
+
+  # Max bytes to store for stdout/err in the task log (10 KB)
+  LogTailSize: 10000
+
+  # Normally the worker deletes its working directory after executing.
+  # This option disables that behavior.
+  # This lets mount-s3 pods unmount and Complete. https://ctds-planx.atlassian.net/browse/MIDRC-1214
+  LeaveWorkDir: true
+
+  # Limit the number of concurrent downloads/uploads
+  MaxParallelTransfers: 10
+
+# -------------------------------------------------------------------------------
+# Databases and/or Event Writers/Handlers
+# -------------------------------------------------------------------------------
+
+# -- Local file database configuration.
+BoltDB:
+  # Path to the database file
+  Path: ./funnel-work-dir/funnel.db
+
+DynamoDB:
+  # Basename to use for dynamodb tables
+  TableBasename: funnel
+  AWSConfig:
+    # AWS region
+    Region: ""
+    # AWS Access key ID
+    Key: ""
+    # AWS Secret Access Key
+    Secret: ""
+
+Elastic:
+  # Prefix to use for indexes (task, events, nodes)
+  IndexPrefix: funnel
+  # URL of the elasticsearch server.
+  URL: http://localhost:9200
+
+# Google Cloud Datastore task database.
+Datastore:
+  Project: ""
+  # Path to account credentials file.
+  # Optional. If possible, credentials will be automatically discovered
+  # from the environment.
+  CredentialsFile: ""
+
+  Timeout:
+    duration: 300s
+
+Kafka:
+  Topic: funnel
+
+# -------------------------------------------------------------------------------
+# Compute Backends
+# -------------------------------------------------------------------------------
+
+# -- HTCondor compute backend configuration.
+HTCondor:
+  # Turn off task state reconciler. When enabled, Funnel communicates with the HPC
+  # scheduler to find tasks that are stuck in a queued state or errored and
+  # updates the task state accordingly.
+  DisableReconciler: true
+  # ReconcileRate is how often the compute backend compares states in Funnel's backend
+  # to those reported by the backend
+  ReconcileRate: 10s
+  TemplateFile: ""
+  Template: |
+    universe = vanilla
+    getenv = True
+    executable = {{.Executable}}
+    arguments = worker run --config {{.Config}} --task-id {{.TaskId}}
+    log = {{.WorkDir}}/condor-event-log
+    error = {{.WorkDir}}/funnel-stderr
+    output = {{.WorkDir}}/funnel-stdout
+    should_transfer_files = YES
+    when_to_transfer_output = ON_EXIT_OR_EVICT
+    {{if ne .Cpus 0 -}}
+    {{printf "request_cpus = %d" .Cpus}}
+    {{- end}}
+    {{if ne .RamGb 0.0 -}}
+    {{printf "request_memory = %.0f GB" .RamGb}}
+    {{- end}}
+    {{if ne .DiskGb 0.0 -}}
+    {{printf "request_disk = %.0f GB" .DiskGb}}
+    {{- end}}
+
+    queue
+
+PBS:
+  # Turn off task state reconciler. When enabled, Funnel communicates with the HPC
+  # scheduler to find tasks that are stuck in a queued state or errored and
+  # updates the task state accordingly.
+  DisableReconciler: true
+  # ReconcileRate is how often the compute backend compares states in Funnel's backend
+  # to those reported by the backend
+  ReconcileRate: 10s
+  TemplateFile: ""
+  Template: |
+    #!bin/bash
+    #PBS -N {{.TaskId}}
+    #PBS -o {{.WorkDir}}/funnel-stdout
+    #PBS -e {{.WorkDir}}/funnel-stderr
+    {{if ne .Cpus 0 -}}
+    {{printf "#PBS -l nodes=1:ppn=%d" .Cpus}}
+    {{- end}}
+    {{if ne .RamGb 0.0 -}}
+    {{printf "#PBS -l mem=%.0fgb" .RamGb}}
+    {{- end}}
+    {{if ne .DiskGb 0.0 -}}
+    {{printf "#PBS -l file=%.0fgb" .DiskGb}}
+    {{- end}}
+
+    {{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}
+
+GridEngine:
+  TemplateFile: ""
+  Template: |
+    #!bin/bash
+    #$ -N {{.TaskId}}
+    #$ -o {{.WorkDir}}/funnel-stdout
+    #$ -e {{.WorkDir}}/funnel-stderr
+    #$ -l nodes=1
+    {{if ne .Cpus 0 -}}
+    {{printf "#$ -pe mpi %d" .Cpus}}
+    {{- end}}
+    {{if ne .RamGb 0.0 -}}
+    {{printf "#$ -l h_vmem=%.0fG" .RamGb}}
+    {{- end}}
+    {{if ne .DiskGb 0.0 -}}
+    {{printf "#$ -l h_fsize=%.0fG" .DiskGb}}
+    {{- end}}
+
+    {{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}
+
+Slurm:
+  # Turn off task state reconciler. When enabled, Funnel communicates with the HPC
+  # scheduler to find tasks that are stuck in a queued state or errored and
+  # updates the task state accordingly.
+  DisableReconciler: true
+  # ReconcileRate is how often the compute backend compares states in Funnel's backend
+  # to those reported by the backend
+  ReconcileRate: 10s
+  TemplateFile: ""
+  Template: |
+    #!/bin/bash
+    #SBATCH --job-name {{.TaskId}}
+    #SBATCH --ntasks 1
+    #SBATCH --error {{.WorkDir}}/funnel-stderr
+    #SBATCH --output {{.WorkDir}}/funnel-stdout
+    {{if ne .Cpus 0 -}}
+    {{printf "#SBATCH --cpus-per-task %d" .Cpus}}
+    {{- end}}
+    {{if ne .RamGb 0.0 -}}
+    {{printf "#SBATCH --mem %.0fGB" .RamGb}}
+    {{- end}}
+    {{if ne .DiskGb 0.0 -}}
+    {{printf "#SBATCH --tmp %.0fGB" .DiskGb}}
+    {{- end}}
+
+    {{.Executable}} worker run --config {{.Config}} --taskID {{.TaskId}}
+
+# AWSBatch describes the configuration for the AWS Batch compute backend.
+AWSBatch:
+  # Turn off task state reconciler. When enabled, Funnel communicates with AWS Batch
+  # to find tasks that never started and updates task state accordingly.
+  DisableReconciler: true
+  # ReconcileRate is how often the compute backend compares states in Funnel's backend
+  # to those reported by AWS Batch
+  ReconcileRate: 10s
+  # JobDefinition can be either a name or the Amazon Resource Name (ARN).
+  JobDefinition: "funnel-job-def"
+  # JobQueue can be either a name or the Amazon Resource Name (ARN).
+  JobQueue: "funnel-job-queue"
+  # AWS region of the specified job queue and to create the job definition in
+  Region: ""
+  Key: ""
+  Secret: ""
