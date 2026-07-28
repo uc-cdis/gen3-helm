@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.75](https://img.shields.io/badge/Version-0.3.74-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.75](https://img.shields.io/badge/Version-0.3.75-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -55,7 +55,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.44 |
 | file://../portal | portal | 0.1.62 |
 | file://../requestor | requestor | 0.1.37 |
-| file://../revproxy | revproxy | 0.1.67 |
+| file://../revproxy | revproxy | 0.1.68 |
 | file://../sheepdog | sheepdog | 0.1.46 |
 | file://../sower | sower | 0.1.48 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.49 |
@@ -257,7 +257,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"global":{"imageRegistry":"quay.io"},"image":{"repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"registry":"quay.io","repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
