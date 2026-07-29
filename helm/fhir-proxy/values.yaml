@@ -1,0 +1,109 @@
+# Default values for fhir-proxy.
+
+global:
+  environment: default
+
+  pdb: false
+  minAvailable: 1
+
+  netPolicy:
+    enabled: false
+    dbSubnet: ""
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+
+  topologySpread:
+    enabled: false
+    topologyKey: "topology.kubernetes.io/zone"
+    maxSkew: 1
+
+metricsEnabled: true
+
+podAnnotations: {}
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - fhir-proxy
+          topologyKey: "kubernetes.io/hostname"
+
+volumes: []
+
+image:
+  repository: fhir-proxy
+  pullPolicy: Never
+  tag: dev
+
+volumeMounts: []
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+service:
+  type: ClusterIP
+  port: 8007
+  targetPort: 8007
+
+netPolicy:
+  ingressApps:
+    - revproxy
+  egressApps:
+    - arborist
+
+release: "dev"
+criticalService: "false"
+partOf: "backend"
+
+selectorLabels:
+  app: fhir-proxy
+
+commonLabels:
+  app: fhir-proxy
+
+config:
+  debug: true
+  debugSkipAuth: false
+
+  # This should match the path exposed through revproxy.
+  urlPrefix: "/fhir"
+
+  # External upstream HAPI-FHIR server.
+  fhirServerUrl: "http://host.docker.internal:8080"
+
+  # Internal Gen3 authorization service.
+  arboristUrl: "http://arborist-service"
+
+  # fhir-proxy is behind Gen3 revproxy.
+  isUpstreamCallerTrustedReverseProxy: true
+
+  enablePrometheusMetrics: true
+  prometheusMultiprocDir: /var/tmp/prometheus_metrics
+
+  enableOpenTelemetryTraces: false
+  otelExporterOtlpEndpoint: "http://127.0.0.1:4318"

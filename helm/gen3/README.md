@@ -35,6 +35,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../embedding-management-service | embedding-management-service | 0.1.7 |
 | file://../etl | etl | 0.1.23 |
 | file://../fence | fence | 0.1.78 |
+| file://../fhir-proxy | fhir-proxy | 0.1.0 |
 | file://../frontend-framework | frontend-framework | 0.1.29 |
 | file://../funnel | funnel | 0.1.26 |
 | file://../gen3-analysis | gen3-analysis | 0.1.12 |
@@ -115,6 +116,7 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
+| fhir-proxy.enabled | bool | `true` |  |
 | frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}}` | Configurations for frontend-framework chart. |
 | frontend-framework.enabled | bool | `false` | Whether to deploy the frontend-framework subchart. |
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |

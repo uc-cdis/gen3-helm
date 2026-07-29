@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fhir-proxy.fullname" . }}
+  {{- with .Values.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "fhir-proxy.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.global.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fhir-proxy.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "fhir-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        netnolimit: "yes"
+        public: "yes"
+      annotations:
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+        {{- if eq $metricsEnabled nil }}
+          {{- $metricsEnabled = true }}
+        {{- end }}
+        {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: fhir-proxy
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
+              protocol: TCP
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DEBUG
+              value: {{ .Values.config.debug | quote }}
+            - name: DEBUG_SKIP_AUTH
+              value: {{ .Values.config.debugSkipAuth | quote }}
+            - name: URL_PREFIX
+              value: {{ .Values.config.urlPrefix | quote }}
+            - name: FHIR_SERVER_URL
+              value: {{ .Values.config.fhirServerUrl | quote }}
+            - name: ARBORIST_URL
+              value: {{ .Values.config.arboristUrl | quote }}
+            - name: IS_UPSTREAM_CALLER_TRUSTED_REVERSE_PROXY
+              value: {{ .Values.config.isUpstreamCallerTrustedReverseProxy | quote }}
+            - name: ENABLE_PROMETHEUS_METRICS
+              value: {{ .Values.config.enablePrometheusMetrics | quote }}
+            - name: PROMETHEUS_MULTIPROC_DIR
+              value: {{ .Values.config.prometheusMultiprocDir | quote }}
+            - name: ENABLE_OPENTELEMETRY_TRACES
+              value: {{ .Values.config.enableOpenTelemetryTraces | quote }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.config.otelExporterOtlpEndpoint | quote }}

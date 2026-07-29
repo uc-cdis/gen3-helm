@@ -71,6 +71,10 @@ dependencies:
     version: 0.1.78
     repository: "file://../fence"
     condition: fence.enabled
+  - name: fhir-proxy
+    version: 0.1.0
+    repository: file://../fhir-proxy
+    condition: fhir-proxy.enabled
   - name: funnel
     version: 0.1.26
     repository: "file://../funnel"

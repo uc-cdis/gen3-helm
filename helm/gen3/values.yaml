@@ -213,6 +213,9 @@ fence:
     # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
     slack_send_dbgap: false
 
+fhir-proxy:
+  enabled: true
+
 # -- (map) Configurations for frontend-framework chart.
 frontend-framework:
   # -- (bool) Whether to deploy the frontend-framework subchart.
