@@ -1,3 +1,7 @@
+global:
+  hostname: "gen3.apps-crc.testing"
+  frontendRoot: "gen3ff"
+
 ambassador:
   enabled: false
   service:
@@ -29,6 +33,17 @@ fence:
   enabled: true
   service:
     targetPort: 8000
+  FENCE_CONFIG:
+    MOCK_GOOGLE_AUTH: true
+  resources:
+    # namespace LimitRange defaults to a 200m cpu limit, which throttles
+    # fence badly under real traffic (multi-second responses on /user/user)
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 
 cedar:
   enabled: false
@@ -101,20 +116,20 @@ peregrine:
     targetPort: 8000
 
 portal:
+  enabled: false
+
+frontend-framework:
   enabled: true
   service:
-    targetPort: 8000
-  resources:
-    requests:
-      memory: 750Mi
-  image:
-      repository: quay.io/cdis/data-portal-prebuilt
-      tag: caninedc.org-jawadqur-patch-1
+    type: ClusterIP
+    port: 80
+  podSecurityContext:
+    fsGroup: 1000
   securityContext:
     capabilities:
       drop:
       - ALL
-    readOnlyRootFilesystem: true
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
     runAsUser: 1000
 
@@ -128,9 +143,19 @@ revproxy:
   nginx:
     resolver: "172.30.0.10"
     user: nginx
-    pidFile: /tmp/nginx.pid 
+    pidFile: /tmp/nginx.pid
   service:
     targetPort: 8000
+  resources:
+    # revproxy is the single ingress point for all traffic; the namespace
+    # LimitRange default (200m) is too tight once more than a couple of
+    # requests land concurrently
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
   openshiftRoute:
     enabled: true
     annotations: {}
@@ -191,9 +216,9 @@ access-backend:
     targetPort: 8001
 
 postgresql:
-  image:
-    repository: bitnamilegacy/postgresql
-    tag: 16.6.0-debian-12-r2
+  # NOTE: no image override here - the umbrella chart's default
+  # (quay.io/cdis/docker-bitnami-pgvector:16) is used because upstream
+  # bitnamilegacy/postgresql tags now require registry auth and 401 on pull
   primary:
     persistence:
       enabled: false
@@ -204,6 +229,15 @@ postgresql:
       allowPrivilegeEscalation: false
       seccompProfile:
         type: "RuntimeDefault"
+    resources:
+      # namespace LimitRange defaults containers to a 200m cpu limit; the
+      # chart's default cpu request (250m) exceeds that unless a limit is set
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
 
 elasticsearch:
   image: "quay.io/cdis/elasticsearch"
