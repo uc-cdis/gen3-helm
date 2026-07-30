@@ -316,6 +316,8 @@ gen3WorkflowConfig:
   kmsEncryptionEnabled: true
   # -- (bool) Set it to true to create S3Files resources (default - false)
   enableS3Files: false
+  # -- (list) Names of the EKS security groups that Karpenter attaches to an EKS worker node in the cluster (needed for S3Files)
+  eksSecurityGroupNames: []
   # -- (string) TES server URL to which workflow tasks are forwarded.
   tesServerUrl: http://funnel:8000
   # -- (list) Whitelist of container image patterns allowed for workflow tasks.
