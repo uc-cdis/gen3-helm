@@ -1,361 +1,326 @@
-# Running Gen3 on OpenShift: what actually breaks, and how we fixed it
+# Making the Gen3 Helm chart run on OpenShift
 
-We set out to answer a simple question: does the latest `gen3` Helm chart
-actually work on OpenShift, using a `Route` instead of an `Ingress`? Rather
-than take that on faith, we tore down an existing deployment, reinstalled
-from scratch against a clean values file, and pushed it end to end — login,
-and a real data submission via `gen3-sdk`. Along the way we hit five
-distinct, reproducible problems. None of them are exotic; all of them are the
-kind of thing that quietly breaks a "it works on my Kubernetes cluster"
-deployment the moment it lands on OpenShift.
+Gen3's Helm chart was written for plain Kubernetes with an Ingress in
+front of it. OpenShift is Kubernetes, but its default security posture
+rejects a lot of what a normal Helm chart assumes: containers can't bind
+to ports below 1024, can't run as a fixed UID unless you're specifically
+granted that, and the root filesystem is expected to be read-only unless
+you say otherwise. [PR #552](https://github.com/uc-cdis/gen3-helm/pull/552),
+merged June 2026, is the actual body of work that made the chart run under
+those constraints — nearly every subchart touched, the same handful of
+patterns applied everywhere. This post walks through what that PR actually
+changed and why, then adds what we found running a fresh deployment from
+it end to end: login, and a real data submission via `gen3-sdk`.
 
-This post is both a report of what we found and a runbook for reproducing a
-working deployment yourself. The full values file is at
-[`examples/openshift_values.yaml`](../../examples/openshift_values.yaml);
-the reference doc with copy-pasteable commands is
-[`docs/openshift.md`](../openshift.md).
+## The core problem: containers can't do what they used to
 
-## TL;DR — five gotchas
+Two OpenShift defaults matter here, and almost everything in the PR is a
+consequence of one or the other:
 
-1. **`global.hostname` must match your Route host, exactly.** Leave it at
-   the chart default (`localhost`) and every OAuth/OIDC redirect, the JWT
-   issuer claim, and the CSP header get built from the wrong URL. The portal
-   loads fine; login silently redirects to `https://localhost/...`. This was
-   the actual root cause behind "the login button doesn't work" — not a
-   login-provider misconfiguration.
-2. **Your namespace's `LimitRange` can break things two different ways.**
-   A default CPU *limit* of `200m` (common on shared OpenShift clusters)
-   caused `postgresql`'s pod to fail to schedule entirely (its default
-   *request* of `250m` exceeds that limit — an outright rejection with a
-   clear error), and separately caused `fence` to silently throttle to
-   8–24 second response times under real traffic, with zero errors in the
-   logs, because it inherited the same `200m` limit with no override.
-3. **`bitnamilegacy/postgresql` image tags now 401.** Bitnami moved most of
-   its historical tags behind registry auth. Use the chart's own default
-   image instead of pinning to the old Bitnami path.
-4. **The OpenShift router's TLS cert won't match a made-up hostname.**
-   `curl -k` hides this; `gen3-sdk` has no equivalent flag and will refuse
-   to talk to your Route with a `SSLCertVerificationError` unless your Route
-   host is under the cluster's real wildcard domain.
-5. **SCC matters, and it's not always `restricted-v2`.** Some projects
-   already carry an `anyuid` grant (`restricted-v2-anyuid`), which is why
-   fixed `runAsUser` values in the values file work even outside the
-   namespace's assigned UID range — worth checking before you assume you
-   need to request elevated permissions.
+- **Restricted SCC assigns an arbitrary non-root UID per namespace** and
+  won't let a container bind privileged ports (<1024) unless it's root.
+  Every Gen3 service was written assuming it could listen on port 80.
+- **`readOnlyRootFilesystem` is often enforced**, which breaks anything
+  that writes to paths baked into the image — nginx's pid file, its temp/
+  cache dirs, its logs.
 
-Everything below is the narrative version, with the actual commands and
-error text we hit.
+Fix both, and most of the rest is bookkeeping.
 
----
+## Fix #1: stop hardcoding port 80
 
-## Setting the stage
+Every subchart's `deployment.yaml` had `containerPort: 80` baked into the
+template, and the app itself was told (via CLI flag or env var, depending
+on the service) to listen on 80. The PR made the port a value instead,
+and added an explicit non-privileged default:
 
-Target: an existing OpenShift namespace on a shared cluster, Route enabled
-(`revproxy.openshiftRoute.enabled: true`), no Ingress. Rather than patch the
-existing 55-day-old release in place, we did a full `helm uninstall` /
-`helm install` cycle against a fresh values file, on the theory that a
-clean install is a much more honest test of "does this chart work" than
-incrementally patching whatever state a namespace has drifted into over two
-months of ad hoc changes.
+```diff
+ # helm/arborist/templates/deployment.yaml
+           ports:
+             - name: http
+-              containerPort: 80
++              containerPort: {{ .Values.service.targetPort }}
+               protocol: TCP
+   ...
+-              /go/src/github.com/uc-cdis/arborist/bin/arborist
++              /go/src/github.com/uc-cdis/arborist/bin/arborist --port {{ .Values.service.targetPort }}
+```
 
-We also swapped the default `portal` frontend for the newer
-`frontend-framework` chart (`gen3ff`), since that's the direction new
-deployments are heading:
+```diff
+ # helm/arborist/values.yaml
+ service:
+   type: ClusterIP
+   port: 80
++  targetPort: 8080
+```
+
+The same shape landed in `fence`, `sheepdog`, `indexd`, `peregrine`,
+`portal`, `revproxy`, `guppy`, `hatchery`, `metadata`, `manifestservice`,
+`requestor`, `sower`, `ssjdispatcher`, `wts`, `cedar`, `audit`,
+`argo-wrapper`, `gen3-workflow`, `gen3-analysis`, `gen3-user-data-library`,
+`cohort-middleware`, `access-backend`, `dicom-server`, `ohif-viewer`,
+`ohdsi-atlas`, `ohdsi-webapi`, `orthanc` — over 25 subcharts got a
+`service.targetPort` value and the corresponding template change.
+`service.port` (what other pods see when they talk to the Service) stays
+at the conventional `80`; `targetPort` (what the container itself
+actually binds) moves to something in the 8000s that any UID can bind.
+
+The probes had to move with it — `httpGet.port: 80` became
+`httpGet.port: http`, referencing the named port instead of a number, so
+a probe doesn't silently point at the wrong port if `targetPort` changes:
+
+```diff
+           livenessProbe:
+             httpGet:
+               path: /_status?timeout=20
+-              port: 80
++              port: http
+```
+
+## Fix #2: give nginx somewhere to write
+
+`revproxy` and `portal` both run nginx, and nginx by default wants to:
+write a pid file to `/var/run`, bind port 80, resolve upstream service
+names via `kube-dns.kube-system.svc.cluster.local` (an in-cluster DNS
+name that doesn't exist the same way on every OpenShift cluster), and
+write its temp/cache/log directories into paths baked into the image.
+Every one of those breaks under a restricted, read-only-root SCC. The
+fix templates all of it:
+
+```diff
+ # helm/revproxy/nginx/nginx.conf
+-user nginx;
++user {{ .Values.nginx.user }};
+ worker_processes 4;
+-pid /var/run/nginx.pid;
++pid {{ .Values.nginx.pidFile }};
+ ...
++  client_body_temp_path /tmp/client_temp;
++  proxy_temp_path       /tmp/proxy_temp_path;
++  fastcgi_temp_path     /tmp/fastcgi_temp;
++  uwsgi_temp_path       /tmp/uwsgi_temp;
++  scgi_temp_path        /tmp/scgi_temp;
+   ...
+   server {
+-    listen 80;
++    listen {{ .Values.service.targetPort }};
+   ...
+-    resolver kube-dns.kube-system.svc.cluster.local ipv6=off;
++    resolver {{ .Values.nginx.resolver }} ipv6=off;
+```
+
+and the deployment gets `emptyDir` volumes mounted over every path nginx
+needs to write to, since the rest of the image filesystem is read-only:
+
+```diff
+ # helm/revproxy/templates/deployment.yaml
+       volumes:
++        - name: nginx-tmp
++          emptyDir: {}
++        - name: nginx-cache
++          emptyDir: {}
++        - emptyDir: {}
++          name: nginx-logs
+   ...
+           volumeMounts:
++          - mountPath: /var/log/nginx
++            name: nginx-logs
+   ...
++          - name: nginx-tmp
++            mountPath: /tmp
++          - name: nginx-cache
++            mountPath: /var/cache/nginx
+```
+
+`portal` got the equivalent treatment — its own `nginx-tmp` emptyDir, a
+`portal-nginx` ConfigMap mounted over `/etc/nginx/nginx.conf` and
+`/etc/nginx/conf.d/nginx.conf`, and explicit pod/container
+`securityContext` blocks wired into the template rather than left to
+inherit whatever the cluster defaulted to:
+
+```diff
+ # helm/portal/templates/deployment.yaml
+       serviceAccountName: {{ include "portal.serviceAccountName" . }}
++      securityContext:
++        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+   ...
+         - name: portal
+           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
++          securityContext:
++            {{- toYaml .Values.securityContext | nindent 12 }}
+```
+
+The chart ships two variants of the portal/frontend-framework nginx
+config — `gen3.nginx.conf/portal-as-root/` and `.../gen3ff-as-root/` —
+so the right one gets mounted depending on which frontend
+(`global.frontendRoot: portal` or `gen3ff`) is actually enabled.
+
+## Fix #3: stop assuming a specific UID/GID
+
+`fence` had `podSecurityContext.fsGroup: 101` hardcoded — fine on
+whatever cluster that number meant something on, meaningless (or actively
+wrong) on an OpenShift namespace with its own assigned UID/GID range. The
+PR just removes the assumption:
+
+```diff
+ # helm/fence/values.yaml
+ podSecurityContext:
+-  fsGroup: 101
++podSecurityContext: {}
+```
+
+and `sheepdog` (which previously had no `securityContext`/
+`podSecurityContext` knobs at all) got them added, template and values
+both, commented-out by default so an operator opts in explicitly rather
+than the chart making a decision for them:
 
 ```yaml
-global:
-  hostname: "gen3.apps-crc.testing"
-  frontendRoot: "gen3ff"
+# helm/sheepdog/values.yaml
+podSecurityContext:
+  {}
+  # fsGroup: 2000
 
-portal:
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+```
+
+This is the pattern `examples/openshift_values.yaml` leans on: pick a
+fixed `runAsUser`/`fsGroup` per service and set it explicitly, once you
+know what your namespace's SCC actually allows (see the SCC section
+below — it's not always the plain-vanilla `restricted-v2` you'd expect).
+
+## Fix #4: add an actual OpenShift Route
+
+None of the above matters if there's no way to get external traffic in
+without an Ingress controller. `revproxy` gained a real `Route` template:
+
+```yaml
+# helm/revproxy/values.yaml
+openshiftRoute:
   enabled: false
-
-frontend-framework:
-  enabled: true
-  securityContext:
-    capabilities:
-      drop: ["ALL"]
-    runAsNonRoot: true
-    runAsUser: 1000
+  annotations: {}
+  host: ""
+  path: "/"
+  targetPort: "http"
+  tls:
+    termination: "edge"
+    insecureEdgeTerminationPolicy: "Redirect"
+  wildcardPolicy: "None"
 ```
 
-`global.frontendRoot` isn't cosmetic. It flips a `perl_set` directive in
-revproxy's nginx config that decides which upstream serves `/`, and gates
-blocks in the umbrella chart's `global-manifest.yaml`. Set the flag without
-enabling the matching chart and you get a Route that resolves fine but
-502s at `/`.
+rendering a plain `route.openshift.io/v1` object gated behind
+`openshiftRoute.enabled`, so it's opt-in and coexists with the chart's
+existing Ingress templates rather than replacing them.
 
-## Gotcha #1: login was broken, but not because of the login provider
+## Fix #5: `kubectl` isn't always the right tool
 
-The obvious first move for testing login without wiring up real Google
-OAuth is `fence`'s mock-auth mode:
+`wts`'s OIDC-client-registration job patches a Kubernetes Secret with the
+client ID/secret it gets back from fence, using `kubectl patch`. That's
+fine on plain Kubernetes; on some OpenShift setups the permissions model
+around who can patch what differs enough that it's simpler to swap in the
+OpenShift CLI image and use `oc` instead — gated behind a flag so it's
+opt-in per deployment:
 
 ```yaml
-fence:
-  FENCE_CONFIG:
-    MOCK_GOOGLE_AUTH: true
+# helm/wts/values.yaml
+oidc_job_openshift: true
 ```
-
-That flag alone should be enough — `LOGIN_OPTIONS` and `DEFAULT_LOGIN_IDP`
-already default to `google` in the chart. But the login button still didn't
-work. Pulling the live fence config out of the cluster showed why:
-
-```
-BASE_URL: https://localhost/user
-```
-
-The Route's actual host was `gen3.apps-crc.testing`. `BASE_URL` is built
-from `global.hostname`, which the values file being used had simply never
-set — it silently inherited the chart default of `localhost`. Every
-OIDC redirect URL, `OAUTH2_JWT_ISS`, and `FRAME_ANCESTORS` in the CSP header
-is templated from `BASE_URL`, so login worked in the sense that fence issued
-a valid session — it just redirected the browser back to `localhost`,
-which doesn't exist from the browser's point of view.
-
-The fix is one line, but it has to be the exact host the Route uses:
 
 ```yaml
-global:
-  hostname: "gen3.apps-crc.testing"
+# helm/wts/templates/wts-oidc.yaml
+{{- if .Values.oidc_job_openshift }}
+- name: oc
+  image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+  ...
+  oc patch secret wts-oidc-client --type=merge -p "..."
+{{- else }}
+- name: kubectl
+  image: {{ .Values.image.utilImage }}
+  ...
+{{- end }}
 ```
 
-After that, `BASE_URL` rendered correctly and the full mock-login flow
-worked: `GET /user/login/google` → `302` with a valid session cookie →
-`GET /user/user` → `200` with the mock user's identity, `iss` claim
-correctly pointing at the real host.
+## Fix #6: a `gen3_load` dependency that didn't need to be there
 
-## Gotcha #2 (twice): the namespace `LimitRange` you didn't know was there
+The shared `_db_setup_job.tpl` used by every service's `dbcreate` init job
+sourced a `gen3/gen3setup` helper via `gen3_load` before running its
+Postgres-readiness loop. The PR comments that out in favor of plain
+`echo`/shell — one less external dependency for a job that's really just
+"wait for Postgres, create the DB if it doesn't exist, patch a Secret so
+downstream pods know it's done." (Commit messages in the PR describe this
+alongside "postgresql 15+ support" and cronjob fixes for `metadata` and
+`fence` — the common thread across all of them is removing assumptions
+that didn't hold up outside the original target environment.)
 
-OpenShift projects often carry a `LimitRange` that injects default resource
-limits on any container that doesn't specify its own:
+## What we validated by actually deploying it
 
-```
-limits:
-  default:
-    cpu: 200m
-    memory: 256Mi
-  defaultRequest:
-    cpu: 10m
-    memory: 64Mi
-  type: Container
-```
+Reading a diff tells you what changed; it doesn't tell you whether the
+result actually works end to end. We took a values file built on top of
+this PR's changes (`examples/openshift_values.yaml`), did a clean
+`helm uninstall` / `helm install` cycle against a real OpenShift
+namespace, and pushed it through login and a data submission. Four things
+surfaced that the PR's diff alone wouldn't show you:
 
-This bit the deployment twice, in two different failure modes.
+**`global.hostname` has to match your Route host, exactly.** The PR gives
+you `openshiftRoute.host` to set the Route's hostname, but fence's
+`BASE_URL` (which drives every OAuth/OIDC redirect, `OAUTH2_JWT_ISS`, and
+the CSP `FRAME_ANCESTORS` header) is built from a separate value,
+`global.hostname`. Leave that at the chart default (`localhost`) and the
+portal loads fine, but clicking "Login" redirects to `https://localhost/...`.
+Not a bug in the PR — just a second value that needs to agree with the
+first one, easy to miss.
 
-**First: a pod that never even schedules.** The `postgresql` subchart's
-upstream default sets `primary.resources.requests.cpu: 250m` with no
-explicit `limits`. Combine that with the LimitRange's `200m` default limit
-and Kubernetes rejects the pod outright — a *request* can't exceed its
-*limit*:
+**Namespace `LimitRange`s can undo the port/UID work in a different way.**
+Plenty of OpenShift projects cap containers at a default CPU *limit*
+(commonly `200m`) if no limit is set explicitly. We hit this twice:
+`postgresql`'s upstream chart requests `250m` CPU with no explicit limit,
+which OpenShift outright rejects (`FailedCreate`, pod never even
+schedules) once the LimitRange injects its `200m` default. Separately,
+`fence` had no `resources` block in our values file at all, silently
+inherited the same `200m` limit, and got CPU-throttled under real login
+traffic — 8 to 24 second responses on `/user/user`, no errors anywhere,
+just slow. `kubectl get limitrange -o yaml` before you deploy, and give
+explicit `resources` to whatever's on your request hot path.
 
-```
-Warning  FailedCreate  statefulset/gen3-postgresql
-create Pod gen3-postgresql-0 in StatefulSet gen3-postgresql failed error:
-Pod "gen3-postgresql-0" is invalid: spec.containers[0].resources.requests:
-Invalid value: "250m": must be less than or equal to cpu limit of 200m
-```
+**Check which SCC you actually have before assuming you need more.** The
+namespace we deployed into turned out to carry `restricted-v2-anyuid`, not
+plain `restricted-v2` — an `anyuid`-flavored grant that permits fixed
+`runAsUser` values outside the namespace's assigned UID range. That's why
+the fixed UIDs in `examples/openshift_values.yaml` (`1000`, `1000660001`,
+`1000950000`) work at all. Worth checking
+(`kubectl get pod <pod> -o jsonpath='{.metadata.annotations.openshift\.io/scc}'`)
+before assuming your cluster needs a specific SCC grant it might already have.
 
-`kubectl get pods` shows nothing — there's no pod to show, just a
-StatefulSet quietly retrying `FailedCreate` forever. You have to check
-`kubectl describe statefulset` or `kubectl get events` to see it at all.
-Fix: give postgresql an explicit limit above its request.
+**`gen3-sdk` doesn't have a `curl -k` equivalent.** If your Route host
+isn't under the cluster's actual router wildcard domain (ours was chosen
+to match a local `/etc/hosts` entry, not the cluster's real domain), the
+router's TLS cert won't validate — `curl -k` shrugs this off, but
+`Gen3Auth`/`Gen3Submission` use plain `requests` with no verification
+override exposed. For a disposable dev cluster we globally disabled
+`requests` verification for the session; for anything closer to
+production, put the Route under the real router domain instead.
 
-**Second: a service that's just... slow, for no visible reason.** `fence`
-had no `resources` block in the values file at all, so it inherited the
-LimitRange's `200m` default *limit* (which is internally consistent, so
-nothing rejects it — it just schedules and runs). Once we started
-exercising the login flow, `kubectl top pod` showed fence sitting at
-`161m` of its `200m` ceiling. That's Linux's CFS scheduler throttling the
-process once it's burned its CPU-time allotment for the period — and it
-manifests as **8 to 24 second response times** on `/user/login/google` and
-`/user/user`, with nothing resembling an error anywhere in fence's logs.
-From the outside it looks like "fence is flaky." It isn't; it's CPU-starved
-by a default nobody set on purpose.
+With those four addressed, the full path worked: Route → mock Google
+login → `fence-create token-create` for a scripted API key → `gen3-sdk`
+creating a Program, a Project, and an Experiment node under it, verified
+by reading the record back through peregrine's GraphQL endpoint. The
+`docs/openshift.md` file has the exact commands for reproducing all of
+this, including the mock-auth/API-key/submission flow in full.
 
-```yaml
-fence:
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-    requests:
-      cpu: 100m
-      memory: 256Mi
-```
+## Where things stand
 
-After that change, the same requests dropped to 0.6–0.7 seconds. We gave
-`revproxy` similar headroom, since it's the single point all traffic flows
-through and was subject to the same silent default.
-
-**Lesson:** on any OpenShift namespace, run `kubectl get limitrange -o yaml`
-before you deploy, and give an explicit `resources` block to at least the
-services on your request hot path (proxy + auth), even if you think the
-defaults are "probably fine."
-
-## Gotcha #3: Bitnami moved the cheese
-
-The values file we started from pinned `postgresql.image.repository` to
-`bitnamilegacy/postgresql`. That tag now returns a flat `401`:
-
-```
-Failed to pull image "quay.io/bitnamilegacy/postgresql:16.6.0-debian-12-r2":
-unauthorized: access to the requested resource is not authorized
-```
-
-Bitnami restructured its free image distribution in 2025, and a lot of
-previously-public "legacy" tags now require registry auth. The umbrella
-chart's own default (`quay.io/cdis/docker-bitnami-pgvector:16`, a
-CDIS-maintained mirror with the pgvector extension baked in) is unaffected
-— the fix was simply to stop overriding the image and let the chart default
-apply.
-
-## Gotcha #4: gen3-sdk and the Route's certificate
-
-Once login worked, the next test was a real submission via `gen3-sdk`
-(`Gen3Auth` + `Gen3Submission`). First call:
-
-```
-ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED]
-certificate verify failed: Hostname mismatch, certificate is not valid
-for 'gen3.apps-crc.testing'
-```
-
-The Route's host, `gen3.apps-crc.testing`, was chosen to match a local
-`/etc/hosts` entry — but this is a real OpenShift cluster, and its router's
-actual TLS certificate covers the cluster's real wildcard domain
-(`*.apps.<cluster-domain>`), not an arbitrary name we picked. `curl -k`
-papers over this without complaint; `gen3-sdk`'s HTTP layer (plain
-`requests`) has no equivalent flag exposed through `Gen3Auth`.
-
-For a disposable dev/test cluster, the workaround is to disable `requests`
-verification for the whole session:
-
-```python
-import urllib3, requests
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-_orig = requests.Session.request
-requests.Session.request = lambda self, *a, **kw: _orig(self, *a, **{**kw, "verify": False})
-```
-
-For anything that isn't a throwaway environment, the real fix is to put the
-Route under the cluster's actual router domain (or bring your own
-certificate for the custom host) so verification works the normal way.
-
-## Gotcha #5: check which SCC you actually have
-
-`docs/openshift.md` already documented the classic `restricted-v2` problem
-— arbitrary non-root UIDs, all capabilities dropped, and an `nginx: Operation
-not permitted` failure the first time an image tries to bind a privileged
-port or write somewhere UID-specific. The existing values file carries
-fixed `runAsUser`/`fsGroup` values for `portal`/`revproxy`/`postgresql`/
-`elasticsearch` to work around exactly that.
-
-What we hadn't checked was *which* SCC this particular namespace actually
-uses:
-
-```
-$ kubectl get pod <pod> -o jsonpath='{.metadata.annotations.openshift\.io/scc}'
-restricted-v2-anyuid
-```
-
-Not plain `restricted-v2` — an `anyuid`-flavored variant. That's why fixed
-UIDs outside the namespace's assigned range
-(`openshift.io/sa.scc.uid-range: 1000950000/10000`, per the namespace
-annotation) worked without complaint: the `anyuid` grant permits running as
-whatever UID the pod spec asks for, not just the namespace's assigned range.
-Worth checking before assuming you need to request elevated SCC access —
-you might already have it.
-
-## Proving it end to end: a real submission
-
-Login working is necessary but not sufficient — the actual point of a data
-commons is submitting and reading data. With mock auth in place, we tested
-the full path: mint a mock identity with real authorization, get an API
-key the way `gen3-sdk` expects, and submit through the standard Program →
-Project → Record hierarchy.
-
-**Picking the right mock user.** `MOCK_GOOGLE_AUTH` lets fence authenticate
-any username via a `dev_login` cookie, but *authorization* comes from
-`user.yaml` (loaded into the `useryaml` ConfigMap by a Job at install time).
-The chart's sample `user.yaml` only grants submitter policies to
-`username1@gmail.com` — logging in as the default mock user
-(`test@example.com`) gets you read-only `open_data_reader` and nothing else.
-Sanity-check what's actually loaded:
-
-```
-kubectl get cm useryaml -o jsonpath='{.data.useryaml}'
-```
-
-**Minting an API key without a browser.** The portal's "Create an API Key"
-button just calls `POST /user/credentials/api` while authenticated. For
-scripting, the same thing can be done from inside the fence pod:
-
-```
-kubectl exec deploy/fence-deployment -- fence-create token-create \
-  --type access --username username1@gmail.com \
-  --scopes openid,user,data,admin,credentials
-```
-
-The first attempt without `credentials` in the scope list failed with a
-clear, useful error (`token is missing required scopes: {'credentials'}`)
-— worth calling out only because it's exactly the kind of error message
-you want and don't always get. Exchange that access token for a long-lived
-API key:
-
-```
-curl -k -X POST "https://gen3.apps-crc.testing/user/credentials/api" \
-  -H "Authorization: bearer <access-token>" -H "Content-Type: application/json" -d '{}'
-# => {"api_key": "<refresh-token-jwt>", "key_id": "..."}
-```
-
-Save that as `credentials.json` and hand it to `Gen3Auth(refresh_file=...)`.
-
-**Programs and projects aren't real until you create them.** `user.yaml`'s
-policy for `MyFirstProgram`/`MyFirstProject` pre-authorizes that path, but
-doesn't create the underlying sheepdog nodes. A GraphQL query for existing
-programs came back empty even though the authz block listed
-`/programs/MyFirstProgram/projects/MyFirstProject`. Bootstrapping them is
-a normal `gen3-sdk` call:
-
-```python
-from gen3.auth import Gen3Auth
-from gen3.submission import Gen3Submission
-
-auth = Gen3Auth(endpoint="https://gen3.apps-crc.testing", refresh_file="credentials.json")
-sub = Gen3Submission("https://gen3.apps-crc.testing", auth)
-
-sub.create_program({"type": "program", "name": "MyFirstProgram",
-                     "dbgap_accession_number": "MyFirstProgram"})
-sub.create_project("MyFirstProgram", {"type": "project", "code": "MyFirstProject",
-                    "dbgap_accession_number": "MyFirstProject", "name": "MyFirstProject"})
-sub.submit_record("MyFirstProgram", "MyFirstProject", {
-    "type": "experiment", "submitter_id": "test-experiment-1",
-    "projects": [{"code": "MyFirstProject"}],
-})
-```
-
-All three calls succeeded on the first try once the API key and TLS
-workaround were in place, and a GraphQL read against peregrine confirmed
-the record was actually persisted:
-
-```
-{"data":{"experiment":[{"project_id":"MyFirstProgram-MyFirstProject","submitter_id":"test-experiment-1"}]}}
-```
-
-## Where this leaves us
-
-Every one of these issues was fixable with a values-file change, not a
-chart-code change — which is the right outcome, but it also means none of
-them are visible unless you actually deploy and exercise the thing. A chart
-that renders cleanly with `helm template` and even installs successfully
-can still have a completely broken login flow (hostname mismatch), a pod
-that silently never starts (LimitRange), or a service that "works" but is
-unusable under load (LimitRange again, different failure mode). The fix in
-every case was small; finding it required actually clicking the login
-button and running a submission, not just checking that pods reached
-`Running`.
-
-The working reference values are in
-[`examples/openshift_values.yaml`](../../examples/openshift_values.yaml),
-and the full gotcha list with copy-pasteable commands lives in
-[`docs/openshift.md`](../openshift.md).
+The chart-level work (PR #552) is the real substance here: over two dozen
+subcharts updated with a consistent, minimal pattern — parameterize the
+port, give nginx somewhere to write, stop hardcoding UIDs, add a Route.
+None of it is exotic; all of it is the specific set of assumptions that
+plain-Kubernetes Helm charts tend to make without realizing they're
+assumptions until OpenShift's defaults refuse to go along with them. What
+we added on top is smaller: a working reference values file, and the
+handful of environment-specific gotchas (hostname/BASE_URL agreement,
+LimitRange interactions, SCC variants, TLS verification) that only show
+up once you actually deploy and click through the thing.
