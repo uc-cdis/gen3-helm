@@ -79,7 +79,7 @@ spec:
       containers:
       - name: funnel-executor-{{`{{.TaskId}}`}}
         image: {{`{{.Image}}`}}
-        imagePullPolicy: {{`{{.ImagePullPolicy | default 'Always'}}`}}
+        imagePullPolicy: {{`{{if .ImagePullPolicy}}{{.ImagePullPolicy}}{{else}}Always{{end}}`}}
         securityContext:
           # Block the ability to gain more privileges
           allowPrivilegeEscalation: false
