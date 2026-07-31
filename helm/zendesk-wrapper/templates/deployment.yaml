@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: argo-wrapper-deployment
+  name: zendesk-wrapper-deployment
   {{- with .Values.podAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "argo-wrapper.labels" . | nindent 4 }}
+    {{- include "zendesk-wrapper.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "argo-wrapper.selectorLabels" . | nindent 6 }}
+      {{- include "zendesk-wrapper.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -23,24 +23,10 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "argo-wrapper.selectorLabels" . | nindent 8 }}
+        {{- include "zendesk-wrapper.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
-        # gen3 networkpolicy labels
         netnolimit: 'yes'
         public: 'yes'
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/argo-wrapper-config.yaml") . | sha256sum }}
-        {{- $metricsEnabled := .Values.metricsEnabled }}
-      {{- if eq $metricsEnabled nil }}
-        {{- $metricsEnabled = .Values.global.metricsEnabled }}
-      {{- end }}
-      {{- if eq $metricsEnabled nil }}
-        {{- $metricsEnabled = true }}
-      {{- end }}
-
-      {{- if $metricsEnabled }}
-        {{- include "common.grafanaAnnotations" . | nindent 8 }}
-      {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -49,31 +35,43 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          livenessProbe:
+          readinessProbe:
             httpGet:
-              path: /test
+              path: /_status/
               port: http
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /_status/
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+            failureThreshold: 6
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - /src/start.sh
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
-              name: http
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-          {{- with .Values.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- toYaml .Values.env | nindent 12 }}
+            - name: ZENDESK_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: zendesk-wrapper-secret
+                  key: clientSecret
+            - name: ZENDESK_OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: zendesk-wrapper-secret
+                  key: clientID

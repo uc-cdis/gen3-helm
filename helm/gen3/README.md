@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.67](https://img.shields.io/badge/Version-0.3.67-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.78](https://img.shields.io/badge/Version-0.3.78-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -21,32 +21,32 @@ Helm chart to deploy Gen3 Data Commons
 | file://../access-backend | access-backend | 0.1.22 |
 | file://../ambassador | ambassador | 0.1.39 |
 | file://../arborist | arborist | 0.1.36 |
-| file://../argo-wrapper | argo-wrapper | 0.1.32 |
-| file://../audit | audit | 0.1.45 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.43 |
+| file://../argo-wrapper | argo-wrapper | 0.1.33 |
+| file://../audit | audit | 0.1.46 |
+| file://../aws-es-proxy | aws-es-proxy | 0.1.44 |
 | file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.4 |
 | file://../cedar | cedar | 0.1.28 |
-| file://../cohort-middleware | cohort-middleware | 0.1.24 |
+| file://../cohort-middleware | cohort-middleware | 0.1.25 |
 | file://../common | common | 0.1.38 |
 | file://../dashboard | dashboard | 0.1.23 |
 | file://../data-upload-cron | data-upload-cron | 0.1.8 |
 | file://../datareplicate | datareplicate | 0.1.23 |
 | file://../dicom-server | dicom-server | 0.1.33 |
-| file://../embedding-management-service | embedding-management-service | 0.1.9 |
-| file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.80 |
+| file://../embedding-management-service | embedding-management-service | 0.1.10 |
+| file://../etl | etl | 0.1.24 |
+| file://../fence | fence | 0.1.81 |
 | file://../frontend-framework | frontend-framework | 0.1.31 |
-| file://../funnel | funnel | 0.1.29 |
+| file://../funnel | funnel | 0.1.31 |
 | file://../gen3-analysis | gen3-analysis | 0.1.14 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.17 |
-| file://../gen3-workflow | gen3-workflow | 0.1.24 |
-| file://../guppy | guppy | 0.1.39 |
-| file://../hatchery | hatchery | 0.1.71 |
+| file://../gen3-workflow | gen3-workflow | 0.1.27 |
+| file://../guppy | guppy | 0.1.40 |
+| file://../hatchery | hatchery | 0.1.72 |
 | file://../indexd | indexd | 0.1.49 |
 | file://../jeg | jeg | 0.1.3 |
-| file://../manifestservice | manifestservice | 0.1.44 |
-| file://../metadata | metadata | 0.1.46 |
+| file://../manifestservice | manifestservice | 0.1.45 |
+| file://../metadata | metadata | 0.1.47 |
 | file://../neuvector | neuvector | 0.1.2 |
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.7 |
@@ -54,14 +54,15 @@ Helm chart to deploy Gen3 Data Commons
 | file://../orthanc | orthanc | 0.1.17 |
 | file://../peregrine | peregrine | 0.1.44 |
 | file://../portal | portal | 0.1.62 |
-| file://../requestor | requestor | 0.1.36 |
-| file://../revproxy | revproxy | 0.1.65 |
-| file://../sheepdog | sheepdog | 0.1.45 |
+| file://../requestor | requestor | 0.1.37 |
+| file://../revproxy | revproxy | 0.1.68 |
+| file://../sheepdog | sheepdog | 0.1.46 |
 | file://../sower | sower | 0.1.48 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.49 |
 | file://../vectis-overlays | vectis-overlays | 0.1.3 |
 | file://../workspace-proxy | workspace-proxy | 0.1.3 |
-| file://../wts | wts | 0.1.42 |
+| file://../wts | wts | 0.1.43 |
+| file://../zendesk-wrapper | zendesk-wrapper | 0.1.1 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 
@@ -256,7 +257,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"global":{"imageRegistry":"quay.io"},"image":{"repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"registry":"quay.io","repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |
@@ -278,3 +279,4 @@ Helm chart to deploy Gen3 Data Commons
 | workspace-proxy | map | `{"enabled":false}` | workspace-proxy — per-user workspace HTTP/WebSocket router. |
 | workspace-proxy.enabled | bool | `false` | Whether to deploy the workspace-proxy subchart. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
+| zendesk-wrapper.enabled | bool | `false` | Whether to deploy the zendesk-wrapper subchart. |

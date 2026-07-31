@@ -270,6 +270,11 @@ extraServices:
 #    authzPolicy: "protein-paint"
 #    authzService: "protein-paint"
 #    csrfCheck: true
+#    customNginxConfigs: |
+#      proxy_buffering off;
+#      proxy_cache off;
+#      proxy_read_timeout 1h;
+#      proxy_send_timeout 1h;
 
 # -- (map) Raw nginx location blocks to add or override entries in the revproxy-nginx-subconf ConfigMap.
 # Keys are the conf filename (e.g. "guppy-service.conf"). A key matching a built-in static conf file

@@ -52,6 +52,8 @@ spec:
         - name: manifestservice
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
             {{- if and .Values.manifestserviceG3auto.awsaccesskey .Values.manifestserviceG3auto.awssecretkey }}
