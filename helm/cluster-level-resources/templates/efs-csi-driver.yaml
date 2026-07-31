@@ -27,11 +27,11 @@ spec:
           controller:
             serviceAccount:
               annotations:
-                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-controller
+                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-controller
           node:
             serviceAccount:
               annotations:
-                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-node
+                eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/{{ .Values.eksClusterName | default .Values.cluster }}--kube-system--efs-csi-node
       {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
