@@ -70,6 +70,7 @@ spec:
               "s3:PutLifecycleConfiguration",
               "s3:GetBucketVersioning",
               "s3:PutBucketVersioning",
+              "s3:ListBucketVersions",
               "s3:DeleteObjectVersion",
               "s3:GetBucketNotification",
               "s3:PutBucketNotification"
