@@ -4,12 +4,6 @@
 
 A Helm chart for AWS ES Proxy Service for gen3
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.38 |
-
 ## Values
 
 | Key | Type | Default | Description |

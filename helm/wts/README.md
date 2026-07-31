@@ -8,7 +8,6 @@ A Helm chart for gen3 workspace token service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

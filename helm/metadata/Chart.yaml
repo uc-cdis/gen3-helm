@@ -24,9 +24,6 @@ version: 0.1.47
 appVersion: "master"
 
 dependencies:
-  - name: common
-    version: 0.1.38
-    repository: file://../common
   - name: postgresql
     version: 11.9.13
     repository: "https://charts.bitnami.com/bitnami"

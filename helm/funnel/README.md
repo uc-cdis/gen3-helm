@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.38 |
+| https://calypr.github.io/helm-charts | funnel | 0.1.99-rc.36 |
 
 ## Values
 

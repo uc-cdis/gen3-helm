@@ -4,12 +4,6 @@
 
 A Helm chart for gen3 Argo Wrapper Service
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.38 |
-
 ## Values
 
 | Key | Type | Default | Description |
