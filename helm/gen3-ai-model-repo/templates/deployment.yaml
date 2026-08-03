@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen3-ai-model-repo-deployment
+  labels:
+    {{- include "gen3-ai-model-repo.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "gen3-ai-model-repo.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "gen3-ai-model-repo.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        netnolimit: 'yes'
+        public: 'yes'
+        userhelper: 'yes'
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      volumes:
+        - name: gen3-ai-model-repo-g3auto-volume
+          secret:
+            secretName: gen3aimodelrepo-g3auto
+        - name: model-storage
+          emptyDir: {}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+            - name: DB_HOST
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: host}}
+            - name: DB_PORT
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: port}}
+            - name: DB_USER
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: username}}
+            - name: DB_PASSWORD
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: password}}
+            - name: DB_DATABASE
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: database}}
+            - name: CONFIG_PATH
+              value: /services/gen3_ai_model_repo/.env
+            - name: DBREADY
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: dbcreated}}
+          ports:
+            - containerPort: 4141
+              name: http
+          livenessProbe:
+            httpGet: {path: /_status, port: http}
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet: {path: /_status, port: http}
+          volumeMounts:
+            - mountPath: /services/gen3_ai_model_repo/.env
+              name: gen3-ai-model-repo-g3auto-volume
+              readOnly: true
+              subPath: gen3-ai-model-repo.env
+            - mountPath: {{ .Values.storage.localPath }}
+              name: model-storage
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      initContainers:
+        - name: gen3-ai-model-repo-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PGPASSWORD
+              {{- if $.Values.global.dev }}
+              valueFrom: {secretKeyRef: {name: {{ .Release.Name }}-postgresql, key: postgres-password}}
+              {{- else if $.Values.global.postgres.externalSecret }}
+              valueFrom: {secretKeyRef: {name: {{ $.Values.global.postgres.externalSecret }}, key: password}}
+              {{- else }}
+              value: {{ .Values.global.postgres.master.password | quote }}
+              {{- end }}
+            - name: PGUSER
+              {{- if $.Values.global.postgres.externalSecret }}
+              valueFrom: {secretKeyRef: {name: {{ $.Values.global.postgres.externalSecret }}, key: username}}
+              {{- else }}
+              value: {{ .Values.global.postgres.master.username | quote }}
+              {{- end }}
+            - name: PGPORT
+              value: {{ .Values.global.postgres.master.port | quote }}
+            - name: PGHOST
+              {{- if $.Values.global.dev }}
+              value: "{{ .Release.Name }}-postgresql"
+              {{- else }}
+              value: {{ .Values.global.postgres.master.host | quote }}
+              {{- end }}
+            - name: PGDATABASE
+              valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: database}}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              DATABASE_URL="postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=disable"
+              dbmate -u "$DATABASE_URL" -d "/services/gen3_ai_model_repo/db/migrations" migrate

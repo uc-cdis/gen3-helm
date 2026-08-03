@@ -189,6 +189,9 @@ datareplicate:
 embedding-management-service:
   enabled: false
 
+gen3-ai-model-repo:
+  enabled: false
+  
 etl:
   # -- (bool) Whether to deploy the etl subchart.
   enabled: true
