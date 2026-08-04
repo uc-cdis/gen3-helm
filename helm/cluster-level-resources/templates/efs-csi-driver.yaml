@@ -21,7 +21,7 @@ spec:
       {{- else }}
         values: |
           image:
-            tag: v3.2.0
+            tag: v3.3.0
           useFIPS: true
 
           controller:
