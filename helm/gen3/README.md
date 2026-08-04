@@ -1,10 +1,6 @@
 # gen3
 
-<<<<<<< HEAD
-![Version: 0.3.48](https://img.shields.io/badge/Version-0.3.48-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
-=======
 ![Version: 0.3.78](https://img.shields.io/badge/Version-0.3.78-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
->>>>>>> origin/master
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -22,29 +18,6 @@ Helm chart to deploy Gen3 Data Commons
 
 | Repository | Name | Version |
 |------------|------|---------|
-<<<<<<< HEAD
-| file://../access-backend | access-backend | 0.1.19 |
-| file://../ambassador | ambassador | 0.1.36 |
-| file://../arborist | arborist | 0.1.33 |
-| file://../argo-wrapper | argo-wrapper | 0.1.28 |
-| file://../audit | audit | 0.1.41 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.40 |
-| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.1 |
-| file://../cedar | cedar | 0.1.25 |
-| file://../cohort-middleware | cohort-middleware | 0.1.21 |
-| file://../common | common | 0.1.36 |
-| file://../dashboard | dashboard | 0.1.19 |
-| file://../data-upload-cron | data-upload-cron | 0.1.5 |
-| file://../datareplicate | datareplicate | 0.1.19 |
-| file://../dicom-server | dicom-server | 0.1.29 |
-| file://../embedding-management-service | embedding-management-service | 0.1.6 |
-| file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.78 |
-| file://../frontend-framework | frontend-framework | 0.1.28 |
-| file://../funnel | funnel | 0.1.24 |
-| file://../gen3-analysis | gen3-analysis | 0.1.11 |
-| file://../gen3-embeddings | gen3-embeddings | 0.1.0 |
-=======
 | file://../access-backend | access-backend | 0.1.22 |
 | file://../ambassador | ambassador | 0.1.39 |
 | file://../arborist | arborist | 0.1.36 |
@@ -65,7 +38,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../frontend-framework | frontend-framework | 0.1.31 |
 | file://../funnel | funnel | 0.1.31 |
 | file://../gen3-analysis | gen3-analysis | 0.1.14 |
->>>>>>> origin/master
+| file://../gen3-embeddings | gen3-embeddings | 0.1.0 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.17 |
 | file://../gen3-workflow | gen3-workflow | 0.1.28 |
@@ -76,20 +49,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../manifestservice | manifestservice | 0.1.45 |
 | file://../metadata | metadata | 0.1.47 |
 | file://../neuvector | neuvector | 0.1.2 |
-<<<<<<< HEAD
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.1 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.4 |
-| file://../ohif-viewer | ohif-viewer | 0.1.12 |
-| file://../orthanc | orthanc | 0.1.13 |
-| file://../peregrine | peregrine | 0.1.41 |
-| file://../portal | portal | 0.1.57 |
-| file://../requestor | requestor | 0.1.33 |
-| file://../revproxy | revproxy | 0.1.59 |
-| file://../sheepdog | sheepdog | 0.1.41 |
-| file://../sower | sower | 0.1.45 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.45 |
-| file://../wts | wts | 0.1.39 |
-=======
 | file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
 | file://../ohdsi-webapi | ohdsi-webapi | 0.1.7 |
 | file://../ohif-viewer | ohif-viewer | 0.1.16 |
@@ -105,7 +64,6 @@ Helm chart to deploy Gen3 Data Commons
 | file://../workspace-proxy | workspace-proxy | 0.1.3 |
 | file://../wts | wts | 0.1.43 |
 | file://../zendesk-wrapper | zendesk-wrapper | 0.1.1 |
->>>>>>> origin/master
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
 

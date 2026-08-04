@@ -41,11 +41,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-<<<<<<< HEAD
-    version: 0.1.36
-=======
     version: 0.1.38
->>>>>>> origin/master
     repository: file://../common
   - name: dashboard
     version: 0.1.23
@@ -72,11 +68,7 @@ dependencies:
     repository: "file://../frontend-framework"
     condition: frontend-framework.enabled
   - name: fence
-<<<<<<< HEAD
-    version: 0.1.78
-=======
     version: 0.1.81
->>>>>>> origin/master
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
@@ -128,11 +120,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-<<<<<<< HEAD
-    version: 0.1.59
-=======
     version: 0.1.68
->>>>>>> origin/master
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -229,11 +217,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-<<<<<<< HEAD
-version: 0.3.48
-=======
 version: 0.3.78
->>>>>>> origin/master
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
