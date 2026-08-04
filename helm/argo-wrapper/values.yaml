@@ -111,12 +111,23 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 128Mi
 
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 8000
+  targetPort: 8000
 
 # -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
 netPolicy:

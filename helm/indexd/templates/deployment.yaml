@@ -88,6 +88,14 @@ spec:
               value: {{ .Values.defaultPrefix }}
             - name: USE_SINGLE_TABLE
               value: {{ .Values.useSingleTable | quote }}
+            - name: DRS_AUTHORIZATION_METADATA
+              value: {{ .Values.trustedIssuers | toJson | quote }}
+            - name: DEFAULT_BEARER_ISSUER
+              value: {{ default (printf "https://%s/user" .Values.global.hostname) .Values.trustedIssuers.defaultBearerIssuer | quote }}
+            - name: DEFAULT_PASSPORT_ISSUER
+              value: {{ .Values.trustedIssuers.defaultPassportIssuer | quote }}
+            - name: CLOUD_PROVIDER_MAP
+              value: {{ .Values.cloudProviderMap | toJson | quote }}
             {{- toYaml .Values.env | nindent 12  }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
@@ -95,7 +103,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:

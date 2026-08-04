@@ -153,6 +153,35 @@ spec:
               readOnly: true
               mountPath: "/shared/appcreds.json"
               subPath: appcreds.json
+        {{- if .Values.oidc_job_openshift }}
+        - name: oc
+          image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+          env:
+            - name: HOME
+              value: /tmp
+          volumeMounts:
+            - name: shared-volume
+              mountPath: /shared
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              set -euxo pipefail
+              while [ ! -e /shared/client_id ]; do
+                sleep 5
+              done
+
+              if grep -q "happy" /shared/client_id; then
+                echo "Client already exists- do nothing."
+                exit 0
+              fi
+
+              CLIENT_ID="$(base64 < /shared/client_id | tr -d '\n')"
+              CLIENT_SECRET="$(base64 < /shared/client_secret | tr -d '\n')"
+
+              oc patch secret wts-oidc-client --type=merge \
+                -p "{\"data\":{\"client_id\":\"${CLIENT_ID}\",\"client_secret\":\"${CLIENT_SECRET}\"}}"
+        {{- else }}
         - name: kubectl
           image: {{ .Values.image.utilImage }}
           volumeMounts:
@@ -177,4 +206,5 @@ spec:
                 CLIENT_SECRET=$(cat /shared/client_secret | base64)
                 kubectl patch secret/wts-oidc-client --patch="{\"data\":{\"client_secret\":\"${CLIENT_SECRET}\", \"client_id\":\"${CLIENT_ID}\"}}"
               fi
+        {{- end }}
 {{- end }}

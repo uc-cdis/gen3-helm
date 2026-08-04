@@ -33,6 +33,8 @@ spec:
       labels:
         authprovider: "yes"
         netnolimit: "yes"
+        internet: "yes"
+        linklocal: "yes"
         userhelper: "yes"
         {{- include "fence.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
@@ -46,11 +48,13 @@ spec:
         {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: fence
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
             - name: https
               containerPort: 443
@@ -88,11 +92,13 @@ spec:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       initContainers:
         - name: fence-init
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
             - name: https
               containerPort: 443

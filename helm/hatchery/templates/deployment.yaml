@@ -33,6 +33,7 @@ spec:
         netnolimit: "yes"
         public: "yes"
         userhelper: "yes"
+        netvpc: "yes"
         {{- include "hatchery.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
@@ -56,7 +57,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:

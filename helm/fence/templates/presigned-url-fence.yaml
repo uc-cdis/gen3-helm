@@ -35,6 +35,8 @@ spec:
         authprovder: "yes"
         netnolimit: "yes"
         public: "yes"
+        internet: "yes"
+        linklocal: "yes"
         userhelper: "yes"
     spec:
       serviceAccountName: {{ include "fence.serviceAccountName" . }}
@@ -46,7 +48,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
             - name: https
               containerPort: 443

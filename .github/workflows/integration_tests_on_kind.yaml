@@ -4,8 +4,9 @@ on:
   pull_request:
     paths:
       - .github/workflows/integration_tests_on_kind.yaml
-      - /helm/funnel/**
-      - /helm/gen3-workflow/**
+      - helm/funnel/**
+      - helm/gen3-workflow/**
+      - helm/revproxy/gen3.nginx.conf/gen3-workflow-service.conf
 
 permissions:
   id-token: write
@@ -19,6 +20,7 @@ jobs:
     uses: uc-cdis/.github/.github/workflows/integration_tests.yaml@master
     with:
       EXTERNAL_TO_CTDS: "true"
+      HELM_BRANCH: ${{ github.event.pull_request.head.ref }}
       SERVICE_TO_TEST: gen3_workflow
       SETUP_SCRIPT_1: https://raw.githubusercontent.com/uc-cdis/gen3-workflow/refs/heads/master/.github/workflows/integration_tests_on_kind/ci_start_kind_cluster.sh
       SETUP_SCRIPT_2: https://raw.githubusercontent.com/uc-cdis/gen3-workflow/refs/heads/master/.github/workflows/integration_tests_on_kind/ci_override_config_and_start_minio.sh

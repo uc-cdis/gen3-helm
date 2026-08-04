@@ -142,12 +142,23 @@ nameOverride: ""
 # -- (string) Override the full name of the deployment.
 fullnameOverride: ""
 
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
+  targetPort: 8000
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:

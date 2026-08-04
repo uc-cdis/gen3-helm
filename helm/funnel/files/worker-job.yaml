@@ -1,0 +1,117 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{`{{.TaskId}}`}}
+  namespace: {{`{{.JobsNamespace}}`}}
+  labels:
+    app: funnel-worker
+    task-id: {{`{{.TaskId}}`}}
+    # Custom Labels support
+    {{`
+    {{- range $key, $value := .ExtraLabels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+    {{- range $key, $value := .NodeSelector }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+    `}}
+spec:
+  backoffLimit: {{ .Values.Kubernetes.Worker.backoffLimit}}
+  completions: {{ .Values.Kubernetes.Worker.completions }}
+  template:
+    metadata:
+      labels:
+        app: funnel-worker
+        task-id: {{`{{.TaskId}}`}}
+
+    # Annotations
+    {{- with .Values.Kubernetes.Worker.Annotations }}
+      annotations:
+      {{ toYaml . | indent 2 }}
+    {{- end }}
+
+    spec:
+    
+    {{ if .Values.Kubernetes.Worker.PriorityClassName }}
+      priorityClassName: {{ .Values.Kubernetes.Worker.PriorityClassName }}
+    {{ end }}
+      # NodeSelectors
+      # https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#create-a-pod-that-gets-scheduled-to-your-chosen-node
+      {{`
+      {{- if .NodeSelector }}
+      nodeSelector:
+        {{- range $key, $value := .NodeSelector }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      `}}
+
+      # Tolerations
+      # https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      {{`
+      {{- if .Tolerations }}
+      tolerations:
+        {{- range .Tolerations }}
+        - key: {{ .Key }}
+          operator: {{ .Operator }}
+          effect: {{ .Effect }}
+          {{if .Value}}value: {{ .Value }}{{end}}
+          {{if .TolerationSeconds}}tolerationSeconds: {{ .TolerationSeconds }}{{end}}
+        {{- end }}
+      {{- end }}
+      `}}
+
+      # SecurityContext
+      # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+      {{`
+      {{- if .securityContext }}
+      securityContext:
+        fsGroup: {{ .securityContext.fsGroup }}
+        runAsUser: {{ .securityContext.runAsUser }}
+        runAsGroup: {{ .securityContext.runAsGroup }}
+        supplementalGroups: {{ .securityContext.supplementalGroups }}
+      {{- end }}
+      `}}
+
+      serviceAccountName: {{`{{.ServiceAccountName}}`}}
+      restartPolicy: {{ .Values.Kubernetes.Worker.restartPolicy }}
+      containers:
+      - name: funnel-worker-{{`{{.TaskId}}`}}
+        image: {{`{{.Image}}`}}
+        imagePullPolicy: Always
+        command:
+        - /bin/sh
+        - -c
+        args:
+        - |
+          funnel worker run --config /etc/config/funnel-worker.yaml --taskID {{`{{.TaskId}}`}}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+            ephemeral-storage: {{ .Values.resources.requests.ephemeral_storage }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+            ephemeral-storage: {{ .Values.resources.limits.ephemeral_storage }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        {{`
+        {{- if .NeedsPVC }}
+        - name: funnel-storage-{{.TaskId}}
+          mountPath: /opt/funnel/funnel-work-dir/{{.TaskId}}
+          subPath: {{.TaskId}}
+        {{- end }}
+        `}}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: funnel-worker-config-{{`{{.TaskId}}`}}
+      {{`
+      {{- if .NeedsPVC }}
+      - name: funnel-storage-{{.TaskId}}
+        persistentVolumeClaim:
+          claimName: funnel-worker-pvc-{{.TaskId}}
+      {{- end }}
+      `}}

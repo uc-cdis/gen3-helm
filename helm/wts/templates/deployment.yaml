@@ -73,6 +73,8 @@ spec:
       serviceAccountName: workspace-token-service
       containers:
         - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
@@ -82,18 +84,18 @@ spec:
             subPath: appcreds.json
           ports:
             - name: http
-              containerPort: 80
+              containerPort:  {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
             failureThreshold: 10
             initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: /_status
-              port: 80
+              port: http
           env:
           - name: OIDC_CLIENT_ID
             valueFrom:
@@ -147,6 +149,8 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
       - name: wts-db-migrate
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
