@@ -16,7 +16,7 @@ spec:
           crds:
             enabled: true
           {{- if (index .Values "cert-manager" "configuration" "enabled") }}
-          {{- nindent 10 (toYaml .Values.cert-manager.configuration") }}
+          {{ toYaml (index .Values "cert-manager" "configuration") |  nindent 10 }}
           {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
