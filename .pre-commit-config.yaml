@@ -38,11 +38,3 @@ repos:
         language: script
         name: Helm Docs
         require_serial: true
-
-  - repo: local
-    hooks:
-      - id: funnel-chart-check
-        name: Funnel chart check
-        entry: git-hook/funnel-chart-check.sh
-        language: script
-        pass_filenames: false

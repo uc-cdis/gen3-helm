@@ -178,6 +178,16 @@ resources:
     # -- (string) The maximum amount of memory the container can use
     memory: 2Gi
 
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
 # -- (map) Kubernetes service information.
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
