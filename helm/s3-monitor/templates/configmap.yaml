@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s3-monitor-script
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "s3-monitor.labels" . | nindent 4 }}
+data:
+  schema.sql: |
+{{ .Files.Get "files/schema.sql" | indent 4 }}
+  table.sql: |
+{{ .Files.Get "files/table.sql" | indent 4 }}
+  index.sql: |
+{{ .Files.Get "files/index.sql" | indent 4 }}
+  sync_s3.py: |
+{{ .Files.Get "files/sync_s3.py" | indent 4 }}
+  run.sh: |
+{{ .Files.Get "files/run.sh" | indent 4 }}

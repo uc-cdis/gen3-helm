@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: s3-monitor
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "s3-monitor.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  concurrencyPolicy: {{ .Values.job.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.job.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.job.failedJobsHistoryLimit }}
+
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.job.backoffLimit }}
+      ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+
+      template:
+        metadata:
+          labels:
+            {{- include "s3-monitor.labels" . | nindent 12 }}
+        spec:
+          serviceAccountName: {{ .Values.serviceAccount.name }}
+          restartPolicy: OnFailure
+
+          containers:
+            - name: s3-monitor
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              command: ["/bin/bash", "/scripts/run.sh"]
+
+              env:
+                - name: REGION
+                  value: {{ .Values.env.region | quote }}
+                - name: CLUSTER_ID
+                  value: {{ .Values.env.clusterId | quote }}
+                - name: SECRET_NAME
+                  value: {{ .Values.env.rdsSecretName | quote }}
+                - name: DB_NAME
+                  value: {{ .Values.env.dbName | quote }}
+                - name: S3_BUCKET
+                  value: {{ .Values.env.s3Bucket | quote }}
+                - name: APPLY
+                  value: {{ .Values.env.apply | quote }}
+                - name: SCRIPTS_DIR
+                  value: "/scripts"
+                - name: RABBITMQ_URL
+                  value: {{ .Values.env.rabbitmqUrl | quote }}
+                - name: RABBITMQ_PORT
+                  value: {{ .Values.env.rabbitmqPort | quote }}
+                - name: MQ_USER
+                  value: {{ .Values.rabbitmq.username | quote }}
+                - name: MQ_PASS
+                  value: {{ .Values.rabbitmq.password | quote }}
+
+              volumeMounts:
+                - name: script-volume
+                  mountPath: /scripts
+
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+
+          volumes:
+            - name: script-volume
+              configMap:
+                name: s3-monitor-script
