@@ -8,7 +8,7 @@ A Helm chart for gen3 Requestor Service
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.38 |
+| file://../common | common | 0.1.39 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 
 ## Values

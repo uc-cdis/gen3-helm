@@ -34,7 +34,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../dicom-server | dicom-server | 0.1.33 |
 | file://../embedding-management-service | embedding-management-service | 0.1.10 |
 | file://../etl | etl | 0.1.24 |
-| file://../fence | fence | 0.1.81 |
+| file://../fence | fence | 0.1.82 |
 | file://../frontend-framework | frontend-framework | 0.1.31 |
 | file://../funnel | funnel | 0.1.29 |
 | file://../gen3-ai-model-repo | gen3-ai-model-repo | 0.1.0 |
