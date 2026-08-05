@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.31](https://img.shields.io/badge/Version-0.3.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.61](https://img.shields.io/badge/Version-0.3.61-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -36,7 +36,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../etl | etl | 0.1.22 |
 | file://../fence | fence | 0.1.74 |
 | file://../frontend-framework | frontend-framework | 0.1.27 |
-| file://../funnel | funnel | 0.1.17 |
+| file://../funnel | funnel | 0.1.27 |
 | file://../gen3-analysis | gen3-analysis | 0.1.10 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.3 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.13 |
@@ -44,6 +44,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../guppy | guppy | 0.1.35 |
 | file://../hatchery | hatchery | 0.1.66 |
 | file://../indexd | indexd | 0.1.43 |
+| file://../jeg | jeg | 0.1.2 |
 | file://../manifestservice | manifestservice | 0.1.40 |
 | file://../metadata | metadata | 0.1.41 |
 | file://../neuvector | neuvector | 0.1.2 |
@@ -54,10 +55,12 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.40 |
 | file://../portal | portal | 0.1.56 |
 | file://../requestor | requestor | 0.1.32 |
-| file://../revproxy | revproxy | 0.1.55 |
+| file://../revproxy | revproxy | 0.1.62 |
 | file://../sheepdog | sheepdog | 0.1.40 |
 | file://../sower | sower | 0.1.43 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.43 |
+| file://../vectis-overlays | vectis-overlays | 0.1.1 |
+| file://../workspace-proxy | workspace-proxy | 0.1.1 |
 | file://../wts | wts | 0.1.38 |
 | https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
 | https://helm.elastic.co | elasticsearch | 7.10.2 |
@@ -231,6 +234,8 @@ Helm chart to deploy Gen3 Data Commons
 | hatchery.hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
+| jeg | map | `{"enabled":false}` | Jupyter Enterprise Gateway for vectis workspaces. |
+| jeg.enabled | bool | `false` | Whether to deploy the jeg subchart. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | mutatingWebhook.enabled | bool | `false` | Whether to deploy the mutating webhook service. |
@@ -267,4 +272,8 @@ Helm chart to deploy Gen3 Data Commons
 | tests | map | `{"SERVICE_TO_TEST":null,"TEST_LABEL":null,"image":{"tag":"master"},"resources":{"limits":{"memory":"10G"},"requests":{"memory":"6G"}}}` | Environment variables that control which tests are run. |
 | tests.SERVICE_TO_TEST | str | `nil` | Name of the service we are testing. Default is empty as GH workflow automatically sets this. |
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
+| vectis-overlays | map | `{"enabled":false}` | vectis-overlays — guppy-compat, siem-service, search-auth-proxy. |
+| vectis-overlays.enabled | bool | `false` | Whether to deploy the vectis-overlays subchart. |
+| workspace-proxy | map | `{"enabled":false}` | workspace-proxy — per-user workspace HTTP/WebSocket router. |
+| workspace-proxy.enabled | bool | `false` | Whether to deploy the workspace-proxy subchart. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
