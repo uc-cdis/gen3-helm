@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.78](https://img.shields.io/badge/Version-0.3.78-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.3.79](https://img.shields.io/badge/Version-0.3.79-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -27,18 +27,18 @@ Helm chart to deploy Gen3 Data Commons
 | file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.4 |
 | file://../cedar | cedar | 0.1.28 |
 | file://../cohort-middleware | cohort-middleware | 0.1.25 |
-| file://../common | common | 0.1.38 |
+| file://../common | common | 0.1.39 |
 | file://../dashboard | dashboard | 0.1.23 |
 | file://../data-upload-cron | data-upload-cron | 0.1.8 |
 | file://../datareplicate | datareplicate | 0.1.23 |
 | file://../dicom-server | dicom-server | 0.1.33 |
 | file://../embedding-management-service | embedding-management-service | 0.1.10 |
 | file://../etl | etl | 0.1.24 |
-| file://../fence | fence | 0.1.81 |
+| file://../fence | fence | 0.1.82 |
 | file://../frontend-framework | frontend-framework | 0.1.31 |
 | file://../funnel | funnel | 0.1.31 |
 | file://../gen3-analysis | gen3-analysis | 0.1.14 |
-| file://../gen3-embeddings | gen3-embeddings | 0.1.0 |
+| file://../gen3-embeddings | gen3-embeddings | 0.1.1 |
 | file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
 | file://../gen3-user-data-library | gen3-user-data-library | 0.1.17 |
 | file://../gen3-workflow | gen3-workflow | 0.1.28 |
@@ -56,7 +56,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.44 |
 | file://../portal | portal | 0.1.62 |
 | file://../requestor | requestor | 0.1.37 |
-| file://../revproxy | revproxy | 0.1.68 |
+| file://../revproxy | revproxy | 0.1.69 |
 | file://../sheepdog | sheepdog | 0.1.46 |
 | file://../sower | sower | 0.1.48 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.49 |

@@ -8,7 +8,7 @@ A Helm chart for gen3 Dicom Server
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.38 |
+| file://../common | common | 0.1.39 |
 
 ## Values
 

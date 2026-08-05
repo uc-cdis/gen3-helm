@@ -8,7 +8,7 @@ Vectis overlay API services (guppy-compat, siem, search-auth-proxy)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.38 |
+| file://../common | common | 0.1.39 |
 
 ## Values
 
