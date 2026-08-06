@@ -463,7 +463,11 @@ spec:
             {{- end }}
             {{- if .Values.global.mapboxToken }}
             - name: MAPBOX_API_TOKEN
-              value: {{ .Values.global.mapboxToken | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: mapbox-config
+                  key: mapbox_token
+                  optional: true
             {{- end }}
             {{- with .Values.datadogApplicationId  }}      
             - name: DATADOG_APPLICATION_ID
