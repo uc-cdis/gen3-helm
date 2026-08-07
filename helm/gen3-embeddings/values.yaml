@@ -136,7 +136,7 @@ readinessProbe:
     port: http
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts: 
+volumeMounts:
   - mountPath: /services/gen3_embeddings/.env
     name: gen3-embeddings-g3auto-volume
     readOnly: true
@@ -204,4 +204,3 @@ secrets:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 gunicornWorkers: 1
-
