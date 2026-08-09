@@ -62,7 +62,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: aurora-db-copy-container
-              image: 707767160287.dkr.ecr.us-east-1.amazonaws.com/gen3/awshelper:master
+              image: {{ $.Values.auroraRdsCopyJob.image }}
               command:
                 - /bin/bash
                 - -c

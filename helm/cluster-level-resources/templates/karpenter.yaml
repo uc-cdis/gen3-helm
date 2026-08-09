@@ -99,7 +99,7 @@ spec:
               digest: {{ .Values.karpenter.controller.image.digest }}
             env:
               - name: AWS_REGION
-                value: us-east-1
+                value: {{ .Values.karpenter.awsRegion }}
             resources:
               requests:
                 memory: {{ .Values.karpenter.resources.requests.memory }}

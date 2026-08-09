@@ -27,6 +27,8 @@ global:
       versioningEnabled: false
   aws:
     enabled: false
+    # -- (string) AWS region for this deployment
+    region: us-east-1
   # -- (map) Karpenter topology spread configuration.
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.

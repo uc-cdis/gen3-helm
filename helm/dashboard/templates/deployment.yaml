@@ -203,7 +203,7 @@ spec:
             main "$@"
         env:
         - name: AWS_DEFAULT_REGION
-          value: "us-east-1"
+          value: {{ .Values.global.aws.region | quote }}
         - name: REPO_URL
           value: {{ .Values.dashboardConfig.gitopsRepo }}
         volumeMounts:

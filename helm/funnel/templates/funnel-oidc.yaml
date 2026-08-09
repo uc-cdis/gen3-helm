@@ -192,7 +192,7 @@ spec:
                   echo " /!\  Ensure the external secret '$FUNNEL_REMOTE_SECRET_NAME' is deleted in AWS Secrets Manager before running this job."
                   echo "   Otherwise, the External Secrets Operator may overwrite this new secret."
                   echo "   To delete it manually, run:"
-                  echo "   aws secretsmanager delete-secret --secret-id \"$FUNNEL_REMOTE_SECRET_NAME\" --region us-east-1 --force-delete-without-recovery"
+                  echo "   aws secretsmanager delete-secret --secret-id \"$FUNNEL_REMOTE_SECRET_NAME\" --region {{ .Values.global.aws.region }} --force-delete-without-recovery"
                   exit 1
                 fi
               fi
