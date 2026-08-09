@@ -20,6 +20,16 @@ spec:
       ref: values
       {{- else }}
         values: |
+          nodeAgent:
+            image:
+              region: us-east-1
+          eniConfig:
+            region: us-east-1
+          init:
+            image: 
+              region: us-east-1
+          image:
+            region: us-east-1
           enableNetworkPolicy: false
           originalMatchLabels: true
           env:
