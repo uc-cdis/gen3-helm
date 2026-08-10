@@ -94,6 +94,8 @@ spec:
               value: {{ default (printf "https://%s/user" .Values.global.hostname) .Values.trustedIssuers.defaultBearerIssuer | quote }}
             - name: DEFAULT_PASSPORT_ISSUER
               value: {{ .Values.trustedIssuers.defaultPassportIssuer | quote }}
+            - name: DEFAULT_PREFERRED_TYPE
+              value: {{ .Values.trustedIssuers.defaultPreferredType | quote }}
             - name: CLOUD_PROVIDER_MAP
               value: {{ .Values.cloudProviderMap | toJson | quote }}
             {{- toYaml .Values.env | nindent 12  }}
