@@ -4,11 +4,15 @@
 
 A Helm chart for Kubernetes
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.39 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 

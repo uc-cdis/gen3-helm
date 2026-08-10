@@ -1,8 +1,12 @@
 # cluster-level-resources
 
-![Version: 0.6.47](https://img.shields.io/badge/Version-0.6.47-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
+
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
 
 ## Values
 

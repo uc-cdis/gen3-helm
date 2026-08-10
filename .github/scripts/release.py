@@ -209,7 +209,15 @@ def tags_by_chart() -> dict[str, list[str]]:
 
 
 def release_exists(tag: str) -> bool:
+    """Whether a GitHub release already exists for this tag.
+
+    Only an extra guard against re-using a version after a partially failed
+    run; the tag list is the primary source. Treats an unavailable gh CLI or
+    missing token as "no release" rather than failing the run.
+    """
     if not os.environ.get("GITHUB_TOKEN") and not os.environ.get("CR_TOKEN"):
+        return False
+    if shutil.which("gh") is None:
         return False
     return (
         subprocess.run(
@@ -326,7 +334,25 @@ def build_plan(base: str | None, head: str, all_charts: bool) -> dict:
                 "direct": name in directly,
             }
         )
-    return {"base": base, "head": head, "charts": entries}
+
+    # Charts that are not being released but get vendored into one that is.
+    # They still need a real version stamped in: an umbrella packaged with
+    # unstamped subcharts ships them at the 0.0.0 placeholder, and its own
+    # dependency block keeps the "*" constraint. Their current version is the
+    # newest existing tag -- they have not changed, so nothing is incremented.
+    vendored = []
+    for name in sorted(set(charts) - selected):
+        versions = index.get(name)
+        vendored.append(
+            {
+                "name": name,
+                "dir": str(charts[name]["dir"]),
+                "version": max(versions, key=version_key)
+                if versions
+                else BASE_VERSION,
+            }
+        )
+    return {"base": base, "head": head, "charts": entries, "vendored": vendored}
 
 
 def cmd_plan(args: argparse.Namespace) -> int:
@@ -363,17 +389,22 @@ def cmd_plan(args: argparse.Namespace) -> int:
 def cmd_stamp(args: argparse.Namespace) -> int:
     plan = json.loads(Path(args.plan).read_text())
     charts = load_charts()
-    versions = {e["name"]: e["version"] for e in plan["charts"]}
+    # Stamp released and merely-vendored charts alike. A released umbrella
+    # vendors its whole dependency tree, so any subchart left at the
+    # placeholder would ship inside it as 0.0.0.
+    everything = plan["charts"] + plan.get("vendored", [])
+    versions = {e["name"]: e["version"] for e in everything}
 
-    for entry in plan["charts"]:
+    for entry in everything:
         stamp_version(Path(entry["dir"]) / "Chart.yaml", entry["version"])
-    # Second pass: every chart being published points its local deps at the
-    # versions we just assigned.
-    for entry in plan["charts"]:
+    # Second pass, once every version is known: rewrite the "*" constraints so
+    # the published Chart.yaml records concrete versions.
+    for entry in everything:
         stamp_dependencies(Path(entry["dir"]) / "Chart.yaml", versions, charts)
 
     for entry in plan["charts"]:
-        print(f"stamped {entry['name']} -> {entry['version']}")
+        print(f"stamped {entry['name']} -> {entry['version']} (releasing)")
+    print(f"stamped {len(plan.get('vendored', []))} more charts at their current version")
     return 0
 
 

@@ -30,4 +30,7 @@ repos:
         - "--skip-version-footer"
         # Shared template: omits the version badge and dependency version
         # column, which are frozen placeholders in git rather than real values.
-        - "--template-files=/helm-docs/.helm-docs/README.md.gotmpl"
+        # Absolute path: pre-commit's docker_image language mounts the repo at
+        # /src, and helm-docs only resolves this flag as an absolute path or
+        # relative to each chart dir.
+        - "--template-files=/src/.helm-docs/README.md.gotmpl"
