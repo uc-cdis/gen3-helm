@@ -1,6 +1,6 @@
 # indexd
 
-![Version: 0.1.50](https://img.shields.io/badge/Version-0.1.50-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 0.1.51](https://img.shields.io/badge/Version-0.1.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 indexd
 
@@ -114,9 +114,10 @@ A Helm chart for gen3 indexd
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
 | tolerations | list | `[]` | Tolerations for the pods |
-| trustedIssuers | map | `{"defaultBearerIssuer":"","defaultPassportIssuer":""}` | Maps an arborist resource to the issuers for passports and bearer tokens. |
+| trustedIssuers | map | `{"defaultBearerIssuer":"","defaultPassportIssuer":"","defaultPreferredType":"BearerAuth"}` | Maps an arborist resource to the issuers for passports and bearer tokens. |
 | trustedIssuers.defaultBearerIssuer | string | `""` | The default issuer for bearer tokens to be used if a given auth resource isn't provided. Defaults to the fence token issuer |
 | trustedIssuers.defaultPassportIssuer | string | `""` | The default issuer for passports to be used if a given auth resource isn't provided. |
+| trustedIssuers.defaultPreferredType | string | `"BearerAuth"` | The default preferred supported_type. This will ensure indexd return this supported_type before the other. |
 | useSingleTable | string | `"False"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
 | volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |

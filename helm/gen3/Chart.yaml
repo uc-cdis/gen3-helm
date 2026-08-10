@@ -100,7 +100,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.50
+    version: 0.1.51
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -124,7 +124,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.70
+    version: 0.1.71
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog

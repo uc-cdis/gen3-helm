@@ -44,7 +44,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../gen3-workflow | gen3-workflow | 0.1.29 |
 | file://../guppy | guppy | 0.1.41 |
 | file://../hatchery | hatchery | 0.1.73 |
-| file://../indexd | indexd | 0.1.50 |
+| file://../indexd | indexd | 0.1.51 |
 | file://../jeg | jeg | 0.1.4 |
 | file://../manifestservice | manifestservice | 0.1.46 |
 | file://../metadata | metadata | 0.1.48 |
@@ -56,7 +56,7 @@ Helm chart to deploy Gen3 Data Commons
 | file://../peregrine | peregrine | 0.1.45 |
 | file://../portal | portal | 0.1.63 |
 | file://../requestor | requestor | 0.1.38 |
-| file://../revproxy | revproxy | 0.1.70 |
+| file://../revproxy | revproxy | 0.1.71 |
 | file://../sheepdog | sheepdog | 0.1.47 |
 | file://../sower | sower | 0.1.49 |
 | file://../ssjdispatcher | ssjdispatcher | 0.1.50 |
