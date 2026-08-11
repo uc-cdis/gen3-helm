@@ -461,7 +461,7 @@ spec:
             - name: PRIVACY_POLICY_URL
               value: {{ .Values.global.privacyPolicyURL | quote }}
             {{- end }}
-            {{- if .Values.global.mapboxToken }}
+            {{- if .Values.global.externalSecrets.mapBoxTokenSecretName }}
             - name: MAPBOX_API_TOKEN
               valueFrom:
                 secretKeyRef:
