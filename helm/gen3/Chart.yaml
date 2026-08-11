@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: funnel
-    version: 0.1.32
+    version: 0.1.33
     repository: "file://../funnel"
     condition: gen3-workflow.enabled
   - name: gen3-embeddings
@@ -96,7 +96,7 @@ dependencies:
     repository: "file://../hatchery"
     condition: hatchery.enabled
   - name: indexd
-    version: 0.1.50
+    version: 0.1.51
     repository: "file://../indexd"
     condition: indexd.enabled
   - name: manifestservice
@@ -120,7 +120,7 @@ dependencies:
     repository: "file://../requestor"
     condition: requestor.enabled
   - name: revproxy
-    version: 0.1.70
+    version: 0.1.71
     repository: "file://../revproxy"
     condition: revproxy.enabled
   - name: sheepdog
@@ -217,7 +217,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-version: 0.3.81
+version: 0.3.83
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
