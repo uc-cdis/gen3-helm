@@ -4,7 +4,7 @@ schedule: "*/5 * * * *"
 
 image:
   repository: quay.io/cdis/s3-monitor
-  tag: "master"
+  tag: "main"
   pullPolicy: Always
 
 command: []
@@ -51,5 +51,5 @@ externalSecret:
   passwordProperty: password
 
 rabbitmq:
-  username: "vectis"
-  password: 
+  username: "username"
+  password: "password"
