@@ -26,8 +26,16 @@ spec:
 
           containers:
             - name: s3-monitor
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-              command: ["/bin/bash", "/scripts/run.sh"]
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
 
               env:
                 - name: REGION
@@ -42,8 +50,6 @@ spec:
                   value: {{ .Values.env.s3Bucket | quote }}
                 - name: APPLY
                   value: {{ .Values.env.apply | quote }}
-                - name: SCRIPTS_DIR
-                  value: "/scripts"
                 - name: RABBITMQ_URL
                   value: {{ .Values.env.rabbitmqUrl | quote }}
                 - name: RABBITMQ_PORT
@@ -53,14 +59,5 @@ spec:
                 - name: MQ_PASS
                   value: {{ .Values.rabbitmq.password | quote }}
 
-              volumeMounts:
-                - name: script-volume
-                  mountPath: /scripts
-
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
-
-          volumes:
-            - name: script-volume
-              configMap:
-                name: s3-monitor-script

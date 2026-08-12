@@ -1,6 +1,6 @@
 # s3-monitor
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart for the S3 Monitor CronJob (syncs S3 object metadata into Postgres and publishes new/updated files to RabbitMQ)
 
@@ -8,6 +8,8 @@ Helm chart for the S3 Monitor CronJob (syncs S3 object metadata into Postgres an
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| args | list | `[]` |  |
+| command | list | `[]` |  |
 | env.apply | string | `"true"` |  |
 | env.clusterId | string | `"gen3-qa-vectis-rdscluster7e964c7d-lqk85dtnbh5j"` |  |
 | env.dbName | string | `"postgres"` |  |
@@ -24,8 +26,9 @@ Helm chart for the S3 Monitor CronJob (syncs S3 object metadata into Postgres an
 | externalSecret.secretStoreKind | string | `"ClusterSecretStore"` |  |
 | externalSecret.secretStoreName | string | `"aws-secrets-manager"` |  |
 | externalSecret.usernameProperty | string | `"username"` |  |
-| image.repository | string | `"python"` |  |
-| image.tag | string | `"3.11-slim"` |  |
+| image.pullPolicy | string | `"Always"` |  |
+| image.repository | string | `"quay.io/cdis/s3-monitor"` |  |
+| image.tag | string | `"master"` |  |
 | job.backoffLimit | int | `2` |  |
 | job.concurrencyPolicy | string | `"Forbid"` |  |
 | job.failedJobsHistoryLimit | int | `1` |  |

@@ -2,5 +2,5 @@ apiVersion: v2
 name: s3-monitor
 description: Helm chart for the S3 Monitor CronJob (syncs S3 object metadata into Postgres and publishes new/updated files to RabbitMQ)
 type: application
-version: 0.1.0
-appVersion: "1.0"
+version: 0.3.0
+appVersion: "master"

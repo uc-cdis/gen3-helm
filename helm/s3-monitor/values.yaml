@@ -3,8 +3,12 @@ namespace: qa-vectis
 schedule: "*/5 * * * *"
 
 image:
-  repository: python
-  tag: "3.11-slim"
+  repository: quay.io/cdis/s3-monitor
+  tag: "master"
+  pullPolicy: Always
+
+command: []
+args: []
 
 serviceAccount:
   create: true
