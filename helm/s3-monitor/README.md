@@ -6,6 +6,7 @@ Helm chart for the S3 Monitor CronJob (syncs S3 object metadata into Postgres an
 
 ## Values
 
+
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | args | list | `[]` |  |
