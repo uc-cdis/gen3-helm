@@ -1,0 +1,55 @@
+namespace: qa-vectis
+
+schedule: "*/5 * * * *"
+
+image:
+  repository: quay.io/cdis/s3-monitor
+  tag: "master"
+  pullPolicy: Always
+
+command: []
+args: []
+
+serviceAccount:
+  create: true
+  name: s3-monitor-sa
+  roleArn: "arn:aws:iam::707767160287:role/s3-monitor-role"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+job:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 600
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+
+env:
+  region: "us-east-1"
+  clusterId: "gen3-qa-vectis-rdscluster7e964c7d-lqk85dtnbh5j"
+  rdsSecretName: "RdsSecretB4544A18-GrJ4o16zGYiT"
+  dbName: "postgres"
+  s3Bucket: "gen3-qa-vectis-config"
+  apply: "true"
+  rabbitmqUrl: "b-60a6d3ee-83ab-4602-b0e6-d89bd97315be.mq.us-east-1.on.aws"
+  rabbitmqPort: "5671"
+
+externalSecret:
+  enabled: true
+  secretName: s3-monitor-rabbitmq-secret
+  refreshInterval: 1h
+  secretStoreName: aws-secrets-manager
+  secretStoreKind: ClusterSecretStore
+  remoteKey: qa-vectis/s3-monitor/rabbitmq
+  usernameProperty: username
+  passwordProperty: password
+
+rabbitmq:
+  username: "vectis"
+  password: 
