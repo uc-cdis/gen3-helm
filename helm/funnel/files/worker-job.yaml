@@ -100,8 +100,7 @@ spec:
         {{`
         {{- if .NeedsPVC }}
         - name: funnel-storage-{{.TaskId}}
-          mountPath: /opt/funnel/funnel-work-dir/{{.TaskId}}
-          subPath: {{.TaskId}}
+          mountPath: /opt/funnel/funnel-work-dir
         {{- end }}
         `}}
       volumes:
