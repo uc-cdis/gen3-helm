@@ -43,7 +43,7 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 if USE_SINGLE_TABLE:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
-            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+            "postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
                 usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
             ),
             echo=True,
@@ -53,7 +53,7 @@ if USE_SINGLE_TABLE:
 else:
     CONFIG["INDEX"] = {
         "driver": SQLAlchemyIndexDriver(
-            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+            "postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
                 usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
             ),
             echo=True,
@@ -64,7 +64,7 @@ else:
 
 CONFIG["ALIAS"] = {
     "driver": SQLAlchemyAliasDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+        "postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
             usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
         )
     )
@@ -72,14 +72,14 @@ CONFIG["ALIAS"] = {
 
 if arborist:
     AUTH = SQLAlchemyAuthDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+        "postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
             usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
         ),
         arborist="http://arborist-service/",
     )
 else:
     AUTH = SQLAlchemyAuthDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
+        "postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
             usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
         )
     )
