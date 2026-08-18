@@ -124,5 +124,5 @@ Published versions of this chart are listed in the
 | trustedIssuers.defaultPreferredType | string | `"BearerAuth"` | The default preferred supported_type. This will ensure indexd return this supported_type before the other. |
 | useSingleTable | string | `"False"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
-| volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}},{"configMap":{"name":"gunicorn-conf"},"name":"gunicorn-conf"}]` | Volumes to attach to the pod |

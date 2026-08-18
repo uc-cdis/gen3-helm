@@ -264,7 +264,7 @@ volumeMounts:
     subPath: uwsgi.ini
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/indexd/local_settings.py"
+    mountPath: "/indexd/local_settings.py"
     subPath: "local_settings.py"
   - name: "gunicorn-conf"
     readOnly: true
