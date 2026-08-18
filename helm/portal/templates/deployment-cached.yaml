@@ -411,7 +411,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           env:
             - name: HOSTNAME
