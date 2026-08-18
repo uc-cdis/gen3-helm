@@ -1,10 +1,14 @@
-kind: ConfigMap 
-apiVersion: v1 
+kind: ConfigMap
+apiVersion: v1
 metadata:
   name: useryaml
-data: 
-  useryaml: {{ .Values.USER_YAML | toYaml | nindent 4}}
+data:
+  useryaml: {{ .Values.USER_YAML | toYaml | nindent 4 }}
 ---
+{{- $pruneFlag := "" -}}
+{{- if kindIs "bool" .Values.usersync.pruneUsers -}}
+{{- $pruneFlag = ternary "--prune-users" "--no-prune-users" .Values.usersync.pruneUsers -}}
+{{- end -}}
 {{ if not .Values.usersync.usersync }}
 apiVersion: batch/v1
 kind: Job
@@ -21,29 +25,32 @@ spec:
       volumes:
         - name: fence-config
           secret:
-            secretName: "fence-config"
+            secretName: fence-config
         - name: useryaml
           configMap:
             name: useryaml
       containers:
-      - name: fence
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        imagePullPolicy: Always
-        env:
-          {{- toYaml .Values.env | nindent 10 }}
-        volumeMounts:
-          - name: "fence-config"
-            readOnly: true
-            mountPath: "/var/www/fence/fence-config.yaml"
-            subPath: fence-config.yaml
-          - name: "useryaml"
-            mountPath: "/var/www/fence/user.yaml"
-            subPath: useryaml
-        command: ["/bin/bash" ]
-        args:
-          - "-c"
-          # Script always succeeds if it runs (echo exits with 0)
-          - |
-            fence-create sync --arborist http://arborist-service --yaml /var/www/fence/user.yaml
+        - name: fence
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          volumeMounts:
+            - name: fence-config
+              readOnly: true
+              mountPath: /var/www/fence/fence-config.yaml
+              subPath: fence-config.yaml
+            - name: useryaml
+              mountPath: /var/www/fence/user.yaml
+              subPath: useryaml
+          command: ["/bin/bash"]
+          args:
+            - "-c"
+            - |
+              # Only pass a pruning flag when explicitly configured as a Boolean.
+              # Omitting the flag preserves compatibility with older Fence versions.
+              fence-create sync \
+                --arborist http://arborist-service \
+                --yaml /var/www/fence/user.yaml{{ if $pruneFlag }} {{ $pruneFlag }}{{ end }}
       restartPolicy: OnFailure
 {{ end }}
