@@ -259,17 +259,17 @@ volumes:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  - name: "uwsgi-config"
-    mountPath: "/etc/uwsgi/uwsgi.ini"
-    subPath: uwsgi.ini
+  # - name: "uwsgi-config"
+  #   mountPath: "/etc/uwsgi/uwsgi.ini"
+  #   subPath: uwsgi.ini
   - name: "config-volume"
     readOnly: true
     mountPath: "/indexd/local_settings.py"
     subPath: "local_settings.py"
-  - name: "gunicorn-conf"
-    readOnly: true
-    mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
-    subPath: "gunicorn.conf.py"
+  # - name: "gunicorn-conf"
+  #   readOnly: true
+  #   mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
+  #   subPath: "gunicorn.conf.py"
 
 # -- (list) Environment variables to pass to the container
 env:
