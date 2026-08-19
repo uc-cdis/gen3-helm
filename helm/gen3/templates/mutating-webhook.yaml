@@ -70,6 +70,7 @@ metadata:
   name: mutating-webhook
   namespace: kube-system
 spec:
+  type: NodePort
   ports:
     - port: 443
       targetPort: 8443
