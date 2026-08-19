@@ -7,8 +7,15 @@ Regenerate examples/local_alloy_values.yaml from the Alloy chart's own configura
 so the local-development overlay has to contain a full copy. This script produces that copy so
 it stays byte-identical to the chart apart from a fixed set of substitutions: the three write
 endpoints, which in the chart point at Mimir, Loki and Tempo hostnames that do not exist on a
-laptop, and the two external labels, which the chart writes as Go template syntax that
-``templates/alloy-config.yaml`` never renders.
+laptop; the two external labels, which the chart writes as Go template syntax that
+``templates/alloy-config.yaml`` never renders; and a ``loki.process`` stage inserted after the pod
+log source.
+
+That last one is not an address rewrite but an added behaviour, and it is the only place it
+exists. It promotes ``trace_id`` to Loki structured metadata and relabels ``service_name`` from the
+log line, which is what makes Grafana's trace-to-logs query resolve. The chart has no equivalent,
+so moving the stage into ``helm/alloy/values.yaml`` is what would extend correlation to deployed
+clusters, and this substitution would then be dropped.
 
 Run it after any change to the chart's configuration:
 
@@ -145,8 +152,10 @@ alloy:
         cpu: 100m
         memory: 256Mi
 
-  # Copied from helm/alloy/values.yaml, changing only the three write endpoints and the two
-  # external labels.
+  # Copied from helm/alloy/values.yaml, changing the three write endpoints and the two external
+  # labels, and inserting the loki.process stage that follows the pod log source. That stage is
+  # local-only: the chart has no equivalent, so trace-to-logs correlation works here and not in a
+  # cluster deployed from helm/alloy.
   #
   # The labels are written out literally on purpose. templates/alloy-config.yaml renders this
   # with toYaml rather than tpl, so any {{ }} left in here reaches the ConfigMap unrendered.

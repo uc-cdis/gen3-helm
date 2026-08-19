@@ -9,8 +9,15 @@ traces to Tempo.
 
 This guide stands the same Alloy pipeline up on a kind cluster, backed by a single-pod LGTM
 stack instead of the [observability](../helm/observability/SETUP.md) chart. You get Grafana,
-Prometheus, Tempo, and Loki in one container, and Alloy configured exactly as it is in a real
-cluster apart from the three addresses it writes to.
+Prometheus, Tempo, and Loki in one container, and Alloy configured as it is in a real cluster
+apart from the three addresses it writes to and one added log-processing stage.
+
+That stage is the one deliberate behavioural difference, and it matters when comparing against a
+deployed cluster: the overlay promotes each log line's `trace_id` to Loki structured metadata and
+takes `service_name` from the line itself, which is what makes Grafana's trace-to-logs link
+resolve. `helm/alloy/values.yaml` carries no such stage, so a deployed cluster using that chart
+correlates traces to logs only once the change described in
+[otel-logs-and-traces.md](otel-logs-and-traces.md) lands there.
 
 Use this when you are developing a service and want to see its own metrics and traces. Do not
 use it as a model for a deployed cluster:
@@ -102,11 +109,41 @@ kubectl port-forward -n monitoring svc/lgtm 3000:3000     # Grafana, admin / adm
 kubectl port-forward -n monitoring svc/alloy 12345:12345  # Alloy UI, at /alloy
 ```
 
-In Grafana, Explore against the Prometheus datasource for metrics and the Tempo datasource for
-traces. Traces are searchable by `service.name`.
+In Grafana, Explore against the Prometheus datasource for metrics, the Tempo datasource for
+traces, and the Loki datasource for logs. Traces are searchable by `service.name`; logs are
+selected by `service_name`, for example `{service_name="gen3_embeddings"}`.
+
+To jump from a trace to its logs, open a span in Tempo and follow its logs link. The Tempo
+datasource in the LGTM image builds that query as `{service_name="..."} | trace_id = "..."`, a
+label filter with no parser stage, which resolves only because the Alloy overlay stores
+`trace_id` as structured metadata.
 
 Every sample Alloy forwards carries `cluster="local-kind"` and `project="local"`, set as
 external labels in the values file. If a metric has those labels it came through this pipeline.
+
+## When a log line or trace link does not show up
+
+Alloy tails every pod's containers by default, so absent logs are usually a write or a label
+problem rather than a collection one. Work forwards along the path.
+
+1. **Is Alloy tailing the pod?** `kubectl -n monitoring logs deploy/alloy -c alloy | grep "opened log stream"`
+   names each container it reads. `tailer stopped; will retry` against a pod that is still
+   starting is normal and clears on its own.
+1. **Is Loki accepting the writes?** `kubectl -n monitoring logs deploy/alloy -c alloy | grep "error sending batch"`.
+   A 500 reading `at least 1 live replicas required, could only find 0` means Loki's single
+   ingester missed its heartbeat, which on a laptop is resource pressure rather than
+   misconfiguration. Alloy retries, so short stalls only leave gaps in log history.
+1. **Did the line land?** `{service_name="<name>"}` in Explore. If the stream exists under a
+   different `service_name` than you expect, the line had no `service` field and Loki fell back to
+   deriving the label from the pod's `app` label.
+1. **Is `trace_id` queryable?** `{service_name="<name>"} | trace_id != ""` must return lines with
+   no `| json` stage. If it only works with `| json`, `stage.structured_metadata` is not taking
+   effect and the trace-to-logs link will stay empty.
+1. **Does the span agree?** Compare `service.name` on a span in Tempo against `service_name` on
+   the log stream. They have to be spelled identically, underscores included.
+
+Lines logged outside a span carry `"trace_id": null`, which is expected for startup and for the
+OTLP exporter's own HTTP calls. Only lines emitted while a span is active can correlate.
 
 ## When a metric does not show up
 
