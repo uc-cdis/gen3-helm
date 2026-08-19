@@ -46,8 +46,10 @@ alloy:
         cpu: 100m
         memory: 256Mi
 
-  # Copied from helm/alloy/values.yaml, changing only the three write endpoints and the two
-  # external labels.
+  # Copied from helm/alloy/values.yaml, changing the three write endpoints and the two external
+  # labels, and inserting the loki.process stage that follows the pod log source. That stage is
+  # local-only: the chart has no equivalent, so trace-to-logs correlation works here and not in a
+  # cluster deployed from helm/alloy.
   #
   # The labels are written out literally on purpose. templates/alloy-config.yaml renders this
   # with toYaml rather than tpl, so any {{ }} left in here reaches the ConfigMap unrendered.
@@ -357,7 +359,38 @@ alloy:
 
     loki.source.kubernetes "pods" {
       targets = discovery.relabel.all_pods.output
+      forward_to = [loki.process.pod_logs.receiver]
+    }
+
+    // Gen3 services log JSON carrying the OpenTelemetry trace_id. Promoting it to
+    // structured metadata is what lets Grafana's trace-to-logs query filter on
+    // `| trace_id = "..."` with no parser stage, which is how the Tempo datasource in
+    // the local LGTM image is provisioned. It deliberately does not become a stream
+    // label: a per-request value there would multiply Loki's stream cardinality.
+    //
+    // Lines that are not JSON, such as etcd and kube-proxy output, extract nothing and
+    // pass through unchanged.
+    loki.process "pod_logs" {
       forward_to = [loki.write.endpoint.receiver]
+
+      stage.json {
+        expressions = { trace_id = "trace_id", span_id = "span_id", otel_service = "service" }
+      }
+
+      stage.structured_metadata {
+        values = { trace_id = "", span_id = "" }
+      }
+
+      // Each line reports the service.name its span was recorded under. Using that as
+      // the stream label is what keeps logs joinable to traces: Grafana builds its
+      // trace-to-logs query from service.name, while Loki would otherwise derive
+      // service_name from the pod's `app` label. Those two spellings differ whenever a
+      // service names itself with underscores, and the join then silently finds nothing.
+      //
+      // Lines logged outside a span extract nothing here and keep Loki's derived value.
+      stage.labels {
+        values = { service_name = "otel_service" }
+      }
     }
 
     // kube-state-metrics
