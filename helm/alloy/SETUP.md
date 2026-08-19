@@ -8,6 +8,8 @@ In this deployment, the Alloy ConfigMap plays a crucial role in configuring whic
 
 Before deploying Alloy, it is important to first deploy the "observability" Helm chart, as it provides the necessary components and configuration for Alloy to function properly. Please refer to the [SETUP.md](https://github.com/uc-cdis/gen3-helm/blob/master/helm/observability/SETUP.md) observability chart documentation for instructions on how to set it up before proceeding with the Alloy deployment.
 
+For a kind cluster, follow [docs/local-observability.md](../../docs/local-observability.md) instead. The observability chart is sized for EKS and does not deploy Tempo, so traces have nowhere to go.
+
 ## Configuring Alloy
 
 ### Helm Chart Configuration
