@@ -3,7 +3,8 @@ from indexd.index.drivers.single_table_alchemy import SingleTableSQLAlchemyIndex
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
 
-from sqlalchemy.engine import URL  # <--- Added URL import
+from sqlalchemy.engine import URL
+from sqlalchemy.pool import NullPool  # <--- CRITICAL FOR PGBOUNCER/ASYNC
 from os import environ
 import json
 
@@ -13,20 +14,27 @@ usr = environ.get("PGUSER", "indexd")
 db = environ.get("PGDB", "indexd")
 psw = environ.get("PGPASSWORD")
 pghost = environ.get("PGHOST")
-pgport = environ.get("PGPORT", 5432)
 
-# Build the URL safely and render it to a string for the drivers
+# 1. Safely parse K8s port injections
+raw_port = environ.get("PGPORT", "5432")
+try:
+    pgport = int(raw_port)
+except Exception:
+    pgport = 5432
+
+# Prove in the pod logs that this file successfully imported without exceptions!
+print(f"indexd local_settings.py loaded successfully! Targeting host: {pghost}")
+
 db_url_obj = URL.create(
     drivername="postgresql+asyncpg",
     username=usr,
     password=psw,
     host=pghost,
-    port=int(pgport),
+    port=pgport,
     database=db
 )
 db_url = db_url_obj.render_as_string(hide_password=False)
 
-# TODO: FIX THIS TO READ FROM ENV VARS
 index_config = {
     "DEFAULT_PREFIX": environ.get("DEFAULT_PREFIX", "testprefix/"),
     "PREPEND_PREFIX": environ.get("PREPEND_PREFIX", True),
@@ -42,12 +50,14 @@ if dist:
 arborist = environ.get("ARBORIST", "false").lower() == "true"
 USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 
+# 2. Add poolclass=NullPool to ALL drivers
 if USE_SINGLE_TABLE:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
             db_url,
             echo=True,
-            index_config=index_config
+            index_config=index_config,
+            poolclass=NullPool 
         )
     }
 else:
@@ -55,21 +65,23 @@ else:
         "driver": SQLAlchemyIndexDriver(
             db_url,
             echo=True,
-            index_config=index_config
+            index_config=index_config,
+            poolclass=NullPool 
         )
     }
 
 CONFIG["ALIAS"] = {
-    "driver": SQLAlchemyAliasDriver(db_url)
+    "driver": SQLAlchemyAliasDriver(db_url, poolclass=NullPool)
 }
 
 if arborist:
     AUTH = SQLAlchemyAuthDriver(
         db_url,
         arborist="http://arborist-service/",
+        poolclass=NullPool
     )
 else:
-    AUTH = SQLAlchemyAuthDriver(db_url)
+    AUTH = SQLAlchemyAuthDriver(db_url, poolclass=NullPool)
 
 cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
 if cloud_provider_map:
