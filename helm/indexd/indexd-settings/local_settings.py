@@ -72,14 +72,20 @@ print("-------done init alias db-------")
 
 
 if arborist:
+    print("-----init arborist db------")
     AUTH = SQLAlchemyAuthDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
         arborist="http://arborist-service/",
     )
+    print("-----done init arborist db------")
+
 else:
+    print("-----else init arborist db------")
+
     AUTH = SQLAlchemyAuthDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
     )
+    print("-----done else init arborist db------")
 
 cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
 if cloud_provider_map:
@@ -109,3 +115,5 @@ if default_preferred_type:
     CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
 
 settings = {"config": CONFIG, "auth": AUTH}
+
+print("-----end of settings----")
