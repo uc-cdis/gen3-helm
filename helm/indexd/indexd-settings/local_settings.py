@@ -101,4 +101,4 @@ default_preferred_type = environ.get("DEFAULT_PREFERRED_TYPE", None)
 if default_preferred_type:
     CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
 
-settings = {"config": CONFIG, "auth": AUTH, "AUTO_MIGRATE": False}
+settings = {"config": CONFIG, "auth": AUTH}
