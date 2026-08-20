@@ -41,12 +41,18 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 # Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
 # will be created as "<PREFIX><PREFIX><GUID>".
 if USE_SINGLE_TABLE is True:
-    CONFIG["INDEX"] = {
-        "driver": SingleTableSQLAlchemyIndexDriver(
-            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
-            index_config=index_config,
-        ),
-    }
+    print("init single table database-----------")
+    try:
+        CONFIG["INDEX"] = {
+            "driver": SingleTableSQLAlchemyIndexDriver(
+                f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
+                index_config=index_config,
+            ),
+        }
+    except Exception as e:
+        print(f"could not init db: {e}")
+    print("Done init single table database-----------")
+
 else:
     CONFIG["INDEX"] = {
         "driver": SQLAlchemyIndexDriver(
@@ -55,11 +61,15 @@ else:
         ),
     }
 
+print("-------init alias db-------")
 CONFIG["ALIAS"] = {
     "driver": SQLAlchemyAliasDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
     ),
 }
+
+print("-------done init alias db-------")
+
 
 if arborist:
     AUTH = SQLAlchemyAuthDriver(
