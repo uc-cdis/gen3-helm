@@ -41,17 +41,12 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 # Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
 # will be created as "<PREFIX><PREFIX><GUID>".
 if USE_SINGLE_TABLE is True:
-    print("init single table database-----------")
-    try:
-        CONFIG["INDEX"] = {
-            "driver": SingleTableSQLAlchemyIndexDriver(
-                f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
-                index_config=index_config,
-            ),
-        }
-    except Exception as e:
-        print(f"could not init db: {e}")
-    print("Done init single table database-----------")
+    CONFIG["INDEX"] = {
+        "driver": SingleTableSQLAlchemyIndexDriver(
+            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
+            index_config=index_config,
+        ),
+    }
 
 else:
     CONFIG["INDEX"] = {
@@ -61,31 +56,23 @@ else:
         ),
     }
 
-print("-------init alias db-------")
 CONFIG["ALIAS"] = {
     "driver": SQLAlchemyAliasDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
     ),
 }
 
-print("-------done init alias db-------")
-
 
 if arborist:
-    print("-----init arborist db------")
     AUTH = SQLAlchemyAuthDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
         arborist="http://arborist-service/",
     )
-    print("-----done init arborist db------")
 
 else:
-    print("-----else init arborist db------")
-
     AUTH = SQLAlchemyAuthDriver(
         f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
     )
-    print("-----done else init arborist db------")
 
 cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
 if cloud_provider_map:
@@ -114,6 +101,4 @@ default_preferred_type = environ.get("DEFAULT_PREFERRED_TYPE", None)
 if default_preferred_type:
     CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
 
-settings = {"config": CONFIG, "auth": AUTH}
-
-print("-----end of settings----")
+settings = {"config": CONFIG, "auth": AUTH, "AUTO_MIGRATE": False}
