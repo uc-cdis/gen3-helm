@@ -3,40 +3,27 @@ from indexd.index.drivers.single_table_alchemy import SingleTableSQLAlchemyIndex
 from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
 
-from sqlalchemy.engine import URL
-from sqlalchemy.pool import NullPool  
+
 from os import environ
-import sys
 import json
 
 APP_NAME = "indexd"
+
 
 usr = environ.get("PGUSER", "indexd")
 db = environ.get("PGDB", "indexd")
 psw = environ.get("PGPASSWORD")
 pghost = environ.get("PGHOST")
+pgport = environ.get("PGPORT", 5432)
 
-# 1. FORCE port 5432 exactly like test_conn() did to bypass PgBouncer
-pgport = 5432
-
-print(f"✅ indexd local_settings.py loaded successfully! Targeting host: {pghost} on port {pgport}", file=sys.stderr)
-
-# 2. Keep this as a pure URL object. Do not render it as a string!
-db_url = URL.create(
-    drivername="postgresql+asyncpg",
-    username=usr,
-    password=psw,
-    host=pghost,
-    port=pgport,
-    database=db
-)
-
+# TODO: FIX THIS TO READ FROM ENV VARS
 index_config = {
     "DEFAULT_PREFIX": environ.get("DEFAULT_PREFIX", "testprefix/"),
     "PREPEND_PREFIX": environ.get("PREPEND_PREFIX", True),
 }
 
 CONFIG = {}
+
 CONFIG["JSONIFY_PRETTYPRINT_REGULAR"] = False
 
 dist = environ.get("DIST", None)
@@ -44,48 +31,45 @@ if dist:
     CONFIG["DIST"] = json.loads(dist)
 
 arborist = environ.get("ARBORIST", "false").lower() == "true"
+
 USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 
-# Disable prepared statements for PgBouncer compatibility (just in case!)
-pgbouncer_args = {
-    "statement_cache_size": 0,
-    "prepared_statement_cache_size": 0
-}
-
-if USE_SINGLE_TABLE:
+# - DEFAULT_PREFIX: prefix to be prepended.
+# - PREPEND_PREFIX: the prefix is preprended to the generated GUID when a
+#   new record is created WITHOUT a provided GUID.
+# - ADD_PREFIX_ALIAS: aliases are created for new records - "<PREFIX><GUID>".
+# Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
+# will be created as "<PREFIX><PREFIX><GUID>".
+if USE_SINGLE_TABLE is True:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
-            db_url,
-            echo=False,
+            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
             index_config=index_config,
-            poolclass=NullPool,
-            connect_args=pgbouncer_args
-        )
+        ),
     }
 else:
     CONFIG["INDEX"] = {
         "driver": SQLAlchemyIndexDriver(
-            db_url,
-            echo=False,
+            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
             index_config=index_config,
-            poolclass=NullPool,
-            connect_args=pgbouncer_args
-        )
+        ),
     }
 
 CONFIG["ALIAS"] = {
-    "driver": SQLAlchemyAliasDriver(db_url, poolclass=NullPool, connect_args=pgbouncer_args) 
+    "driver": SQLAlchemyAliasDriver(
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
+    ),
 }
 
 if arborist:
     AUTH = SQLAlchemyAuthDriver(
-        db_url,
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
         arborist="http://arborist-service/",
-        poolclass=NullPool,
-        connect_args=pgbouncer_args
     )
 else:
-    AUTH = SQLAlchemyAuthDriver(db_url, poolclass=NullPool, connect_args=pgbouncer_args) 
+    AUTH = SQLAlchemyAuthDriver(
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
+    )
 
 cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
 if cloud_provider_map:
@@ -110,6 +94,7 @@ if default_passport_issuer:
     CONFIG["DEFAULT_PASSPORT_ISSUER"] = default_passport_issuer
 
 default_preferred_type = environ.get("DEFAULT_PREFERRED_TYPE", None)
+
 if default_preferred_type:
     CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
 
