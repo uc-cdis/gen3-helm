@@ -181,7 +181,7 @@ spec:
               "events:ListTargetsByRule"
             ],
             "Resource": "arn:aws:events:*:{{ .Values.global.crossplane.accountId }}:rule/*"
-          },
+          }
         ]
       }
 ---
