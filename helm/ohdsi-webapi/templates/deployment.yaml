@@ -49,6 +49,18 @@ spec:
             - secretRef:
                 name: ohdsi-webapi-config
           env:
+            - name: SECURITY_OID_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-oidc-client
+                  key: client_id
+                  optional: false
+            - name: SECURITY_OID_APISECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ohdsi-oidc-client
+                  key: client_secret
+                  optional: false
             - name: PGHOST
               valueFrom:
                 secretKeyRef:

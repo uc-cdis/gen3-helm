@@ -20,8 +20,8 @@ Published versions of this chart are listed in the
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | arboristUrl | string | `"http://arborist-service"` |  |
-| createFenceClientJobEnabled | bool | `true` | Whether to automatically create a OIDC a client in Fence. |
 | externalSecrets.createK8sOhdsiWebApiConfigSecret | string | `false` | Override flag: will create the Helm "ohdsi-webapi-config" secret even if Secrets Manager is enabled (see global.ExternalSecrets.deploy). This is for when we need to override the global Secrets Manager flag for this service. |
+| externalSecrets.createOhdsiOidcClientSecret | bool | `true` | true = run the OIDC job and create a local placeholder Secret for ohdsi-oidc-client; false = pull OIDC credentials from AWS Secrets Manager via ExternalSecret (job is skipped). |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | fenceUrl | string | `"http://fence-service"` |  |
@@ -39,8 +39,10 @@ Published versions of this chart are listed in the
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/ohdsi-webapi"` |  |
 | image.tag | string | `"2.15.0-DEV"` |  |
+| image.utilImage | string | `"quay.io/cdis/utilities:master"` |  |
 | nginx.repository | string | `"quay.io/cdis/nginx"` |  |
 | nginx.tag | string | `"master"` |  |
+| oidc_job_enabled | bool | `true` | Whether to automatically create an OIDC client in Fence. |
 | postgres | map | `{"database":null,"dbCreate":null,"host":"","password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set to true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |

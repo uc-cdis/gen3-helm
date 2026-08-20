@@ -9,6 +9,7 @@ image:
   repository: quay.io/cdis/ohdsi-webapi
   pullPolicy: Always
   tag: "2.15.0-DEV"
+  utilImage: quay.io/cdis/utilities:master
 
 service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
@@ -52,6 +53,8 @@ externalSecrets:
   pushSecret: false
   # -- (string) Override flag: will create the Helm "ohdsi-webapi-config" secret even if Secrets Manager is enabled (see global.ExternalSecrets.deploy). This is for when we need to override the global Secrets Manager flag for this service.
   createK8sOhdsiWebApiConfigSecret: false
+  # -- (bool) true = run the OIDC job and create a local placeholder Secret for ohdsi-oidc-client; false = pull OIDC credentials from AWS Secrets Manager via ExternalSecret (job is skipped).
+  createOhdsiOidcClientSecret: true
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
 
@@ -85,8 +88,8 @@ postgresql:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
-# -- (bool) Whether to automatically create a OIDC a client in Fence.
-createFenceClientJobEnabled: true
+# -- (bool) Whether to automatically create an OIDC client in Fence.
+oidc_job_enabled: true
 
 arboristUrl: http://arborist-service
 fenceUrl: http://fence-service

@@ -36,9 +36,6 @@ stringData:
   security_db_datasource_schema: security
   security_db_datasource_driverClassName: org.postgresql.Driver
 
- # the xxx below are replaced by the client-create-job (see ./ohdsi-webapi-client-create-job.yaml)
-  security_oid_clientId: xxx
-  security_oid_apiSecret: xxx
   security_oid_url: "{{ .Values.fenceUrl }}/.well-known/openid-configuration"
   security_oid_redirectUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/welcome
   security_oid_logoutUrl: https://atlas.{{ .Values.global.hostname }}/atlas/#/home
