@@ -91,6 +91,20 @@ spec:
                   optional: false
             - name: CONFIG_PATH
               value: /services/gen3_embeddings/.env
+            {{- /* Only emit OTel vars that are explicitly set, so an unset value falls
+                   through to the default baked into the image rather than being blanked. */}}
+            {{- if kindIs "bool" .Values.otel.enabled }}
+            - name: ENABLE_OPENTELEMETRY_TRACES
+              value: {{ .Values.otel.enabled | quote }}
+            {{- end }}
+            {{- with .Values.otel.endpoint }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.otel.protocol }}
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: {{ . | quote }}
+            {{- end }}
             {{- if eq .Values.global.dev false }}
             - name: FENCE_URL
               value: https://{{ .Values.global.hostname }}/user
@@ -106,19 +120,19 @@ spec:
                   optional: false
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 4142
+            - containerPort: 8000
               name: http
           livenessProbe:
             httpGet:
               path: /_status
-              port: 4142
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /_status
-              port: 4142
+              port: 8000
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

@@ -113,3 +113,7 @@ portal:
 helm repo add gen3 http://helm.gen3.org
 helm upgrade --install gen3 gen3/gen3 -f ./values.yaml 
 ```
+
+# Optional: metrics and traces
+
+To see the metrics and traces your services emit, see [local-observability.md](local-observability.md).
