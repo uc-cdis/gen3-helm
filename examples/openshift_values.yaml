@@ -1,0 +1,230 @@
+ambassador:
+  enabled: false
+  service:
+    targetPort: 8080
+
+arborist:
+  enabled: true
+  image:
+    tag: openshift
+  service:
+    targetPort: 8080
+
+argo-wrapper:
+  enabled: false
+  service:
+    targetPort: 8000
+
+audit:
+  enabled: false
+  service:
+    targetPort: 8000
+
+aws-es-proxy:
+  enabled: false
+  service:
+    targetPort: 8080
+
+fence:
+  enabled: true
+  service:
+    targetPort: 8000
+
+cedar:
+  enabled: false
+  service:
+    targetPort: 8000
+
+cohort-middleware:
+  enabled: false
+  service:
+    targetPort: 8080
+
+gen3-analysis:
+  enabled: false
+  service:
+    targetPort: 8000
+
+gen3-user-data-library:
+  enabled: false
+  service:
+    targetPort: 8000
+
+gen3-workflow:
+  enabled: false
+  service:
+    targetPort: 8080
+
+guppy:
+  enabled: false
+  service:
+    targetPort: 8080
+
+hatchery:
+  enabled: false
+  service:
+    targetPort: 8000
+
+indexd:
+  enabled: true
+  service:
+    targetPort: 8000
+
+manifestservice:
+  enabled: false
+  service:
+    targetPort: 8000
+
+metadata:
+  enabled: false
+  service:
+    targetPort: 8000
+
+ohdsi-atlas:
+  enabled: false
+  service:
+    targetPort: 8080
+
+ohdsi-webapi:
+  enabled: false
+  service:
+    targetPort: 8080
+
+orthanc:
+  enabled: false
+  service:
+    targetPort: 8042
+
+peregrine:
+  enabled: true
+  service:
+    targetPort: 8000
+
+portal:
+  enabled: true
+  service:
+    targetPort: 8000
+  resources:
+    requests:
+      memory: 750Mi
+  image:
+      repository: quay.io/cdis/data-portal-prebuilt
+      tag: caninedc.org-jawadqur-patch-1
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+requestor:
+  enabled: false
+  service:
+    targetPort: 8000
+
+revproxy:
+  enabled: true
+  nginx:
+    resolver: "172.30.0.10"
+    user: nginx
+    pidFile: /tmp/nginx.pid 
+  service:
+    targetPort: 8000
+  openshiftRoute:
+    enabled: true
+    annotations: {}
+    host: "gen3.apps-crc.testing"
+    path: "/"
+    targetPort: "http"
+    tls:
+      termination: "edge"
+      insecureEdgeTerminationPolicy: "Redirect"
+    wildcardPolicy: "None"
+
+  podSecurityContext: 
+    fsGroup: 2000
+
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+
+sheepdog:
+  enabled: true
+  service:
+    targetPort: 8000
+
+ssjdispatcher:
+  enabled: false
+  service:
+    targetPort: 8080
+
+wts:
+  enabled: false
+  oidc_job_openshift: true
+  service:
+    targetPort: 8000
+
+sower:
+  enabled: false
+  service:
+    targetPort: 8000
+
+ohif-viewer:
+  enabled: false
+  service:
+    targetPort: 8080
+
+dicom-server:
+  enabled: false
+  service:
+    targetPort: 8042
+
+access-backend:
+  enabled: false
+  service:
+    targetPort: 8001
+
+postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 16.6.0-debian-12-r2
+  primary:
+    persistence:
+      enabled: false
+    podSecurityContext:
+      fsGroup: 1000660001
+    containerSecurityContext:
+      runAsUser: 1000660001
+      allowPrivilegeEscalation: false
+      seccompProfile:
+        type: "RuntimeDefault"
+
+elasticsearch:
+  image: "quay.io/cdis/elasticsearch"
+  imageTag: "7.10.2"
+  clusterName: gen3-elasticsearch
+  maxUnavailable: 0
+  singleNode: true
+  replicas: 1
+  sysctlInitContainer:
+    enabled: false
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  esConfig:
+    elasticsearch.yml: |
+  podSecurityContext:
+    fsGroup: 1000950000
+    runAsUser: 1000950000
+
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    runAsUser: 1000950000
+

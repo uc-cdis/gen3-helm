@@ -95,7 +95,7 @@ service:
   # -- (int) The port number that the service exposes.
   port: 80
   # -- (int) The port on the host machine that traffic is directed to.
-  targetport: 8042
+  targetPort: 8042
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:

@@ -131,8 +131,8 @@ spec:
             #!/bin/bash
             set -e
 
-            source "${GEN3_HOME}/gen3/lib/utils.sh"
-            gen3_load "gen3/gen3setup"
+            # source "${GEN3_HOME}/gen3/lib/utils.sh"
+            # gen3_load "gen3/gen3setup"
 
             echo "PGHOST=$PGHOST"
             echo "PGPORT=$PGPORT"
@@ -149,7 +149,8 @@ spec:
             >&2 echo "Postgres is up - executing command"
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
-              gen3_log_info "Database exists"
+              # gen3_log_info "Database exists"
+              echo "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
@@ -164,10 +165,14 @@ spec:
               psql -d $SERVICE_PGDB -c "ALTER SCHEMA public OWNER TO \"$SERVICE_PGUSER\";"
               psql -d $SERVICE_PGDB -c "GRANT ALL ON SCHEMA public TO \"$SERVICE_PGUSER\";"
               psql -d $SERVICE_PGDB -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO \"$SERVICE_PGUSER\";"
+              psql -d $SERVICE_PGDB -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"$SERVICE_PGUSER\";"
               psql -d $SERVICE_PGDB -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN;"
 
               echo "Creating ltree extension..."
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS ltree;"
+
+              echo "Creating pgvector extension..."
+              psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'

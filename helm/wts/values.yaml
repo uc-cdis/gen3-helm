@@ -161,6 +161,8 @@ oidc_client_id:
 oidc_client_secret:
 # -- (bool) Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created.
 oidc_job_enabled: true
+# -- (bool) Whether to run the OpenShift version of the OIDC job.
+oidc_job_openshift: false
 
 # -- (map) Service account to use or create.
 serviceAccount:
@@ -194,6 +196,7 @@ securityContext:
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
+  targetPort: 80
   # -- (int) Port on which the service is exposed
   httpPort: 80
   # -- (int) Secure port on which the service is exposed

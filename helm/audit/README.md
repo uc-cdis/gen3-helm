@@ -1,15 +1,19 @@
 # audit
 
-![Version: 0.1.41](https://img.shields.io/badge/Version-0.1.41-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.35 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
+| https://charts.bitnami.com/bitnami | postgresql |
 
 ## Values
 
@@ -133,7 +137,7 @@ A Helm chart for Kubernetes
 | server.sqs.region | string | `"us-east-1"` | SQS queue AWS region. |
 | server.sqs.url | string | `"http://sqs.com"` | The URL for the SQS queue. |
 | server.type | string | `"aws_sqs"` | Whether audit should use the api or aws_sqs. |
-| service | map | `{"port":80,"type":"ClusterIP"}` | Configuration for the service |
+| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.port | int | `80` | Port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"audit-service-sa"}` | Service account to use or create. |

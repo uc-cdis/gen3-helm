@@ -27,6 +27,7 @@ spec:
         {{- end }}
       labels:
         public: "yes"
+        netnolimit: "yes"
         {{- include "portal.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
     spec:
@@ -410,7 +411,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
             - containerPort: 443
           env:
             - name: HOSTNAME

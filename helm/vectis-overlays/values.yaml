@@ -1,0 +1,158 @@
+# vectis-overlays default values.
+# All service-internal URLs use .Release.Namespace so the chart is env-agnostic.
+# Override image tags per-environment in gitops values.
+# Adding global value
+
+
+global:
+  externalSecrets:
+    clusterSecretStoreRef: ""
+
+guppyCompat:
+  enabled: false
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    name: guppy-compat-service
+    annotations: {}
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: guppy-compat-v1
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    GUPPY_COMPAT_MAX_LIMIT: "5000"
+
+siemService:
+  enabled: true
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    name: siem-service
+    annotations: {}
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: siem-service-v1
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    DB_SCHEMA: "vectis"
+    SIEM_DEFAULT_LIMIT: "250"
+    SIEM_MAX_LIMIT: "2000"
+    SIEM_VIEWS_S3_BUCKET: ""
+    SIEM_VIEWS_S3_KEY: "siem/views.json"
+    SIEM_VIEWS_S3_ENABLED: "false"
+
+searchAuthProxy:
+  enabled: true
+  replicaCount: 1
+  serviceName: search-auth-proxy
+  serviceAccount:
+    create: true
+    name: search-auth-proxy
+    annotations: {}
+  image:
+    repository: quay.io/cdis/gen3-vectis
+    tag: search-auth-proxy-v1
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    SEARCH_PROXY_DEFAULT_LIMIT: "50"
+    SEARCH_PROXY_MAX_LIMIT: "1000"
+    SEARCH_API_TLS_VERIFY: ""
+  # S3 bucket for pre-baked /search/graphql snapshots, populated by the
+  # snapshot-publisher Lambda (CDK SnapshotsBucketName output). Leave empty
+  # to disable the /snapshots/* passthrough.
+  snapshotsBucket: ""
+  snapshotsKeyPrefix: "snapshots/"
+  apiGateway:
+    apiId: ""
+    region: "us-east-1"
+  # Override DNS for the execute-api hostname to bypass the VPC endpoint.
+  # Set per-environment to the public API Gateway IPs when the execute-api
+  # VPC endpoint causes 403s (HTTP APIs are not routable through private
+  # execute-api VPC endpoints — they require a Private REST API).
+  hostAliases: []
+  # Dual-route backend configuration:
+  # - Discovery/Guppy traffic uses SEARCH_API_BASE (API Gateway/Lambda path)
+  # - SIEM index traffic can use SIEM_SEARCH_BASE (RDS/ES-backed path)
+  siemBackend:
+    baseUrl: ""
+    searchApiRequireSigv4: "true"
+    siemRequireSigv4: "auto"
+    indexes: "security_event,audit_event,threat_indicator"
+  postgresDsnSecretRef:
+    name: vectis-search-auth-proxy
+    key: postgres_dsn
+  # Optional separate AWS secret name for the search-role credentials.
+  # Falls back to rds.secretName for backward compatibility.
+  appDsnSecretName: ""
+
+s3Monitor:
+  enabled: false
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  serviceAccount:
+    create: true
+    name: s3-monitor-sa
+    annotations: {}
+  image:
+    repository: python
+    tag: "3.11-slim"
+    pullPolicy: IfNotPresent
+  initImage:
+    repository: busybox
+    tag: "1.36"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  aws:
+    region: "us-east-1"
+  s3:
+    bucket: ""
+    prefix: ""
+  db:
+    schema: "vectis"
+    table: "s3_metadata"
+    secretName: ""
+    secretTargetName: "s3-monitor-db-creds"
+    host: ""
+    port: "5432"
+    database: "postgres"
+
+# CDK RDS secret in Secrets Manager — used to build the postgres DSN ExternalSecret.
+# Set per-environment in gitops values.
+rds:
+  secretName: ""
+  endpoint: ""
+  port: "5432"
+  database: postgres
+
+# Database migrations — one-time Job to bootstrap the vectis schema and RLS views.
+# Set migrations.enabled: true in gitops values to trigger the Job, then flip back to false.
+migrations:
+  enabled: false

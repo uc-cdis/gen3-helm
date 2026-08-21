@@ -1,0 +1,2 @@
+{{- /* Namespace owned by the hatchery chart (jupyter-namespace.yaml).
+     workspace-proxy deploys into it but does not create it. */ -}}
