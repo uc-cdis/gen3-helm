@@ -3994,6 +3994,17 @@ entries:
   cluster-level-resources:
   - apiVersion: v2
     appVersion: 1.17.0
+    created: "2026-08-21T16:42:25.022282011Z"
+    description: An app-of-apps Helm chart that allows for flexible deployment of
+      resources that support Gen3
+    digest: 5dd6fa88ae5617f25b954cdbb438a188d9bedfd08caa2403451f1198e5af3703
+    name: cluster-level-resources
+    type: application
+    urls:
+    - https://github.com/uc-cdis/gen3-helm/releases/download/cluster-level-resources-0.6.49/cluster-level-resources-0.6.49.tgz
+    version: 0.6.49
+  - apiVersion: v2
+    appVersion: 1.17.0
     created: "2026-08-12T16:02:56.968646112Z"
     description: An app-of-apps Helm chart that allows for flexible deployment of
       resources that support Gen3
@@ -73555,4 +73566,4 @@ entries:
     urls:
     - https://github.com/uc-cdis/gen3-helm/releases/download/zendesk-wrapper-0.1.0/zendesk-wrapper-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-20T21:36:28.007311462Z"
+generated: "2026-08-21T16:42:25.025761837Z"
