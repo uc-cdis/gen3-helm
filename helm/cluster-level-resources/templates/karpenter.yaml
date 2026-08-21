@@ -38,6 +38,9 @@ spec:
           settings:
             clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
             clusterEndpoint: {{ .Values.eksClusterEndpoint }}
+            {{- if .Values.karpenter.interruptionQueue }}
+            interruptionQueue: {{ .Values.karpenter.interruptionQueue }}
+            {{- end }}
           controller:
             env:
               - name: AWS_REGION
