@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fhir-proxy.fullname" . }}
+  name: fhir-proxy-deployment
   {{- with .Values.podAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -64,9 +64,7 @@ spec:
           env:
             - name: DEBUG
               value: {{ .Values.config.debug | quote }}
-            - name: DEBUG_SKIP_AUTH
-              value: {{ .Values.config.debugSkipAuth | quote }}
-            - name: URL_PREFIX
+            - name: GEN3_FHIR_PROXY_URL_PREFIX
               value: {{ .Values.config.urlPrefix | quote }}
             - name: FHIR_SERVER_URL
               value: {{ .Values.config.fhirServerUrl | quote }}

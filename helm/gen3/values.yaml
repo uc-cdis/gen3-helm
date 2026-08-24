@@ -215,6 +215,10 @@ fence:
 
 fhir-proxy:
   enabled: true
+  image:
+    repository: fhir-proxy
+    tag: dev
+    pullPolicy: IfNotPresent
 
 # -- (map) Configurations for frontend-framework chart.
 frontend-framework:

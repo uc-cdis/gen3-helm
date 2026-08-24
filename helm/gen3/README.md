@@ -117,6 +117,9 @@ Helm chart to deploy Gen3 Data Commons
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
 | fhir-proxy.enabled | bool | `true` |  |
+| fhir-proxy.image.pullPolicy | string | `"IfNotPresent"` |  |
+| fhir-proxy.image.repository | string | `"fhir-proxy"` |  |
+| fhir-proxy.image.tag | string | `"dev"` |  |
 | frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}}` | Configurations for frontend-framework chart. |
 | frontend-framework.enabled | bool | `false` | Whether to deploy the frontend-framework subchart. |
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |

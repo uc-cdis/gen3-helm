@@ -49,21 +49,25 @@ affinity:
                   - fhir-proxy
           topologyKey: "kubernetes.io/hostname"
 
-volumes: []
-
 image:
   repository: fhir-proxy
-  pullPolicy: Never
+  pullPolicy: IfNotPresent
   tag: dev
 
-volumeMounts: []
+volumes:
+  - name: prometheus-multiproc
+    emptyDir: {}
+
+volumeMounts:
+  - name: prometheus-multiproc
+    mountPath: /var/tmp/prometheus_metrics
 
 resources:
   limits:
-    memory: 256Mi
+    memory: 512Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 256Mi
 
 service:
   type: ClusterIP
@@ -87,14 +91,13 @@ commonLabels:
   app: fhir-proxy
 
 config:
-  debug: true
-  debugSkipAuth: false
-
+  debug: false
+  
   # This should match the path exposed through revproxy.
-  urlPrefix: "/fhir"
+  urlPrefix: ""
 
-  # External upstream HAPI-FHIR server.
-  fhirServerUrl: "http://host.docker.internal:8080"
+  # External upstream FHIR server.
+  fhirServerUrl: ""
 
   # Internal Gen3 authorization service.
   arboristUrl: "http://arborist-service"
