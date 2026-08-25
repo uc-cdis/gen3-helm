@@ -285,6 +285,14 @@ extraLabels:
   # for network policy
   netnolimit: "yes"
 
+# -- (map) Passed straight through to the service's own configuration file, so any setting
+# gen3-workflow supports can be set here using its real ALL_UPPER name, without the chart
+# needing a matching key. Rendered after the `gen3WorkflowConfig` values below, so setting a key
+# that the chart already templates does override it, but leaves both lines in the rendered
+# config file.
+# See https://github.com/uc-cdis/gen3-workflow/blob/master/gen3workflow/config-default.yaml
+GEN3_WORKFLOW_CONFIG: {}
+
 gen3WorkflowConfig:
   # -- (string) Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname
   hostname: ""
@@ -292,8 +300,6 @@ gen3WorkflowConfig:
   debug: false
   # -- (bool) Enables verbose logging specifically for httpx requests.
   httpxDebug: false
-  # -- (int) Number of gunicorn workers
-  nWorkers: 2
   # -- (string) For deployments that run the app behind a proxy. The value should start with a slash.
   proxyPrefix: /workflows
   # -- (string) Custom Arborist URL. Ignored if already set via environment variable.

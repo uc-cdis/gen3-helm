@@ -9,7 +9,8 @@ traces to Tempo.
 
 This guide stands the same Alloy pipeline up on a kind cluster, backed by a single-pod LGTM
 stack instead of the [observability](../helm/observability/SETUP.md) chart. You get Grafana,
-Prometheus, Tempo, and Loki in one container, and Alloy configured as it is in a real cluster
+Prometheus, Tempo, Loki, and Pyroscope in one container, and Alloy configured as it is in a real
+cluster
 apart from the three addresses it writes to and one added log-processing stage.
 
 That stage is the one deliberate behavioural difference, and it matters when comparing against a
@@ -36,8 +37,11 @@ A running kind cluster. See [kubernetes-in-docker.md](kubernetes-in-docker.md).
 # Step 1. Deploy the LGTM backend
 
 [examples/local_lgtm.yaml](../examples/local_lgtm.yaml) is adapted from the manifest published
-by [grafana/docker-otel-lgtm](https://github.com/grafana/docker-otel-lgtm), with one change: the
-Loki port is exposed, so Alloy has somewhere to send logs. The image already starts Prometheus
+by [grafana/docker-otel-lgtm](https://github.com/grafana/docker-otel-lgtm), with two changes: the
+Loki port is exposed, so Alloy has somewhere to send logs, and the Pyroscope port is exposed, so
+services can push profiles. Both listen inside the image already; only the Service was missing
+them, and a Service without the port silently drops the traffic rather than refusing it. The
+image already starts Prometheus
 with `--web.enable-remote-write-receiver`, which is what Alloy needs in order to deliver
 metrics, so nothing has to be passed to enable it.
 
@@ -50,8 +54,8 @@ kubectl wait --namespace monitoring \
   --timeout=180s
 ```
 
-Grafana comes with Prometheus, Tempo, and Loki datasources already provisioned, so there is
-nothing to wire up by hand.
+Grafana comes with Prometheus, Tempo, Loki, and Pyroscope datasources already provisioned, so
+there is nothing to wire up by hand.
 
 # Step 2. Deploy Alloy
 
@@ -99,8 +103,22 @@ gen3-embeddings:
 for `grpc` on 4317, and a mismatched pair fails when the first span is exported rather than at
 startup.
 
+**Profiles need one address.** A service that ships a Pyroscope SDK pushes to
+`PYROSCOPE_SERVER_ADDRESS`, which here is:
+
+```
+PYROSCOPE_SERVER_ADDRESS=http://lgtm.monitoring:4040
+```
+
+CPU and memory are enabled separately. `cdispyutils.observability.configure_profiling` reads
+`PROFILE_CPU` (default true) and `PROFILE_MEMORY` (default **false**), so a service pushes CPU
+profiles and no memory series until `PROFILE_MEMORY` is set. Both are read from the process
+environment rather than from a service's config file, so they belong in the chart's `env` list
+next to the other container variables, not in the config block that carries
+`PYROSCOPE_SERVER_ADDRESS`.
+
 Services deployed in another namespace reach Alloy fine - `alloy.monitoring` resolves from
-anywhere in the cluster.
+anywhere in the cluster, as does `lgtm.monitoring`.
 
 # Step 4. Look at the data
 
@@ -109,7 +127,8 @@ kubectl port-forward -n monitoring svc/lgtm 3000:3000     # Grafana, admin / adm
 kubectl port-forward -n monitoring svc/alloy 12345:12345  # Alloy UI, at /alloy
 ```
 
-In Grafana, Explore against the Prometheus datasource for metrics, the Tempo datasource for
+In Grafana, Explore against the Prometheus datasource for metrics, the Pyroscope datasource for
+profiles, the Tempo datasource for
 traces, and the Loki datasource for logs. Traces are searchable by `service.name`; logs are
 selected by `service_name`, for example `{service_name="gen3_embeddings"}`.
 

@@ -50,6 +50,7 @@ spec:
             - { name: otel-grpc, containerPort: 4317 }
             - { name: otel-http, containerPort: 4318 }
             - { name: prometheus, containerPort: 9090 }
+            - { name: pyroscope, containerPort: 4040 }
           readinessProbe:
             exec:
               command: ["cat", "/tmp/ready"]
@@ -89,3 +90,4 @@ spec:
     - { name: otel-grpc, port: 4317, targetPort: 4317 }
     - { name: otel-http, port: 4318, targetPort: 4318 }
     - { name: prometheus, port: 9090, targetPort: 9090 }
+    - { name: pyroscope, port: 4040, targetPort: 4040 }
