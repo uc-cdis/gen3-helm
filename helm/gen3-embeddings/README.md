@@ -25,7 +25,7 @@ Published versions of this chart are listed in the
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
-| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"}]` | Environment variables to pass to the container |
+| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"},{"name":"GUNICORN_WORKERS","value":"2"}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sGen3EmbeddingsSecret":false,"dbcreds":null,"gen3EmbeddingsG3auto":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createK8sGen3EmbeddingsSecret | string | `false` | Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
@@ -58,6 +58,7 @@ Published versions of this chart are listed in the
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
+| gunicornWorkers | int | `1` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3_embeddings"` |  |
 | image.tag | string | `"main"` |  |
@@ -72,10 +73,6 @@ Published versions of this chart are listed in the
 | livenessProbe.httpGet.port | string | `"http"` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` |  |
-| otel | map | `{"enabled":null,"endpoint":"","protocol":""}` | OpenTelemetry tracing. Every field is optional: leave one empty to keep the default baked into the image. Alloy accepts OTLP on both 4318 (http/protobuf) and 4317 (grpc), so `endpoint` and `protocol` have to be changed together. |
-| otel.enabled | bool | `nil` | Whether the service exports traces. Unset keeps the image default (enabled). |
-| otel.endpoint | string | `""` | Base URL of the OTLP collector, e.g. "http://alloy.monitoring:4318". |
-| otel.protocol | string | `""` | OTLP protocol, either "http/protobuf" or "grpc". |
 | partOf | string | `"Embeddings"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
@@ -91,7 +88,7 @@ Published versions of this chart are listed in the
 | readinessProbe.httpGet.port | string | `"http"` |  |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` |  |
-| resources | map | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Compute resources. Sized for the single Uvicorn process the image runs; add replicas rather than raising these to serve more concurrent traffic. The same values apply to the migration initContainer. |
+| resources | object | `{}` |  |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
