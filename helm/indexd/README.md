@@ -78,6 +78,7 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| maxBulkRequestLength | int | `100` |  |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
 | migrateToSingleTable.args | string | `nil` |  |
 | nameOverride | string | `""` | Override the name of the chart. |

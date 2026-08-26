@@ -294,6 +294,7 @@ cloudProviderMap:
   gs: gcp
   az: azure
 
+maxBulkRequestLength: 100
 
 # -- (map) Maps an arborist resource to the issuers for passports and bearer tokens.
 trustedIssuers:
