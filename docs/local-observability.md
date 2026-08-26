@@ -77,11 +77,14 @@ The release has to be named `alloy` and live in `monitoring`. Gen3 service image
 Confirm Alloy came up clean:
 
 ```bash
-kubectl -n monitoring logs deploy/alloy | grep -i error
+kubectl -n monitoring logs deploy/alloy | grep '"level":"error"'
 ```
 
-Scrape jobs for `kube-state-metrics`, `node-exporter`, and the kubelet are part of the shipped
-configuration and find nothing on kind. They sit idle rather than failing.
+Expect `"level":"warn"` lines reading `tailer stopped; will retry` for any container that has not
+started yet. `loki.source.kubernetes` gets a target per declared container as soon as the pod object
+exists, so it retries on a backoff until the container runs. A pod stuck in
+`Init:CreateContainerConfigError` or `ImagePullBackOff` produces these indefinitely without
+affecting collection from healthy pods.
 
 # Step 3. Point a service at it
 
@@ -105,19 +108,14 @@ gen3-embeddings:
 for `grpc` on 4317, and a mismatched pair fails when the first span is exported rather than at
 startup.
 
-**Profiles need one address.** A service that ships a Pyroscope SDK pushes to
-`PYROSCOPE_SERVER_ADDRESS`, which here is:
+**Profiles need one address.** A service that ships a Pyroscope SDK likely pushes to
+`PYROSCOPE_SERVER_ADDRESS`, which is something like:
 
 ```
 PYROSCOPE_SERVER_ADDRESS=http://lgtm.monitoring:4040
 ```
 
-CPU and memory are enabled separately. `cdispyutils.observability.configure_profiling` reads
-`PROFILE_CPU` (default true) and `PROFILE_MEMORY` (default **false**), so a service pushes CPU
-profiles and no memory series until `PROFILE_MEMORY` is set. Both are read from the process
-environment rather than from a service's config file, so they belong in the chart's `env` list
-next to the other container variables, not in the config block that carries
-`PYROSCOPE_SERVER_ADDRESS`.
+> NOTE: Check the individual service config for how to enable and configure observability. We are trying to consolidate Python observability into one of our Python packages that we import and use in the services, but there may be some differences across services.
 
 Services deployed in another namespace reach Alloy fine - `alloy.monitoring` resolves from
 anywhere in the cluster, as does `lgtm.monitoring`.
@@ -149,8 +147,10 @@ Alloy tails every pod's containers by default, so absent logs are usually a writ
 problem rather than a collection one. Work forwards along the path.
 
 1. **Is Alloy tailing the pod?** `kubectl -n monitoring logs deploy/alloy -c alloy | grep "opened log stream"`
-   names each container it reads. `tailer stopped; will retry` against a pod that is still
-   starting is normal and clears on its own.
+   names each container it reads. `tailer stopped; will retry` is normal against a container that
+   is not running, and clears once it starts. Against a pod wedged in `ImagePullBackOff` or
+   `Init:CreateContainerConfigError` it repeats on a backoff for as long as the pod exists - that is
+   a broken pod, not a broken collector.
 1. **Is Loki accepting the writes?** `kubectl -n monitoring logs deploy/alloy -c alloy | grep "error sending batch"`.
    A 500 reading `at least 1 live replicas required, could only find 0` means Loki's single
    ingester missed its heartbeat, which on a laptop is resource pressure rather than
