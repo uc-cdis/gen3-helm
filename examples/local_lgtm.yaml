@@ -1,10 +1,12 @@
-# A single-pod Grafana + Prometheus + Tempo + Loki stack for local development, backing the
+# A single-pod Grafana + Prometheus + Tempo + Loki + Pyroscope stack for local development, backing the
 # Alloy install described in docs/local-observability.md. Apply with:
 #
 #   kubectl apply -f examples/local_lgtm.yaml
 #
-# Adapted from the manifest published by grafana/docker-otel-lgtm, with one change: the Loki
-# port is exposed, so Alloy has somewhere to send logs.
+# Adapted from the manifest published by grafana/docker-otel-lgtm, with two changes: the Loki
+# port is exposed, so Alloy has somewhere to send logs, and the Pyroscope port is exposed, so
+# services can push profiles. Both already listen inside the image; a Service that omits the port
+# drops the traffic rather than refusing it.
 #
 # For local development only. One replica, emptyDir storage so everything is lost on restart,
 # no ingress, no TLS, and Grafana's default admin/admin. The observability chart is the answer

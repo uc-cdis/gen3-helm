@@ -10,6 +10,8 @@ Before deploying Alloy, it is important to first deploy the "observability" Helm
 
 For a kind cluster, follow [docs/local-observability.md](../../docs/local-observability.md) instead. The observability chart is sized for EKS and does not deploy Tempo, so traces have nowhere to go.
 
+Profiles are the one kind of telemetry Alloy does not carry. A service that ships a Pyroscope SDK pushes to the address in its own `PYROSCOPE_SERVER_ADDRESS`, so supporting profiling needs a Pyroscope for that address to point at and no change to `alloyConfigmapData`.
+
 ## Configuring Alloy
 
 ### Helm Chart Configuration

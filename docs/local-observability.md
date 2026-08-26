@@ -2,16 +2,17 @@
 
 ## Overview
 
-Gen3 services emit two kinds of telemetry: Prometheus metrics scraped from a `/metrics`
-endpoint, and OpenTelemetry traces pushed over OTLP. In a deployed cluster both flow through
-[Grafana Alloy](../helm/alloy/SETUP.md), which forwards metrics to Mimir, logs to Loki, and
-traces to Tempo.
+Gen3 services emit four kinds of telemetry: Prometheus metrics scraped from a `/metrics`
+endpoint, logs written to stdout, OpenTelemetry traces pushed over OTLP, and continuous profiles
+pushed to Pyroscope. In a deployed cluster the first three flow through
+[Grafana Alloy](../helm/alloy/SETUP.md), which forwards metrics to Mimir, logs to Loki, and traces
+to Tempo. Profiles take no such detour - the SDK inside each service pushes them straight to
+Pyroscope, so nothing in Alloy's configuration is involved in carrying them.
 
 This guide stands the same Alloy pipeline up on a kind cluster, backed by a single-pod LGTM
 stack instead of the [observability](../helm/observability/SETUP.md) chart. You get Grafana,
 Prometheus, Tempo, Loki, and Pyroscope in one container, and Alloy configured as it is in a real
-cluster
-apart from the three addresses it writes to and one added log-processing stage.
+cluster apart from the three addresses it writes to and one added log-processing stage.
 
 That stage is the one deliberate behavioural difference, and it matters when comparing against a
 deployed cluster: the overlay promotes each log line's `trace_id` to Loki structured metadata and
@@ -20,15 +21,17 @@ resolve. `helm/alloy/values.yaml` carries no such stage, so a deployed cluster u
 correlates traces to logs only once the change described in
 [otel-logs-and-traces.md](otel-logs-and-traces.md) lands there.
 
-Use this when you are developing a service and want to see its own metrics and traces. Do not
-use it as a model for a deployed cluster:
+Use this when you are developing a service and want to see its own metrics, traces, logs, and
+profiles. Do not use it as a model for a deployed cluster:
 
 - one replica of everything, no high availability
 - `emptyDir` storage, so all data is lost when the pod restarts
 - no ingress, no TLS, no authentication beyond Grafana's default `admin` / `admin`
 
 The `observability` chart is the deployed-cluster answer. It is sized for EKS - five Mimir
-ingesters, S3 storage, ALB ingresses - and will not fit comfortably on a laptop.
+ingesters, S3 storage, ALB ingresses - and will not fit comfortably on a laptop. It also deploys
+neither Tempo nor Pyroscope, so a deployed cluster gets traces and profiles only from backends
+outside that chart; see [otel-logs-and-traces.md](otel-logs-and-traces.md).
 
 ## Prerequisites
 
@@ -41,9 +44,8 @@ by [grafana/docker-otel-lgtm](https://github.com/grafana/docker-otel-lgtm), with
 Loki port is exposed, so Alloy has somewhere to send logs, and the Pyroscope port is exposed, so
 services can push profiles. Both listen inside the image already; only the Service was missing
 them, and a Service without the port silently drops the traffic rather than refusing it. The
-image already starts Prometheus
-with `--web.enable-remote-write-receiver`, which is what Alloy needs in order to deliver
-metrics, so nothing has to be passed to enable it.
+image already starts Prometheus with `--web.enable-remote-write-receiver`, which is what Alloy
+needs in order to deliver metrics, so nothing has to be passed to enable it.
 
 ```bash
 kubectl apply -f examples/local_lgtm.yaml
@@ -127,10 +129,11 @@ kubectl port-forward -n monitoring svc/lgtm 3000:3000     # Grafana, admin / adm
 kubectl port-forward -n monitoring svc/alloy 12345:12345  # Alloy UI, at /alloy
 ```
 
-In Grafana, Explore against the Prometheus datasource for metrics, the Pyroscope datasource for
-profiles, the Tempo datasource for
-traces, and the Loki datasource for logs. Traces are searchable by `service.name`; logs are
-selected by `service_name`, for example `{service_name="gen3_embeddings"}`.
+In Grafana, Explore against the Prometheus datasource for metrics, the Tempo datasource for
+traces, the Loki datasource for logs, and the Pyroscope datasource for profiles. Traces are
+searchable by `service.name`; logs are selected by `service_name`, for example
+`{service_name="gen3_embeddings"}`. Profiles are selected by the application name the SDK
+registers, which the service sets rather than the chart.
 
 To jump from a trace to its logs, open a span in Tempo and follow its logs link. The Tempo
 datasource in the LGTM image builds that query as `{service_name="..."} | trace_id = "..."`, a
