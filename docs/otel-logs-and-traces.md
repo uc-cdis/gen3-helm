@@ -3,10 +3,11 @@
 > **Working notes** This is one reading of what the platform would need in order to
 > support JSON logging and tracing for Gen3 services in general. This file is meant to be deleted once the work is scoped.
 
-## What the services emit
+## What the services (will eventually) emit
 
-The Gen3 AI services (`gen3-embeddings` and its siblings) v1.0.0 will emit logs in JSON, tracing info with Open Telemetry, and metrics with prometheus. Metrics need no
-chart work from what I can tell.
+The Gen3 AI services (`gen3-embeddings` and its siblings) v1.0.0 will emit logs in JSON, tracing info with Open Telemetry, metrics with prometheus, and continuous profiles with Pyroscope. Metrics need no
+chart work from what I can tell, and profiles need only an address plus a backend to put at the
+other end of it.
 
 `gen3logging`'s JSON formatter writes one object per line:
 
@@ -23,6 +24,11 @@ chart work from what I can tell.
 ```
 
 * Traces go to Alloy over OTLP on port 4318 (`http/protobuf`).
+* Profiles go to Pyroscope on port 4040, pushed by the SDK in the service rather than collected by
+  Alloy. The service reads `PYROSCOPE_SERVER_ADDRESS` for the destination, and `PROFILE_CPU`
+  (default true) and `PROFILE_MEMORY` (default false) for what to push. All three are process
+  environment variables, so in a chart they belong in the container `env` rather than in a config
+  file.
 * `trace_id` and `span_id` come from `opentelemetry-instrumentation-logging`(python library), which puts them on
   every log record. They are `null` for anything logged outside a request span, such as startup or
   the OTLP exporter's own HTTP calls. Only lines emitted while a span is active can correlate.
@@ -250,6 +256,32 @@ port 4317 closed, and Alloy's exporter fails with nothing obviously wrong in the
 
 Whether a cluster should run its own Tempo at all, given the central one, is a decision rather
 than a defect.
+
+## There is no Pyroscope in the observability chart either
+
+The same gap as Tempo, one step further along. `lgtm-distributed` has no Pyroscope subchart at
+all: its dependencies are Grafana, `loki-distributed`, `mimir-distributed`, `tempo-distributed`,
+and OnCall. Nor is there a CTDS-managed Pyroscope playing the role `tempo.planx-pla.net` plays for
+traces. No chart in this repo sets `PYROSCOPE_SERVER_ADDRESS`, so no deployed service pushes
+profiles today.
+
+Local Grafana showing a Pyroscope datasource is not evidence against this. That comes from the
+`grafana/otel-lgtm` container in [local-observability.md](local-observability.md), which bundles
+Pyroscope and provisions the datasource itself. The two stacks share the letters and nothing
+else: the kind overlay runs one process with everything in it, `helm/observability` runs the
+distributed charts, and only the first has a profiling backend.
+
+Supporting profiles in a cluster is a separate release rather than a values change:
+
+- the [`pyroscope`](https://github.com/grafana/pyroscope/tree/main/operations/pyroscope/helm/pyroscope)
+  chart from `grafana/helm-charts`, whose distributed mode needs S3 and so an IRSA policy
+  alongside Mimir's and Loki's
+- a Pyroscope datasource in Grafana, which section 3 has to restate anyway once
+  `datasources.yaml` is overridden
+- `PYROSCOPE_SERVER_ADDRESS` on each service that should profile, and `PROFILE_MEMORY` where heap
+  profiles are wanted
+
+Nothing in Alloy changes for any of it, which is the one simplifying difference from traces.
 
 ## Alert rules assume a different log shape
 
