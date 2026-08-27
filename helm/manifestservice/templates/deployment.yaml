@@ -52,6 +52,8 @@ spec:
         - name: manifestservice
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
             {{- if and .Values.manifestserviceG3auto.awsaccesskey .Values.manifestserviceG3auto.awssecretkey }}
@@ -85,6 +87,8 @@ spec:
                 {{- end }}
                   key: secret-access-key
             {{- end }}
+            - name: FENCE_URL
+              value: {{ default "http://fence-service" (printf "https://%s/user" .Values.global.hostname) }}
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:

@@ -1,15 +1,19 @@
 # requestor
 
-![Version: 0.1.34](https://img.shields.io/badge/Version-0.1.34-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Requestor Service
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.36 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
+| https://charts.bitnami.com/bitnami | postgresql |
 
 ## Values
 
@@ -29,9 +33,11 @@ A Helm chart for gen3 Requestor Service
 | command | list | `["/bin/sh"]` | Command to run for the init container. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"dbcreds":null,"pushSecret":false}` | External Secrets settings. |
+| externalSecrets | map | `{"createK8sRequestorSecret":false,"dbcreds":null,"pushSecret":false,"requestorG3auto":null}` | External Secrets settings. |
+| externalSecrets.createK8sRequestorSecret | string | `false` | Will create the Helm "requestor-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+| externalSecrets.requestorG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "requestor-g3auto" |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -99,6 +105,9 @@ A Helm chart for gen3 Requestor Service
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
+| requestorConfig | map | `{"configYaml":"","enabled":false}` | Requestor runtime configuration. leave enabled=false and provide the secret externally. |
+| requestorConfig.configYaml | str | `""` | ontents of requestor config.yaml |
+| requestorConfig.enabled | bool | `false` | Create local Kubernetes secret from configYaml |
 | resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
 | resources.limits | map | `{"memory":"512Mi"}` | The maximum amount of resources that the container is allowed to use |
 | resources.limits.memory | string | `"512Mi"` | The maximum amount of memory the container can use |
@@ -112,6 +121,10 @@ A Helm chart for gen3 Requestor Service
 | service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| serviceAccount.annotations | map | `{"eks.amazonaws.com/role-arn":null}` | Annotations to add to the service account. |
+| serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
+| serviceAccount.name | string | `"requestor-sa"` | The name of the service account |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |
