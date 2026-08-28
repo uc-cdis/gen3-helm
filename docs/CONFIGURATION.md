@@ -1,5 +1,40 @@
 # Gen3 Services
 
+# Where a setting goes
+
+Newer service charts (Gen3 Embeddings for example) split configuration by sensitivity rather than by subsystem. The values
+files in [gen3-gitops](https://github.com/uc-cdis/gen3-gitops) are public, so nothing secret can
+live in them, and every non-file setting converges on the container's process environment.
+
+Newer services handle configuration by environment (either environment variables or a .env file), so the configuration
+variables in Helm values mirrors the configuration in the service itself.
+
+| Kind of setting | Lives in | Reaches the container via |
+| --- | --- | --- |
+| Public, versioned config | `extraEnv` map in the service's gitops values | rendered into the container `env:` list |
+| Secret config | AWS Secrets Manager, referenced by name only | External Secrets `dataFrom.extract` into a `<service>-env-secret` Secret, projected with `envFrom` |
+| Secret config, local dev | `secretEnv` map, rendered by the chart | the same `<service>-env-secret` Secret |
+| Fixed, known credentials | `<service>-dbcreds` | individual `env` entries with `secretKeyRef` |
+| Whole files the service reads (`user.yaml`, JSON config) | the service's g3auto Secret | a mounted volume |
+
+`dataFrom.extract` turns every property of the Secrets Manager secret into its own Secret key,
+so adding a secret setting means adding a JSON property there - no chart change, and nothing new
+in a public repo. Keys have to be valid environment variable names, which is why the
+`-env-secret` Secret is separate from the g3auto one: g3auto holds keys like `base64Authz.txt`
+and `dbcreds.json`, and `envFrom` skips anything that is not an identifier.
+
+Prefer `extraEnv` over appending to the `env` list. Helm replaces lists wholesale, so setting
+`env` in a values file discards the chart's own defaults, while map keys merge per key.
+
+Older charts do this differently and are not being migrated wholesale. `fence` renders an
+ALL_UPPER `FENCE_CONFIG` map into a YAML config file (documented under Fence below), and
+`gen3-workflow` does the same with `GEN3_WORKFLOW_CONFIG`. Services that mount a `.env` file
+still work, but env vars take precedence over it, so new settings belong in `extraEnv` rather
+than the file.
+
+> NOTE: When the same name is set in both `envFrom` and `env`, Kubernetes resolves it to the `env` value.
+> Public config therefore overrides a secret of the same name, silently.
+
 # Ambassador
 
 ## What Does it Do

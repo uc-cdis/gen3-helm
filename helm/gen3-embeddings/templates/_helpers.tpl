@@ -57,20 +57,39 @@ Selector labels
 {{- end }}
 
 {{/*
- Postgres Password lookup
-*/}}
-{{- define "gen3-embeddings.postgres.password" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.postgres.password }}
-{{- end }}
-{{- end }}
-
-{{/*
   Gen3Embeddings g3 Auto Secrets Manager Name
 */}}
 {{- define "gen3embeddings-g3auto" -}}
 {{- default "gen3embeddings-g3auto" .Values.externalSecrets.gen3EmbeddingsG3auto }}
+{{- end }}
+
+{{/*
+  Name of the Secret holding secret values projected into the container environment, and the
+  Secrets Manager key it is populated from.
+*/}}
+{{- define "gen3-embeddings.envSecretName" -}}
+{{- default (printf "%s-env-secret" (include "gen3-embeddings.name" .)) .Values.externalSecrets.gen3EmbeddingsEnvSecret }}
+{{- end }}
+
+{{/*
+  Admin credential in "gateway:<password>" form.
+
+  Reused from the existing gen3embeddings-g3auto Secret when one is present, so that the password
+  does not rotate on every `helm upgrade` and the deployment's checksum/config annotation only
+  changes when configuration actually changes. `lookup` returns nothing during `helm template`,
+  so a bare render still produces a fresh password every time; stability only holds against a
+  live cluster.
+
+  The round trip is asymmetric and easy to break: base64Authz.txt is written as
+  `quote | b64enc`, Kubernetes base64-encodes that again on the way in, and the quote marks end
+  up inside the encoded text. So recovering the credential means decoding twice and then
+  stripping the quotes that decoding reveals.
+*/}}
+{{- define "gen3-embeddings.adminLogins" -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace "gen3embeddings-g3auto" -}}
+{{- if and $existing (hasKey $existing.data "base64Authz.txt") -}}
+{{- index $existing.data "base64Authz.txt" | b64dec | b64dec | trimAll "\"" -}}
+{{- else -}}
+{{- printf "gateway:%s" (randAlphaNum 32) -}}
+{{- end -}}
 {{- end }}

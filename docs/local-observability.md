@@ -98,10 +98,10 @@ The only requirement is that your service actually serves `/metrics`.
 
 ```yaml
 gen3-embeddings:
-  otel:
-    enabled: true
-    endpoint: "http://alloy.monitoring:4318"
-    protocol: "http/protobuf"
+  extraEnv:
+    ENABLE_OPENTELEMETRY_TRACES: "true"
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy.monitoring:4318
+    OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
 ```
 
 `endpoint` and `protocol` have to change together: Alloy listens for `http/protobuf` on 4318 and
@@ -114,6 +114,21 @@ startup.
 ```
 PYROSCOPE_SERVER_ADDRESS=http://lgtm.monitoring:4040
 ```
+
+These are read from the process environment, not from a service's config file, so on charts that
+support `extraEnv` they go there:
+
+```yaml
+gen3-embeddings:
+  extraEnv:
+    PYROSCOPE_SERVER_ADDRESS: http://lgtm.monitoring:4040
+    PROFILE_MEMORY: "true"
+```
+
+`cdispyutils.observability.configure_profiling` reads `PROFILE_CPU` (default true) and
+`PROFILE_MEMORY` (default **false**), so CPU profiles arrive without any flag but memory series
+do not until `PROFILE_MEMORY` is set. Setting an address alone is what makes profiles appear at
+all.
 
 > NOTE: Check the individual service config for how to enable and configure observability. We are trying to consolidate Python observability into one of our Python packages that we import and use in the services, but there may be some differences across services.
 

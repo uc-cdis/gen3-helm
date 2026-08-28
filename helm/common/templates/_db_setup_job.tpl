@@ -37,6 +37,10 @@ kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
 spec:
+  {{- /* Completed Jobs clean themselves up rather than accumulating. Note this does not make the
+         Job re-runnable: the name is fixed, so a changed spec still collides with the existing
+         object until it is deleted. */}}
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       labels:
