@@ -91,7 +91,7 @@ spec:
     - to:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: {{ include "hatchery.fullname" . }}
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
         podSelector:
           matchLabels:
             userhelper: "yes"
