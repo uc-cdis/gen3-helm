@@ -327,6 +327,18 @@ Not required for the ArgoCD path, but it should probably not stay broken. Groupe
   this; only `tpl` evaluates the template. Note that `tpl` evaluates the whole config, so any
   future stage using Go-style braces, `stage.template` being the common one, would break.
 - No `labeldrop`, unlike the ArgoCD config, which makes the label limit in section 1 worse.
+- No cAdvisor scrape. The chart scrapes the kubelet's own `/metrics`, which carries operational
+  counters and no per-container resource usage, so no cluster deployed from this chart reports what
+  a pod's memory or CPU actually is - `container_memory_working_set_bytes`,
+  `container_spec_memory_limit_bytes` and `container_cpu_usage_seconds_total` are all absent, and
+  the `kube_state_metrics` scrape alongside it targets a `monitoring-extras-kube-state-metrics`
+  service that this repo never creates. The kubelet serves cAdvisor on a second path
+  (`/metrics/cadvisor`) reached through the same node proxy and the same service account token, so
+  this is an added scrape rather than a longer keep list.
+  [examples/local_alloy_values.yaml](../examples/local_alloy_values.yaml) carries that scrape for
+  local development only, inserted by `.github/scripts/regenerate_local_alloy_values.py` alongside
+  the `loki.process` stage below. Moving it into `helm/alloy/values.yaml` is what would give
+  deployed clusters the same view, and that substitution would then be dropped from the script.
 
 **Blocks correlation.**
 
@@ -343,4 +355,5 @@ Not required for the ArgoCD path, but it should probably not stay broken. Groupe
 Metrics. `common.grafanaAnnotations` already puts `prometheus.io/scrape` and `prometheus.io/path`
 on every Gen3 pod, `global.metricsEnabled` defaults to true, and Alloy's
 `annotation_autodiscovery_pods` relabel already resolves those to `podIP:<containerPort>/metrics`.
-A service only has to serve the endpoint.
+A service only has to serve the endpoint. That covers what a service publishes about itself; what
+the container consumes is a separate scrape, in the cAdvisor bullet above.
