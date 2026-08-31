@@ -110,7 +110,13 @@ spec:
                   name: gen3-embeddings-dbcreds
                   key: dbcreated
                   optional: false
+            {{- if not (kindIs "map" .Values.extraEnv) }}
+            {{- fail (printf "gen3-embeddings.extraEnv must be a map of NAME: value, got %s. Use `valueFrom` entries in `env` instead." (kindOf .Values.extraEnv)) }}
+            {{- end }}
             {{- range $k, $v := .Values.extraEnv }}
+            {{- if or (kindIs "map" $v) (kindIs "slice" $v) }}
+            {{- fail (printf "gen3-embeddings.extraEnv[%s] must be a scalar, got %s. Use `env` for anything needing `valueFrom`." $k (kindOf $v)) }}
+            {{- end }}
             - name: {{ $k }}
               value: {{ $v | quote }}
             {{- end }}
