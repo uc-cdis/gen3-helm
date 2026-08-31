@@ -491,7 +491,7 @@ alloy:
     prometheus.relabel "cadvisor" {
       rule {
         source_labels = ["__name__"]
-        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total"
+        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_spec_cpu_quota|container_spec_cpu_period|container_oom_events_total"
         action = "keep"
       }
 

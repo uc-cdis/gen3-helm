@@ -243,6 +243,11 @@ Leave the panel's unit unset. The datasource stamps a unit on each series, and a
 panel options overrides it - which is also why one panel holding both CPU and memory queries can
 label neither correctly. One unit per panel.
 
+`groupBy` is not limited to `service_name`. Pyroscope labels each sample with the `span_name` that
+was active when it was taken, so grouping by that attributes CPU to a route - the `CPU by endpoint`
+panel. Samples taken outside a span carry no `span_name`, so background work and startup drop out of
+any panel grouped that way.
+
 ## When a log line or trace link does not show up
 
 Alloy tails every pod's containers by default, so absent logs are usually a write or a label

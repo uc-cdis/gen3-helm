@@ -2,7 +2,7 @@
   "id": null,
   "uid": "gen3-local-services",
   "title": "Local services - overview",
-  "description": "Resources, requests, traces, service metrics and logs for the local kind cluster, one row per signal. CPU and memory are profiler-reported and come from Python services today: only services pushing profiles appear there, and sampled heap is not the pod's resident memory - the Container memory row is.",
+  "description": "Resources, requests, traces, service metrics and logs for the local kind cluster, one row per signal. The CPU and Memory rows are profiler-reported, so only services running a profiler appear there and sampled heap is not the pod's resident memory - the Container resources row is.",
   "tags": [
     "local",
     "observability"
@@ -209,7 +209,7 @@
       "id": 3,
       "type": "stat",
       "title": "Heap in use now",
-      "description": "Latest sampled heap in use: the bytes the profiler saw allocated and still live. This is not the pod's memory usage, which is resident set size - the memory the kernel actually holds in RAM for the process. For the Python services profiled here, resident memory also covers the Python interpreter itself, its shared libraries, buffers allocated inside C extensions, and memory CPython's allocator has freed but kept back from the OS, none of which reaches a profile; expect an order of magnitude between the two figures. A Go service would be sampled the same way, with the Go runtime's stacks and spans outside the profile instead. Read the Container memory row for the footprint and this panel for which code is holding objects.",
+      "description": "Latest sampled heap in use: the bytes the profiler saw allocated and still live. It is not what the kernel charges the container, which also covers the runtime itself, its shared libraries, buffers allocated inside C extensions, and memory the allocator has freed but kept back from the OS - for the Python services profiled here that is CPython's allocator, and a Go service would instead hold the runtime's stacks and spans. Expect an order of magnitude between the two figures. Read the Container memory row for what a limit is enforced against, and this panel for which code is holding objects.",
       "datasource": {
         "type": "grafana-pyroscope-datasource",
         "uid": "pyroscope"
@@ -274,7 +274,7 @@
     {
       "id": 4,
       "type": "row",
-      "title": "CPU",
+      "title": "CPU (profiler samples)",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -445,7 +445,7 @@
     {
       "id": 7,
       "type": "row",
-      "title": "Memory",
+      "title": "Memory (profiler samples)",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -539,7 +539,7 @@
       "id": 8,
       "type": "timeseries",
       "title": "Heap in use",
-      "description": "Bytes the profiler sampled as allocated and still live. Useful for which code holds objects and whether that is growing, not for footprint - the Container memory row below is the footprint, and is normally an order of magnitude larger.",
+      "description": "Bytes the profiler sampled as allocated and still live - what the program itself is holding. Read it for which code holds objects and whether that is growing. For what the kernel charges the container, which is what a limit is enforced against, see the Container memory row.",
       "datasource": {
         "type": "grafana-pyroscope-datasource",
         "uid": "pyroscope"
@@ -698,7 +698,7 @@
     {
       "id": 30,
       "type": "row",
-      "title": "Container memory (real usage)",
+      "title": "Container memory (kernel accounting)",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -712,14 +712,14 @@
       "id": 28,
       "type": "timeseries",
       "title": "Container memory (working set) by pod",
-      "description": "Working set is the number Kubernetes evicts and OOM-kills on - resident memory minus the page cache it could reclaim - so it is the pod's real footprint, unlike the sampled heap above. Dashed lines are each container's limit. A container with no limit has no line, because cAdvisor reports its limit as 0 rather than leaving the series out. Not filtered by the Service picker: these series are keyed by pod and container, which carry neither spelling of the name the picker holds.",
+      "description": "Working set as the kernel accounts it: pages charged to the container's cgroup, minus the page cache it could reclaim under pressure. This is the number Kubernetes evicts and OOM-kills on, so it decides whether the pod lives - but it counts memory the process is not using, including the interpreter, shared libraries and anything its allocator has held back from the OS. The profiler rows above count what the program allocated and still holds. Neither is wrong; they answer different questions, and the gap between them is the runtime's overhead. Dashed lines are each container's limit; a container without one has no line, because cAdvisor reports its limit as 0 rather than leaving the series out. Not filtered by the Service picker: these series are keyed by pod and container.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "h": 9,
-        "w": 24,
+        "w": 16,
         "x": 0,
         "y": 27
       },
@@ -814,6 +814,85 @@
           "showLegend": true,
           "calcs": [
             "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 34,
+      "type": "timeseries",
+      "title": "OOM kills",
+      "description": "Out-of-memory kills counted by the kernel. Flat at zero until something is killed, which is the point: a container that vanished mid-request with nothing in its own logs shows up here and nowhere else. Read it beside the memory table - a pod killed at its limit was at 100% there a moment earlier. Not filtered by the Service picker: these series are keyed by pod and container, which carry neither spelling of the name the picker holds.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 27
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (increase(container_oom_events_total{container!=\"\", namespace=~\"default|monitoring\"}[$__rate_interval]))",
+          "legendFormat": "{{pod}}",
+          "editorMode": "code",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 60,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "sum"
           ]
         },
         "tooltip": {
@@ -1052,6 +1131,259 @@
       }
     },
     {
+      "id": 40,
+      "type": "row",
+      "title": "Container CPU (kernel accounting)",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      }
+    },
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "Container CPU by pod",
+      "description": "CPU the container actually consumed, from cAdvisor - the counterpart to the profiler's CPU row above, and the pair that shows how much CPU the profiler never sees. 0.02 cores means 2% of one core. Not filtered by the Service picker: these series are keyed by pod and container, which carry neither spelling of the name the picker holds.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{container!=\"\", namespace=~\"default|monitoring\"}[$__rate_interval]))",
+          "legendFormat": "{{pod}}",
+          "editorMode": "code",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "cores"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 32,
+      "type": "timeseries",
+      "title": "CPU used vs limit",
+      "description": "Consumption as a share of the container's own CPU limit. Only containers that declare a limit appear; the rest are absent rather than shown at zero, since there is nothing to be a share of. Check this panel before reading CPU throttling: a flat zero there means headroom if a limit exists here, and nothing at all if it does not. Not filtered by the Service picker: these series are keyed by pod and container.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{container!=\"\", namespace=~\"default|monitoring\"}[$__rate_interval])) / (sum by (pod) (container_spec_cpu_quota{container!=\"\", namespace=~\"default|monitoring\"} / container_spec_cpu_period{container!=\"\", namespace=~\"default|monitoring\"}) > 0)",
+          "legendFormat": "{{pod}}",
+          "editorMode": "code",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "CPU throttling",
+      "description": "The share of scheduling periods in which the kernel stopped the container after it spent its quota. Only a container with a CPU limit can throttle, so a flat zero here means either headroom or no limit - check CPU used vs limit to tell which. This is the usual reason a service is slow while its own CPU graph looks unremarkable. Not filtered by the Service picker: these series are keyed by pod and container, which carry neither spelling of the name the picker holds.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_cfs_throttled_periods_total{container!=\"\", namespace=~\"default|monitoring\"}[$__rate_interval])) / sum by (pod) (rate(container_cpu_cfs_periods_total{container!=\"\", namespace=~\"default|monitoring\"}[$__rate_interval]))",
+          "legendFormat": "{{pod}}",
+          "editorMode": "code",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
       "id": 14,
       "type": "row",
       "title": "Requests (from traces)",
@@ -1061,7 +1393,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 64
       }
     },
     {
@@ -1077,7 +1409,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 65
       },
       "targets": [
         {
@@ -1153,7 +1485,7 @@
       "id": 16,
       "type": "timeseries",
       "title": "Latency p95 by endpoint",
-      "description": "95th percentile of inbound server span duration. Derived by Tempo's metrics generator from the spans it receives, not exported by the service. The series exist only while traces arrive, so a quiet service leaves a gap rather than a zero.",
+      "description": "95th percentile of inbound server span duration. The marks are exemplars: individual requests carrying their trace ID, so a spike can be opened as the trace that caused it. Derived by Tempo's metrics generator from the spans it receives, not exported by the service, so the series exist only while traces arrive and a quiet service leaves a gap rather than a zero.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -1162,7 +1494,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 65
       },
       "targets": [
         {
@@ -1174,7 +1506,8 @@
           "expr": "histogram_quantile(0.95, sum by (service, span_name, le) (rate(traces_spanmetrics_latency_bucket{service=~\"${service:pipe}\", span_kind=\"SPAN_KIND_SERVER\"}[$__rate_interval])))",
           "legendFormat": "{{service}} {{span_name}}",
           "range": true,
-          "editorMode": "code"
+          "editorMode": "code",
+          "exemplar": true
         }
       ],
       "fieldConfig": {
@@ -1235,10 +1568,197 @@
       }
     },
     {
+      "id": 36,
+      "type": "heatmap",
+      "title": "Latency heatmap",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "The full distribution of inbound span duration, not just its 95th percentile: two bands rather than one is the shape a p95 line hides, typically a fast path and a slow one. The magenta marks are exemplars - each one is a real request that landed in that cell, carrying its trace ID, so a hot spot can be opened as a trace rather than guessed at. Hovering names the service and span; clicking follows it to Tempo. Buckets and exemplars both come from Tempo's metrics generator, so they exist only while traces arrive.",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 74
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (le) (rate(traces_spanmetrics_latency_bucket{service=~\"${service:pipe}\", span_kind=\"SPAN_KIND_SERVER\"}[$__rate_interval]))",
+          "legendFormat": "{{le}}",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "heatmap",
+          "exemplar": true
+        }
+      ],
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "short"
+        },
+        "color": {
+          "mode": "scheme",
+          "scheme": "Spectral",
+          "steps": 64,
+          "reverse": false,
+          "exponent": 0.5,
+          "fill": "dark-orange"
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-09
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": true
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false,
+          "unit": "s"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 37,
+      "type": "table",
+      "title": "Slowest endpoints",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "p95 per route across the whole time range shown, ranked, so the worst endpoint names itself instead of being picked out of a crowded legend. It reads the range rather than a rate interval on purpose: a p95 over the last few minutes is empty whenever traffic is not arriving right now. Routes with no samples in the range are dropped rather than listed blank. Server spans only.",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 74
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "topk(10, histogram_quantile(0.95, sum by (service, span_name, le) (rate(traces_spanmetrics_latency_bucket{service=~\"${service:pipe}\", span_kind=\"SPAN_KIND_SERVER\"}[$__range]))) > 0)",
+          "legendFormat": "",
+          "editorMode": "code",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "service": "Service",
+              "span_name": "Endpoint",
+              "Value": "p95",
+              "Value #A": "p95"
+            },
+            "indexByName": {},
+            "includeByName": {}
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "p95",
+            "desc": true
+          }
+        ]
+      }
+    },
+    {
       "id": 17,
       "type": "timeseries",
-      "title": "Error rate by endpoint",
-      "description": "Spans of any kind whose status is ERROR. Empty until a span actually carries that status - an HTTP 500 that the service handles without marking its span is invisible here. Derived by Tempo's metrics generator from the spans it receives, not exported by the service. The series exist only while traces arrive, so a quiet service leaves a gap rather than a zero.",
+      "title": "Error rate by span",
+      "description": "Spans whose status is ERROR, of every kind - not just endpoints. A server span is a request that failed, a client span is a call this service made that failed, and an internal span is a step inside it, which is how a failure that propagates up a call chain shows as several series at once. Empty until a span actually carries that status: a handled 500 that never marks its span is invisible here. Derived by Tempo's metrics generator from the spans it receives, not exported by the service, so the series exist only while traces arrive.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -1247,7 +1767,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 83
       },
       "targets": [
         {
@@ -1337,7 +1857,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 64
+        "y": 90
       },
       "targets": [
         {
@@ -1384,6 +1904,176 @@
       }
     },
     {
+      "id": 38,
+      "type": "nodeGraph",
+      "title": "Service graph",
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
+      "description": "Who calls whom, derived by Tempo from span pairs rather than declared anywhere. Nodes are not all services: a datastore appears as its own node, and `user` is a request that arrived with no parent span, meaning anything entering from outside. Grafana draws those two with a dashed outline because Tempo marks them un-instrumented, which is the only labelling the panel supports - the Service dependencies table beside it names each edge in words. Edges carry request rate and latency, so an N+1 query pattern shows here before it shows in CPU. Needs traffic, and ignores both pickers.",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 99
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "queryType": "serviceMap"
+        }
+      ],
+      "options": {},
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 41,
+      "type": "table",
+      "title": "Service dependencies",
+      "description": "The same edges the graph draws, named. Kind is Tempo's `connection_type`: a blank one is service to service, `database` is a datastore the client queried, and `virtual_node` is not a caller at all but a request that arrived with no parent span - anything entering from outside the traced system. The graph cannot say this in text: its node subtitle is reserved for the service namespace, and its only marker for a non-service node is a dashed outline. Database names come from the span's database attributes, which for these charts is the `<chart>_<release>` name the chart generates, so a service and its own database can appear under two different spellings.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 99
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "instant": true,
+          "range": false,
+          "format": "table",
+          "expr": "sum by (client, server, connection_type) (rate(traces_service_graph_request_total[$__range]))"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "client": "Calls from",
+              "server": "Calls to",
+              "connection_type": "Kind",
+              "Value": "Rate",
+              "Value #A": "Rate"
+            },
+            "indexByName": {},
+            "includeByName": {}
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Kind"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "": {
+                        "text": "service to service",
+                        "index": 0
+                      },
+                      "database": {
+                        "text": "database query",
+                        "index": 1
+                      },
+                      "virtual_node": {
+                        "text": "entering from outside",
+                        "index": 2
+                      },
+                      "messaging_system": {
+                        "text": "queue",
+                        "index": 3
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 190
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "Rate",
+            "desc": true
+          }
+        ]
+      }
+    },
+    {
       "id": 19,
       "type": "row",
       "title": "Service metrics (scraped from /metrics)",
@@ -1393,14 +2083,14 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 108
       }
     },
     {
       "id": 20,
       "type": "timeseries",
       "title": "Request rate by status (all services)",
-      "description": "Counted by the service itself through cdispyutils request_metrics and read from its /metrics, so it is independent of the trace pipeline and survives a service that never exports a span. Selected by metric name rather than by service, so any service using that helper appears without editing this dashboard. Ignores the Service picker: these series carry `app` from the Kubernetes label (`gen3-embeddings`), which is spelled differently from the `service_name` the picker holds (`gen3_embeddings`), and no variable format converts between the two.",
+      "description": "Counted by the service itself through cdispyutils request_metrics and read from its /metrics, so it is independent of the trace pipeline and survives a service that never exports a span. Selected by metric name (`.+_api_requests_total`) rather than by service, so anything using that helper appears without editing this dashboard. That panel ignores the Service picker, which is why the title says so: its series carry `app`, from Kubernetes. The Kubernetes `app` label and the name a service registers with the SDK need not match - hyphen against underscore is the usual difference - and no variable format converts one into the other.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -1409,7 +2099,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 109
       },
       "targets": [
         {
@@ -1484,7 +2174,88 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 83
+        "y": 118
+      }
+    },
+    {
+      "id": 35,
+      "type": "timeseries",
+      "title": "CPU by endpoint",
+      "description": "CPU attributed to the route that was executing when each sample was taken, which is the one thing the flame graphs below cannot tell you at a glance: they merge every request together. Only samples taken inside a span carry span_name, so background work and startup are absent here while still appearing in CPU by service.",
+      "datasource": {
+        "type": "grafana-pyroscope-datasource",
+        "uid": "pyroscope"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 119
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-pyroscope-datasource",
+            "uid": "pyroscope"
+          },
+          "queryType": "metrics",
+          "profileTypeId": "process_cpu:cpu:nanoseconds:cpu:nanoseconds",
+          "labelSelector": "{service_name=~\"${service:pipe}\", span_name!=\"\"}",
+          "groupBy": [
+            "span_name"
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.span_name}"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
     },
     {
@@ -1500,7 +2271,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 84
+        "y": 127
       },
       "targets": [
         {
@@ -1534,7 +2305,7 @@
         "h": 13,
         "w": 12,
         "x": 12,
-        "y": 84
+        "y": 127
       },
       "targets": [
         {
@@ -1565,23 +2336,23 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 97
+        "y": 140
       }
     },
     {
       "id": 24,
       "type": "timeseries",
       "title": "Log volume by service",
-      "description": "Lines per second per stream. Driven by the Log stream picker, not Service: Alloy takes `service_name` from each line's own `service` field and falls back to the pod's `app` label, so one service can appear under both spellings (`gen3_embeddings` and `gen3-embeddings`) while Pyroscope knows only the one the SDK registered.",
+      "description": "Lines per second per stream, driven by the Log stream picker rather than by Service. Alloy takes `service_name` from each line's own `service` field and falls back to the pod's `app` label when a line has none, so one service can own two streams under two spellings, and services that never profile appear here too. The Kubernetes `app` label and the name a service registers with the SDK need not match - hyphen against underscore is the usual difference - and no variable format converts one into the other.",
       "datasource": {
         "type": "loki",
         "uid": "loki"
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 8,
         "x": 0,
-        "y": 98
+        "y": 141
       },
       "targets": [
         {
@@ -1657,9 +2428,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 98
+        "w": 8,
+        "x": 8,
+        "y": 141
       },
       "targets": [
         {
@@ -1801,6 +2572,85 @@
       }
     },
     {
+      "id": 39,
+      "type": "timeseries",
+      "title": "Error rate by service",
+      "description": "Error lines per second per service, which for much of this cluster is the only error signal there is: a service that serves no metrics and exports no spans still logs. Driven by the Log stream and Exclude controls, and by the level Loki inferred - a service logging severity in a shape Loki cannot parse is invisible here.",
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 141
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "queryType": "range",
+          "editorMode": "code",
+          "legendFormat": "{{service_name}}",
+          "expr": "sum by (service_name) (rate({service_name=~\"${logservice:pipe}\", service_name!~\"$exclude\"} | detected_level =~ \"error\" [$__auto]))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 60,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "pointSize": 4,
+            "spanNulls": false,
+            "axisSoftMin": 0,
+            "axisPlacement": "auto",
+            "axisBorderShow": false,
+            "barAlignment": 0,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "cps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
       "id": 27,
       "type": "logs",
       "title": "Recent logs",
@@ -1813,7 +2663,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 150
       },
       "targets": [
         {
@@ -1868,7 +2718,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 119
+        "y": 162
       },
       "targets": [
         {

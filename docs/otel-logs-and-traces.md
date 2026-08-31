@@ -330,7 +330,10 @@ Not required for the ArgoCD path, but it should probably not stay broken. Groupe
 - No cAdvisor scrape. The chart scrapes the kubelet's own `/metrics`, which carries operational
   counters and no per-container resource usage, so no cluster deployed from this chart reports what
   a pod's memory or CPU actually is - `container_memory_working_set_bytes`,
-  `container_spec_memory_limit_bytes` and `container_cpu_usage_seconds_total` are all absent, and
+  `container_spec_memory_limit_bytes`, `container_cpu_usage_seconds_total`, the CFS throttling
+  counters, `container_spec_cpu_quota` / `container_spec_cpu_period` and
+  `container_oom_events_total` are all absent, so neither a container's real footprint nor the
+  reason it was killed or throttled can be seen, and
   the `kube_state_metrics` scrape alongside it targets a `monitoring-extras-kube-state-metrics`
   service that this repo never creates. The kubelet serves cAdvisor on a second path
   (`/metrics/cadvisor`) reached through the same node proxy and the same service account token, so

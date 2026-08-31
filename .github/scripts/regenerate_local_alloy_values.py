@@ -102,7 +102,7 @@ SUBSTITUTIONS = [
         # the kubelet's own /metrics, which carries no per-container memory or CPU, so nothing
         # in a cluster deployed from helm/alloy reports what a pod actually uses.
         '    // Cluster Events\n',
-        '    // cAdvisor. Local-only; see docs/otel-logs-and-traces.md.\n'
+        '    // cAdvisor. Local-only for now; see docs/otel-logs-and-traces.md.\n'
         "    //\n"
         "    // The kubelet serves this on a second path, so it needs its own scrape rather than a\n"
         "    // longer keep list on the kubelet one.\n"
@@ -138,7 +138,7 @@ SUBSTITUTIONS = [
         '    prometheus.relabel "cadvisor" {\n'
         "      rule {\n"
         '        source_labels = ["__name__"]\n'
-        '        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total"\n'
+        '        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_spec_cpu_quota|container_spec_cpu_period|container_oom_events_total"\n'
         '        action = "keep"\n'
         "      }\n"
         "\n"
