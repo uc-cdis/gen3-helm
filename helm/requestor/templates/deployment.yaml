@@ -45,6 +45,7 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "requestor.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes: 
         - name: config-volume

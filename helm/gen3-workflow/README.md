@@ -1,19 +1,24 @@
 # gen3-workflow
 
-![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.36 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| GEN3_WORKFLOW_CONFIG | map | `{}` | Passed straight through to the service's own configuration file, so any setting gen3-workflow supports can be set here using its real ALL_UPPER name, without the chart needing a matching key. Rendered after the `gen3WorkflowConfig` values below, so setting a key that the chart already templates does override it, but leaves both lines in the rendered config file. See https://github.com/uc-cdis/gen3-workflow/blob/master/gen3workflow/config-default.yaml |
 | affinity | map | `{"nodeAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"karpenter.sh/capacity-type","operator":"In","values":["spot"]}]},"weight":100},{"preference":{"matchExpressions":[{"key":"eks.amazonaws.com/capacityType","operator":"In","values":["SPOT"]}]},"weight":99}]},"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["gen3-workflow"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":25}]}}` | Affinity to use for the deployment. |
 | affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution | map | `[{"preference":{"matchExpressions":[{"key":"karpenter.sh/capacity-type","operator":"In","values":["spot"]}]},"weight":100},{"preference":{"matchExpressions":[{"key":"eks.amazonaws.com/capacityType","operator":"In","values":["SPOT"]}]},"weight":99}]` | Option for scheduling to be required or preferred. |
 | affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[0] | int | `{"preference":{"matchExpressions":[{"key":"karpenter.sh/capacity-type","operator":"In","values":["spot"]}]},"weight":100}` | Weight value for preferred scheduling. |
@@ -42,8 +47,10 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` | Override the full name of the chart, which is used as the name of resources created by the chart |
 | gen3WorkflowConfig.arboristUrl | string | `""` | Custom Arborist URL. Ignored if already set via environment variable. |
 | gen3WorkflowConfig.debug | bool | `false` | Enables debug mode for the application. |
+| gen3WorkflowConfig.eksSecurityGroupNames | list | `[]` | Names of the EKS security groups that Karpenter attaches to an EKS worker node in the cluster (needed for S3Files) |
 | gen3WorkflowConfig.enableOptimizedNodeScheduling | bool | `true` | When enabled, jobs are configured to run on specific nodes through Kubernetes NodeSelector and Tolerations. Disable this if using a cluster that does not support nodepools. |
 | gen3WorkflowConfig.enablePrometheusMetrics | bool | `false` | Enables Prometheus metrics for the workflow service. |
+| gen3WorkflowConfig.enableS3Files | bool | `false` | Set it to true to create S3Files resources (default - false) |
 | gen3WorkflowConfig.hostname | string | `""` | Override hostname where the workflow service runs. If empty, gen3-workflow falls back to values.global.hostname |
 | gen3WorkflowConfig.httpxDebug | bool | `false` | Enables verbose logging specifically for httpx requests. |
 | gen3WorkflowConfig.kmsEncryptionEnabled | bool | `true` | Enables KMS encryption for S3 uploads. |
