@@ -205,7 +205,7 @@ volumeMounts:
     readOnly: true
     mountPath: /hatchery.json
     subPath: json
-
+workspaceInternetEgress: True
 hatchery:
   json: ""
   sharedWorkspaceEnabled: false
