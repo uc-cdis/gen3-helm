@@ -43,10 +43,17 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.volumes }}
+
+      {{- if or .Values.volumes .Values.extraVolumes }}
       volumes:
+        {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
+
       containers:
         - name: fhir-proxy
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -55,12 +62,20 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
               protocol: TCP
-          {{- with .Values.volumeMounts }}
+
+          {{- if or .Values.volumeMounts .Values.extraVolumeMounts }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
           env:
             - name: DEBUG
               value: {{ .Values.config.debug | quote }}
@@ -68,6 +83,12 @@ spec:
               value: {{ .Values.config.urlPrefix | quote }}
             - name: FHIR_SERVER_URL
               value: {{ .Values.config.fhirServerUrl | quote }}
+            - name: FHIR_BACKEND_TYPE
+              value: {{ .Values.config.fhirBackendType | default "" | quote }}
+            - name: FHIR_BACKEND_GCP_SA_CREDS
+              value: {{ .Values.config.fhirBackendGcpSaCreds | default "" | quote }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: {{ .Values.config.fhirBackendGcpSaCreds | default "" | quote }}
             - name: ARBORIST_URL
               value: {{ .Values.config.arboristUrl | quote }}
             - name: IS_UPSTREAM_CALLER_TRUSTED_REVERSE_PROXY
@@ -80,3 +101,6 @@ spec:
               value: {{ .Values.config.enableOpenTelemetryTraces | quote }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .Values.config.otelExporterOtlpEndpoint | quote }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
