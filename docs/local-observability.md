@@ -109,6 +109,21 @@ gen3-embeddings:
 for `grpc` on 4317, and a mismatched pair fails when the first span is exported rather than at
 startup.
 
+**Logs have to be JSON**, or trace-to-logs cannot resolve. Alloy's `stage.json` reads `trace_id`
+off each line, and `gen3logging`'s text formatter buries it in a `[trace_id=...]` suffix that no
+JSON parser sees. `gen3logging` emits text unless `GEN3_JSON_LOGS` is truthy, which it reads
+straight from the process environment:
+
+```yaml
+gen3-workflow:
+  extraEnv:
+    GEN3_JSON_LOGS: "true"
+```
+
+The variable is only consulted when a service leaves `get_logger`'s `json_logs` argument as
+`None`. A service that passes the value explicitly, usually from a config key of its own, ignores
+the environment entirely - so check which of the two governs before setting either.
+
 **Profiles need one address.** A service that ships a Pyroscope SDK likely pushes to
 `PYROSCOPE_SERVER_ADDRESS`, which is something like:
 

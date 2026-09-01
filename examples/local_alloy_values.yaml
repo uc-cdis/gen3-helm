@@ -375,23 +375,13 @@ alloy:
       forward_to = [loki.write.endpoint.receiver]
 
       stage.json {
-        expressions = { trace_id = "trace_id", span_id = "span_id", otel_service = "service" }
+        expressions = { trace_id = "trace_id", span_id = "span_id" }
       }
 
       stage.structured_metadata {
         values = { trace_id = "", span_id = "" }
       }
 
-      // Each line reports the service.name its span was recorded under. Using that as
-      // the stream label is what keeps logs joinable to traces: Grafana builds its
-      // trace-to-logs query from service.name, while Loki would otherwise derive
-      // service_name from the pod's `app` label. Those two spellings differ whenever a
-      // service names itself with underscores, and the join then silently finds nothing.
-      //
-      // Lines logged outside a span extract nothing here and keep Loki's derived value.
-      stage.labels {
-        values = { service_name = "otel_service" }
-      }
     }
 
     // kube-state-metrics
