@@ -183,6 +183,9 @@ image:
 
 debug: false
 
+# If set to True, this flag will force an authorization check for all metadata query endpoints:
+forceAuthzCheckForMetadataQueries: false
+
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
 esEndpoint: http://gen3-elasticsearch-master:9200
