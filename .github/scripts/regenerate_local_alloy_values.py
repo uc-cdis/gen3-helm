@@ -12,8 +12,8 @@ laptop; the two external labels, which the chart writes as Go template syntax th
 log source.
 
 Two of the substitutions are not address rewrites but added behaviour that exists nowhere else.
-The ``loki.process`` stage promotes ``trace_id`` to Loki structured metadata and relabels
-``service_name`` from the log line, which is what makes Grafana's trace-to-logs query resolve. The
+The ``loki.process`` stage promotes ``trace_id`` to Loki structured metadata, which is what lets
+Grafana's trace-to-logs query filter on it with no parser stage. The
 cAdvisor scrape adds the per-container memory and CPU series the chart's kubelet scrape does not
 carry. The chart has no equivalent of either, so moving one into ``helm/alloy/values.yaml`` is what
 would extend it to deployed clusters, and its substitution would then be dropped.
@@ -78,23 +78,13 @@ SUBSTITUTIONS = [
         "      forward_to = [loki.write.endpoint.receiver]\n"
         "\n"
         "      stage.json {\n"
-        '        expressions = { trace_id = "trace_id", span_id = "span_id", otel_service = "service" }\n'
+        '        expressions = { trace_id = "trace_id", span_id = "span_id" }\n'
         "      }\n"
         "\n"
         "      stage.structured_metadata {\n"
         '        values = { trace_id = "", span_id = "" }\n'
         "      }\n"
         "\n"
-        "      // Each line reports the service.name its span was recorded under. Using that as\n"
-        "      // the stream label is what keeps logs joinable to traces: Grafana builds its\n"
-        "      // trace-to-logs query from service.name, while Loki would otherwise derive\n"
-        "      // service_name from the pod's `app` label. Those two spellings differ whenever a\n"
-        "      // service names itself with underscores, and the join then silently finds nothing.\n"
-        "      //\n"
-        "      // Lines logged outside a span extract nothing here and keep Loki's derived value.\n"
-        "      stage.labels {\n"
-        '        values = { service_name = "otel_service" }\n'
-        "      }\n"
         "    }\n",
     ),
     (

@@ -114,10 +114,12 @@ Two problems follow from that.
 `trace_id` is only text inside the log message, so a LogQL label filter cannot see it and a query
 built from a trace id matches nothing.
 
-The service name also disagrees with itself. Grafana builds its trace-to-logs stream selector from
-the span's `service.name`, while Loki derives `service_name` from the pod's `app` label when the
-label is absent. A span says `service.name = gen3_embeddings` and its logs land on a stream
-labelled `service_name = gen3-embeddings`, so the join finds nothing. Underscore against hyphen.
+A service that names itself differently from its pod compounds it. Grafana builds its trace-to-logs
+stream selector from the span's `service.name`, while Loki derives `service_name` from the pod's
+`app` label when the label is absent, so a span saying `service.name = a_service` whose logs land on
+`service_name = a-service` joins to nothing. That is a naming bug rather than a pipeline one, and the
+fix belongs in the service: an `app` label cannot carry an underscore, because the API server rejects
+one in an object name, so the name a service reports to OpenTelemetry has to be the hyphenated one.
 
 Insert a processing stage between the source and the write:
 
@@ -131,15 +133,11 @@ loki.process "pod_logs" {
   forward_to = [loki.write.endpoint.receiver]
 
   stage.json {
-    expressions = { trace_id = "trace_id", span_id = "span_id", otel_service = "service" }
+    expressions = { trace_id = "trace_id", span_id = "span_id" }
   }
 
   stage.structured_metadata {
     values = { trace_id = "", span_id = "" }
-  }
-
-  stage.labels {
-    values = { service_name = "otel_service" }
   }
 }
 ```
@@ -148,9 +146,10 @@ loki.process "pod_logs" {
 structured metadata is filterable with `| trace_id = "..."` and no parser stage, while a
 per-request value used as a stream label would multiply Loki's stream cardinality without bound.
 
-`stage.labels` takes `service_name` from the line's own `service` field, so the label matches the
-span by construction. Lines logged outside a span have no `service` value and keep Loki's derived
-label, which is why both spellings appear in a healthy cluster.
+Nothing rewrites `service_name`: Loki's own derivation from the pod's `app` label is correct once a
+service reports that same name to OpenTelemetry, and one stream per service is what you want. A
+service still reporting a different name needs fixing there, not here - rewriting the label hides the
+divergence while leaving every other signal split.
 
 Requires Loki on `tsdb` with schema `v13` or later. `helm/observability/values.yaml` already
 configures `store: tsdb` with `schema: v13`.
@@ -162,7 +161,8 @@ This stage currently ships in one place only: the kind overlay, where
 `.github/scripts/regenerate_local_alloy_values.py` inserts it while generating
 `examples/local_alloy_values.yaml`. Neither `cluster-level-resources/values.yaml` nor
 `helm/alloy/values.yaml` contains it, so correlation is a local-development capability until this
-lands in one of them. Anything verified against a kind cluster is exercising the overlay rather
+lands in one of them. It is now a smaller change than it was: promoting `trace_id`, with no label
+rewriting attached. Anything verified against a kind cluster is exercising the overlay rather
 than the configuration a cluster runs.
 
 **Verify:** `{service_name="gen3_embeddings"} | trace_id != ""` returns lines **with no `| json`
