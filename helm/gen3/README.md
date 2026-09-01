@@ -1,6 +1,6 @@
 # gen3
 
-![Version: 0.3.77](https://img.shields.io/badge/Version-0.3.77-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
 
@@ -20,56 +20,56 @@ Published versions of this chart are listed in the
 
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../access-backend | access-backend | 0.1.23 |
-| file://../ambassador | ambassador | 0.1.40 |
-| file://../arborist | arborist | 0.1.37 |
-| file://../argo-wrapper | argo-wrapper | 0.1.34 |
-| file://../audit | audit | 0.1.47 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.45 |
-| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.5 |
-| file://../cedar | cedar | 0.1.29 |
-| file://../cohort-middleware | cohort-middleware | 0.1.26 |
-| file://../common | common | 0.1.39 |
-| file://../dashboard | dashboard | 0.1.24 |
-| file://../data-upload-cron | data-upload-cron | 0.1.9 |
-| file://../datareplicate | datareplicate | 0.1.24 |
-| file://../dicom-server | dicom-server | 0.1.34 |
-| file://../embedding-management-service | embedding-management-service | 0.1.11 |
-| file://../etl | etl | 0.1.24 |
-| file://../fence | fence | 0.1.82 |
-| file://../frontend-framework | frontend-framework | 0.1.31 |
-| file://../funnel | funnel | 0.1.29 |
-| file://../gen3-ai-model-repo | gen3-ai-model-repo | 0.1.0 |
-| file://../gen3-analysis | gen3-analysis | 0.1.14 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.18 |
-| file://../gen3-workflow | gen3-workflow | 0.1.29 |
-| file://../guppy | guppy | 0.1.41 |
-| file://../hatchery | hatchery | 0.1.73 |
-| file://../indexd | indexd | 0.1.51 |
-| file://../jeg | jeg | 0.1.4 |
-| file://../manifestservice | manifestservice | 0.1.46 |
-| file://../metadata | metadata | 0.1.48 |
-| file://../neuvector | neuvector | 0.1.2 |
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.8 |
-| file://../ohif-viewer | ohif-viewer | 0.1.17 |
-| file://../orthanc | orthanc | 0.1.18 |
-| file://../peregrine | peregrine | 0.1.45 |
-| file://../portal | portal | 0.1.63 |
-| file://../requestor | requestor | 0.1.38 |
-| file://../revproxy | revproxy | 0.1.71 |
-| file://../sheepdog | sheepdog | 0.1.47 |
-| file://../sower | sower | 0.1.49 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.50 |
-| file://../vectis-overlays | vectis-overlays | 0.1.4 |
-| file://../workspace-proxy | workspace-proxy | 0.1.4 |
-| file://../wts | wts | 0.1.44 |
-| file://../zendesk-wrapper | zendesk-wrapper | 0.1.2 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
+| Repository | Name |
+|------------|------|
+| file://../access-backend | access-backend |
+| file://../ambassador | ambassador |
+| file://../arborist | arborist |
+| file://../argo-wrapper | argo-wrapper |
+| file://../audit | audit |
+| file://../aws-es-proxy | aws-es-proxy |
+| file://../aws-sigv4-proxy | aws-sigv4-proxy |
+| file://../cedar | cedar |
+| file://../cohort-middleware | cohort-middleware |
+| file://../common | common |
+| file://../dashboard | dashboard |
+| file://../data-upload-cron | data-upload-cron |
+| file://../datareplicate | datareplicate |
+| file://../dicom-server | dicom-server |
+| file://../embedding-management-service | embedding-management-service |
+| file://../etl | etl |
+| file://../fence | fence |
+| file://../frontend-framework | frontend-framework |
+| file://../funnel | funnel |
+| file://../gen3-analysis | gen3-analysis |
+| file://../gen3-embeddings | gen3-embeddings |
+| file://../gen3-network-policies | gen3-network-policies |
+| file://../gen3-user-data-library | gen3-user-data-library |
+| file://../gen3-workflow | gen3-workflow |
+| file://../guppy | guppy |
+| file://../hatchery | hatchery |
+| file://../indexd | indexd |
+| file://../jeg | jeg |
+| file://../manifestservice | manifestservice |
+| file://../metadata | metadata |
+| file://../neuvector | neuvector |
+| file://../ohdsi-atlas | ohdsi-atlas |
+| file://../ohdsi-webapi | ohdsi-webapi |
+| file://../ohif-viewer | ohif-viewer |
+| file://../orthanc | orthanc |
+| file://../peregrine | peregrine |
+| file://../portal | portal |
+| file://../requestor | requestor |
+| file://../revproxy | revproxy |
+| file://../sheepdog | sheepdog |
+| file://../sower | sower |
+| file://../ssjdispatcher | ssjdispatcher |
+| file://../vectis-overlays | vectis-overlays |
+| file://../workspace-proxy | workspace-proxy |
+| file://../wts | wts |
+| file://../zendesk-wrapper | zendesk-wrapper |
+| https://charts.bitnami.com/bitnami | postgresql |
+| https://helm.elastic.co | elasticsearch |
 
 ## Values
 
