@@ -1,0 +1,13 @@
+apiVersion: v2
+name: mock-jwt-issuer
+description: |
+  A test-only OIDC-ish issuer that serves the public half of fence's JWT signing
+  key. Useful for exercising token exchange / GA4GH passport flows without a real
+  external IdP: sign a token with fence's private key and point the consumer at
+  this service as the issuer.
+
+type: application
+
+version: 0.1.0
+
+appVersion: "3.12-alpine"

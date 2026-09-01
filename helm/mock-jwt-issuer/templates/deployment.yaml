@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mock-jwt-issuer.fullname" . }}-deployment
+  labels:
+    {{- include "mock-jwt-issuer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "mock-jwt-issuer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/server: {{ .Files.Get "files/server.py" | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "mock-jwt-issuer.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      volumes:
+        - name: server
+          configMap:
+            name: {{ include "mock-jwt-issuer.fullname" . }}-server
+        - name: jwt-keys
+          secret:
+            secretName: {{ include "mock-jwt-issuer.secretName" . }}
+            items:
+              - key: {{ include "mock-jwt-issuer.secretKey" . }}
+                path: jwt_private_key.pem
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - python3
+            - /app/server.py
+          env:
+            - name: ISSUER
+              value: {{ include "mock-jwt-issuer.issuer" . | quote }}
+            - name: KID
+              value: {{ .Values.kid | quote }}
+            - name: ALG
+              value: {{ .Values.alg | quote }}
+            - name: KEY_PATH
+              value: /jwt-keys/jwt_private_key.pem
+            - name: PORT
+              value: {{ .Values.containerPort | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_status
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: server
+              mountPath: /app
+              readOnly: true
+            - name: jwt-keys
+              mountPath: /jwt-keys
+              readOnly: true

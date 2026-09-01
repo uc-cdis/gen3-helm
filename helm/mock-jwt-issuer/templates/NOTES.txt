@@ -1,0 +1,29 @@
+mock-jwt-issuer is serving the PUBLIC half of {{ include "mock-jwt-issuer.secretName" . }}/{{ include "mock-jwt-issuer.secretKey" . }}.
+
+Issuer URL (use this as `iss` when you mint tokens):
+
+    {{ include "mock-jwt-issuer.issuer" . }}
+
+Endpoints:
+
+    {{ include "mock-jwt-issuer.issuer" . }}/jwt/keys                          (fence format: [[kid, pem]])
+    {{ include "mock-jwt-issuer.issuer" . }}/.well-known/jwks.json             (RFC 7517)
+    {{ include "mock-jwt-issuer.issuer" . }}/.well-known/openid-configuration
+    {{ include "mock-jwt-issuer.issuer" . }}/_status
+
+Check it from inside the cluster:
+
+    kubectl -n {{ .Release.Namespace }} run curl --rm -it --image=curlimages/curl --restart=Never -- \
+      curl -s {{ include "mock-jwt-issuer.issuer" . }}/jwt/keys
+
+Or locally:
+
+    kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "mock-jwt-issuer.fullname" . }} 8080:{{ .Values.service.port }}
+    curl -s localhost:8080/.well-known/jwks.json
+
+Sign test tokens with the matching private key and header kid={{ .Values.kid }}:
+
+    kubectl -n {{ .Release.Namespace }} get secret {{ include "mock-jwt-issuer.secretName" . }} -o json \
+      | jq -r '.data["{{ include "mock-jwt-issuer.secretKey" . }}"]' | base64 -d > /tmp/jwt_private_key.pem
+
+This chart is a test fixture with no authentication. Do not run it in production.

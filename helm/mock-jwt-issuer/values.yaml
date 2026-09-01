@@ -1,0 +1,70 @@
+# Default values for mock-jwt-issuer.
+# This chart is a TEST FIXTURE. It publishes a public key and, by design, has no
+# authentication in front of it. Do not deploy it to a production commons.
+
+# -- (string) Name used for the Deployment/Service/ConfigMap. Defaults to the chart
+# name so the in-cluster DNS name (and therefore the issuer URL) is stable and does
+# not depend on the release name.
+fullnameOverride: ""
+
+# -- (string) The `iss` value this server advertises, and the base URL it builds
+# `jwks_uri` from. Leave empty to use `http://<fullname>.<namespace>.svc.cluster.local`,
+# which matches the Service below when `service.port` is 80.
+issuer: ""
+
+# -- (string) Key ID advertised in the JWKS. Tokens you mint must carry this `kid`
+# in their header.
+kid: test-kid-01
+
+# -- (string) `alg` advertised in the JWKS.
+alg: RS256
+
+jwtKeys:
+  # -- (string) Name of an existing secret holding the RSA private key. Defaults to
+  # the secret the fence chart creates, so this chart serves exactly the key fence
+  # signs with.
+  existingSecret: fence-jwt-keys
+  # -- (string) Key within that secret containing the PEM private key.
+  existingSecretKey: jwt_private_key.pem
+  # -- (string) Inline PEM private key (PKCS#1 or PKCS#8 RSA). If set, this chart
+  # creates its own secret and ignores `existingSecret`. Only the public half is
+  # ever served.
+  privateKey: ""
+
+image:
+  repository: python
+  tag: "3.12-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  # -- (int) Service port. Keep this at 80 so the issuer URL needs no port suffix.
+  port: 80
+
+# -- (int) Port the server listens on inside the pod.
+containerPort: 8080
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+podAnnotations: {}
+
+podLabels:
+  # Gen3 network policies allow traffic between pods labelled this way.
+  netnolimit: 'yes'
+  public: 'yes'
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
