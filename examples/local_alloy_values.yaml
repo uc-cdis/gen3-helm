@@ -47,9 +47,10 @@ alloy:
         memory: 256Mi
 
   # Copied from helm/alloy/values.yaml, changing the three write endpoints and the two external
-  # labels, and inserting the loki.process stage that follows the pod log source. That stage is
-  # local-only: the chart has no equivalent, so trace-to-logs correlation works here and not in a
-  # cluster deployed from helm/alloy.
+  # labels, and inserting two things the chart has no equivalent of: the loki.process stage that
+  # follows the pod log source, and the cAdvisor scrape. Both are local-only, so trace-to-logs
+  # correlation and per-container memory and CPU work here and not in a cluster deployed from
+  # helm/alloy. See docs/otel-logs-and-traces.md.
   #
   # The labels are written out literally on purpose. templates/alloy-config.yaml renders this
   # with toYaml rather than tpl, so any {{ }} left in here reaches the ConfigMap unrendered.
@@ -451,6 +452,58 @@ alloy:
         regex = "up|container_cpu_usage_seconds_total|kubelet_certificate_manager_client_expiration_renew_errors|kubelet_certificate_manager_client_ttl_seconds|kubelet_certificate_manager_server_ttl_seconds|kubelet_cgroup_manager_duration_seconds_bucket|kubelet_cgroup_manager_duration_seconds_count|kubelet_node_config_error|kubelet_node_name|kubelet_pleg_relist_duration_seconds_bucket|kubelet_pleg_relist_duration_seconds_count|kubelet_pleg_relist_interval_seconds_bucket|kubelet_pod_start_duration_seconds_bucket|kubelet_pod_start_duration_seconds_count|kubelet_pod_worker_duration_seconds_bucket|kubelet_pod_worker_duration_seconds_count|kubelet_running_container_count|kubelet_running_containers|kubelet_running_pod_count|kubelet_running_pods|kubelet_runtime_operations_errors_total|kubelet_runtime_operations_total|kubelet_server_expiration_renew_errors|kubelet_volume_stats_available_bytes|kubelet_volume_stats_capacity_bytes|kubelet_volume_stats_inodes|kubelet_volume_stats_inodes_used|kubernetes_build_info|namespace_workload_pod|rest_client_requests_total|storage_operation_duration_seconds_count|storage_operation_errors_total|volume_manager_total_volumes"
         action = "keep"
       }
+      forward_to = [prometheus.relabel.metrics_service.receiver]
+    }
+
+    // cAdvisor. Local-only for now; see docs/otel-logs-and-traces.md.
+    //
+    // The kubelet serves this on a second path, so it needs its own scrape rather than a
+    // longer keep list on the kubelet one.
+    discovery.relabel "cadvisor" {
+      targets = discovery.kubernetes.nodes.targets
+      rule {
+        target_label = "__address__"
+        replacement  = "kubernetes.default.svc.cluster.local:443"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = "(.+)"
+        replacement   = "/api/v1/nodes/${1}/proxy/metrics/cadvisor"
+        target_label  = "__metrics_path__"
+      }
+    }
+
+    prometheus.scrape "cadvisor" {
+      job_name   = "integrations/kubernetes/cadvisor"
+      targets  = discovery.relabel.cadvisor.output
+      scheme   = "https"
+      scrape_interval = "60s"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        insecure_skip_verify = true
+      }
+      clustering {
+        enabled = true
+      }
+      forward_to = [prometheus.relabel.cadvisor.receiver]
+    }
+
+    prometheus.relabel "cadvisor" {
+      rule {
+        source_labels = ["__name__"]
+        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_spec_cpu_quota|container_spec_cpu_period|container_oom_events_total"
+        action = "keep"
+      }
+
+      // cAdvisor reports one series per cgroup level. The pod and slice rollups carry an
+      // empty container label and sum the containers beneath them, so keeping both counts
+      // every container twice.
+      rule {
+        source_labels = ["container"]
+        regex = ""
+        action = "drop"
+      }
+
       forward_to = [prometheus.relabel.metrics_service.receiver]
     }
 

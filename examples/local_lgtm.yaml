@@ -8,7 +8,8 @@
 # services can push profiles. Both already listen inside the image; a Service that omits the port
 # drops the traffic rather than refusing it.
 #
-# For local development only. One replica, emptyDir storage so everything is lost on restart,
+# For local development only. One replica, emptyDir storage for the telemetry so it is lost on
+# restart while dashboards persist on a small claim,
 # no ingress, no TLS, and Grafana's default admin/admin. The observability chart is the answer
 # for a deployed cluster.
 ---
@@ -16,6 +17,23 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: monitoring
+---
+# Dashboards outlive the pod; telemetry does not. kind's default local-path StorageClass keeps
+# this on the node, so it survives a pod restart and a `docker restart`, and goes away with
+# `kind delete cluster` or by deleting the claim - which is how you reset Grafana.
+#
+# examples/dashboards/ stays the source of truth. Editing a dashboard in the UI now sticks, so
+# export it back to the file or the next fresh cluster will not have the change.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lgtm-grafana
+  namespace: monitoring
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,6 +63,13 @@ spec:
             # of each pod's log rather than from now.
             - name: LOKI_EXTRA_ARGS
               value: "-validation.max-label-names-per-series=32 -validation.reject-old-samples=false"
+            # Pyroscope refuses any query longer than its default max_query_length of 1d with
+            # "the query time range exceeds the limit", which in Grafana surfaces only as
+            # "An error occurred within the plugin" on every profile panel at once. 0 disables
+            # the check. max-query-lookback stays at its 1w default, so a longer window returns
+            # the last week rather than failing.
+            - name: PYROSCOPE_EXTRA_ARGS
+              value: "-querier.max-query-length=0"
           ports:
             - { name: grafana, containerPort: 3000 }
             - { name: loki, containerPort: 3100 }
@@ -71,7 +96,12 @@ spec:
             - { name: pyroscope-storage, mountPath: /data/pyroscope }
       volumes:
         - { name: tempo-data, emptyDir: {} }
-        - { name: grafana-data, emptyDir: {} }
+        # Only Grafana's own volume persists: GF_PATHS_DATA is /data/grafana/data, so
+        # this is the dashboard database and the plugin directory and nothing else.
+        # Metrics, logs, traces and profiles stay on emptyDir and start clean.
+        - name: grafana-data
+          persistentVolumeClaim:
+            claimName: lgtm-grafana
         - { name: loki-data, emptyDir: {} }
         - { name: loki-storage, emptyDir: {} }
         - { name: p8s-storage, emptyDir: {} }
