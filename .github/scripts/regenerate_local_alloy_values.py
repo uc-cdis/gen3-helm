@@ -11,11 +11,12 @@ laptop; the two external labels, which the chart writes as Go template syntax th
 ``templates/alloy-config.yaml`` never renders; and a ``loki.process`` stage inserted after the pod
 log source.
 
-That last one is not an address rewrite but an added behaviour, and it is the only place it
-exists. It promotes ``trace_id`` to Loki structured metadata and relabels ``service_name`` from the
-log line, which is what makes Grafana's trace-to-logs query resolve. The chart has no equivalent,
-so moving the stage into ``helm/alloy/values.yaml`` is what would extend correlation to deployed
-clusters, and this substitution would then be dropped.
+Two of the substitutions are not address rewrites but added behaviour that exists nowhere else.
+The ``loki.process`` stage promotes ``trace_id`` to Loki structured metadata, which is what lets
+Grafana's trace-to-logs query filter on it with no parser stage. The
+cAdvisor scrape adds the per-container memory and CPU series the chart's kubelet scrape does not
+carry. The chart has no equivalent of either, so moving one into ``helm/alloy/values.yaml`` is what
+would extend it to deployed clusters, and its substitution would then be dropped.
 
 Run it after any change to the chart's configuration:
 
@@ -77,24 +78,73 @@ SUBSTITUTIONS = [
         "      forward_to = [loki.write.endpoint.receiver]\n"
         "\n"
         "      stage.json {\n"
-        '        expressions = { trace_id = "trace_id", span_id = "span_id", otel_service = "service" }\n'
+        '        expressions = { trace_id = "trace_id", span_id = "span_id" }\n'
         "      }\n"
         "\n"
         "      stage.structured_metadata {\n"
         '        values = { trace_id = "", span_id = "" }\n'
         "      }\n"
         "\n"
-        "      // Each line reports the service.name its span was recorded under. Using that as\n"
-        "      // the stream label is what keeps logs joinable to traces: Grafana builds its\n"
-        "      // trace-to-logs query from service.name, while Loki would otherwise derive\n"
-        "      // service_name from the pod's `app` label. Those two spellings differ whenever a\n"
-        "      // service names itself with underscores, and the join then silently finds nothing.\n"
-        "      //\n"
-        "      // Lines logged outside a span extract nothing here and keep Loki's derived value.\n"
-        "      stage.labels {\n"
-        '        values = { service_name = "otel_service" }\n'
-        "      }\n"
         "    }\n",
+    ),
+    (
+        # cAdvisor, reached over the same node proxy the kubelet scrape uses. The chart scrapes
+        # the kubelet's own /metrics, which carries no per-container memory or CPU, so nothing
+        # in a cluster deployed from helm/alloy reports what a pod actually uses.
+        '    // Cluster Events\n',
+        '    // cAdvisor. Local-only for now; see docs/otel-logs-and-traces.md.\n'
+        "    //\n"
+        "    // The kubelet serves this on a second path, so it needs its own scrape rather than a\n"
+        "    // longer keep list on the kubelet one.\n"
+        '    discovery.relabel "cadvisor" {\n'
+        "      targets = discovery.kubernetes.nodes.targets\n"
+        "      rule {\n"
+        '        target_label = "__address__"\n'
+        '        replacement  = "kubernetes.default.svc.cluster.local:443"\n'
+        "      }\n"
+        "      rule {\n"
+        '        source_labels = ["__meta_kubernetes_node_name"]\n'
+        '        regex         = "(.+)"\n'
+        '        replacement   = "/api/v1/nodes/${1}/proxy/metrics/cadvisor"\n'
+        '        target_label  = "__metrics_path__"\n'
+        "      }\n"
+        "    }\n"
+        "\n"
+        '    prometheus.scrape "cadvisor" {\n'
+        '      job_name   = "integrations/kubernetes/cadvisor"\n'
+        "      targets  = discovery.relabel.cadvisor.output\n"
+        '      scheme   = "https"\n'
+        '      scrape_interval = "60s"\n'
+        '      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"\n'
+        "      tls_config {\n"
+        "        insecure_skip_verify = true\n"
+        "      }\n"
+        "      clustering {\n"
+        "        enabled = true\n"
+        "      }\n"
+        "      forward_to = [prometheus.relabel.cadvisor.receiver]\n"
+        "    }\n"
+        "\n"
+        '    prometheus.relabel "cadvisor" {\n'
+        "      rule {\n"
+        '        source_labels = ["__name__"]\n'
+        '        regex = "container_memory_working_set_bytes|container_memory_rss|container_spec_memory_limit_bytes|container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_spec_cpu_quota|container_spec_cpu_period|container_oom_events_total"\n'
+        '        action = "keep"\n'
+        "      }\n"
+        "\n"
+        "      // cAdvisor reports one series per cgroup level. The pod and slice rollups carry an\n"
+        "      // empty container label and sum the containers beneath them, so keeping both counts\n"
+        "      // every container twice.\n"
+        "      rule {\n"
+        '        source_labels = ["container"]\n'
+        '        regex = ""\n'
+        '        action = "drop"\n'
+        "      }\n"
+        "\n"
+        "      forward_to = [prometheus.relabel.metrics_service.receiver]\n"
+        "    }\n"
+        "\n"
+        '    // Cluster Events\n',
     ),
     # Once per write endpoint, hence the repeated pairs.
     ('        cluster = "{{ .Values.cluster }}",\n', '        cluster = "local-kind",\n'),
@@ -153,9 +203,10 @@ alloy:
         memory: 256Mi
 
   # Copied from helm/alloy/values.yaml, changing the three write endpoints and the two external
-  # labels, and inserting the loki.process stage that follows the pod log source. That stage is
-  # local-only: the chart has no equivalent, so trace-to-logs correlation works here and not in a
-  # cluster deployed from helm/alloy.
+  # labels, and inserting two things the chart has no equivalent of: the loki.process stage that
+  # follows the pod log source, and the cAdvisor scrape. Both are local-only, so trace-to-logs
+  # correlation and per-container memory and CPU work here and not in a cluster deployed from
+  # helm/alloy. See docs/otel-logs-and-traces.md.
   #
   # The labels are written out literally on purpose. templates/alloy-config.yaml renders this
   # with toYaml rather than tpl, so any {{ }} left in here reaches the ConfigMap unrendered.

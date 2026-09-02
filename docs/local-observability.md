@@ -25,7 +25,8 @@ Use this when you are developing a service and want to see its own metrics, trac
 profiles. Do not use it as a model for a deployed cluster:
 
 - one replica of everything, no high availability
-- `emptyDir` storage, so all data is lost when the pod restarts
+- `emptyDir` storage for the telemetry, so metrics, logs, traces and profiles are lost when the
+  pod restarts; only Grafana's own database persists, on a claim
 - no ingress, no TLS, no authentication beyond Grafana's default `admin` / `admin`
 
 The `observability` chart is the deployed-cluster answer. It is sized for EKS - five Mimir
@@ -108,6 +109,21 @@ gen3-embeddings:
 for `grpc` on 4317, and a mismatched pair fails when the first span is exported rather than at
 startup.
 
+**Logs have to be JSON**, or trace-to-logs cannot resolve. Alloy's `stage.json` reads `trace_id`
+off each line, and `gen3logging`'s text formatter buries it in a `[trace_id=...]` suffix that no
+JSON parser sees. `gen3logging` emits text unless `GEN3_JSON_LOGS` is truthy, which it reads
+straight from the process environment:
+
+```yaml
+gen3-workflow:
+  extraEnv:
+    GEN3_JSON_LOGS: "true"
+```
+
+The variable is only consulted when a service leaves `get_logger`'s `json_logs` argument as
+`None`. A service that passes the value explicitly, usually from a config key of its own, ignores
+the environment entirely - so check which of the two governs before setting either.
+
 **Profiles need one address.** A service that ships a Pyroscope SDK likely pushes to
 `PYROSCOPE_SERVER_ADDRESS`, which is something like:
 
@@ -140,6 +156,112 @@ label filter with no parser stage, which resolves only because the Alloy overlay
 
 Every sample Alloy forwards carries `cluster="local-kind"` and `project="local"`, set as
 external labels in the values file. If a metric has those labels it came through this pipeline.
+
+# Step 5. Load the local observability dashboard
+
+[examples/dashboards/local-services.json](../examples/dashboards/local-services.json) pulls all four
+signals onto one board: CPU and memory per service and per pod, request rate and p95 latency and
+recent traces, real per-container memory against each container's limit, the metrics the services
+publish themselves, CPU and heap flame graphs, and log volume with a log viewer at the bottom. Load
+it with:
+
+```bash
+jq '{dashboard: ., overwrite: true}' examples/dashboards/local-services.json \
+  | curl -sS -u admin:admin -H 'Content-Type: application/json' \
+      -X POST http://localhost:3000/api/dashboards/db -d @- | jq -r '.status, .url'
+```
+
+Run that once. Grafana's own volume is the one thing in
+[examples/local_lgtm.yaml](../examples/local_lgtm.yaml) backed by a claim rather than an `emptyDir`,
+because `GF_PATHS_DATA` points inside it - so imported and hand-edited dashboards survive a pod
+restart while metrics, logs, traces and profiles start clean. The stack stays ephemeral where it
+would otherwise grow without bound locally. Deleting the
+`lgtm-grafana` claim resets Grafana; `kind delete cluster` takes it too.
+
+`examples/dashboards/` is still the source of truth. A dashboard edited in the UI now sticks in that
+volume, which means it can drift from the file - export it back after editing for general improvements
+to share.
+
+## Exporting an edited dashboard back over the file
+
+Grafana is the easier place to drag panels around; the file is what everyone else gets. After
+saving in the UI, here's how to export back to the general file:
+
+```bash
+curl -sS -u admin:admin http://localhost:3000/api/dashboards/uid/gen3-local-services \
+  | jq '.dashboard | .id = null | del(.version)' > examples/dashboards/local-services.json
+```
+
+`id` is Grafana's local row number and `version` changes on every save, so dropping both keeps the
+diff to what actually changed and lets the file import cleanly with the command above. Dashboard
+settings -> JSON Model does the same thing by hand.
+
+Every panel carries a description. Hover over for what the series is and what it is not: which
+signal it came from, whether the pickers reach it, and the way it misleads. 
+
+Some general info on what's on there:
+
+**Two views of memory.** The Memory row is Pyroscope's sampled heap, which is
+useful for which code holds objects. The Container memory row is
+`container_memory_working_set_bytes` against each container's limit, which is the footprint
+Kubernetes evicts and OOM-kills on. Expect them to disagree by an order of magnitude, and take the
+second for footprint. 
+
+Only the local overlay scrapes cAdvisor, so a cluster deployed from
+`helm/alloy` has neither container series - see
+[otel-logs-and-traces.md](otel-logs-and-traces.md). The Pyroscope memory panels also stay empty
+until `PROFILE_MEMORY` is set (step 3).
+
+**Two pickers at the top, because the label spellings differ.** Service is populated from Pyroscope's
+`service_name`; Log stream from Loki's, which holds both spellings of a service because Alloy falls
+back to the pod's `app` label when a line carries no `service` field. Panels keyed by `app` or by
+`pod` reach neither picker, and say so in their titles. Making the services register one spelling
+is what would collapse this back to a single picker. Log level, search and the display toggles live
+in each log viewer's own controls rather than at the top of the board; clicking a field in a line's
+details adds it to the Log filters control, which narrows every Loki panel at once.
+
+The Logs row hides cluster plumbing by default through the Exclude streams box, which holds a regex
+rather than a list of services: a new Gen3 service is kept without editing anything, a new kube
+component is dropped by the same `kube-.*` it already matches. Add `|name` to hide one more, or
+clear the box to see everything the cluster logs.
+
+**Drilldown starts with the time picker.** No panel overrides the dashboard range, so dragging a
+selection across a spike on any graph re-scopes every other panel, log viewers included, to those
+minutes. From there, clicking a series on the trace panels opens Explore for that service and
+window, and each log viewer has a header link to its own query.
+
+**Profile queries are capped at a week.** Pyroscope rejects any query longer than its
+`max_query_length`, which defaults to 1d, and Grafana reports that only as "An error occurred within
+the plugin" on every profile panel at once. `examples/local_lgtm.yaml` disables that check with
+`PYROSCOPE_EXTRA_ARGS`, leaving `max-query-lookback` at its 1w default - so a wider dashboard window
+returns the last week of profiles instead of failing, while metrics, logs and traces keep the whole
+range. A stack already running keeps the old limit until its pod is replaced, and replacing it
+discards the telemetry collected so far - the dashboards survive, the five `emptyDir` volumes do
+not.
+
+## Building your own panel from a profile
+
+A Pyroscope query returns a different frame for each `queryType`, and the panel has to match it:
+
+| `queryType` | frames returned | panel |
+| --- | --- | --- |
+| `metrics` | one time series, unit already set to `cores`, `bytes` or `binBps` | Time series, Stat |
+| `profile` | one flame-graph frame, no time field | Flame graph |
+| `both` | both of the above | Explore only |
+
+Explore queries with `both` and splits the two frames into a Graph above a Flame graph. A dashboard
+panel renders whichever frame it understands and drops the other, so "Add to dashboard" appears to
+lose the graph. Keep the queries and split them: a Time series panel set to `metrics`, a Flame graph
+panel set to `profile`.
+
+Leave the panel's unit unset. The datasource stamps a unit on each series, and a unit picked in the
+panel options overrides it - which is also why one panel holding both CPU and memory queries can
+label neither correctly. One unit per panel.
+
+`groupBy` is not limited to `service_name`. Pyroscope labels each sample with the `span_name` that
+was active when it was taken, so grouping by that attributes CPU to a route - the `CPU by endpoint`
+panel. Samples taken outside a span carry no `span_name`, so background work and startup drop out of
+any panel grouped that way.
 
 ## When a log line or trace link does not show up
 

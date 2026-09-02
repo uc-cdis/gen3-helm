@@ -81,9 +81,9 @@ Published versions of this chart are listed in the
 | ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
-| netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob","ssjdispatcherjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
-| netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
+| netPolicy.ingressApps | array | `["portal","sowerjob","ssjdispatcherjob"]` | List of app labels that require ingress to this service |
 | nginx.pidFile | string | `"/var/run/nginx.pid"` |  |
 | nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
 | nginx.user | string | `"nginx"` |  |
