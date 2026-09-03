@@ -157,6 +157,10 @@ karpenter-crds:
       cpu: "1000"
       memory: 1000Gi
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -182,6 +186,10 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
   secondary:
     enabled: false
@@ -192,6 +200,10 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -217,6 +229,10 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -242,6 +258,10 @@ karpenter-crds:
     expireAfter: "168h"
     volumeSize: 50Gi
     sgSelector: ""
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
