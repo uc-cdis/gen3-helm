@@ -14,6 +14,11 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["*"]
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
+- apiGroups: ["external-secrets.io"]
+  resources: ["pushsecrets"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -177,6 +182,28 @@ spec:
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
+
+            # Create the PushSecret from within this job (instead of having helm create it as part of
+            # the release) and wait until the remote secret is populated. This avoids the race condition
+            # where the job completes before helm/external-secrets has created and processed the
+            # PushSecret, leaving consumers with an unpopulated remote secret.
+            echo "Waiting for bootstrap secret {{ $.Chart.Name }}-dbcreds-bootstrap ..."
+            for i in $(seq 1 60); do
+              kubectl -n {{ $.Release.Namespace }} get secret {{ $.Chart.Name }}-dbcreds-bootstrap >/dev/null 2>&1 && break
+              sleep 5
+            done
+            kubectl -n {{ $.Release.Namespace }} get secret {{ $.Chart.Name }}-dbcreds-bootstrap
+
+            echo "Creating PushSecret {{ $.Chart.Name }}-dbcreds ..."
+            # kubectl apply is idempotent: on subsequent runs the existing PushSecret is kept as-is
+            # (updatePolicy is IfNotExists, so the remote secret is never overwritten).
+            echo '{{ include "common.db-push-secret" . | b64enc }}' | base64 --decode | kubectl -n {{ $.Release.Namespace }} apply -f -
+
+            echo "Waiting for PushSecret to sync            echo "Waiting for PushSecret to sync to the remote secret store ..."
+            kubectl -n {{ $.Release.Namespace }} wait --for=condition=Ready pushsecret/{{ .Chart.Name }}-dbcreds --timeout=300s
+            echo "PushSecret is Ready - remote secret has been populated"
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -231,6 +258,12 @@ data:
 {{- end -}}
 
 
+{{/*
+  PushSecret manifest for the dbcreds bootstrap secret.
+  NOTE: this is no longer rendered as a standalone helm resource. It is applied by the
+  {{ .Chart.Name }}-dbcreate job (see common.db_setup_job) so that the job only completes
+  after the remote secret has been populated.
+*/}}
 {{- define "common.db-push-secret" -}}
 {{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret .Values.externalSecrets.pushSecret) }}
 apiVersion: external-secrets.io/v1alpha1
