@@ -64,6 +64,8 @@ spec:
               value: "False"
             - name: GEN3_ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
+            - name: FORCE_AUTHZ_CHECK_FOR_METADATA_QUERIES
+              value: {{ .Values.forceAuthzCheckForMetadataQueries }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
