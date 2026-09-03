@@ -59,6 +59,10 @@ dependencies:
     version: "*"
     repository: file://../embedding-management-service
     condition: embedding-management-service.enabled
+  - name: gen3-ai-model-repo
+    version: 0.1.0
+    repository: file://../gen3-ai-model-repo
+    condition: gen3-ai-model-repo.enabled
   - name: etl
     version: "*"
     repository: file://../etl
