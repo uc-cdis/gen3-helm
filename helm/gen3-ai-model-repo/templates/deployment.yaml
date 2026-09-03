@@ -65,7 +65,7 @@ spec:
             - name: DBREADY
               valueFrom: {secretKeyRef: {name: gen3-ai-model-repo-dbcreds, key: dbcreated}}
           ports:
-            - containerPort: 4141
+            - containerPort: 8000
               name: http
           livenessProbe:
             httpGet: {path: /_status, port: http}
