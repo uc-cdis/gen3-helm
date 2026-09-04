@@ -18,6 +18,10 @@ global:
       externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
+  # -- (int) Minimum pods the PodDisruptionBudget keeps available. Only consulted when
+  # global.pdb is set and replicaCount is above 1; the PDB renders an empty minAvailable and is
+  # rejected without it.
+  minAvailable: 1
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
@@ -59,7 +63,11 @@ global:
 autoscaling: {}
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
+
+# -- (int) The image runs a single Uvicorn process, so concurrency comes from replicas rather
+# than from workers inside the container. Replicas do not migrate: postgres.migrations runs that
+# once in a Job and each replica waits for it, so this can be raised freely.
+replicaCount: 2
 debug: false
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
@@ -80,6 +88,10 @@ service:
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 80
+  # -- (int) Port the service listens on inside the container. Also the container port the
+  # probes address by name, so changing it here moves the Service, the container port and both
+  # probes together.
+  targetPort: 8000
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -98,17 +110,17 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# -- (map) Compute resources. Sized for the single Uvicorn process the image runs; add
+# replicas rather than raising these to serve more concurrent traffic. The same values apply
+# to the migration initContainer.
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
 # -- (list) Environment variables to pass to the container
 env:
   - name: GEN3_DEBUG
@@ -123,17 +135,39 @@ env:
     value: "1"
   - name: PGPOOL_MAX_SIZE
     value: "5"
-  - name: GUNICORN_WORKERS
-    value: "2"
+
+# -- (map) Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this
+# over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env`
+# drops the defaults above, while map keys merge. Rendered after `env`, so a name set in both
+# resolves here. Values must be scalars; use `env` for anything needing `valueFrom`. Secret
+# values belong in `secretEnv` or Secrets Manager, not here - this file is public.
+extraEnv: {}
+
+# -- (map) Secret environment variables, rendered into the <name>-env-secret Secret and
+# projected with envFrom. Intended for local development only: when
+# global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and
+# anything here is ignored. Never commit real credentials to a public values file.
+secretEnv: {}
+
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+# -- (map) Liveness probe. `port: http` follows service.targetPort, so the probe cannot drift
+# from the port the container actually listens on.
 livenessProbe:
   httpGet:
-    path: /
+    path: /_status
     port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+# -- (map) Readiness probe. Removes the pod from the Service until /_status answers.
 readinessProbe:
   httpGet:
-    path: /
+    path: /_status
     port: http
+
+# -- (list) Additional volumes on the output Deployment definition.
+extraVolumes: []
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
@@ -163,6 +197,16 @@ postgres:
   password:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
+  # -- (map) dbmate schema migrations. dbmate takes no lock while migrating, so migrations run in
+  # a single Job with parallelism 1 and the deployment waits for them rather than each replica
+  # racing to apply the same migration.
+  migrations:
+    # -- (bool) Run migrations as a Job, and make the deployment wait for them before serving.
+    enabled: true
+    # -- (string) Directory inside the image holding dbmate migrations.
+    dir: /services/gen3_embeddings/db/migrations
+    # -- (string) sslmode for the migration connection.
+    sslmode: disable
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
@@ -187,8 +231,12 @@ commonLabels:
 externalSecrets:
   # -- (string) Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
   createK8sGen3EmbeddingsSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto"
+  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3embeddings-g3auto"
   gen3EmbeddingsG3auto:
+  # -- (string) Will override the name of both the Secret holding secret environment variables
+  # and the aws secrets manager secret it is populated from. Default is
+  # "gen3-embeddings-env-secret".
+  gen3EmbeddingsEnvSecret:
   # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
   pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
@@ -203,4 +251,3 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
-gunicornWorkers: 1

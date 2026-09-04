@@ -10,7 +10,7 @@ Before deploying the Gen3 application using Helm, ensure that the following prer
 
   - We use Amazon aurora serverless v2 for our production deployments. 
   - **Note:** Managing a database on Kubernetes can be a complex topic, and may result in data loss. We recommend using a managed database service outside of Kubernetes. In production, we use Amazon Aurora Serverless V2 or RDS for Postgres.
-  - It is possible for development purposes to run Postgres on kubernetes, if you set `global.dev=true` in your `Values.yaml` file, the postgres will be deployed. See [this document](docs/databases.md) for more information on running postgres on kubernetes
+  - It is possible for development purposes to run Postgres on kubernetes, if you set `global.dev=true` in your `Values.yaml` file, the postgres will be deployed. See [this document](databases.md) for more information on running postgres on kubernetes
 
 
 
@@ -71,7 +71,7 @@ arborist:
 
 
 
-For a detailed description of each service and it's configuration options see [CONFIGURATION.md](./docs/CONFIGURATION.md) for more information. 
+For a detailed description of each service and it's configuration options see [CONFIGURATION.md](CONFIGURATION.md) for more information. 
 
 
  

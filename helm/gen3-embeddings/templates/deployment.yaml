@@ -57,6 +57,12 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- /* Secret settings arrive as environment variables, ahead of the `env` entries
+                 below so that a name set in both resolves to the `env` value. */}}
+          envFrom:
+            - secretRef:
+                name: {{ include "gen3-embeddings.envSecretName" . }}
+                optional: true
           env:
             {{- toYaml .Values.env | nindent 12 }}
             - name: PGHOST
@@ -104,21 +110,24 @@ spec:
                   name: gen3-embeddings-dbcreds
                   key: dbcreated
                   optional: false
+            {{- if not (kindIs "map" .Values.extraEnv) }}
+            {{- fail (printf "gen3-embeddings.extraEnv must be a map of NAME: value, got %s. Use `valueFrom` entries in `env` instead." (kindOf .Values.extraEnv)) }}
+            {{- end }}
+            {{- range $k, $v := .Values.extraEnv }}
+            {{- if or (kindIs "map" $v) (kindIs "slice" $v) }}
+            {{- fail (printf "gen3-embeddings.extraEnv[%s] must be a scalar, got %s. Use `env` for anything needing `valueFrom`." $k (kindOf $v)) }}
+            {{- end }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 4142
+            - containerPort: {{ .Values.service.targetPort }}
               name: http
           livenessProbe:
-            httpGet:
-              path: /_status
-              port: 4142
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /_status
-              port: 4142
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
@@ -127,6 +136,9 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      {{- /* Only wait when something is going to migrate. With migrations disabled there is no
+             Job to wait for, and the poll below would never see a clean status. */}}
+      {{- if dig "migrations" "enabled" false (.Values.postgres | default dict) }}
       initContainers:
         - name: gen3-embeddings-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -205,11 +217,45 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          command: ["/bin/bash", "-c"]
+          command: ["/bin/sh", "-c"]
           args:
             - |
-              set -euo pipefail
-              echo "Running gen3-embeddings migrations..."
-              DATABASE_URL="postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=disable"
-              dbmate -u "$DATABASE_URL" -d "/services/gen3_embeddings/db/migrations" migrate
-              echo "Migrations completed."
+              set -eu
+              {{- $mig := dig "migrations" dict (.Values.postgres | default dict) }}
+              # Password omitted from the DSN on purpose; lib/pq picks up PGPASSWORD from the
+              # environment, so a password containing @, / or : cannot corrupt the URL.
+              DATABASE_URL="postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode={{ dig "sslmode" "disable" $mig }}"
+              # Waits rather than migrates: the dbmigrate Job is the only writer. Polls the
+              # database instead of the Job because ttlSecondsAfterFinished reaps the Job, so a
+              # replica starting later would wait on an object that no longer exists.
+              #
+              # dbmate status --quiet exits 0 with nothing pending, 1 with migrations pending, and
+              # 2 on any other error. Treating 2 as "keep waiting" would turn a bad DSN into a pod
+              # that hangs in Init forever, so it gets a bounded retry.
+              attempts=0
+              until_ready() {
+                set +e
+                dbmate -u "$DATABASE_URL" -d {{ dig "dir" "" $mig | quote }} status --quiet
+                rc=$?
+                set -e
+                return $rc
+              }
+              while true; do
+                if until_ready; then
+                  echo "Migrations up to date."
+                  break
+                fi
+                if [ "$rc" -eq 1 ]; then
+                  attempts=0
+                  echo "Waiting for migrations to be applied..."
+                else
+                  attempts=$((attempts + 1))
+                  echo "dbmate status failed (rc=$rc), attempt ${attempts}/30"
+                  if [ "$attempts" -ge 30 ]; then
+                    echo "Giving up waiting for migrations."
+                    exit 1
+                  fi
+                fi
+                sleep 5
+              done
+      {{- end }}
