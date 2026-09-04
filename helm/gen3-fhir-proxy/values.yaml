@@ -1,0 +1,112 @@
+# Default values for gen3-fhir-proxy.
+
+global:
+  environment: default
+
+  pdb: false
+  minAvailable: 1
+
+  netPolicy:
+    enabled: false
+    dbSubnet: ""
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    averageCPUValue: 500m
+    averageMemoryValue: 500Mi
+
+  topologySpread:
+    enabled: false
+    topologyKey: "topology.kubernetes.io/zone"
+    maxSkew: 1
+
+metricsEnabled: true
+
+podAnnotations: {}
+
+replicaCount: 1
+
+revisionHistoryLimit: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - gen3-fhir-proxy
+          topologyKey: "kubernetes.io/hostname"
+
+image:
+  repository: gen3-fhir-proxy
+  pullPolicy: IfNotPresent
+  tag: dev
+
+volumes:
+  - name: prometheus-multiproc
+    emptyDir: {}
+
+volumeMounts:
+  - name: prometheus-multiproc
+    mountPath: /var/tmp/prometheus_metrics
+
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+service:
+  type: ClusterIP
+  port: 8007
+  targetPort: 8007
+
+netPolicy:
+  ingressApps:
+    - revproxy
+  egressApps:
+    - arborist
+
+release: "dev"
+criticalService: "false"
+partOf: "backend"
+
+selectorLabels:
+  app: gen3-fhir-proxy
+
+commonLabels:
+  app: gen3-fhir-proxy
+
+config:
+  debug: false
+
+  # This should match the path exposed through revproxy.
+  urlPrefix: ""
+
+  # External upstream FHIR server.
+  fhirServerUrl: ""
+
+  # Internal Gen3 authorization service.
+  arboristUrl: "http://arborist-service"
+
+  # gen3-fhir-proxy is behind Gen3 revproxy.
+  isUpstreamCallerTrustedReverseProxy: true
+
+  enablePrometheusMetrics: true
+  prometheusMultiprocDir: /var/tmp/prometheus_metrics
+
+  enableOpenTelemetryTraces: false
+  otelExporterOtlpEndpoint: "http://127.0.0.1:4318"

@@ -1,0 +1,9 @@
+.git/
+.gitignore
+*.pack
+*.tgz
+*.tar.gz
+__pycache__/
+*.pyc
+.venv/
+venv/
