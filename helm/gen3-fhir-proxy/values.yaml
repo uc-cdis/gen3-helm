@@ -92,7 +92,7 @@ commonLabels:
 
 config:
   debug: false
-  
+
   # This should match the path exposed through revproxy.
   urlPrefix: ""
 

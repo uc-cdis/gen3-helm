@@ -77,3 +77,19 @@ Define environment
 {{- .Values.environment }}
 {{- end }}
 {{- end }}
+
+{{/*
+Extra labels
+*/}}
+{{- define "common.extraLabels" -}}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Grafana annotations for Prometheus scraping
+*/}}
+{{- define "common.grafanaAnnotations" -}}
+prometheus.io/scrape: "true"
+prometheus.io/path: "/metrics"
+prometheus.io/port: {{ .Values.service.targetPort | quote }}
+{{- end }}

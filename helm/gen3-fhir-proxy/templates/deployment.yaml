@@ -24,7 +24,6 @@ spec:
     metadata:
       labels:
         {{- include "gen3-fhir-proxy.selectorLabels" . | nindent 8 }}
-        {{- include "common.extraLabels" . | nindent 8 }}
         netnolimit: "yes"
         public: "yes"
       annotations:
@@ -33,7 +32,9 @@ spec:
           {{- $metricsEnabled = true }}
         {{- end }}
         {{- if $metricsEnabled }}
-        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.service.targetPort }}"
         {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
