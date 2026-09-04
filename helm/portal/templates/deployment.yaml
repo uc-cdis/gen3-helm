@@ -277,12 +277,11 @@ spec:
             - name: PRIVACY_POLICY_URL
               value: {{ .Values.global.privacyPolicyURL | quote }}
             {{- end }}
-            {{- if .Values.global.mapboxToken }}
+            {{- if and .Values.global.externalSecrets (hasKey .Values.global.externalSecrets "mapboxTokenSecretName") .Values.global.externalSecrets.mapboxTokenSecretName }}
             - name: MAPBOX_API_TOKEN
-              # Optional token for mapbox api
               valueFrom:
-                configMapKeyRef:
-                  name: global
+                secretKeyRef:
+                  name: mapbox-config
                   key: mapbox_token
                   optional: true
             {{- end }}
