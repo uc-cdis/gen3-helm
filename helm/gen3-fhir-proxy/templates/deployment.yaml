@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fhir-proxy-deployment
+  name: gen3-fhir-proxy-deployment
   {{- with .Values.podAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "fhir-proxy.labels" . | nindent 4 }}
+    {{- include "gen3-fhir-proxy.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.global.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "fhir-proxy.selectorLabels" . | nindent 6 }}
+      {{- include "gen3-fhir-proxy.selectorLabels" . | nindent 6 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   {{- with .Values.strategy }}
   strategy:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "fhir-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "gen3-fhir-proxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         netnolimit: "yes"
         public: "yes"
@@ -55,7 +55,7 @@ spec:
       {{- end }}
 
       containers:
-        - name: fhir-proxy
+        - name: gen3-fhir-proxy
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

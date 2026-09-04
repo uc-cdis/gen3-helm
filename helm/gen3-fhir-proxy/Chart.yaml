@@ -1,5 +1,5 @@
 apiVersion: v2
-name: fhir-proxy
+name: gen3-fhir-proxy
 description: A Helm chart for gen3 FHIR proxy Service
 
 # A chart can be either an 'application' or a 'library' chart.

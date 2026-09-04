@@ -215,10 +215,10 @@ fence:
     # -- (bool) Will echo what files we are seeing on dbgap ftp to Slack.
     slack_send_dbgap: false
 
-fhir-proxy:
-  enabled: true
+gen3-fhir-proxy:
+  enabled: false
   image:
-    repository: fhir-proxy
+    repository: gen3-fhir-proxy
     tag: dev
     pullPolicy: IfNotPresent
 

@@ -39,11 +39,11 @@ Published versions of this chart are listed in the
 | file://../embedding-management-service | embedding-management-service |
 | file://../etl | etl |
 | file://../fence | fence |
-| file://../fhir-proxy | fhir-proxy |
 | file://../frontend-framework | frontend-framework |
 | file://../funnel | funnel |
 | file://../gen3-analysis | gen3-analysis |
 | file://../gen3-embeddings | gen3-embeddings |
+| file://../gen3-fhir-proxy | gen3-fhir-proxy |
 | file://../gen3-network-policies | gen3-network-policies |
 | file://../gen3-user-data-library | gen3-user-data-library |
 | file://../gen3-workflow | gen3-workflow |
@@ -125,10 +125,6 @@ Published versions of this chart are listed in the
 | fence.usersync.syncFromDbgap | bool | `false` | Whether to sync data from dbGaP. |
 | fence.usersync.userYamlS3Path | string | `"s3://cdis-gen3-users/helm-test/user.yaml"` | Path to the user.yaml file in S3. |
 | fence.usersync.usersync | bool | `false` | Whether to run Fence usersync or not. |
-| fhir-proxy.enabled | bool | `true` |  |
-| fhir-proxy.image.pullPolicy | string | `"IfNotPresent"` |  |
-| fhir-proxy.image.repository | string | `"fhir-proxy"` |  |
-| fhir-proxy.image.tag | string | `"dev"` |  |
 | frontend-framework | map | `{"enabled":false,"image":{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}}` | Configurations for frontend-framework chart. |
 | frontend-framework.enabled | bool | `false` | Whether to deploy the frontend-framework subchart. |
 | frontend-framework.image | map | `{"repository":"quay.io/cdis/commons-frontend-app","tag":"main"}` | Docker image information. |
@@ -137,6 +133,10 @@ Published versions of this chart are listed in the
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-embeddings | map | `{"enabled":false}` | Configurations for gen3-embeddings chart. |
+| gen3-fhir-proxy.enabled | bool | `false` |  |
+| gen3-fhir-proxy.image.pullPolicy | string | `"IfNotPresent"` |  |
+| gen3-fhir-proxy.image.repository | string | `"gen3-fhir-proxy"` |  |
+| gen3-fhir-proxy.image.tag | string | `"dev"` |  |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |

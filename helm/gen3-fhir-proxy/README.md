@@ -1,4 +1,4 @@
-# fhir-proxy
+# gen3-fhir-proxy
 
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: dev](https://img.shields.io/badge/AppVersion-dev-informational?style=flat-square)
 
@@ -14,10 +14,10 @@ Published versions of this chart are listed in the
 |-----|------|---------|-------------|
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].key | string | `"app"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].operator | string | `"In"` |  |
-| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"fhir-proxy"` |  |
+| affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"gen3-fhir-proxy"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
-| commonLabels.app | string | `"fhir-proxy"` |  |
+| commonLabels.app | string | `"gen3-fhir-proxy"` |  |
 | config.arboristUrl | string | `"http://arborist-service"` |  |
 | config.debug | bool | `false` |  |
 | config.enableOpenTelemetryTraces | bool | `false` |  |
@@ -42,7 +42,7 @@ Published versions of this chart are listed in the
 | global.topologySpread.maxSkew | int | `1` |  |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"fhir-proxy"` |  |
+| image.repository | string | `"gen3-fhir-proxy"` |  |
 | image.tag | string | `"dev"` |  |
 | metricsEnabled | bool | `true` |  |
 | netPolicy.egressApps[0] | string | `"arborist"` |  |
@@ -55,7 +55,7 @@ Published versions of this chart are listed in the
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | revisionHistoryLimit | int | `2` |  |
-| selectorLabels.app | string | `"fhir-proxy"` |  |
+| selectorLabels.app | string | `"gen3-fhir-proxy"` |  |
 | service.port | int | `8007` |  |
 | service.targetPort | int | `8007` |  |
 | service.type | string | `"ClusterIP"` |  |

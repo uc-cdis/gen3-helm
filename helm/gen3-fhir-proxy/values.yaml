@@ -1,4 +1,4 @@
-# Default values for fhir-proxy.
+# Default values for gen3-fhir-proxy.
 
 global:
   environment: default
@@ -46,11 +46,11 @@ affinity:
               - key: app
                 operator: In
                 values:
-                  - fhir-proxy
+                  - gen3-fhir-proxy
           topologyKey: "kubernetes.io/hostname"
 
 image:
-  repository: fhir-proxy
+  repository: gen3-fhir-proxy
   pullPolicy: IfNotPresent
   tag: dev
 
@@ -85,10 +85,10 @@ criticalService: "false"
 partOf: "backend"
 
 selectorLabels:
-  app: fhir-proxy
+  app: gen3-fhir-proxy
 
 commonLabels:
-  app: fhir-proxy
+  app: gen3-fhir-proxy
 
 config:
   debug: false
@@ -102,7 +102,7 @@ config:
   # Internal Gen3 authorization service.
   arboristUrl: "http://arborist-service"
 
-  # fhir-proxy is behind Gen3 revproxy.
+  # gen3-fhir-proxy is behind Gen3 revproxy.
   isUpstreamCallerTrustedReverseProxy: true
 
   enablePrometheusMetrics: true
