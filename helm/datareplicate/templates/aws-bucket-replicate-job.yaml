@@ -81,7 +81,7 @@ spec:
                 cat /secrets/dcf_dataservice_settings.py > ./dcfdataservice/settings.py
                 echo """
                 [default]
-                region: us-east-1
+                region: {{ .Values.global.aws.region }}
                 """ > ~/.aws/config
                 aws configure set default.s3.max_concurrent_requests 1000
                 aws configure set default.s3.max_queue_size 10000

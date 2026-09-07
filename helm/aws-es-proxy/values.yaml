@@ -113,6 +113,8 @@ ports:
 
 # -- (str) Elasticsearch endpoint in AWS
 esEndpoint: test.us-east-1.es.amazonaws.com
+# -- (str) AWS region for the Elasticsearch domain, used for Crossplane IAM policy ARNs
+awsRegion: us-east-1
 
 # -- (list) Volumes to mount to the pod.
 volumeMounts:
