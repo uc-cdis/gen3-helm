@@ -195,12 +195,24 @@ spec:
             done
             kubectl -n {{ $.Release.Namespace }} get secret {{ $.Chart.Name }}-dbcreds-bootstrap
 
+            # PGHOST is sourced from the Aurora master secret when
+            # global.postgres.externalSecret is configured. Copy that resolved value into the
+            # bootstrap secret immediately before creating the PushSecret so the hostname does
+            # not need to be duplicated in Helm values or rendered into the bootstrap manifest.
+            if [ -z "$PGHOST" ]; then
+              echo "ERROR: PGHOST is empty; cannot populate {{ $.Chart.Name }}-dbcreds-bootstrap"
+              exit 1
+            fi
+            BOOTSTRAP_PGHOST_B64="$(printf '%s' "$PGHOST" | base64 | tr -d '\n')"
+            kubectl -n {{ $.Release.Namespace }} patch secret {{ $.Chart.Name }}-dbcreds-bootstrap \
+              --type merge \
+              -p "{\"data\":{\"host\":\"${BOOTSTRAP_PGHOST_B64}\"}}"
+
             echo "Creating PushSecret {{ $.Chart.Name }}-dbcreds ..."
             # kubectl apply is idempotent: on subsequent runs the existing PushSecret is kept as-is
             # (updatePolicy is IfNotExists, so the remote secret is never overwritten).
             echo '{{ include "common.db-push-secret" . | b64enc }}' | base64 --decode | kubectl -n {{ $.Release.Namespace }} apply -f -
-
-            echo "Waiting for PushSecret to sync            echo "Waiting for PushSecret to sync to the remote secret store ..."
+            echo "Waiting for PushSecret to sync to the remote secret store ..."
             kubectl -n {{ $.Release.Namespace }} wait --for=condition=Ready pushsecret/{{ .Chart.Name }}-dbcreds --timeout=300s
             echo "PushSecret is Ready - remote secret has been populated"
 {{- end }}
@@ -248,11 +260,6 @@ data:
   username: {{ ( $.Values.postgres.username | default (printf "%s_%s" $.Chart.Name $.Release.Name)  ) | b64enc | quote}}
   port: {{ $.Values.postgres.port | b64enc | quote }}
   password: {{ include "gen3.service-postgres" (dict "key" "password" "service" $.Chart.Name "context" $) | b64enc | quote }}
-  {{- if $.Values.global.dev }}
-  host: {{ (printf "%s-%s" $.Release.Name "postgresql" ) | b64enc | quote }}
-  {{- else }}
-  host: {{ ( $.Values.postgres.host | default ( $.Values.global.postgres.master.host)) | b64enc | quote }}
-  {{- end }}
   dbcreated: {{ "true" | b64enc | quote }}
 {{- end }}
 {{- end -}}
