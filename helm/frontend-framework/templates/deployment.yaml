@@ -60,6 +60,8 @@ spec:
             - /bin/sh
             - -c
             - |
+              set -eu
+              
               echo "Starting config puller initContainer"
 
               mkdir -p /tmp/repo
