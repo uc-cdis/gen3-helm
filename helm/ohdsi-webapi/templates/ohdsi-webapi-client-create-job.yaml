@@ -4,6 +4,7 @@ kind: Job
 metadata:
   name: ohdsi-webapi-client-job
 spec:
+  ttlSecondsAfterFinished: 120
   template:
     metadata:
       labels:
