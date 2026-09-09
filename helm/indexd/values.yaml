@@ -294,6 +294,8 @@ cloudProviderMap:
   gs: gcp
   az: azure
 
+# -- (int) The maximum number of records that can be processed in a single bulk request. This is used to prevent large requests from overwhelming the system.
+maxBulkRequestLength: 100
 
 # -- (map) Maps an arborist resource to the issuers for passports and bearer tokens.
 trustedIssuers:
