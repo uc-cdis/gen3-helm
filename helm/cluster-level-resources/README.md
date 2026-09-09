@@ -201,6 +201,17 @@ Published versions of this chart are listed in the
 | nvidia-device-plugin.enabled | bool | `false` |  |
 | nvidia-device-plugin.targetRevision | string | `"v0.18.0"` |  |
 | project | string | `"unfunded"` |  |
+| storageclass.allowVolumeExpansion | bool | `true` |  |
+| storageclass.default | bool | `true` |  |
+| storageclass.enabled | bool | `false` |  |
+| storageclass.name | string | `"gp3"` |  |
+| storageclass.parameters.encrypted | string | `"true"` |  |
+| storageclass.parameters.type | string | `"gp3"` |  |
+| storageclass.previousDefault.name | string | `"gp2"` |  |
+| storageclass.previousDefault.removeDefault | bool | `true` |  |
+| storageclass.provisioner | string | `"ebs.csi.aws.com"` |  |
+| storageclass.reclaimPolicy | string | `"Retain"` |  |
+| storageclass.volumeBindingMode | string | `"WaitForFirstConsumer"` |  |
 | vpc-cni.configuration.enabled | bool | `false` |  |
 | vpc-cni.enabled | bool | `false` |  |
 | vpc-cni.targetRevision | string | `"v1.20.4"` |  |

@@ -287,6 +287,25 @@ nvidia-device-plugin:
     enabled: false
   targetRevision: v0.18.0
 
+storageclass:
+  enabled: false
+  name: gp3
+  default: true
+
+  provisioner: ebs.csi.aws.com
+
+  reclaimPolicy: Retain
+  volumeBindingMode: WaitForFirstConsumer
+  allowVolumeExpansion: true
+
+  parameters:
+    type: gp3
+    encrypted: "true"
+
+  previousDefault:
+    removeDefault: true
+    name: gp2
+
 vpc-cni:
   enabled: false
   targetRevision: v1.20.4
