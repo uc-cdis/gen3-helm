@@ -81,6 +81,15 @@ metricsEnabled:
 # -- (int) Number of replicas for the deployment.
 replicaCount: 1
 
+# -- (list) Overrides the container's entrypoint. The image's own CMD is
+# `./start_with_config.sh`, which recent commons-frontend-app builds no longer ship - only
+# /gen3/start.sh - so the container exits immediately with "can't open
+# ./start_with_config.sh". start.sh runs the same standalone server and tolerates a missing
+# config directory, so it works whether or not customConfig is enabled. Set to [] to fall back
+# to whatever CMD the image defines.
+command:
+  - /gen3/start.sh
+
 # -- (map) Docker image information.
 image:
   # -- (string) Docker repository.
