@@ -208,6 +208,10 @@ volumeMounts:
 workspaceInternetEgress: True
 hatchery:
   json: ""
+  # -- (string) The StorageClass to use for the user volume PVCs created by
+  # hatchery for workspace pods (e.g. user NFS home dirs). Leave empty to
+  # omit storageClassName on the claim so the cluster-default StorageClass is used.
+  defaultStorageClass: ""
   sharedWorkspaceEnabled: false
   # ARN of the OIDC provider for shared workspace.
   oidcProviderArn: ""

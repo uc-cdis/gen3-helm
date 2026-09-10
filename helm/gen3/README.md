@@ -224,6 +224,7 @@ Published versions of this chart are listed in the
 | hatchery.hatchery.containers[0].use-tls | string | `"false"` |  |
 | hatchery.hatchery.containers[0].user-uid | int | `1010` |  |
 | hatchery.hatchery.containers[0].user-volume-location | string | `"/home/jovyan/pd"` |  |
+| hatchery.hatchery.defaultStorageClass | string | `""` | StorageClass for the user volume PVCs created by hatchery for workspace pods (e.g. user NFS home dirs). Leave empty to use the cluster-default StorageClass. |
 | hatchery.hatchery.reaper.enabled | bool | `true` |  |
 | hatchery.hatchery.reaper.idleTimeoutSeconds | int | `3600` |  |
 | hatchery.hatchery.reaper.schedule | string | `"*/15 * * * *"` |  |
