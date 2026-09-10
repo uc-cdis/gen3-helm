@@ -57,20 +57,9 @@ Selector labels
 {{- end }}
 
 {{/*
- Postgres Password lookup
+  Name of the Secret holding secret values projected into the container environment, and the
+  Secrets Manager key it is populated from.
 */}}
-{{- define "gen3-embeddings.postgres.password" -}}
-{{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
-{{- if $localpass }}
-{{- default (index $localpass.data "postgres-password" | b64dec) }}
-{{- else }}
-{{- default .Values.postgres.password }}
-{{- end }}
-{{- end }}
-
-{{/*
-  Gen3Embeddings g3 Auto Secrets Manager Name
-*/}}
-{{- define "gen3embeddings-g3auto" -}}
-{{- default "gen3embeddings-g3auto" .Values.externalSecrets.gen3EmbeddingsG3auto }}
+{{- define "gen3-embeddings.envSecretName" -}}
+{{- default (printf "%s-env-secret" (include "gen3-embeddings.name" .)) .Values.externalSecrets.gen3EmbeddingsEnvSecret }}
 {{- end }}
