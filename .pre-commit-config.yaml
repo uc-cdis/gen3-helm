@@ -7,10 +7,12 @@ repos:
         additional_dependencies: ["gibberish-detector"]
   
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v4.2.0
     hooks:
-      - id: no-commit-to-branch
-        args: [--branch, develop, --branch, master, --pattern, release/.*]
+        - id: no-commit-to-branch
+          args: [--branch, develop, --branch, master, --branch, main, --pattern, release/.*]
+        - id: check-merge-conflict
+        - id: end-of-file-fixer
 
   # - repo: https://github.com/gruntwork-io/pre-commit
   #   rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
