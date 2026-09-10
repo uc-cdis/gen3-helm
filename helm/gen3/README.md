@@ -170,6 +170,7 @@ Published versions of this chart are listed in the
 | global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
+| global.externalSecrets.mapboxTokenSecretName | string | `""` | Name of the secret in Secrets Manager that contains the mapbox API token. |
 | global.externalSecrets.slackWebhookSecretName | string | `""` | Name of the secret in Secrets Manager that contains the slack webhook. |
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
