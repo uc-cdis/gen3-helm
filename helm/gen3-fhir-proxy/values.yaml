@@ -22,6 +22,9 @@ global:
     topologyKey: "topology.kubernetes.io/zone"
     maxSkew: 1
 
+  externalSecrets:
+    deploy: false
+
 metricsEnabled: true
 
 podAnnotations: {}
@@ -53,6 +56,9 @@ image:
   repository: gen3-fhir-proxy
   pullPolicy: IfNotPresent
   tag: dev
+
+externalSecrets:
+  fhirCreds: ""
 
 volumes:
   - name: prometheus-multiproc
