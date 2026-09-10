@@ -1,0 +1,3 @@
+{{- if default .Values.global.autoscaling.enabled .Values.autoscaling.enabled }}
+{{ include "common.hpa" . }}
+{{- end }}

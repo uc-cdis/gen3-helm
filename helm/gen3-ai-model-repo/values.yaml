@@ -1,0 +1,72 @@
+global:
+  dev: true
+  postgres:
+    dbCreate: true
+    externalSecret: ""
+    master:
+      host: ""
+      username: postgres
+      password: ""
+      port: "5432"
+  externalSecrets:
+    deploy: false
+    createLocalK8sSecret: false
+    separateSecretStore: false
+  autoscaling:
+    enabled: false
+  topologySpread:
+    enabled: false
+
+autoscaling: {}
+replicaCount: 1
+revisionHistoryLimit: 3
+debug: false
+image:
+  repository: quay.io/cdis/gen3_ai_model_repo
+  pullPolicy: Always
+  tag: main
+nameOverride: ""
+fullnameOverride: ""
+service:
+  type: ClusterIP
+  port: 80
+resources: {}
+env:
+  - name: GEN3_DEBUG
+    value: "false"
+  - name: GUNICORN_WORKERS
+    value: "2"
+storage:
+  # Local storage makes the development chart self-contained. Production
+  # deployments can override these settings for MinIO or S3.
+  provider: local
+  localPath: /data/models
+volumeMounts: []
+extraVolumes: []
+affinity: {}
+automountServiceAccountToken: false
+postgres:
+  dbRestore: false
+  dbCreate:
+  host:
+  database:
+  username:
+  port: "5432"
+  password:
+  separate: false
+postgresql:
+  primary:
+    persistence:
+      enabled: false
+release: production
+criticalService: "false"
+partOf: "AI"
+selectorLabels:
+commonLabels:
+externalSecrets:
+  createK8sGen3AiModelRepoSecret: false
+  gen3AiModelRepoG3auto:
+  pushSecret: false
+  dbcreds:
+metricsEnabled:
+gunicornWorkers: 2
