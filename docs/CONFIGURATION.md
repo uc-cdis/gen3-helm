@@ -9,13 +9,13 @@ live in them, and every non-file setting converges on the container's process en
 Newer services handle configuration by environment (either environment variables or a .env file), so the configuration
 variables in Helm values mirrors the configuration in the service itself.
 
-| Kind of setting | Lives in | Reaches the container via |
-| --- | --- | --- |
-| Public, versioned config | `extraEnv` map in the service's gitops values | rendered into the container `env:` list |
-| Secret config | AWS Secrets Manager, referenced by name only | External Secrets `dataFrom.extract` into a `<service>-env-secret` Secret, projected with `envFrom` |
-| Secret config, local dev | `secretEnv` map, rendered by the chart | the same `<service>-env-secret` Secret |
-| Fixed, known credentials | `<service>-dbcreds` | individual `env` entries with `secretKeyRef` |
-| Whole files the service reads (`user.yaml`, JSON config) | the service's g3auto Secret | a mounted volume |
+| Kind of setting                                          | Lives in                                      | Reaches the container via                                                                          |
+| -------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Public, versioned config                                 | `extraEnv` map in the service's gitops values | rendered into the container `env:` list                                                            |
+| Secret config                                            | AWS Secrets Manager, referenced by name only  | External Secrets `dataFrom.extract` into a `<service>-env-secret` Secret, projected with `envFrom` |
+| Secret config, local dev                                 | `secretEnv` map, rendered by the chart        | the same `<service>-env-secret` Secret                                                             |
+| Fixed, known credentials                                 | `<service>-dbcreds`                           | individual `env` entries with `secretKeyRef`                                                       |
+| Whole files the service reads (`user.yaml`, JSON config) | the service's g3auto Secret                   | a mounted volume                                                                                   |
 
 `dataFrom.extract` turns every property of the Secrets Manager secret into its own Secret key,
 so adding a secret setting means adding a JSON property there - no chart change, and nothing new
@@ -34,6 +34,38 @@ than the file.
 
 > NOTE: When the same name is set in both `envFrom` and `env`, Kubernetes resolves it to the `env` value.
 > Public config therefore overrides a secret of the same name, silently.
+
+For example, in your local `values.yaml`, you could have this:
+
+```yaml
+gen3-embeddings:
+  enabled: true
+  debug: true
+  image:
+    repository: gen3_embeddings
+    tag: latest
+    pullPolicy: IfNotPresent
+  postgres:
+    password: REDACTED
+    dbCreate: true
+    migrations:
+      enabled: true
+      dir: /services/gen3_embeddings/db/migrations
+      sslmode: disable
+  extraEnv:
+    ENABLE_CONTINUOUS_PROFILING: "true"
+    ENABLE_OPENTELEMETRY_TRACES: "true"
+    ANOTHER_ENV_VAR_THE_SERVICE_UNDERSTANDS: "foobar"
+  # Note: The below are not secrets. This is just to show how to manually pass through secret
+  #       env vars in a local env. In a real deployment where global.externalSecrets.deploy is set,
+  #       this block is IGNORED, and the same gen3-embeddings-env-secret this
+  #       populates manually is instead populated by an ExternalSecret 
+  #       from the JSON properties of a Secrets Manager secret of the same name.
+  secretEnv: {
+    PROFILE_MEMORY: "true",
+    PYROSCOPE_SERVER_ADDRESS: "http://lgtm.monitoring:4040"
+  }
+```
 
 # Ambassador
 
@@ -59,7 +91,6 @@ ambassador:
     pullPolicy: Always
 ```
 
-
 ## Extra Information
 
 Ambassador is only necessary if there is a hatchery deployment, as this is used as an envoy proxy primarily for workspaces. This may change in the future. 
@@ -74,9 +105,7 @@ The aws-es-proxy is a proxy for hitting the elasticsearch service running in AWS
 
 ## How to Configure it
 
-
 For a full set of configuration see the [helm README.md for aws-es-proxy](../helm/aws-es-proxy/README.md) or read the [values.yaml](../helm/aws-es-proxy/values.yaml) directly
-
 
 Some important configuration items for `aws-es-proxy` in helm:
 
@@ -100,7 +129,6 @@ aws-es-proxy:
   esEndpoint: test.us-east-1.es.amazonaws.com
 ```
 
-
 ## Extra Information
 
 This pod can also be used to make direct queries to elastic search. If you know you want to make a manaul query to elastic search. You can exec into the aws-es-proxy pod and run the following, filling in the appropriate endpoint you want to hit to query elasticsearch.
@@ -122,9 +150,9 @@ Arborist is the authorization service. It works with fence to assign authortizat
 For a full set of configuration see the [helm README.md for arborist](../helm/arborist/README.md) or read the [values.yaml](../helm/arborist/values.yaml) directly
 
 Some configuration options include:
--  postgres configuration 
-- image repo/ tag
 
+- postgres configuration 
+- image repo/ tag
 
 ```yaml
 arborist:
@@ -150,7 +178,6 @@ arborist:
 Fence is a core service for a gen3 datacommons which handles authentication. It is necessary for a commons to run and will handle authentication on the /login endpoint as well as creating presigned url's in the presigned-url-fence pods.
 
 ## How to Configure it
-
 
 ```yaml
 fence:
@@ -179,24 +206,38 @@ fence:
 You need to ensure a proper working fence-config file. Fence is highly configurable and a lot of config is commons specific, but some important fields to configure are as follows.
 
 1. BASE_URL
-  * This should be (the url of the commons)/user.
+
+* This should be (the url of the commons)/user.
+
 2. DB
-  * This should contain the psql connection string, which should contain the correct database, user, password and hostname.
+
+* This should contain the psql connection string, which should contain the correct database, user, password and hostname.
+
 3. OPENID_CONNECT
-  * This is where different IdP's can be configured. To be able to leverage an IdP as a login option you need to add the client id's/secrets and any other necesary config to the predefined blocks.
+
+* This is where different IdP's can be configured. To be able to leverage an IdP as a login option you need to add the client id's/secrets and any other necesary config to the predefined blocks.
+
 4. ENABLED_IDENTITY_PROVIDERS/LOGIN_OPTIONS
-  * Use one of these blocks to enable/configure buttons for logging into the IdP's defined in the OPENID_CONNECT block.
+
+* Use one of these blocks to enable/configure buttons for logging into the IdP's defined in the OPENID_CONNECT block.
+
 5. DEFAULT_LOGIN_IDP/DEFAULT_LOGIN_URL
-  * These blocks will define the default login option, which will be used by most external oidc clients.
+
+* These blocks will define the default login option, which will be used by most external oidc clients.
+
 6. dbGaP
-  * This will be used to connect to an sftp server which will contain telemetry files for usersync. Is necessary for setting up authorizations outside of the useryaml.
+
+* This will be used to connect to an sftp server which will contain telemetry files for usersync. Is necessary for setting up authorizations outside of the useryaml.
+
 7. AWS_CREDENTIALS/S3_BUCKETS/DATA_UPLOAD_BUCKET
- * The AWS_CREDENTIALS block will define credentials for service accounts used to access s3 buckets. The s3 buckets are defined in the S3_BUCKETS block, which will reference a credential in the AWS_CREDENTIALS block. The DATA_UPLOAD_BUCKET block defines the data upload bucket, which is the bucket used in the data upload flow, to upload files to a commons.
+
+* The AWS_CREDENTIALS block will define credentials for service accounts used to access s3 buckets. The s3 buckets are defined in the S3_BUCKETS block, which will reference a credential in the AWS_CREDENTIALS block. The DATA_UPLOAD_BUCKET block defines the data upload bucket, which is the bucket used in the data upload flow, to upload files to a commons.
+
 8. CIRRUS_CFG
-  * If google buckets are used you need to configure this block. It is used to setup the google bucket workflow, which essentially creates google users and google bucket access groups, which get filled with users and added to bucket policies to allow implicit access to users.
+
+* If google buckets are used you need to configure this block. It is used to setup the google bucket workflow, which essentially creates google users and google bucket access groups, which get filled with users and added to bucket policies to allow implicit access to users.
 
 For more infomation, [see this](https://github.com/uc-cdis/fence/blob/master/fence/config-default.yaml)
-
 
 A user.yaml will control access to your data commons. To see how to construct a user.yaml properly:
 
@@ -218,7 +259,6 @@ OIDC (OpenID Connect) clients allow applications to authenticate with Fence. Thi
 
 Once the client is created, share the client_id and client_secret with the application owner so they can configure their application to authenticate with Fence. To create these clients, you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/setup.md#register-oauth-client).
 
-
 ---
 
 # Guppy
@@ -229,9 +269,7 @@ Guppy is used to render the explorer page. It uses elastic search indices to ren
 
 ## How to Configure it
 
-
 For a full set of configuration see the [helm README.md for guppy](../helm/guppy/README.md) or read the [values.yaml](../helm/guppy/values.yaml) directly
-
 
 There is also config that needs to be set within the global block around the tier access level, defining how the explorer page should handle displaying unauthorized files, and the limit to how far unauthorized user can filter down files. Last, there is a guppy block that needs to be configured with the elastic search indices guppy will use to render the explorer page.
 
@@ -266,7 +304,6 @@ guppy:
   esEndpoint: ""
 ```
 
-
 You will also need a mapping file to map the fields you want to pull from postgres into the elasticsearch indices. There are too many fields to describe here, but [an example mapping file can be found here](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/etlMapping.yaml).
 
 Last, guppy works closely with portal to render the explorer page. You will need to ensure a proper [dataExplorer block](https://github.com/uc-cdis/cdis-manifest/blob/master/gen3.biodatacatalyst.nhlbi.nih.gov/portal/gitops.json#L212) is setup within the gitops.json file, referencing fields that have been pulled from postgres into the elasticsearch indices.
@@ -277,8 +314,8 @@ Guppy relies on indices being created to run, if there are no indices created gu
 
 To create these indices you can run etl, however a valid ETL mapping file needs to be created and data needs to be submitted to the commons. 
 
-
 ---
+
 # Hatchery
 
 ## What Does it Do
@@ -287,9 +324,7 @@ Hatchery is used to create workspaces. It contains information about workspaces 
 
 ## How to Configure it
 
-
 For a full set of configuration see the [helm README.md for hatchery](../helm/hatchery/README.md) or read the [values.yaml](../helm/hatchery/values.yaml) directly
-
 
 ```
 hatchery:
@@ -355,7 +390,6 @@ hatchery:
         gen3-volume-location: "/home/jovyan/.gen3"
 ```
 
-
 ## Extra Information
 
 ---
@@ -369,7 +403,6 @@ Indexd is a core service of the commons. It is used to index files within the co
 ## How to Configure it
 
 For a full set of configuration see the [helm README.md for indexd](../helm/indexd/README.md) or read the [values.yaml](../helm/indexd/values.yaml) directly
-
 
 ```yaml
 indexd:
@@ -401,6 +434,7 @@ Indexd is used to hold information regarding files in the commons. We can index 
 The manifestservice is used by the workspaces to mount files to a workspace. Workspace pods get setup with a sidecar container which will  mount files to the data directory. This is used so that users can access files directly on the worskpace container. The files pulled are defined by manifests, created through the export to workspace button in the explorer page. These manifests live in an s3 bucket which the manifestservice can query.
 
 ## How to Configure it
+
 For a full set of configuration see the [Helm README.md for Manifestservice](https://github.com/uc-cdis/gen3-helm/blob/master/helm/manifestservice/README.md) or read the [Manifestservice values.yaml](https://github.com/uc-cdis/gen3-helm/blob/master/helm/manifestservice/values.yaml) directly.
 
 ```
@@ -422,6 +456,7 @@ manifestservice:
 ## Extra Information
 
 ---
+
 # Metadata
 
 ## What Does it Do
@@ -430,10 +465,7 @@ The Metadata Service provides an API for retrieving JSON metadata of GUIDs. It i
 
 The GUID (the key) can be any string that is unique within the instance. The value is the metadata associated with the GUID, it’s a JSON blob whose structure is not enforced on the server side.
 
-
-
 ## How to Configure it
-
 
 ```
 manifestservice:
@@ -453,8 +485,8 @@ manifestservice:
 
 ## Extra Information
 
-
 ---
+
 # Peregrine
 
 ## What Does it Do
@@ -465,13 +497,10 @@ The peregrine service is used to query data in postgres. It works similar to gup
 
 To configure peregrine we require an entry in the versions block. It also requires a dictionary in the global block.
 
-
 ```yaml
 ```
 
-
 ## Extra Information
-
 
 ---
 
@@ -505,7 +534,6 @@ portal:
     sponsors:
 ```
 
-
 To do this you can follow [the example here](https://github.com/uc-cdis/data-portal/blob/master/docs/portal_config.md).
 
 Portal can also be configured with different images and icons by updating the values, [similar to this](https://github.com/uc-cdis/cdis-manifest/tree/master/gen3.biodatacatalyst.nhlbi.nih.gov/portal). 
@@ -513,6 +541,7 @@ Portal can also be configured with different images and icons by updating the va
 ## Extra Information
 
 ---
+
 # Revproxy
 
 ## What Does it Do
@@ -549,6 +578,7 @@ Revproxy is essentially an nginx container, which contains informtation about th
 Sheepdog is a core service that handles data submission. Data gets submitted to the commons, using the dictionary as a schema, which is reflected within the sheepdog database.
 
 ## How to Configure it
+
 <!-- 
 To configure sheepdog we require an entry in the versions block. It also requires a dictionary in the global block.
 
@@ -564,7 +594,9 @@ To configure sheepdog we require an entry in the versions block. It also require
 ``` -->
 
 ## Extra Information
+
 ---
+
 # Sower
 
 ## What Does it Do

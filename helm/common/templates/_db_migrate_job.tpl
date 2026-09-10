@@ -15,8 +15,7 @@
 
 {{/*
   Resolved migration settings, so callers and both Jobs agree on one source of truth.
-  `dig` throughout: a chart may include these templates without declaring postgres.migrations,
-  and helm/common/values.yaml carries no defaults for most global keys.
+  `dig` throughout: a chart may include these templates without declaring postgres.migrations.
 */}}
 {{- define "common.db_migrate.settings" -}}
 {{- $chart := dig "migrations" dict (.Values.postgres | default dict) -}}
