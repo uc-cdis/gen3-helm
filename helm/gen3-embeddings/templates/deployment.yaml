@@ -47,13 +47,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.extraVolumes }}
       volumes:
-        - name: gen3-embeddings-g3auto-volume
-          secret:
-            secretName: gen3embeddings-g3auto
-        {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -95,15 +92,8 @@ spec:
                   name: gen3-embeddings-dbcreds
                   key: database
                   optional: false
-            - name: CONFIG_PATH
-              value: /services/gen3_embeddings/.env
-            {{- if eq .Values.global.dev false }}
-            - name: FENCE_URL
-              value: https://{{ .Values.global.hostname }}/user
-            {{- else }}
-            - name: FENCE_URL
-              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
-            {{- end }}
+            - name: DEBUG
+              value: {{ .Values.debug | quote }}
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
@@ -137,8 +127,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- /* Only wait when something is going to migrate. With migrations disabled there is no
-             Job to wait for, and the poll below would never see a clean status. */}}
-      {{- if dig "migrations" "enabled" false (.Values.postgres | default dict) }}
+             Job to wait for, and the poll below would never see a clean status. Resolved through
+             common.db_migrate.settings so the gate cannot disagree with common.db_migrate_job
+             about whether a Job exists. */}}
+      {{- $migrations := include "common.db_migrate.settings" . | fromYaml }}
+      {{- if $migrations.enabled }}
       initContainers:
         - name: gen3-embeddings-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -146,68 +139,7 @@ spec:
           env:
             - name: GEN3_DEBUG
               value: "False"
-            # Admin/master connection – same pattern as db_setup_job
-            - name: PGPASSWORD
-              {{- if $.Values.global.dev }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
-                  optional: false
-              {{- else if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: password
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.password | quote }}
-              {{- end }}
-            - name: PGUSER
-              {{- if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: username
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.username | quote }}
-              {{- end }}
-            - name: PGPORT
-              {{- if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: port
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.port | quote }}
-              {{- end }}
-            - name: PGHOST
-              {{- if $.Values.global.dev }}
-              value: "{{ .Release.Name }}-postgresql"
-              {{- else if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: host
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.host | quote }}
-              {{- end }}
-
-            - name: PGDATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: gen3-embeddings-dbcreds
-                  key: database
-                  optional: false
-            - name: DBREADY
-              valueFrom:
-                secretKeyRef:
-                  name: gen3-embeddings-dbcreds
-                  key: dbcreated
-                  optional: false
+            {{- include "common.db_migrate.env" . | nindent 12 }}
 
           {{- with .Values.volumeMounts }}
           volumeMounts:
@@ -221,10 +153,7 @@ spec:
           args:
             - |
               set -eu
-              {{- $mig := dig "migrations" dict (.Values.postgres | default dict) }}
-              # Password omitted from the DSN on purpose; lib/pq picks up PGPASSWORD from the
-              # environment, so a password containing @, / or : cannot corrupt the URL.
-              DATABASE_URL="postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode={{ dig "sslmode" "disable" $mig }}"
+              {{- include "common.db_migrate.dsn" . | nindent 14 }}
               # Waits rather than migrates: the dbmigrate Job is the only writer. Polls the
               # database instead of the Job because ttlSecondsAfterFinished reaps the Job, so a
               # replica starting later would wait on an object that no longer exists.
@@ -235,7 +164,7 @@ spec:
               attempts=0
               until_ready() {
                 set +e
-                dbmate -u "$DATABASE_URL" -d {{ dig "dir" "" $mig | quote }} status --quiet
+                dbmate -u "$DATABASE_URL" -d {{ $migrations.dir | quote }} status --quiet
                 rc=$?
                 set -e
                 return $rc

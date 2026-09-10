@@ -26,11 +26,9 @@ Published versions of this chart are listed in the
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
 | env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sGen3EmbeddingsSecret":false,"dbcreds":null,"gen3EmbeddingsEnvSecret":null,"gen3EmbeddingsG3auto":null,"pushSecret":false}` | External Secrets settings. |
-| externalSecrets.createK8sGen3EmbeddingsSecret | string | `false` | Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| externalSecrets | map | `{"dbcreds":null,"gen3EmbeddingsEnvSecret":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.gen3EmbeddingsEnvSecret | string | `nil` | Will override the name of both the Secret holding secret environment variables and the aws secrets manager secret it is populated from. Default is "gen3-embeddings-env-secret". |
-| externalSecrets.gen3EmbeddingsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "gen3embeddings-g3auto" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | extraEnv | map | `{}` | Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env` drops the defaults above, while map keys merge. Rendered after `env`, so a name set in both resolves here. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values belong in `secretEnv` or Secrets Manager, not here - this file is public. |
 | extraVolumes | list | `[]` | Additional volumes on the output Deployment definition. |
@@ -102,7 +100,4 @@ Published versions of this chart are listed in the
 | service.port | int | `80` |  |
 | service.targetPort | int | `8000` | Port the service listens on inside the container. Also the container port the probes address by name, so changing it here moves the Service, the container port and both probes together. |
 | service.type | string | `"ClusterIP"` |  |
-| volumeMounts[0].mountPath | string | `"/services/gen3_embeddings/.env"` |  |
-| volumeMounts[0].name | string | `"gen3-embeddings-g3auto-volume"` |  |
-| volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"gen3-embeddings.env"` |  |
+| volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition. |

@@ -27,59 +27,45 @@ sslmode: {{ dig "sslmode" (dig "sslmode" "disable" $global) $chart | quote }}
 {{- end }}
 
 {{/*
-  Admin/master connection plus the service database name. Mirrors common.db_setup_job's env
-  rather than any one chart's naming: charts disagree on PG* versus DB_*, so these templates
-  declare their own canonical variables and build the DSN themselves.
+  Migration connection. Every value comes from <chart>-dbcreds, so migrations reuse the role
+  common.db_setup_job already provisioned rather than a second credential path.
+
+  DB_MIGRATION_* rather than PG*: the service reads PGUSER/PGPASSWORD as its runtime role, and
+  naming the migration role the same way would leave no way to tell which role a variable meant
+  once the two stop being equal. PGUSER/PGPASSWORD are deliberately absent here.
+
+  That role is sufficient today because common.db_setup_job grants it ALL PRIVILEGES on the
+  database and ownership of schema public. CREATEDB is not needed: the container runs
+  `dbmate migrate`, which never creates a database, and DBREADY gates it until db_setup_job has.
+
+  A service whose tables use row level security needs a runtime role that owns nothing, and at
+  that point DB_MIGRATION_* has to point at a separate owner role instead.
 */}}
 {{- define "common.db_migrate.env" -}}
-- name: PGPASSWORD
-  {{- if .Values.global.dev }}
+- name: DB_MIGRATION_USER
   valueFrom:
     secretKeyRef:
-      name: {{ .Release.Name }}-postgresql
-      key: postgres-password
-      optional: false
-  {{- else if .Values.global.postgres.externalSecret }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
-      key: password
-      optional: false
-  {{- else }}
-  value: {{ .Values.global.postgres.master.password | quote }}
-  {{- end }}
-- name: PGUSER
-  {{- if .Values.global.postgres.externalSecret }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
+      name: {{ .Chart.Name }}-dbcreds
       key: username
       optional: false
-  {{- else }}
-  value: {{ .Values.global.postgres.master.username | quote }}
-  {{- end }}
-- name: PGPORT
-  {{- if .Values.global.postgres.externalSecret }}
+- name: DB_MIGRATION_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
-      key: port
+      name: {{ .Chart.Name }}-dbcreds
+      key: password
       optional: false
-  {{- else }}
-  value: {{ .Values.global.postgres.master.port | quote }}
-  {{- end }}
 - name: PGHOST
-  {{- if .Values.global.dev }}
-  value: "{{ .Release.Name }}-postgresql"
-  {{- else if .Values.global.postgres.externalSecret }}
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
+      name: {{ .Chart.Name }}-dbcreds
       key: host
       optional: false
-  {{- else }}
-  value: {{ .Values.global.postgres.master.host | quote }}
-  {{- end }}
+- name: PGPORT
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Chart.Name }}-dbcreds
+      key: port
+      optional: false
 - name: PGDATABASE
   valueFrom:
     secretKeyRef:
@@ -93,6 +79,22 @@ sslmode: {{ dig "sslmode" (dig "sslmode" "disable" $global) $chart | quote }}
       name: {{ .Chart.Name }}-dbcreds
       key: dbcreated
       optional: false
+{{- end }}
+
+{{/*
+  Shell prelude setting DATABASE_URL, shared by the migrating container and by any caller that
+  waits on migrations, so the two cannot disagree about which role connects where.
+
+  The password is deliberately absent from the DSN: it is not URL-encoded here, so a password
+  containing @, / or : would corrupt the URL. dbmate hands the connection string to lib/pq,
+  which falls back to libpq environment variables for anything the URL omits, so PGPASSWORD is
+  picked up as-is. Host and port cannot move to the environment the same way - dbmate always
+  forces them into the URL.
+*/}}
+{{- define "common.db_migrate.dsn" -}}
+{{- $settings := include "common.db_migrate.settings" . | fromYaml -}}
+export PGPASSWORD="$DB_MIGRATION_PASSWORD"
+DATABASE_URL="postgresql://${DB_MIGRATION_USER}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode={{ $settings.sslmode }}"
 {{- end }}
 
 {{/*
@@ -113,12 +115,7 @@ sslmode: {{ dig "sslmode" (dig "sslmode" "disable" $global) $chart | quote }}
     - |
       set -eu
       echo "Running {{ .Chart.Name }} migrations..."
-      # The password is deliberately absent from the DSN: it is not URL-encoded here, so a
-      # password containing @, / or : would corrupt the URL. dbmate hands the connection string
-      # to lib/pq, which falls back to libpq environment variables for anything the URL omits, so
-      # PGPASSWORD above is picked up as-is. Host and port cannot move to the environment the
-      # same way - dbmate always forces them into the URL.
-      DATABASE_URL="postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode={{ $settings.sslmode }}"
+      {{- include "common.db_migrate.dsn" . | nindent 6 }}
       dbmate -u "$DATABASE_URL" -d {{ $settings.dir | quote }} migrate
       echo "Migrations completed."
 {{- end }}

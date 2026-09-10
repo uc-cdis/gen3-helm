@@ -169,12 +169,8 @@ readinessProbe:
 # -- (list) Additional volumes on the output Deployment definition.
 extraVolumes: []
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-  - mountPath: /services/gen3_embeddings/.env
-    name: gen3-embeddings-g3auto-volume
-    readOnly: true
-    subPath: gen3-embeddings.env
+# -- (list) Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
 
 affinity: {}
 automountServiceAccountToken: false
@@ -229,10 +225,6 @@ commonLabels:
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sGen3EmbeddingsSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3embeddings-g3auto"
-  gen3EmbeddingsG3auto:
   # -- (string) Will override the name of both the Secret holding secret environment variables
   # and the aws secrets manager secret it is populated from. Default is
   # "gen3-embeddings-env-secret".
