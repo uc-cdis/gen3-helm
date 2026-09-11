@@ -43,6 +43,7 @@ Published versions of this chart are listed in the
 | file://../funnel | funnel |
 | file://../gen3-analysis | gen3-analysis |
 | file://../gen3-embeddings | gen3-embeddings |
+| file://../gen3-fhir-proxy | gen3-fhir-proxy |
 | file://../gen3-network-policies | gen3-network-policies |
 | file://../gen3-user-data-library | gen3-user-data-library |
 | file://../gen3-workflow | gen3-workflow |
@@ -132,6 +133,10 @@ Published versions of this chart are listed in the
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
 | gen3-embeddings | map | `{"enabled":false}` | Configurations for gen3-embeddings chart. |
+| gen3-fhir-proxy.enabled | bool | `false` |  |
+| gen3-fhir-proxy.image.pullPolicy | string | `"IfNotPresent"` |  |
+| gen3-fhir-proxy.image.repository | string | `"gen3-fhir-proxy"` |  |
+| gen3-fhir-proxy.image.tag | string | `"dev"` |  |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |

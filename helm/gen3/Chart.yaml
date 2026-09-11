@@ -71,6 +71,10 @@ dependencies:
     version: "*"
     repository: "file://../fence"
     condition: fence.enabled
+  - name: gen3-fhir-proxy
+    version: 0.1.0
+    repository: file://../gen3-fhir-proxy
+    condition: gen3-fhir-proxy.enabled
   - name: funnel
     version: "*"
     repository: "file://../funnel"
