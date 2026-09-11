@@ -16,14 +16,18 @@
 #   # ~2 min after job completes the job object should disappear:
 #   kubectl get job ohdsi-webapi-client-job
 
+image:
+  repository: quay.io/cdis/ohdsi-webapi
+  tag: master
+
 global:
-  hostname: your-dev-hostname.planx-pla.net
+  hostname: jbarno.planx-pla.net
   postgres:
     dbCreate: true
     master:
-      host: ""       # fill in your postgres host
+      host: ohdsi-webapi-postgresql   # bitnami subchart service name
       username: postgres
-      password: ""   # fill in your postgres superuser password
+      password: postgres              # matches postgresql.auth.postgresPassword below
       port: "5432"
 
 # Enable the Fence OIDC client bootstrap job (default: true — explicit here for clarity)
@@ -33,9 +37,11 @@ fenceUrl: http://fence-service
 arboristUrl: http://arborist-service
 
 postgres:
-  separate: false
+  separate: true
 
 postgresql:
+  auth:
+    postgresPassword: postgres
   primary:
     persistence:
       enabled: false
