@@ -143,5 +143,5 @@ spec:
                     \"security_oid_apiSecret\":\"${FENCE_CLIENT_SECRET}\"
                 }}"
               echo -e "\n\n>>========== Restarting webapi pods so they pick up new config above ============\n\n"
-              kubectl delete pod -l app=ohdsi-webapi
+              kubectl rollout restart deployment/ohdsi-webapi-deployment
 {{- end }}

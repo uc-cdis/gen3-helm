@@ -1,0 +1,41 @@
+# Example values for testing the ohdsi-webapi Helm chart.
+#
+# What this exercises:
+#   1. createFenceClientJobEnabled: true  — triggers ohdsi-webapi-client-job
+#   2. Job patches the ohdsi-webapi-config secret with Fence OIDC client credentials
+#   3. Job calls `kubectl rollout restart deployment/ohdsi-webapi-deployment` (zero-downtime)
+#   4. Job is automatically cleaned up 120 s after it finishes (ttlSecondsAfterFinished)
+#
+# To test:
+#   helm upgrade --install ohdsi-webapi helm/ohdsi-webapi -f examples/ohdsi_webapi_values.yaml
+#
+# What to watch:
+#   kubectl get job ohdsi-webapi-client-job -w
+#   kubectl logs -l job-name=ohdsi-webapi-client-job -c update-webapi-config -f
+#   kubectl rollout status deployment/ohdsi-webapi-deployment
+#   # ~2 min after job completes the job object should disappear:
+#   kubectl get job ohdsi-webapi-client-job
+
+global:
+  hostname: your-dev-hostname.planx-pla.net
+  postgres:
+    dbCreate: true
+    master:
+      host: ""       # fill in your postgres host
+      username: postgres
+      password: ""   # fill in your postgres superuser password
+      port: "5432"
+
+# Enable the Fence OIDC client bootstrap job (default: true — explicit here for clarity)
+createFenceClientJobEnabled: true
+
+fenceUrl: http://fence-service
+arboristUrl: http://arborist-service
+
+postgres:
+  separate: false
+
+postgresql:
+  primary:
+    persistence:
+      enabled: false
