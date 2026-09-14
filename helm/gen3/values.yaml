@@ -275,6 +275,9 @@ hatchery:
   enabled: true
 
   hatchery:
+    # -- (string) StorageClass for the user volume PVCs created by hatchery for
+    # workspace pods (e.g. user NFS home dirs). Leave empty to use the cluster-default StorageClass.
+    defaultStorageClass: ""
     sidecarContainer:
       # -- (string) The maximum amount of CPU the sidecar container can use
       cpu-limit: "0.1"
