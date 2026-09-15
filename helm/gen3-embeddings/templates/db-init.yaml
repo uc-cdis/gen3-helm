@@ -2,7 +2,9 @@
 ---
 {{ include "common.db_setup_sa" . }}
 ---
-{{- if .Values.dbRestore }}
+{{- /* postgres.dbRestore, not dbRestore: the value is declared nested, so the flat name read
+       nil and made the restore path unreachable. */}}
+{{- if .Values.postgres.dbRestore }}
 {{ include "common.s3_pg_restore" . }}
 {{- else }}
 {{ include "common.db_setup_job" . }}
@@ -13,3 +15,7 @@
 ---
 {{ include "common.secret.db.bootstrap" . }}
 {{- end }}
+---
+{{ include "common.db_migrate_job" . }}
+---
+{{ include "common.db_migrate_cronjob" . }}

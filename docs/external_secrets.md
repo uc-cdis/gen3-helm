@@ -8,7 +8,7 @@ This document will guide you through setting up the essential resources to acces
 You can use the following Bash script to apply the External Secrets Operator to your cluster and create the necessary AWS resources. Fill in the variables below to get started:
 
 ***Notice:
-The Gen3 Helm chart has various jobs and uses for an IAM user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same IAM user for External Secrets and jobs like ["Fence Usersync"](fence_usersync_job.md) or our "AWS ES Proxy Service", you can follow [THIS](global_IAM_helm_user.md) guide that details how to setup a Helm global user. In case you opt for a global IAM user, please comment out the "create_iam_policy" and "create_iam_user" functions at the end of the script.***
+The Gen3 Helm chart has various jobs and uses for an IAM user. To enhance code reusability, we've implemented the option for jobs and services to share the same AWS IAM global user. If you would like to use the same IAM user for External Secrets and jobs like ["Fence Usersync"](fence_usersync_job.md) or our "AWS ES Proxy Service", you can follow [THIS](global_iam_helm_user.md) guide that details how to setup a Helm global user. In case you opt for a global IAM user, please comment out the "create_iam_policy" and "create_iam_user" functions at the end of the script.***
 
 ```
 #!/bin/bash
