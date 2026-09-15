@@ -86,7 +86,8 @@ global:
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
-
+# -- (bool) True to enable debug logs and other dev only functionality, false if otherwise.
+debug: false
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
 
