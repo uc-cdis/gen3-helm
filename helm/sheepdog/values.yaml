@@ -19,7 +19,8 @@ global:
       externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-
+  # -- (str) True to enable debug logs and other dev only functionality, False if otherwise.
+  debug: "False"
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
@@ -86,8 +87,7 @@ global:
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
-# -- (bool) True to enable debug logs and other dev only functionality, false if otherwise.
-debug: false
+
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
 
