@@ -8,6 +8,12 @@ Published versions of this chart are listed in the
 [Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
 [releases page](https://github.com/uc-cdis/gen3-helm/releases).
 
+## Requirements
+
+| Repository | Name |
+|------------|------|
+| file://../common | common |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -17,6 +23,7 @@ Published versions of this chart are listed in the
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions[0].values[0] | string | `"gen3-fhir-proxy"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
+| autoscaling | object | `{}` |  |
 | commonLabels.app | string | `"gen3-fhir-proxy"` |  |
 | config.arboristUrl | string | `"http://arborist-service"` |  |
 | config.debug | bool | `false` |  |
@@ -28,12 +35,14 @@ Published versions of this chart are listed in the
 | config.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` |  |
 | config.urlPrefix | string | `""` |  |
 | criticalService | string | `"false"` |  |
+| externalSecrets.fhirCreds | string | `""` |  |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `3` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
 | global.environment | string | `"default"` |  |
+| global.externalSecrets.deploy | bool | `false` |  |
 | global.minAvailable | int | `1` |  |
 | global.netPolicy.dbSubnet | string | `""` |  |
 | global.netPolicy.enabled | bool | `false` |  |

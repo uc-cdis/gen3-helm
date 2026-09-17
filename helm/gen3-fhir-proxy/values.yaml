@@ -25,6 +25,8 @@ global:
   externalSecrets:
     deploy: false
 
+autoscaling: {}
+
 metricsEnabled: true
 
 podAnnotations: {}
