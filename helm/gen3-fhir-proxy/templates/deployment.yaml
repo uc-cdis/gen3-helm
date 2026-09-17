@@ -9,7 +9,7 @@ metadata:
   labels:
     {{- include "gen3-fhir-proxy.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.global.autoscaling.enabled }}
+  {{- if not (and .Values.global .Values.global.autoscaling .Values.global.autoscaling.enabled) }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:

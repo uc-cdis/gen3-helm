@@ -41,7 +41,7 @@ dependencies:
     repository: "file://../cohort-middleware"
     condition: cohort-middleware.enabled
   - name: common
-    version: "*"
+    version: "0.1.36"
     repository: file://../common
   - name: dashboard
     version: "*"
@@ -72,7 +72,7 @@ dependencies:
     repository: "file://../fence"
     condition: fence.enabled
   - name: gen3-fhir-proxy
-    version: 0.1.0
+    version: 0.1.1
     repository: file://../gen3-fhir-proxy
     condition: gen3-fhir-proxy.enabled
   - name: funnel
