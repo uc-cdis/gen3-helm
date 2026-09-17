@@ -35,14 +35,12 @@ Published versions of this chart are listed in the
 | config.prometheusMultiprocDir | string | `"/var/tmp/prometheus_metrics"` |  |
 | config.urlPrefix | string | `""` |  |
 | criticalService | string | `"false"` |  |
-| externalSecrets.fhirCreds | string | `""` |  |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
 | global.autoscaling.maxReplicas | int | `3` |  |
 | global.autoscaling.minReplicas | int | `1` |  |
 | global.environment | string | `"default"` |  |
-| global.externalSecrets.deploy | bool | `false` |  |
 | global.minAvailable | int | `1` |  |
 | global.netPolicy.dbSubnet | string | `""` |  |
 | global.netPolicy.enabled | bool | `false` |  |
