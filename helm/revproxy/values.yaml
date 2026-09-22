@@ -89,7 +89,7 @@ global:
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
   # -- (string) argo server host URL:PORT. Endpoint for the the Argo Workflows service.
-  argoHost: http://argo-workflows-server.argo.svc.cluster.local:2746
+  argoHost: http://argo-argo-workflows-server.argo.svc.cluster.local:2746
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}

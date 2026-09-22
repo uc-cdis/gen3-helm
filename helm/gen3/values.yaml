@@ -148,7 +148,7 @@ global:
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
   # -- (string) argo server host URL:PORT. Endpoint for the the Argo Workflows service.
-  argoHost: http://argo-workflows-server.argo.svc.cluster.local:2746
+  argoHost: http://argo-argo-workflows-server.argo.svc.cluster.local:2746
 
 # Dependancy Charts
 

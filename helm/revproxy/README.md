@@ -26,7 +26,7 @@ Published versions of this chart are listed in the
 | enableRobotsTxt | bool | `false` | Whether to enable robots.txt generation and serving. |
 | extraServices | map | `nil` | Configuration to add any extra service endpoints outside of gen3 to be served by revproxy |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
-| global.argoHost | string | `"http://argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
+| global.argoHost | string | `"http://argo-argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
