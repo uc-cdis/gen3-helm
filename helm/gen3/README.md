@@ -136,6 +136,7 @@ Published versions of this chart are listed in the
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
 | gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
+| global.argoHost | string | `"http://argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
