@@ -176,6 +176,7 @@ netPolicy:
   ingressApps:
     - portal
     - sowerjob
+    - ssjdispatcherjob
 
   # -- (array) List of apps that this app requires egress to
   egressApps:

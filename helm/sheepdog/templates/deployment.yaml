@@ -251,7 +251,7 @@ spec:
             #   #
             #   value: /etc/ssl/certs/ca-certificates.crt
             - name: GEN3_DEBUG
-              value: "True"
+              value: {{ .Values.debug }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}

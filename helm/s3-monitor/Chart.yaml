@@ -1,0 +1,9 @@
+apiVersion: v2
+name: s3-monitor
+description: >
+  s3-monitor (ActiveMQ + DuckDB): per-tenant S3 metadata sync into a Parquet lake, published to
+  Amazon MQ, with an optional real-time S3 event recorder Lambda. All code runs from the
+  quay.io/cdis/s3-monitor image; this chart holds only configuration, EKS objects and AWS resources (Crossplane). Operator guide: GUIDE.md.
+type: application
+version: 0.0.0
+appVersion: "ActiveMQDuckDB"

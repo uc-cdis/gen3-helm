@@ -1,0 +1,208 @@
+{{- /*
+S3 event recorder (Crossplane): execution role + policies, ECR repository (Lambda only pulls from ECR),
+log group, the Lambda itself (runs the quay.io image's handler.py), and S3 invoke permissions.
+The image copy and the bucket notifications are done by the Jobs in templates/eks/setup-jobs.yaml.
+*/ -}}
+{{- if .Values.enabled }}
+{{- if include "s3monitor.crossplaneEnabled" . }}
+{{- include "s3monitor.validate" . }}
+{{- $pc := include "s3monitor.providerConfig" . }}
+{{- $account := include "s3monitor.accountId" . }}
+{{- $partition := include "s3monitor.partition" . }}
+{{- $region := include "s3monitor.region" . }}
+{{- $oidc := include "s3monitor.oidcProviderUrl" . }}
+{{- $tags := include "s3monitor.iamTags" . }}
+
+{{- /* ---------- S3 event recorder (Lambda) ---------- */}}
+{{- if .Values.eventRecorder.enabled }}
+{{- $er := .Values.eventRecorder }}
+{{- $fn := include "s3monitor.recorderName" . }}
+{{- $roleName := include "s3monitor.recorderRoleName" . }}
+{{- $repo := include "s3monitor.ecrRepoName" . }}
+{{- $awsTags := include "s3monitor.awsTags" . | fromJson }}
+{{- $recorderTenants := include "s3monitor.recorderTenants" . | fromJsonArray }}
+{{- $trust := dict "Version" "2012-10-17" "Statement" (list (dict
+      "Effect" "Allow"
+      "Principal" (dict "Service" "lambda.amazonaws.com")
+      "Action" "sts:AssumeRole"
+      "Condition" (dict "StringEquals" (dict "aws:SourceAccount" $account)))) }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: {{ $roleName | quote }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    description: {{ printf "Execution role for the s3-monitor S3 event recorder Lambda in %s" .Release.Namespace | quote }}
+    maxSessionDuration: 3600
+    assumeRolePolicyDocument: |-
+      {{- toJson $trust | nindent 6 }}
+    tags:
+      {{- $tags | nindent 6 }}
+{{- range $p := (include "s3monitor.recorderPolicies" . | fromJsonArray) }}
+{{- $pname := printf "%s-%s" $roleName $p.suffix }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: {{ $pname | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    name: {{ $pname | quote }}
+    description: "s3-monitor S3 event recorder permissions"
+    document: |-
+      {{- toJson $p.document | nindent 6 }}
+    tags:
+      {{- $tags | nindent 6 }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: {{ $pname | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    roleNameRef:
+      name: {{ $roleName | quote }}
+    policyArnRef:
+      name: {{ $pname | quote }}
+{{- end }}
+---
+# Lambda can only run images from ECR: the setup Job copies the quay.io image here.
+apiVersion: ecr.aws.crossplane.io/v1beta1
+kind: Repository
+metadata:
+  name: {{ $repo | quote }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    region: {{ $region }}
+    imageTagMutability: MUTABLE
+    imageScanningConfiguration:
+      scanOnPush: true
+    forceDelete: true
+    tags:
+      {{- $tags | nindent 6 }}
+---
+apiVersion: ecr.aws.crossplane.io/v1beta1
+kind: RepositoryPolicy
+metadata:
+  name: {{ $repo | quote }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    region: {{ $region }}
+    repositoryNameRef:
+      name: {{ $repo | quote }}
+    rawPolicy: |-
+      {{- toJson (dict "Version" "2012-10-17" "Statement" (list (dict
+            "Sid" "LambdaPull"
+            "Effect" "Allow"
+            "Principal" (dict "Service" "lambda.amazonaws.com")
+            "Action" (list "ecr:BatchGetImage" "ecr:GetDownloadUrlForLayer")
+            "Condition" (dict "StringLike" (dict "aws:sourceArn" (printf "arn:%s:lambda:%s:%s:function:%s" $partition $region $account $fn)))))) | nindent 6 }}
+---
+apiVersion: cloudwatchlogs.aws.crossplane.io/v1alpha1
+kind: LogGroup
+metadata:
+  name: {{ $fn | quote }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    region: {{ $region }}
+    logGroupName: {{ include "s3monitor.recorderLogGroup" . | quote }}
+    retentionInDays: {{ $er.logRetentionDays }}
+    tags:
+      {{- toYaml $awsTags | nindent 6 }}
+---
+apiVersion: lambda.aws.crossplane.io/v1beta1
+kind: Function
+metadata:
+  name: {{ $fn | quote }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recorder
+  annotations:
+    s3-monitor/source-image: {{ include "s3monitor.image" . | quote }}
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    region: {{ $region }}
+    description: "Records S3 ObjectCreated events into the s3-monitor lake"
+    packageType: Image
+    code:
+      imageURI: {{ printf "%s:%s" (include "s3monitor.ecrRepoUri" .) (include "s3monitor.recorderImageTag" .) | quote }}
+    imageConfig:
+      entryPoint: ["/opt/venv/bin/python", "-m", "awslambdaric"]
+      command: ["handler.handler"]
+      workingDirectory: /scripts
+    architectures:
+      - {{ ternary "arm64" "x86_64" (eq $er.architecture "arm64") }}
+    roleRef:
+      name: {{ $roleName | quote }}
+    memorySize: {{ $er.memorySize }}
+    timeout: {{ $er.timeoutSeconds }}
+    environment:
+      variables:
+        {{- $buckets := dict }}
+        {{- range $t := $recorderTenants }}{{ $_ := set $buckets $t.id $t.existing_bucket_name }}{{ end }}
+        TENANT_BUCKETS: {{ toJson $buckets | quote }}
+        LAKE_BUCKET: {{ .Values.config.lake.bucket | quote }}
+        LAKE_PREFIX: {{ trimAll "/" .Values.config.lake.prefix | quote }}
+        {{- if .Values.config.useFipsAwsEndpoints }}
+        AWS_USE_FIPS_ENDPOINT: "true"
+        {{- end }}
+    tags:
+      {{- toYaml $awsTags | nindent 6 }}
+{{- range $t := $recorderTenants }}
+---
+# Lets S3 invoke the recorder for tenant {{ $t.id }} (bucket {{ $t.existing_bucket_name }}).
+apiVersion: lambda.aws.crossplane.io/v1alpha1
+kind: Permission
+metadata:
+  name: {{ printf "%s-%s" $fn ($t.id | lower | replace "_" "-") | trunc 100 | trimSuffix "-" | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: recorder
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    region: {{ $region }}
+    action: lambda:InvokeFunction
+    principal: s3.amazonaws.com
+    functionNameRef:
+      name: {{ $fn | quote }}
+    sourceARN: {{ printf "arn:%s:s3:::%s" $partition $t.existing_bucket_name | quote }}
+    sourceAccount: {{ $account | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
