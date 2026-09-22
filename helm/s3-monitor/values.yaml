@@ -1,0 +1,128 @@
+global:
+  # -- (string) Environment name; prefix of every AWS resource name (<environment>-<namespace>-...).
+  environment: ""
+  crossplane:
+    # -- (bool) Create the IAM roles (and the recorder Lambda) with Crossplane.
+    enabled: false
+    # -- (string) Crossplane ProviderConfig (crossplane-contrib/provider-aws).
+    providerConfigName: provider-aws
+    # -- (string) EKS cluster OIDC provider, without https://
+    oidcProviderUrl: ""
+    # -- (string) AWS account id. Quote it.
+    accountId: ""
+
+# -- (bool) Deploy s3-monitor. In the gen3 umbrella chart this is the `s3-monitor.enabled` condition.
+enabled: false
+
+# -- (string) Prefix of the Kubernetes object names. Defaults to s3-monitor-activemq, so it never
+# collides with the legacy s3-monitor in vectis-overlays.
+fullnameOverride: ""
+
+# -- (string) CronJob schedule.
+schedule: "*/5 * * * *"
+# -- (string) CronJob concurrency policy. Keep Forbid: runs must not overlap.
+concurrencyPolicy: Forbid
+# -- (int) Successful Jobs to keep.
+successfulJobsHistoryLimit: 3
+# -- (int) Failed Jobs to keep.
+failedJobsHistoryLimit: 1
+# -- (int) Retries of a failed run.
+backoffLimit: 2
+# -- (int) Seconds before a finished Job is deleted.
+ttlSecondsAfterFinished: 600
+serviceAccount:
+  # -- (bool) Create the CronJob's ServiceAccount.
+  create: true
+  # -- (string) CronJob ServiceAccount. With Crossplane its IRSA role is <environment>-<namespace>-<name>.
+  name: s3-monitor-activemq-sa
+  # -- (map) Annotations when Crossplane is off (e.g. an existing eks.amazonaws.com/role-arn).
+  annotations: {}
+setupServiceAccount:
+  # -- (string) ServiceAccount of the setup Jobs (ECR image copy, bucket notifications). Created only with the event recorder.
+  name: s3-monitor-activemq-setup
+image:
+  # -- (string) s3-monitor image (all Python and shell code). Built and pushed by the s3-monitor-activemq repo.
+  repository: quay.io/cdis/s3-monitor
+  # -- (string) Image tag.
+  tag: ActiveMQDuckDB
+  # -- (string) Optional sha256 digest. When set, the CronJob, the Jobs and the Lambda run exactly this build.
+  digest: ""
+  # -- (string) Image pull policy.
+  pullPolicy: IfNotPresent
+# -- (list) Image pull secrets, if the quay.io repository is private.
+imagePullSecrets: []
+# -- (map) CronJob resources. DuckDB works in memory, so leave headroom.
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+aws:
+  # -- (string) AWS region of the buckets, lake, MQ and the recorder Lambda.
+  region: "us-east-1"
+# -- (string) EKS cluster name (required; shown in the job's startup log and checked by the config schema).
+eksClusterName: ""
+# Environment config for the application, rendered into the s3-monitor-config ConfigMap.
+# name, account, region, eks and iam are filled in from the release and global values.
+config:
+  # -- (bool) false = dry run: scan and log, write nothing to the lake and publish nothing.
+  apply: false
+  # -- (int) Days of S3 history each run scans.
+  lookbackDays: 3
+  # -- (bool) Use FIPS S3/STS endpoints.
+  useFipsAwsEndpoints: true
+  # -- (string) Optional role the CronJob assumes for S3 access (e.g. tenant buckets in another account).
+  assumeRoleArn: ""
+  lake:
+    # -- (string) Bucket of the Parquet lake.
+    bucket: ""
+    # -- (string) Key prefix of the lake inside the bucket.
+    prefix: "vectis"
+    # -- (string) KMS key of the lake bucket, if it uses one.
+    kmsKeyArn: ""
+  mq:
+    # -- (list) Amazon MQ STOMP endpoints, e.g. stomp+ssl://b-xxxx-1.mq.us-east-1.amazonaws.com:61614
+    stompEndpoints: []
+    # -- (string) Secrets Manager ARN of the MQ credentials (username/password).
+    secretArn: ""
+    # -- (string) KMS key of that secret, if it is a customer-managed key.
+    secretKmsKeyArn: ""
+    # -- (string) Queue prefix; tenant queues are <prefix>.<tenant id> and <prefix>.<tenant id>.failures
+    destinationPrefix: "/queue/s3monitor.ingest"
+    # -- (bool) Resolve broker hostnames to IPv4 before connecting.
+    resolveIpv4: false
+  tenants: []
+eventRecorder:
+  # -- (bool) Deploy the S3 event recorder Lambda (Crossplane) for tenants with s3_event.enabled.
+  enabled: false
+  # -- (string) Lambda architecture: arm64 or amd64. The image must be built for it.
+  architecture: arm64
+  # -- (int) Lambda memory (MB).
+  memorySize: 1024
+  # -- (int) Lambda timeout (seconds, max 900).
+  timeoutSeconds: 120
+  # -- (int) Retention of /aws/lambda/<function> logs.
+  logRetentionDays: 30
+  # -- (bool) With enabled=false: still run the notifications Job once to remove this release's
+  # entries from the tenant buckets. Set it for the sync that turns the recorder off.
+  removeNotifications: false
+iam:
+  # -- (int) Tenants per CronJob IAM policy (IAM limits: 6,144 characters per policy, 10 policies per role).
+  tenantsPerPolicy: 8
+setupJobs:
+  # -- (int) Retries; the Jobs wait for Crossplane to create their AWS dependencies.
+  backoffLimit: 10
+  # -- (int) Seconds before a finished setup Job is deleted.
+  ttlSecondsAfterFinished: 3600
+  # -- (bool) Only print the bucket notification changes.
+  notificationsDryRun: false
+  # -- (map) Setup Job resources.
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"

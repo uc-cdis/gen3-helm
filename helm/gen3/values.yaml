@@ -498,6 +498,11 @@ vectis-overlays:
   # -- (bool) Whether to deploy the vectis-overlays subchart.
   enabled: false
 
+# -- (map) s3-monitor (ActiveMQ + DuckDB) — S3 metadata sync to a Parquet lake and Amazon MQ, optional S3 event recorder Lambda. See helm/s3-monitor/README.md.
+s3-monitor:
+  # -- (bool) Whether to deploy the s3-monitor subchart.
+  enabled: false
+
 # -- (map) Secret information for External Secrets and DB Secrets.
 secrets:
   # -- (str) AWS access key ID. Overrides global key.

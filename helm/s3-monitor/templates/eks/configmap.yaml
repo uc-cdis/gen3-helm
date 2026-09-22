@@ -1,0 +1,17 @@
+{{- if .Values.enabled }}
+{{- include "s3monitor.validate" . }}
+# Environment config for the s3-monitor code in the quay.io image (schema: scripts/config.py).
+# Generated from values so namespace, service account and IAM role match this release.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "s3monitor.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+data:
+  config.json: |-
+    {{- include "s3monitor.configJson" . | nindent 4 }}
+{{- end }}

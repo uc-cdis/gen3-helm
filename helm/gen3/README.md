@@ -61,6 +61,7 @@ Published versions of this chart are listed in the
 | file://../portal | portal |
 | file://../requestor | requestor |
 | file://../revproxy | revproxy |
+| file://../s3-monitor | s3-monitor |
 | file://../sheepdog | sheepdog |
 | file://../sower | sower |
 | file://../ssjdispatcher | ssjdispatcher |
@@ -271,6 +272,8 @@ Published versions of this chart are listed in the
 | revproxy.ingress.enabled | bool | `false` | Whether to create the custom revproxy ingress |
 | revproxy.ingress.hosts | list | `[{"host":"chart-example.local"}]` | Where to route the traffic. |
 | revproxy.ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
+| s3-monitor | map | `{"enabled":false}` | s3-monitor (ActiveMQ + DuckDB) — S3 metadata sync to a Parquet lake and Amazon MQ, optional S3 event recorder Lambda. See helm/s3-monitor/README.md. |
+| s3-monitor.enabled | bool | `false` | Whether to deploy the s3-monitor subchart. |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information for External Secrets and DB Secrets. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
