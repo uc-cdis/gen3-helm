@@ -85,6 +85,9 @@ Published versions of this chart are listed in the
 | karpenter-crds.default.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
+| karpenter-crds.default.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.default.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.default.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.default.limits.cpu | string | `"1000"` |  |
 | karpenter-crds.default.limits.memory | string | `"1000Gi"` |  |
 | karpenter-crds.default.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
@@ -109,6 +112,9 @@ Published versions of this chart are listed in the
 | karpenter-crds.gpu.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.gpu.enabled | bool | `false` |  |
 | karpenter-crds.gpu.expireAfter | string | `"168h"` |  |
+| karpenter-crds.gpu.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.gpu.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.gpu.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.gpu.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
@@ -116,6 +122,9 @@ Published versions of this chart are listed in the
 | karpenter-crds.jupyter.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.jupyter.enabled | bool | `true` |  |
 | karpenter-crds.jupyter.expireAfter | string | `"168h"` |  |
+| karpenter-crds.jupyter.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.jupyter.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.jupyter.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.jupyter.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.jupyter.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.jupyter.requirements[0].values[0] | string | `"on-demand"` |  |
@@ -137,6 +146,9 @@ Published versions of this chart are listed in the
 | karpenter-crds.secondary.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.secondary.enabled | bool | `false` |  |
 | karpenter-crds.secondary.expireAfter | string | `"168h"` |  |
+| karpenter-crds.secondary.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.secondary.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.secondary.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.secondary.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.secondary.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.secondary.requirements[0].values[0] | string | `"on-demand"` |  |
@@ -161,6 +173,9 @@ Published versions of this chart are listed in the
 | karpenter-crds.workflow.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.workflow.enabled | bool | `true` |  |
 | karpenter-crds.workflow.expireAfter | string | `"168h"` |  |
+| karpenter-crds.workflow.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.workflow.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.workflow.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.workflow.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.workflow.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.workflow.requirements[0].values[0] | string | `"on-demand"` |  |
