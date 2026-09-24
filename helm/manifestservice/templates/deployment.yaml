@@ -19,6 +19,7 @@ spec:
       labels:
         public: "yes"
         s3: "yes"
+        internet: "yes"
         userhelper: "yes"
         {{- include "manifestservice.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}

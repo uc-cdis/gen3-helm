@@ -28,6 +28,10 @@ spec:
       encrypted: true
       volumeSize: {{ index .Values "karpenter-crds" "workflow" "volumeSize" }}
       volumeType: gp3
+{{ if and (semverCompare ">=1.33" .Capabilities.KubeVersion.Version) (index .Values "karpenter-crds" "workflow" "fastImagePull" "enabled") }}
+      iops: {{ index .Values "karpenter-crds" "workflow" "fastImagePull" "iops" }}
+      throughput: {{ index .Values "karpenter-crds" "workflow" "fastImagePull" "throughput" }}
+{{ end }}
   metadataOptions:
     httpEndpoint: enabled
     httpProtocolIPv6: disabled
@@ -66,6 +70,18 @@ spec:
     sysctl -w fs.inotify.max_user_watches=12000 &
     systemctl stop firewalld
     systemctl disable firewalld
+{{ if and (semverCompare ">=1.33" .Capabilities.KubeVersion.Version) (index .Values "karpenter-crds" "workflow" "fastImagePull" "enabled") }}
+
+    --BOUNDARY
+    Content-Type: application/node.eks.aws
+
+    ---
+    apiVersion: node.eks.aws/v1alpha1
+    kind: NodeConfig
+    spec:
+      featureGates:
+        FastImagePull: true
+{{ end }}
 
     --BOUNDARY--
 

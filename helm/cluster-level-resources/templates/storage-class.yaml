@@ -1,0 +1,32 @@
+{{- if .Values.storageclass.enabled }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageclass.name }}
+  annotations:
+    storageclass.kubernetes.io/is-default-class: {{ .Values.storageclass.default | quote }}
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+provisioner: {{ .Values.storageclass.provisioner }}
+parameters:
+{{- with .Values.storageclass.parameters }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+reclaimPolicy: {{ .Values.storageclass.reclaimPolicy }}
+volumeBindingMode: {{ .Values.storageclass.volumeBindingMode }}
+allowVolumeExpansion: {{ .Values.storageclass.allowVolumeExpansion }}
+{{- end }}
+---
+{{- if and
+      .Values.storageclass.enabled
+      .Values.storageclass.previousDefault.removeDefault
+}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageclass.previousDefault.name }}
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-options: ServerSideApply=true,Validate=false,Prune=false,Delete=false
+{{- end }}
