@@ -19,6 +19,10 @@ spec:
       encrypted: true
       volumeSize: {{ index .Values "karpenter-crds" "gpu" "volumeSize" }}
       volumeType: gp3
+{{ if (index .Values "karpenter-crds" "gpu" "fastImagePull" "enabled") }}
+      iops: {{ index .Values "karpenter-crds" "gpu" "fastImagePull" "iops" }}
+      throughput: {{ index .Values "karpenter-crds" "gpu" "fastImagePull" "throughput" }}
+{{ end }}
   metadataOptions:
     httpEndpoint: enabled
     httpProtocolIPv6: disabled
@@ -53,7 +57,19 @@ spec:
     curl https://raw.githubusercontent.com/uc-cdis/cloud-automation/master/files/authorized_keys/ops_team >> /home/ec2-user/.ssh/authorized_keys &
     sysctl -w fs.inotify.max_user_watches=12000 &
     systemctl stop firewalld
-    systemctl disable firewalld    
+    systemctl disable firewalld
+{{ if (index .Values "karpenter-crds" "gpu" "fastImagePull" "enabled") }}
+
+    --BOUNDARY
+    Content-Type: application/node.eks.aws
+
+    ---
+    apiVersion: node.eks.aws/v1alpha1
+    kind: NodeConfig
+    spec:
+      featureGates:
+        FastImagePull: true
+{{ end }}
 
     --BOUNDARY--
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}
