@@ -293,6 +293,13 @@ service:
   # -- (int) The port number that the service exposes.
   port: 80
   targetPort: 80
+  # -- (string) Session affinity type. Valid values are "None" or "ClientIP".
+  sessionAffinity: ClientIP
+  # -- (map) Session affinity configuration.
+  sessionAffinityConfig:
+    clientIP:
+      # -- (int) Session affinity timeout in seconds. Defaults to 6 hours (21600s).
+      timeoutSeconds: 21600
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
