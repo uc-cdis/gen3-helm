@@ -28,7 +28,7 @@ spec:
             - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
               value: "cri"
             - name: AWS_REGION
-              value: "us-east-1"
+              value: {{ .Values.fluentd.awsRegion | quote }}
           image:
             tag: v1.15.3-debian-cloudwatch-1.0
       {{- end }}

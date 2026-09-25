@@ -10,6 +10,8 @@ credentials:
     key: ""
     secret: ""
     session_token: ""
+    # -- (string) AWS region for this deployment
+    region: "us-east-1"
 
 terraform:
   resource_name: ""

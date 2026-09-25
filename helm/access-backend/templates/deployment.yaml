@@ -60,7 +60,7 @@ spec:
           - name: GEN3_DEBUG
             value: "False"
           - name: AWS_DEFAULT_REGION
-            value: "us-east-1"
+            value: {{ .Values.global.aws.region | quote }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
           httpGet:
