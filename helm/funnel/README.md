@@ -188,8 +188,8 @@ Published versions of this chart are listed in the
 | image.initContainers[0].pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
-| image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
-| image.tag | string | `"develop-2026-07-09-19-49-55Z-97d1df55"` |  |
+| image.repository | string | `"quay.io/cdis/funnel"` | The Docker image repository for the Funnel service. |
+| image.tag | string | `"main-gen3"` |  |
 | labels.app | string | `"funnel"` |  |
 | metricsEnabled | bool | `false` |  |
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
