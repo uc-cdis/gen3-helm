@@ -153,12 +153,6 @@ spec:
               value: /portal
             {{- end }}
           {{- if .Values.customConfig.enabled }}
-            - name: DATADOG_APPLICATION_ID
-              value: {{ .Values.env.DATADOG_APPLICATION_ID | quote }}
-            - name: DATADOG_CLIENT_TOKEN
-              value: {{ .Values.env.DATADOG_CLIENT_TOKEN | quote }}
-            - name: DATACOMMONS
-              value: {{ .Values.env.DATACOMMONS | quote }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config

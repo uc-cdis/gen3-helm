@@ -202,6 +202,10 @@ dependencies:
     version: "*"
     repository: "file://../vectis-overlays"
     condition: vectis-overlays.enabled
+  - name: s3-monitor
+    version: "*"
+    repository: "file://../s3-monitor"
+    condition: s3-monitor.enabled
 
 # A chart can be either an 'application' or a 'library' chart.
 #

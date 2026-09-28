@@ -1,0 +1,147 @@
+{{- /*
+Setup Jobs, run on every sync/upgrade with the s3-monitor-setup service account.
+Both run code from the quay.io image and retry until the Crossplane resources they
+depend on exist in AWS (role, ECR repository, Lambda invoke permission).
+*/ -}}
+{{- if .Values.enabled }}
+{{- if include "s3monitor.crossplaneEnabled" . }}
+{{- $v := .Values }}
+{{- if $v.eventRecorder.enabled }}
+---
+# Copies the image's linux/<arch> variant into the recorder's ECR repository (Lambda only pulls from ECR).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "s3monitor.fullname" . }}-mirror-recorder-image
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: setup
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: {{ $v.setupJobs.backoffLimit }}
+  ttlSecondsAfterFinished: {{ $v.setupJobs.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "s3monitor.labels" . | nindent 8 }}
+        s3-monitor/component: setup
+    spec:
+      serviceAccountName: {{ $v.setupServiceAccount.name }}
+      restartPolicy: Never
+      {{- with $v.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mirror
+          image: {{ include "s3monitor.image" . | quote }}
+          imagePullPolicy: {{ $v.image.pullPolicy }}
+          command: ["/scripts/mirror-lambda-image.sh"]
+          args:
+            - {{ include "s3monitor.image" . | quote }}
+            - {{ include "s3monitor.ecrRepoUri" . | quote }}
+            - {{ toString $v.image.tag | quote }}
+            - {{ $v.eventRecorder.architecture | quote }}
+          env:
+            - name: DEST_TAG
+              value: {{ include "s3monitor.recorderImageTag" . | quote }}
+            - name: AWS_REGION
+              value: {{ $v.aws.region | quote }}
+            - name: HOME
+              value: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            {{- toYaml $v.setupJobs.resources | nindent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}
+{{- if or $v.eventRecorder.enabled $v.eventRecorder.removeNotifications }}
+---
+# Adds/removes this release's entries in the tenant buckets' notification configuration,
+# keeping every other notification on those buckets. With the recorder off and
+# eventRecorder.removeNotifications on, it only removes them.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "s3monitor.fullname" . }}-bucket-notifications
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: setup
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: {{ $v.setupJobs.backoffLimit }}
+  ttlSecondsAfterFinished: {{ $v.setupJobs.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "s3monitor.labels" . | nindent 8 }}
+        s3-monitor/component: setup
+      annotations:
+        checksum/config: {{ include "s3monitor.configJson" . | sha256sum }}
+    spec:
+      serviceAccountName: {{ $v.setupServiceAccount.name }}
+      restartPolicy: Never
+      {{- with $v.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: notifications
+          image: {{ include "s3monitor.image" . | quote }}
+          imagePullPolicy: {{ $v.image.pullPolicy }}
+          command: ["python3", "/scripts/configure-s3-notifications.py"]
+          env:
+            - name: CONFIG_URI
+              value: /config/config.json
+            - name: AWS_REGION
+              value: {{ $v.aws.region | quote }}
+            - name: NOTIFICATION_ID_PREFIX
+              value: {{ include "s3monitor.notificationIdPrefix" . | quote }}
+            {{- if $v.eventRecorder.enabled }}
+            - name: FUNCTION_ARN
+              value: {{ include "s3monitor.recorderFunctionArn" . | quote }}
+            {{- end }}
+            - name: DRY_RUN
+              value: {{ ternary "true" "false" $v.setupJobs.notificationsDryRun | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          resources:
+            {{- toYaml $v.setupJobs.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "s3monitor.fullname" . }}-config
+{{- end }}
+{{- end }}
+{{- end }}

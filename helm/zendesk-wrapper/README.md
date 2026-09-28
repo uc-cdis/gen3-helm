@@ -26,8 +26,9 @@ Published versions of this chart are listed in the
 | autoscaling | object | `{}` |  |
 | commonLabels | string | `nil` |  |
 | criticalService | string | `"false"` |  |
-| env | map | `[{"name":"GEN3_ZENDESK_URL","value":""}]` | Environment variables for the Zendesk wrapper service |
+| env | map | `[{"name":"GEN3_ZENDESK_URL","value":""},{"name":"GEN3_ZENDESK_BRAND_ID","value":""}]` | Environment variables for the Zendesk wrapper service |
 | env[0] | string | `{"name":"GEN3_ZENDESK_URL","value":""}` | Zendesk instance URL (e.g., https://gen3support.zendesk.com) |
+| env[1] | string | `{"name":"GEN3_ZENDESK_BRAND_ID","value":""}` | Zendesk brand ID (e.g., 123456, can be found in Zendesk admin panel) |
 | externalSecrets | map | `{"name":"zendesk-wrapper-secret"}` | Secret environment variables (referenced from Kubernetes secrets) |
 | externalSecrets.name | string | `"zendesk-wrapper-secret"` | Name of the Kubernetes secret containing the Zendesk API token |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |

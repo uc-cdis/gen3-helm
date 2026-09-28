@@ -82,6 +82,9 @@ env:
   # -- (string) Zendesk instance URL (e.g., https://gen3support.zendesk.com)
   - name: GEN3_ZENDESK_URL
     value: ""
+  # -- (string) Zendesk brand ID (e.g., 123456, can be found in Zendesk admin panel)
+  - name: GEN3_ZENDESK_BRAND_ID
+    value: ""
 
 # -- (map) Secret environment variables (referenced from Kubernetes secrets)
 externalSecrets:

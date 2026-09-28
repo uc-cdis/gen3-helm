@@ -1,0 +1,91 @@
+{{- /*
+IRSA roles (Crossplane, crossplane-contrib/provider-aws): the CronJob's role and, only for the event recorder, the setup Jobs' role,
+each trusted only by its ServiceAccount in this namespace, with least-privilege policies built in _helpers.tpl.
+*/ -}}
+{{- if .Values.enabled }}
+{{- if include "s3monitor.crossplaneEnabled" . }}
+{{- include "s3monitor.validate" . }}
+{{- $pc := include "s3monitor.providerConfig" . }}
+{{- $account := include "s3monitor.accountId" . }}
+{{- $partition := include "s3monitor.partition" . }}
+{{- $region := include "s3monitor.region" . }}
+{{- $oidc := include "s3monitor.oidcProviderUrl" . }}
+{{- $tags := include "s3monitor.iamTags" . }}
+
+{{- /* ---------- IRSA roles: CronJob + setup Jobs ---------- */}}
+{{- $irsa := list
+      (dict "role" (include "s3monitor.roleName" .) "sa" .Values.serviceAccount.name "component" "cronjob"
+            "description" (printf "IRSA role for the s3-monitor CronJob in %s" .Release.Namespace)
+            "policies" (include "s3monitor.cronjobPolicies" . | fromJsonArray)) }}
+{{- if include "s3monitor.setupEnabled" . }}
+{{- $irsa = append $irsa
+      (dict "role" (include "s3monitor.setupRoleName" .) "sa" .Values.setupServiceAccount.name "component" "setup"
+            "description" (printf "IRSA role for the s3-monitor setup Jobs in %s (ECR image copy, bucket notifications)" .Release.Namespace)
+            "policies" (include "s3monitor.setupPolicies" . | fromJsonArray)) }}
+{{- end }}
+{{- range $r := $irsa }}
+{{- $trust := dict "Version" "2012-10-17" "Statement" (list (dict
+      "Effect" "Allow"
+      "Principal" (dict "Federated" (printf "arn:%s:iam::%s:oidc-provider/%s" $partition $account $oidc))
+      "Action" "sts:AssumeRoleWithWebIdentity"
+      "Condition" (dict "StringEquals" (dict
+          (printf "%s:sub" $oidc) (printf "system:serviceaccount:%s:%s" $.Release.Namespace $r.sa)
+          (printf "%s:aud" $oidc) "sts.amazonaws.com")))) }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: {{ $r.role | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: {{ $r.component }}
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    description: {{ $r.description | quote }}
+    maxSessionDuration: 3600
+    assumeRolePolicyDocument: |-
+      {{- toJson $trust | nindent 6 }}
+    tags:
+      {{- $tags | nindent 6 }}
+{{- range $p := $r.policies }}
+{{- $pname := printf "%s-%s" $r.role $p.suffix }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: {{ $pname | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: {{ $r.component }}
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    name: {{ $pname | quote }}
+    description: {{ printf "s3-monitor %s permissions (%s)" $r.component $p.suffix | quote }}
+    document: |-
+      {{- toJson $p.document | nindent 6 }}
+    tags:
+      {{- $tags | nindent 6 }}
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: {{ $pname | quote }}
+  labels:
+    {{- include "s3monitor.labels" $ | nindent 4 }}
+    s3-monitor/component: {{ $r.component }}
+spec:
+  providerConfigRef:
+    name: {{ $pc }}
+  forProvider:
+    roleNameRef:
+      name: {{ $r.role | quote }}
+    policyArnRef:
+      name: {{ $pname | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

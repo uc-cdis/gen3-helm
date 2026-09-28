@@ -131,6 +131,7 @@ Published versions of this chart are listed in the
 | tolerations | list | `[]` | Tolerations to use for the deployment. |
 | volumeMounts | list | `[{"mountPath":"/var/hatchery/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"},{"mountPath":"/hatchery.json","name":"hatchery-config","readOnly":true,"subPath":"json"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"manifest-hatchery"},"name":"hatchery-config"}]` | Volumes to attach to the container. |
+| workspaceInternetEgress | bool | `true` |  |
 | workspaceLaunchTest | map | `{"enabled":false,"hostname":"https://example.com","operatorName":"username","schedule":"*/20 * * * *","workspaceImages":"(Generic) Jupyter Lab Notebook with R Kernel"}` | Configuration for workspace launch test crobjob |
 | workspaceLaunchTest.enabled | bool | `false` | Whether the workspace launch test cron job is enabled. |
 | workspaceLaunchTest.hostname | string | `"https://example.com"` | Hostname for the workspace launch test operator. |

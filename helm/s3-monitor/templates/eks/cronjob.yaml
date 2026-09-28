@@ -1,0 +1,65 @@
+{{- if .Values.enabled }}
+{{- $v := .Values }}
+# Runs /scripts/run.sh (sync_s3.py) from the quay.io image; no code lives in this chart.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "s3monitor.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+spec:
+  schedule: {{ $v.schedule | quote }}
+  concurrencyPolicy: {{ $v.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ $v.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $v.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ $v.backoffLimit }}
+      ttlSecondsAfterFinished: {{ $v.ttlSecondsAfterFinished }}
+      template:
+        metadata:
+          labels:
+            {{- include "s3monitor.labels" . | nindent 12 }}
+          annotations:
+            checksum/config: {{ include "s3monitor.configJson" . | sha256sum }}
+        spec:
+          serviceAccountName: {{ $v.serviceAccount.name }}
+          restartPolicy: OnFailure
+          {{- with $v.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: s3-monitor
+              image: {{ include "s3monitor.image" . | quote }}
+              imagePullPolicy: {{ $v.image.pullPolicy }}
+              env:
+                - name: CONFIG_URI
+                  value: /config/config.json
+                - name: AWS_REGION
+                  value: {{ $v.aws.region | quote }}
+                - name: TMPDIR
+                  value: /tmp
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+              resources:
+                {{- toYaml $v.resources | nindent 16 }}
+          volumes:
+            - name: config
+              configMap:
+                name: {{ include "s3monitor.fullname" . }}-config
+            - name: tmp
+              emptyDir: {}
+{{- end }}
