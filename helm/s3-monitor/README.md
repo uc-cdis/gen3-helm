@@ -1,7 +1,5 @@
 # s3-monitor
 
-![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: ActiveMQDuckDB](https://img.shields.io/badge/AppVersion-ActiveMQDuckDB-informational?style=flat-square)
-
 s3-monitor (ActiveMQ + DuckDB): per-tenant S3 metadata sync into a Parquet lake, published to Amazon MQ, with an optional real-time S3 event recorder Lambda. All code runs from the quay.io/cdis/s3-monitor image; this chart holds only configuration, EKS objects and AWS resources (Crossplane). Operator guide: GUIDE.md.
 
 Published versions of this chart are listed in the
@@ -18,7 +16,6 @@ Published versions of this chart are listed in the
 | config.apply | bool | `false` | false = dry run: scan and log, write nothing to the lake and publish nothing. |
 | config.assumeRoleArn | string | `""` | Optional role the CronJob assumes for S3 access (e.g. tenant buckets in another account). |
 | config.lake.bucket | string | `""` | Bucket of the Parquet lake. |
-| config.lake.kmsKeyArn | string | `""` | KMS key of the lake bucket, if it uses one. |
 | config.lake.prefix | string | `"vectis"` | Key prefix of the lake inside the bucket. |
 | config.lookbackDays | int | `3` | Days of S3 history each run scans. |
 | config.mq.destinationPrefix | string | `"/queue/s3monitor.ingest"` | Queue prefix; tenant queues are <prefix>.<tenant id> and <prefix>.<tenant id>.failures |
@@ -27,7 +24,6 @@ Published versions of this chart are listed in the
 | config.mq.secretKmsKeyArn | string | `""` | KMS key of that secret, if it is a customer-managed key. |
 | config.mq.stompEndpoints | list | `[]` | Amazon MQ STOMP endpoints, e.g. stomp+ssl://b-xxxx-1.mq.us-east-1.amazonaws.com:61614 |
 | config.tenants | list | `[]` |  |
-| config.useFipsAwsEndpoints | bool | `true` | Use FIPS S3/STS endpoints. |
 | eksClusterName | string | `""` | EKS cluster name (required; shown in the job's startup log and checked by the config schema). |
 | enabled | bool | `false` | Deploy s3-monitor. In the gen3 umbrella chart this is the `s3-monitor.enabled` condition. |
 | eventRecorder.architecture | string | `"arm64"` | Lambda architecture: arm64 or amd64. The image must be built for it. |
