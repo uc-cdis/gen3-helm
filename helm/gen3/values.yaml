@@ -140,6 +140,12 @@ global:
     createSlackWebhookSecret: false
     # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
     slackWebhookSecretName: ""
+  secretStore:
+      create: true
+      name: ""
+      kind: SecretStore
+      annotations: {}
+      spec: {}    
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
     enabled: false
