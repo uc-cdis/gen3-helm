@@ -63,11 +63,13 @@ Published versions of this chart are listed in the
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
 | removeObjectsFromCloudsJob.suspendCronjob | bool | `true` |  |
 | replicateServiceAccount.annotations | object | `{}` |  |
+| replicateValidationJob.BATCH_SIZE | string | `nil` |  |
 | replicateValidationJob.FORCE_CREATE_MANIFEST | string | `nil` |  |
 | replicateValidationJob.IGNORED_FILE | string | `nil` |  |
 | replicateValidationJob.LOG_BUCKET | string | `nil` |  |
 | replicateValidationJob.MANIFEST_FILE | string | `nil` |  |
 | replicateValidationJob.MAP_FILE | string | `nil` |  |
+| replicateValidationJob.MAX_AWS_WORKERS | string | `nil` |  |
 | replicateValidationJob.OUT_FILES | string | `nil` |  |
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
