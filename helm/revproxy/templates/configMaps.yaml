@@ -6,7 +6,9 @@ data:
 {{- $additionalConfigs := .Values.additionalConfigs | default dict }}
 {{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
 {{- $filename := ($a := split "/" $path)._1 }}
-{{- if not (hasKey $additionalConfigs $filename) }}
+{{- if and (eq $filename "workspace-api.conf") (not (index $.Values "hatchery" | default dict).enabled) }}
+  {{- /* workspace-api.conf is only included when hatchery is enabled */ -}}
+{{- else if not (hasKey $additionalConfigs $filename) }}
   {{ $filename }}: |
   {{- $bytes | toString | nindent 4 }}
 {{- end }}
