@@ -19,7 +19,8 @@ global:
       externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
-
+  # -- (str) True to enable debug logs and other dev only functionality, False if otherwise.
+  debug: "False"
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true

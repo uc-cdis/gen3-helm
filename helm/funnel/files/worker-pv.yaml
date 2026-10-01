@@ -22,7 +22,6 @@ spec:
     - allow-other           # allow non-root users to access the mount
     - region={{`{{.Region}}`}}
     - file-mode=0755
-    - prefix=funnel-temp-files/
     {{`{{- if .KmsKeyID}}`}}
     - sse aws:kms
     - sse-kms-key-id={{`{{.KmsKeyID}}`}}
