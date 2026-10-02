@@ -205,8 +205,11 @@ Published versions of this chart are listed in the
 | secrets.awsSecretAccessKey | str | `nil` | AWS access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service | map | `{"port":80,"sessionAffinity":"ClientIP","sessionAffinityConfig":{"clientIP":{"timeoutSeconds":21600}},"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
+| service.sessionAffinity | string | `"ClientIP"` | Session affinity type. Valid values are "None" or "ClientIP". |
+| service.sessionAffinityConfig | map | `{"clientIP":{"timeoutSeconds":21600}}` | Session affinity configuration. |
+| service.sessionAffinityConfig.clientIP.timeoutSeconds | int | `21600` | Session affinity timeout in seconds. Defaults to 6 hours (21600s). |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{"eks.amazonaws.com/role-arn":null},"create":true,"name":"fence-sa"}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{"eks.amazonaws.com/role-arn":null}` | Annotations to add to the service account. |
