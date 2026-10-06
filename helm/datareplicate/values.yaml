@@ -101,6 +101,7 @@ replicateValidationJob:
   VALIDATE_PLATFORM: "AWS"
   BATCH_SIZE:
   MAX_AWS_WORKERS:
+  PREVIOUS_MANIFEST:
 
 batchServiceAccount:
   annotations: {}

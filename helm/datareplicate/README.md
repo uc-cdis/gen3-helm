@@ -71,6 +71,7 @@ Published versions of this chart are listed in the
 | replicateValidationJob.MAP_FILE | string | `nil` |  |
 | replicateValidationJob.MAX_AWS_WORKERS | string | `nil` |  |
 | replicateValidationJob.OUT_FILES | string | `nil` |  |
+| replicateValidationJob.PREVIOUS_MANIFEST | string | `nil` |  |
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 | replicateValidationJob.VALIDATE_PLATFORM | string | `"AWS"` |  |
