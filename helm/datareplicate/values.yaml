@@ -99,6 +99,9 @@ replicateValidationJob:
   SAVE_COPIED_OBJECTS:
   FORCE_CREATE_MANIFEST:
   VALIDATE_PLATFORM: "AWS"
+  BATCH_SIZE:
+  MAX_AWS_WORKERS:
+  PREVIOUS_MANIFEST:
 
 batchServiceAccount:
   annotations: {}
