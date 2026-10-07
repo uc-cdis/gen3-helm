@@ -191,6 +191,8 @@ karpenter-crds:
       iops: 3000
       throughput: 600
     additionalTags: {}
+    # -- (list) Specific EC2 instance types for the gpu NodePools (e.g. ["g6.xlarge"]). If empty, defaults to the g4dn instance family.
+    instanceTypes: []
   secondary:
     enabled: false
     weight: 1
