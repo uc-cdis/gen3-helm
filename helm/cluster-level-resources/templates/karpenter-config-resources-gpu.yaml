@@ -108,9 +108,15 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
+      {{- with (index .Values "karpenter-crds" "gpu" "instanceTypes") }}
+      - key: node.kubernetes.io/instance-type
+        operator: In
+        values: {{ toJson . }}
+      {{- else }}
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
+      {{- end }}
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["on-demand"]
@@ -166,9 +172,15 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
+      {{- with (index .Values "karpenter-crds" "gpu" "instanceTypes") }}
+      - key: node.kubernetes.io/instance-type
+        operator: In
+        values: {{ toJson . }}
+      {{- else }}
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
+      {{- end }}
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["on-demand"]
@@ -203,9 +215,15 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
+      {{- with (index .Values "karpenter-crds" "gpu" "instanceTypes") }}
+      - key: node.kubernetes.io/instance-type
+        operator: In
+        values: {{ toJson . }}
+      {{- else }}
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
+      {{- end }}
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["spot","on-demand"]
@@ -266,9 +284,15 @@ spec:
         value: "present"
         effect: "NoSchedule"
       requirements:
+      {{- with (index .Values "karpenter-crds" "gpu" "instanceTypes") }}
+      - key: node.kubernetes.io/instance-type
+        operator: In
+        values: {{ toJson . }}
+      {{- else }}
       - key: karpenter.k8s.aws/instance-family
         operator: In
         values: ["g4dn"]
+      {{- end }}
       - key: karpenter.sh/capacity-type
         operator: In
         values: ["spot","on-demand"]
