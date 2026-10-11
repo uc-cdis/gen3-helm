@@ -36,7 +36,6 @@ Published versions of this chart are listed in the
 | file://../data-upload-cron | data-upload-cron |
 | file://../datareplicate | datareplicate |
 | file://../dicom-server | dicom-server |
-| file://../embedding-management-service | embedding-management-service |
 | file://../etl | etl |
 | file://../fence | fence |
 | file://../frontend-framework | frontend-framework |
@@ -112,7 +111,6 @@ Published versions of this chart are listed in the
 | elasticsearch.replicas | int | `1` |  |
 | elasticsearch.resources.requests.cpu | string | `"500m"` |  |
 | elasticsearch.singleNode | bool | `true` |  |
-| embedding-management-service.enabled | bool | `false` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
 | fence.usersync | map | `{"addDbgap":false,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","syncFromDbgap":false,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","usersync":false}` | Configuration options for usersync cronjob. |
