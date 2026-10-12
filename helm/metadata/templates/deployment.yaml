@@ -69,6 +69,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env: 
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: GEN3_DEBUG
               value: "False"
             - name: GEN3_ES_ENDPOINT

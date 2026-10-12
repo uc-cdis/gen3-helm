@@ -229,6 +229,7 @@ spec:
           args:
             - "launch"
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: AWS_STS_REGIONAL_ENDPOINTS
               value: regional
           livenessProbe:

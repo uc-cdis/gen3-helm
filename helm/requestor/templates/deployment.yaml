@@ -64,6 +64,7 @@ spec:
         - name: requestor
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: DB_PORT
               value: "5432"
             - name: DB_HOST

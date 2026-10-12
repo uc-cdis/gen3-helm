@@ -157,6 +157,7 @@ spec:
           #   - "-c"
           #   - "sleep infinity"
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: CONF_HOSTNAME
               value: {{ .Values.global.hostname }}
             - name: FENCE_DB_USER

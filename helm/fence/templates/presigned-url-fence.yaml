@@ -90,6 +90,7 @@ spec:
               fi
               bash /fence/dockerrun.bash
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
             {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}

@@ -82,6 +82,7 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
           env: 
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: GUPPY_PORT
               value: "8000"
             - name: GUPPY_CONFIG_FILEPATH

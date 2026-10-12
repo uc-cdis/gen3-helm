@@ -67,6 +67,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
           {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}

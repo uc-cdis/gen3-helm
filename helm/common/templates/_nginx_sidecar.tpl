@@ -26,6 +26,31 @@
 {{- end -}}
 {{- end }}
 
+{{/*
+  Pod-level env so the app containers trust the gen3-internal-ca issuer:
+  SSL_CERT_FILE covers OpenSSL defaults (and Python ssl),
+  REQUESTS_CA_BUNDLE covers Python requests/urllib3.
+*/}}
+{{- define "common.nginxSidecar.caEnv" -}}
+{{- if include "common.nginxSidecar.tls" . -}}
+env:
+  - name: REQUESTS_CA_BUNDLE
+    value: /etc/nginx/internal-ca/ca.crt
+  - name: SSL_CERT_FILE
+    value: /etc/nginx/internal-ca/ca.crt
+{{- end -}}
+{{- end }}
+
+{{/* Same as caEnv but without the `env:` key, for prepending into an existing env list. */}}
+{{- define "common.nginxSidecar.caEnvVars" -}}
+{{- if include "common.nginxSidecar.tls" . -}}
+- name: REQUESTS_CA_BUNDLE
+  value: /etc/nginx/internal-ca/ca.crt
+- name: SSL_CERT_FILE
+  value: /etc/nginx/internal-ca/ca.crt
+{{- end -}}
+{{- end }}
+
 {{- define "common.nginxSidecar.targetPortName" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
 {{- if $nginx.enabled -}}

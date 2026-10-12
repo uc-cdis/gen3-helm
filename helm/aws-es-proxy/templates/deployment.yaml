@@ -61,6 +61,7 @@ spec:
             {{- toYaml . | nindent 12}}
           {{- end }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
           {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}

@@ -107,6 +107,7 @@ spec:
               path: /_status
               port: http
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: OIDC_CLIENT_ID
             valueFrom:
               secretKeyRef:

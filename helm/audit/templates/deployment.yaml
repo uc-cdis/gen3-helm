@@ -81,6 +81,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:

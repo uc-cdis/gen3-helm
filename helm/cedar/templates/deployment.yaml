@@ -124,6 +124,7 @@ spec:
             timeoutSeconds: 30
             failureThreshold: 6
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: HOSTNAME
               value: revproxy-service
             - name: API_KEY

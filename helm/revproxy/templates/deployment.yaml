@@ -117,6 +117,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:

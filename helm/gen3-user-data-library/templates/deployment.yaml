@@ -64,6 +64,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             {{- toYaml .Values.env | nindent 12 }}
             - name: URL_PREFIX
               value: '/library'

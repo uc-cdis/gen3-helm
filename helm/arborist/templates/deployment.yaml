@@ -97,6 +97,7 @@ spec:
               # run arborist
               /go/src/github.com/uc-cdis/arborist/bin/arborist --port {{ .Values.service.targetPort }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
 
             {{- toYaml .Values.env | nindent 12 }}
             - name: PGPASSWORD

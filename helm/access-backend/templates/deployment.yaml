@@ -66,6 +66,7 @@ spec:
           - secretRef:
               name: access-backend-kv
         env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: GEN3_DEBUG
             value: "False"
           - name: AWS_DEFAULT_REGION

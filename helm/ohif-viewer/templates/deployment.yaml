@@ -76,6 +76,7 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: PORT
             value: {{ .Values.service.targetPort | quote }}
           - name: PUBLIC_URL

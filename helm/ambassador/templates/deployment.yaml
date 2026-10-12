@@ -71,6 +71,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: AMBASSADOR_NAMESPACE
             value: {{- if .Values.jupyterNamespace }}
               {{ .Values.jupyterNamespace | quote }}

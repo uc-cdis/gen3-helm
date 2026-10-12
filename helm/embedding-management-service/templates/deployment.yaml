@@ -47,6 +47,7 @@ spec:
               containerPort: {{ .Values.service.port.targetPort }}
               protocol: TCP
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:

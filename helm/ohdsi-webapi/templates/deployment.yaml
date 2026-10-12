@@ -58,6 +58,7 @@ spec:
             - secretRef:
                 name: ohdsi-webapi-config
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: PGHOST
               valueFrom:
                 secretKeyRef:

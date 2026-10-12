@@ -56,6 +56,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: GIN_MODE
               value: "release"
             - name: PORT
