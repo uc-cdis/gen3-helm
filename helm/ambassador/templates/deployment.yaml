@@ -98,6 +98,10 @@ spec:
             periodSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if include "common.nginxSidecar.tls" . }}
+          volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
+          {{- end }}
       {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

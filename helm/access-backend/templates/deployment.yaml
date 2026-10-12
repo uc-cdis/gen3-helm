@@ -82,12 +82,15 @@ spec:
         ports:
         - name: http
           containerPort: {{ .Values.service.targetPort }}
-        {{- with .Values.volumeMounts }}
+        {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
         volumeMounts:
+          {{- with .Values.volumeMounts }}
           {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
         {{- end }}
         {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-      {{- include "common.nginxSidecar.containers" . | nindent 8 }}
+      {{- include "common.nginxSidecar.containers" . | nindent 6 }}

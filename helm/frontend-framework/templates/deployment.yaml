@@ -160,12 +160,15 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
-          {{- if .Values.customConfig.enabled }}
+          {{- if or .Values.customConfig.enabled (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
+            {{- if .Values.customConfig.enabled }}
             - name: config-volume
               mountPath: /gen3/config
             - name: public-volume
               mountPath: /gen3/public
+            {{- end }}
           {{- end }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       volumes:

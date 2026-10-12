@@ -113,6 +113,7 @@ spec:
           ports:
           - containerPort: 80
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             - name: ohdsi-webapi-reverse-proxy-config
               readOnly: true
               mountPath: /etc/nginx/nginx.conf

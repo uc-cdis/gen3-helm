@@ -113,6 +113,7 @@ spec:
                   optional: false
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
+              {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 14 }}
               - name: "config-volume"
                 readOnly: true
                 mountPath: "/src/audit-service-config.yaml"

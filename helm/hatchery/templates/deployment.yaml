@@ -85,6 +85,7 @@ spec:
             - name: GEN3_VPCID
               value: {{ default .Values.global.environment .Values.vpcId }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}

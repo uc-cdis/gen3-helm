@@ -80,8 +80,11 @@ spec:
             value: {{ .Values.service.targetPort | quote }}
           - name: PUBLIC_URL
             value: "/ohif-viewer/"
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}

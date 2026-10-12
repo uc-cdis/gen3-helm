@@ -61,6 +61,7 @@ spec:
             - name: PORT
               value: "8080"
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             - name: cohort-middleware-g3auto
               readOnly: true
               mountPath: /config/development.yaml
@@ -91,4 +92,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-

@@ -100,9 +100,12 @@ spec:
               value: production
             - name: NODE_TLS_REJECT_UNAUTHORIZED
               value: "0"              
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:

@@ -81,9 +81,12 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
               protocol: TCP
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -63,9 +63,12 @@ spec:
           env:
             - name: ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           command: ["/bin/sh"]
           # NOTE- NEED TO RUN `gen3 kube-setup-aws-es-proxy` TO POPULATE ES_ENDPOINT - ugh!

@@ -138,9 +138,12 @@ spec:
                   key: dbcreated
                   optional: false
 
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12 }}  
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
           {{- end }}
       {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}

@@ -327,6 +327,7 @@ spec:
               value: {{ .Values.global.dataUploadBucket }}
             {{- end }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- if .Values.extraImages  }}
             - name: extra-images
               mountPath: /data-portal/custom/images

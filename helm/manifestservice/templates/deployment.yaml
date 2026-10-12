@@ -100,6 +100,7 @@ spec:
             - name: FENCE_URL
               value: {{ default "http://fence-service" (printf "https://%s/user" .Values.global.hostname) }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

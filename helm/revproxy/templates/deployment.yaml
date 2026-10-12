@@ -79,10 +79,13 @@ spec:
         - name: revproxy-subconf
           configMap:
             name: revproxy-nginx-subconf
-      {{- if and $nginx.enabled $nginx.tls.enabled }}
+      {{- if $nginxTls }}
         - name: nginx-sidecar-tls
           secret:
             secretName: revproxy-nginx-sidecar-tls 
+        - name: internal-ca
+          secret:
+            secretName: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.caSecretName }}
       {{- end}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -164,9 +167,12 @@ spec:
             mountPath: /tmp
           - name: nginx-cache
             mountPath: /var/cache/nginx
-          {{- if and $nginx.enabled $nginx.tls.enabled }}
+          {{- if $nginxTls }}
           - name: nginx-sidecar-tls
             mountPath: /etc/nginx/tls
+            readOnly: true
+          - name: internal-ca
+            mountPath: /etc/nginx/internal-ca
             readOnly: true
           {{- end}}
           # - name: "modsec-conf"

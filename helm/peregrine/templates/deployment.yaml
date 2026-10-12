@@ -169,9 +169,12 @@ spec:
               value: {{ .Values.global.hostname | quote }}
             - name: INTERNAL_SERVICE_PROTOCOL
               value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}              
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           ports:
             - name: http

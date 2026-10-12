@@ -115,9 +115,12 @@ spec:
             - name: MAX_BULK_REQUEST_LENGTH
               value: {{ .Values.maxBulkRequestLength | quote }}
             {{- toYaml .Values.env | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
           {{- end }}
           ports:
             - name: http

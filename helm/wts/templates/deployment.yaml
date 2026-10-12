@@ -87,6 +87,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+          {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           - name: "wts-secret"
             readOnly: true
             mountPath: "/var/www/wts/appcreds.json"
@@ -229,4 +230,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-

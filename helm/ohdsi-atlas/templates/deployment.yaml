@@ -82,6 +82,7 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             - name: ohdsi-atlas-config
               readOnly: true
               mountPath: /etc/atlas/config-local.js

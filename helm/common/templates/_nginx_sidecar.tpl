@@ -9,6 +9,23 @@
 {{- if $nginx.enabled }}true{{- end -}}
 {{- end }}
 
+{{- define "common.nginxSidecar.tls" -}}
+{{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
+{{- if and $nginx.enabled $nginx.tls.enabled }}true{{- end -}}
+{{- end }}
+
+{{/*
+  Volume mount for the internal CA certificate, so pods can trust
+  certificates issued by the gen3-internal-ca issuer (nginx sidecar TLS).
+*/}}
+{{- define "common.nginxSidecar.caVolumeMounts" -}}
+{{- if include "common.nginxSidecar.tls" . -}}
+- name: internal-ca
+  mountPath: /etc/nginx/internal-ca
+  readOnly: true
+{{- end -}}
+{{- end }}
+
 {{- define "common.nginxSidecar.targetPortName" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
 {{- if $nginx.enabled -}}
@@ -68,6 +85,9 @@ k8s.grafana.com/metrics.path: "/metrics"
 - name: nginx-sidecar-tls
   secret:
     secretName: {{ default (printf "%s-nginx-sidecar-tls" .Chart.Name) $nginx.tls.secretName }}
+- name: internal-ca
+  secret:
+    secretName: {{ default "gen3-internal-ca" $nginx.tls.caSecretName }}
 {{- end }}
 {{- end }}
 {{- end }}

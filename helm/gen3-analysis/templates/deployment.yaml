@@ -112,6 +112,7 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- if .Values.s3DataMount.enabled }}
             - name: tmp-volume
               mountPath: /opt/mmrf_gene_expression_test_data

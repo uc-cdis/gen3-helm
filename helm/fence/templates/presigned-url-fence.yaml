@@ -92,6 +92,7 @@ spec:
           env:
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
