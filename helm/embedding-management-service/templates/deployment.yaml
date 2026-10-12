@@ -44,7 +44,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port.targetPort }}
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           env:
             {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
