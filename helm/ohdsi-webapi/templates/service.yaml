@@ -7,7 +7,7 @@ spec:
   selector:
     app: ohdsi-webapi
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
+      protocol: TCP
       name: http

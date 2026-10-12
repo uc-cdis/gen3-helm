@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,6 +34,9 @@ spec:
       {{- end }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         {{- include "frontend-framework.selectorLabels" . | nindent 8 }}
@@ -143,6 +149,7 @@ spec:
                 name: {{ include "frontend-framework.fullname" . }}-configmap
                 optional: true
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
               {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -154,15 +161,22 @@ spec:
             - name: NEXT_PUBLIC_PORTAL_BASENAME
               value: /portal
             {{- end }}
-          {{- if .Values.customConfig.enabled }}
+          {{- if or .Values.customConfig.enabled (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
+            {{- if .Values.customConfig.enabled }}
             - name: config-volume
               mountPath: /gen3/config
             - name: public-volume
               mountPath: /gen3/public
+            {{- end }}
           {{- end }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       volumes:
         - name: config-volume
           emptyDir: {}
         - name: public-volume
           emptyDir: {}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}

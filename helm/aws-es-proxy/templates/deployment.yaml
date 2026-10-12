@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +33,9 @@ spec:
       annotations:
       {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -41,6 +47,9 @@ spec:
           secret:
             secretName: {{.Chart.Name}}-aws-config
             optional: true
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: "esproxy"
           securityContext:
@@ -52,11 +61,15 @@ spec:
             {{- toYaml . | nindent 12}}
           {{- end }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           command: ["/bin/sh"]
           # NOTE- NEED TO RUN `gen3 kube-setup-aws-es-proxy` TO POPULATE ES_ENDPOINT - ugh!
@@ -82,3 +95,4 @@ spec:
               ${BINARY} -endpoint "https://$ES_ENDPOINT" -verbose -listen ":9200"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}

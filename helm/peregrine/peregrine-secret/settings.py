@@ -22,10 +22,12 @@ config = app.config
 # ARBORIST_URL is initialized in app_init() directly
 # config["ARBORIST"] = "http://arborist-service/"
 
-config['INDEX_CLIENT'] = {
-    'host': environ.get('INDEX_CLIENT_HOST') or 'http://indexd-service',
-    'version': 'v0',
-    'auth': ('gdcapi', environ.get( "PGHOST") ),
+INTERNAL_SERVICE_PROTOCOL = environ.get("INTERNAL_SERVICE_PROTOCOL", "http")
+
+config["INDEX_CLIENT"] = {
+    "host": environ.get("INDEX_CLIENT_HOST") or f"{INTERNAL_SERVICE_PROTOCOL}://indexd-service",
+    "version": "v0",
+    "auth": ("gdcapi", environ.get("PGHOST")),
 }
 # config["FAKE_AUTH"] = environ.get( "FAKE_AUTH", False)
 config["PSQLGRAPH"] = {
@@ -73,12 +75,12 @@ config['OAUTH2'] = {
         'scope': 'openid data user',
     },
     # deprecated key values, should be removed after all commons use new oidc
-    'internal_oauth_provider': 'http://fence-service/oauth2/',
+    "internal_oauth_provider": environ.get("INTERNAL_OAUTH_PROVIDER") or f"{INTERNAL_SERVICE_PROTOCOL}://fence-service/oauth2/",
     'oauth_provider': 'https://%s/user/oauth2/' % hostname,
     'redirect_uri': 'https://%s/api/v0/oauth2/authorize'  % hostname
 }
 
-config['USER_API'] = environ.get('FENCE_URL') or 'http://fence-service/'
+config["USER_API"] = environ.get("FENCE_URL") or f"{INTERNAL_SERVICE_PROTOCOL}://fence-service/"
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config['FORCE_ISSUER'] = True
 print(config)

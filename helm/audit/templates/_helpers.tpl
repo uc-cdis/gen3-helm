@@ -86,4 +86,3 @@ Create the name of the service account to use
 {{- define "audit-g3auto" -}}
 {{- default "audit-g3auto" .Values.externalSecrets.auditG3auto }}
 {{- end }}
-
