@@ -1,19 +1,24 @@
 # revproxy
 
-![Version: 0.1.62](https://img.shields.io/badge/Version-0.1.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 revproxy
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.36 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| additionalConfigs | map | `{}` | Raw nginx location blocks to add or override entries in the revproxy-nginx-subconf ConfigMap. Keys are the conf filename (e.g. "guppy-service.conf"). A key matching a built-in static conf file will replace that file's content, allowing disabled services to be suppressed or routes redirected to alternative upstreams without modifying the chart. |
 | affinity | map | `{}` | Affinity to use for the deployment. |
 | autoscaling | object | `{}` |  |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
@@ -21,6 +26,7 @@ A Helm chart for gen3 revproxy
 | enableRobotsTxt | bool | `false` | Whether to enable robots.txt generation and serving. |
 | extraServices | map | `nil` | Configuration to add any extra service endpoints outside of gen3 to be served by revproxy |
 | fullnameOverride | string | `""` | Override the full name of the deployment. |
+| global.argoHost | string | `"http://argo-argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -76,9 +82,9 @@ A Helm chart for gen3 revproxy
 | ingress.tls | list | `[]` | To secure an Ingress by specifying a secret that contains a TLS private key and certificate. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
-| netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy | map | `{"egressApps":["portal","sowerjob"],"ingressApps":["portal","sowerjob","ssjdispatcherjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
 | netPolicy.egressApps | array | `["portal","sowerjob"]` | List of apps that this app requires egress to |
-| netPolicy.ingressApps | array | `["portal","sowerjob"]` | List of app labels that require ingress to this service |
+| netPolicy.ingressApps | array | `["portal","sowerjob","ssjdispatcherjob"]` | List of app labels that require ingress to this service |
 | nginx.pidFile | string | `"/var/run/nginx.pid"` |  |
 | nginx.resolver | string | `"kube-dns.kube-system.svc.cluster.local"` |  |
 | nginx.user | string | `"nginx"` |  |

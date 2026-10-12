@@ -183,6 +183,9 @@ image:
 
 debug: false
 
+# If set to True, this flag will force an authorization check for all metadata query endpoints:
+forceAuthzCheckForMetadataQueries: false
+
 # Environment Variables
 # -- (string) Elasticsearch endpoint.
 esEndpoint: http://gen3-elasticsearch-master:9200
@@ -328,6 +331,16 @@ serviceAnnotations:
     name:  metadata_mapping
     prefix: /index/
     service: http://metadata-service:80
+
+# -- (map) Security context for the containers in the pod
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 # -- (map) Kubernetes service information.
 service:

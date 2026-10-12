@@ -1,4 +1,5 @@
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
+{{- $nginxTls := and (default false $nginx.enabled) (default false $nginx.tls.enabled) -}}
 {{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
 
 apiVersion: apps/v1
@@ -94,22 +95,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ ternary 443 .Values.service.targetPort (and $nginx.enabled $nginx.tls.enabled) }}
-            name: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
+          - containerPort: {{ ternary 443 .Values.service.targetPort $nginxTls }}
+            name: {{ ternary "https" "http" $nginxTls }}
           - containerPort: 6567
             name: metrics
           livenessProbe:
             httpGet:
               path: /_status
-              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
-              scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
+              port: {{ ternary "https" "http" $nginxTls }}
+              scheme: {{ ternary "HTTPS" "HTTP" $nginxTls }}
             initialDelaySeconds: 5
             periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
-              port: {{ ternary "https" "http" (and $nginx.enabled $nginx.tls.enabled) }}
-              scheme: {{ ternary "HTTPS" "HTTP" (and $nginx.enabled $nginx.tls.enabled) }}
+              port: {{ ternary "https" "http" $nginxTls }}
+              scheme: {{ ternary "HTTPS" "HTTP" $nginxTls }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

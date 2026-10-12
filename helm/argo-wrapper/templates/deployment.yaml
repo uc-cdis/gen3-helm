@@ -66,6 +66,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           livenessProbe:
             httpGet:
@@ -86,4 +88,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: ARGO_HOST
+              value: {{ .Values.global.argoHost }}
       {{- include "common.nginxSidecar.containers" . | nindent 8 }}

@@ -15,10 +15,9 @@ spec:
         values: |
           crds:
             enabled: true
-          #securePort: 10251
-          hostNetwork: true
-          webhook:
-            securePort: 10252
+          {{- if (index .Values "cert-manager" "configuration" "enabled") }}
+          {{ toYaml (index .Values "cert-manager" "configuration") |  nindent 10 }}
+          {{- end }}
   destination:
     server: "https://kubernetes.default.svc"
     namespace: cert-manager

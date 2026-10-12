@@ -39,6 +39,8 @@ spec:
         {{- include "audit.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         internet: "yes"
+        linklocal: "yes"
+        public: "yes"
         netvpc: "yes"
     spec:
       {{- if .Values.global.topologySpread.enabled }}
@@ -57,6 +59,8 @@ spec:
         {{- end }}
       containers:
         - name: audit
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -124,6 +128,8 @@ spec:
         {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       initContainers:
         - name: audit-init
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:

@@ -1,0 +1,39 @@
+# workspace-proxy default values.
+# Override via your environment's workspace-proxy-values.yaml
+
+# Namespace where the workspace-proxy pod runs (same as gen3 helm release).
+# Must be set per-environment in gitops values.
+deploymentNamespace: ""
+
+# Namespace where Hatchery creates user workspace pods and services.
+# CRITICAL: must match hatchery user-namespace and jeg workspaceNamespace exactly.
+workspaceNamespace: ""
+
+replicaCount: 2
+
+image:
+  repository: quay.io/cdis/gen3-vectis
+  tag: qa-goproxy
+  pullPolicy: Always
+
+listenAddr: ":8080"
+
+# Optional JSON policy controlling which JEG kernelspecs are visible/launchable.
+# Example: {"allowedSpecs":["python3"],"costPerHour":{"python3":0.0}}
+jegKernelSpecPolicy: ""
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+# NetworkPolicy: restrict ingress to revproxy only.
+networkPolicy:
+  enabled: true
+
+# Egress destinations for the in-cluster Kubernetes API service
+# (kubernetes.default.svc -> service ClusterIP). Must be set per environment.
+kubernetesApiServerCIDRs: []

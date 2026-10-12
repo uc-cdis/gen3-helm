@@ -4,6 +4,23 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Commit to diff against (recovery for a missed or force-pushed run)"
+        required: false
+        type: string
+      all:
+        description: "Release every chart, ignoring the diff"
+        required: false
+        type: boolean
+        default: false
+
+# Never run two releases at once: they would race on gh-pages, and cancelling
+# mid-run can leave GitHub Releases that the index never learns about.
+concurrency:
+  group: release-charts
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -12,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -20,19 +37,70 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      
+
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
           version: v3.10.0
-          
+
       - name: Add helm repositories
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add elastic https://helm.elastic.co
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo add calypr https://calypr.github.io/helm-charts
+          helm repo update
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.4.1
-        with:
-          charts_dir: helm
+      - name: Install chart-releaser
+        run: |
+          CR_VERSION=1.6.1
+          curl -sSLo cr.tar.gz \
+            "https://github.com/helm/chart-releaser/releases/download/v${CR_VERSION}/chart-releaser_${CR_VERSION}_linux_amd64.tar.gz"
+          tar -xzf cr.tar.gz cr
+          sudo mv cr /usr/local/bin/cr
+          rm cr.tar.gz
+          cr version
+
+      # Versions live in git tags, not in Chart.yaml. Work out which charts this
+      # push touched (plus everything that depends on them) and what version
+      # each should be published at.
+      - name: Compute release plan
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          python3 .github/scripts/release.py plan \
+            --head "${{ github.sha }}" \
+            ${{ inputs.base && format('--base {0}', inputs.base) || '' }} \
+            ${{ inputs.all && '--all' || '' }} \
+            --output plan.json
+          python3 .github/scripts/release.py plan \
+            --head "${{ github.sha }}" \
+            ${{ inputs.base && format('--base {0}', inputs.base) || '' }} \
+            ${{ inputs.all && '--all' || '' }} \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check whether anything needs releasing
+        id: check
+        run: |
+          count=$(jq '.charts | length' plan.json)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Charts to release: $count"
+
+      # Stamp the computed versions into the working tree. This is never
+      # committed -- Chart.yaml stays at the placeholder in git.
+      - name: Stamp versions
+        if: steps.check.outputs.count != '0'
+        run: python3 .github/scripts/release.py stamp --plan plan.json
+
+      # Releases first, index last: a release with no index entry is invisible
+      # but harmless and self-heals, whereas an index entry with no release is a
+      # broken download link.
+      - name: Package and publish
+        if: steps.check.outputs.count != '0'
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 .github/scripts/release.py publish \
+            --plan plan.json \
+            --repo "${{ github.repository }}"

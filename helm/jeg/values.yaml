@@ -1,0 +1,35 @@
+# Jupyter Enterprise Gateway default values.
+# Override via your environment's jeg-values.yaml
+
+# Namespace where JEG pod runs AND where it launches kernel pods.
+# CRITICAL: must match hatchery user-namespace and workspace-proxy workspaceNamespace.
+workspaceNamespace: jupyter-pods
+
+replicaCount: 1
+
+image:
+  repository: quay.io/cdis/gen3-vectis
+  tag: qa-jeg
+  pullPolicy: Always
+
+env:
+  EG_NAMESPACE: jupyter-pods
+  EG_KERNEL_LAUNCH_TIMEOUT: "120"
+  EG_MAX_KERNELS_PER_USER: "2"
+  EG_CULL_IDLE_TIMEOUT: "14400"
+  EG_CULL_CONNECTED: "True"
+  EG_AUTH_TOKEN: ""
+  EG_DEFAULT_KERNEL_NAME: python3
+  EG_LIST_KERNELS: "True"
+  EG_KERNEL_IMAGE_PULL_POLICY: IfNotPresent
+  EG_SHARED_NAMESPACE: "False"
+  EG_MIRROR_WORKING_DIRS: "False"
+  EG_KERNEL_WHITELIST_ENVS: "ACCESS_TOKEN"  # propagate workspace token into kernel pods
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"

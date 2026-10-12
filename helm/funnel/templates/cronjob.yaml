@@ -1,0 +1,45 @@
+{{- if .Values.cleanup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: funnel-cleanup-{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "funnel.labels" . | nindent 4 }}
+spec:
+  # Schedule is derived from Kubernetes.ReconcileRate unless cleanup.schedule is set explicitly.
+  schedule: {{ include "funnel.cleanupSchedule" . | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "funnel.labels" . | nindent 12 }}
+        spec:
+          serviceAccountName: funnel-sa-{{ .Release.Namespace }}
+          restartPolicy: OnFailure
+          containers:
+            - name: funnel-cleanup
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: Always
+              command:
+                - funnel
+                - kubernetes
+                - cleanup
+                - --config
+                - /etc/config/funnel-server.yaml
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "128Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "256Mi"
+              volumeMounts:
+              {{- toYaml .Values.volumeMounts | nindent 14 }}
+          volumes:
+          {{- toYaml .Values.volumes | nindent 10 }}
+{{- end }}

@@ -3,25 +3,33 @@ kind: ConfigMap
 metadata:
   name: revproxy-nginx-subconf
 data:
-{{ range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
-  {{ ($a := split "/" $path)._1 }}: |
-{{ tpl ($bytes | toString) $ | nindent 4 }}
-{{ end }}
-{{ if eq "gen3ff" .Values.global.frontendRoot }}
-  frontend-framework-service.conf: |
-{{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf") . | nindent 4 }}
-  portal-service.conf: |
-{{ tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf") . | nindent 4 }}
-{{ else }}
-  frontend-framework-service.conf: |
-{{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf") . | nindent 4 }}
-  portal-service.conf: |
-{{ tpl (.Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf") . | nindent 4 }}
-{{ end }}
-{{ if .Values.enableRobotsTxt }}
-  robots-txt.conf: |
-{{ tpl (.Files.Get "gen3.nginx.conf/robots/robots-txt.conf") . | nindent 4 }}
-{{ end }}
+{{- $additionalConfigs := .Values.additionalConfigs | default dict }}
+{{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/*.conf" }}
+{{- $filename := ($a := split "/" $path)._1 }}
+{{- if not (hasKey $additionalConfigs $filename) }}
+  {{ $filename }}: |
+  {{- tpl ($bytes | toString) $ | nindent 4 }}
+{{- end }}
+{{- end}}
+{{- if eq "gen3ff" .Values.global.frontendRoot }}
+  {{ "frontend-framework-service.conf" }}: |
+  {{- tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf") $ | nindent 4}}
+  {{ "portal-service.conf" }}: |
+  {{- tpl (.Files.Get "gen3.nginx.conf/gen3ff-as-root/portal-service.conf") $ | nindent 4}}
+{{- else }}
+  {{ "frontend-framework-service.conf" }}: |
+  {{- tpl (.Files.Get "gen3.nginx.conf/portal-as-root/frontend-framework-service.conf") $ | nindent 4}}
+  {{ "portal-service.conf" }}: |
+  {{- tpl (.Files.Get "gen3.nginx.conf/portal-as-root/portal-service.conf") $ | nindent 4}}
+{{- end }}
+{{- if .Values.enableRobotsTxt }}
+  {{ "robots-txt.conf" }}: |
+  {{- tpl (.Files.Get "gen3.nginx.conf/robots/robots-txt.conf") $ | nindent 4}}
+{{- end }}
+{{- range $filename, $content := $additionalConfigs }}
+  {{ $filename }}: |
+  {{- $content | nindent 4 }}
+{{- end }}
 {{- range .Values.extraServices }}
   {{ printf "%s-service.conf" .name }}: |
     location {{ .path }}/ {
@@ -40,7 +48,14 @@ data:
 
         set $proxy_service "{{ .name }}";
         set $upstream http://{{ .serviceName }}$des_domain;
+        {{- if .customNginxConfigs }}
+{{ "\n        " }}{{- .customNginxConfigs | trim | replace "\n" "\n        " }}
+{{- end }}
+
+        {{- if ne .rewritePath false }}
         rewrite ^{{ .path }}/(.*) /$1 break;
+        {{- end }}
+
         proxy_pass $upstream;
         proxy_redirect http://$host/ https://$host{{ .path }}/;
     }

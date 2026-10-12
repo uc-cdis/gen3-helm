@@ -1,0 +1,65 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: funnel-cluster-role-{{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - "configmaps"
+      - "pods"
+      - "pods/log"
+      - "persistentvolumes"
+      - "persistentvolumeclaims"
+      - "secrets"
+      - "serviceaccounts"
+      - "events"
+      - "pods/status"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+      - "create"
+      - "update"
+      - "patch"
+      - "delete"
+  
+  - apiGroups: ["batch", "extensions"]
+    resources:
+      - "jobs"
+      - "jobs/status" # Previously corrected
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+      - "create"
+      - "update"
+      - "patch"
+      - "delete"
+  
+  - apiGroups: ["extensions", "apps"]
+    resources:
+      - "deployments"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+      - "create"
+      - "update"
+      - "patch"
+      - "delete"
+  
+  - apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - roles
+    - rolebindings
+    verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+    - delete
+{{- end }}

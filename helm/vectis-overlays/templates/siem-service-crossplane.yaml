@@ -1,0 +1,69 @@
+{{- $global := .Values.global | default dict }}
+{{- $crossplane := get $global "crossplane" | default dict }}
+{{- $crossplaneEnabled := get $crossplane "enabled" | default false }}
+{{- if and .Values.siemService.enabled .Values.siemService.serviceAccount.create $crossplaneEnabled }}
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service"
+    description: "IRSA role for siem-service in {{ .Release.Namespace }} — S3 access to siem views config"
+    assumeRolePolicyDocument: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Principal":{"Federated":"arn:aws:iam::{{ get $crossplane "accountId" }}:oidc-provider/{{ get $crossplane "oidcProviderUrl" }}"},
+            "Action":"sts:AssumeRoleWithWebIdentity",
+            "Condition":{
+              "StringEquals":{
+                "{{ get $crossplane "oidcProviderUrl" }}:sub":"system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.siemService.serviceAccount.name }}",
+                "{{ get $crossplane "oidcProviderUrl" }}:aud":"sts.amazonaws.com"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Policy
+metadata:
+  name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
+    document: |
+      {
+        "Version":"2012-10-17",
+        "Statement":[
+          {
+            "Effect":"Allow",
+            "Action":["s3:GetObject","s3:PutObject"],
+            "Resource":[
+              {{- $bucket := .Values.siemService.env.SIEM_VIEWS_S3_BUCKET | default "" }}
+              "arn:aws:s3:::{{ $bucket }}/siem/views.json",
+              "arn:aws:s3:::{{ $bucket }}/siem/default-views.json"
+            ]
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: "siem-service-{{ .Release.Namespace }}-managed-policy-attachment"
+spec:
+  providerConfigRef:
+    name: {{ get $crossplane "providerConfigName" | default "provider-aws" }}
+  forProvider:
+    roleName: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service"
+    policyArnRef:
+      name: "{{ get $global "environment" }}-{{ .Release.Namespace }}-siem-service-role-policy"
+{{- end }}

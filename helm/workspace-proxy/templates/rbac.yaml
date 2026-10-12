@@ -1,0 +1,29 @@
+# Role in the workspace namespace — workspace-proxy reads Services written by Hatchery
+# (one per user session) to resolve proxy upstreams.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: workspace-proxy
+  namespace: {{ .Values.workspaceNamespace }}
+  labels:
+    app: workspace-proxy
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: workspace-proxy
+  namespace: {{ .Values.workspaceNamespace }}
+  labels:
+    app: workspace-proxy
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: workspace-proxy
+subjects:
+  - kind: ServiceAccount
+    name: workspace-proxy
+    namespace: {{ .Values.deploymentNamespace }}

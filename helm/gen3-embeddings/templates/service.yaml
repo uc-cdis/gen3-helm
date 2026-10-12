@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "gen3-embeddings-service"
+  labels:
+    {{- include "gen3-embeddings.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 4142
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "gen3-embeddings.selectorLabels" . | nindent 4 }}

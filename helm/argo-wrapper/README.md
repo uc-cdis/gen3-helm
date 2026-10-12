@@ -1,14 +1,18 @@
 # argo-wrapper
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Argo Wrapper Service
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.36 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 
@@ -25,6 +29,7 @@ A Helm chart for gen3 Argo Wrapper Service
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | environment | string | `"default"` | Environment name. |
+| global.argoHost | string | `"http://argo-argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -61,6 +66,7 @@ A Helm chart for gen3 Argo Wrapper Service
 | revisionHistoryLimit | int | `2` | Number of old revisions to retain |
 | s3Bucket | string | `"argo-artifact-downloadable"` | S3 bucket name for Argo artifacts (allows pre-signed URLs). |
 | scalingGroups | list | `[{"user1":"workflow1"},{"user2":"workflow2"},{"user3":"workflow3"}]` | The workflow scaling groups to be used by Argo. |
+| securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service | map | `{"port":8000,"targetPort":8000,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `8000` | The port number that the service exposes. |

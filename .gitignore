@@ -10,3 +10,7 @@ _sample-*/
 !helm/funnel/charts
 helm/funnel/charts/common*
 *copy.yaml
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -29,8 +29,18 @@ jobs:
         run: |
           changed=$(ct list-changed --config .github/ct.yaml)
           if [[ -n "$changed" ]]; then
-            echo "changed=true >> $GITHUB_OUTPUT"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # Chart versions are frozen in git, so show what merging this PR would
+      # actually publish -- including charts pulled in by the dependency
+      # cascade (a change to common fans out to everything that depends on it).
+      - name: Preview chart releases
+        run: |
+          python3 .github/scripts/release.py plan \
+            --base "${{ github.event.pull_request.base.sha }}" \
+            --head "${{ github.event.pull_request.head.sha }}" \
+            --markdown >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml

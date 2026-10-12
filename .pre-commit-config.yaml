@@ -16,6 +16,7 @@ repos:
   #   rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
   #   hooks:
   #   - id: helmlint
+  #
 
   - repo: https://github.com/norwoodj/helm-docs
     rev: "v1.14.2"
@@ -27,21 +28,9 @@ repos:
         args:
         - "--chart-search-root=helm"
         - "--skip-version-footer"
-
-  - repo: local
-    hooks:
-      - id: helm-chart-bump
-        args: []
-        description: Updates the .Chart.yaml with updates version if there are changes since master branch. This is to ensure we bump our charts for updates.
-        entry: git-hook/helm-bump.sh
-        language: script
-        name: Helm Docs
-        require_serial: true
-
-  - repo: local
-    hooks:
-      - id: funnel-chart-check
-        name: Funnel chart check
-        entry: git-hook/funnel-chart-check.sh
-        language: script
-        pass_filenames: false
+        # Shared template: omits the version badge and dependency version
+        # column, which are frozen placeholders in git rather than real values.
+        # Absolute path: pre-commit's docker_image language mounts the repo at
+        # /src, and helm-docs only resolves this flag as an absolute path or
+        # relative to each chart dir.
+        - "--template-files=/src/.helm-docs/README.md.gotmpl"

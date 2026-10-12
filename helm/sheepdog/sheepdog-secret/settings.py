@@ -75,6 +75,7 @@ config['OAUTH2'] = {
 }
 
 config["USER_API"] = environ.get("FENCE_URL") or f"{INTERNAL_SERVICE_PROTOCOL}://fence-service/"
+config["AUTHZ_AUDIENCE"] = "gen3"  # for use by authutils
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config['FORCE_ISSUER'] = True
 app_init(app)
