@@ -57,7 +57,7 @@ global:
       # -- (bool) Whether to use s3 bucket versioning.
       versioningEnabled: false
 
-  # -- (bool) Deploys postgres/elasticsearch for dev
+  # -- (bool) Deploys postgres/opensearch for dev
   dev: true
   postgres:
     # -- (bool) Whether the database create job should run.
@@ -438,17 +438,25 @@ postgresql:
       # -- (bool) Option to persist the dbs data.
       enabled: false
 
-elasticsearch:
-  image: "quay.io/cdis/elasticsearch"
-  imageTag: "7.10.2"
+opensearch:
+  image:
+    tag: "2.19.6"
   clusterName: gen3-elasticsearch
-  maxUnavailable: 0
+  masterService: gen3-elasticsearch-master
   singleNode: true
   replicas: 1
-  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
-  esConfig:
-    elasticsearch.yml: |
-      # Here we can add elasticsearch config
+  config:
+    opensearch.yml: |
+      compatibility:
+        override_main_response_version: true
+  # OpenSearch bundles and auto-configures the security plugin; disable it to keep the legacy plain-http, no-auth dev behavior of the old ES image
+  extraEnvs:
+    - name: DISABLE_SECURITY_PLUGIN
+      value: "true"
+    - name: DISABLE_INSTALL_DEMO_CONFIG
+      value: "true"
+  labels:
+    app: gen3-elasticsearch-master
   resources:
     requests:
       cpu: "500m"

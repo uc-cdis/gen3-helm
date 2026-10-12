@@ -69,7 +69,7 @@ Published versions of this chart are listed in the
 | file://../wts | wts |
 | file://../zendesk-wrapper | zendesk-wrapper |
 | https://charts.bitnami.com/bitnami | postgresql |
-| https://helm.elastic.co | elasticsearch |
+| https://opensearch-project.github.io/helm-charts/ | opensearch |
 
 ## Values
 
@@ -103,15 +103,6 @@ Published versions of this chart are listed in the
 | data-upload-cron.enabled | bool | `false` |  |
 | datareplicate.enabled | bool | `false` | Whether to deploy the datareplicate subchart. |
 | dicom-server.enabled | bool | `false` | Whether to deploy the dicom-server subchart. |
-| elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
-| elasticsearch.clusterName | string | `"gen3-elasticsearch"` |  |
-| elasticsearch.esConfig."elasticsearch.yml" | string | `"# Here we can add elasticsearch config\n"` |  |
-| elasticsearch.image | string | `"quay.io/cdis/elasticsearch"` |  |
-| elasticsearch.imageTag | string | `"7.10.2"` |  |
-| elasticsearch.maxUnavailable | int | `0` |  |
-| elasticsearch.replicas | int | `1` |  |
-| elasticsearch.resources.requests.cpu | string | `"500m"` |  |
-| elasticsearch.singleNode | bool | `true` |  |
 | embedding-management-service.enabled | bool | `false` |  |
 | etl.enabled | bool | `true` | Whether to deploy the etl subchart. |
 | fence.enabled | bool | `true` | Whether to deploy the fence subchart. |
@@ -162,7 +153,7 @@ Published versions of this chart are listed in the
 | global.crossplane.s3.kmsKeyId | string | `nil` | The kms key id for the s3 bucket. |
 | global.crossplane.s3.versioningEnabled | bool | `false` | Whether to use s3 bucket versioning. |
 | global.dataUploadBucket | string | `nil` |  |
-| global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
+| global.dev | bool | `true` | Deploys postgres/opensearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
@@ -260,6 +251,18 @@ Published versions of this chart are listed in the
 | ohdsi-atlas.enabled | bool | `false` | Whether to deploy the ohdsi-atlas subchart. |
 | ohdsi-webapi.enabled | bool | `false` | Whether to deploy the ohdsi-webapi subchart. |
 | ohif-viewer.enabled | bool | `false` | Whether to deploy the ohif-viewer subchart. |
+| opensearch.clusterName | string | `"gen3-elasticsearch"` |  |
+| opensearch.config."opensearch.yml" | string | `"compatibility:\n  override_main_response_version: true\n"` |  |
+| opensearch.extraEnvs[0].name | string | `"DISABLE_SECURITY_PLUGIN"` |  |
+| opensearch.extraEnvs[0].value | string | `"true"` |  |
+| opensearch.extraEnvs[1].name | string | `"DISABLE_INSTALL_DEMO_CONFIG"` |  |
+| opensearch.extraEnvs[1].value | string | `"true"` |  |
+| opensearch.image.tag | string | `"2.19.6"` |  |
+| opensearch.labels.app | string | `"gen3-elasticsearch-master"` |  |
+| opensearch.masterService | string | `"gen3-elasticsearch-master"` |  |
+| opensearch.replicas | int | `1` |  |
+| opensearch.resources.requests.cpu | string | `"500m"` |  |
+| opensearch.singleNode | bool | `true` |  |
 | orthanc.enabled | bool | `false` | Whether to deploy the orthanc subchart. |
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
