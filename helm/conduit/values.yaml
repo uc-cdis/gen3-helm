@@ -1,0 +1,200 @@
+# Default values for conduit.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # -- (bool) Whether the deployment is for development purposes.
+  dev: true
+  # -- (string) Hostname for the deployment.
+  hostname: "localhost"
+  # -- (bool) If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed.
+  pdb: false
+  # -- (int) The minimum amount of pods that are available at all times if the PDB is deployed.
+  minAvailable: 1
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
+  # -- (bool) Whether Metrics are enabled.
+  metricsEnabled:
+  # -- (map) Karpenter topology spread configuration.
+  topologySpread:
+    # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
+    enabled: false
+    # -- (string) The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone".
+    topologyKey: "topology.kubernetes.io/zone"
+    # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
+    maxSkew: 1
+
+# -- (int) Number of server replicas. With leader election only one replica is active; the rest are hot standbys.
+replicaCount: 2
+
+# -- (int) Number of old revisions to retain
+revisionHistoryLimit: 2
+
+# -- (map) Rolling update deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- (int) Number of additional replicas to add during rollout.
+    maxSurge: 1
+    # -- (int) Maximum amount of pods that can be unavailable during the update.
+    maxUnavailable: 0
+
+image:
+  # -- (string) The Docker image repository for the conduit server.
+  repository: quay.io/cdis/conduit-server
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# -- (string) Override the name of the chart.
+nameOverride: ""
+
+# -- (string) Server log level: debug, info, warn, or error.
+logLevel: info
+
+# -- (map) Container ports. Rendered into the listen addresses in server.json.
+ports:
+  # -- (int) Public HTTP listener that proxies requests into agent tunnels.
+  http: 8080
+  # -- (int) mTLS gRPC listener that agents connect to.
+  grpc: 8443
+  # -- (int) Admin API, UI, health and metrics. Serves agent private keys; keep it in-cluster.
+  admin: 9090
+
+service:
+  # -- (int) Port conduit-service exposes for tunnel HTTP traffic (revproxy targets this).
+  httpPort: 80
+
+# -- (map) Leader election. Only the lease holder is labelled active and receives traffic.
+leaderElection:
+  # -- (bool) Enable leader election. Required when replicaCount > 1.
+  enabled: true
+  # -- (string) Name of the Lease object.
+  lockName: conduit-server-leader
+  # -- (string) Lease duration.
+  leaseDuration: 10s
+  # -- (string) Renew deadline.
+  renewDeadline: 6s
+  # -- (string) Retry period.
+  retryPeriod: 2s
+  # -- (string) Label key the leader sets on its own pod.
+  podLabelKey: conduit-role
+  # -- (string) Label value the leader sets on its own pod.
+  podLabelValue: active
+
+# -- (map) Passed through to server.json (snake_case keys, see conduit internal/config). http_addr, grpc_addr, admin_addr, cert_backend, kubernetes and leader_election are set by the chart and cannot be overridden here. server_names entries are appended to the in-cluster service names.
+serverConfig:
+  default_timeout: 30s
+  chunk_bytes: 65536
+  max_concurrent: 1000
+  # -- (list) Extra DNS names / IPs added to the auto-generated server certificate SANs.
+  server_names: []
+  # -- (list) Restrict which agent IDs may connect. Empty allows any agent with a valid cert.
+  allowed_agent_ids: []
+  # -- (list) Routes from public HTTP requests to agent tunnels. At least one is required.
+  routes:
+    - path_prefix: /conduit/
+      strip_prefix: true
+      route_mode: path_agent
+      route_id: default
+      timeout: 30s
+
+# -- (map) LoadBalancer Service for remote agents. Must be an L4 passthrough (agents use mTLS).
+grpcLoadBalancer:
+  # -- (bool) Create the gRPC LoadBalancer Service.
+  enabled: false
+  # -- (string) DNS name agents dial. Added to the server certificate SANs.
+  hostname: ""
+  # -- (int) Port the load balancer listens on.
+  port: 443
+  # -- (map) Annotations for the Service, e.g. for an AWS NLB:
+  # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  # service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  annotations: {}
+  # -- (list) Restrict client source ranges on the load balancer.
+  loadBalancerSourceRanges: []
+  # -- (list) CIDRs allowed to reach the gRPC port when global.netPolicy.enabled is true.
+  allowedCIDRs:
+    - 0.0.0.0/0
+
+# -- (map) Optional dedicated Ingress for tunnel HTTP traffic. Not needed when routing through revproxy.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+serviceAccount:
+  # -- (bool) Create the service account.
+  create: true
+  # -- (string) Service account name. Defaults to conduit-server.
+  name: ""
+  # -- (map) Service account annotations.
+  annotations: {}
+
+# -- (int) Should exceed the server's shutdown_grace (default 15s).
+terminationGracePeriodSeconds: 30
+
+# -- (list) Environment variables to pass to the container
+env: []
+
+# -- (list) Extra volumes for the pod.
+extraVolumes: []
+# -- (list) Extra volume mounts for the container.
+extraVolumeMounts: []
+
+# -- (map) Readiness probe. Standby replicas report ready too.
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: admin
+  initialDelaySeconds: 5
+  periodSeconds: 10
+# -- (map) Liveness probe.
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: admin
+  initialDelaySeconds: 10
+  periodSeconds: 30
+
+# -- (map) Resource requests and limits for the container
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+
+# -- (map) Affinity to use for the deployment.
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: conduit
+          topologyKey: kubernetes.io/hostname
+
+# -- (bool) Whether Metrics are enabled.
+metricsEnabled:
+
+# Values to determine the labels that are used for the deployment, pod, etc.
+# -- (string) Valid options are "production" or "dev". If invalid option is set- the value will default to "dev".
+release: "production"
+# -- (string) Valid options are "true" or "false". If invalid option is set- the value will default to "false".
+criticalService: "false"
+# -- (string) Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words.
+partOf: "Conduit"
+# -- (map) Will completely override the selectorLabels defined in the common chart's _label_setup.tpl
+selectorLabels:
+# -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
+commonLabels:
