@@ -1,0 +1,39 @@
+# Tunnel traffic (HTTP) and agent connections (gRPC). Selects only the
+# current leader when leader election is enabled.
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit-service
+  labels:
+    {{- include "conduit.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "conduit.activeSelectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+    - name: grpc
+      port: {{ .Values.ports.grpc }}
+      targetPort: grpc
+      protocol: TCP
+---
+# Admin API (agent registration, certs, UI, metrics). Never expose this
+# outside the cluster: it serves agent private keys.
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit-admin-service
+  labels:
+    {{- include "conduit.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "conduit.activeSelectorLabels" . | nindent 4 }}
+  ports:
+    - name: admin
+      port: {{ .Values.ports.admin }}
+      targetPort: admin
+      protocol: TCP

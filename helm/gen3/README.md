@@ -32,6 +32,7 @@ Published versions of this chart are listed in the
 | file://../cedar | cedar |
 | file://../cohort-middleware | cohort-middleware |
 | file://../common | common |
+| file://../conduit | conduit |
 | file://../dashboard | dashboard |
 | file://../data-upload-cron | data-upload-cron |
 | file://../datareplicate | datareplicate |
@@ -97,6 +98,8 @@ Published versions of this chart are listed in the
 | cedar.enabled | bool | `false` | Whether to deploy the cedar subchart. |
 | cohort-middleware | map | `{"enabled":false}` | Configurations for cohort-middleware chart. |
 | cohort-middleware.enabled | bool | `false` | Whether to deploy the cohort-middleware subchart. |
+| conduit | map | `{"enabled":false}` | Configurations for conduit chart. |
+| conduit.enabled | bool | `false` | Whether to deploy the conduit subchart. |
 | dashboard.dashboardConfig.bucket | string | `"generic-dashboard-bucket"` |  |
 | dashboard.dashboardConfig.prefix | string | `"hostname.com"` |  |
 | dashboard.enabled | bool | `false` |  |
