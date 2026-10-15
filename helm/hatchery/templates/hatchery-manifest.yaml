@@ -5,12 +5,19 @@ metadata:
 data:
   json: |-
     {{- if .Values.hatchery.json }}
+    {{- if .Values.global.usernameHash }}
+    {{- $cfg := .Values.hatchery.json | fromJson }}
+    {{- $_ := set $cfg "username-hash" .Values.global.usernameHash }}
+    {{ $cfg | toPrettyJson | nindent 4 }}
+    {{- else }}
     {{ .Values.hatchery.json | nindent 4 }}
+    {{- end }}
     {{- else }}
     {
       "user-namespace": "{{ include "hatchery.jupyterNamespace" . }}",
       "skip-node-selector": {{ or .Values.global.dev .Values.hatchery.skipNodeSelector | toJson }},
       "use-internal-services-url": {{ or .Values.global.dev .Values.hatchery.useInternalServicesUrl | toJson }},
+      "username-hash": {{ .Values.global.usernameHash | default "" | toJson }},
       "sub-dir": "/lw-workspace",
       "user-volume-size": "10Gi",
       "sidecar": {{ tpl (.Values.hatchery.sidecarContainer | toJson) . }},

@@ -198,6 +198,7 @@ Published versions of this chart are listed in the
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
+| global.usernameHash | string | `""` | How usernames are encoded in per-user workspace resource names: "" (escaped username) or "sha256-16" (first 16 bytes of the SHA-256, as hex). Shared by hatchery (which creates the resources) and workspace-proxy (which looks them up), so they cannot disagree. When set, overrides "username-hash" in hatchery.json. |
 | global.workspaceTimeoutInMinutes | int | `480` |  |
 | guppy | map | `{"enabled":false}` | Configurations for guppy chart. |
 | guppy.enabled | bool | `false` | Whether to deploy the guppy subchart. |

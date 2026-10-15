@@ -25,6 +25,8 @@ spec:
             - --listen={{ .Values.listenAddr }}
             - --workspace-namespace={{ .Values.workspaceNamespace }}
           env:
+            - name: USERNAME_HASH
+              value: {{ include "workspace-proxy.usernameHash" . | quote }}
             - name: JEG_GATEWAY_URL
               value: "http://jupyter-enterprise-gateway.{{ .Values.workspaceNamespace }}.svc.cluster.local:8888"
             - name: WORKSPACE_NAMESPACE

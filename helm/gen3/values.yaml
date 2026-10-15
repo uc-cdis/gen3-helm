@@ -4,6 +4,8 @@
 
 # Global configuration
 global:
+  # -- (string) How usernames are encoded in per-user workspace resource names: "" (escaped username) or "sha256-16" (first 16 bytes of the SHA-256, as hex). Shared by hatchery (which creates the resources) and workspace-proxy (which looks them up), so they cannot disagree. When set, overrides "username-hash" in hatchery.json.
+  usernameHash: ""
   # -- (map) GCP configuration
   gcp:
     enabled: false
