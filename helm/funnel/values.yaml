@@ -68,6 +68,8 @@ externalSecrets:
   funnelOidcClient:
   # -- (string) Name of the secret that will be created in secrets manager
   dbcreds: ""
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
 
 # -- (map) Secret information for External Secrets.
 secrets:

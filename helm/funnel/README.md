@@ -149,10 +149,11 @@ Published versions of this chart are listed in the
 | cleanup.schedule | string | `""` |  |
 | cleanup.scheduleOffsetMinutes | int | `0` |  |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createFunnelOidcClientSecret | bool | `true` | Whether to create the Funnel OIDC client secret using the oidc job. |
 | externalSecrets.dbcreds | string | `""` | Name of the secret that will be created in secrets manager |
 | externalSecrets.funnelOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client". |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
