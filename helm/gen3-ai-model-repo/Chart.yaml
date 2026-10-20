@@ -1,0 +1,14 @@
+apiVersion: v2
+name: gen3-ai-model-repo
+description: A Helm chart for the Gen3 AI model repository service
+type: application
+version: 0.1.0
+appVersion: "main"
+dependencies:
+  - name: common
+    version: 0.1.39
+    repository: file://../common
+  - name: postgresql
+    version: 11.9.13
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgres.separate
