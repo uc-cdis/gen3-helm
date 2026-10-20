@@ -38,9 +38,7 @@ data:
   {{- if .Values.global.privacyPolicyURL }}
   "privacy_policy_url": {{ . | quote }}
   {{- end -}}
-  {{- if .Values.global.mapboxToken }}
-  "mapbox_token": {{ . | quote }}
-  {{- end -}}
+
   {{- if .Values.global.cookieDomain }}
   "cookie_domain": {{ . | quote }}
   {{- end -}}

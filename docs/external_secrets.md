@@ -177,3 +177,37 @@ When pulling a secret from AWS Secrets Manager, you want to ensure that the Exte
 You can customize the name of the secret to pull from in the `.Values.externalSecrets` section of a Chart. You can see the name for the confiugrable secrets in a chart by looking in this section as well. 
 
 Any string you put in this section will override the name of the secret that is pulled from AWS Secrets Manager NOT the name of the Kubernetes secret that is created from the External Secret resource.
+
+## Umbrella-Level External Secrets
+
+The gen3 umbrella chart manages several secrets via the `global.externalSecrets` configuration. When `global.externalSecrets.deploy` is set to `true`, these secrets are pulled from AWS Secrets Manager instead of being passed through Helm values. This keeps secret values **out of Argo CD manifests, the Argo CD UI, and git history**.
+
+| Helm Value | K8s Secret Name | K8s Secret Key | Description |
+|---|---|---|---|
+| `global.externalSecrets.slackWebhookSecretName` | `slack-webhook` | `slack_webhook` | Slack webhook URL for notifications |
+| `global.externalSecrets.mapboxTokenSecretName` | `mapbox-config` | `mapbox_token` | Mapbox API token for geographic visualizations |
+
+### How to Use
+
+1. Store the secret value in AWS Secrets Manager under a key of your choice (e.g., `gen3/mapbox-token`)
+2. In your Argo CD Application values, reference only the **key name** — never the secret value:
+
+```yaml
+global:
+  externalSecrets:
+    deploy: true
+    mapboxTokenSecretName: "gen3/mapbox-token"  # key in AWS Secrets Manager, not the token itself
+```
+
+3. Do **not** set the plaintext fallback (e.g., `global.mapboxToken`) when using ExternalSecrets
+
+### Fallback for Dev Environments
+
+When `global.externalSecrets.deploy` is `false` (the default), the chart falls back to creating K8s Secrets directly from Helm values:
+
+```yaml
+global:
+  mapboxToken: "pk.abc123..."  # only for dev; visible in control plane
+```
+
+This fallback is intended for local/dev environments where External Secrets Operator is not deployed. **Do not use this pattern in production.**

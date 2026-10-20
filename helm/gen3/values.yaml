@@ -140,6 +140,8 @@ global:
     createSlackWebhookSecret: false
     # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
     slackWebhookSecretName: ""
+    # -- (string) Name of the secret in Secrets Manager that contains the mapbox API token.
+    mapboxTokenSecretName: ""
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
     enabled: false
