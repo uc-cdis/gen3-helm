@@ -134,7 +134,7 @@ spec:
             {{- toYaml .Values.initVolumeMounts | nindent 12 }}
           env:
             {{ toYaml .Values.initEnv | nindent 12 }}
-            DPoP: fence-create fails config validation without this when DPOP_ENABLED is true. Under evaluation.
+            #DPoP: fence-create fails config validation without this when DPOP_ENABLED is true. Under evaluation.
             - name: DPOP_SHARED_SECRET
               valueFrom:
                 secretKeyRef:
