@@ -203,6 +203,24 @@ fence:
     DPOP_ENABLED: true
 ```
 
+#### Creating the secret in AWS Secrets Manager
+
+When `global.externalSecrets.createDpopSecret` is set, the chart only syncs the secret into Kubernetes; it does not create it in AWS. Create it once per environment, before enabling the flag:
+
+```bash
+aws secretsmanager create-secret \
+  --name gen3-dpop \
+  --secret-string "{\"DPOP_SHARED_SECRET\":\"$(openssl rand -base64 48)\"}"
+```
+
+- `--name` must match `global.externalSecrets.dpopSecretName` (default `gen3-dpop`). The preferred approach is to use a per-environment name, such as `<environment>-gen3-dpop`, and set `dpopSecretName` to match.
+- The value is stored as JSON with a `DPOP_SHARED_SECRET` property, because that is the property the ExternalSecret reads. `openssl rand -base64 48` generates a random 48-byte value without writing it to disk or shell history, but any sufficiently random string will work.
+- If fence already has a `DPOP_SHARED_SECRET` (for example, in its `fence-config` secret), reuse that value instead of generating a new one. Services holding different values cannot verify each other's nonces.
+
+To rotate the value, run `aws secretsmanager put-secret-value --secret-id <dpopSecretName> --secret-string ...` with the same JSON shape.
+
+Once the ExternalSecret has refreshed, restart fence, presigned-url-fence and gen3-workflow together, because the services read the variable only at startup.
+
 
 ---
 
