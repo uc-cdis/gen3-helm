@@ -55,6 +55,13 @@ spec:
                       name: slack-webhook
                       key: slack_webhook
                       optional: true
+                # DPoP: fence-create fails config validation without this when DPOP_ENABLED is true. Under evaluation.
+                # - name: DPOP_SHARED_SECRET
+                #   valueFrom:
+                #     secretKeyRef:
+                #       name: gen3-dpop
+                #       key: DPOP_SHARED_SECRET
+                #       optional: true
                 - name: FENCE_PUBLIC_CONFIG
                   valueFrom:
                     configMapKeyRef:

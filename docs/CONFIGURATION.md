@@ -183,6 +183,26 @@ OIDC (OpenID Connect) clients allow applications to authenticate with Fence. Thi
 
 Once the client is created, share the client_id and client_secret with the application owner so they can configure their application to authenticate with Fence. To create these clients, you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/setup.md#register-oauth-client).
 
+### DPoP shared secret
+
+`DPOP_SHARED_SECRET` must be identical in fence and every DPoP-aware service (such as gen3-workflow). It is rendered once by the umbrella chart as the Kubernetes Secret `gen3-dpop`, and each service reads it through an `env` entry with `secretKeyRef`. Do not put it in `FENCE_CONFIG`, `FENCE_CONFIG_PUBLIC` or `GEN3_WORKFLOW_CONFIG`.
+
+```yaml
+global:
+  # Local development: render gen3-dpop from a value.
+  createDpopSecret: true
+  dpopSharedSecret: "<local-random-value>"
+  externalSecrets:
+    # Real deployments: sync gen3-dpop from the Secrets Manager secret named by dpopSecretName,
+    # which must hold a DPOP_SHARED_SECRET property.
+    createDpopSecret: true
+    dpopSecretName: "gen3-dpop"
+
+fence:
+  FENCE_CONFIG_PUBLIC:
+    DPOP_ENABLED: true
+```
+
 
 ---
 
