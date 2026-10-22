@@ -36,13 +36,6 @@ spec:
                       name: manifest-fence
                       key: fence-config-public.yaml
                       optional: true
-                # DPoP: fence-create fails config validation without this when DPOP_ENABLED is true. Under evaluation.
-                # - name: DPOP_SHARED_SECRET
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: gen3-dpop
-                #       key: DPOP_SHARED_SECRET
-                #       optional: true
                 {{- toYaml .Values.env | nindent 16 }}
             volumeMounts:
               - name: "config-volume"

@@ -134,13 +134,6 @@ spec:
             {{- toYaml .Values.initVolumeMounts | nindent 12 }}
           env:
             {{ toYaml .Values.initEnv | nindent 12 }}
-            #DPoP: fence-create fails config validation without this when DPOP_ENABLED is true. Under evaluation.
-            - name: DPOP_SHARED_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: gen3-dpop
-                  key: DPOP_SHARED_SECRET
-                  optional: true
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
