@@ -76,6 +76,13 @@ spec:
         podSelector:
           matchLabels:
             app: "ambassador"
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app: "workspace-proxy"
   policyTypes:
     - Ingress
 ---
