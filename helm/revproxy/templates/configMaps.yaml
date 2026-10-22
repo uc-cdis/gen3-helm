@@ -10,7 +10,14 @@ data:
   {{ $filename }}: |
   {{- $bytes | toString | nindent 4 }}
 {{- end }}
-{{- end}}
+{{- end }}
+{{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/workspace/*.conf" }}
+{{- $filename := ($a := split "/" $path)._2 }}
+{{- if not (hasKey $additionalConfigs $filename) }}
+  {{ $filename }}: |
+  {{- $bytes | toString | nindent 4 }}
+{{- end }}
+{{- end }}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
   {{ "frontend-framework-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf" | nindent 4}}
