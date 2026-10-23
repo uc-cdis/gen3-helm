@@ -190,23 +190,15 @@ Once the client is created, share the client_id and client_secret with the appli
 ```yaml
 global:
   # With externalSecrets.deploy: true, gen3-dpop is synced from the Secrets Manager secret
-  # <global.environment>-gen3-dpop. Otherwise it is created empty for admins to fill in.
+  # <global.environment>-gen3-dpop. Otherwise it is created from dpopSharedSecret.
   createDpopSecret: true
+  # Required without External Secrets. Generate with: openssl rand -base64 64
+  dpopSharedSecret: ""
 
 fence:
   FENCE_CONFIG_PUBLIC:
     DPOP_ENABLED: true
 ```
-
-#### Setting the value without External Secrets
-
-The chart creates `gen3-dpop` with an empty `DPOP_SHARED_SECRET`. Set the value once after the first install:
-
-```bash
-kubectl patch secret gen3-dpop -n <namespace> \
-  -p "{\"stringData\":{\"DPOP_SHARED_SECRET\":\"$(openssl rand -base64 64 | tr -d '\n')\"}}"
-```
-Restart fence, presigned-url-fence and gen3-workflow after setting it.
 
 #### Creating the secret in AWS Secrets Manager
 
