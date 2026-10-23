@@ -191,12 +191,12 @@ Once the client is created, share the client_id and client_secret with the appli
 global:
   # Local development: render gen3-dpop from a value.
   createDpopSecret: true
-  dpopSharedSecret: "<local-random-value>"
+  # Required when createDpopSecret is true. Generate with: openssl rand -base64 64
+  dpopSharedSecret: ""
   externalSecrets:
-    # Real deployments: sync gen3-dpop from the Secrets Manager secret named by dpopSecretName,
-    # which must hold a DPOP_SHARED_SECRET property.
+    # Real deployments: sync gen3-dpop from the Secrets Manager secret
+    # <global.environment>-gen3-dpop, which must hold a DPOP_SHARED_SECRET property.
     createDpopSecret: true
-    dpopSecretName: "gen3-dpop"
 
 fence:
   FENCE_CONFIG_PUBLIC:
@@ -209,15 +209,15 @@ When `global.externalSecrets.createDpopSecret` is set, the chart only syncs the 
 
 ```bash
 aws secretsmanager create-secret \
-  --name gen3-dpop \
+  --name <environment>-gen3-dpop \
   --secret-string "{\"DPOP_SHARED_SECRET\":\"$(openssl rand -base64 64)\"}"
 ```
 
-- `--name` must match `global.externalSecrets.dpopSecretName` (default `gen3-dpop`). The preferred approach is to use a per-environment name, such as `<environment>-gen3-dpop`, and set `dpopSecretName` to match.
-- The value is stored as JSON with a `DPOP_SHARED_SECRET` property, because that is the property the ExternalSecret reads. `openssl rand -base64 64` generates a random 48-byte value without writing it to disk or shell history, but any sufficiently random string will work.
+- `--name` must be `<global.environment>-gen3-dpop` (or plain `gen3-dpop` if `global.environment` is empty).
+- The value is stored as JSON with a `DPOP_SHARED_SECRET` property, because that is the property the ExternalSecret reads. `openssl rand -base64 64` generates a random 64-byte value without writing it to disk or shell history, but any sufficiently random string will work.
 - If fence already has a `DPOP_SHARED_SECRET` (for example, in its `fence-config` secret), reuse that value instead of generating a new one. Services holding different values cannot verify each other's nonces.
 
-To rotate the value, run `aws secretsmanager put-secret-value --secret-id <dpopSecretName> --secret-string ...` with the same JSON shape.
+To rotate the value, run `aws secretsmanager put-secret-value --secret-id <environment>-gen3-dpop --secret-string ...` with the same JSON shape.
 
 Once the ExternalSecret has refreshed, restart fence, presigned-url-fence and gen3-workflow together, because the services read the variable only at startup.
 

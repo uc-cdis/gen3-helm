@@ -146,8 +146,6 @@ global:
     slackWebhookSecretName: ""
     # -- (bool) Will create a Kubernetes Secret for the DPoP shared secret.
     createDpopSecret: false
-    # -- (string) Name of the secret in Secrets Manager that contains the DPoP shared secret.
-    dpopSecretName: "gen3-dpop"
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
     enabled: false
