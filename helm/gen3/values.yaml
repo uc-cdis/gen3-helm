@@ -126,10 +126,8 @@ global:
   createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
-  # -- (bool) Will create a Kubernetes Secret for the DPoP shared secret.
+  # -- (bool) Will create the gen3-dpop Kubernetes Secret for the DPoP shared secret. Synced from Secrets Manager ("<global.environment>-gen3-dpop") when externalSecrets.deploy is true; otherwise created empty for admins to fill in.
   createDpopSecret: false
-  # -- (string) DPoP shared secret for fence and DPoP-aware services
-  dpopSharedSecret: ""
   metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
@@ -144,8 +142,6 @@ global:
     createSlackWebhookSecret: false
     # -- (string) Name of the secret in Secrets Manager that contains the slack webhook.
     slackWebhookSecretName: ""
-    # -- (bool) Will create a Kubernetes Secret for the DPoP shared secret.
-    createDpopSecret: false
   topologySpread:
     # -- (bool) Whether to enable topology spread constraints for all subcharts that support it.
     enabled: false

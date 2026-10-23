@@ -153,7 +153,7 @@ Published versions of this chart are listed in the
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
 | global.clusterName | string | `"default"` | Kubernetes cluster name. |
-| global.createDpopSecret | bool | `false` | Will create a Kubernetes Secret for the DPoP shared secret. |
+| global.createDpopSecret | bool | `false` | Will create the gen3-dpop Kubernetes Secret for the DPoP shared secret. Synced from Secrets Manager ("<global.environment>-gen3-dpop") when externalSecrets.deploy is true; otherwise created empty for admins to fill in. |
 | global.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
@@ -166,11 +166,9 @@ Published versions of this chart are listed in the
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
-| global.dpopSharedSecret | string | `""` | DPoP shared secret for fence and DPoP-aware services |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"apiVersion":"external-secrets.io/v1","clusterSecretStoreRef":"","createDpopSecret":false,"createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets | map | `{"apiVersion":"external-secrets.io/v1","clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
 | global.externalSecrets.apiVersion | string | `"external-secrets.io/v1"` | API version to use for External Secrets resources. Defaults to v1beta1 when unset. |
-| global.externalSecrets.createDpopSecret | bool | `false` | Will create a Kubernetes Secret for the DPoP shared secret. |
 | global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
