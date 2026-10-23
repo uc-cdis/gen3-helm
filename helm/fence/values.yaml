@@ -797,7 +797,7 @@ USER_YAML: |
   cloud_providers: {}
   groups: {}
 
-# -- (map) Public configuration settings for Fence app. 
+# -- (map) Public configuration settings for Fence app.
 # DPOP_ENABLED belongs here.
 FENCE_CONFIG_PUBLIC: {}
 
