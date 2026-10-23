@@ -183,6 +183,41 @@ OIDC (OpenID Connect) clients allow applications to authenticate with Fence. Thi
 
 Once the client is created, share the client_id and client_secret with the application owner so they can configure their application to authenticate with Fence. To create these clients, you will need to exec into a fence container and run the [following commands](https://github.com/uc-cdis/fence/blob/master/docs/additional_documentation/setup.md#register-oauth-client).
 
+### DPoP shared secret
+
+`DPOP_SHARED_SECRET` must be identical in fence and every DPoP-aware service (such as gen3-workflow). It is rendered once by the umbrella chart as the Kubernetes Secret `gen3-dpop`, and each service reads it through an `env` entry with `secretKeyRef`. Do not put it in `FENCE_CONFIG`, `FENCE_CONFIG_PUBLIC` or `GEN3_WORKFLOW_CONFIG`.
+
+```yaml
+global:
+  # With externalSecrets.deploy: true, gen3-dpop is synced from the Secrets Manager secret
+  # <global.environment>-gen3-dpop. Otherwise it is created from dpopSharedSecret.
+  createDpopSecret: true
+  # Required without External Secrets. Generate with: openssl rand -base64 64
+  dpopSharedSecret: ""
+
+fence:
+  FENCE_CONFIG_PUBLIC:
+    DPOP_ENABLED: true
+```
+
+#### Creating the secret in AWS Secrets Manager
+
+When `global.createDpopSecret` and `global.externalSecrets.deploy` are both set, the chart only syncs the secret into Kubernetes; it does not create it in AWS. Create it once per environment, before enabling the flag:
+
+```bash
+aws secretsmanager create-secret \
+  --name <environment>-gen3-dpop \
+  --secret-string "{\"DPOP_SHARED_SECRET\":\"$(openssl rand -base64 64)\"}"
+```
+
+- `--name` must be `<global.environment>-gen3-dpop` (or plain `gen3-dpop` if `global.environment` is empty).
+- The value is stored as JSON with a `DPOP_SHARED_SECRET` property, because that is the property the ExternalSecret reads. `openssl rand -base64 64` generates a random 64-byte value without writing it to disk or shell history, but any sufficiently random string will work.
+- If fence already has a `DPOP_SHARED_SECRET` (for example, in its `fence-config` secret), reuse that value instead of generating a new one. Services holding different values cannot verify each other's nonces.
+
+To rotate the value, run `aws secretsmanager put-secret-value --secret-id <environment>-gen3-dpop --secret-string ...` with the same JSON shape.
+
+Once the ExternalSecret has refreshed, restart fence, presigned-url-fence and gen3-workflow together, because the services read the variable only at startup.
+
 
 ---
 
