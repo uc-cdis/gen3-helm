@@ -115,6 +115,7 @@ Published versions of this chart are listed in the
 | karpenter-crds.gpu.fastImagePull.enabled | bool | `false` |  |
 | karpenter-crds.gpu.fastImagePull.iops | int | `3000` |  |
 | karpenter-crds.gpu.fastImagePull.throughput | int | `600` |  |
+| karpenter-crds.gpu.instanceTypes | list | `[]` | Specific EC2 instance types for the gpu NodePools (e.g. ["g6.xlarge"]). If empty, defaults to the g4dn instance family. |
 | karpenter-crds.gpu.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |

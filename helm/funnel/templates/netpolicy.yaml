@@ -138,6 +138,8 @@ spec:
   - to: []
     ports:
       - protocol: TCP
+        port: 6443
+      - protocol: TCP
         port: 443
 ---
 # Funnel workers need to be able to access
@@ -170,7 +172,9 @@ spec:
     {{- end }}
       ports:
       - protocol: TCP
-        port: 443  # Kubernetes API
+        port: 443
+      - protocol: TCP
+        port: 6443  # Kubernetes API
   policyTypes:
     - Egress
 
