@@ -53,6 +53,18 @@ This will kick off a [database creation job](../helm/common/templates/_db_setup_
 <!-- Describe the database creation job -->
 
 
+## Schema migrations
+
+Creating the database is separate from migrating its schema. The creation job provisions the
+database, role and extensions, then signals completion by patching a `dbcreated` key into
+`<service>-dbcreds`; applying migrations on top of that is the service's own step.
+
+Charts using [dbmate](https://github.com/amacneil/dbmate) get a shared migration Job from
+`helm/common`, with the service's pods waiting for it rather than migrating themselves. See
+[database-migrations.md](database-migrations.md). Fence uses `fence-create migrate` instead, in
+[fence-db-migration.md](fence-db-migration.md).
+
+
 ## Database restoration. (BETA)
 There is a job to restore dummy data for Postgres and Elasticsearch to speed up setting up ephemeral enviornments for testing purposes, and to avoid running expensive ETL jobs in CI to have a fully featured gen3 environment
 

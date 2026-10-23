@@ -47,16 +47,19 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- with .Values.extraVolumes }}
       volumes:
-        - name: gen3-embeddings-g3auto-volume
-          secret:
-            secretName: gen3embeddings-g3auto
-        {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- /* Secret settings arrive as environment variables, ahead of the `env` entries
+                 below so that a name set in both resolves to the `env` value. */}}
+          envFrom:
+            - secretRef:
+                name: {{ include "gen3-embeddings.envSecretName" . }}
+                optional: true
           env:
             {{- toYaml .Values.env | nindent 12 }}
             - name: PGHOST
@@ -89,36 +92,32 @@ spec:
                   name: gen3-embeddings-dbcreds
                   key: database
                   optional: false
-            - name: CONFIG_PATH
-              value: /services/gen3_embeddings/.env
-            {{- if eq .Values.global.dev false }}
-            - name: FENCE_URL
-              value: https://{{ .Values.global.hostname }}/user
-            {{- else }}
-            - name: FENCE_URL
-              value: {{ default "http://fence-service" .Values.global.fenceURL | quote }}
-            {{- end }}
+            - name: DEBUG
+              value: {{ .Values.debug | quote }}
             - name: DBREADY
               valueFrom:
                 secretKeyRef:
                   name: gen3-embeddings-dbcreds
                   key: dbcreated
                   optional: false
+            {{- if not (kindIs "map" .Values.extraEnv) }}
+            {{- fail (printf "gen3-embeddings.extraEnv must be a map of NAME: value, got %s. Use `valueFrom` entries in `env` instead." (kindOf .Values.extraEnv)) }}
+            {{- end }}
+            {{- range $k, $v := .Values.extraEnv }}
+            {{- if or (kindIs "map" $v) (kindIs "slice" $v) }}
+            {{- fail (printf "gen3-embeddings.extraEnv[%s] must be a scalar, got %s. Use `env` for anything needing `valueFrom`." $k (kindOf $v)) }}
+            {{- end }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 4142
+            - containerPort: {{ .Values.service.targetPort }}
               name: http
           livenessProbe:
-            httpGet:
-              path: /_status
-              port: 4142
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /_status
-              port: 4142
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
@@ -127,6 +126,12 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      {{- /* Only wait when something is going to migrate. With migrations disabled there is no
+             Job to wait for, and the poll below would never see a clean status. Resolved through
+             common.db_migrate.settings so the gate cannot disagree with common.db_migrate_job
+             about whether a Job exists. */}}
+      {{- $migrations := include "common.db_migrate.settings" . | fromYaml }}
+      {{- if $migrations.enabled }}
       initContainers:
         - name: gen3-embeddings-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -134,68 +139,7 @@ spec:
           env:
             - name: GEN3_DEBUG
               value: "False"
-            # Admin/master connection – same pattern as db_setup_job
-            - name: PGPASSWORD
-              {{- if $.Values.global.dev }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
-                  optional: false
-              {{- else if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: password
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.password | quote }}
-              {{- end }}
-            - name: PGUSER
-              {{- if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: username
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.username | quote }}
-              {{- end }}
-            - name: PGPORT
-              {{- if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: port
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.port | quote }}
-              {{- end }}
-            - name: PGHOST
-              {{- if $.Values.global.dev }}
-              value: "{{ .Release.Name }}-postgresql"
-              {{- else if $.Values.global.postgres.externalSecret }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.global.postgres.externalSecret }}
-                  key: host
-                  optional: false
-              {{- else }}
-              value: {{ .Values.global.postgres.master.host | quote }}
-              {{- end }}
-
-            - name: PGDATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: gen3-embeddings-dbcreds
-                  key: database
-                  optional: false
-            - name: DBREADY
-              valueFrom:
-                secretKeyRef:
-                  name: gen3-embeddings-dbcreds
-                  key: dbcreated
-                  optional: false
+            {{- include "common.db_migrate.env" . | nindent 12 }}
 
           {{- with .Values.volumeMounts }}
           volumeMounts:
@@ -205,11 +149,42 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          command: ["/bin/bash", "-c"]
+          command: ["/bin/sh", "-c"]
           args:
             - |
-              set -euo pipefail
-              echo "Running gen3-embeddings migrations..."
-              DATABASE_URL="postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=disable"
-              dbmate -u "$DATABASE_URL" -d "/services/gen3_embeddings/db/migrations" migrate
-              echo "Migrations completed."
+              set -eu
+              {{- include "common.db_migrate.dsn" . | nindent 14 }}
+              # Waits rather than migrates: the dbmigrate Job is the only writer. Polls the
+              # database instead of the Job because ttlSecondsAfterFinished reaps the Job, so a
+              # replica starting later would wait on an object that no longer exists.
+              #
+              # dbmate status --quiet exits 0 with nothing pending, 1 with migrations pending, and
+              # 2 on any other error. Treating 2 as "keep waiting" would turn a bad DSN into a pod
+              # that hangs in Init forever, so it gets a bounded retry.
+              attempts=0
+              until_ready() {
+                set +e
+                dbmate -u "$DATABASE_URL" -d {{ $migrations.dir | quote }} status --quiet
+                rc=$?
+                set -e
+                return $rc
+              }
+              while true; do
+                if until_ready; then
+                  echo "Migrations up to date."
+                  break
+                fi
+                if [ "$rc" -eq 1 ]; then
+                  attempts=0
+                  echo "Waiting for migrations to be applied..."
+                else
+                  attempts=$((attempts + 1))
+                  echo "dbmate status failed (rc=$rc), attempt ${attempts}/30"
+                  if [ "$attempts" -ge 30 ]; then
+                    echo "Giving up waiting for migrations."
+                    exit 1
+                  fi
+                fi
+                sleep 5
+              done
+      {{- end }}
