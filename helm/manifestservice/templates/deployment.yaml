@@ -20,6 +20,7 @@ spec:
         public: "yes"
         s3: "yes"
         internet: "yes"
+        linklocal: "yes"
         userhelper: "yes"
         {{- include "manifestservice.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
