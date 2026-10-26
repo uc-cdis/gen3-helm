@@ -175,6 +175,8 @@ Published versions of this chart are listed in the
 | global.frontendRoot | string | `"portal"` | Which app will be served on /. Needs be set to portal for portal, or "gen3ff" for frontendframework. |
 | global.gcp | map | `{"enabled":false,"projectID":"project-name","secretStoreServiceAccount":"GCP_SA@PROJECT_ID.iam.gserviceaccount.com"}` | GCP configuration |
 | global.hostname | string | `"localhost"` | Hostname for the deployment. |
+| global.jeg | map | `{"enabled":false}` | Vectis workspaces (jeg + workspace-proxy). Global so revproxy can pick the workspace route. |
+| global.jeg.enabled | bool | `false` | Deploy jeg and workspace-proxy and route /lw-workspace/proxy/ to workspace-proxy. Must not be combined with ambassador.enabled. |
 | global.logoutInactiveUsers | bool | `true` |  |
 | global.maintenanceMode | string | `"off"` |  |
 | global.manifestGlobalExtraValues | map | `{}` | If you would like to add any extra values to the manifest-global configmap. |
@@ -243,8 +245,7 @@ Published versions of this chart are listed in the
 | hatchery.hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
-| jeg | map | `{"enabled":false}` | Jupyter Enterprise Gateway for vectis workspaces. |
-| jeg.enabled | bool | `false` | Whether to deploy the jeg subchart. |
+| jeg | map | `{}` | Per-chart `enabled` is optional; it falls back to global.jeg.enabled. |
 | manifestservice.enabled | bool | `true` | Whether to deploy the manifest service subchart. |
 | metadata.enabled | bool | `true` | Whether to deploy the metadata subchart. |
 | mutatingWebhook.enabled | bool | `false` | Whether to deploy the mutating webhook service. |
@@ -283,7 +284,6 @@ Published versions of this chart are listed in the
 | tests.TEST_LABEL | str | `nil` | Name of the test that will run. Default is empty as GH workflow automatically sets this. |
 | vectis-overlays | map | `{"enabled":false}` | vectis-overlays — guppy-compat, siem-service, search-auth-proxy. |
 | vectis-overlays.enabled | bool | `false` | Whether to deploy the vectis-overlays subchart. |
-| workspace-proxy | map | `{"enabled":false}` | workspace-proxy — per-user workspace HTTP/WebSocket router. |
-| workspace-proxy.enabled | bool | `false` | Whether to deploy the workspace-proxy subchart. |
+| workspace-proxy | map | `{}` | workspace-proxy — per-user workspace HTTP/WebSocket router. |
 | wts.enabled | bool | `true` | Whether to deploy the wts subchart. |
 | zendesk-wrapper.enabled | bool | `false` | Whether to deploy the zendesk-wrapper subchart. |

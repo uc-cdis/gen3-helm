@@ -11,7 +11,8 @@ data:
   {{- $bytes | toString | nindent 4 }}
 {{- end }}
 {{- end }}
-{{- range $path, $bytes := .Files.Glob "gen3.nginx.conf/workspace/*.conf" }}
+{{- $workspaceGlob := ternary "gen3.nginx.conf/workspace/*.conf" "gen3.nginx.conf/ambassador/*.conf" ((.Values.global.jeg | default dict).enabled | default false) }}
+{{- range $path, $bytes := .Files.Glob $workspaceGlob }}
 {{- $filename := ($a := split "/" $path)._2 }}
 {{- if not (hasKey $additionalConfigs $filename) }}
   {{ $filename }}: |

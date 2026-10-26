@@ -4,6 +4,10 @@
 
 # Global configuration
 global:
+  # -- (map) Vectis workspaces (jeg + workspace-proxy). Global so revproxy can pick the workspace route.
+  jeg:
+    # -- (bool) Deploy jeg and workspace-proxy and route /lw-workspace/proxy/ to workspace-proxy. Must not be combined with ambassador.enabled.
+    enabled: false
   # -- (map) GCP configuration
   gcp:
     enabled: false
@@ -486,14 +490,11 @@ neuvector:
   ES_HOST: gen3-elasticsearch-master
 
 # -- (map) Jupyter Enterprise Gateway for vectis workspaces.
-jeg:
-  # -- (bool) Whether to deploy the jeg subchart.
-  enabled: false
+# -- (map) Per-chart `enabled` is optional; it falls back to global.jeg.enabled.
+jeg: {}
 
 # -- (map) workspace-proxy — per-user workspace HTTP/WebSocket router.
-workspace-proxy:
-  # -- (bool) Whether to deploy the workspace-proxy subchart.
-  enabled: false
+workspace-proxy: {}
 
 # -- (map) vectis-overlays — guppy-compat, siem-service, search-auth-proxy.
 vectis-overlays:

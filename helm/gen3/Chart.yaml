@@ -193,11 +193,11 @@ dependencies:
   - name: jeg
     version: "*"
     repository: "file://../jeg"
-    condition: jeg.enabled
+    condition: jeg.enabled,global.jeg.enabled
   - name: workspace-proxy
     version: "*"
     repository: "file://../workspace-proxy"
-    condition: workspace-proxy.enabled
+    condition: workspace-proxy.enabled,global.jeg.enabled
   - name: vectis-overlays
     version: "*"
     repository: "file://../vectis-overlays"
