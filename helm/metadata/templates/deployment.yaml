@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,6 +40,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -54,12 +60,16 @@ spec:
           configMap:
             name: agg-mds-config
             optional: true
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env: 
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: GEN3_DEBUG
               value: "False"
             - name: GEN3_ES_ENDPOINT
@@ -121,14 +131,18 @@ spec:
           ports:
             - containerPort:  {{ .Values.service.targetPort }}
               name: http
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 10 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 10 }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       initContainers:
         - name: {{ .Values.initContainerName }}
           securityContext:

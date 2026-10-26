@@ -122,10 +122,11 @@ def set_prod_defaults(config_file_path):
     )
 
     print("  INDEXD set as http://indexd-service/")
-    config_file = _replace(config_file, "INDEXD", "http://indexd-service/")
+    internal_scheme = os.environ.get("INTERNAL_SERVICE_PROTOCOL", "http")
+    config_file = _replace(config_file, "INDEXD", f"{internal_scheme}://indexd-service/")
 
     print("  ARBORIST set as http://arborist-service/")
-    config_file = _replace(config_file, "ARBORIST", "http://arborist-service/")
+    config_file = _replace(config_file, "ARBORIST", f"{internal_scheme}://arborist-service/")
 
     print("  HTTP_PROXY/host set as cloud-proxy.internal.io")
     config_file = _replace(config_file, "HTTP_PROXY/host", "cloud-proxy.internal.io")

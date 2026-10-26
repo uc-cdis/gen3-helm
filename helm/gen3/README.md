@@ -182,6 +182,18 @@ Published versions of this chart are listed in the
 | global.netPolicy | bool | `{"dbSubnets":[],"enabled":false}` | Global flags to control and manage network policies for a Gen3 installation NOTE: Network policies are currently a beta feature. Use with caution! |
 | global.netPolicy.dbSubnets | array | `[]` | A CIDR range representing a database subnet, that services with a database need access to |
 | global.netPolicy.enabled | bool | `false` | Whether network policies are enabled |
+| global.nginxSidecar.enabled | bool | `false` |  |
+| global.nginxSidecar.image | string | `"nginx:1.27-alpine"` |  |
+| global.nginxSidecar.listenPort | int | `8443` |  |
+| global.nginxSidecar.metrics.enabled | bool | `false` |  |
+| global.nginxSidecar.metrics.image | string | `"nginx/nginx-prometheus-exporter:1.4.2"` |  |
+| global.nginxSidecar.metrics.port | int | `9113` |  |
+| global.nginxSidecar.metrics.stubStatusPort | int | `8081` |  |
+| global.nginxSidecar.tls.caSecretName | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.enabled | bool | `false` |  |
+| global.nginxSidecar.tls.issuerRef.kind | string | `"Issuer"` |  |
+| global.nginxSidecar.tls.issuerRef.name | string | `"gen3-internal-ca"` |  |
+| global.nginxSidecar.tls.selfSignedIssuerName | string | `"gen3-selfsigned"` |  |
 | global.pdb | bool | `false` | If the service will be deployed with a Pod Disruption Budget. Note- you need to have more than 2 replicas for the pdb to be deployed. |
 | global.portalApp | string | `"gitops"` | Portal application name. |
 | global.postgres.dbCreate | bool | `true` | Whether the database create job should run. |

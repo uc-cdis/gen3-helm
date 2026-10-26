@@ -1,3 +1,7 @@
+{{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
+{{- $nginxTls := and (default false $nginx.enabled) (default false $nginx.tls.enabled) -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +40,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "revproxy.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
@@ -72,6 +79,14 @@ spec:
         - name: revproxy-subconf
           configMap:
             name: revproxy-nginx-subconf
+      {{- if $nginxTls }}
+        - name: nginx-sidecar-tls
+          secret:
+            secretName: revproxy-nginx-sidecar-tls 
+        - name: internal-ca
+          secret:
+            secretName: {{ default "gen3-internal-ca" .Values.global.nginxSidecar.tls.caSecretName }}
+      {{- end}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -83,23 +98,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.service.targetPort }}
-            name: http
-          - containerPort: 443
+          - containerPort: {{ ternary 443 .Values.service.targetPort $nginxTls }}
+            name: {{ ternary "https" "http" $nginxTls }}
           - containerPort: 6567
+            name: metrics
           livenessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" $nginxTls }}
+              scheme: {{ ternary "HTTPS" "HTTP" $nginxTls }}
             initialDelaySeconds: 5
             periodSeconds: 3000
           readinessProbe:
             httpGet:
               path: /_status
-              port: http
+              port: {{ ternary "https" "http" $nginxTls }}
+              scheme: {{ ternary "HTTPS" "HTTP" $nginxTls }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
@@ -150,6 +168,14 @@ spec:
             mountPath: /tmp
           - name: nginx-cache
             mountPath: /var/cache/nginx
+          {{- if $nginxTls }}
+          - name: nginx-sidecar-tls
+            mountPath: /etc/nginx/tls
+            readOnly: true
+          - name: internal-ca
+            mountPath: /etc/nginx/internal-ca
+            readOnly: true
+          {{- end}}
           # - name: "modsec-conf"
           #   readOnly: true
           #   mountPath: "/etc/nginx/modsec"
@@ -200,6 +226,17 @@ spec:
               fi
 
               exec nginx -g 'daemon off;'
+        {{- if and $nginx.enabled $nginx.metrics.enabled }}
+        - name: nginx-prometheus-exporter
+          image: {{ default "nginx/nginx-prometheus-exporter:1.4.2" $nginx.metrics.image | quote }}
+          imagePullPolicy: {{ default "IfNotPresent" $nginx.metrics.imagePullPolicy }}
+          args:
+            - -nginx.scrape-uri=http://127.0.0.1:{{ default 8081 $nginx.metrics.stubStatusPort }}/stub_status
+          ports:
+            - name: nginx-metrics
+              containerPort: {{ default 9113 $nginx.metrics.port }}
+              protocol: TCP
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

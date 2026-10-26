@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,6 +32,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "audit.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
@@ -47,6 +53,9 @@ spec:
             secretName: "audit-g3auto"
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
         {{- end }}
       containers:
         - name: audit
@@ -72,6 +81,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -104,6 +114,7 @@ spec:
                   optional: false
             {{- toYaml .Values.env | nindent 12 }}
           volumeMounts:
+              {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 14 }}
               - name: "config-volume"
                 readOnly: true
                 mountPath: "/src/audit-service-config.yaml"
@@ -116,6 +127,7 @@ spec:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       initContainers:
         - name: audit-init
           securityContext:

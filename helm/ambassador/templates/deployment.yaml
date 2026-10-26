@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +31,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         netnolimit: "yes"
         public: "yes"
@@ -54,6 +60,10 @@ spec:
       serviceAccountName: ambassador
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if $nginxVolumes }}
+      volumes:
+        {{- $nginxVolumes | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -61,6 +71,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          {{- include "common.nginxSidecar.caEnvVars" . | nindent 10 }}
           - name: AMBASSADOR_NAMESPACE
             value: {{- if .Values.jupyterNamespace }}
               {{ .Values.jupyterNamespace | quote }}
@@ -72,8 +83,6 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
-            - name: https
-              containerPort: 8443
             - name: admin
               containerPort: 8877
           livenessProbe:
@@ -90,6 +99,11 @@ spec:
             periodSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if include "common.nginxSidecar.tls" . }}
+          volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
+          {{- end }}
+      {{- include "common.nginxSidecar.containers" . | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

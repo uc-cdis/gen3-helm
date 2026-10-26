@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +39,9 @@ spec:
       {{- if $metricsEnabled }}
         {{- include "common.grafanaAnnotations" . | nindent 8 }}
       {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -48,6 +54,9 @@ spec:
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken}}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }} 
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds}}
       containers:
         - name: manifestservice
@@ -91,6 +100,7 @@ spec:
             - name: FENCE_URL
               value: {{ default "http://fence-service" (printf "https://%s/user" .Values.global.hostname) }}
           volumeMounts:
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -108,3 +118,4 @@ spec:
             httpGet:
               path: /_status
               port: http
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
