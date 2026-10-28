@@ -33,14 +33,10 @@ spec:
                     operator: In
                     values:
                     - ONDEMAND
-              
           volumes:
-            - name: google-cred-volume
-              secret:
-                secretName: "google-creds-secret"
             - name: aws-cred-volume
               secret:
-                secretName: "fence-bot-aws-creds"
+                secretName: "dcf-aws-creds-secret"
             - name: setting-volume
               secret:
                 secretName: "dcf-dataservice-settings-secrets"
@@ -67,9 +63,6 @@ spec:
               - name: aws-cred-volume
                 mountPath: "/root/.aws/credentials"
                 subPath: credentials
-              - name: google-cred-volume
-                mountPath: "/secrets/google_service_account_creds"
-                subPath: google-creds-secret
               - name: "setting-volume"
                 mountPath: "/secrets/dcf_dataservice_settings.py"
                 subPath: "dcf-dataservice-settings-secrets"
@@ -82,8 +75,6 @@ spec:
                 [default]
                 region: us-east-1
                 """ > ~/.aws/config
-                gcloud auth activate-service-account --key-file=/secrets/google_service_account_creds
-                export GOOGLE_APPLICATION_CREDENTIALS=/secrets/google_service_account_creds
                 aws s3 cp $IGNORED_FILE_S3 /dcf-dataservice/ignored_files_manifest.csv
                 python replicate.py redact --dry_run $DRY_RUN --release $RELEASE --redact_file $MANIFEST_S3 --log_bucket $LOG_BUCKET --only_redact $ONLY_REDACT
           restartPolicy: Never
