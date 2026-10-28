@@ -10,15 +10,7 @@ data:
   {{ $filename }}: |
   {{- $bytes | toString | nindent 4 }}
 {{- end }}
-{{- end }}
-{{- $workspaceGlob := ternary "gen3.nginx.conf/workspace/*.conf" "gen3.nginx.conf/ambassador/*.conf" ((.Values.global.jeg | default dict).enabled | default false) }}
-{{- range $path, $bytes := .Files.Glob $workspaceGlob }}
-{{- $filename := ($a := split "/" $path)._2 }}
-{{- if not (hasKey $additionalConfigs $filename) }}
-  {{ $filename }}: |
-  {{- $bytes | toString | nindent 4 }}
-{{- end }}
-{{- end }}
+{{- end}}
 {{- if eq "gen3ff" .Values.global.frontendRoot }}
   {{ "frontend-framework-service.conf" }}: |
   {{- .Files.Get "gen3.nginx.conf/gen3ff-as-root/frontend-framework-service.conf" | nindent 4}}
