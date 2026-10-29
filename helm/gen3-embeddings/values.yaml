@@ -131,20 +131,16 @@ env:
         name: manifest-global
         key: arborist_url
         optional: true
-  - name: PGPOOL_MIN_SIZE
-    value: "1"
-  - name: PGPOOL_MAX_SIZE
-    value: "5"
 
 # -- (map) Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this
 # over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env`
-# drops the defaults above, while map keys merge. Rendered after `env`, so a name set in both
-# resolves here. Values must be scalars; use `env` for anything needing `valueFrom`. Secret
-# values belong in `secretEnv` or Secrets Manager, not here - this file is public.
+# drops the defaults above, while map keys merge. A name set here replaces the `env` entry of the
+# same name. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values
+# belong in `secretEnv` or Secrets Manager, not here - this file is public.
 extraEnv: {}
 
 # -- (map) Secret environment variables, rendered into the <name>-env-secret Secret and
-# projected with envFrom. Intended for local development only: when
+# projected with envFrom. Values must be scalars. Intended for local development only: when
 # global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and
 # anything here is ignored. Never commit real credentials to a public values file.
 secretEnv: {}

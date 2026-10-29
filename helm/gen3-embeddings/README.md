@@ -25,12 +25,12 @@ Published versions of this chart are listed in the
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
-| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"}]` | Environment variables to pass to the container |
+| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"dbcreds":null,"gen3EmbeddingsEnvSecret":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
 | externalSecrets.gen3EmbeddingsEnvSecret | string | `nil` | Will override the name of both the Secret holding secret environment variables and the aws secrets manager secret it is populated from. Default is "gen3-embeddings-env-secret". |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
-| extraEnv | map | `{}` | Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env` drops the defaults above, while map keys merge. Rendered after `env`, so a name set in both resolves here. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values belong in `secretEnv` or Secrets Manager, not here - this file is public. |
+| extraEnv | map | `{}` | Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env` drops the defaults above, while map keys merge. A name set here replaces the `env` entry of the same name. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values belong in `secretEnv` or Secrets Manager, not here - this file is public. |
 | extraVolumes | list | `[]` | Additional volumes on the output Deployment definition. |
 | fullnameOverride | string | `""` |  |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
@@ -92,7 +92,7 @@ Published versions of this chart are listed in the
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `2` | The image runs a single Uvicorn process, so concurrency comes from replicas rather than from workers inside the container. Replicas do not migrate: postgres.migrations runs that once in a Job and each replica waits for it, so this can be raised freely. |
 | resources | map | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Compute resources. Sized for the single Uvicorn process the image runs; add replicas rather than raising these to serve more concurrent traffic. The same values apply to the migration initContainer. |
-| secretEnv | map | `{}` | Secret environment variables, rendered into the <name>-env-secret Secret and projected with envFrom. Intended for local development only: when global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and anything here is ignored. Never commit real credentials to a public values file. |
+| secretEnv | map | `{}` | Secret environment variables, rendered into the <name>-env-secret Secret and projected with envFrom. Values must be scalars. Intended for local development only: when global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and anything here is ignored. Never commit real credentials to a public values file. |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |

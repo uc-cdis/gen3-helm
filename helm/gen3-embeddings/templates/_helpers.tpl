@@ -63,3 +63,21 @@ Selector labels
 {{- define "gen3-embeddings.envSecretName" -}}
 {{- default (printf "%s-env-secret" (include "gen3-embeddings.name" .)) .Values.externalSecrets.gen3EmbeddingsEnvSecret }}
 {{- end }}
+
+{{/*
+  Renders one extraEnv or secretEnv value as an unquoted string. Takes a dict of `field` (the
+  values key, for error messages), `key` and `value`. Helm reads unquoted numbers in values files
+  as float64, which print in exponent form from 1000000 up (1e+06), so whole numbers are printed
+  as integers instead.
+*/}}
+{{- define "gen3-embeddings.envValue" -}}
+{{- $v := .value }}
+{{- if or (kindIs "map" $v) (kindIs "slice" $v) }}
+{{- fail (printf "gen3-embeddings.%s[%s] must be a scalar, got %s. Use `env` for anything needing `valueFrom`." .field .key (kindOf $v)) }}
+{{- else if kindIs "invalid" $v }}
+{{- else if and (kindIs "float64" $v) (eq $v (floor $v)) }}
+{{- int64 $v }}
+{{- else }}
+{{- $v }}
+{{- end }}
+{{- end }}
