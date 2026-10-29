@@ -49,7 +49,7 @@ jobs:
         id: setup-kubeconform
         uses: bmuschko/setup-kubeconform@v1
         with:
-          kubeconform-version: '0.6.1'
+          kubeconform-version: '0.8.0'
 
       - name: Print Kubeconform installation path
         env:
