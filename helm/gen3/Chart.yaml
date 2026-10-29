@@ -11,7 +11,7 @@ dependencies:
   - name: ambassador
     version: "*"
     repository: "file://../ambassador"
-    condition: ambassador.enabled,!workspace-proxy.enabled
+    condition: ambassador.enabled
   - name: arborist
     version: "*"
     repository: "file://../arborist"
