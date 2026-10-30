@@ -37,8 +37,9 @@ sslmode: {{ dig "sslmode" (dig "sslmode" "disable" $global) $chart | quote }}
   database and ownership of schema public. CREATEDB is not needed: the container runs
   `dbmate migrate`, which never creates a database, and DBREADY gates it until db_setup_job has.
 
-  A service whose tables use row level security needs a runtime role that owns nothing, and at
-  that point DB_MIGRATION_* has to point at a separate owner role instead.
+  This role owns the tables it migrates, and an owner can switch row level security off on its
+  own tables. A service relying on row level security therefore connects as a separate role that
+  owns nothing, as gen3-embeddings does with postgres.appUser, while migrations keep this one.
 */}}
 {{- define "common.db_migrate.env" -}}
 - name: DB_MIGRATION_USER

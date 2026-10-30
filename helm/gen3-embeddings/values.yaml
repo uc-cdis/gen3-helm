@@ -199,6 +199,19 @@ postgres:
     dir: /services/gen3_embeddings/db/migrations
     # -- (string) sslmode for the migration connection.
     sslmode: disable
+  # -- (map) The role the service connects as. The role in <chart>-dbcreds owns the tables and
+  # runs migrations, and an owner can switch row level security off on its own tables, so the
+  # service runs as a separate role that owns nothing. A Job creates it with the admin
+  # credentials common.db_setup_job uses, grants it what the image's app_user.sql lists, and the
+  # deployment waits for that Job.
+  appUser:
+    # -- (bool) Connect as the separate app role. When false, the service connects as the table
+    # owner from <chart>-dbcreds.
+    enabled: true
+    # -- (string) Role name. Defaults to <chart>_<release>_app.
+    username:
+    # -- (string) Path inside the image of the script that grants the app role its privileges.
+    sqlFile: /services/gen3_embeddings/db/app_user.sql
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:

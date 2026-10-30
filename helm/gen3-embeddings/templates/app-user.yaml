@@ -1,0 +1,112 @@
+{{- $appUser := include "gen3-embeddings.appUser" . | fromYaml }}
+{{- if $appUser.enabled }}
+{{- $migrations := include "common.db_migrate.settings" . | fromYaml }}
+{{- $password := include "gen3-embeddings.appUserPassword" . }}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion }}
+{{- /* Same naming as common.db_migrate_job: an unchanged deploy re-applies an identical spec
+       instead of failing on Job immutability, and a new image, role or password reruns it. */}}
+{{- $hash := printf "%s|%s|%s|%s" $tag $appUser.username $migrations.sslmode ($password | sha256sum) | sha256sum | trunc 8 }}
+{{- /* No `rolecreated` key here: the Job patches it in once the role is usable. */}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $appUser.secretName }}
+data:
+  username: {{ $appUser.username | b64enc | quote }}
+  password: {{ $password | b64enc | quote }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-appuser-{{ $hash }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        {{- /* Required: common.db_netpolicy grants database egress to app in (<chart>, gen3job). */}}
+        app: gen3job
+    spec:
+      {{- /* For kubectl patch on the app Secret; the Role behind it allows secrets. */}}
+      serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
+      restartPolicy: OnFailure
+      volumes:
+        - name: work
+          emptyDir: {}
+      initContainers:
+        {{- /* The grants name the tables, so they wait for the finished schema. app_user.sql
+               ships in the service image, which has dbmate but no psql. */}}
+        - name: wait-and-copy
+          image: "{{ .Values.image.repository }}:{{ $tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- include "common.db_migrate.env" . | nindent 12 }}
+          volumeMounts:
+            - name: work
+              mountPath: /work
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              {{- if $migrations.enabled }}
+              {{- include "common.db_migrate.dsn" . | nindent 14 }}
+              {{- include "gen3-embeddings.waitForMigrations" . | nindent 14 }}
+              {{- end }}
+              cp {{ .Values.postgres.appUser.sqlFile | quote }} /work/app_user.sql
+      containers:
+        - name: app-user
+          image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
+          imagePullPolicy: IfNotPresent
+          env:
+            {{- include "common.db_migrate.env" . | nindent 12 }}
+            {{- include "gen3-embeddings.adminPgEnv" . | nindent 12 }}
+            - name: APP_PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $appUser.secretName }}
+                  key: username
+                  optional: false
+            - name: APP_PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $appUser.secretName }}
+                  key: password
+                  optional: false
+            - name: PGSSLMODE
+              value: {{ $migrations.sslmode | quote }}
+          volumeMounts:
+            - name: work
+              mountPath: /work
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              # Creating the role takes CREATEROLE, which only the admin has. Setting the
+              # password on every run keeps the role in step with the Secret. CONNECT is granted
+              # here because the admin owns the database and the table owner does not.
+              echo "Creating or updating role $APP_PGUSER as $ADMIN_PGUSER..."
+              PGUSER="$ADMIN_PGUSER" PGPASSWORD="$ADMIN_PGPASSWORD" psql -X -v ON_ERROR_STOP=1 \
+                -v app_user="$APP_PGUSER" -v app_password="$APP_PGPASSWORD" \
+                -v owner_user="$DB_MIGRATION_USER" <<'SQL'
+              SELECT format(
+                  'DO $$ BEGIN RAISE EXCEPTION ''%%'', %L; END $$',
+                  format('The app role (%s) must differ from the admin and table owner roles.', :'app_user')
+              )
+              WHERE :'app_user' IN (current_user, :'owner_user') \gexec
+              SELECT format(
+                  'CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS',
+                  :'app_user', :'app_password'
+              )
+              WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'app_user') \gexec
+              SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L', :'app_user', :'app_password') \gexec
+              SELECT format('GRANT CONNECT ON DATABASE %I TO %I', current_database(), :'app_user') \gexec
+              SQL
+              # The table grants come from the service's own script, run as the role that owns
+              # the tables, which can always grant on them. Its CONNECT grant is a no-op here.
+              echo "Granting table privileges as $DB_MIGRATION_USER..."
+              PGUSER="$DB_MIGRATION_USER" PGPASSWORD="$DB_MIGRATION_PASSWORD" psql -X -v ON_ERROR_STOP=1 \
+                -v app_user="$APP_PGUSER" -v app_password="$APP_PGPASSWORD" -f /work/app_user.sql
+              kubectl patch secret/{{ $appUser.secretName }} -p '{"data":{"rolecreated":"dHJ1ZQ=="}}'
+              echo "App role $APP_PGUSER is ready."
+{{- end }}

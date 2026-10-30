@@ -80,18 +80,29 @@ spec:
                   name: gen3-embeddings-dbcreds
                   key: port
                   optional: false
+            {{- $appUser := include "gen3-embeddings.appUser" . | fromYaml }}
+            {{- $credsSecret := ternary $appUser.secretName "gen3-embeddings-dbcreds" $appUser.enabled }}
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: gen3-embeddings-dbcreds
+                  name: {{ $credsSecret }}
                   key: username
                   optional: false
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gen3-embeddings-dbcreds
+                  name: {{ $credsSecret }}
                   key: password
                   optional: false
+            {{- if $appUser.enabled }}
+            {{- /* Startup gate: absent until the app-user Job has created the role and granted it. */}}
+            - name: APPUSERREADY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $appUser.secretName }}
+                  key: rolecreated
+                  optional: false
+            {{- end }}
             - name: PGDATABASE
               valueFrom:
                 secretKeyRef:
@@ -157,37 +168,5 @@ spec:
             - |
               set -eu
               {{- include "common.db_migrate.dsn" . | nindent 14 }}
-              # Waits rather than migrates: the dbmigrate Job is the only writer. Polls the
-              # database instead of the Job because ttlSecondsAfterFinished reaps the Job, so a
-              # replica starting later would wait on an object that no longer exists.
-              #
-              # dbmate status --quiet exits 0 with nothing pending, 1 with migrations pending, and
-              # 2 on any other error. Treating 2 as "keep waiting" would turn a bad DSN into a pod
-              # that hangs in Init forever, so it gets a bounded retry.
-              attempts=0
-              until_ready() {
-                set +e
-                dbmate -u "$DATABASE_URL" -d {{ $migrations.dir | quote }} status --quiet
-                rc=$?
-                set -e
-                return $rc
-              }
-              while true; do
-                if until_ready; then
-                  echo "Migrations up to date."
-                  break
-                fi
-                if [ "$rc" -eq 1 ]; then
-                  attempts=0
-                  echo "Waiting for migrations to be applied..."
-                else
-                  attempts=$((attempts + 1))
-                  echo "dbmate status failed (rc=$rc), attempt ${attempts}/30"
-                  if [ "$attempts" -ge 30 ]; then
-                    echo "Giving up waiting for migrations."
-                    exit 1
-                  fi
-                fi
-                sleep 5
-              done
+              {{- include "gen3-embeddings.waitForMigrations" . | nindent 14 }}
       {{- end }}

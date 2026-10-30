@@ -74,7 +74,11 @@ Published versions of this chart are listed in the
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` |  |
 | partOf | string | `"Embeddings"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
-| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"migrations":{"dir":"/services/gen3_embeddings/db/migrations","enabled":true,"sslmode":"disable"},"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres | map | `{"appUser":{"enabled":true,"sqlFile":"/services/gen3_embeddings/db/app_user.sql","username":null},"database":null,"dbCreate":null,"dbRestore":false,"host":null,"migrations":{"dir":"/services/gen3_embeddings/db/migrations","enabled":true,"sslmode":"disable"},"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres.appUser | map | `{"enabled":true,"sqlFile":"/services/gen3_embeddings/db/app_user.sql","username":null}` | The role the service connects as. The role in <chart>-dbcreds owns the tables and runs migrations, and an owner can switch row level security off on its own tables, so the service runs as a separate role that owns nothing. A Job creates it with the admin credentials common.db_setup_job uses, grants it what the image's app_user.sql lists, and the deployment waits for that Job. |
+| postgres.appUser.enabled | bool | `true` | Connect as the separate app role. When false, the service connects as the table owner from <chart>-dbcreds. |
+| postgres.appUser.sqlFile | string | `"/services/gen3_embeddings/db/app_user.sql"` | Path inside the image of the script that grants the app role its privileges. |
+| postgres.appUser.username | string | `nil` | Role name. Defaults to <chart>_<release>_app. |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
 | postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
