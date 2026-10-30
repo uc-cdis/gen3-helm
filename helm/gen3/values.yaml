@@ -498,7 +498,7 @@ vectis-overlays:
   # -- (bool) Whether to deploy the vectis-overlays subchart.
   enabled: false
 
-# -- (map) s3-monitor (ActiveMQ + DuckDB) — S3 metadata sync to a Parquet lake and Amazon MQ, optional S3 event recorder Lambda. See helm/s3-monitor/README.md.
+# -- (map) s3-monitor (ActiveMQ + DuckDB) — announces new S3 objects (from S3 notifications via SQS) on Amazon MQ and records them in a Parquet lake. See helm/s3-monitor/README.md.
 s3-monitor:
   # -- (bool) Whether to deploy the s3-monitor subchart.
   enabled: false

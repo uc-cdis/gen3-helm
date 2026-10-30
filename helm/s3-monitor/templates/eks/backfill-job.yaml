@@ -1,0 +1,25 @@
+{{- /*
+One-off backfill (backfill.py): lists a tenant's existing objects and queues them as ObjectCreated notifications,
+which the CronJob then handles like new files (already-recorded objects are dropped as duplicates).
+Off by default. Set backfill.enabled, backfill.tenant and a new backfill.runId for each run; turn it off afterwards.
+*/ -}}
+{{- if and .Values.enabled .Values.backfill.enabled }}
+{{- $b := .Values.backfill }}
+{{- if not (and $b.tenant $b.runId) }}{{ fail "backfill.tenant and backfill.runId are required when backfill.enabled" }}{{ end }}
+{{- $args := list "--tenant" $b.tenant }}
+{{- if $b.prefix }}{{ $args = concat $args (list "--prefix" $b.prefix) }}{{ end }}
+{{- if $b.since }}{{ $args = concat $args (list "--since" $b.since) }}{{ end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-backfill-%s" (include "s3monitor.fullname" .) ($b.runId | toString) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: backfill
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    {{- include "s3monitor.podTemplate" (list . (dict "command" (list "python3" "-u" "/scripts/backfill.py") "args" $args)) | nindent 4 }}
+{{- end }}

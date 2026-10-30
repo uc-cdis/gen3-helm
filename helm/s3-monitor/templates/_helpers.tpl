@@ -17,11 +17,6 @@ s3-monitor chart helpers. The application code runs from the quay.io image
 {{- if get $cp "enabled" }}true{{ end -}}
 {{- end -}}
 
-{{/* The setup ServiceAccount, role and Jobs exist only for the event recorder (or its one-off cleanup). */}}
-{{- define "s3monitor.setupEnabled" -}}
-{{- if and (include "s3monitor.crossplaneEnabled" .) (or .Values.eventRecorder.enabled .Values.eventRecorder.removeNotifications) }}true{{ end -}}
-{{- end -}}
-
 {{/* Account id as a string. gen3 values often have it as a bare YAML number, which Helm reads as float64. */}}
 {{- define "s3monitor.accountId" -}}
 {{- $cp := include "s3monitor.crossplane" . | fromJson -}}
@@ -64,39 +59,6 @@ s3-monitor chart helpers. The application code runs from the quay.io image
 {{- printf "%s-%s" (include "s3monitor.base" .) .Values.serviceAccount.name -}}
 {{- end -}}
 
-{{- define "s3monitor.setupRoleName" -}}
-{{- printf "%s-%s" (include "s3monitor.base" .) .Values.setupServiceAccount.name -}}
-{{- end -}}
-
-{{- define "s3monitor.recorderName" -}}
-{{- printf "%s-%s-recorder" (include "s3monitor.base" .) (include "s3monitor.fullname" .) -}}
-{{- end -}}
-
-{{- define "s3monitor.recorderRoleName" -}}
-{{- include "s3monitor.recorderName" . -}}
-{{- end -}}
-
-{{- define "s3monitor.recorderLogGroup" -}}
-{{- printf "/aws/lambda/%s" (include "s3monitor.recorderName" .) -}}
-{{- end -}}
-
-{{- define "s3monitor.ecrRepoName" -}}
-{{- include "s3monitor.recorderName" . | lower -}}
-{{- end -}}
-
-{{- define "s3monitor.ecrRepoUri" -}}
-{{- printf "%s.dkr.ecr.%s.amazonaws.com/%s" (include "s3monitor.accountId" .) (include "s3monitor.region" .) (include "s3monitor.ecrRepoName" .) -}}
-{{- end -}}
-
-{{- define "s3monitor.recorderFunctionArn" -}}
-{{- printf "arn:%s:lambda:%s:%s:function:%s" (include "s3monitor.partition" .) (include "s3monitor.region" .) (include "s3monitor.accountId" .) (include "s3monitor.recorderName" .) -}}
-{{- end -}}
-
-{{/* Id prefix of the bucket notification entries owned by this release. */}}
-{{- define "s3monitor.notificationIdPrefix" -}}
-{{- printf "%s-%s-" (include "s3monitor.fullname" .) (include "s3monitor.base" .) -}}
-{{- end -}}
-
 {{- define "s3monitor.labels" -}}
 app: {{ include "s3monitor.fullname" . }}
 app.kubernetes.io/name: {{ include "s3monitor.fullname" . }}
@@ -124,34 +86,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if $i.digest -}}{{ printf "%s@%s" $i.repository $i.digest }}{{- else -}}{{ printf "%s:%s" $i.repository $i.tag }}{{- end -}}
 {{- end -}}
 
-{{/* Tag of the Lambda's copy in ECR. Changes whenever the source image digest (or tag) changes. */}}
-{{- define "s3monitor.recorderImageTag" -}}
-{{- $i := .Values.image -}}
-{{- $arch := .Values.eventRecorder.architecture -}}
-{{- $safe := regexReplaceAll "[^A-Za-z0-9_.-]" (toString $i.tag) "_" | trunc 80 -}}
-{{- if $i.digest -}}{{ printf "%s-%s-%s" $safe $arch (substr 7 19 $i.digest) }}{{- else -}}{{ printf "%s-%s" $safe $arch }}{{- end -}}
-{{- end -}}
-
 {{/* Tenants that still get access (everything except lifecycle "retired"). */}}
 {{- define "s3monitor.activeTenants" -}}
 {{- $out := list -}}
 {{- range $i, $t := .Values.config.tenants -}}
 {{- if ne ($t.lifecycle | default "active") "retired" -}}
 {{- $out = append $out (merge (dict "_index" $i) $t) -}}
-{{- end -}}
-{{- end -}}
-{{- toJson $out -}}
-{{- end -}}
-
-{{/* Tenants whose ObjectCreated events go to the recorder Lambda (mirrors config.py s3_event_tenants). */}}
-{{- define "s3monitor.recorderTenants" -}}
-{{- $out := list -}}
-{{- if .Values.eventRecorder.enabled -}}
-{{- range $i, $t := .Values.config.tenants -}}
-{{- $ev := $t.s3_event | default dict -}}
-{{- if and $ev.enabled (eq ($t.lifecycle | default "active") "active") -}}
-{{- $out = append $out (merge (dict "_index" $i) $t) -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- toJson $out -}}
@@ -167,6 +107,7 @@ Rendered from values, so namespace, service account and role always match this r
 {{- $lake := dict "bucket" $c.lake.bucket "prefix" $c.lake.prefix -}}
 {{- if $c.lake.kmsKeyArn }}{{ $_ := set $lake "kms_key_arn" $c.lake.kmsKeyArn }}{{ end -}}
 {{- $mq := dict "existing_mq_stomp_endpoints" $c.mq.stompEndpoints "existing_mq_secret_arn" $c.mq.secretArn "destination_prefix" $c.mq.destinationPrefix "resolve_ipv4" $c.mq.resolveIpv4 -}}
+{{- $sqs := dict "queue_url" $c.sqs.queueUrl "wait_time_seconds" (int $c.sqs.waitTimeSeconds) "batch_size" (int $c.sqs.batchSize) "max_receive_count" (int $c.sqs.maxReceiveCount) "max_run_seconds" (int $c.sqs.maxRunSeconds) "flush_rows" (int $c.sqs.flushRows) "flush_seconds" (int $c.sqs.flushSeconds) -}}
 {{- $eks := dict "cluster_name" $v.eksClusterName "namespace" .Release.Namespace "service_account" $v.serviceAccount.name -}}
 {{- $oidc := include "s3monitor.oidcProviderUrl" . -}}
 {{- if $oidc }}{{ $_ := set $eks "oidc_provider_url" $oidc }}{{ end -}}
@@ -175,18 +116,22 @@ Rendered from values, so namespace, service account and role always match this r
     "account" (include "s3monitor.accountId" .)
     "region" (include "s3monitor.region" .)
     "apply" $c.apply
-    "lookback_days" $c.lookbackDays
     "use_fips_aws_endpoints" $c.useFipsAwsEndpoints
     "eks" $eks
-    "image" (dict "repository" $v.image.repository "tag" (toString $v.image.tag))
     "iam" (dict "role_name" (include "s3monitor.roleName" .))
+    "sqs" $sqs
     "lake" $lake
     "mq" $mq
-    "s3_event_recorder" (dict "enabled" $v.eventRecorder.enabled "memory_size" $v.eventRecorder.memorySize "timeout_seconds" $v.eventRecorder.timeoutSeconds)
     "tenants" $c.tenants
 -}}
 {{- if $c.assumeRoleArn }}{{ $_ := set $cfg "assume_role_arn" $c.assumeRoleArn }}{{ end -}}
 {{- toPrettyJson $cfg -}}
+{{- end -}}
+
+{{/* arn:aws:sqs:<region>:<account>:<name> from https://sqs.<region>.amazonaws.com/<account>/<name> */}}
+{{- define "s3monitor.queueArn" -}}
+{{- $parts := splitList "/" (.Values.config.sqs.queueUrl | trimSuffix "/") -}}
+{{- printf "arn:%s:sqs:%s:%s:%s" (include "s3monitor.partition" .) (include "s3monitor.region" .) (index $parts 3) (index $parts 4) -}}
 {{- end -}}
 
 {{/* ---------- IAM policy statements (JSON lists) ---------- */}}
@@ -225,6 +170,7 @@ Rendered from values, so namespace, service account and role always match this r
 {{- $c := .Values.config -}}
 {{- $stmts := include "s3monitor.lakeStatements" . | fromJsonArray -}}
 {{- $stmts = append $stmts (dict "Sid" "ReadMqSecret" "Effect" "Allow" "Action" (list "secretsmanager:GetSecretValue" "secretsmanager:DescribeSecret") "Resource" (list $c.mq.secretArn)) -}}
+{{- $stmts = append $stmts (dict "Sid" "ConsumeEvents" "Effect" "Allow" "Action" (list "sqs:ReceiveMessage" "sqs:DeleteMessage" "sqs:ChangeMessageVisibility" "sqs:GetQueueAttributes" "sqs:GetQueueUrl" "sqs:SendMessage") "Resource" (list (include "s3monitor.queueArn" .))) -}}
 {{- if $c.mq.secretKmsKeyArn -}}
 {{- $stmts = append $stmts (dict "Sid" "MqSecretKms" "Effect" "Allow" "Action" (list "kms:Decrypt" "kms:DescribeKey") "Resource" (list $c.mq.secretKmsKeyArn)) -}}
 {{- end -}}
@@ -240,7 +186,7 @@ Rendered from values, so namespace, service account and role always match this r
 {{- $p := include "s3monitor.partition" $root -}}
 {{- $arn := include "s3monitor.s3Arn" (list $p $t.existing_bucket_name) -}}
 {{- $sid := printf "T%v%s" $t._index (regexReplaceAll "[^A-Za-z0-9]" $t.id "") -}}
-{{- $prefix := trimPrefix "/" ($t.scan_prefix | default "") -}}
+{{- $prefix := trimPrefix "/" ($t.prefix | default "") -}}
 {{- $stmts := include "s3monitor.listStatements" (list (printf "%sList" $sid) $arn $prefix) | fromJsonArray -}}
 {{- $stmts = append $stmts (dict "Sid" (printf "%sRead" $sid) "Effect" "Allow" "Action" (list "s3:GetObject") "Resource" (list (printf "%s/%s*" $arn $prefix))) -}}
 {{- if $t.kms_key_arn -}}
@@ -291,42 +237,6 @@ over IAM's 6,144-character limit or the role would need more than 10 attached po
 {{- end -}}
 {{- end -}}
 
-{{/* Recorder Lambda execution role: its own log group, the lake, recorder tenants' objects. */}}
-{{- define "s3monitor.recorderPolicies" -}}
-{{- $p := include "s3monitor.partition" . -}}
-{{- $lg := printf "arn:%s:logs:%s:%s:log-group:%s" $p (include "s3monitor.region" .) (include "s3monitor.accountId" .) (include "s3monitor.recorderLogGroup" .) -}}
-{{- $base := list (dict "Sid" "Logs" "Effect" "Allow" "Action" (list "logs:CreateLogStream" "logs:PutLogEvents") "Resource" (list (printf "%s:*" $lg))) -}}
-{{- $base = concat $base (include "s3monitor.lakeStatements" . | fromJsonArray) -}}
-{{- $perTenant := list -}}
-{{- range $t := (include "s3monitor.recorderTenants" . | fromJsonArray) -}}
-{{- $sid := printf "T%v%s" $t._index (regexReplaceAll "[^A-Za-z0-9]" $t.id "") -}}
-{{- $ev := $t.s3_event | default dict -}}
-{{- $stmts := list (dict "Sid" (printf "%sRead" $sid) "Effect" "Allow" "Action" (list "s3:GetObject") "Resource" (list (printf "%s/%s*" (include "s3monitor.s3Arn" (list $p $t.existing_bucket_name)) (trimPrefix "/" ($ev.prefix | default ""))))) -}}
-{{- if $t.kms_key_arn -}}
-{{- $stmts = append $stmts (dict "Sid" (printf "%sKms" $sid) "Effect" "Allow" "Action" (list "kms:Decrypt" "kms:DescribeKey") "Resource" (list $t.kms_key_arn)) -}}
-{{- end -}}
-{{- $perTenant = append $perTenant $stmts -}}
-{{- end -}}
-{{- include "s3monitor.packPolicies" (list . (include "s3monitor.recorderRoleName" .) $base $perTenant) -}}
-{{- end -}}
-
-{{/* Setup Jobs' role: copy the image into ECR, manage tenant bucket notifications. */}}
-{{- define "s3monitor.setupPolicies" -}}
-{{- $p := include "s3monitor.partition" . -}}
-{{- $base := list -}}
-{{- if .Values.eventRecorder.enabled -}}
-{{- $repo := printf "arn:%s:ecr:%s:%s:repository/%s" $p (include "s3monitor.region" .) (include "s3monitor.accountId" .) (include "s3monitor.ecrRepoName" .) -}}
-{{- $base = append $base (dict "Sid" "EcrLogin" "Effect" "Allow" "Action" (list "ecr:GetAuthorizationToken") "Resource" (list "*")) -}}
-{{- $base = append $base (dict "Sid" "EcrPushRecorderImage" "Effect" "Allow" "Action" (list "ecr:BatchCheckLayerAvailability" "ecr:BatchGetImage" "ecr:CompleteLayerUpload" "ecr:GetDownloadUrlForLayer" "ecr:InitiateLayerUpload" "ecr:PutImage" "ecr:UploadLayerPart") "Resource" (list $repo)) -}}
-{{- end -}}
-{{- $perTenant := list -}}
-{{- range $t := (include "s3monitor.activeTenants" . | fromJsonArray) -}}
-{{- $sid := printf "T%v%s" $t._index (regexReplaceAll "[^A-Za-z0-9]" $t.id "") -}}
-{{- $perTenant = append $perTenant (list (dict "Sid" (printf "%sNotifications" $sid) "Effect" "Allow" "Action" (list "s3:GetBucketNotification" "s3:PutBucketNotification") "Resource" (list (include "s3monitor.s3Arn" (list $p $t.existing_bucket_name))))) -}}
-{{- end -}}
-{{- include "s3monitor.packPolicies" (list . (include "s3monitor.setupRoleName" .) $base $perTenant) -}}
-{{- end -}}
-
 {{/* ---------- Validation ---------- */}}
 {{- define "s3monitor.validate" -}}
 {{- $v := .Values -}}
@@ -341,6 +251,7 @@ over IAM's 6,144-character limit or the role would need more than 10 attached po
 {{- if not $c.lake.prefix }}{{ fail "config.lake.prefix is required" }}{{ end -}}
 {{- if not $c.mq.stompEndpoints }}{{ fail "config.mq.stompEndpoints needs at least one stomp+ssl:// endpoint" }}{{ end -}}
 {{- if not $c.mq.secretArn }}{{ fail "config.mq.secretArn is required" }}{{ end -}}
+{{- if not (regexMatch "^https://sqs\\.[a-z0-9-]+\\.amazonaws\\.com/[0-9]{12}/[A-Za-z0-9_-]+$" ($c.sqs.queueUrl | default "")) }}{{ fail "config.sqs.queueUrl must be an SQS queue URL: https://sqs.<region>.amazonaws.com/<account>/<name>" }}{{ end -}}
 {{- if not $c.tenants }}{{ fail "config.tenants must list at least one tenant" }}{{ end -}}
 {{- range $i, $t := $c.tenants -}}
 {{- if not (and $t.id $t.existing_bucket_name) }}{{ fail (printf "config.tenants[%d] needs id and existing_bucket_name" $i) }}{{ end -}}
@@ -348,13 +259,62 @@ over IAM's 6,144-character limit or the role would need more than 10 attached po
 {{- if $v.image.digest -}}
 {{- if not (regexMatch "^sha256:[0-9a-f]{64}$" $v.image.digest) }}{{ fail "image.digest must be sha256:<64 hex chars>" }}{{ end -}}
 {{- end -}}
-{{- if not (has $v.eventRecorder.architecture (list "arm64" "amd64")) }}{{ fail "eventRecorder.architecture must be arm64 or amd64" }}{{ end -}}
 {{- if include "s3monitor.crossplaneEnabled" . -}}
 {{- if not (include "s3monitor.oidcProviderUrl" .) }}{{ fail "s3-monitor: global.crossplane.oidcProviderUrl is required" }}{{ end -}}
-{{- range $n := list (include "s3monitor.roleName" .) (include "s3monitor.setupRoleName" .) (include "s3monitor.recorderName" .) -}}
-{{- if gt (len $n) 64 }}{{ fail (printf "s3-monitor: AWS name %q is longer than 64 characters; shorten global.environment or the namespace" $n) }}{{ end -}}
+{{- if gt (len (include "s3monitor.roleName" .)) 64 }}{{ fail (printf "s3-monitor: role name %q is longer than 64 characters; shorten global.environment or the namespace" (include "s3monitor.roleName" .)) }}{{ end -}}
 {{- end -}}
-{{- else if $v.eventRecorder.enabled -}}
-{{- fail "s3-monitor: eventRecorder needs global.crossplane.enabled (the Lambda, its role and ECR repository are Crossplane resources)" -}}
 {{- end -}}
+
+{{/* Pod template shared by the CronJob and the backfill Job: (list $ overrides), overrides = nil or {command, args}. */}}
+{{- define "s3monitor.podTemplate" -}}
+{{- $root := index . 0 -}}{{- $o := index . 1 -}}
+{{- $v := $root.Values -}}
+metadata:
+  labels:
+    {{- include "s3monitor.labels" $root | nindent 4 }}
+  annotations:
+    checksum/config: {{ include "s3monitor.configJson" $root | sha256sum }}
+spec:
+  serviceAccountName: {{ $v.serviceAccount.name }}
+  restartPolicy: {{ if $o }}Never{{ else }}OnFailure{{ end }}
+  {{- with $v.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: s3-monitor
+      image: {{ include "s3monitor.image" $root | quote }}
+      imagePullPolicy: {{ $v.image.pullPolicy }}
+      {{- if $o }}
+      command: {{ toJson $o.command }}
+      args: {{ toJson $o.args }}
+      {{- end }}
+      env:
+        - name: CONFIG_URI
+          value: /config/config.json
+        - name: AWS_REGION
+          value: {{ $v.aws.region | quote }}
+        - name: TMPDIR
+          value: /tmp
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+      volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      resources:
+        {{- toYaml $v.resources | nindent 8 }}
+  volumes:
+    - name: config
+      configMap:
+        name: {{ include "s3monitor.fullname" $root }}-config
+    - name: tmp
+      emptyDir: {}
 {{- end -}}

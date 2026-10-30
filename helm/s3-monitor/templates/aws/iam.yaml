@@ -1,6 +1,6 @@
 {{- /*
-IRSA roles (Crossplane, crossplane-contrib/provider-aws): the CronJob's role and, only for the event recorder, the setup Jobs' role,
-each trusted only by its ServiceAccount in this namespace, with least-privilege policies built in _helpers.tpl.
+IRSA role (Crossplane, crossplane-contrib/provider-aws) for the CronJob and the backfill Job, trusted only by their
+ServiceAccount in this namespace, with least-privilege policies built in _helpers.tpl (lake, MQ secret, SQS queue, tenants).
 */ -}}
 {{- if .Values.enabled }}
 {{- if include "s3monitor.crossplaneEnabled" . }}
@@ -12,17 +12,11 @@ each trusted only by its ServiceAccount in this namespace, with least-privilege 
 {{- $oidc := include "s3monitor.oidcProviderUrl" . }}
 {{- $tags := include "s3monitor.iamTags" . }}
 
-{{- /* ---------- IRSA roles: CronJob + setup Jobs ---------- */}}
+{{- /* ---------- IRSA role ---------- */}}
 {{- $irsa := list
       (dict "role" (include "s3monitor.roleName" .) "sa" .Values.serviceAccount.name "component" "cronjob"
             "description" (printf "IRSA role for the s3-monitor CronJob in %s" .Release.Namespace)
             "policies" (include "s3monitor.cronjobPolicies" . | fromJsonArray)) }}
-{{- if include "s3monitor.setupEnabled" . }}
-{{- $irsa = append $irsa
-      (dict "role" (include "s3monitor.setupRoleName" .) "sa" .Values.setupServiceAccount.name "component" "setup"
-            "description" (printf "IRSA role for the s3-monitor setup Jobs in %s (ECR image copy, bucket notifications)" .Release.Namespace)
-            "policies" (include "s3monitor.setupPolicies" . | fromJsonArray)) }}
-{{- end }}
 {{- range $r := $irsa }}
 {{- $trust := dict "Version" "2012-10-17" "Statement" (list (dict
       "Effect" "Allow"
