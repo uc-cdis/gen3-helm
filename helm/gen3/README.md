@@ -194,6 +194,7 @@ Published versions of this chart are listed in the
 | global.postgres.master.username | string | `"postgres"` | global postgres master username |
 | global.publicDataSets | bool | `true` | Whether public datasets are enabled. |
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
+| global.skipExistingJobs | bool | `false` | Skip one-time Jobs that already exist in the namespace and keep them when no longer rendered |
 | global.slackWebhook | string | `""` | slack webhook for notifications |
 | global.tierAccessLevel | string | `"private"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |

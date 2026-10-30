@@ -1,8 +1,12 @@
-{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createFunnelOidcClientSecret) }}
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createFunnelOidcClientSecret) (not (include "common.job.exists" (dict "name" "funnel-oidc-job" "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: funnel-oidc-job
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:

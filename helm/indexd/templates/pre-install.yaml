@@ -1,3 +1,4 @@
+{{- if not (include "common.job.exists" (dict "name" "indexd-userdb" "ctx" $)) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -7,6 +8,10 @@ metadata:
   # endpoints.
   # Loads the list of users from env var.
   name: indexd-userdb
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   backoffLimit: 0
   template:
@@ -115,3 +120,4 @@ spec:
                 poetry run python /indexd/bin/index_admin.py create --username "gateway" --password "${GATEWAY_PASS}"
               fi
       restartPolicy: Never
+{{- end }}
