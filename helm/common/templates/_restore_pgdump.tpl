@@ -2,10 +2,15 @@
 A job that will restore a db using a pgdump file from s3 with bogus data
 */}}
 {{ define "common.s3_pg_restore" -}}
+{{- if not (include "common.job.exists" (dict "name" (printf "%s-pgrestore" .Chart.Name) "ctx" $)) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-pgrestore
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:
@@ -137,4 +142,5 @@ spec:
               # Update secret to signal that db has been created, and services can start
               kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
               
+{{- end }}
 {{- end }}

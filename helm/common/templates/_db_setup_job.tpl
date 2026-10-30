@@ -36,11 +36,15 @@ roleRef:
 
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
-{{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
+{{- if and (or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate) (not (include "common.job.exists" (dict "name" (printf "%s-dbcreate" .Chart.Name) "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:

@@ -112,4 +112,6 @@ Published versions of this chart are listed in the
 | resources.tube.requests.cpu | string | `"10m"` | The amount of cpu requested |
 | resources.tube.requests.memory | string | `"128Mi"` | The amount of memory requested |
 | schedule | string | `"*/30 * * * *"` |  |
+| sparkDriverMemory | string | `"8g"` | Spark driver memory |
+| sparkExecutorMemory | string | `"8g"` | Spark executor memory |
 | suspendCronjob | bool | `true` |  |

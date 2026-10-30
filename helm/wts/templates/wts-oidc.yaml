@@ -1,8 +1,12 @@
-{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) }}
+{{- if and (.Values.oidc_job_enabled) (.Values.externalSecrets.createWtsOidcClientSecret) (not (include "common.job.exists" (dict "name" "wts-oidc-job" "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: wts-oidc-job
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:

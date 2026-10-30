@@ -5,11 +5,15 @@ metadata:
 data: 
   useryaml: {{ .Values.USER_YAML | toYaml | nindent 4}}
 ---
-{{ if not .Values.usersync.usersync }}
+{{ if and (not .Values.usersync.usersync) (not (include "common.job.exists" (dict "name" "useryaml" "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: useryaml
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   backoffLimit: 10
   template:

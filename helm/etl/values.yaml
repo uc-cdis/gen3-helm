@@ -27,6 +27,11 @@ imagePullSecrets: []
 podAnnotations: {}
 
 
+# -- (string) Spark executor memory
+sparkExecutorMemory: 8g
+# -- (string) Spark driver memory
+sparkDriverMemory: 8g
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   tube:

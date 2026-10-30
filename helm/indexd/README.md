@@ -73,6 +73,7 @@ Published versions of this chart are listed in the
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
+| gunicorn | map | `{"group":"gen3","user":"gen3"}` | gunicorn user and group |
 | image | map | `{"pullPolicy":"Always","repository":"quay.io/cdis/indexd","tag":""}` | Docker image information. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. |
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |

@@ -328,3 +328,8 @@ partOf: "S3-GS"
 selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
+
+# -- (map) gunicorn user and group
+gunicorn:
+  user: gen3
+  group: gen3
