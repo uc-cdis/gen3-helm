@@ -82,6 +82,12 @@ spec:
               bash /fence/dockerrun.bash
           env:
             {{- toYaml .Values.env | nindent 12 }}
+            - name: DPOP_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-dpop
+                  key: DPOP_SHARED_SECRET
+                  optional: true
           volumeMounts:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
       {{- with .Values.nodeSelector }}
