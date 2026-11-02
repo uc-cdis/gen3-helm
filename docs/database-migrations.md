@@ -104,7 +104,7 @@ database egress to `app in (<chart>, gen3job)`, so a migration pod without that 
 Postgres wherever network policies are enabled. It is also how the observability stack finds Gen3
 job logs in Loki.
 
-**Migrations connect as the Postgres master user**, not the service user, because some migrations
-need privileges the service role lacks. `activeDeadlineSeconds` is deliberately unset - a
+**Migrations connect as the role in `<chart>-dbcreds`**, through `DB_MIGRATION_*`, so that role
+owns the tables they create. `activeDeadlineSeconds` is deliberately unset - a
 container-create failure does not consume `backoffLimit`, so waiting on `dbcreated` is safe, but a
 deadline would kill the Job while it waits.

@@ -212,6 +212,27 @@ postgres:
     username:
     # -- (string) Path inside the image of the script that grants the app role its privileges.
     sqlFile: /services/gen3_embeddings/db/app_user.sql
+# -- (map) HNSW vector indexes, applied as dbmate index migrations recorded in their own
+# `index_migrations` table, apart from the schema migrations, so the deployment never waits on
+# a build. A Job applies them whenever this list changes, then restarts the service, which reads
+# the index catalog only at startup. Collection ids differ between deployments, so these belong
+# in each deployment's own values. See services/gen3_embeddings/db/index_migrations/README.md
+# in gen3-ai for choosing indexes.
+vectorIndexes:
+  # -- (string) Postgres session settings for the build, as connection URL parameters. Keep
+  # statement_timeout=0: a large HNSW build can run for days. For example
+  # "statement_timeout=0&maintenance_work_mem=8GB&max_parallel_maintenance_workers=4".
+  sessionParams: "statement_timeout=0"
+  # -- (list) One entry per index migration. `version` (a timestamp such as 20261031120000)
+  # orders the migrations and must never change once applied; editing an applied entry changes
+  # nothing, since dbmate never rereads applied files. `collectionId` is collections.id, and
+  # `vectorType` (vector or halfvec) and `dimensions` must match that collection. `kind` is
+  # cosine, l2, ip, l1, or binary (serves every metric). Optional `params` sets m and
+  # ef_construction. To remove an index, add a new entry with a new version and `drop: true`.
+  # A failed build leaves its Job failed: drop the invalid index, then delete the Job and deploy
+  # again.
+  indexes: []
+
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:

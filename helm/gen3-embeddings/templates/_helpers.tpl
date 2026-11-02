@@ -169,6 +169,103 @@ done
 {{- end }}
 
 {{/*
+  A positive whole number from values, printed without an exponent. Takes a dict of `where` (for
+  error messages) and `value`. Accepts a number or a string of digits.
+*/}}
+{{- define "gen3-embeddings.wholeNumber" -}}
+{{- $v := .value }}
+{{- if and (kindIs "float64" $v) (eq $v (floor $v)) (gt $v 0.0) }}
+{{- int64 $v }}
+{{- else if and (or (kindIs "int" $v) (kindIs "int64" $v)) (gt (int64 $v) 0) }}
+{{- $v }}
+{{- else if and (kindIs "string" $v) (regexMatch "^[0-9]+$" $v) }}
+{{- $v }}
+{{- else }}
+{{- fail (printf "%s must be a positive whole number, got %v" .where $v) }}
+{{- end }}
+{{- end }}
+
+{{/*
+  vectorIndexes.indexes rendered as dbmate index migration files, as a YAML map of file name to
+  contents. Each index is written in exactly the shape the service recognizes, which
+  services/gen3_embeddings/db/index_migrations/README.md describes: one statement per file,
+  transaction:false, CONCURRENTLY, HNSW, and a WHERE clause of exactly `collection_id = <id>`.
+  An index in any other shape is ignored by the service, and searches on its collection fall
+  back to a sequential scan.
+*/}}
+{{- define "gen3-embeddings.vectorIndexFiles" -}}
+{{- $indexes := dig "indexes" list (.Values.vectorIndexes | default dict) | default list }}
+{{- if not (kindIs "slice" $indexes) }}
+{{- fail (printf "gen3-embeddings.vectorIndexes.indexes must be a list, got %s." (kindOf $indexes)) }}
+{{- end }}
+{{- $files := dict }}
+{{- $versions := dict }}
+{{- range $i, $idx := $indexes }}
+{{- $where := printf "gen3-embeddings.vectorIndexes.indexes[%d]" $i }}
+{{- if not (kindIs "map" $idx) }}
+{{- fail (printf "%s must be a map, got %s." $where (kindOf $idx)) }}
+{{- end }}
+{{- range $key := keys $idx }}
+{{- if not (has $key (list "version" "collectionId" "vectorType" "dimensions" "kind" "params" "drop")) }}
+{{- fail (printf "%s has unknown key %s." $where $key) }}
+{{- end }}
+{{- end }}
+{{- range $key := list "version" "collectionId" "vectorType" "dimensions" "kind" }}
+{{- if not (hasKey $idx $key) }}
+{{- fail (printf "%s is missing %s." $where $key) }}
+{{- end }}
+{{- end }}
+{{- $version := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.version" $where) "value" $idx.version) }}
+{{- if hasKey $versions $version }}
+{{- fail (printf "%s reuses version %s, which dbmate uses to tell migrations apart." $where $version) }}
+{{- end }}
+{{- $_ := set $versions $version true }}
+{{- $collectionId := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.collectionId" $where) "value" $idx.collectionId) }}
+{{- $dims := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.dimensions" $where) "value" $idx.dimensions) | atoi }}
+{{- $vectorType := $idx.vectorType }}
+{{- if not (has $vectorType (list "vector" "halfvec")) }}
+{{- fail (printf "%s.vectorType must be vector or halfvec, got %v." $where $vectorType) }}
+{{- end }}
+{{- $kind := $idx.kind }}
+{{- if not (has $kind (list "cosine" "l2" "ip" "l1" "binary")) }}
+{{- fail (printf "%s.kind must be one of cosine, l2, ip, l1, binary, got %v." $where $kind) }}
+{{- end }}
+{{- /* pgvector's HNSW limits. Above them only a binary index can be built. */}}
+{{- $maxDims := ternary 64000 (ternary 2000 4000 (eq $vectorType "vector")) (eq $kind "binary") }}
+{{- if gt $dims $maxDims }}
+{{- fail (printf "%s: a %s %s HNSW index supports at most %d dimensions, got %d." $where $vectorType $kind $maxDims $dims) }}
+{{- end }}
+{{- $table := printf "embeddings_%s" $vectorType }}
+{{- $name := printf "%s_c%s_hnsw_%s" $table $collectionId $kind }}
+{{- $expr := printf "(embedding::%s(%d))" $vectorType $dims }}
+{{- $opclass := printf "%s_%s_ops" $vectorType $kind }}
+{{- if eq $kind "binary" }}
+{{- $expr = printf "(binary_quantize(embedding)::bit(%d))" $dims }}
+{{- $opclass = "bit_hamming_ops" }}
+{{- end }}
+{{- $with := list }}
+{{- range $param, $value := ($idx.params | default dict) }}
+{{- if not (has $param (list "m" "ef_construction")) }}
+{{- fail (printf "%s.params has unknown key %s; only m and ef_construction are supported." $where $param) }}
+{{- end }}
+{{- $with = append $with (printf "%s = %s" $param (include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.params.%s" $where $param) "value" $value))) }}
+{{- end }}
+{{- $create := printf "CREATE INDEX CONCURRENTLY IF NOT EXISTS %s\nON %s USING hnsw (%s %s)" $name $table $expr $opclass }}
+{{- if $with }}
+{{- $create = printf "%s\nWITH (%s)" $create (join ", " $with) }}
+{{- end }}
+{{- $create = printf "%s\nWHERE collection_id = %s;" $create $collectionId }}
+{{- $drop := printf "DROP INDEX CONCURRENTLY IF EXISTS %s;" $name }}
+{{- if $idx.drop }}
+{{- $_ := set $files (printf "%s_drop_%s.sql" $version $name) (printf "-- migrate:up transaction:false\n%s\n\n-- migrate:down transaction:false\n%s\n" $drop $create) }}
+{{- else }}
+{{- $_ := set $files (printf "%s_%s.sql" $version $name) (printf "-- migrate:up transaction:false\n%s\n\n-- migrate:down transaction:false\n%s\n" $create $drop) }}
+{{- end }}
+{{- end }}
+{{- toYaml $files }}
+{{- end }}
+
+{{/*
   Renders one extraEnv or secretEnv value as an unquoted string. Takes a dict of `field` (the
   values key, for error messages), `key` and `value`. Helm reads unquoted numbers in values files
   as float64, which print in exponent form from 1000000 up (1e+06), so whole numbers are printed

@@ -261,6 +261,88 @@ Once the client is created, share the client_id and client_secret with the appli
 
 ---
 
+# Gen3 Embeddings
+
+## What Does it Do
+
+Gen3 Embeddings stores vector embeddings in Postgres with pgvector and serves similarity search over them. Access to each collection is authorized through Arborist and enforced with row level security.
+
+## How to Configure it
+
+For a full set of configuration see the [helm README.md for gen3-embeddings](../helm/gen3-embeddings/README.md) or read the [values.yaml](../helm/gen3-embeddings/values.yaml) directly. Environment settings are covered in [Where a setting goes](#where-a-setting-goes) above.
+
+### Vector indexes
+
+HNSW vector indexes are deployment-specific, so they are listed in the deployment's values under `vectorIndexes.indexes` rather than shipped as schema migrations. The chart writes each entry as a dbmate index migration, recorded in the `index_migrations` table. On a deploy that changes the list, a `gen3-embeddings-vectorindex-<hash>` Job builds what is pending and restarts the service.
+
+`collectionId`, `vectorType` and `dimensions` come from the collection:
+
+```sql
+SELECT id, collection_name, dimensions, vector_type FROM collections;
+```
+
+`version` orders the migrations; use a timestamp, and never change it once applied. Keep every entry in the list, including applied ones.
+
+```yaml
+gen3-embeddings:
+  vectorIndexes:
+    # Optional. Keep statement_timeout=0: a large build can run for days.
+    sessionParams: "statement_timeout=0&maintenance_work_mem=8GB&max_parallel_maintenance_workers=4"
+    indexes:
+      # Cosine index on a `vector` collection
+      - version: 20261101120000
+        collectionId: 1
+        vectorType: vector
+        dimensions: 1536
+        kind: cosine # cosine | l2 | ip | l1 | binary
+
+      # Binary-quantized index: smaller, and serves every metric
+      - version: 20261102120000
+        collectionId: 1
+        vectorType: vector
+        dimensions: 1536
+        kind: binary
+
+      # L2 index on a `halfvec` collection, with HNSW build parameters
+      - version: 20261103120000
+        collectionId: 7
+        vectorType: halfvec
+        dimensions: 3072
+        kind: l2
+        params:
+          m: 16
+          ef_construction: 64
+
+      # Dropping an index is a new entry with a new version
+      - version: 20261104120000
+        collectionId: 7
+        vectorType: halfvec
+        dimensions: 3072
+        kind: l2
+        drop: true
+```
+
+Each entry becomes `<version>_<table>_c<collectionId>_hnsw_<kind>.sql`. Direct HNSW indexes support up to 2000 dimensions on `vector` and 4000 on `halfvec`; above that, use `kind: binary`.
+
+Follow the build with:
+
+```bash
+kubectl get jobs | grep vectorindex
+kubectl logs -f job/gen3-embeddings-vectorindex-<hash> -c build
+```
+
+A failed build leaves the Job failed and an `INVALID` index behind, and later index Jobs refuse to run until it is gone. Drop it, delete the failed Job, and deploy again:
+
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS embeddings_vector_c1_hnsw_cosine;
+```
+
+```bash
+kubectl delete job gen3-embeddings-vectorindex-<hash>
+```
+
+---
+
 # Guppy
 
 ## What Does it Do
