@@ -201,17 +201,16 @@ postgres:
     sslmode: disable
   # -- (map) The role the service connects as. The role in <chart>-dbcreds owns the tables and
   # runs migrations, and an owner can switch row level security off on its own tables, so the
-  # service runs as a separate role that owns nothing. A Job creates it with the admin
-  # credentials common.db_setup_job uses, grants it what the image's app_user.sql lists, and the
-  # deployment waits for that Job. Its credentials are in the <chart>-app-creds Secret, which the
-  # Job creates on its first run rather than the chart rendering it, so the password stays the
-  # same under `helm template` and ArgoCD. `helm uninstall` leaves that Secret behind.
+  # service runs as a separate role that owns nothing. common.db_setup_job creates the role with
+  # its admin connection, a Job grants it what the image's app_user.sql lists once the
+  # migrations have run, and the deployment waits for that Job. Its credentials are in
+  # <chart>-app-dbcreds, which follows <chart>-dbcreds: a local Secret, or an ExternalSecret
+  # from Secrets Manager when global.externalSecrets.deploy is set.
   appUser:
     # -- (bool) Connect as the separate app role. When false, the service connects as the table
     # owner from <chart>-dbcreds.
     enabled: true
-    # -- (string) Role name. Defaults to the owner role's name from <chart>-dbcreds plus `_app`.
-    # Changing it after the first run needs the <chart>-app-creds Secret deleted.
+    # -- (string) Role name. Defaults to postgres.username, or <chart>_<release>, plus `_app`.
     username:
     # -- (string) Path inside the image of the script that grants the app role its privileges.
     sqlFile: /services/gen3_embeddings/db/app_user.sql
@@ -266,6 +265,9 @@ externalSecrets:
   pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  # -- (string) Will override the name of the aws secrets manager secret holding the app role's
+  # credentials. Default is "Values.global.environment-.Chart.Name-app-creds"
+  appDbcreds:
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:

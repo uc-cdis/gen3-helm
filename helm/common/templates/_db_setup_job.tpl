@@ -220,6 +220,10 @@ spec:
             kubectl -n {{ $.Release.Namespace }} wait --for=condition=Ready pushsecret/{{ .Chart.Name }}-dbcreds --timeout=300s
             echo "PushSecret is Ready - remote secret has been populated"
 {{- end }}
+{{- if (include "common.db_app_user.settings" . | fromYaml).enabled }}
+
+            {{- include "common.db_app_user.setup" . | nindent 12 }}
+{{- end }}
 {{- end }}
 {{- end }}
 

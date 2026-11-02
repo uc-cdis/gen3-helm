@@ -95,11 +95,11 @@ spec:
                   key: password
                   optional: false
             {{- if $appUser.enabled }}
-            {{- /* Startup gate: absent until the app-user Job has created the role and granted it. */}}
+            {{- /* Startup gate: absent until the app-user Job has granted the role its tables. */}}
             - name: APPUSERREADY
               valueFrom:
                 secretKeyRef:
-                  name: {{ $appUser.secretName }}
+                  name: {{ $appUser.readySecretName }}
                   key: rolecreated
                   optional: false
             {{- end }}

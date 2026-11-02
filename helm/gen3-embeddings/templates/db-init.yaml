@@ -1,5 +1,11 @@
 {{ include "common.db-secret" . }}
 ---
+{{ include "common.db-app-secret" . }}
+---
+{{ include "common.externalSecret.appDb" . }}
+---
+{{ include "common.secret.appDb.bootstrap" . }}
+---
 {{ include "common.db_setup_sa" . }}
 ---
 {{- /* postgres.dbRestore, not dbRestore: the value is declared nested, so the flat name read

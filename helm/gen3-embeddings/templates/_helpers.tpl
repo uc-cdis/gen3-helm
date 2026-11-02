@@ -65,50 +65,13 @@ Selector labels
 {{- end }}
 
 {{/*
-  Resolved settings for the role the service connects as, kept apart from the role that owns the
-  tables. The owner can switch row level security off on its own tables, so the service runs as a
-  role that owns nothing and holds only what services/gen3_embeddings/db/app_user.sql grants.
+  The app role's settings from common.db_app_user.settings, plus the Secret the app-user Job
+  writes once the role holds its table privileges. That gate lives in its own Secret because
+  with External Secrets <chart>-app-dbcreds is reset to the remote entry on every refresh.
 */}}
 {{- define "gen3-embeddings.appUser" -}}
-{{- $appUser := .Values.postgres.appUser | default dict -}}
-enabled: {{ dig "enabled" true $appUser }}
-{{- /* Empty means the app-user Job derives it from the owner role at run time. */}}
-username: {{ dig "username" "" $appUser | default "" | quote }}
-secretName: {{ printf "%s-app-creds" .Chart.Name | quote }}
-{{- end }}
-
-{{/*
-  Admin credentials for creating the app role, from the same sources common.db_setup_job reads.
-  Only the admin can CREATE ROLE: the owner role has no CREATEROLE. Host and port are not here;
-  the Job takes them from <chart>-dbcreds so the role lands on the server the service uses.
-*/}}
-{{- define "gen3-embeddings.adminPgEnv" -}}
-- name: ADMIN_PGUSER
-{{- if .Values.global.postgres.externalSecret }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
-      key: username
-      optional: false
-{{- else }}
-  value: {{ .Values.global.postgres.master.username | quote }}
-{{- end }}
-- name: ADMIN_PGPASSWORD
-{{- if .Values.global.dev }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Release.Name }}-postgresql
-      key: postgres-password
-      optional: false
-{{- else if .Values.global.postgres.externalSecret }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.global.postgres.externalSecret }}
-      key: password
-      optional: false
-{{- else }}
-  value: {{ .Values.global.postgres.master.password | quote }}
-{{- end }}
+{{- include "common.db_app_user.settings" . }}
+readySecretName: {{ printf "%s-appuser-ready" .Chart.Name | quote }}
 {{- end }}
 
 {{/*
