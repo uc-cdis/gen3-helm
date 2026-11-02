@@ -72,24 +72,9 @@ Selector labels
 {{- define "gen3-embeddings.appUser" -}}
 {{- $appUser := .Values.postgres.appUser | default dict -}}
 enabled: {{ dig "enabled" true $appUser }}
-username: {{ dig "username" "" $appUser | default (printf "%s_%s_app" .Chart.Name .Release.Name) | quote }}
-secretName: {{ printf "%s-app-dbcreds" .Chart.Name | quote }}
-{{- end }}
-
-{{/*
-  The app role's password: the one already in the Secret if there is one, so an upgrade does not
-  rotate it, and a new random one otherwise. The app-user Job sets whatever this is on the role,
-  so a regenerated Secret brings the role back in step on the next run. Pods already running keep
-  the old password until they restart.
-*/}}
-{{- define "gen3-embeddings.appUserPassword" -}}
-{{- $settings := include "gen3-embeddings.appUser" . | fromYaml -}}
-{{- $existing := (lookup "v1" "Secret" .Release.Namespace $settings.secretName).data | default dict -}}
-{{- if hasKey $existing "password" }}
-{{- index $existing "password" | b64dec }}
-{{- else }}
-{{- randAlphaNum 20 }}
-{{- end }}
+{{- /* Empty means the app-user Job derives it from the owner role at run time. */}}
+username: {{ dig "username" "" $appUser | default "" | quote }}
+secretName: {{ printf "%s-app-creds" .Chart.Name | quote }}
 {{- end }}
 
 {{/*
