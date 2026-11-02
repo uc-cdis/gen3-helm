@@ -62,6 +62,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
+            # Shared across fence and every DPoP-aware service; rendered once by the umbrella
+            # chart as Secret gen3-dpop. Optional so that environments without DPoP still start;
+            # with DPOP_REQUIRED true the service itself refuses to start without it.
+            - name: DPOP_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-dpop
+                  key: DPOP_SHARED_SECRET
+                  optional: true
           volumeMounts:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
