@@ -18,7 +18,7 @@ kind: Service
 metadata:
   labels:
     app: ambassador
-  name: workspace-proxy-service
+  name: ambassador-service
 spec:
   ports:
   - port: 80
