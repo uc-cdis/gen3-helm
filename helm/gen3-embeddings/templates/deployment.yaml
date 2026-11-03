@@ -55,11 +55,14 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{- /* Secret settings arrive as environment variables, ahead of the `env` entries
-                 below so that a name set in both resolves to the `env` value. */}}
+                 below so that a name set in both resolves to the `env` value. Required, so that
+                 under External Secrets no pod starts before the first sync and misses them. */}}
+          {{- with include "gen3-embeddings.envSecretName" . }}
           envFrom:
             - secretRef:
-                name: {{ include "gen3-embeddings.envSecretName" . }}
+                name: {{ . }}
                 optional: false
+          {{- end }}
           env:
             {{- /* An `env` entry whose name is also in extraEnv is left out, so each name appears
                    once. A second entry with the same name breaks the patch Helm upgrades with. */}}

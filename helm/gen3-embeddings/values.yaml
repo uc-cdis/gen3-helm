@@ -141,9 +141,9 @@ extraEnv: {}
 
 # -- (map) Secret environment variables, rendered into the <name>-env-secret Secret and
 # projected with envFrom. Values must be scalars. Intended for local development only: when
-# global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and
-# anything here is ignored; the Secrets Manager entry must then exist, even as `{}`, or the pods
-# wait for it. Never commit real credentials to a public values file.
+# global.externalSecrets.deploy is set, that Secret comes from the Secrets Manager entry named in
+# externalSecrets.gen3EmbeddingsEnvSecret instead and anything here is ignored. Never commit real
+# credentials to a public values file.
 secretEnv: {}
 
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -280,9 +280,9 @@ commonLabels:
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will override the name of both the Secret holding secret environment variables
-  # and the aws secrets manager secret it is populated from. Default is
-  # "gen3-embeddings-env-secret".
+  # -- (string) Name of the aws secrets manager secret whose JSON properties become secret
+  # environment variables, through the <name>-env-secret Secret. Leave empty when the service
+  # needs none; once set, the entry must exist or the pods wait for it.
   gen3EmbeddingsEnvSecret:
   # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
   pushSecret: false

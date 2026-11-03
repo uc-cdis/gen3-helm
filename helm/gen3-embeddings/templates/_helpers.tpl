@@ -57,11 +57,19 @@ Selector labels
 {{- end }}
 
 {{/*
-  Name of the Secret holding secret values projected into the container environment, and the
-  Secrets Manager key it is populated from.
+  Name of the Secret holding secret values projected into the container environment, or empty
+  when there are none: from Secrets Manager when externalSecrets.gen3EmbeddingsEnvSecret names an
+  entry under External Secrets, otherwise from secretEnv. The chart renders it whenever this is
+  not empty, so the deployment can require it.
 */}}
 {{- define "gen3-embeddings.envSecretName" -}}
-{{- default (printf "%s-env-secret" (include "gen3-embeddings.name" .)) .Values.externalSecrets.gen3EmbeddingsEnvSecret }}
+{{- $source := .Values.secretEnv }}
+{{- if .Values.global.externalSecrets.deploy }}
+{{- $source = .Values.externalSecrets.gen3EmbeddingsEnvSecret }}
+{{- end }}
+{{- if $source }}
+{{- printf "%s-env-secret" (include "gen3-embeddings.name" .) }}
+{{- end }}
 {{- end }}
 
 {{/*

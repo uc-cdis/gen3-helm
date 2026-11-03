@@ -59,8 +59,10 @@ gen3-embeddings:
   # Note: The below are not secrets. This is just to show how to manually pass through secret
   #       env vars in a local env. In a real deployment where global.externalSecrets.deploy is set,
   #       this block is IGNORED, and the same gen3-embeddings-env-secret this
-  #       populates manually is instead populated by an ExternalSecret 
-  #       from the JSON properties of a Secrets Manager secret of the same name.
+  #       populates manually is instead populated by an ExternalSecret from the
+  #       JSON properties of the Secrets Manager secret named in
+  #       externalSecrets.gen3EmbeddingsEnvSecret. With neither set, there is
+  #       no env secret.
   secretEnv: {
     PROFILE_MEMORY: "true",
     PYROSCOPE_SERVER_ADDRESS: "http://lgtm.monitoring:4040"
