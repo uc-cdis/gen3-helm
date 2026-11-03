@@ -187,12 +187,15 @@ Once the client is created, share the client_id and client_secret with the appli
 
 `DPOP_SHARED_SECRET` must be identical in fence and every DPoP-aware service (such as gen3-workflow). It is rendered once by the umbrella chart as the Kubernetes Secret `gen3-dpop`, and each service reads it through an `env` entry with `secretKeyRef`. Do not put it in `FENCE_CONFIG`, `FENCE_CONFIG_PUBLIC` or `GEN3_WORKFLOW_CONFIG`.
 
+Setting `fence.FENCE_CONFIG_PUBLIC.DPOP_ENABLED: true` automatically renders `gen3-dpop`; without it fence refuses to start. `global.createDpopSecret: true` forces the Secret even when fence does not enable DPoP.
+
 ```yaml
 global:
   # With externalSecrets.deploy: true, gen3-dpop is synced from the Secrets Manager secret
   # <global.environment>-gen3-dpop. Otherwise it is created from dpopSharedSecret.
+  # Implied when fence DPOP_ENABLED is true.
   createDpopSecret: true
-  # Required without External Secrets. Generate with: openssl rand -base64 64
+  # Required without External Secrets (the render fails if empty). Generate with: openssl rand -base64 64
   dpopSharedSecret: ""
 
 fence:

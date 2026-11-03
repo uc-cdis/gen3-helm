@@ -60,3 +60,13 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Whether the shared gen3-dpop Secret must be rendered: explicitly requested via
+global.createDpopSecret, or implied by DPoP being enabled for fence.
+*/}}
+{{- define "gen3.dpop.enabled" -}}
+{{- if or .Values.global.createDpopSecret (and .Values.fence .Values.fence.FENCE_CONFIG_PUBLIC .Values.fence.FENCE_CONFIG_PUBLIC.DPOP_ENABLED) -}}
+true
+{{- end -}}
+{{- end }}
