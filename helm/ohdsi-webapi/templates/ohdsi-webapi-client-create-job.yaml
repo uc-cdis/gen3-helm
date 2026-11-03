@@ -4,6 +4,7 @@ kind: Job
 metadata:
   name: ohdsi-webapi-client-job
 spec:
+  ttlSecondsAfterFinished: 120
   template:
     metadata:
       labels:
@@ -141,4 +142,6 @@ spec:
                     \"security_oid_clientId\":\"${FENCE_CLIENT_ID}\",
                     \"security_oid_apiSecret\":\"${FENCE_CLIENT_SECRET}\"
                 }}"
+              echo -e "\n\n>>========== Restarting webapi pods so they pick up new config above ============\n\n"
+              kubectl delete pod -l app=ohdsi-webapi
 {{- end }}

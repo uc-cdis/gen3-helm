@@ -56,12 +56,16 @@ spec:
             optional: true
       containers:
         - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env: 
             - name: GEN3_DEBUG
               value: "False"
             - name: GEN3_ES_ENDPOINT
               value: {{ .Values.esEndpoint }}
+            - name: FORCE_AUTHZ_CHECK_FOR_METADATA_QUERIES
+              value: {{ .Values.forceAuthzCheckForMetadataQueries | quote }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -127,6 +131,8 @@ spec:
           {{- end }}
       initContainers:
         - name: {{ .Values.initContainerName }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.initVolumeMounts }}

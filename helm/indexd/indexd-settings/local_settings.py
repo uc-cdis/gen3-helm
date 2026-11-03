@@ -106,4 +106,9 @@ default_passport_issuer = environ.get("DEFAULT_PASSPORT_ISSUER", None)
 if default_passport_issuer:
     CONFIG["DEFAULT_PASSPORT_ISSUER"] = default_passport_issuer
 
+default_preferred_type = environ.get("DEFAULT_PREFERRED_TYPE", None)
+
+if default_preferred_type:
+    CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
+
 settings = {"config": CONFIG, "auth": AUTH}

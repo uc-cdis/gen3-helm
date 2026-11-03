@@ -1,8 +1,12 @@
 # gen3
 
-![Version: 0.3.69](https://img.shields.io/badge/Version-0.3.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 Helm chart to deploy Gen3 Data Commons
+
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
 
 ## Maintainers
 
@@ -16,55 +20,56 @@ Helm chart to deploy Gen3 Data Commons
 
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../access-backend | access-backend | 0.1.22 |
-| file://../ambassador | ambassador | 0.1.39 |
-| file://../arborist | arborist | 0.1.36 |
-| file://../argo-wrapper | argo-wrapper | 0.1.32 |
-| file://../audit | audit | 0.1.45 |
-| file://../aws-es-proxy | aws-es-proxy | 0.1.43 |
-| file://../aws-sigv4-proxy | aws-sigv4-proxy | 0.1.4 |
-| file://../cedar | cedar | 0.1.28 |
-| file://../cohort-middleware | cohort-middleware | 0.1.24 |
-| file://../common | common | 0.1.38 |
-| file://../dashboard | dashboard | 0.1.23 |
-| file://../data-upload-cron | data-upload-cron | 0.1.8 |
-| file://../datareplicate | datareplicate | 0.1.23 |
-| file://../dicom-server | dicom-server | 0.1.33 |
-| file://../embedding-management-service | embedding-management-service | 0.1.10 |
-| file://../etl | etl | 0.1.23 |
-| file://../fence | fence | 0.1.80 |
-| file://../frontend-framework | frontend-framework | 0.1.31 |
-| file://../funnel | funnel | 0.1.28 |
-| file://../gen3-analysis | gen3-analysis | 0.1.14 |
-| file://../gen3-network-policies | gen3-network-policies | 0.1.4 |
-| file://../gen3-user-data-library | gen3-user-data-library | 0.1.17 |
-| file://../gen3-workflow | gen3-workflow | 0.1.24 |
-| file://../guppy | guppy | 0.1.39 |
-| file://../hatchery | hatchery | 0.1.71 |
-| file://../indexd | indexd | 0.1.49 |
-| file://../jeg | jeg | 0.1.3 |
-| file://../manifestservice | manifestservice | 0.1.44 |
-| file://../metadata | metadata | 0.1.46 |
-| file://../neuvector | neuvector | 0.1.2 |
-| file://../ohdsi-atlas | ohdsi-atlas | 0.1.2 |
-| file://../ohdsi-webapi | ohdsi-webapi | 0.1.7 |
-| file://../ohif-viewer | ohif-viewer | 0.1.16 |
-| file://../orthanc | orthanc | 0.1.17 |
-| file://../peregrine | peregrine | 0.1.44 |
-| file://../portal | portal | 0.1.62 |
-| file://../requestor | requestor | 0.1.36 |
-| file://../revproxy | revproxy | 0.1.66 |
-| file://../sheepdog | sheepdog | 0.1.45 |
-| file://../sower | sower | 0.1.48 |
-| file://../ssjdispatcher | ssjdispatcher | 0.1.49 |
-| file://../vectis-overlays | vectis-overlays | 0.1.3 |
-| file://../workspace-proxy | workspace-proxy | 0.1.3 |
-| file://../wts | wts | 0.1.42 |
-| file://../zendesk-wrapper | zendesk-wrapper | 0.1.1 |
-| https://charts.bitnami.com/bitnami | postgresql | 11.9.13 |
-| https://helm.elastic.co | elasticsearch | 7.10.2 |
+| Repository | Name |
+|------------|------|
+| file://../access-backend | access-backend |
+| file://../ambassador | ambassador |
+| file://../arborist | arborist |
+| file://../argo-wrapper | argo-wrapper |
+| file://../audit | audit |
+| file://../aws-es-proxy | aws-es-proxy |
+| file://../aws-sigv4-proxy | aws-sigv4-proxy |
+| file://../cedar | cedar |
+| file://../cohort-middleware | cohort-middleware |
+| file://../common | common |
+| file://../dashboard | dashboard |
+| file://../data-upload-cron | data-upload-cron |
+| file://../datareplicate | datareplicate |
+| file://../dicom-server | dicom-server |
+| file://../embedding-management-service | embedding-management-service |
+| file://../etl | etl |
+| file://../fence | fence |
+| file://../frontend-framework | frontend-framework |
+| file://../funnel | funnel |
+| file://../gen3-analysis | gen3-analysis |
+| file://../gen3-embeddings | gen3-embeddings |
+| file://../gen3-network-policies | gen3-network-policies |
+| file://../gen3-user-data-library | gen3-user-data-library |
+| file://../gen3-workflow | gen3-workflow |
+| file://../guppy | guppy |
+| file://../hatchery | hatchery |
+| file://../indexd | indexd |
+| file://../jeg | jeg |
+| file://../manifestservice | manifestservice |
+| file://../metadata | metadata |
+| file://../neuvector | neuvector |
+| file://../ohdsi-atlas | ohdsi-atlas |
+| file://../ohdsi-webapi | ohdsi-webapi |
+| file://../ohif-viewer | ohif-viewer |
+| file://../orthanc | orthanc |
+| file://../peregrine | peregrine |
+| file://../portal | portal |
+| file://../requestor | requestor |
+| file://../revproxy | revproxy |
+| file://../sheepdog | sheepdog |
+| file://../sower | sower |
+| file://../ssjdispatcher | ssjdispatcher |
+| file://../vectis-overlays | vectis-overlays |
+| file://../workspace-proxy | workspace-proxy |
+| file://../wts | wts |
+| file://../zendesk-wrapper | zendesk-wrapper |
+| https://charts.bitnami.com/bitnami | postgresql |
+| https://helm.elastic.co | elasticsearch |
 
 ## Values
 
@@ -126,10 +131,12 @@ Helm chart to deploy Gen3 Data Commons
 | frontend-framework.image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion. |
 | gen3-analysis | map | `{"enabled":false}` | Configurations for gen3-analysis chart. |
 | gen3-analysis.enabled | bool | `false` | Whether to deploy the gen3-analysis subchart. |
+| gen3-embeddings | map | `{"enabled":false}` | Configurations for gen3-embeddings chart. |
 | gen3-user-data-library | map | `{"enabled":false}` | Configurations for gen3-user-data-library chart. |
 | gen3-user-data-library.enabled | bool | `false` | Whether to deploy the gen3-user-data-library subchart. |
 | gen3-workflow | map | `{"enabled":false}` | Configurations for gen3-workflow chart. |
 | gen3-workflow.enabled | bool | `false` | Whether to deploy the gen3-workflow subchart. |
+| global.argoHost | string | `"http://argo-argo-workflows-server.argo.svc.cluster.local:2746"` | argo server host URL:PORT. Endpoint for the the Argo Workflows service. |
 | global.aws | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null,"enabled":false,"externalSecrets":{"enabled":false,"externalSecretAwsCreds":null,"pushSecret":false},"region":"us-east-1","secretStoreServiceAccount":{"enabled":false,"name":"secret-store-sa","roleArn":null},"useLocalSecret":{"enabled":false,"localSecretName":null}}` | AWS configuration |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
@@ -146,6 +153,7 @@ Helm chart to deploy Gen3 Data Commons
 | global.aws.useLocalSecret.enabled | bool | `false` | Set to true if you would like to use a secret that is already running on your cluster. |
 | global.aws.useLocalSecret.localSecretName | string | `nil` | Name of the local secret. |
 | global.clusterName | string | `"default"` | Kubernetes cluster name. |
+| global.createDpopSecret | bool | `false` | Will create the gen3-dpop Kubernetes Secret for the DPoP shared secret. Synced from Secrets Manager ("<global.environment>-gen3-dpop") when externalSecrets.deploy is true; otherwise created from dpopSharedSecret. |
 | global.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.crossplane | map | `{"accountId":123456789012,"enabled":false,"oidcProviderUrl":"oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890","providerConfigName":"provider-aws","s3":{"kmsKeyId":null,"versioningEnabled":false}}` | Kubernetes configuration |
 | global.crossplane.accountId | string | `123456789012` | The account ID of the AWS account. |
@@ -158,9 +166,10 @@ Helm chart to deploy Gen3 Data Commons
 | global.dev | bool | `true` | Deploys postgres/elasticsearch for dev |
 | global.dictionaryUrl | string | `"https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json"` | URL of the data dictionary. |
 | global.dispatcherJobNum | int | `"10"` | Number of dispatcher jobs. |
+| global.dpopSharedSecret | string | `""` | DPoP shared secret for fence and DPoP-aware services. Required when createDpopSecret is true and externalSecrets.deploy is false. |
 | global.environment | string | `"default"` | Environment name. This should be the same as vpcname if you're doing an AWS deployment. Currently this is being used to share ALB's if you have multiple namespaces in same cluster. |
-| global.externalSecrets | map | `{"apiVersion":"external-secrets.io/v1beta1","clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
-| global.externalSecrets.apiVersion | string | `"external-secrets.io/v1beta1"` | API version to use for External Secrets resources. Defaults to v1beta1 when unset. |
+| global.externalSecrets | map | `{"apiVersion":"external-secrets.io/v1","clusterSecretStoreRef":"","createLocalK8sSecret":false,"createSlackWebhookSecret":false,"deploy":false,"slackWebhookSecretName":""}` | External Secrets settings. |
+| global.externalSecrets.apiVersion | string | `"external-secrets.io/v1"` | API version to use for External Secrets resources. Defaults to v1beta1 when unset. |
 | global.externalSecrets.createLocalK8sSecret | bool | `false` | Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets. |
 | global.externalSecrets.createSlackWebhookSecret | bool | `false` | Will create a Kubernetes Secret for the slack webhook. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed. |
@@ -257,7 +266,7 @@ Helm chart to deploy Gen3 Data Commons
 | peregrine.enabled | bool | `true` | Whether to deploy the peregrine subchart. |
 | pidgin.enabled | bool | `false` | Whether to deploy the pidgin subchart. |
 | portal.enabled | bool | `true` | Whether to deploy the portal subchart. |
-| postgresql | map | `{"global":{"imageRegistry":"quay.io"},"image":{"repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
+| postgresql | map | `{"image":{"registry":"quay.io","repository":"cdis/docker-bitnami-pgvector","tag":16},"primary":{"persistence":{"enabled":false}}}` | To configure postgresql subchart Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | requestor.enabled | bool | `false` | Whether to deploy the requestor subchart. |
 | revproxy.enabled | bool | `true` | Whether to deploy the revproxy subchart. |

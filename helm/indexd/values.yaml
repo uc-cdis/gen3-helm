@@ -294,15 +294,20 @@ cloudProviderMap:
   gs: gcp
   az: azure
 
+# -- (int) The maximum number of records that can be processed in a single bulk request. This is used to prevent large requests from overwhelming the system.
+maxBulkRequestLength: 100
 
 # -- (map) Maps an arborist resource to the issuers for passports and bearer tokens.
 trustedIssuers:
+  # -- (string) The default preferred supported_type. This will ensure indexd return this supported_type before the other.
+  defaultPreferredType: "BearerAuth"
   # -- (string) The default issuer for bearer tokens to be used if a given auth resource isn't provided. Defaults to the fence token issuer
   defaultBearerIssuer: ""
   # -- (string) The default issuer for passports to be used if a given auth resource isn't provided.
   defaultPassportIssuer: ""
   # Example:
   #   "/programs/parent":
+  #     preferred_type: "PassportAuth"
   #     passport_auth_issuers:
   #       - "https://stsstg.nih.gov"
   #     bearer_auth_issuers:

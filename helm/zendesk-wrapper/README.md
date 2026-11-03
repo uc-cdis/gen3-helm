@@ -1,14 +1,18 @@
 # zendesk-wrapper
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 Zendesk Wrapper Service
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.38 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 
@@ -22,8 +26,9 @@ A Helm chart for gen3 Zendesk Wrapper Service
 | autoscaling | object | `{}` |  |
 | commonLabels | string | `nil` |  |
 | criticalService | string | `"false"` |  |
-| env | map | `[{"name":"GEN3_ZENDESK_URL","value":""}]` | Environment variables for the Zendesk wrapper service |
+| env | map | `[{"name":"GEN3_ZENDESK_URL","value":""},{"name":"GEN3_ZENDESK_BRAND_ID","value":""}]` | Environment variables for the Zendesk wrapper service |
 | env[0] | string | `{"name":"GEN3_ZENDESK_URL","value":""}` | Zendesk instance URL (e.g., https://gen3support.zendesk.com) |
+| env[1] | string | `{"name":"GEN3_ZENDESK_BRAND_ID","value":""}` | Zendesk brand ID (e.g., 123456, can be found in Zendesk admin panel) |
 | externalSecrets | map | `{"name":"zendesk-wrapper-secret"}` | Secret environment variables (referenced from Kubernetes secrets) |
 | externalSecrets.name | string | `"zendesk-wrapper-secret"` | Name of the Kubernetes secret containing the Zendesk API token |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |

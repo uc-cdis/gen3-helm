@@ -1,14 +1,18 @@
 # datareplicate
 
-![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 A Helm chart for gen3 datareplicate
 
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
 ## Requirements
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../common | common | 0.1.38 |
+| Repository | Name |
+|------------|------|
+| file://../common | common |
 
 ## Values
 
@@ -59,12 +63,15 @@ A Helm chart for gen3 datareplicate
 | removeObjectsFromCloudsJob.schedule | string | `"*/30 * * * *"` |  |
 | removeObjectsFromCloudsJob.suspendCronjob | bool | `true` |  |
 | replicateServiceAccount.annotations | object | `{}` |  |
+| replicateValidationJob.BATCH_SIZE | string | `nil` |  |
 | replicateValidationJob.FORCE_CREATE_MANIFEST | string | `nil` |  |
 | replicateValidationJob.IGNORED_FILE | string | `nil` |  |
 | replicateValidationJob.LOG_BUCKET | string | `nil` |  |
 | replicateValidationJob.MANIFEST_FILE | string | `nil` |  |
 | replicateValidationJob.MAP_FILE | string | `nil` |  |
+| replicateValidationJob.MAX_AWS_WORKERS | string | `nil` |  |
 | replicateValidationJob.OUT_FILES | string | `nil` |  |
+| replicateValidationJob.PREVIOUS_MANIFEST | string | `nil` |  |
 | replicateValidationJob.RELEASE | string | `nil` |  |
 | replicateValidationJob.SAVE_COPIED_OBJECTS | string | `nil` |  |
 | replicateValidationJob.VALIDATE_PLATFORM | string | `"AWS"` |  |

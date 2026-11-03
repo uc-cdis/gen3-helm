@@ -76,6 +76,13 @@ spec:
         podSelector:
           matchLabels:
             app: "ambassador"
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
+        podSelector:
+          matchLabels:
+            app: "workspace-proxy"
   policyTypes:
     - Ingress
 ---
@@ -91,7 +98,7 @@ spec:
     - to:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: {{ include "hatchery.fullname" . }}
+            kubernetes.io/metadata.name: {{ .Release.Namespace }}
         podSelector:
           matchLabels:
             userhelper: "yes"
@@ -116,5 +123,23 @@ spec:
       - to:
           - namespaceSelector:
               matchLabels:
-                name: "{{ include "hatchery.jupyterNamespace" . }}"
+                kubernetes.io/metadata.name: "{{ include "hatchery.jupyterNamespace" . }}"
+{{- if .Values.workspaceInternetEgress }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-external
+  namespace: "{{ include "hatchery.jupyterNamespace" . }}"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.168.0/22
+{{- end }}
 {{- end }}

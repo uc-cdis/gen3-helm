@@ -36,6 +36,7 @@ spec:
         {{- include "frontend-framework.selectorLabels" . | nindent 8 }}
         {{- include "common.extraLabels" . | nindent 8 }}
         public: "yes"
+        internet: "yes"
     spec:
       {{- if .Values.global.topologySpread.enabled }}
       {{- include "common.TopologySpread" . | nindent 6 }}
@@ -60,6 +61,8 @@ spec:
             - /bin/sh
             - -c
             - |
+              set -eu
+              
               echo "Starting config puller initContainer"
 
               mkdir -p /tmp/repo
@@ -153,12 +156,6 @@ spec:
               value: /portal
             {{- end }}
           {{- if .Values.customConfig.enabled }}
-            - name: DATADOG_APPLICATION_ID
-              value: {{ .Values.env.DATADOG_APPLICATION_ID | quote }}
-            - name: DATADOG_CLIENT_TOKEN
-              value: {{ .Values.env.DATADOG_CLIENT_TOKEN | quote }}
-            - name: DATACOMMONS
-              value: {{ .Values.env.DATACOMMONS | quote }}
           volumeMounts:
             - name: config-volume
               mountPath: /gen3/config
