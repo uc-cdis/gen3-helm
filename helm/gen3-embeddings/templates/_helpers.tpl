@@ -142,9 +142,23 @@ done
   back to a sequential scan.
 */}}
 {{- define "gen3-embeddings.vectorIndexFiles" -}}
-{{- $indexes := dig "indexes" list (.Values.vectorIndexes | default dict) | default list }}
+{{- $settings := .Values.vectorIndexes | default dict }}
+{{- $indexes := dig "indexes" list $settings | default list }}
 {{- if not (kindIs "slice" $indexes) }}
 {{- fail (printf "gen3-embeddings.vectorIndexes.indexes must be a list, got %s." (kindOf $indexes)) }}
+{{- end }}
+{{- /* Type and kind names end up in table and index names, so they are held to identifiers. */}}
+{{- $vectorTypes := dig "vectorTypes" dict $settings | default dict }}
+{{- $kinds := dig "kinds" dict $settings | default dict }}
+{{- range $field, $entries := dict "vectorTypes" $vectorTypes "kinds" $kinds }}
+{{- if not (kindIs "map" $entries) }}
+{{- fail (printf "gen3-embeddings.vectorIndexes.%s must be a map, got %s." $field (kindOf $entries)) }}
+{{- end }}
+{{- range $name := keys $entries }}
+{{- if not (regexMatch "^[a-z][a-z0-9_]*$" $name) }}
+{{- fail (printf "gen3-embeddings.vectorIndexes.%s has key %s; use lowercase letters, digits and underscores." $field $name) }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- $files := dict }}
 {{- $versions := dict }}
@@ -169,28 +183,40 @@ done
 {{- end }}
 {{- $_ := set $versions $version true }}
 {{- $collectionId := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.collectionId" $where) "value" $idx.collectionId) }}
-{{- $dims := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.dimensions" $where) "value" $idx.dimensions) | atoi }}
-{{- $vectorType := $idx.vectorType }}
-{{- if not (has $vectorType (list "vector" "halfvec")) }}
-{{- fail (printf "%s.vectorType must be vector or halfvec, got %v." $where $vectorType) }}
+{{- $dims := include "gen3-embeddings.wholeNumber" (dict "where" (printf "%s.dimensions" $where) "value" $idx.dimensions) }}
+{{- $vectorType := toString $idx.vectorType }}
+{{- $typeSettings := get $vectorTypes $vectorType }}
+{{- if not (kindIs "map" $typeSettings) }}
+{{- fail (printf "%s.vectorType must be one of %s (vectorIndexes.vectorTypes), got %s." $where (keys $vectorTypes | sortAlpha | join ", ") $vectorType) }}
 {{- end }}
-{{- $kind := $idx.kind }}
-{{- if not (has $kind (list "cosine" "l2" "ip" "l1" "binary")) }}
-{{- fail (printf "%s.kind must be one of cosine, l2, ip, l1, binary, got %v." $where $kind) }}
+{{- $kind := toString $idx.kind }}
+{{- $kindSettings := get $kinds $kind }}
+{{- if not (kindIs "map" $kindSettings) }}
+{{- fail (printf "%s.kind must be one of %s (vectorIndexes.kinds), got %s." $where (keys $kinds | sortAlpha | join ", ") $kind) }}
 {{- end }}
-{{- /* pgvector's HNSW limits. Above them only a binary index can be built. */}}
-{{- $maxDims := ternary 64000 (ternary 2000 4000 (eq $vectorType "vector")) (eq $kind "binary") }}
-{{- if gt $dims $maxDims }}
-{{- fail (printf "%s: a %s %s HNSW index supports at most %d dimensions, got %d." $where $vectorType $kind $maxDims $dims) }}
+{{- $maxDimsKey := printf "gen3-embeddings.vectorIndexes.vectorTypes.%s.maxDimensions" $vectorType }}
+{{- $maxDims := $typeSettings.maxDimensions }}
+{{- if hasKey $kindSettings "maxDimensions" }}
+{{- $maxDimsKey = printf "gen3-embeddings.vectorIndexes.kinds.%s.maxDimensions" $kind }}
+{{- $maxDims = $kindSettings.maxDimensions }}
+{{- end }}
+{{- $maxDims = include "gen3-embeddings.wholeNumber" (dict "where" $maxDimsKey "value" $maxDims) }}
+{{- if gt (atoi $dims) (atoi $maxDims) }}
+{{- fail (printf "%s: a %s %s HNSW index supports at most %s dimensions, got %s." $where $vectorType $kind $maxDims $dims) }}
+{{- end }}
+{{- $placeholders := dict "{type}" $vectorType "{dimensions}" $dims }}
+{{- $expr := $kindSettings.expression | default "embedding::{type}({dimensions})" }}
+{{- $opclass := $kindSettings.opclass | default (printf "{type}_%s_ops" $kind) }}
+{{- range $placeholder, $value := $placeholders }}
+{{- $expr = replace $placeholder $value $expr }}
+{{- $opclass = replace $placeholder $value $opclass }}
+{{- end }}
+{{- if not (regexMatch "^[a-z_][a-z0-9_]*$" $opclass) }}
+{{- fail (printf "%s: opclass %s for kind %s is not a valid name." $where $opclass $kind) }}
 {{- end }}
 {{- $table := printf "embeddings_%s" $vectorType }}
 {{- $name := printf "%s_c%s_hnsw_%s" $table $collectionId $kind }}
-{{- $expr := printf "(embedding::%s(%d))" $vectorType $dims }}
-{{- $opclass := printf "%s_%s_ops" $vectorType $kind }}
-{{- if eq $kind "binary" }}
-{{- $expr = printf "(binary_quantize(embedding)::bit(%d))" $dims }}
-{{- $opclass = "bit_hamming_ops" }}
-{{- end }}
+{{- $expr = printf "(%s)" $expr }}
 {{- $with := list }}
 {{- range $param, $value := ($idx.params | default dict) }}
 {{- if not (has $param (list "m" "ef_construction")) }}

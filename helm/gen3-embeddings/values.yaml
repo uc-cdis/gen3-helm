@@ -142,7 +142,8 @@ extraEnv: {}
 # -- (map) Secret environment variables, rendered into the <name>-env-secret Secret and
 # projected with envFrom. Values must be scalars. Intended for local development only: when
 # global.externalSecrets.deploy is set, this Secret is populated from Secrets Manager instead and
-# anything here is ignored. Never commit real credentials to a public values file.
+# anything here is ignored; the Secrets Manager entry must then exist, even as `{}`, or the pods
+# wait for it. Never commit real credentials to a public values file.
 secretEnv: {}
 
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -225,12 +226,34 @@ vectorIndexes:
   # statement_timeout=0: a large HNSW build can run for days. For example
   # "statement_timeout=0&maintenance_work_mem=8GB&max_parallel_maintenance_workers=4".
   sessionParams: "statement_timeout=0"
+  # -- (map) Vector types an index can be built on. Each is stored in its own
+  # embeddings_<type> table. `maxDimensions` is the most an HNSW index on that type supports.
+  vectorTypes:
+    vector:
+      maxDimensions: 2000
+    halfvec:
+      maxDimensions: 4000
+  # -- (map) Index kinds. By default a kind indexes `embedding::{type}({dimensions})` with the
+  # `{type}_<kind>_ops` opclass, up to the vector type's maxDimensions. `expression`, `opclass`
+  # and `maxDimensions` override those, and may use the {type} and {dimensions} placeholders.
+  # The service only searches with indexes whose opclass it knows, which are those of the
+  # default kinds.
+  kinds:
+    cosine: {}
+    l2: {}
+    ip: {}
+    l1: {}
+    # Hamming distance over the quantized vector, then exact rescoring; serves every metric.
+    binary:
+      expression: "binary_quantize(embedding)::bit({dimensions})"
+      opclass: bit_hamming_ops
+      maxDimensions: 64000
   # -- (list) One entry per index migration. `version` (a timestamp such as 20261031120000)
   # orders the migrations and must never change once applied; editing an applied entry changes
   # nothing, since dbmate never rereads applied files. `collectionId` is collections.id, and
-  # `vectorType` (vector or halfvec) and `dimensions` must match that collection. `kind` is
-  # cosine, l2, ip, l1, or binary (serves every metric). Optional `params` sets m and
-  # ef_construction. To remove an index, add a new entry with a new version and `drop: true`.
+  # `vectorType` (a key of vectorTypes) and `dimensions` must match that collection. `kind` is a
+  # key of kinds. Optional `params` sets m and ef_construction. To remove an index, add a new
+  # entry with a new version and `drop: true`.
   # A failed build leaves its Job failed: drop the invalid index, then delete the Job and deploy
   # again.
   indexes: []

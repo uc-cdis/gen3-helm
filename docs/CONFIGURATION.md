@@ -359,6 +359,16 @@ gen3-embeddings:
 
 Each entry becomes `<version>_<table>_c<collectionId>_hnsw_<kind>.sql`. Direct HNSW indexes support up to 2000 dimensions on `vector` and 4000 on `halfvec`; above that, use `kind: binary`.
 
+The vector types and kinds an entry can use, with their dimension limits, are themselves values: `vectorIndexes.vectorTypes` and `vectorIndexes.kinds`. Values maps merge, so a deployment can add one, or change a limit, without restating the defaults. A kind's `expression` and `opclass` can use the `{type}` and `{dimensions}` placeholders:
+
+```yaml
+gen3-embeddings:
+  vectorIndexes:
+    kinds:
+      binary:
+        maxDimensions: 32000
+```
+
 Follow the build with:
 
 ```bash
