@@ -86,6 +86,24 @@ spec:
           echo "Granting table privileges to $APP_PGUSER as $DB_MIGRATION_USER..."
           psql -X -v ON_ERROR_STOP=1 \
             -v app_user="$APP_PGUSER" -v app_password="$APP_PGPASSWORD" -f /work/app_user.sql
+          # A GRANT on a table this role does not own grants nothing and only warns, so check
+          # that the role can now use every table row level security guards.
+          missing="$(psql -X -tA -v ON_ERROR_STOP=1 -v app_user="$APP_PGUSER" <<'SQL'
+          SELECT string_agg(format('%I (owner %I)', c.relname, pg_get_userbyid(c.relowner)), ', ')
+          FROM pg_class c
+          WHERE c.relnamespace = 'public'::regnamespace AND c.relrowsecurity
+            AND NOT (has_table_privilege(:'app_user', c.oid, 'SELECT')
+                 AND has_table_privilege(:'app_user', c.oid, 'INSERT')
+                 AND has_table_privilege(:'app_user', c.oid, 'UPDATE')
+                 AND has_table_privilege(:'app_user', c.oid, 'DELETE'));
+          SQL
+          )"
+          if [ -n "$missing" ]; then
+            echo "$APP_PGUSER still lacks privileges on: $missing."
+            echo "Only a table's owner can grant on it, and these grants ran as $DB_MIGRATION_USER."
+            echo "Make $DB_MIGRATION_USER the owner, or run app_user.sql as the owner."
+            exit 1
+          fi
           kubectl create secret generic {{ $appUser.readySecretName }} --from-literal=rolecreated=true \
             --dry-run=client -o yaml | kubectl apply -f -
           echo "App role $APP_PGUSER is ready."
