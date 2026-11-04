@@ -25,12 +25,14 @@ Published versions of this chart are listed in the
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | debug | bool | `false` |  |
-| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}},{"name":"PGPOOL_MIN_SIZE","value":"1"},{"name":"PGPOOL_MAX_SIZE","value":"5"},{"name":"GUNICORN_WORKERS","value":"2"}]` | Environment variables to pass to the container |
-| externalSecrets | map | `{"createK8sGen3EmbeddingsSecret":false,"dbcreds":null,"gen3EmbeddingsG3auto":null,"pushSecret":false}` | External Secrets settings. |
-| externalSecrets.createK8sGen3EmbeddingsSecret | string | `false` | Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
+| env | list | `[{"name":"GEN3_DEBUG","value":"false"},{"name":"ARBORIST_URL","valueFrom":{"configMapKeyRef":{"key":"arborist_url","name":"manifest-global","optional":true}}}]` | Environment variables to pass to the container |
+| externalSecrets | map | `{"appDbcreds":null,"dbcreds":null,"gen3EmbeddingsEnvSecret":null,"pushSecret":false}` | External Secrets settings. |
+| externalSecrets.appDbcreds | string | `nil` | Will override the name of the aws secrets manager secret holding the app role's credentials. Default is "Values.global.environment-.Chart.Name-app-creds" |
 | externalSecrets.dbcreds | string | `nil` | Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds" |
-| externalSecrets.gen3EmbeddingsG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto" |
+| externalSecrets.gen3EmbeddingsEnvSecret | string | `nil` | Name of the aws secrets manager secret whose JSON properties become secret environment variables, through the <name>-env-secret Secret. Leave empty when the service needs none; once set, the entry must exist or the pods wait for it. |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
+| extraEnv | map | `{}` | Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env` drops the defaults above, while map keys merge. A name set here replaces the `env` entry of the same name. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values belong in `secretEnv` or Secrets Manager, not here - this file is public. |
+| extraVolumes | list | `[]` | Additional volumes on the output Deployment definition. |
 | fullnameOverride | string | `""` |  |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
@@ -47,6 +49,7 @@ Published versions of this chart are listed in the
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.minAvailable | int | `1` | Minimum pods the PodDisruptionBudget keeps available. Only consulted when global.pdb is set and replicaCount is above 1; the PDB renders an empty minAvailable and is rejected without it. |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
 | global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
@@ -58,7 +61,6 @@ Published versions of this chart are listed in the
 | global.topologySpread.enabled | bool | `false` | Whether to enable topology spread constraints for all subcharts that support it. |
 | global.topologySpread.maxSkew | int | `1` | The maxSkew to use for topology spread constraints. Defaults to 1. |
 | global.topologySpread.topologyKey | string | `"topology.kubernetes.io/zone"` | The topology key to use for spreading. Defaults to "topology.kubernetes.io/zone". |
-| gunicornWorkers | int | `1` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3_embeddings"` |  |
 | image.tag | string | `"main"` |  |
@@ -69,33 +71,43 @@ Published versions of this chart are listed in the
 | ingress.hosts[0].paths[0].path | string | `"/"` |  |
 | ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
 | ingress.tls | list | `[]` |  |
-| livenessProbe.httpGet.path | string | `"/"` |  |
-| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe | map | `{"httpGet":{"path":"/_status","port":"http"},"initialDelaySeconds":30,"periodSeconds":60,"timeoutSeconds":30}` | Liveness probe. `port: http` follows service.targetPort, so the probe cannot drift from the port the container actually listens on. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` |  |
 | partOf | string | `"Embeddings"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
-| postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres | map | `{"appUser":{"enabled":true,"sqlFile":"/services/gen3_embeddings/db/app_user.sql","username":null},"database":null,"dbCreate":null,"dbRestore":false,"host":null,"migrations":{"dir":"/services/gen3_embeddings/db/migrations","enabled":true,"sslmode":"disable"},"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
+| postgres.appUser | map | `{"enabled":true,"sqlFile":"/services/gen3_embeddings/db/app_user.sql","username":null}` | The role the service connects as. The role in <chart>-dbcreds owns the tables and runs migrations, and an owner can switch row level security off on its own tables, so the service runs as a separate role that owns nothing. common.db_setup_job creates the role with its admin connection, a Job grants it what the image's app_user.sql lists once the migrations have run, and the deployment waits for that Job. Its credentials are in <chart>-app-dbcreds, which follows <chart>-dbcreds: a local Secret, or an ExternalSecret from Secrets Manager when global.externalSecrets.deploy is set. |
+| postgres.appUser.enabled | bool | `true` | Connect as the separate app role. When false, the service connects as the table owner from <chart>-dbcreds. |
+| postgres.appUser.sqlFile | string | `"/services/gen3_embeddings/db/app_user.sql"` | Path inside the image of the script that grants the app role its privileges. |
+| postgres.appUser.username | string | `nil` | Role name. Defaults to postgres.username, or <chart>_<release>, plus `_app`. |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgres.dbCreate | bool | `nil` | Whether the database should be created. Default to global.postgres.dbCreate |
 | postgres.host | string | `nil` | Hostname for postgres server. This is a service override, defaults to global.postgres.host |
+| postgres.migrations | map | `{"dir":"/services/gen3_embeddings/db/migrations","enabled":true,"sslmode":"disable"}` | dbmate schema migrations. dbmate takes no lock while migrating, so migrations run in a single Job with parallelism 1 and the deployment waits for them rather than each replica racing to apply the same migration. |
+| postgres.migrations.dir | string | `"/services/gen3_embeddings/db/migrations"` | Directory inside the image holding dbmate migrations. |
+| postgres.migrations.enabled | bool | `true` | Run migrations as a Job, and make the deployment wait for them before serving. |
+| postgres.migrations.sslmode | string | `"disable"` | sslmode for the migration connection. |
 | postgres.password | string | `nil` | Password for Postgres. Will be autogenerated if left empty. |
 | postgres.port | string | `"5432"` | Port for Postgres. |
 | postgres.separate | string | `false` | Will create a Database for the individual service to help with developing it. |
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
-| readinessProbe.httpGet.path | string | `"/"` |  |
-| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe | map | `{"httpGet":{"path":"/_status","port":"http"}}` | Readiness probe. Removes the pod from the Service until /_status answers. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
-| replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| replicaCount | int | `2` | The image runs a single Uvicorn process, so concurrency comes from replicas rather than from workers inside the container. Replicas do not migrate: postgres.migrations runs that once in a Job and each replica waits for it, so this can be raised freely. |
+| resources | map | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Compute resources. Sized for the single Uvicorn process the image runs; add replicas rather than raising these to serve more concurrent traffic. The same values apply to the migration initContainer. |
+| secretEnv | map | `{}` | Secret environment variables, rendered into the <name>-env-secret Secret and projected with envFrom. Values must be scalars. Intended for local development only: when global.externalSecrets.deploy is set, that Secret comes from the Secrets Manager entry named in externalSecrets.gen3EmbeddingsEnvSecret instead and anything here is ignored. Never commit real credentials to a public values file. |
 | secrets | map | `{"awsAccessKeyId":null,"awsSecretAccessKey":null}` | Secret information to access the db restore job S3 bucket. |
 | secrets.awsAccessKeyId | str | `nil` | AWS access key ID. Overrides global key. |
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
 | service.port | int | `80` |  |
+| service.targetPort | int | `8000` | Port the service listens on inside the container. Also the container port the probes address by name, so changing it here moves the Service, the container port and both probes together. |
 | service.type | string | `"ClusterIP"` |  |
-| volumeMounts[0].mountPath | string | `"/services/gen3_embeddings/.env"` |  |
-| volumeMounts[0].name | string | `"gen3-embeddings-g3auto-volume"` |  |
-| volumeMounts[0].readOnly | bool | `true` |  |
-| volumeMounts[0].subPath | string | `"gen3-embeddings.env"` |  |
+| vectorIndexes | map | `{"indexes":[],"kinds":{"binary":{"expression":"binary_quantize(embedding)::bit({dimensions})","maxDimensions":64000,"opclass":"bit_hamming_ops"},"cosine":{},"ip":{},"l1":{},"l2":{}},"sessionParams":"statement_timeout=0","vectorTypes":{"halfvec":{"maxDimensions":4000},"vector":{"maxDimensions":2000}}}` | HNSW vector indexes, applied as dbmate index migrations recorded in their own `index_migrations` table, apart from the schema migrations, so the deployment never waits on a build. A Job applies them whenever this list changes, then restarts the service, which reads the index catalog only at startup. Collection ids differ between deployments, so these belong in each deployment's own values. See services/gen3_embeddings/db/index_migrations/README.md in gen3-ai for choosing indexes. |
+| vectorIndexes.indexes | list | `[]` | One entry per index migration. `version` (a timestamp such as 20261031120000) orders the migrations and must never change once applied; editing an applied entry changes nothing, since dbmate never rereads applied files. `collectionId` is collections.id, and `vectorType` (a key of vectorTypes) and `dimensions` must match that collection. `kind` is a key of kinds. Optional `params` sets m and ef_construction. To remove an index, add a new entry with a new version and `drop: true`. A failed build leaves its Job failed: drop the invalid index, then delete the Job and deploy again. |
+| vectorIndexes.kinds | map | `{"binary":{"expression":"binary_quantize(embedding)::bit({dimensions})","maxDimensions":64000,"opclass":"bit_hamming_ops"},"cosine":{},"ip":{},"l1":{},"l2":{}}` | Index kinds. By default a kind indexes `embedding::{type}({dimensions})` with the `{type}_<kind>_ops` opclass, up to the vector type's maxDimensions. `expression`, `opclass` and `maxDimensions` override those, and may use the {type} and {dimensions} placeholders. The service only searches with indexes whose opclass it knows, which are those of the default kinds. |
+| vectorIndexes.sessionParams | string | `"statement_timeout=0"` | Postgres session settings for the build, as connection URL parameters. Keep statement_timeout=0: a large HNSW build can run for days. For example "statement_timeout=0&maintenance_work_mem=8GB&max_parallel_maintenance_workers=4". |
+| vectorIndexes.vectorTypes | map | `{"halfvec":{"maxDimensions":4000},"vector":{"maxDimensions":2000}}` | Vector types an index can be built on. Each is stored in its own embeddings_<type> table. `maxDimensions` is the most an HNSW index on that type supports. |
+| volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition. |
