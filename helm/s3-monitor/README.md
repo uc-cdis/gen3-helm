@@ -30,6 +30,13 @@ Published versions of this chart are listed in the
 | config.mq.secretArn | string | `""` | Secrets Manager ARN of the MQ credentials (username/password). |
 | config.mq.secretKmsKeyArn | string | `""` | KMS key of that secret, if it is a customer-managed key. |
 | config.mq.stompEndpoints | list | `[]` | Amazon MQ STOMP endpoints, e.g. stomp+ssl://b-xxxx-1.mq.us-east-1.amazonaws.com:61614 |
+| config.recon.epochSlackMinutes | int | `60` | Epoch-named folders are listed only this many minutes around the window. |
+| config.recon.lagHours | int | `1` | Check the hour that ended this many hours ago (lag 1 at 10:15 -> 08:00-09:00 UTC). |
+| config.recon.maxRequeue | int | `10000` | Above this many missing objects, alarm instead of re-queueing. |
+| config.recon.mqCloudwatchBrokers | list | `[]` | Amazon MQ broker names as CloudWatch shows them (e.g. ["gen3-mq-1", "gen3-mq-2"]); empty = skip the MQ check. |
+| config.recon.mqGraceSeconds | int | `300` | ActiveMQ enqueues are counted this many seconds past the window end (publish delay). |
+| config.recon.requeueMissing | bool | `false` | Re-queue S3 objects missing from the lake in two hourly checks in a row (only with apply: true). |
+| config.recon.sqsGraceSeconds | int | `120` | SQS messages sent are counted this many seconds past the window end (notification delay). |
 | config.sqs.batchSize | int | `10` | Messages per batch (1-10). |
 | config.sqs.flushRows | int | `1000` | Write the buffered rows to the lake (one Parquet file per bucket) after this many rows... |
 | config.sqs.flushSeconds | int | `120` | ...or after this many seconds, whichever comes first, and always at the end of the run. |
@@ -54,6 +61,8 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/s3-monitor"` | s3-monitor image (all Python and shell code). Built and pushed by the uc-cdis/s3-monitor repo. |
 | image.tag | string | `"ActiveMQDuckDB"` | Image tag. |
 | imagePullSecrets | list | `[]` | Image pull secrets, if the quay.io repository is private. |
+| recon.enabled | bool | `false` | Create the recon CronJob. |
+| recon.schedule | string | `"15 * * * *"` | Recon schedule (default: 15 minutes past every hour). |
 | resources | map | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}` | CronJob resources. DuckDB works in memory, so leave headroom. |
 | schedule | string | `"*/5 * * * *"` | CronJob schedule. Each run drains the SQS queue (up to config.sqs.maxRunSeconds) and exits. |
 | serviceAccount.annotations | map | `{}` | Annotations when Crossplane is off (e.g. an existing eks.amazonaws.com/role-arn). |

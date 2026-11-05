@@ -120,6 +120,7 @@ Rendered from values, so namespace, service account and role always match this r
     "eks" $eks
     "iam" (dict "role_name" (include "s3monitor.roleName" .))
     "sqs" $sqs
+    "recon" (dict "mq_cloudwatch_brokers" ($c.recon.mqCloudwatchBrokers | default list) "lag_hours" (int $c.recon.lagHours) "epoch_slack_minutes" (int $c.recon.epochSlackMinutes) "requeue_missing" $c.recon.requeueMissing "max_requeue" (int $c.recon.maxRequeue) "sqs_grace_seconds" (int $c.recon.sqsGraceSeconds) "mq_grace_seconds" (int $c.recon.mqGraceSeconds))
     "lake" $lake
     "mq" $mq
     "tenants" $c.tenants
@@ -171,6 +172,9 @@ Rendered from values, so namespace, service account and role always match this r
 {{- $stmts := include "s3monitor.lakeStatements" . | fromJsonArray -}}
 {{- $stmts = append $stmts (dict "Sid" "ReadMqSecret" "Effect" "Allow" "Action" (list "secretsmanager:GetSecretValue" "secretsmanager:DescribeSecret") "Resource" (list $c.mq.secretArn)) -}}
 {{- $stmts = append $stmts (dict "Sid" "ConsumeEvents" "Effect" "Allow" "Action" (list "sqs:ReceiveMessage" "sqs:DeleteMessage" "sqs:ChangeMessageVisibility" "sqs:GetQueueAttributes" "sqs:GetQueueUrl" "sqs:SendMessage") "Resource" (list (include "s3monitor.queueArn" .))) -}}
+{{- if .Values.recon.enabled -}}
+{{- $stmts = append $stmts (dict "Sid" "ReconMetrics" "Effect" "Allow" "Action" (list "cloudwatch:GetMetricData") "Resource" (list "*")) -}}
+{{- end -}}
 {{- if $c.mq.secretKmsKeyArn -}}
 {{- $stmts = append $stmts (dict "Sid" "MqSecretKms" "Effect" "Allow" "Action" (list "kms:Decrypt" "kms:DescribeKey") "Resource" (list $c.mq.secretKmsKeyArn)) -}}
 {{- end -}}

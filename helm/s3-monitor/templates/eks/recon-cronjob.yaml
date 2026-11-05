@@ -1,0 +1,27 @@
+{{- /*
+Hourly reconciliation (recon.py): for one past hour, compares S3 objects created vs SQS messages sent vs lake rows vs
+ActiveMQ enqueues, lists objects that never got through (re-queues them with config.recon.requeueMissing) and writes a
+report to <lake>/<prefix>/recon/. A failed Job = a mismatch to look at. Needs cloudwatch:GetMetricData on the role.
+*/ -}}
+{{- if and .Values.enabled .Values.recon.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "s3monitor.fullname" . }}-recon
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "s3monitor.labels" . | nindent 4 }}
+    s3-monitor/component: recon
+spec:
+  schedule: {{ .Values.recon.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      activeDeadlineSeconds: 3000
+      template:
+        {{- include "s3monitor.podTemplate" (list . (dict "command" (list "python3" "-u" "/scripts/recon.py") "args" (list))) | nindent 8 }}
+{{- end }}

@@ -104,9 +104,31 @@ config:
     destinationPrefix: "/queue/s3monitor.ingest"
     # -- (bool) Resolve broker hostnames to IPv4 before connecting.
     resolveIpv4: false
+  recon:
+    # -- (list) Amazon MQ broker names as CloudWatch shows them (e.g. ["gen3-mq-1", "gen3-mq-2"]); empty = skip the MQ check.
+    mqCloudwatchBrokers: []
+    # -- (int) Check the hour that ended this many hours ago (lag 1 at 10:15 -> 08:00-09:00 UTC).
+    lagHours: 1
+    # -- (int) Epoch-named folders are listed only this many minutes around the window.
+    epochSlackMinutes: 60
+    # -- (bool) Re-queue S3 objects missing from the lake in two hourly checks in a row (only with apply: true).
+    requeueMissing: false
+    # -- (int) Above this many missing objects, alarm instead of re-queueing.
+    maxRequeue: 10000
+    # -- (int) SQS messages sent are counted this many seconds past the window end (notification delay).
+    sqsGraceSeconds: 120
+    # -- (int) ActiveMQ enqueues are counted this many seconds past the window end (publish delay).
+    mqGraceSeconds: 300
   # -- (list) Watched buckets: id, existing_bucket_name, optional prefix / suffix (the same filter as the bucket
   # notification), kms_key_arn, lifecycle (active | draining | retired), destination, failure_destination.
   tenants: []
+# Hourly reconciliation CronJob (recon.py): compares S3 objects created vs SQS messages vs lake rows vs ActiveMQ enqueues
+# for one past hour, lists (and optionally re-queues) objects that never got through. Settings: config.recon.
+recon:
+  # -- (bool) Create the recon CronJob.
+  enabled: false
+  # -- (string) Recon schedule (default: 15 minutes past every hour).
+  schedule: "15 * * * *"
 # One-off backfill Job (backfill.py): queues a tenant's existing objects as notifications. Turn it off after the run.
 backfill:
   # -- (bool) Create the backfill Job.
