@@ -1,3 +1,6 @@
+global:
+  skipExistingJobs: true
+
 ambassador:
   enabled: false
   service:
@@ -58,7 +61,7 @@ gen3-workflow:
 guppy:
   enabled: false
   service:
-    targetPort: 8080
+    targetPort: 8000
 
 hatchery:
   enabled: false
@@ -69,6 +72,9 @@ indexd:
   enabled: true
   service:
     targetPort: 8000
+  gunicorn:
+    user: ""
+    group: ""
 
 manifestservice:
   enabled: false
@@ -79,6 +85,8 @@ metadata:
   enabled: false
   service:
     targetPort: 8000
+  postgres:
+    lookupLocalSecret: false
 
 ohdsi-atlas:
   enabled: false
@@ -103,20 +111,16 @@ peregrine:
 portal:
   enabled: true
   service:
-    targetPort: 8000
+    targetPort: 8080
   resources:
     requests:
       memory: 750Mi
-  image:
-      repository: quay.io/cdis/data-portal-prebuilt
-      tag: caninedc.org-jawadqur-patch-1
   securityContext:
     capabilities:
       drop:
       - ALL
-    readOnlyRootFilesystem: true
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
-    runAsUser: 1000
 
 requestor:
   enabled: false
@@ -158,6 +162,25 @@ sheepdog:
   enabled: true
   service:
     targetPort: 8000
+
+etl:
+  sparkExecutorMemory: 1g
+  sparkDriverMemory: 1g
+  resources:
+    spark:
+      requests:
+        cpu: 250m
+        memory: 1536Mi
+      limits:
+        cpu: 1500m
+        memory: 3Gi
+    tube:
+      requests:
+        cpu: 250m
+        memory: 1Gi
+      limits:
+        cpu: 1500m
+        memory: 2Gi
 
 ssjdispatcher:
   enabled: false

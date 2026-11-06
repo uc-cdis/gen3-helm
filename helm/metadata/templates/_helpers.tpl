@@ -70,11 +70,20 @@ Create the name of the service account to use
  Postgres Password lookup
 */}}
 {{- define "metadata.postgres.password" -}}
+{{- if .Values.postgres.lookupLocalSecret }}
 {{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
 {{- if $localpass }}
 {{- default (index $localpass.data "postgres-password" | b64dec) }}
 {{- else }}
 {{- default .Values.postgres.password }}
+{{- end }}
+{{- else }}
+{{- $dbcreds := (lookup "v1" "Secret" .Release.Namespace "metadata-dbcreds" ) -}}
+{{- if and $dbcreds $dbcreds.data }}
+{{- index $dbcreds.data "password" | b64dec }}
+{{- else }}
+{{- default .Values.postgres.password }}
+{{- end }}
 {{- end }}
 {{- end }}
 

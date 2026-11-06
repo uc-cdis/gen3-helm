@@ -4,6 +4,8 @@
 
 # Global configuration
 global:
+  # -- (bool) Skip one-time Jobs that already exist in the namespace and keep them when no longer rendered
+  skipExistingJobs: false
   # -- (map) GCP configuration
   gcp:
     enabled: false

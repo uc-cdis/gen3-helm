@@ -36,11 +36,19 @@ roleRef:
 
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
-{{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
+{{- $dbCredsSecret := printf "%s-dbcreds" .Chart.Name }}
+{{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
+{{- $dbCredsSecret = printf "%s-dbcreds-bootstrap" .Chart.Name }}
+{{- end }}
+{{- if and (or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate) (not (include "common.job.exists" (dict "name" (printf "%s-dbcreate" .Chart.Name) "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:
@@ -114,19 +122,19 @@ spec:
           - name: SERVICE_PGUSER
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $dbCredsSecret }}
                 key: username
                 optional: false
           - name: SERVICE_PGDB
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $dbCredsSecret }}
                 key: database
                 optional: false
           - name: SERVICE_PGPASS
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $dbCredsSecret }}
                 key: password
                 optional: false
           - name: GEN3_HOME
@@ -157,7 +165,7 @@ spec:
               # gen3_log_info "Database exists"
               echo "Database exists"
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
+              kubectl patch secret/{{ $dbCredsSecret }} -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             else
               echo "Database does not exist — creating..."
               psql -tc "SELECT 1 FROM pg_database WHERE datname = '$SERVICE_PGDB'" | grep -q 1 || \
@@ -180,7 +188,7 @@ spec:
               psql -d $SERVICE_PGDB -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
               PGPASSWORD=$SERVICE_PGPASS psql -d $SERVICE_PGDB -h $PGHOST -p $PGPORT -U $SERVICE_PGUSER -c "\conninfo"
-              kubectl patch secret/{{ .Chart.Name }}-dbcreds -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
+              kubectl patch secret/{{ $dbCredsSecret }} -p '{"data":{"dbcreated":"dHJ1ZQo="}}'
             fi
 {{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
 
