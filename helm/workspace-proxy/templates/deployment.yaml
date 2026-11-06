@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: workspace-proxy
+        public: "yes"
     spec:
       serviceAccountName: workspace-proxy
       automountServiceAccountToken: true

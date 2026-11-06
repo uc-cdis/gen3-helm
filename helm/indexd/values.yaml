@@ -297,6 +297,14 @@ cloudProviderMap:
 # -- (int) The maximum number of records that can be processed in a single bulk request. This is used to prevent large requests from overwhelming the system.
 maxBulkRequestLength: 100
 
+# -- (map) Overrides for the DRS service-info response (/ga4gh/drs/v1/service-info).
+# Default `id` is the hostname in reverse.
+# Default `organization.url` is `https://<global.hostname>`.
+# To change a value, add it here, for example `organization.name`.
+# The chart sends these values to indexd in the `DRS_SERVICE_INFO` env var.
+# Leave this empty to use the defaults.
+drsServiceInfo: {}
+
 # -- (map) Maps an arborist resource to the issuers for passports and bearer tokens.
 trustedIssuers:
   # -- (string) The default preferred supported_type. This will ensure indexd return this supported_type before the other.

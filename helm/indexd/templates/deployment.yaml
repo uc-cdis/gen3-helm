@@ -115,8 +115,10 @@ spec:
               value: {{ include "common.nginxSidecar.upstreamScheme" . | quote }}
             - name: MAX_BULK_REQUEST_LENGTH
               value: {{ .Values.maxBulkRequestLength | quote }}
-            {{- toYaml .Values.env | nindent 12 }}
           {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
+            - name: DRS_SERVICE_INFO
+              value: {{ include "indexd.drsServiceInfo" . | quote }}
+            {{- toYaml .Values.env | nindent 12  }}
           volumeMounts:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}

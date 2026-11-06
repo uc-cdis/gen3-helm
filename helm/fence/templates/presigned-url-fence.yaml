@@ -92,6 +92,12 @@ spec:
           env:
             {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             {{- toYaml .Values.env | nindent 12 }}
+            - name: DPOP_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gen3-dpop
+                  key: DPOP_SHARED_SECRET
+                  optional: true
           volumeMounts:
             {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
             {{- toYaml .Values.volumeMounts | nindent 12 }}
