@@ -1,0 +1,68 @@
+{{ if index .Values "alb-controller" "enabled" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alb-controller-mtls
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: aws-load-balancer-controller
+      repoURL: https://aws.github.io/eks-charts
+      targetRevision: {{ index .Values "alb-controller" "targetRevision" }}
+      helm:
+        releaseName: alb-controller
+      {{- if index .Values "alb-controller" "configuration" "enabled" }}
+        valueFiles:
+          - $values/{{ .Values.cluster }}/cluster-values/alb-controller.yaml
+    - repoURL: {{ .Values.configuration.configurationRepo }}
+      targetRevision: {{ .Values.configuration.configurationRevision }}
+      ref: values
+      {{- else }}
+        values: |
+          clusterName: {{ .Values.eksClusterName | default .Values.cluster }}
+          hostNetwork: true
+          serviceAccount:
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.accountNumber }}:role/gen3_service/{{ .Values.eksClusterName | default .Values.cluster }}--default--ingress
+            name: aws-load-balancer-controller
+          metricsBindAddr: "0.0.0.0:8081"
+          hostNetwork: {{ index .Values "alb-controller" "hostNetworkEnabled" }}
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=false
+    automated:
+      selfHeal: true
+{{ end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $ingress.name | default "revproxy-mtls" | quote }}
+  namespace: {{ required "Set alb-controller-mtls.ingress.namespace to the backend Service namespace" $ingress.namespace | quote }}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: {{ $ingress.scheme | default "internet-facing" | quote }}
+    alb.ingress.kubernetes.io/target-type: {{ $ingress.targetType | default "instance" | quote }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: {{ $certificateArn | quote }}
+    alb.ingress.kubernetes.io/ssl-policy: {{ $ingress.sslPolicy | default "ELBSecurityPolicy-TLS13-1-2-2021-06" | quote }}
+    alb.ingress.kubernetes.io/mutual-authentication: {{ list (dict "port" 443 "mode" "verify" "trustStore" $trustStore "ignoreClientCertificateExpiry" false) | toJson | quote }}
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ required "Set alb-controller-mtls.ingress.hostname" $ingress.hostname | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $ingress.serviceName | default "revproxy-service" | quote }}
+                port:
+                  number: {{ $ingress.servicePort | default 80 }}
+{{- end }}
