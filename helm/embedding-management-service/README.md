@@ -82,8 +82,8 @@ Published versions of this chart are listed in the
 | readinessProbe.httpGet.port | int | `8000` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
-| service | map | `{"port":{"name":"http","port":80,"protocol":"TCP","targetPort":8000},"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000}` | The port number that the service exposes. |
+| service | map | `{"name":"http","port":80,"protocol":"TCP","targetPort":8000,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.protocol | int | `"TCP"` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |

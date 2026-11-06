@@ -1,4 +1,5 @@
 {{- if .Values.useAggMds }}
+{{- $scheme := include "common.nginxSidecar.upstreamScheme" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -49,7 +50,7 @@ spec:
               image: alpine/curl
               env:
                 - name: GEN3_ES_ENDPOINT
-                  value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
+                  value: {{ .Values.esEndpoint | default "{{ $scheme }}://gen3-elasticsearch-master:9200" }}
               imagePullPolicy: IfNotPresent
               command: ["/bin/sh"]
               args:
@@ -65,14 +66,14 @@ spec:
               image: alpine/curl
               env:
                 - name: GEN3_ES_ENDPOINT
-                  value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
+                  value: {{ .Values.esEndpoint | default "{{ $scheme }}://gen3-elasticsearch-master:9200" }}
               imagePullPolicy: IfNotPresent
               command: ["/bin/sh"]
               args:
                 - "-c"
                 - |
                   echo "Waiting for metadata service to be ready"
-                  until curl -s -XGET http://metadata-service; do
+                  until curl -sk -XGET {{ $scheme }}://metadata-service; do
                     echo "Metadata service is not ready yet..."
                     sleep 5
                   done
@@ -98,7 +99,7 @@ spec:
                 - name: GEN3_DEBUG
                   value: "False"
                 - name: GEN3_ES_ENDPOINT
-                  value: {{ .Values.esEndpoint | default "http://gen3-elasticsearch-master:9200" }}
+                  value: {{ .Values.esEndpoint | default "{{ $scheme }}://gen3-elasticsearch-master:9200" }}
                 - name: USE_AGG_MDS
                   value: {{ (.Values.useAggMds | quote | default "True") }}
                 - name: AGG_MDS_NAMESPACE

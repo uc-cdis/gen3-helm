@@ -1,3 +1,6 @@
+{{- $nginxVolumes := include "common.nginxSidecar.volumes" . -}}
+{{- $nginxAnnotations := include "common.nginxSidecar.annotations" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +19,9 @@ spec:
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $nginxAnnotations }}
+        {{- $nginxAnnotations | nindent 8 }}
       {{- end }}
       labels:
         {{- include "embedding-management-service.labels" . | nindent 8 }}
@@ -38,9 +44,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port.targetPort }}
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           env:
+            {{- include "common.nginxSidecar.caEnvVars" . | nindent 12 }}
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -71,17 +78,22 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+          {{- if or .Values.volumeMounts (include "common.nginxSidecar.tls" .) }}
           volumeMounts:
+            {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- include "common.nginxSidecar.caVolumeMounts" . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+        {{- include "common.nginxSidecar.containers" . | nindent 8 }}
+      {{- if or .Values.volumes $nginxVolumes }}
       volumes:
-        - name: config-volume
-          configMap:
-            name: ems-config
-            optional: false
+        {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if $nginxVolumes }}
+        {{- $nginxVolumes | nindent 8 }}
+        {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

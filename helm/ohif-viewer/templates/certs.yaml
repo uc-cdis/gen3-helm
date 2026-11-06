@@ -1,0 +1,3 @@
+{{- include "common.nginxSidecar.configmap" . }}
+---
+{{- include "common.nginxSidecar.certificate" . }}
