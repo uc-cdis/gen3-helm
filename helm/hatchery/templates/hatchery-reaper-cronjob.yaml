@@ -101,7 +101,7 @@ spec:
                       echo "Workspace status for $user - $status"
                       if [[ "$status" == "Running" || "$status" == "Launching" ]]; then
                           serviceName=h-$(escape $user)-s
-                          service="ambassador-service"
+                          service="workspace-proxy-service"
                           status_code=$(curl -s -w '%{http_code}' -o status.json -H "REMOTE_USER: $user" $service/api/status)
                           echo "Workspace status code for $user - $status_code"
                           if [ "$status_code" == "200" ]; then
