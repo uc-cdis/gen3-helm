@@ -1,4 +1,4 @@
-{{ if index .Values "alb-controller" "enabled" }}
+{{ if index .Values "alb-controller-mtls" "enabled" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -38,7 +38,6 @@ spec:
     - CreateNamespace=false
     automated:
       selfHeal: true
-{{ end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
