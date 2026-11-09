@@ -82,3 +82,77 @@ Create the name of the jupyter namespace
 {{- define "stata-workspace-gen3-license" -}}
 {{- default "stata-workspace-gen3-license" .Values.externalSecrets.stataG3auto }}
 {{- end }}
+
+{{/*
+JSON list of the workspace images the hot-node prepullers pull. Resolved from the same inputs as
+the manifest-hatchery ConfigMap so the prepuller doesn't have to look them up when its pod starts.
+*/}}
+{{- define "hatchery.prepullImages" -}}
+{{- $containers := list -}}
+{{- if .Values.hatchery.json -}}
+  {{- $manifest := .Values.hatchery.json | fromJson -}}
+  {{- if hasKey $manifest "Error" -}}
+    {{- fail (printf "hatchery.json is not valid JSON: %s" $manifest.Error) -}}
+  {{- end -}}
+  {{- $containers = $manifest.containers | default list -}}
+{{- else -}}
+  {{- $containers = tpl (.Values.hatchery.containers | toJson) . | fromJsonArray -}}
+{{- end -}}
+{{- $images := list -}}
+{{- range $containers -}}
+  {{- if .image -}}
+    {{- $images = append $images .image -}}
+  {{- end -}}
+{{- end -}}
+{{- $images | uniq | toJson -}}
+{{- end }}
+
+{{/*
+Job that pulls every workspace image onto the node it is pinned to. Takes a dict of:
+  root:        the chart's root context
+  app:         value of the `app` label
+  tolerations: list of tolerations for the node group
+Everything is rendered here except $JOB_NAME and $NODE_NAME, which the hot-node init container
+fills in with envsubst, so the ConfigMap holding this (and its hash) only changes when the chart
+inputs change.
+*/}}
+{{- define "hatchery.prepullJob" -}}
+{{- $images := include "hatchery.prepullImages" .root | fromJsonArray -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: $JOB_NAME
+  labels:
+    app: {{ .app }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .app }}
+    spec:
+      nodeName: $NODE_NAME
+      restartPolicy: Never
+      tolerations:
+        {{- toYaml .tolerations | nindent 8 }}
+      terminationGracePeriodSeconds: 0
+      automountServiceAccountToken: false
+      containers:
+      - name: pause
+        image: busybox:latest
+        command:
+          - /bin/sh
+          - -c
+          - exit 0
+      {{- with $images }}
+      initContainers:
+        {{- range $i, $image := . }}
+      - name: image-{{ $i }}
+        image: {{ $image | quote }}
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/sh
+          - -c
+          - echo 'Pulling complete'
+        {{- end }}
+      {{- end }}
+{{- end }}
