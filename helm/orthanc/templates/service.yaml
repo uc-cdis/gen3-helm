@@ -6,10 +6,10 @@ metadata:
     {{- include "orthanc.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+    - port: {{ ternary 443 .Values.service.port (eq (include "common.nginxSidecar.servicePortName" .) "https") }}
+      targetPort: {{ include "common.nginxSidecar.targetPortName" . }}
       protocol: TCP
-      name: https
+      name: http
       nodePort: null
   type: ClusterIP
   selector:

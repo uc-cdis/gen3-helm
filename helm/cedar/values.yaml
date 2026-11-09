@@ -164,11 +164,9 @@ securityContext: {}
 service:
   # -- (string) Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName".
   type: ClusterIP
-  # -- (int) Port on which the service is exposed
-  httpPort: 80
-  # -- (int) Secure port on which the service is exposed
-  httpsPort: 443
-  # -- (int) Port on which the service is exposed for Cedar API
+  # -- (int) The port number that the service exposes.
+  port: 80
+  # -- (int) Port the cedar-wrapper container listens on.
   targetPort: 8000
 
 # -- (map) Resource requests and limits for the containers in the pod

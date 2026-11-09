@@ -124,8 +124,7 @@ Published versions of this chart are listed in the
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
+| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAnnotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nambassador_id: \"gen3\"\nkind:  Mapping\nname:  metadata_mapping\nprefix: /index/\nservice: http://metadata-service:80\n"` |  |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |

@@ -108,7 +108,7 @@ Published versions of this chart are listed in the
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"httpPort":80,"httpsPort":443,"targetPort":80,"type":"ClusterIP"}` | Configuration for the service |
+| service | map | `{"httpPort":80,"httpsPort":443,"port":80,"targetPort":80,"type":"ClusterIP"}` | Configuration for the service |
 | service.httpPort | int | `80` | Port on which the service is exposed |
 | service.httpsPort | int | `443` | Secure port on which the service is exposed |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |

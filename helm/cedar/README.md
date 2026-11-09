@@ -98,10 +98,9 @@ Published versions of this chart are listed in the
 | secrets.cedarDirectoryId | string | `""` | Values for Cedar directory ID. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"httpPort":80,"httpsPort":443,"targetPort":8000,"type":"ClusterIP"}` | Configuration for the service |
-| service.httpPort | int | `80` | Port on which the service is exposed |
-| service.httpsPort | int | `443` | Secure port on which the service is exposed |
-| service.targetPort | int | `8000` | Port on which the service is exposed for Cedar API |
+| service | map | `{"port":80,"targetPort":8000,"type":"ClusterIP"}` | Configuration for the service |
+| service.port | int | `80` | The port number that the service exposes. |
+| service.targetPort | int | `8000` | Port the cedar-wrapper container listens on. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":true,"name":""}` | Service account to use or create. |
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
