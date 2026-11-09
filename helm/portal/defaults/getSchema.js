@@ -24,7 +24,7 @@ const { gdcSubPath } = (function () {
     if (process.env.HOSTNAME) {
       gdcDefaultPath = `https://${process.env.HOSTNAME}/api/v0/submission/`;
       if (process.env.HOSTNAME.startsWith('revproxy')) {
-        gdcDefaultPath = `https://${process.env.HOSTNAME}/api/v0/submission/`;
+        gdcDefaultPath = `http://${process.env.HOSTNAME}/api/v0/submission/`;
       }
     }
     return { status: 'ok', gdcSubPath: addSlash(process.env.GDC_SUBPATH || gdcDefaultPath) };

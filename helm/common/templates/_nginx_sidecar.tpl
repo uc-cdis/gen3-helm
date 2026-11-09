@@ -62,7 +62,7 @@ http
 
 {{- define "common.nginxSidecar.servicePortName" -}}
 {{- $nginx := include "common.nginxSidecar.values" . | fromYaml -}}
-{{- if $nginx.enabled -}}
+{{- if and $nginx.enabled $nginx.tls.enabled -}}
 https
 {{- else -}}
 http
