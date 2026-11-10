@@ -1,0 +1,46 @@
+apiVersion: v2
+name: ai-gateway
+description: |
+  CTDS unified AI gateway. Deploys Bifrost, Headroom (token compression),
+  the reversible redactor plugin sidecars (Presidio + detect-secrets +
+  Redis vault), the admin-API façade, and the org-standards MCP server.
+
+  All workload images are CTDS-built on the hardened AL2023 base.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.28.0-0"
+
+keywords:
+  - ai
+  - gateway
+  - bifrost
+  - bedrock
+  - vertex
+  - kserve
+  - llm
+
+home: https://github.com/uc-cdis/ctds-ai-gateway
+sources:
+  - https://github.com/uc-cdis/ctds-ai-gateway
+
+maintainers:
+  - name: CTDS Platform
+    email: platform@ctds.uchicago.edu
+
+# Postgres + Redis are pulled in as Bitnami subcharts. We deploy them in-cluster
+# for non-prod; prod overrides set `enabled: false` and point Bifrost at RDS /
+# ElastiCache via values.
+dependencies:
+  - name: postgresql
+    version: "15.5.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "19.6.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+
+annotations:
+  category: AI
+  licenses: Apache-2.0

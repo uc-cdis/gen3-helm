@@ -1,0 +1,70 @@
+{{- if .Values.orgStandardsMcp.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-org-standards-mcp
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "org-standards-mcp") | nindent 4 }}
+spec:
+  replicas: {{ .Values.orgStandardsMcp.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "org-standards-mcp") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "org-standards-mcp") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: org-standards-mcp
+          image: "{{ .Values.orgStandardsMcp.image.repository }}:{{ .Values.orgStandardsMcp.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: {{ .Values.orgStandardsMcp.service.port }}
+          env:
+            - name: ORG_STANDARDS_REPO
+              value: {{ .Values.orgStandardsMcp.standardsRepo | quote }}
+            - name: ORG_STANDARDS_TTL_SECONDS
+              value: {{ .Values.orgStandardsMcp.cacheTtlSeconds | quote }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-org-standards-mcp
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "org-standards-mcp") | nindent 4 }}
+spec:
+  type: {{ .Values.orgStandardsMcp.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "org-standards-mcp") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.orgStandardsMcp.service.port }}
+      targetPort: http
+{{- end }}

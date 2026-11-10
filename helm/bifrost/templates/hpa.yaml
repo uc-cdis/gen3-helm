@@ -1,0 +1,256 @@
+{{- if and .Values.bifrost.enabled .Values.bifrost.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-bifrost
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "bifrost") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-bifrost
+  minReplicas: {{ .Values.bifrost.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.bifrost.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.bifrost.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.bifrost.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.bifrost.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.bifrost.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.bifrost.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.bifrost.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.bifrost.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.bifrost.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.bifrost.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.bifrost.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+---
+{{- end }}
+
+{{- if and .Values.headroom.enabled .Values.headroom.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-headroom
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "headroom") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-headroom
+  minReplicas: {{ .Values.headroom.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.headroom.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.headroom.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.headroom.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.headroom.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.headroom.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.headroom.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.headroom.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.headroom.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.headroom.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.headroom.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.headroom.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.enabled .Values.redactor.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-redactor
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "redactor") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-redactor
+  minReplicas: {{ .Values.redactor.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.redactor.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.redactor.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.redactor.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.redactor.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.redactor.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.redactor.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.redactor.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.presidio.enabled .Values.redactor.presidio.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-presidio
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "presidio") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-presidio
+  minReplicas: {{ .Values.redactor.presidio.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.redactor.presidio.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.presidio.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.presidio.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.redactor.presidio.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.presidio.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.redactor.presidio.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.redactor.presidio.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.redactor.presidio.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.presidio.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.redactor.presidio.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.redactor.presidio.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.detectSecrets.enabled .Values.redactor.detectSecrets.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-detect-secrets
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "detect-secrets") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-detect-secrets
+  minReplicas: {{ .Values.redactor.detectSecrets.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.redactor.detectSecrets.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.detectSecrets.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.redactor.detectSecrets.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.redactor.detectSecrets.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+---
+{{- end }}
+
+{{- if and .Values.adminApi.enabled .Values.adminApi.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-admin-api
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "admin-api") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ai-gateway.fullname" . }}-admin-api
+  minReplicas: {{ .Values.adminApi.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.adminApi.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.adminApi.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.adminApi.autoscaling.targetMemoryUtilizationPercentage }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.adminApi.autoscaling.behavior.scaleUp.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.adminApi.autoscaling.behavior.scaleUp.policy.type }}
+          value: {{ .Values.adminApi.autoscaling.behavior.scaleUp.policy.value }}
+          periodSeconds: {{ .Values.adminApi.autoscaling.behavior.scaleUp.policy.periodSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.adminApi.autoscaling.behavior.scaleDown.stabilizationWindowSeconds }}
+      policies:
+        - type: {{ .Values.adminApi.autoscaling.behavior.scaleDown.policy.type }}
+          value: {{ .Values.adminApi.autoscaling.behavior.scaleDown.policy.value }}
+          periodSeconds: {{ .Values.adminApi.autoscaling.behavior.scaleDown.policy.periodSeconds }}
+{{- end }}
