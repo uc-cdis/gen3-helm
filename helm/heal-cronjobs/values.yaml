@@ -1,0 +1,132 @@
+# -- (bool) Whether to deploy the heal-cronjobs chart.
+enabled: true
+
+# Global configuration
+global:
+  # -- (string) Hostname of the deployment. Used for the `hostname` label on job pods.
+  hostname: ""
+  # -- (string) Optional global override for the awshelper image. Used by every job that does not set its own `image`.
+  awshelper_container_image: ""
+
+# -- (map) Default image for every cronjob. Each job can override it with its own `image` block.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/awshelper
+  # -- (string) Docker image tag.
+  tag: master
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+
+# -- (map) Slack notification settings. When a job has `slackNotify: true`, a notifier container posts SUCCESS/FAILED to Slack after the job script finishes.
+slack:
+  # -- (string) Name of the secret that holds the Slack webhook URL. Missing secret or key is tolerated (no message is sent).
+  secretName: slack-webhook
+  # -- (string) Key in the secret that holds the Slack webhook URL.
+  secretKey: slack_webhook
+
+# -- (map) Node affinity applied to every job pod unless the job sets its own `affinity`. Prefers on-demand capacity, so long jobs are not interrupted by spot reclaims.
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values:
+                - on-demand
+      - weight: 99
+        preference:
+          matchExpressions:
+            - key: eks.amazonaws.com/capacityType
+              operator: In
+              values:
+                - ONDEMAND
+
+# -- (map) Node selector applied to every job pod.
+nodeSelector: {}
+
+# -- (list) Tolerations applied to every job pod.
+tolerations: []
+
+# -- (map) Annotations added to every job pod.
+podAnnotations: {}
+
+# -- (map) Extra labels added to every job pod.
+extraLabels: {}
+
+# -- (map) Cronjobs to deploy, keyed by name. The key is used as the CronJob name.
+# Each job runs `script` in an init container. Exit code 0 = SUCCESS, anything else = FAILED.
+# If `slackNotify` is true, a notifier container then reports the result to Slack.
+#
+# Supported keys per job:
+#   enabled, schedule, suspend, concurrencyPolicy, successfulJobsHistoryLimit,
+#   failedJobsHistoryLimit, backoffLimit, image {repository, tag, pullPolicy},
+#   serviceAccountName, resources, env (list of k8s EnvVar), volumes, volumeMounts,
+#   affinity, slackNotify, script.
+# @default -- see values.yaml
+cronjobs:
+  # Ported from cloud-automation kube/services/jobs/cedar-ingestion-job.yaml.
+  # Pulls HEAL study metadata from a CEDAR directory into the metadata service.
+  # Needs the `cedar-g3auto` secret (keys: directory_id.txt, cedar_client_credentials.json),
+  # and the fence client in cedar_client_credentials.json needs MDS admin and CEDAR policies.
+  cedar-ingestion:
+    enabled: true
+    schedule: "0 8,15 * * *"
+    suspend: false
+    concurrencyPolicy: Forbid
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    backoffLimit: 0
+    slackNotify: true
+    resources:
+      limits:
+        cpu: 1
+        memory: 5Gi
+    env:
+      - name: HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+      # Optional override. If empty, the directory id is read from the cedar-g3auto secret.
+      - name: CEDAR_DIRECTORY_ID
+        value: ""
+      - name: CEDAR_DIRECTORY_ID_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: cedar-g3auto
+            key: directory_id.txt
+      - name: CEDAR_CLIENT_CREDENTIALS
+        valueFrom:
+          secretKeyRef:
+            name: cedar-g3auto
+            key: cedar_client_credentials.json
+    script: |
+      if [[ -z "$CEDAR_DIRECTORY_ID" ]]; then
+        if [[ -n "$CEDAR_DIRECTORY_ID_SECRET" ]]; then
+          echo "CEDAR_DIRECTORY_ID is from g3auto secret"
+          export CEDAR_DIRECTORY_ID=$CEDAR_DIRECTORY_ID_SECRET
+        else
+          echo "ERROR: CEDAR_DIRECTORY_ID must be set in values or in the cedar-g3auto secret" 1>&2
+          exit 1
+        fi
+      else
+        echo "CEDAR_DIRECTORY_ID is from values override"
+      fi
+
+      if [[ -n "$CEDAR_CLIENT_CREDENTIALS" ]]; then
+        export CEDAR_CLIENT_ID=$(echo "$CEDAR_CLIENT_CREDENTIALS" | jq -r .client_id)
+        export CEDAR_CLIENT_SECRET=$(echo "$CEDAR_CLIENT_CREDENTIALS" | jq -r .client_secret)
+      else
+        echo "ERROR: Could not read cedar-client credentials" 1>&2
+        exit 1
+      fi
+
+      pip install pydash
+      export GEN3_HOME="$HOME/cloud-automation"
+      python "${GEN3_HOME}/files/scripts/healdata/heal-cedar-data-ingest.py" \
+        --directory "$CEDAR_DIRECTORY_ID" \
+        --cedar_client_id "$CEDAR_CLIENT_ID" \
+        --cedar_client_secret "$CEDAR_CLIENT_SECRET" \
+        --hostname "$HOSTNAME"
