@@ -25,7 +25,7 @@ Published versions of this chart are listed in the
 | jegKernelSpecPolicy | string | `""` |  |
 | kubernetesApiServerCIDRs | list | `[]` |  |
 | listenAddr | string | `":8080"` |  |
-| networkPolicy.enabled | bool | `true` |  |
+| networkPolicy | object | `{}` |  |
 | replicaCount | int | `2` |  |
 | resources.limits.cpu | string | `"500m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
