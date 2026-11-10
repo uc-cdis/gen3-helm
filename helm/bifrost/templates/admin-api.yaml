@@ -1,0 +1,84 @@
+{{- if .Values.adminApi.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-admin-api
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "admin-api") | nindent 4 }}
+spec:
+  replicas: {{ .Values.adminApi.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: admin-api
+          image: "{{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: 8090
+          env:
+            - name: ADMIN_API_LISTEN_ADDR
+              value: 0.0.0.0:8090
+            - name: BIFROST_URL
+              value: http://{{ include "ai-gateway.fullname" . }}-bifrost:{{ .Values.bifrost.service.port }}
+            - name: ADMIN_API_ALLOWED_PROVIDERS
+              value: {{ join "," .Values.adminApi.allowedProviders | quote }}
+            - name: ADMIN_API_BUDGET_ADMIN
+              value: {{ .Values.adminApi.tierBudgetDefaults.admin | quote }}
+            - name: ADMIN_API_BUDGET_STAFF
+              value: {{ .Values.adminApi.tierBudgetDefaults.staff | quote }}
+            - name: ADMIN_API_BUDGET_RESEARCHER
+              value: {{ .Values.adminApi.tierBudgetDefaults.researcher | quote }}
+            - name: ADMIN_API_BUDGET_DEFAULT
+              value: {{ .Values.adminApi.tierBudgetDefaults.default | quote }}
+            - name: BIFROST_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ai-gateway-bifrost-admin
+                  key: token
+            - name: ADMIN_API_BEARER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.adminApi.bearerTokenSecret.name }}
+                  key: {{ .Values.adminApi.bearerTokenSecret.key }}
+          readinessProbe:
+            httpGet: { path: /admin/v1/readyz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /admin/v1/healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-admin-api
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "admin-api") | nindent 4 }}
+spec:
+  type: {{ .Values.adminApi.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.adminApi.service.port }}
+      targetPort: http
+{{- end }}

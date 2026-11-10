@@ -1,0 +1,214 @@
+{{- if .Values.redactor.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-redactor
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "redactor") | nindent 4 }}
+spec:
+  replicas: {{ .Values.redactor.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: redactor
+          image: "{{ .Values.redactor.image.repository }}:{{ .Values.redactor.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: {{ .Values.redactor.port }}
+          env:
+            - name: REDACTOR_PRESIDIO_URL
+              value: http://{{ include "ai-gateway.fullname" . }}-presidio:{{ .Values.redactor.presidio.service.port }}
+            - name: REDACTOR_DETECT_SECRETS_URL
+              value: http://{{ include "ai-gateway.fullname" . }}-detect-secrets:{{ .Values.redactor.detectSecrets.service.port }}
+            - name: REDACTOR_REDIS_ADDR
+              value: {{ .Values.redactor.vault.redisAddr | quote }}
+            - name: REDACTOR_VAULT_TTL_SECONDS
+              value: {{ .Values.redactor.vault.ttlSeconds | quote }}
+            - name: REDACTOR_FAIL_OPEN
+              value: {{ .Values.redactor.failOpen | quote }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.redactor.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-redactor
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "redactor") | nindent 4 }}
+spec:
+  type: {{ .Values.redactor.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.redactor.service.port }}
+      targetPort: http
+{{- if .Values.redactor.presidio.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-presidio
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "presidio") | nindent 4 }}
+spec:
+  replicas: {{ .Values.redactor.presidio.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "presidio") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "presidio") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: presidio
+          image: "{{ .Values.redactor.presidio.image.repository }}:{{ .Values.redactor.presidio.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: {{ .Values.redactor.presidio.port }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.redactor.presidio.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-presidio
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "presidio") | nindent 4 }}
+spec:
+  type: {{ .Values.redactor.presidio.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "presidio") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.redactor.presidio.service.port }}
+      targetPort: http
+{{- end }}
+{{- if .Values.redactor.detectSecrets.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-detect-secrets
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "detect-secrets") | nindent 4 }}
+spec:
+  replicas: {{ .Values.redactor.detectSecrets.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "detect-secrets") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "detect-secrets") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: detect-secrets
+          image: "{{ .Values.redactor.detectSecrets.image.repository }}:{{ .Values.redactor.detectSecrets.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: {{ .Values.redactor.detectSecrets.port }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.redactor.detectSecrets.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-detect-secrets
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "detect-secrets") | nindent 4 }}
+spec:
+  type: {{ .Values.redactor.detectSecrets.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "detect-secrets") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.redactor.detectSecrets.service.port }}
+      targetPort: http
+{{- end }}
+{{- end }}

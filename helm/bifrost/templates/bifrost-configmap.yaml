@@ -1,0 +1,77 @@
+{{- if .Values.bifrost.enabled -}}
+{{- $providers := dict -}}
+{{- if .Values.bifrost.providers.bedrock.enabled -}}
+{{- $_ := set $providers "bedrock" (dict
+  "type" "bedrock"
+  "keys" (list (dict
+    "name" .Values.bifrost.providers.bedrock.keyName
+    "value" ""
+    "weight" 1
+    "models" .Values.bifrost.providers.bedrock.models
+    "aliases" .Values.bifrost.providers.bedrock.aliases
+    "bedrock_key_config" (dict
+      "region" .Values.bifrost.providers.bedrock.region)))) -}}
+{{- end -}}
+{{- if .Values.bifrost.providers.vertex.enabled -}}
+{{- $_ := set $providers "vertex" (dict
+  "type" "vertex"
+  "project" .Values.bifrost.providers.vertex.project
+  "location" .Values.bifrost.providers.vertex.location
+  "auth" (dict "mode" .Values.bifrost.providers.vertex.authMode)
+  "models" .Values.bifrost.providers.vertex.models) -}}
+{{- end -}}
+{{- if .Values.bifrost.providers.kserve.enabled -}}
+{{- $_ := set $providers "kserve" (dict
+  "type" "kserve"
+  "services" .Values.bifrost.providers.kserve.services) -}}
+{{- end -}}
+{{- if .Values.bifrost.providers.onpremOpenAI.enabled -}}
+{{- $_ := set $providers "openai" (dict
+  "keys" (list (dict
+    "name" "onprem"
+    "weight" 1
+    "models" .Values.bifrost.providers.onpremOpenAI.models))
+  "network_config" (dict
+    "base_url" .Values.bifrost.providers.onpremOpenAI.endpoint
+    "allow_private_network" true)) -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-bifrost-config
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "bifrost") | nindent 4 }}
+data:
+  config.json: |
+    {
+      "$schema": "https://www.getbifrost.ai/schema",
+      "version": 2,
+      "source_of_truth": "config.json",
+      "providers": {{ toJson $providers }},
+      "config_store": {
+        "enabled": true,
+        "type": "postgres",
+        "config": {
+          "host": "{{ .Release.Name }}-postgresql",
+          "port": "5432",
+          "user": "postgres",
+          "password": "env.BIFROST_POSTGRES_PASSWORD",
+          "db_name": "postgres",
+          "ssl_mode": "disable"
+        }
+      },
+      "logs_store": {
+        "enabled": true,
+        "type": "postgres",
+        "config": {
+          "host": "{{ .Release.Name }}-postgresql",
+          "port": "5432",
+          "user": "postgres",
+          "password": "env.BIFROST_POSTGRES_PASSWORD",
+          "db_name": "postgres",
+          "ssl_mode": "disable"
+        }
+      },
+      "plugins": []
+    }
+{{- end }}

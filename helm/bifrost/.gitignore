@@ -1,0 +1,38 @@
+# Build / dependency outputs
+node_modules/
+dist/
+build/
+target/
+*.pyc
+__pycache__/
+.venv/
+venv/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Local secrets / state — never commit
+.env
+.env.*
+!.env.example
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+kubeconfig
+*.kubeconfig
+*-credentials.json
+*-key.json
+*.pem
+
+# Helm packaging
+charts/**/*.tgz
+charts/**/charts/
+
+# CI / cosign artifacts
+*.sig
+*.cert
+*.sbom.json

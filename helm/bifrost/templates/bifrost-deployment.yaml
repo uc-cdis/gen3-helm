@@ -1,0 +1,66 @@
+{{- if .Values.bifrost.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-bifrost
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "bifrost") | nindent 4 }}
+spec:
+  replicas: {{ .Values.bifrost.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/bifrost-configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "ai-gateway.serviceAccountName" . }}
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        {{- toYaml .Values.bifrost.podSecurityContext | nindent 8 }}
+      containers:
+        - name: bifrost
+          image: "{{ .Values.bifrost.image.repository }}:{{ .Values.bifrost.image.tag }}"
+          imagePullPolicy: {{ .Values.bifrost.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.bifrost.containerSecurityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: BIFROST_HOST
+              value: 0.0.0.0
+            - name: BIFROST_PORT
+              value: "8080"
+            - name: BIFROST_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ai-gateway-postgres
+                  key: password
+          volumeMounts:
+            - name: config
+              mountPath: /etc/bifrost
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.bifrost.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "ai-gateway.fullname" . }}-bifrost-config
+        - name: tmp
+          emptyDir: {}
+{{- end }}
