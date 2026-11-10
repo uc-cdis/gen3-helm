@@ -19,7 +19,6 @@ Published versions of this chart are listed in the
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | deploymentNamespace | string | `""` |  |
-| global.netPolicy.enabled | bool | `true` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3-vectis"` |  |
 | image.tag | string | `"qa-goproxy"` |  |
