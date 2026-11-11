@@ -62,9 +62,15 @@ spec:
             - name: {{ $name }}
               image: {{ $image }}
               imagePullPolicy: {{ $pullPolicy }}
-              {{- with $job.env }}
+              {{- if or $job.env $job.vars }}
               env:
+                {{- with $job.env }}
                 {{- toYaml . | nindent 16 }}
+                {{- end }}
+                {{- range $k, $v := $job.vars }}
+                - name: {{ $k }}
+                  value: {{ $v | toString | quote }}
+                {{- end }}
               {{- end }}
               {{- with $job.resources }}
               resources:

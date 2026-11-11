@@ -62,8 +62,10 @@ extraLabels: {}
 # Supported keys per job:
 #   enabled, schedule, suspend, concurrencyPolicy, successfulJobsHistoryLimit,
 #   failedJobsHistoryLimit, backoffLimit, image {repository, tag, pullPolicy},
-#   serviceAccountName, resources, env (list of k8s EnvVar), volumes, volumeMounts,
-#   affinity, slackNotify, script.
+#   serviceAccountName, resources, env (list of k8s EnvVar), vars (map of plain env vars),
+#   volumes, volumeMounts, affinity, slackNotify, script.
+# Prefer `vars` for settings an environment may override: maps are deep-merged
+# across values files, while lists like `env` are replaced wholesale.
 # @default -- see values.yaml
 cronjobs:
   # Ported from cloud-automation kube/services/jobs/cedar-ingestion-job.yaml.
@@ -89,9 +91,6 @@ cronjobs:
           configMapKeyRef:
             name: manifest-global
             key: hostname
-      # Optional override. If empty, the directory id is read from the cedar-g3auto secret.
-      - name: CEDAR_DIRECTORY_ID
-        value: ""
       - name: CEDAR_DIRECTORY_ID_SECRET
         valueFrom:
           secretKeyRef:
@@ -102,6 +101,9 @@ cronjobs:
           secretKeyRef:
             name: cedar-g3auto
             key: cedar_client_credentials.json
+    vars:
+      # Optional override. If empty, the directory id is read from the cedar-g3auto secret.
+      CEDAR_DIRECTORY_ID: ""
     script: |
       if [[ -z "$CEDAR_DIRECTORY_ID" ]]; then
         if [[ -n "$CEDAR_DIRECTORY_ID_SECRET" ]]; then
@@ -130,3 +132,77 @@ cronjobs:
         --cedar_client_id "$CEDAR_CLIENT_ID" \
         --cedar_client_secret "$CEDAR_CLIENT_SECRET" \
         --hostname "$HOSTNAME"
+
+  # Pulls HEAL study metadata from MDS and loads selected gen3_discovery fields
+  # into the Elasticsearch index INDEX_NAME. Each run builds a new timestamped
+  # index and atomically swaps the INDEX_NAME alias onto it.
+  # Script source: cloud-automation files/scripts/healdata/heal-aggmds-load.py
+  # (shipped in the awshelper image, with config/es_mapping.json next to it).
+  heal-aggmds-etl:
+    enabled: true
+    # 1 hour after the first cedar-ingestion run (08:00), then 12 hours later.
+    schedule: "0 9,21 * * *"
+    suspend: false
+    concurrencyPolicy: Forbid
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    backoffLimit: 0
+    slackNotify: true
+    # TODO: drop this override (back to the chart default awshelper:master) once
+    # cloud-automation feat/heal-cronjobs is merged and the script is in master.
+    image:
+      repository: quay.io/cdis/awshelper
+      tag: feat_heal-cronjobs
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+    env:
+      - name: HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+    vars:
+      # ES index name (alias) to load into, passed as --index_name. Must be
+      # lowercase. Defaults to "<hostname>_aggmds" when empty.
+      INDEX_NAME: ""
+      # Elasticsearch base URL.
+      ES_URL: "http://esproxy-service:9200"
+      # MDS base URL (in-cluster service).
+      MDS_URL: "http://metadata-service"
+      # Commons hostname stored in each doc as gen3_discovery.commons_url.
+      # Defaults to the hostname in manifest-global when empty.
+      COMMONS_URL: ""
+      # Path to the script inside the image. Defaults to the cloud-automation
+      # copy in the awshelper image when empty.
+      SCRIPT_PATH: ""
+    script: |
+      SCRIPT_PATH="${SCRIPT_PATH:-$HOME/cloud-automation/files/scripts/healdata/heal-aggmds-load.py}"
+      if [[ ! -f "$SCRIPT_PATH" ]]; then
+        echo "ERROR: script not found at SCRIPT_PATH=$SCRIPT_PATH" 1>&2
+        exit 1
+      fi
+
+      COMMONS_URL="${COMMONS_URL:-$HOSTNAME}"
+      if [[ -z "$COMMONS_URL" ]]; then
+        echo "ERROR: COMMONS_URL is empty and no hostname found in manifest-global" 1>&2
+        exit 1
+      fi
+      if [[ -z "$INDEX_NAME" ]]; then
+        INDEX_NAME="$(printf '%s' "$COMMONS_URL" | tr '[:upper:]' '[:lower:]')_aggmds"
+      fi
+
+      # --recreate is needed on every run after the first: without it the script
+      # exits with an error once the index exists. Rebuilds swap an alias, so
+      # searches never see an empty or partial index.
+      echo "Loading '$INDEX_NAME' at $ES_URL from $MDS_URL (commons_url=$COMMONS_URL)"
+      python "$SCRIPT_PATH" \
+        --index_name "$INDEX_NAME" \
+        --commons_url "$COMMONS_URL" \
+        --mds_url "$MDS_URL" \
+        --es_url "$ES_URL" \
+        --recreate
