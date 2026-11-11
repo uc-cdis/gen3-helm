@@ -271,6 +271,9 @@ nginxConf:
             }
         }
 
+    }
+  # -- (string) The server block configuration loaded by the main nginx.conf (winds up at /etc/nginx/conf.d/nginx.conf)
+  serverBlock: |
     log_format json '{"gen3log": "nginx", '
             '"date_access": "$time_iso8601", '
             '"user_id": "$http_x_userid", '
