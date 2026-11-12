@@ -174,6 +174,7 @@ Published versions of this chart are listed in the
 | labels.netnolimit | string | `"yes"` | Grants egress from pods labeled with netnolimit=yes to any IP address. Use explicit proxy and AWS APIs |
 | labels.public | string | `"yes"` | Grants ingress from the revproxy service for pods labeled with public=yes |
 | labels.userhelper | string | `"yes"` | Grants ingress from pods in usercode namespaces for gen3 pods labeled with userhelper=yes |
+| livenessProbe | map | `{"httpGet":{"path":"/_status","port":"http"},"initialDelaySeconds":60,"periodSeconds":60,"timeoutSeconds":30}` | Liveness probe for the fence container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | logo | string | `nil` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
@@ -193,6 +194,7 @@ Published versions of this chart are listed in the
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
 | privacy_policy | string | `nil` |  |
 | projects | string | `nil` |  |
+| readinessProbe | map | `{"httpGet":{"path":"/_status","port":"http"}}` | Readiness probe for the fence container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
 | resources | map | `{"limits":{"memory":"2Gi"},"requests":{"memory":"128Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -213,6 +215,7 @@ Published versions of this chart are listed in the
 | serviceAccount.annotations."eks.amazonaws.com/role-arn" | string | `nil` | The Amazon Resource Name (ARN) of the role to associate with the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `"fence-sa"` | The name of the service account |
+| startupProbe | map | `{"failureThreshold":30,"httpGet":{"path":"/_status","port":"http"},"initialDelaySeconds":10,"periodSeconds":10}` | Startup probe for the fence container. The container runs `nginx` before `gunicorn`, and gunicorn only binds :8000 after it has preloaded the app, so a probe that lands in that window gets a 502 and nginx logs `connect() failed (111: Connection refused)` for `/_status`. While this probe is failing, the liveness and readiness probes do not run. Raise `initialDelaySeconds` to about the pod's real boot time to avoid those logged refusals; the container is restarted if it has not passed after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | usersync | map | `{"addDbgap":false,"custom_image":null,"env":null,"onlyDbgap":false,"schedule":"*/30 * * * *","slack_send_dbgap":false,"slack_webhook":"None","sshKnownHosts":"# example: <host> <keytype> <base64-key>\nsftp-dev.planx-pla.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCwGT41cGGn980gatwRR/EdKGx0QpOW2ghN6vhXAsCZBXvD1xsH7pGHK/5V2SASW5HvsbU73SKcA0KbNhYHDXN03Qr8bQ5or8b7EWs13TvNAMsPzFhwExZbZ8Zqqe7+ll4aA6uLk8FT/i1JqaJWUiJDHMl06BSdaEncwqB1FnluuGuFCbtApcAkGFCv9SFT3EvjJszOXHWcH7w/ZcaQnhXjIHhLooacDussSKYOxstWALJpC1eYtM0e2yq/ZlJzK0o4XH7j46av2SMs1Q9Esif8rX6cjqknI3d7AQP49rSGvj4oMwJCp74O6UieK7QetzabOSey/9h2OiRrJKOcQGsoikUJeJ3u+4lnHSqaVPhTiw+TXCCIi8DUXJksU+G7YNqsA5LB93ZKZvM/VFRJflLIwtZgP10qi+B+fBnT3Mln296x7nH+esT3IIWTn1Wfut/RKNuHbe4rC2LcuEHWv0l2iJTotXamDHcfFjYkZze3gF4fBfO36/wwMQLeInQ99W76B2Q6uKC7I1fnESu7KQR6nOiuQrLH4TADGT8QitEZC8guyWrW4SCDnGXAlCeI7U7cIhFwVlOPxeGKvyz33izAQNMkIXNrONIxdlN1yvSGsOls+ONuaf1a3CrLeXujI3ULB3bc26GWCIWKn+tEa+uC5meFQPeVFwXB4Qgn3+V6VQ==\nsftp-dev.planx-pla.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII12G7WwOj4xWHLwj2ZnpA8e/FwOwy97SlYslOpzKctT\ns-5745d53f10e1421eb.server.transfer.us-east-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNIOMhn0C6cf6pG0XnrXUP/TbzFgYN+tVoWzGuo4h8P5Foqev6Rs6gOXomu/vxONpNJ7/fl9oOAT3kD1Pdg0XkmEI2gksonwO5FRXEaMuz9be5d+uekrSuGSBV5ttoaiWvUootqbT8ZfG9aOHla/JbnvG9o8uijXdZsMZKgMRM/7tz+wF4Jp2+MqxMnpOS4NIknih16ZK2GTG4K2WmG4wsHmsLC+KMITc0UzDpD5aYWa+bicK4dsAk02Vu3R4FHsFdyMOZvdRbBRINlcmTYS7Ajd6Dow/iTDQGD5u2bOfPF0DGTg4jbwx7nnauEoMM20Ewr0QYdge6iac8VAzFfMOJ\n","syncFromDbgap":false,"userYamlS3AccessKeyId":null,"userYamlS3Endpoint":null,"userYamlS3Path":"s3://cdis-gen3-users/helm-test/user.yaml","userYamlS3SecretAccessKey":null,"usersync":false}` | Configuration options for usersync cronjob. |
 | usersync.addDbgap | bool | `false` | Force attempting a dbgap sync if "true", falls back on user.yaml |

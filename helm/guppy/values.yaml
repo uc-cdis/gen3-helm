@@ -167,6 +167,32 @@ volumeMounts:
     mountPath: /guppy/guppy_config.json
     subPath: guppy_config.json
 
+# -- (map) Startup probe for the guppy container. While it is failing, the liveness and readiness probes do not
+# run, so a slow boot is not killed by the liveness probe. The container is restarted if it has not passed
+# after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable.
+startupProbe:
+  httpGet:
+    path: /_status
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
+
+# -- (map) Liveness probe for the guppy container. Only starts once the startup probe has passed. Set to `null` to disable.
+livenessProbe:
+  httpGet:
+    path: /_status
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+
+# -- (map) Readiness probe for the guppy container. Only starts once the startup probe has passed. Set to `null` to disable.
+readinessProbe:
+  httpGet:
+    path: /_status
+    port: http
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
