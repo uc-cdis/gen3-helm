@@ -42,6 +42,10 @@ kind: Job
 metadata:
   name: {{ .Chart.Name }}-dbcreate
 spec:
+  {{- /* Completed Jobs clean themselves up rather than accumulating. Note this does not make the
+         Job re-runnable: the name is fixed, so a changed spec still collides with the existing
+         object until it is deleted. */}}
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       labels:
@@ -215,6 +219,10 @@ spec:
             echo "Waiting for PushSecret to sync to the remote secret store ..."
             kubectl -n {{ $.Release.Namespace }} wait --for=condition=Ready pushsecret/{{ .Chart.Name }}-dbcreds --timeout=300s
             echo "PushSecret is Ready - remote secret has been populated"
+{{- end }}
+{{- if (include "common.db_app_user.settings" . | fromYaml).enabled }}
+
+            {{- include "common.db_app_user.setup" . | nindent 12 }}
 {{- end }}
 {{- end }}
 {{- end }}
