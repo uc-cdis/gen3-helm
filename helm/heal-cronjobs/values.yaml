@@ -148,11 +148,9 @@ cronjobs:
     failedJobsHistoryLimit: 1
     backoffLimit: 0
     slackNotify: true
-    # TODO: drop this override (back to the chart default awshelper:master) once
-    # cloud-automation feat/heal-cronjobs is merged and the script is in master.
     image:
       repository: quay.io/cdis/awshelper
-      tag: feat_heal-cronjobs
+      tag: master
     resources:
       requests:
         cpu: 250m
