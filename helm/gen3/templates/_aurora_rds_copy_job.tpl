@@ -57,6 +57,8 @@ spec:
         metadata:
           labels:
             app: aurora-db-copy-job
+            # allow egress to the k8s API and Aurora under the default-deny allow-nothing-netpolicy
+            netnolimit: "yes"
         spec:
           serviceAccountName: aurora-db-copy-sa
           restartPolicy: Never
