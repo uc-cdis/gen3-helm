@@ -58,29 +58,50 @@ Each chart has its own README.md that is automatically built with [helm-docs](ht
 
 ## Helm chart release strategy
 
-It is important to understand that when a branch is merged into the main branch, a GitHub action will generate a new helm chart release if the helm chart version in the chart.yaml file has been incremented. Consider the following example where a change to the Helm chart has been made and the contributor wants a new version to be released:
-
-The original Chart.yaml file:
-
-   ```yaml
-   apiVersion: v2
-   name: Sheepdog
-   description: A Helm chart for Kubernetes
-   type: application
-   version: 0.1.0
-   ```
-
-If a modification to the Helm chart is made (an update to the values.yaml file for instance) the version in Chart.yaml is incremented to `0.2.0`:
+**You do not need to bump any chart versions.** Every `Chart.yaml` in this repo
+is frozen at the placeholder `version: 0.0.0`, and dependencies between charts
+in this repo are declared as `version: "*"`:
 
    ```yaml
    apiVersion: v2
-   name: Sheepdog
+   name: sheepdog
    description: A Helm chart for Kubernetes
    type: application
-   version: 0.2.0 # version updates to 0.2.0
+   version: 0.0.0        # placeholder -- never edit this
+   dependencies:
+     - name: common
+       version: "*"      # resolved locally, stamped at release time
+       repository: file://../common
    ```
 
-Once the associated branch is merged into the main branch, the GitHub action packages and publishes an artifact, making it available for consumption. The release name is based off the 'name' field and the 'version' field in the Chart.yaml file. Given the example above, GitHub action will produce a release called `sheepdog-0.2.0`.
+The real version is worked out when the chart is published. On a merge to
+`master`, the release workflow:
+
+1. Diffs the merge to find which charts changed.
+2. Adds every chart that depends on a changed chart -- so a change to `common`
+   republishes everything that uses it, and any subchart change republishes the
+   `gen3` umbrella.
+3. Looks up the highest existing `<chart>-X.Y.Z` git tag for each of those
+   charts and increments the patch number.
+4. Stamps those versions into `Chart.yaml` (in the CI working tree only -- this
+   is never committed), packages, and publishes.
+
+So if `sheepdog-0.1.47` is the latest tag and you change something under
+`helm/sheepdog/`, merging produces `sheepdog-0.1.48` plus a new `gen3` release.
+Nothing in the repo records that number.
+
+To see exactly what your PR would publish, check the **job summary** on the
+"Lint and Test Charts" run -- it lists every chart that would be released, the
+version it would get, and whether it was pulled in directly or by the
+dependency cascade.
+
+Two consequences worth knowing:
+
+- A one-line change to `helm/common/` republishes ~43 charts. That is
+  intentional -- previously those dependents were silently left unpublished.
+- Chart READMEs no longer show a version badge, since the in-repo version is
+  always the placeholder. Published versions are listed at
+  <https://helm.gen3.org> and on the [releases page](https://github.com/uc-cdis/gen3-helm/releases).
 
 
 ## Branch Naming Conventions
@@ -114,7 +135,7 @@ Before submitting a PR for review, try to make sure you’ve accomplished these 
 The PR:
 - contains a brief description of what it changes and/or adds
 - passes status checks
-- If there are changes to the charts, it bumps the chart versions
+- If there are changes to the charts, the release preview in the job summary looks right (chart versions are derived at release time -- do not bump them by hand)
 
 
 To merge the PR:

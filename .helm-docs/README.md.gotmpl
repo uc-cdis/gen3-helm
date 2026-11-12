@@ -1,0 +1,33 @@
+{{ template "chart.header" . }}
+
+{{/*
+  Chart versions are frozen at a placeholder in git and derived from git tags
+  when the chart is published, so the version badge and the dependency version
+  column would only ever show "0.0.0" and "*". They are omitted here rather
+  than rendered misleadingly -- see the releases page for published versions.
+*/}}
+![Type: {{ .Type }}](https://img.shields.io/badge/Type-{{ .Type }}-informational?style=flat-square) {{ if .AppVersion }}![AppVersion: {{ .AppVersion }}](https://img.shields.io/badge/AppVersion-{{ .AppVersion | replace "-" "--" }}-informational?style=flat-square){{ end }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ if .Dependencies }}
+## Requirements
+
+| Repository | Name |
+|------------|------|
+{{- range .Dependencies }}
+| {{ .Repository }} | {{ .Name }} |
+{{- end }}
+{{ end }}
+
+{{ template "chart.valuesSection" . }}

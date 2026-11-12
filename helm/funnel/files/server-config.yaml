@@ -1,0 +1,201 @@
+Compute: {{ .Values.Compute }}
+
+Kubernetes:
+  DisableReconciler: {{ .Values.Kubernetes.DisableReconciler }}
+  DisableJobCleanup: {{ .Values.Kubernetes.DisableJobCleanup }}
+  ReconcileRate: {{ .Values.Kubernetes.ReconcileRate }}
+{{- with .Values.Kubernetes.ForbiddenPathPrefixes }}
+  ForbiddenPathPrefixes:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  Namespace: {{ .Release.Namespace }}
+  JobsNamespace: {{ .Values.Kubernetes.JobsNamespace }}
+  ServiceAccount: {{ .Values.Kubernetes.ServiceAccount }}
+  Resources:
+    Defaults:
+      Cpus: {{ .Values.Kubernetes.Resources.Defaults.Cpus }}
+      RamGb: {{ .Values.Kubernetes.Resources.Defaults.RamGb }}
+      DiskGb: {{ .Values.Kubernetes.Resources.Defaults.DiskGb }}
+    Limits:
+      Cpus: {{ .Values.Kubernetes.Resources.Limits.Cpus }}
+      RamGb: {{ .Values.Kubernetes.Resources.Limits.RamGb }}
+      DiskGb: {{ .Values.Kubernetes.Resources.Limits.DiskGb }}
+  Timeout:
+    duration: {{ .Values.Kubernetes.Timeout.duration }}
+
+  NodeSelector:
+    {{- if .Values.Kubernetes.NodeSelector }}
+    {{- range $key, $value := .Values.Kubernetes.NodeSelector }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+    {{- end }}
+
+  Tolerations:
+    {{- if .Values.Kubernetes.Tolerations }}
+    {{- range .Values.Kubernetes.Tolerations }}
+    - Key: {{ .Key }}
+      Operator: {{ .Operator }}
+      {{- if .Value }}
+      Value: {{ .Value }}
+      {{- end }}
+      Effect: {{ .Effect }}
+      {{- if .TolerationSeconds }}
+      TolerationSeconds: {{ .TolerationSeconds }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+
+  # Worker Job
+  WorkerTemplate: |
+{{ tpl ((.Values.Kubernetes.WorkerTemplate | default (.Files.Get "files/worker-job.yaml"))) . | indent 4 }}
+
+  # Executor Job
+  ExecutorTemplate: |
+{{ tpl ((.Values.Kubernetes.ExecutorTemplate | default (.Files.Get "files/executor-job.yaml"))) . | indent 4 }}
+
+# ConfigMap template
+  ConfigMapTemplate: |
+{{ tpl (.Files.Get "files/worker-configmap.yaml") . | indent 4 }}
+
+  # PV template
+  PVTemplate: |
+{{ tpl (.Files.Get "files/worker-pv.yaml") . | indent 4 }}
+
+  # PVC template
+  PVCTemplate: |
+{{ tpl (.Files.Get "files/worker-pvc.yaml") . | indent 4 }}
+
+  # ServiceAccount template
+  ServiceAccountTemplate: |
+{{ tpl (.Files.Get "files/serviceaccount.yaml") . | indent 4 }}
+
+  RoleTemplate: |
+{{ tpl (.Files.Get "files/role.yaml") . | indent 4 }}
+
+  RoleBindingTemplate: |
+{{ tpl (.Files.Get "files/rolebinding.yaml") . | indent 4 }}
+
+Database: {{ .Values.Database }}
+
+EventWriters:
+  {{- range .Values.EventWriters }}
+  - {{ . }}
+  {{- end }}
+
+Logger:
+  Level: {{ .Values.Logger.Level }}
+  OutputFile: "{{ .Values.Logger.OutputFile }}"
+  Formatter: {{ .Values.Logger.Formatter }}
+  TextFormat:
+    ForceColors: {{ .Values.Logger.TextFormat.ForceColors }}
+    FullTimestamp: {{ .Values.Logger.TextFormat.FullTimestamp }}
+    TimestampFormat: {{ .Values.Logger.TextFormat.TimestampFormat }}
+
+Server:
+  HostName: "{{ .Values.Server.HostName }}"
+  HTTPPort: "{{ .Values.Server.HTTPPort }}"
+  RPCPort: "{{ .Values.Server.RPCPort }}"
+  DisableHTTPCache: {{ .Values.Server.DisableHTTPCache }}
+
+RPCClient:
+  ServerAddress: {{ .Values.RPCClient.ServerAddress }}
+  Timeout:
+    duration: {{ .Values.RPCClient.Timeout.duration }}
+  MaxRetries: {{ .Values.RPCClient.MaxRetries }}
+
+Scheduler:
+  ScheduleRate: {{ .Values.Scheduler.ScheduleRate }}
+  ScheduleChunk: {{ .Values.Scheduler.ScheduleChunk }}
+  NodePingTimeout:
+    duration: {{ .Values.Scheduler.NodePingTimeout.duration }}
+  NodeInitTimeout:
+    duration: {{ .Values.Scheduler.NodeInitTimeout.duration }}
+
+Node:
+  ID: {{ .Values.Node.ID }}
+  Timeout:
+    disabled: {{ .Values.Node.Timeout.disabled }}
+  UpdateRate: {{ .Values.Node.UpdateRate }}
+  Resources:
+    Cpus: {{ .Values.Node.Resources.Cpus }}
+    RamGb: {{ .Values.Node.Resources.RamGb }}
+    DiskGb: {{ .Values.Node.Resources.DiskGb }}
+
+Worker:
+  WorkDir: {{ .Values.Worker.WorkDir }}
+  PollingRate: {{ .Values.Worker.PollingRate }}
+  LogUpdateRate: {{ .Values.Worker.LogUpdateRate }}
+  LogTailSize: {{ .Values.Worker.LogTailSize }}
+  LeaveWorkDir: {{ .Values.Worker.LeaveWorkDir }}
+  MaxParallelTransfers: {{ .Values.Worker.MaxParallelTransfers }}
+
+BoltDB:
+  Path: {{ .Values.BoltDB.Path }}
+
+AmazonS3:
+  Disabled: {{ .Values.AmazonS3.Disabled }}
+  AWSConfig:
+    MaxRetries: {{ .Values.AmazonS3.AWSConfig.MaxRetries }}
+    Key: {{ .Values.AmazonS3.AWSConfig.Key }}
+    Secret: {{ .Values.AmazonS3.AWSConfig.Secret }}
+  SSE:
+    CustomerKeyFile: {{ .Values.AmazonS3.SSE.CustomerKeyFile }}
+    KMSKey: {{ .Values.AmazonS3.SSE.KMSKey }}
+
+DynamoDB:
+  TableBasename: {{ .Values.DynamoDB.TableBasename }}
+  AWSConfig:
+    Region: {{ .Values.DynamoDB.AWSConfig.Region }}
+    Key: {{ .Values.DynamoDB.AWSConfig.Key }}
+    Secret: {{ .Values.DynamoDB.AWSConfig.Secret }}
+
+Elastic:
+  IndexPrefix: {{ .Values.Elastic.IndexPrefix }}
+  URL: {{ .Values.Elastic.URL }}
+
+Datastore:
+  Project: {{ .Values.Datastore.Project }}
+  CredentialsFile: {{ .Values.Datastore.CredentialsFile }}
+
+Postgres:
+  Host: {{ .Values.Postgres.Host }}
+  Database: {{ .Values.Postgres.Database }}
+  User: {{ .Values.Postgres.User }}
+  Password: {{ .Values.Postgres.Password }}
+  AdminUser: {{ .Values.Postgres.AdminUser }}
+  AdminPassword: {{ .Values.Postgres.AdminPassword }}
+  Timeout:
+    duration: {{ .Values.Postgres.Timeout.duration }}
+
+Kafka:
+  Servers:
+  {{- if .Values.Kafka.Servers }}
+  {{- range .Values.Kafka.Servers }}
+  - {{ . }}
+  {{- end }}
+  {{- else }}
+  - ""
+  {{- end }}
+  Topic: {{ .Values.Kafka.Topic }}
+
+GenericS3:
+  {{- range .Values.GenericS3 }}
+  - Disabled: {{ .Disabled }}
+    Endpoint: {{ .Endpoint }}
+    Key: {{ .Key }}
+    Secret: {{ .Secret }}
+    Bucket: {{ .Bucket }}
+    Region: {{ .Region }}
+    KmsKeyID: {{ .KmsKeyID }}
+  {{- end }}
+
+{{- if .Values.Plugins}}
+Plugins:
+  Path: {{ .Values.Plugins.Path }}
+  Params:
+  {{- if .Values.Plugins.Params }}
+  {{- range $key, $value := .Values.Plugins.Params }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  {{- end }}
+{{- end}}

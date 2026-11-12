@@ -1,8 +1,12 @@
 # cluster-level-resources
 
-![Version: 0.6.45](https://img.shields.io/badge/Version-0.6.45-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
 
 An app-of-apps Helm chart that allows for flexible deployment of resources that support Gen3
+
+Published versions of this chart are listed in the
+[Helm repository](https://helm.gen3.org) (`helm search repo gen3`) and on the
+[releases page](https://github.com/uc-cdis/gen3-helm/releases).
 
 ## Values
 
@@ -57,6 +61,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | ebs-csi-driver.configuration.enabled | bool | `false` |  |
 | ebs-csi-driver.enabled | bool | `false` |  |
 | ebs-csi-driver.targetRevision | string | `"2.48.0"` |  |
+| efs-csi-driver.configuration.enabled | bool | `false` |  |
+| efs-csi-driver.enabled | bool | `false` |  |
+| efs-csi-driver.targetRevision | string | `"4.2.0"` |  |
 | eksClusterEndpoint | string | `""` |  |
 | external-secrets.configuration.enabled | bool | `false` |  |
 | external-secrets.enabled | bool | `false` |  |
@@ -78,6 +85,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.default.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.default.enabled | bool | `true` |  |
 | karpenter-crds.default.expireAfter | string | `"168h"` |  |
+| karpenter-crds.default.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.default.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.default.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.default.limits.cpu | string | `"1000"` |  |
 | karpenter-crds.default.limits.memory | string | `"1000Gi"` |  |
 | karpenter-crds.default.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
@@ -102,6 +112,10 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.gpu.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.gpu.enabled | bool | `false` |  |
 | karpenter-crds.gpu.expireAfter | string | `"168h"` |  |
+| karpenter-crds.gpu.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.gpu.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.gpu.fastImagePull.throughput | int | `600` |  |
+| karpenter-crds.gpu.instanceTypes | list | `[]` | Specific EC2 instance types for the gpu NodePools (e.g. ["g6.xlarge"]). If empty, defaults to the g4dn instance family. |
 | karpenter-crds.gpu.volumeSize | string | `"50Gi"` |  |
 | karpenter-crds.jupyter.additionalTags | object | `{}` |  |
 | karpenter-crds.jupyter.consolidateAfter | string | `"30s"` |  |
@@ -109,6 +123,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.jupyter.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.jupyter.enabled | bool | `true` |  |
 | karpenter-crds.jupyter.expireAfter | string | `"168h"` |  |
+| karpenter-crds.jupyter.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.jupyter.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.jupyter.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.jupyter.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.jupyter.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.jupyter.requirements[0].values[0] | string | `"on-demand"` |  |
@@ -130,6 +147,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.secondary.disruptionBudget | string | `"10%"` |  |
 | karpenter-crds.secondary.enabled | bool | `false` |  |
 | karpenter-crds.secondary.expireAfter | string | `"168h"` |  |
+| karpenter-crds.secondary.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.secondary.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.secondary.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.secondary.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.secondary.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.secondary.requirements[0].values[0] | string | `"on-demand"` |  |
@@ -154,6 +174,9 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter-crds.workflow.consolidationPolicy | string | `"WhenEmpty"` |  |
 | karpenter-crds.workflow.enabled | bool | `true` |  |
 | karpenter-crds.workflow.expireAfter | string | `"168h"` |  |
+| karpenter-crds.workflow.fastImagePull.enabled | bool | `false` |  |
+| karpenter-crds.workflow.fastImagePull.iops | int | `3000` |  |
+| karpenter-crds.workflow.fastImagePull.throughput | int | `600` |  |
 | karpenter-crds.workflow.requirements[0].key | string | `"karpenter.sh/capacity-type"` |  |
 | karpenter-crds.workflow.requirements[0].operator | string | `"In"` |  |
 | karpenter-crds.workflow.requirements[0].values[0] | string | `"on-demand"` |  |
@@ -173,6 +196,7 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | karpenter.controller.image.digest | string | `"sha256:0c142050d872cb0ac7b30a188ec36aa765b449718cde0c7e49f7495b28f47c29"` |  |
 | karpenter.controller.image.tag | string | `"1.0.8"` |  |
 | karpenter.enabled | bool | `false` |  |
+| karpenter.interruptionQueue | string | `""` |  |
 | karpenter.resources.limits.cpu | string | `"1"` |  |
 | karpenter.resources.limits.memory | string | `"1Gi"` |  |
 | karpenter.resources.requests.cpu | string | `"1"` |  |
@@ -193,6 +217,17 @@ An app-of-apps Helm chart that allows for flexible deployment of resources that 
 | nvidia-device-plugin.enabled | bool | `false` |  |
 | nvidia-device-plugin.targetRevision | string | `"v0.18.0"` |  |
 | project | string | `"unfunded"` |  |
+| storageclass.allowVolumeExpansion | bool | `true` |  |
+| storageclass.default | bool | `true` |  |
+| storageclass.enabled | bool | `false` |  |
+| storageclass.name | string | `"gp3"` |  |
+| storageclass.parameters.encrypted | string | `"true"` |  |
+| storageclass.parameters.type | string | `"gp3"` |  |
+| storageclass.previousDefault.name | string | `"gp2"` |  |
+| storageclass.previousDefault.removeDefault | bool | `true` |  |
+| storageclass.provisioner | string | `"ebs.csi.aws.com"` |  |
+| storageclass.reclaimPolicy | string | `"Retain"` |  |
+| storageclass.volumeBindingMode | string | `"WaitForFirstConsumer"` |  |
 | vpc-cni.configuration.enabled | bool | `false` |  |
 | vpc-cni.enabled | bool | `false` |  |
 | vpc-cni.targetRevision | string | `"v1.20.4"` |  |

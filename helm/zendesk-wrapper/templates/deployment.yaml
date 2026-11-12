@@ -65,13 +65,13 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
-            - name: ZENDESK_API_EMAIL
+            - name: ZENDESK_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: zendesk-wrapper-secret
-                  key: apiEmail
-            - name: ZENDESK_API_TOKEN
+                  key: clientSecret
+            - name: ZENDESK_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: zendesk-wrapper-secret
-                  key: apiToken
+                  key: clientID

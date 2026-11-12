@@ -126,11 +126,15 @@ global:
   createSlackWebhookSecret: false
   # -- (string) slack webhook for notifications
   slackWebhook: ""
+  # -- (bool) Will create the gen3-dpop Kubernetes Secret for the DPoP shared secret. Synced from Secrets Manager ("<global.environment>-gen3-dpop") when externalSecrets.deploy is true; otherwise created from dpopSharedSecret.
+  createDpopSecret: false
+  # -- (string) DPoP shared secret for fence and DPoP-aware services. Required when createDpopSecret is true and externalSecrets.deploy is false.
+  dpopSharedSecret: ""
   metricsEnabled: true
   # -- (map) External Secrets settings.
   externalSecrets:
     # -- (string) API version to use for External Secrets resources. Defaults to v1beta1 when unset.
-    apiVersion: "external-secrets.io/v1beta1"
+    apiVersion: "external-secrets.io/v1"
     # -- (bool) Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override secrets you have deployed.
     deploy: false
     # -- (bool) Will create the databases and store the creds in Kubernetes Secrets even if externalSecrets is deployed. Useful if you want to use ExternalSecrets for other secrets besides db secrets.
@@ -147,6 +151,8 @@ global:
     topologyKey: "topology.kubernetes.io/zone"
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
+  # -- (string) argo server host URL:PORT. Endpoint for the the Argo Workflows service.
+  argoHost: http://argo-argo-workflows-server.argo.svc.cluster.local:2746
 
 # Dependancy Charts
 
@@ -249,6 +255,10 @@ gen3-analysis:
   enabled: false
 
 data-upload-cron:
+  enabled: false
+
+# -- (map) Configurations for gen3-embeddings chart.
+gen3-embeddings:
   enabled: false
 
 # -- (map) Configurations for gen3-user-data-library chart.
@@ -423,9 +433,8 @@ access-backend:
 # -- (map) To configure postgresql subchart
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
-  global:
-    imageRegistry: "quay.io"
   image:
+    registry: quay.io
     repository: "cdis/docker-bitnami-pgvector"
     tag: 16
   primary:

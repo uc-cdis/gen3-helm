@@ -30,6 +30,10 @@ dist = environ.get("DIST", None)
 if dist:
     CONFIG["DIST"] = json.loads(dist)
 
+drs_service_info = environ.get("DRS_SERVICE_INFO", None)
+if drs_service_info:
+    CONFIG["DRS_SERVICE_INFO"] = json.loads(drs_service_info)
+
 arborist = environ.get("ARBORIST", "false").lower() == "true"
 
 USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
@@ -105,5 +109,10 @@ if default_bearer_issuer:
 default_passport_issuer = environ.get("DEFAULT_PASSPORT_ISSUER", None)
 if default_passport_issuer:
     CONFIG["DEFAULT_PASSPORT_ISSUER"] = default_passport_issuer
+
+default_preferred_type = environ.get("DEFAULT_PREFERRED_TYPE", None)
+
+if default_preferred_type:
+    CONFIG["DEFAULT_PREFERRED_TYPE"] = default_preferred_type
 
 settings = {"config": CONFIG, "auth": AUTH}
