@@ -1,8 +1,4 @@
-{{- /*
-One-off backfill (backfill.py): lists a tenant's existing objects and queues them as ObjectCreated notifications,
-which the CronJob then handles like new files (already-recorded objects are dropped as duplicates).
-Off by default. Set backfill.enabled, backfill.tenant and a new backfill.runId for each run; turn it off afterwards.
-*/ -}}
+{{- /* One-off backfill (backfill.py): new backfill.runId per run; turn off afterwards. */ -}}
 {{- if and .Values.enabled .Values.backfill.enabled }}
 {{- $b := .Values.backfill }}
 {{- if not (and $b.tenant $b.runId) }}{{ fail "backfill.tenant and backfill.runId are required when backfill.enabled" }}{{ end }}

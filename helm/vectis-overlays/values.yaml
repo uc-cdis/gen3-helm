@@ -1,7 +1,4 @@
-# vectis-overlays default values.
-# All service-internal URLs use .Release.Namespace so the chart is env-agnostic.
-# Override image tags per-environment in gitops values.
-# Adding global value
+# vectis-overlays defaults; override per environment in gitops values.
 
 
 global:
@@ -78,22 +75,15 @@ searchAuthProxy:
     SEARCH_PROXY_DEFAULT_LIMIT: "50"
     SEARCH_PROXY_MAX_LIMIT: "1000"
     SEARCH_API_TLS_VERIFY: ""
-  # S3 bucket for pre-baked /search/graphql snapshots, populated by the
-  # snapshot-publisher Lambda (CDK SnapshotsBucketName output). Leave empty
-  # to disable the /snapshots/* passthrough.
+  # snapshot bucket for /snapshots/*; empty disables it
   snapshotsBucket: ""
   snapshotsKeyPrefix: "snapshots/"
   apiGateway:
     apiId: ""
     region: "us-east-1"
-  # Override DNS for the execute-api hostname to bypass the VPC endpoint.
-  # Set per-environment to the public API Gateway IPs when the execute-api
-  # VPC endpoint causes 403s (HTTP APIs are not routable through private
-  # execute-api VPC endpoints — they require a Private REST API).
+  # execute-api DNS override (public API Gateway IPs) when the VPC endpoint returns 403
   hostAliases: []
-  # Dual-route backend configuration:
-  # - Discovery/Guppy traffic uses SEARCH_API_BASE (API Gateway/Lambda path)
-  # - SIEM index traffic can use SIEM_SEARCH_BASE (RDS/ES-backed path)
+  # Guppy -> SEARCH_API_BASE; SIEM indexes -> SIEM_SEARCH_BASE
   siemBackend:
     baseUrl: ""
     searchApiRequireSigv4: "true"
@@ -102,57 +92,16 @@ searchAuthProxy:
   postgresDsnSecretRef:
     name: vectis-search-auth-proxy
     key: postgres_dsn
-  # Optional separate AWS secret name for the search-role credentials.
-  # Falls back to rds.secretName for backward compatibility.
+  # optional search-role secret; defaults to rds.secretName
   appDsnSecretName: ""
 
-s3Monitor:
-  enabled: false
-  schedule: "*/5 * * * *"
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 1
-  serviceAccount:
-    create: true
-    name: s3-monitor-sa
-    annotations: {}
-  image:
-    repository: python
-    tag: "3.11-slim"
-    pullPolicy: IfNotPresent
-  initImage:
-    repository: busybox
-    tag: "1.36"
-    pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: "50m"
-      memory: "128Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
-  aws:
-    region: "us-east-1"
-  s3:
-    bucket: ""
-    prefix: ""
-  db:
-    schema: "vectis"
-    table: "s3_metadata"
-    secretName: ""
-    secretTargetName: "s3-monitor-db-creds"
-    host: ""
-    port: "5432"
-    database: "postgres"
-
-# CDK RDS secret in Secrets Manager — used to build the postgres DSN ExternalSecret.
-# Set per-environment in gitops values.
+# CDK RDS secret for the postgres DSN ExternalSecret
 rds:
   secretName: ""
   endpoint: ""
   port: "5432"
   database: postgres
 
-# Database migrations — one-time Job to bootstrap the vectis schema and RLS views.
-# Set migrations.enabled: true in gitops values to trigger the Job, then flip back to false.
+# one-time schema/RLS migration Job; enable, run, then disable
 migrations:
   enabled: false

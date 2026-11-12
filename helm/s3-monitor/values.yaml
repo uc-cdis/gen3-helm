@@ -14,8 +14,7 @@ global:
 # -- (bool) Deploy s3-monitor. In the gen3 umbrella chart this is the `s3-monitor.enabled` condition.
 enabled: false
 
-# -- (string) Prefix of the Kubernetes object names. Defaults to s3-monitor-activemq, so it never
-# collides with the legacy s3-monitor in vectis-overlays.
+# -- (string) Prefix of the Kubernetes object names (default s3-monitor-activemq).
 fullnameOverride: ""
 
 # -- (string) CronJob schedule. Each run drains the SQS queue (up to config.sqs.maxRunSeconds) and exits.
@@ -30,6 +29,8 @@ failedJobsHistoryLimit: 1
 backoffLimit: 2
 # -- (int) Seconds before a finished Job is deleted.
 ttlSecondsAfterFinished: 600
+# -- (int) Time to finish after SIGTERM: current event, final lake write, SQS deletes.
+terminationGracePeriodSeconds: 150
 serviceAccount:
   # -- (bool) Create the CronJob's ServiceAccount.
   create: true
@@ -41,7 +42,7 @@ image:
   # -- (string) s3-monitor image (all Python and shell code). Built and pushed by the uc-cdis/s3-monitor repo.
   repository: quay.io/cdis/s3-monitor
   # -- (string) Image tag.
-  tag: ActiveMQDuckDB
+  tag: feature_sqs-consumer
   # -- (string) Optional sha256 digest. When set, the CronJob and the backfill Job run exactly this build.
   digest: ""
   # -- (string) Image pull policy.
@@ -59,13 +60,12 @@ resources:
 aws:
   # -- (string) AWS region of the buckets, lake, queue and MQ.
   region: "us-east-1"
-# -- (string) EKS cluster name (required; shown in the job's startup log and checked by the config schema).
-eksClusterName: ""
-# Environment config for the application, rendered into the s3-monitor-config ConfigMap.
-# name, account, region, eks and iam are filled in from the release and global values.
+# Application config, rendered into the ConfigMap (name, account, region, eks come from the release).
 config:
-  # -- (bool) false = dry run: peek one batch without consuming it, classify it against the lake, check the MQ secret; change nothing.
+  # -- (bool) false = dry run: checks MQ secret, queue, buckets and lake; receives nothing.
   apply: false
+  # -- (int) Max object size streamed to compute md5_checksum when the ETag is not the MD5 (0 = never).
+  md5MaxBytes: 1073741824
   sqs:
     # -- (string) SQS queue the tenant buckets' ObjectCreated notifications go to (created outside the chart, e.g. CDK).
     queueUrl: ""
@@ -73,14 +73,11 @@ config:
     waitTimeSeconds: 10
     # -- (int) Messages per batch (1-10).
     batchSize: 10
-    # -- (int) Must equal the queue's redrive maxReceiveCount; on that try a failure is also sent to the tenant's .failures queue.
-    maxReceiveCount: 5
-    # -- (int) A run stops after this many seconds. Keep it below the schedule interval and below the queue's visibility timeout:
-    # buffered messages are deleted at the latest when the run ends.
+    # -- (int) A run stops taking work after this. Queue VisibilityTimeout must be >= this + 120 (checked at start).
     maxRunSeconds: 240
-    # -- (int) Write the buffered rows to the lake (one Parquet file per bucket) after this many rows...
+    # -- (int) Write buffered rows to the lake after this many rows...
     flushRows: 1000
-    # -- (int) ...or after this many seconds, whichever comes first, and always at the end of the run.
+    # -- (int) ...or seconds, and at the end of the run.
     flushSeconds: 120
   # -- (bool) Use FIPS S3/STS endpoints.
   useFipsAwsEndpoints: true
@@ -91,8 +88,10 @@ config:
     bucket: ""
     # -- (string) Key prefix of the lake inside the bucket.
     prefix: "vectis"
-    # -- (string) KMS key of the lake bucket, if it uses one.
+    # -- (string) SSE-KMS key for all lake writes.
     kmsKeyArn: ""
+    # -- (int) Hours between lake state snapshot rebuilds (done by recon).
+    stateCompactHours: 24
   mq:
     # -- (list) Amazon MQ STOMP endpoints, e.g. stomp+ssl://b-xxxx-1.mq.us-east-1.amazonaws.com:61614
     stompEndpoints: []
@@ -102,8 +101,6 @@ config:
     secretKmsKeyArn: ""
     # -- (string) Queue prefix; tenant queues are <prefix>.<tenant id> and <prefix>.<tenant id>.failures
     destinationPrefix: "/queue/s3monitor.ingest"
-    # -- (bool) Resolve broker hostnames to IPv4 before connecting.
-    resolveIpv4: false
   recon:
     # -- (list) Amazon MQ broker names as CloudWatch shows them (e.g. ["gen3-mq-1", "gen3-mq-2"]); empty = skip the MQ check.
     mqCloudwatchBrokers: []
@@ -111,7 +108,7 @@ config:
     lagHours: 1
     # -- (int) Epoch-named folders are listed only this many minutes around the window.
     epochSlackMinutes: 60
-    # -- (bool) Re-queue S3 objects missing from the lake in two hourly checks in a row (only with apply: true).
+    # -- (bool) Re-queue objects missing two hours in a row (apply: true only).
     requeueMissing: false
     # -- (int) Above this many missing objects, alarm instead of re-queueing.
     maxRequeue: 10000
@@ -119,17 +116,16 @@ config:
     sqsGraceSeconds: 120
     # -- (int) ActiveMQ enqueues are counted this many seconds past the window end (publish delay).
     mqGraceSeconds: 300
-  # -- (list) Watched buckets: id, existing_bucket_name, optional prefix / suffix (the same filter as the bucket
-  # notification), kms_key_arn, lifecycle (active | draining | retired), destination, failure_destination.
+  # -- (list) Watched buckets: id, existing_bucket_name, prefix, suffix, lifecycle (active | draining | retired),
+  # destination, failure_destination; kms_key_arn is used for IAM only.
   tenants: []
-# Hourly reconciliation CronJob (recon.py): compares S3 objects created vs SQS messages vs lake rows vs ActiveMQ enqueues
-# for one past hour, lists (and optionally re-queues) objects that never got through. Settings: config.recon.
+# Hourly recon CronJob (recon.py). Settings: config.recon.
 recon:
   # -- (bool) Create the recon CronJob.
   enabled: false
   # -- (string) Recon schedule (default: 15 minutes past every hour).
   schedule: "15 * * * *"
-# One-off backfill Job (backfill.py): queues a tenant's existing objects as notifications. Turn it off after the run.
+# One-off backfill Job (backfill.py); turn off after the run.
 backfill:
   # -- (bool) Create the backfill Job.
   enabled: false

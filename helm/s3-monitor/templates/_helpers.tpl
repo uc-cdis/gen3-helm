@@ -1,7 +1,4 @@
-{{/*
-s3-monitor chart helpers. The application code runs from the quay.io image
-(.Values.image); this chart only provides configuration and AWS/EKS resources.
-*/}}
+{{/* s3-monitor chart helpers; the application code is in the image. */}}
 
 {{- define "s3monitor.global" -}}
 {{- toJson (.Values.global | default dict) -}}
@@ -49,7 +46,7 @@ s3-monitor chart helpers. The application code runs from the quay.io image
 {{- printf "%s-%s" (get $global "environment" | default "") .Release.Namespace -}}
 {{- end -}}
 
-{{/* Prefix of the Kubernetes objects. Distinct from the legacy s3-monitor in vectis-overlays. */}}
+{{/* Prefix of the Kubernetes objects. */}}
 {{- define "s3monitor.fullname" -}}
 {{- .Values.fullnameOverride | default "s3-monitor-activemq" | trunc 52 | trimSuffix "-" -}}
 {{- end -}}
@@ -97,33 +94,33 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- toJson $out -}}
 {{- end -}}
 
-{{/*
-The environment config the application reads (schema: scripts/config.py in the image).
-Rendered from values, so namespace, service account and role always match this release.
-*/}}
+{{/* The application config (schema: scripts/config.py in the image). */}}
 {{- define "s3monitor.configJson" -}}
 {{- $v := .Values -}}
 {{- $c := $v.config -}}
-{{- $lake := dict "bucket" $c.lake.bucket "prefix" $c.lake.prefix -}}
+{{- $lake := dict "bucket" $c.lake.bucket "prefix" $c.lake.prefix "state_compact_hours" (int $c.lake.stateCompactHours) -}}
 {{- if $c.lake.kmsKeyArn }}{{ $_ := set $lake "kms_key_arn" $c.lake.kmsKeyArn }}{{ end -}}
-{{- $mq := dict "existing_mq_stomp_endpoints" $c.mq.stompEndpoints "existing_mq_secret_arn" $c.mq.secretArn "destination_prefix" $c.mq.destinationPrefix "resolve_ipv4" $c.mq.resolveIpv4 -}}
-{{- $sqs := dict "queue_url" $c.sqs.queueUrl "wait_time_seconds" (int $c.sqs.waitTimeSeconds) "batch_size" (int $c.sqs.batchSize) "max_receive_count" (int $c.sqs.maxReceiveCount) "max_run_seconds" (int $c.sqs.maxRunSeconds) "flush_rows" (int $c.sqs.flushRows) "flush_seconds" (int $c.sqs.flushSeconds) -}}
-{{- $eks := dict "cluster_name" $v.eksClusterName "namespace" .Release.Namespace "service_account" $v.serviceAccount.name -}}
-{{- $oidc := include "s3monitor.oidcProviderUrl" . -}}
-{{- if $oidc }}{{ $_ := set $eks "oidc_provider_url" $oidc }}{{ end -}}
+{{- $mq := dict "existing_mq_stomp_endpoints" $c.mq.stompEndpoints "existing_mq_secret_arn" $c.mq.secretArn "destination_prefix" $c.mq.destinationPrefix -}}
+{{- $sqs := dict "queue_url" $c.sqs.queueUrl "wait_time_seconds" (int $c.sqs.waitTimeSeconds) "batch_size" (int $c.sqs.batchSize) "max_run_seconds" (int $c.sqs.maxRunSeconds) "flush_rows" (int $c.sqs.flushRows) "flush_seconds" (int $c.sqs.flushSeconds) -}}
+{{- $eks := dict "namespace" .Release.Namespace "service_account" $v.serviceAccount.name -}}
+{{- /* kms_key_arn is chart-only (IAM); the app gets only its own keys */ -}}
+{{- $tenants := list -}}
+{{- range $c.tenants -}}
+{{- $tenants = append $tenants (pick . "id" "existing_bucket_name" "lifecycle" "prefix" "suffix" "destination" "failure_destination") -}}
+{{- end -}}
 {{- $cfg := dict
     "name" (include "s3monitor.base" .)
     "account" (include "s3monitor.accountId" .)
     "region" (include "s3monitor.region" .)
     "apply" $c.apply
     "use_fips_aws_endpoints" $c.useFipsAwsEndpoints
+    "md5_max_bytes" (int64 $c.md5MaxBytes)
     "eks" $eks
-    "iam" (dict "role_name" (include "s3monitor.roleName" .))
     "sqs" $sqs
     "recon" (dict "mq_cloudwatch_brokers" ($c.recon.mqCloudwatchBrokers | default list) "lag_hours" (int $c.recon.lagHours) "epoch_slack_minutes" (int $c.recon.epochSlackMinutes) "requeue_missing" $c.recon.requeueMissing "max_requeue" (int $c.recon.maxRequeue) "sqs_grace_seconds" (int $c.recon.sqsGraceSeconds) "mq_grace_seconds" (int $c.recon.mqGraceSeconds))
     "lake" $lake
     "mq" $mq
-    "tenants" $c.tenants
+    "tenants" $tenants
 -}}
 {{- if $c.assumeRoleArn }}{{ $_ := set $cfg "assume_role_arn" $c.assumeRoleArn }}{{ end -}}
 {{- toPrettyJson $cfg -}}
@@ -160,6 +157,7 @@ Rendered from values, so namespace, service account and role always match this r
 {{- $prefix := trimAll "/" $lake.prefix -}}
 {{- $stmts := include "s3monitor.listStatements" (list "LakeList" $arn (printf "%s/" $prefix)) | fromJsonArray -}}
 {{- $stmts = append $stmts (dict "Sid" "LakeReadWrite" "Effect" "Allow" "Action" (list "s3:GetObject" "s3:PutObject" "s3:AbortMultipartUpload") "Resource" (list (printf "%s/%s/*" $arn $prefix))) -}}
+{{- $stmts = append $stmts (dict "Sid" "LakeStateCleanup" "Effect" "Allow" "Action" (list "s3:DeleteObject") "Resource" (list (printf "%s/%s/s3_state/*" $arn $prefix))) -}}
 {{- if $lake.kmsKeyArn -}}
 {{- $stmts = append $stmts (dict "Sid" "LakeKms" "Effect" "Allow" "Action" (list "kms:Decrypt" "kms:GenerateDataKey" "kms:DescribeKey") "Resource" (list $lake.kmsKeyArn)) -}}
 {{- end -}}
@@ -170,8 +168,8 @@ Rendered from values, so namespace, service account and role always match this r
 {{- define "s3monitor.cronjobBaseStatements" -}}
 {{- $c := .Values.config -}}
 {{- $stmts := include "s3monitor.lakeStatements" . | fromJsonArray -}}
-{{- $stmts = append $stmts (dict "Sid" "ReadMqSecret" "Effect" "Allow" "Action" (list "secretsmanager:GetSecretValue" "secretsmanager:DescribeSecret") "Resource" (list $c.mq.secretArn)) -}}
-{{- $stmts = append $stmts (dict "Sid" "ConsumeEvents" "Effect" "Allow" "Action" (list "sqs:ReceiveMessage" "sqs:DeleteMessage" "sqs:ChangeMessageVisibility" "sqs:GetQueueAttributes" "sqs:GetQueueUrl" "sqs:SendMessage") "Resource" (list (include "s3monitor.queueArn" .))) -}}
+{{- $stmts = append $stmts (dict "Sid" "ReadMqSecret" "Effect" "Allow" "Action" (list "secretsmanager:GetSecretValue") "Resource" (list $c.mq.secretArn)) -}}
+{{- $stmts = append $stmts (dict "Sid" "ConsumeEvents" "Effect" "Allow" "Action" (list "sqs:ReceiveMessage" "sqs:DeleteMessage" "sqs:GetQueueAttributes" "sqs:SendMessage") "Resource" (list (include "s3monitor.queueArn" .))) -}}
 {{- if .Values.recon.enabled -}}
 {{- $stmts = append $stmts (dict "Sid" "ReconMetrics" "Effect" "Allow" "Action" (list "cloudwatch:GetMetricData") "Resource" (list "*")) -}}
 {{- end -}}
@@ -199,12 +197,7 @@ Rendered from values, so namespace, service account and role always match this r
 {{- toJson $stmts -}}
 {{- end -}}
 
-{{/*
-Pack statements into IAM managed policies: one "base" policy plus tenant policies holding
-.Values.iam.tenantsPerPolicy tenants each. Input: (list $ roleName baseStatements
-perTenantStatementLists). Output: JSON list of {"suffix", "document"}. Fails if a document is
-over IAM's 6,144-character limit or the role would need more than 10 attached policies.
-*/}}
+{{/* Pack statements into a base policy + tenant policies (iam.tenantsPerPolicy each); fails over IAM limits. */}}
 {{- define "s3monitor.packPolicies" -}}
 {{- $root := index . 0 -}}{{- $role := index . 1 -}}{{- $base := index . 2 -}}{{- $perTenant := index . 3 -}}
 {{- $policies := list -}}
@@ -250,9 +243,8 @@ over IAM's 6,144-character limit or the role would need more than 10 attached po
 {{- if not (regexMatch "^[0-9]{12}$" (include "s3monitor.accountId" .)) -}}
 {{- fail (printf "s3-monitor: global.crossplane.accountId must be a 12-digit AWS account id (quote it in values), got %q" (include "s3monitor.accountId" .)) -}}
 {{- end -}}
-{{- if not $v.eksClusterName }}{{ fail "eksClusterName is required" }}{{ end -}}
 {{- if not $c.lake.bucket }}{{ fail "config.lake.bucket is required" }}{{ end -}}
-{{- if not $c.lake.prefix }}{{ fail "config.lake.prefix is required" }}{{ end -}}
+{{- if not (trimAll "/" ($c.lake.prefix | default "")) }}{{ fail "config.lake.prefix is required" }}{{ end -}}
 {{- if not $c.mq.stompEndpoints }}{{ fail "config.mq.stompEndpoints needs at least one stomp+ssl:// endpoint" }}{{ end -}}
 {{- if not $c.mq.secretArn }}{{ fail "config.mq.secretArn is required" }}{{ end -}}
 {{- if not (regexMatch "^https://sqs\\.[a-z0-9-]+\\.amazonaws\\.com/[0-9]{12}/[A-Za-z0-9_-]+$" ($c.sqs.queueUrl | default "")) }}{{ fail "config.sqs.queueUrl must be an SQS queue URL: https://sqs.<region>.amazonaws.com/<account>/<name>" }}{{ end -}}
@@ -280,6 +272,7 @@ metadata:
     checksum/config: {{ include "s3monitor.configJson" $root | sha256sum }}
 spec:
   serviceAccountName: {{ $v.serviceAccount.name }}
+  terminationGracePeriodSeconds: {{ int $v.terminationGracePeriodSeconds }}
   restartPolicy: {{ if $o }}Never{{ else }}OnFailure{{ end }}
   {{- with $v.imagePullSecrets }}
   imagePullSecrets:

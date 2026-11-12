@@ -6,4 +6,4 @@ description: >
   image; this chart holds only configuration, the CronJob, an optional backfill Job and (with Crossplane) the IAM role.
 type: application
 version: 0.0.0
-appVersion: "ActiveMQDuckDB"
+appVersion: "feature_sqs-consumer"

@@ -1,7 +1,6 @@
 {{- if .Values.enabled }}
 {{- include "s3monitor.validate" . }}
-# Environment config for the s3-monitor code in the quay.io image (schema: scripts/config.py).
-# Generated from values so namespace, service account and IAM role match this release.
+# s3-monitor application config (schema: scripts/config.py in the image)
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -1,7 +1,4 @@
-{{- /*
-IRSA role (Crossplane, crossplane-contrib/provider-aws) for the CronJob and the backfill Job, trusted only by their
-ServiceAccount in this namespace, with least-privilege policies built in _helpers.tpl (lake, MQ secret, SQS queue, tenants).
-*/ -}}
+{{- /* IRSA role (Crossplane) for the s3-monitor ServiceAccount; policies built in _helpers.tpl. */ -}}
 {{- if .Values.enabled }}
 {{- if include "s3monitor.crossplaneEnabled" . }}
 {{- include "s3monitor.validate" . }}

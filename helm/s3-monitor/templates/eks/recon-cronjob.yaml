@@ -1,8 +1,4 @@
-{{- /*
-Hourly reconciliation (recon.py): for one past hour, compares S3 objects created vs SQS messages sent vs lake rows vs
-ActiveMQ enqueues, lists objects that never got through (re-queues them with config.recon.requeueMissing) and writes a
-report to <lake>/<prefix>/recon/. A failed Job = a mismatch to look at. Needs cloudwatch:GetMetricData on the role.
-*/ -}}
+{{- /* Hourly recon (recon.py); a failed Job means an S3 vs lake mismatch. */ -}}
 {{- if and .Values.enabled .Values.recon.enabled }}
 apiVersion: batch/v1
 kind: CronJob

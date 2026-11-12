@@ -1,7 +1,6 @@
 {{- if .Values.enabled }}
 {{- $v := .Values }}
-# Runs /scripts/run.sh (consume.py) from the quay.io image: drains the SQS queue of S3 ObjectCreated notifications.
-# No code lives in this chart. A run stops after config.sqs.maxRunSeconds, so runs never overlap.
+# consume.py: drains the S3 notification queue, stops after config.sqs.maxRunSeconds
 apiVersion: batch/v1
 kind: CronJob
 metadata:
