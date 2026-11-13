@@ -294,6 +294,35 @@ service:
   port: 80
   targetPort: 80
 
+# -- (map) Startup probe for the fence container. The container runs `nginx` before `gunicorn`, and gunicorn
+# only binds :8000 after it has preloaded the app, so a probe that lands in that window gets a 502 and nginx
+# logs `connect() failed (111: Connection refused)` for `/_status`. While this probe is failing, the liveness and
+# readiness probes do not run. Raise `initialDelaySeconds` to about the pod's real boot time to avoid those
+# logged refusals; the container is restarted if it has not passed after `initialDelaySeconds + periodSeconds *
+# failureThreshold`. Set to `null` to disable.
+startupProbe:
+  httpGet:
+    path: /_status
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
+
+# -- (map) Liveness probe for the fence container. Only starts once the startup probe has passed. Set to `null` to disable.
+livenessProbe:
+  httpGet:
+    path: /_status
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  timeoutSeconds: 30
+
+# -- (map) Readiness probe for the fence container. Only starts once the startup probe has passed. Set to `null` to disable.
+readinessProbe:
+  httpGet:
+    path: /_status
+    port: http
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests
