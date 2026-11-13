@@ -57,6 +57,8 @@ spec:
         metadata:
           labels:
             app: aurora-db-copy-job
+            # allow egress to the k8s API and Aurora under the default-deny allow-nothing-netpolicy
+            netnolimit: "yes"
         spec:
           serviceAccountName: aurora-db-copy-sa
           restartPolicy: Never
@@ -108,6 +110,20 @@ spec:
                     exit 1
                   fi
 
+                  # Detect PostgreSQL major version to choose the right CREATE DATABASE strategy.
+                  # PostgreSQL 15 changed the default strategy from FILE_COPY to WAL_LOG.
+                  # FILE_COPY is much faster on Aurora so we explicitly use it for PG15+.
+                  PG_MAJOR_VERSION=$(psql -h "$AURORA_HOST" -U "$AURORA_USER" -tAc "SELECT current_setting('server_version_num')::int / 10000")
+                  echo "DEBUG: PostgreSQL major version: $PG_MAJOR_VERSION"
+
+                  if [[ "$PG_MAJOR_VERSION" -ge 15 ]]; then
+                    echo "Using STRATEGY = FILE_COPY"
+                    CREATE_DB_STRATEGY="STRATEGY = FILE_COPY"
+                  else
+                    echo "Using default strategy"
+                    CREATE_DB_STRATEGY=""
+                  fi
+
                   date_str=$(date '+%y%m%d_%H%M%S')
                   target_db_name="{{ .serviceName }}_{{ $.Values.auroraRdsCopyJob.targetNamespace | replace "-" "_" }}_${date_str}"
                   TARGET_DB=$(truncate_identifier "$target_db_name")
@@ -116,7 +132,7 @@ spec:
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "GRANT \"$TARGET_USER\" TO \"$AURORA_USER\";"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
                   psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$SOURCE_DB' AND pid <> pg_backend_pid();"
-                  psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\";"
+                  psql -h "$AURORA_HOST" -U "$AURORA_USER" -d postgres -c "CREATE DATABASE \"$TARGET_DB\" WITH TEMPLATE \"$SOURCE_DB\" OWNER \"$TARGET_USER\" $CREATE_DB_STRATEGY;"
 
                   echo "::CLONED_DB_NAME::{{ .serviceName }}=$TARGET_DB"
 
