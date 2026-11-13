@@ -4,10 +4,15 @@ A job that will create test indices with data for guppy to run upon
 deployment since it requires indices to be present.
 */}}
 {{ define "common.s3_restore_indices" -}}
+{{- if not (include "common.job.exists" (dict "name" (printf "%s-restore-indices" .Chart.Name) "ctx" $)) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Chart.Name }}-restore-indices
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:
@@ -81,4 +86,5 @@ spec:
                 gen3_log_info "Restoring data...."
                 elasticdump --input "/home/ubuntu/es/${index}__data.json" --output=http://$ESHOST/$index --type data --limit 10000
               done
+{{- end }}
 {{- end }}

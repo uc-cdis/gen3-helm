@@ -109,6 +109,8 @@ secrets:
 
 # -- (map) Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you
 postgres:
+  # -- (bool) Read the database password from the `postgres/postgres-postgresql` secret. When false, read it from `metadata-dbcreds`
+  lookupLocalSecret: true
   # (bool) Whether the database should be restored from s3. Default to global.postgres.dbRestore
   dbRestore: false
   # -- (bool) Whether the database should be created. Default to global.postgres.dbCreate
@@ -319,7 +321,7 @@ args:
   - "-c"
   - |
     # Managing virtual environments via poetry instead of python since the AL base image update, but retaining backwards compatibility
-    poetry run alembic upgrade head || /env/bin/alembic upgrade head
+    alembic upgrade head || poetry run alembic upgrade head || /env/bin/alembic upgrade head
 
 # Service and Pod
 serviceAnnotations:

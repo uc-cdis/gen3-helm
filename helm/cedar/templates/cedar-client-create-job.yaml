@@ -1,8 +1,12 @@
-{{- if and (.Values.cedar_client_job_enabled) (.Values.externalSecrets.createCedarClientSecret) }}
+{{- if and (.Values.cedar_client_job_enabled) (.Values.externalSecrets.createCedarClientSecret) (not (include "common.job.exists" (dict "name" "cedar-client-job" "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: cedar-client-job
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   template:
     metadata:

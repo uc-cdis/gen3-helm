@@ -1,10 +1,16 @@
-{{- if (.Values.createFenceClientJobEnabled) }}
+{{- if and (.Values.createFenceClientJobEnabled) (not (include "common.job.exists" (dict "name" "ohdsi-webapi-client-job" "ctx" $))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: ohdsi-webapi-client-job
+  {{- if .Values.global.skipExistingJobs }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
+  {{- if not .Values.global.skipExistingJobs }}
   ttlSecondsAfterFinished: 120
+  {{- end }}
   template:
     metadata:
       labels:
