@@ -47,9 +47,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes: 
-        - name: config-volume-g3auto
-          secret:
-            secretName: metadata-g3auto
         - name: config-volume
           configMap:
             name: agg-mds-config

@@ -72,7 +72,7 @@ spec:
               name: http
           env: 
             - name: GUPPY_PORT
-              value: "8000"
+              value: {{ .Values.service.targetPort }}
             - name: GUPPY_CONFIG_FILEPATH
               value: /guppy/guppy_config.json
             - name: GEN3_ES_ENDPOINT
