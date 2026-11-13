@@ -1,0 +1,206 @@
+# -- (bool) Whether to deploy the heal-cronjobs chart.
+enabled: true
+
+# Global configuration
+global:
+  # -- (string) Hostname of the deployment. Used for the `hostname` label on job pods.
+  hostname: ""
+  # -- (string) Optional global override for the awshelper image. Used by every job that does not set its own `image`.
+  awshelper_container_image: ""
+
+# -- (map) Default image for every cronjob. Each job can override it with its own `image` block.
+image:
+  # -- (string) Docker repository.
+  repository: quay.io/cdis/awshelper
+  # -- (string) Docker image tag.
+  tag: master
+  # -- (string) Docker pull policy.
+  pullPolicy: Always
+
+# -- (map) Slack notification settings. When a job has `slackNotify: true`, a notifier container posts SUCCESS/FAILED to Slack after the job script finishes.
+slack:
+  # -- (string) Name of the secret that holds the Slack webhook URL. Missing secret or key is tolerated (no message is sent).
+  secretName: slack-webhook
+  # -- (string) Key in the secret that holds the Slack webhook URL.
+  secretKey: slack_webhook
+
+# -- (map) Node affinity applied to every job pod unless the job sets its own `affinity`. Prefers on-demand capacity, so long jobs are not interrupted by spot reclaims.
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values:
+                - on-demand
+      - weight: 99
+        preference:
+          matchExpressions:
+            - key: eks.amazonaws.com/capacityType
+              operator: In
+              values:
+                - ONDEMAND
+
+# -- (map) Node selector applied to every job pod.
+nodeSelector: {}
+
+# -- (list) Tolerations applied to every job pod.
+tolerations: []
+
+# -- (map) Annotations added to every job pod.
+podAnnotations: {}
+
+# -- (map) Extra labels added to every job pod.
+extraLabels: {}
+
+# -- (map) Cronjobs to deploy, keyed by name. The key is used as the CronJob name.
+# Each job runs `script` in an init container. Exit code 0 = SUCCESS, anything else = FAILED.
+# If `slackNotify` is true, a notifier container then reports the result to Slack.
+#
+# Supported keys per job:
+#   enabled, schedule, suspend, concurrencyPolicy, successfulJobsHistoryLimit,
+#   failedJobsHistoryLimit, backoffLimit, image {repository, tag, pullPolicy},
+#   serviceAccountName, resources, env (list of k8s EnvVar), vars (map of plain env vars),
+#   volumes, volumeMounts, affinity, slackNotify, script.
+# Prefer `vars` for settings an environment may override: maps are deep-merged
+# across values files, while lists like `env` are replaced wholesale.
+# @default -- see values.yaml
+cronjobs:
+  # Ported from cloud-automation kube/services/jobs/cedar-ingestion-job.yaml.
+  # Pulls HEAL study metadata from a CEDAR directory into the metadata service.
+  # Needs the `cedar-g3auto` secret (keys: directory_id.txt, cedar_client_credentials.json),
+  # and the fence client in cedar_client_credentials.json needs MDS admin and CEDAR policies.
+  cedar-ingestion:
+    enabled: true
+    schedule: "0 8,15 * * *"
+    suspend: false
+    concurrencyPolicy: Forbid
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    backoffLimit: 0
+    slackNotify: true
+    resources:
+      limits:
+        cpu: 1
+        memory: 5Gi
+    env:
+      - name: HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+      - name: CEDAR_DIRECTORY_ID_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: cedar-g3auto
+            key: directory_id.txt
+      - name: CEDAR_CLIENT_CREDENTIALS
+        valueFrom:
+          secretKeyRef:
+            name: cedar-g3auto
+            key: cedar_client_credentials.json
+    vars:
+      # Optional override. If empty, the directory id is read from the cedar-g3auto secret.
+      CEDAR_DIRECTORY_ID: ""
+    script: |
+      if [[ -z "$CEDAR_DIRECTORY_ID" ]]; then
+        if [[ -n "$CEDAR_DIRECTORY_ID_SECRET" ]]; then
+          echo "CEDAR_DIRECTORY_ID is from g3auto secret"
+          export CEDAR_DIRECTORY_ID=$CEDAR_DIRECTORY_ID_SECRET
+        else
+          echo "ERROR: CEDAR_DIRECTORY_ID must be set in values or in the cedar-g3auto secret" 1>&2
+          exit 1
+        fi
+      else
+        echo "CEDAR_DIRECTORY_ID is from values override"
+      fi
+
+      if [[ -n "$CEDAR_CLIENT_CREDENTIALS" ]]; then
+        export CEDAR_CLIENT_ID=$(echo "$CEDAR_CLIENT_CREDENTIALS" | jq -r .client_id)
+        export CEDAR_CLIENT_SECRET=$(echo "$CEDAR_CLIENT_CREDENTIALS" | jq -r .client_secret)
+      else
+        echo "ERROR: Could not read cedar-client credentials" 1>&2
+        exit 1
+      fi
+
+      pip install pydash
+      export GEN3_HOME="$HOME/cloud-automation"
+      python "${GEN3_HOME}/files/scripts/healdata/heal-cedar-data-ingest.py" \
+        --directory "$CEDAR_DIRECTORY_ID" \
+        --cedar_client_id "$CEDAR_CLIENT_ID" \
+        --cedar_client_secret "$CEDAR_CLIENT_SECRET" \
+        --hostname "$HOSTNAME"
+
+  # Pulls HEAL study metadata from MDS and loads selected gen3_discovery fields
+  # into the Elasticsearch index INDEX_NAME. Each run builds a new timestamped
+  # index and atomically swaps the INDEX_NAME alias onto it.
+  # Script source: cloud-automation files/scripts/healdata/heal-aggmds-load.py
+  # (shipped in the awshelper image, with config/es_mapping.json next to it).
+  heal-aggmds-etl:
+    enabled: true
+    # 1 hour after the first cedar-ingestion run (08:00), then 12 hours later.
+    schedule: "0 9,21 * * *"
+    suspend: false
+    concurrencyPolicy: Forbid
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    backoffLimit: 0
+    slackNotify: true
+    image:
+      repository: quay.io/cdis/awshelper
+      tag: master
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+    env:
+      - name: HOSTNAME
+        valueFrom:
+          configMapKeyRef:
+            name: manifest-global
+            key: hostname
+    vars:
+      # ES index name (alias) to load into, passed as --index_name. Must be
+      # lowercase. Defaults to "<hostname>_aggmds" when empty.
+      INDEX_NAME: ""
+      # Elasticsearch base URL.
+      ES_URL: "http://esproxy-service:9200"
+      # MDS base URL (in-cluster service).
+      MDS_URL: "http://metadata-service"
+      # Commons hostname stored in each doc as gen3_discovery.commons_url.
+      # Defaults to the hostname in manifest-global when empty.
+      COMMONS_URL: ""
+      # Path to the script inside the image. Defaults to the cloud-automation
+      # copy in the awshelper image when empty.
+      SCRIPT_PATH: ""
+    script: |
+      SCRIPT_PATH="${SCRIPT_PATH:-$HOME/cloud-automation/files/scripts/healdata/heal-aggmds-load.py}"
+      if [[ ! -f "$SCRIPT_PATH" ]]; then
+        echo "ERROR: script not found at SCRIPT_PATH=$SCRIPT_PATH" 1>&2
+        exit 1
+      fi
+
+      COMMONS_URL="${COMMONS_URL:-$HOSTNAME}"
+      if [[ -z "$COMMONS_URL" ]]; then
+        echo "ERROR: COMMONS_URL is empty and no hostname found in manifest-global" 1>&2
+        exit 1
+      fi
+      if [[ -z "$INDEX_NAME" ]]; then
+        INDEX_NAME="$(printf '%s' "$COMMONS_URL" | tr '[:upper:]' '[:lower:]')_aggmds"
+      fi
+
+      # --recreate is needed on every run after the first: without it the script
+      # exits with an error once the index exists. Rebuilds swap an alias, so
+      # searches never see an empty or partial index.
+      echo "Loading '$INDEX_NAME' at $ES_URL from $MDS_URL (commons_url=$COMMONS_URL)"
+      python "$SCRIPT_PATH" \
+        --index_name "$INDEX_NAME" \
+        --commons_url "$COMMONS_URL" \
+        --mds_url "$MDS_URL" \
+        --es_url "$ES_URL" \
+        --recreate

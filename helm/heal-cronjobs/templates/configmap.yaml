@@ -1,0 +1,15 @@
+{{- range $name, $job := .Values.cronjobs }}
+{{- if $job.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "healCronjobs.scriptConfigMapName" (dict "name" $name) }}
+  labels:
+    {{- include "healCronjobs.labels" $ | nindent 4 }}
+    app: {{ $name }}
+data:
+  run.sh: |
+    {{- required (printf "cronjobs.%s.script is required" $name) $job.script | nindent 4 }}
+{{- end }}
+{{- end }}

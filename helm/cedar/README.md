@@ -24,7 +24,6 @@ Published versions of this chart are listed in the
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `10` |  |
 | autoscaling.minReplicas | int | `1` |  |
-| cedarIngestion | map | `{"enabled":true}` | Whether or not to deploy the cedar ingestion job. |
 | cedar_client_job_enabled | bool | `true` | Whether to enable OIDC job. You can disable after inital run to ensure oidc clients are created. |
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
@@ -78,7 +77,6 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/cedar"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
-| ingestion | map | `{"image":"quay.io/cdis/awshelper:master"}` | Cedar configuration for ingestion job. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node Selector for the pods |

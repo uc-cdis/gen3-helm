@@ -1,0 +1,149 @@
+{{- range $name, $job := .Values.cronjobs }}
+{{- if $job.enabled }}
+{{- $image := include "healCronjobs.image" (dict "job" $job "root" $) }}
+{{- $pullPolicy := include "healCronjobs.pullPolicy" (dict "job" $job "root" $) }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "healCronjobs.labels" $ | nindent 4 }}
+    app: {{ $name }}
+spec:
+  schedule: {{ required (printf "cronjobs.%s.schedule is required" $name) $job.schedule | quote }}
+  suspend: {{ $job.suspend | default false }}
+  concurrencyPolicy: {{ $job.concurrencyPolicy | default "Forbid" }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit | default 1 }}
+  failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit | default 1 }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ $job.backoffLimit | default 0 }}
+      template:
+        metadata:
+          {{- with $.Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            app: gen3job
+            {{- include "common.extraLabels" $ | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 10
+          {{- with $job.serviceAccountName }}
+          serviceAccountName: {{ . }}
+          {{- end }}
+          {{- with (default $.Values.affinity $job.affinity) }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumes:
+            - name: shared-data
+              emptyDir: {}
+            - name: job-script
+              configMap:
+                name: {{ include "healCronjobs.scriptConfigMapName" (dict "name" $name) }}
+            {{- with $job.volumes }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          # The job runs as an init container so the notifier container below
+          # always runs afterwards. The init container always exits 0 and
+          # records success via /mnt/shared/success.
+          initContainers:
+            - name: {{ $name }}
+              image: {{ $image }}
+              imagePullPolicy: {{ $pullPolicy }}
+              {{- if or $job.env $job.vars }}
+              env:
+                {{- with $job.env }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+                {{- range $k, $v := $job.vars }}
+                - name: {{ $k }}
+                  value: {{ $v | toString | quote }}
+                {{- end }}
+              {{- end }}
+              {{- with $job.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              volumeMounts:
+                - name: shared-data
+                  mountPath: /mnt/shared
+                - name: job-script
+                  mountPath: /opt/heal-cronjobs
+                  readOnly: true
+                {{- with $job.volumeMounts }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  bash /opt/heal-cronjobs/run.sh
+                  status=$?
+                  if [[ $status -ne 0 ]]; then
+                    echo "WARNING: non zero exit code: $status"
+                  else
+                    echo "All done - exit code: $status"
+                    touch /mnt/shared/success
+                  fi
+                  exit 0
+          containers:
+            - name: notifier
+              image: {{ $image }}
+              imagePullPolicy: {{ $pullPolicy }}
+              env:
+                - name: JOB_NAME
+                  value: {{ $name | quote }}
+                - name: SLACK_NOTIFY
+                  value: {{ ternary "true" "false" (ne $job.slackNotify false) | quote }}
+                - name: slackWebHook
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Values.slack.secretName }}
+                      key: {{ $.Values.slack.secretKey }}
+                      optional: true
+                - name: gen3Env
+                  valueFrom:
+                    configMapKeyRef:
+                      name: manifest-global
+                      key: hostname
+                      optional: true
+              volumeMounts:
+                - name: shared-data
+                  mountPath: /mnt/shared
+              command: ["/bin/bash"]
+              args:
+                - "-c"
+                - |
+                  if [[ -f /mnt/shared/success ]]; then
+                    success="SUCCESS"
+                    color="2EB67D"
+                  else
+                    success="FAILED"
+                    color="ff0000"
+                  fi
+                  echo "Job ${JOB_NAME}: ${success}"
+                  if [[ "$SLACK_NOTIFY" != "true" ]]; then
+                    echo "Slack notification disabled for this job"
+                    exit 0
+                  fi
+                  if [[ ! "$slackWebHook" =~ ^http ]]; then
+                    echo "Slack webhook not set"
+                    exit 0
+                  fi
+                  echo "Sending ${success} message to slack..."
+                  payload="{\"attachments\": [{\"fallback\": \"JOB ${success}: ${JOB_NAME} cronjob on ${gen3Env}\",\"color\": \"#${color}\",\"title\": \"JOB ${success}: ${JOB_NAME} cronjob on ${gen3Env}\",\"text\": \"Pod name: ${HOSTNAME}\",\"ts\": \"$(date +%s)\"}]}"
+                  curl -X POST --data-urlencode "payload=${payload}" "${slackWebHook}"
+{{- end }}
+{{- end }}
