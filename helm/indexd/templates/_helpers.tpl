@@ -69,6 +69,17 @@ Create the name of the service account to use
 
 
 {{/*
+DRS service-info overrides as JSON. id and organization.url default to global.hostname;
+without them indexd falls back to the container's HOSTNAME, which is the pod name.
+*/}}
+{{- define "indexd.drsServiceInfo" -}}
+{{- $hostname := .Values.global.hostname }}
+{{- $defaults := dict "id" (splitList "." $hostname | reverse | join ".") "organization" (dict "url" (printf "https://%s" $hostname)) }}
+{{- mergeOverwrite $defaults (default (dict) .Values.drsServiceInfo) | toJson }}
+{{- end }}
+
+
+{{/*
  Postgres Password lookup
 */}}
 {{- define "indexd.postgres.password" -}}

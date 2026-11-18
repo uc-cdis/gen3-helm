@@ -257,6 +257,11 @@ gen3-analysis:
 data-upload-cron:
   enabled: false
 
+# -- (map) Configurations for heal-cronjobs chart.
+heal-cronjobs:
+  # -- (bool) Whether to deploy the heal-cronjobs subchart.
+  enabled: false
+
 # -- (map) Configurations for gen3-embeddings chart.
 gen3-embeddings:
   enabled: false
