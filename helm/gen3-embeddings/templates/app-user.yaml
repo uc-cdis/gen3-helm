@@ -1,0 +1,126 @@
+{{- /*
+  The app-user Job's pod template, separate so the Job name can hash it. Emitted at column 0.
+
+  common.db_setup_job creates the app role. This Job gives it its table privileges, which can only
+  happen once the migrations have created the tables, and only as the role that owns them.
+*/}}
+{{- define "gen3-embeddings.appUserPod" -}}
+{{- $appUser := include "gen3-embeddings.appUser" . | fromYaml }}
+{{- $migrations := include "common.db_migrate.settings" . | fromYaml }}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion }}
+metadata:
+  labels:
+    {{- /* Required: common.db_netpolicy grants database egress to app in (<chart>, gen3job). */}}
+    app: gen3job
+spec:
+  {{- /* For writing the gate Secret; the Role behind it allows secrets. */}}
+  serviceAccountName: {{ .Chart.Name }}-dbcreate-sa
+  restartPolicy: OnFailure
+  volumes:
+    - name: work
+      emptyDir: {}
+  initContainers:
+    {{- /* The grants name the tables, so they wait for the finished schema. app_user.sql ships
+           in the service image, which has dbmate but no psql. */}}
+    - name: wait-and-copy
+      image: "{{ .Values.image.repository }}:{{ $tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      env:
+        {{- include "common.db_migrate.env" . | nindent 8 }}
+      volumeMounts:
+        - name: work
+          mountPath: /work
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          set -eu
+          {{- if $migrations.enabled }}
+          {{- include "common.db_migrate.dsn" . | nindent 10 }}
+          {{- include "gen3-embeddings.waitForMigrations" . | nindent 10 }}
+          {{- end }}
+          cp {{ .Values.postgres.appUser.sqlFile | quote }} /work/app_user.sql
+  containers:
+    - name: app-user
+      image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
+      imagePullPolicy: IfNotPresent
+      env:
+        {{- include "common.db_migrate.env" . | nindent 8 }}
+        - name: APP_PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: {{ $appUser.secretName }}
+              key: username
+              optional: false
+        - name: APP_PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $appUser.secretName }}
+              key: password
+              optional: false
+        - name: PGSSLMODE
+          value: {{ $migrations.sslmode | quote }}
+      volumeMounts:
+        - name: work
+          mountPath: /work
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          set -euo pipefail
+          export PGUSER="$DB_MIGRATION_USER" PGPASSWORD="$DB_MIGRATION_PASSWORD"
+          # common.db_setup_job creates the role, and this Job can start before it has.
+          for i in $(seq 1 60); do
+            found="$(psql -X -tA -v app_user="$APP_PGUSER" <<'SQL'
+          SELECT 1 FROM pg_roles WHERE rolname = :'app_user';
+          SQL
+            )"
+            [ "$found" = "1" ] && break
+            echo "Waiting for role $APP_PGUSER, created by {{ .Chart.Name }}-dbcreate ..."
+            sleep 5
+          done
+          if [ "$found" != "1" ]; then
+            echo "Role $APP_PGUSER does not exist; check the {{ .Chart.Name }}-dbcreate Job."
+            exit 1
+          fi
+          # The service's own script, run as the role that owns the tables, which can always
+          # grant on them. The role already exists, so its CREATE ROLE is skipped.
+          echo "Granting table privileges to $APP_PGUSER as $DB_MIGRATION_USER..."
+          psql -X -v ON_ERROR_STOP=1 \
+            -v app_user="$APP_PGUSER" -v app_password="$APP_PGPASSWORD" -f /work/app_user.sql
+          # A GRANT on a table this role does not own grants nothing and only warns, so check
+          # that the role can now use every table row level security guards.
+          missing="$(psql -X -tA -v ON_ERROR_STOP=1 -v app_user="$APP_PGUSER" <<'SQL'
+          SELECT string_agg(format('%I (owner %I)', c.relname, pg_get_userbyid(c.relowner)), ', ')
+          FROM pg_class c
+          WHERE c.relnamespace = 'public'::regnamespace AND c.relrowsecurity
+            AND NOT (has_table_privilege(:'app_user', c.oid, 'SELECT')
+                 AND has_table_privilege(:'app_user', c.oid, 'INSERT')
+                 AND has_table_privilege(:'app_user', c.oid, 'UPDATE')
+                 AND has_table_privilege(:'app_user', c.oid, 'DELETE'));
+          SQL
+          )"
+          if [ -n "$missing" ]; then
+            echo "$APP_PGUSER still lacks privileges on: $missing."
+            echo "Only a table's owner can grant on it, and these grants ran as $DB_MIGRATION_USER."
+            echo "Make $DB_MIGRATION_USER the owner, or run app_user.sql as the owner."
+            exit 1
+          fi
+          kubectl create secret generic {{ $appUser.readySecretName }} --from-literal=rolecreated=true \
+            --dry-run=client -o yaml | kubectl apply -f -
+          echo "App role $APP_PGUSER is ready."
+{{- end }}
+
+{{- $appUser := include "gen3-embeddings.appUser" . | fromYaml }}
+{{- if $appUser.enabled }}
+{{- $pod := include "gen3-embeddings.appUserPod" . }}
+{{- /* The name hashes the pod template, so an unchanged deploy re-applies an identical Job and
+       any change gets a new Job rather than failing on Job immutability. Reruns are harmless. */}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-appuser-{{ $pod | sha256sum | trunc 8 }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    {{- $pod | nindent 4 }}
+{{- end }}

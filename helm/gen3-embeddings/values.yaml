@@ -18,6 +18,10 @@ global:
       externalSecretAwsCreds:
   # -- (bool) Whether the deployment is for development purposes.
   dev: true
+  # -- (int) Minimum pods the PodDisruptionBudget keeps available. Only consulted when
+  # global.pdb is set and replicaCount is above 1; the PDB renders an empty minAvailable and is
+  # rejected without it.
+  minAvailable: 1
   postgres:
     # -- (bool) Whether the database should be created.
     dbCreate: true
@@ -59,7 +63,11 @@ global:
 autoscaling: {}
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
+
+# -- (int) The image runs a single Uvicorn process, so concurrency comes from replicas rather
+# than from workers inside the container. Replicas do not migrate: postgres.migrations runs that
+# once in a Job and each replica waits for it, so this can be raised freely.
+replicaCount: 2
 debug: false
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
@@ -80,6 +88,10 @@ service:
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 80
+  # -- (int) Port the service listens on inside the container. Also the container port the
+  # probes address by name, so changing it here moves the Service, the container port and both
+  # probes together.
+  targetPort: 8000
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -98,17 +110,17 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# -- (map) Compute resources. Sized for the single Uvicorn process the image runs; add
+# replicas rather than raising these to serve more concurrent traffic. The same values apply
+# to the migration initContainer.
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
 # -- (list) Environment variables to pass to the container
 env:
   - name: GEN3_DEBUG
@@ -119,28 +131,43 @@ env:
         name: manifest-global
         key: arborist_url
         optional: true
-  - name: PGPOOL_MIN_SIZE
-    value: "1"
-  - name: PGPOOL_MAX_SIZE
-    value: "5"
-  - name: GUNICORN_WORKERS
-    value: "2"
+
+# -- (map) Public, non-secret environment variables, by their real ALL_UPPER name. Prefer this
+# over `env` for per-environment settings: Helm replaces lists wholesale, so overriding `env`
+# drops the defaults above, while map keys merge. A name set here replaces the `env` entry of the
+# same name. Values must be scalars; use `env` for anything needing `valueFrom`. Secret values
+# belong in `secretEnv` or Secrets Manager, not here - this file is public.
+extraEnv: {}
+
+# -- (map) Secret environment variables, rendered into the <name>-env-secret Secret and
+# projected with envFrom. Values must be scalars. Intended for local development only: when
+# global.externalSecrets.deploy is set, that Secret comes from the Secrets Manager entry named in
+# externalSecrets.gen3EmbeddingsEnvSecret instead and anything here is ignored. Never commit real
+# credentials to a public values file.
+secretEnv: {}
+
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+# -- (map) Liveness probe. `port: http` follows service.targetPort, so the probe cannot drift
+# from the port the container actually listens on.
 livenessProbe:
   httpGet:
-    path: /
+    path: /_status
     port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 30
+# -- (map) Readiness probe. Removes the pod from the Service until /_status answers.
 readinessProbe:
   httpGet:
-    path: /
+    path: /_status
     port: http
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-  - mountPath: /services/gen3_embeddings/.env
-    name: gen3-embeddings-g3auto-volume
-    readOnly: true
-    subPath: gen3-embeddings.env
+# -- (list) Additional volumes on the output Deployment definition.
+extraVolumes: []
+
+# -- (list) Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
 
 affinity: {}
 automountServiceAccountToken: false
@@ -163,6 +190,74 @@ postgres:
   password:
   # -- (string) Will create a Database for the individual service to help with developing it.
   separate: false
+  # -- (map) dbmate schema migrations. dbmate takes no lock while migrating, so migrations run in
+  # a single Job with parallelism 1 and the deployment waits for them rather than each replica
+  # racing to apply the same migration.
+  migrations:
+    # -- (bool) Run migrations as a Job, and make the deployment wait for them before serving.
+    enabled: true
+    # -- (string) Directory inside the image holding dbmate migrations.
+    dir: /services/gen3_embeddings/db/migrations
+    # -- (string) sslmode for the migration connection.
+    sslmode: disable
+  # -- (map) The role the service connects as. The role in <chart>-dbcreds owns the tables and
+  # runs migrations, and an owner can switch row level security off on its own tables, so the
+  # service runs as a separate role that owns nothing. common.db_setup_job creates the role with
+  # its admin connection, a Job grants it what the image's app_user.sql lists once the
+  # migrations have run, and the deployment waits for that Job. Its credentials are in
+  # <chart>-app-dbcreds, which follows <chart>-dbcreds: a local Secret, or an ExternalSecret
+  # from Secrets Manager when global.externalSecrets.deploy is set.
+  appUser:
+    # -- (bool) Connect as the separate app role. When false, the service connects as the table
+    # owner from <chart>-dbcreds.
+    enabled: true
+    # -- (string) Role name. Defaults to postgres.username, or <chart>_<release>, plus `_app`.
+    username:
+    # -- (string) Path inside the image of the script that grants the app role its privileges.
+    sqlFile: /services/gen3_embeddings/db/app_user.sql
+# -- (map) HNSW vector indexes, applied as dbmate index migrations recorded in their own
+# `index_migrations` table, apart from the schema migrations, so the deployment never waits on
+# a build. A Job applies them whenever this list changes, then restarts the service, which reads
+# the index catalog only at startup. Collection ids differ between deployments, so these belong
+# in each deployment's own values. See services/gen3_embeddings/db/index_migrations/README.md
+# in gen3-ai for choosing indexes.
+vectorIndexes:
+  # -- (string) Postgres session settings for the build, as connection URL parameters. Keep
+  # statement_timeout=0: a large HNSW build can run for days. For example
+  # "statement_timeout=0&maintenance_work_mem=8GB&max_parallel_maintenance_workers=4".
+  sessionParams: "statement_timeout=0"
+  # -- (map) Vector types an index can be built on. Each is stored in its own
+  # embeddings_<type> table. `maxDimensions` is the most an HNSW index on that type supports.
+  vectorTypes:
+    vector:
+      maxDimensions: 2000
+    halfvec:
+      maxDimensions: 4000
+  # -- (map) Index kinds. By default a kind indexes `embedding::{type}({dimensions})` with the
+  # `{type}_<kind>_ops` opclass, up to the vector type's maxDimensions. `expression`, `opclass`
+  # and `maxDimensions` override those, and may use the {type} and {dimensions} placeholders.
+  # The service only searches with indexes whose opclass it knows, which are those of the
+  # default kinds.
+  kinds:
+    cosine: {}
+    l2: {}
+    ip: {}
+    l1: {}
+    # Hamming distance over the quantized vector, then exact rescoring; serves every metric.
+    binary:
+      expression: "binary_quantize(embedding)::bit({dimensions})"
+      opclass: bit_hamming_ops
+      maxDimensions: 64000
+  # -- (list) One entry per index migration. `version` (a timestamp such as 20261031120000)
+  # orders the migrations and must never change once applied; editing an applied entry changes
+  # nothing, since dbmate never rereads applied files. `collectionId` is collections.id, and
+  # `vectorType` (a key of vectorTypes) and `dimensions` must match that collection. `kind` is a
+  # key of kinds. Optional `params` sets m and ef_construction. To remove an index, add a new
+  # entry with a new version and `drop: true`.
+  # A failed build leaves its Job failed: drop the invalid index, then delete the Job and deploy
+  # again.
+  indexes: []
+
 # -- (map) Postgresql subchart settings if deployed separately option is set to "true".
 # Disable persistence by default so we can spin up and down ephemeral environments
 postgresql:
@@ -185,14 +280,17 @@ commonLabels:
 
 # -- (map) External Secrets settings.
 externalSecrets:
-  # -- (string) Will create the Helm "gen3Embeddings-g3auto" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets.
-  createK8sGen3EmbeddingsSecret: false
-  # -- (string) Will override the name of the aws secrets manager secret. Default is "gen3UserDataLibrary-g3auto"
-  gen3EmbeddingsG3auto:
+  # -- (string) Name of the aws secrets manager secret whose JSON properties become secret
+  # environment variables, through the <name>-env-secret Secret. Leave empty when the service
+  # needs none; once set, the entry must exist or the pods wait for it.
+  gen3EmbeddingsEnvSecret:
   # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
   pushSecret: false
   # -- (string) Will override the name of the aws secrets manager secret. Default is "Values.global.environment-.Chart.Name-creds"
   dbcreds:
+  # -- (string) Will override the name of the aws secrets manager secret holding the app role's
+  # credentials. Default is "Values.global.environment-.Chart.Name-app-creds"
+  appDbcreds:
 
 # -- (bool) Whether Metrics are enabled.
 metricsEnabled:
@@ -203,4 +301,3 @@ secrets:
   awsAccessKeyId:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
-gunicornWorkers: 1
