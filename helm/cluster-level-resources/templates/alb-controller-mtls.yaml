@@ -1,4 +1,9 @@
 {{ if index .Values "alb-controller-mtls" "enabled" }}
+{{- $ingress := index .Values "alb-controller-mtls" "ingress" }}
+{{- $certificateArn := required "Set alb-controller-mtls.ingress.certificateArn to an ACM certificate ARN" $ingress.certificateArn }}
+{{- $trustStore := required "Set alb-controller-mtls.ingress.trustStore to an existing ALB trust store ARN or name" $ingress.trustStore }}
+apiVersion: argoproj.io/v1alpha1
+...
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
