@@ -37,6 +37,10 @@ roleRef:
 # DB Setup Job
 {{- define "common.db_setup_job" -}}
 {{- if or $.Values.global.postgres.dbCreate $.Values.postgres.dbCreate }}
+{{- $pushSecret := and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
+{{- /* With pushSecret, <chart>-dbcreds is an ExternalSecret that only exists once the remote secret
+       has been pushed by this Job, so the Job starts from the bootstrap secret instead. */}}
+{{- $credsSecret := ternary (printf "%s-dbcreds-bootstrap" .Chart.Name) (printf "%s-dbcreds" .Chart.Name) $pushSecret }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -118,19 +122,19 @@ spec:
           - name: SERVICE_PGUSER
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $credsSecret }}
                 key: username
                 optional: false
           - name: SERVICE_PGDB
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $credsSecret }}
                 key: database
                 optional: false
           - name: SERVICE_PGPASS
             valueFrom:
               secretKeyRef:
-                name: {{ .Chart.Name }}-dbcreds
+                name: {{ $credsSecret }}
                 key: password
                 optional: false
           - name: GEN3_HOME
@@ -156,6 +160,24 @@ spec:
               sleep 5
             done
             >&2 echo "Postgres is up - executing command"
+{{- if $pushSecret }}
+
+            # Once <chart>-dbcreds exists (synced from the remote store, or rendered locally), it holds
+            # the credentials the service actually uses: prefer it over the freshly rendered bootstrap
+            # values, which change on every render when helm lookup is unavailable (e.g. ArgoCD).
+            SYNCED_PGPASS="$(kubectl -n {{ $.Release.Namespace }} get secret {{ .Chart.Name }}-dbcreds -o jsonpath='{.data.password}' 2>/dev/null | base64 --decode || true)"
+            if [ -n "$SYNCED_PGPASS" ]; then
+              echo "Using existing {{ .Chart.Name }}-dbcreds"
+              SERVICE_PGPASS="$SYNCED_PGPASS"
+              SERVICE_PGUSER="$(kubectl -n {{ $.Release.Namespace }} get secret {{ .Chart.Name }}-dbcreds -o jsonpath='{.data.username}' | base64 --decode)"
+              SERVICE_PGDB="$(kubectl -n {{ $.Release.Namespace }} get secret {{ .Chart.Name }}-dbcreds -o jsonpath='{.data.database}' | base64 --decode)"
+            fi
+
+            # Make sure the role exists and its password matches the credentials being pushed/used.
+            psql -tc "SELECT 1 FROM pg_roles WHERE rolname = '$SERVICE_PGUSER'" | grep -q 1 || \
+              psql -c "CREATE USER \"$SERVICE_PGUSER\" WITH PASSWORD '$SERVICE_PGPASS';"
+            psql -c "ALTER ROLE \"$SERVICE_PGUSER\" WITH LOGIN PASSWORD '$SERVICE_PGPASS';"
+{{- end }}
 
             if psql -lqt | cut -d \| -f 1 | grep -qw $SERVICE_PGDB; then
               # gen3_log_info "Database exists"
@@ -207,10 +229,11 @@ spec:
               echo "ERROR: PGHOST is empty; cannot populate {{ $.Chart.Name }}-dbcreds-bootstrap"
               exit 1
             fi
-            BOOTSTRAP_PGHOST_B64="$(printf '%s' "$PGHOST" | base64 | tr -d '\n')"
+            # Also copy the resolved service credentials, so the pushed secret always matches the role.
+            b64() { printf '%s' "$1" | base64 | tr -d '\n'; }
             kubectl -n {{ $.Release.Namespace }} patch secret {{ $.Chart.Name }}-dbcreds-bootstrap \
               --type merge \
-              -p "{\"data\":{\"host\":\"${BOOTSTRAP_PGHOST_B64}\"}}"
+              -p "{\"data\":{\"host\":\"$(b64 "$PGHOST")\",\"username\":\"$(b64 "$SERVICE_PGUSER")\",\"database\":\"$(b64 "$SERVICE_PGDB")\",\"password\":\"$(b64 "$SERVICE_PGPASS")\"}}"
 
             echo "Creating PushSecret {{ $.Chart.Name }}-dbcreds ..."
             # kubectl apply is idempotent: on subsequent runs the existing PushSecret is kept as-is
