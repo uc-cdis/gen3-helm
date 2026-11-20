@@ -27,6 +27,7 @@ Published versions of this chart are listed in the
 | commonLabels | map | `nil` | Will completely override the commonLabels defined in the common chart's _label_setup.tpl |
 | criticalService | string | `"true"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
 | defaultPrefix | string | `"PREFIX/"` | default prefix for indexd - must end in slash |
+| drsServiceInfo | map | `{}` | Overrides for the DRS service-info response (/ga4gh/drs/v1/service-info). Default `id` is the hostname in reverse. Default `organization.url` is `https://<global.hostname>`. To change a value, add it here, for example `organization.name`. The chart sends these values to indexd in the `DRS_SERVICE_INFO` env var. Leave this empty to use the defaults. |
 | env | list | `[{"name":"ARBORIST","value":"true"},{"name":"GEN3_DEBUG","value":"False"}]` | Environment variables to pass to the container |
 | externalSecrets | map | `{"createK8sServiceCredsSecret":false,"dbcreds":null,"pushSecret":false,"serviceCreds":"indexd-service-creds"}` | External Secrets settings. |
 | externalSecrets.createK8sServiceCredsSecret | string | `false` | Will create the Helm "indexd-service-creds" secret even if Secrets Manager is enabled. This is helpful if you are wanting to use External Secrets for some, but not all secrets. |
@@ -78,6 +79,7 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| maxBulkRequestLength | int | `100` | The maximum number of records that can be processed in a single bulk request. This is used to prevent large requests from overwhelming the system. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
 | migrateToSingleTable.args | string | `nil` |  |
 | nameOverride | string | `""` | Override the name of the chart. |

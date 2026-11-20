@@ -1,0 +1,4 @@
+{{- $wp := index .Values "workspace-proxy" | default dict }}
+{{- if and .Values.ambassador.enabled ($wp.enabled | default false) }}
+{{- fail "ambassador.enabled and workspace-proxy.enabled both provide workspace-proxy-service. Set ambassador.enabled=false." }}
+{{- end }}

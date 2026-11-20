@@ -19,7 +19,7 @@ spec:
     owner: {{ index .Values "karpenter-crds" "amiOwner" | quote }}
   {{- else }}
   - alias: {{ index .Values "karpenter-crds" "alias" | quote }}
-  {{- end }}    
+  {{- end }}
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
@@ -27,6 +27,10 @@ spec:
       encrypted: true
       volumeSize: {{ index .Values "karpenter-crds" "jupyter" "volumeSize" }}
       volumeType: gp3
+{{ if and (semverCompare ">=1.33" .Capabilities.KubeVersion.Version) (index .Values "karpenter-crds" "jupyter" "fastImagePull" "enabled") }}
+      iops: {{ index .Values "karpenter-crds" "jupyter" "fastImagePull" "iops" }}
+      throughput: {{ index .Values "karpenter-crds" "jupyter" "fastImagePull" "throughput" }}
+{{ end }}
   metadataOptions:
     httpEndpoint: enabled
     httpProtocolIPv6: disabled
@@ -61,6 +65,18 @@ spec:
     sysctl -w fs.inotify.max_user_watches=12000 &
     systemctl stop firewalld
     systemctl disable firewalld
+{{ if and (semverCompare ">=1.33" .Capabilities.KubeVersion.Version) (index .Values "karpenter-crds" "jupyter" "fastImagePull" "enabled") }}
+
+    --BOUNDARY
+    Content-Type: application/node.eks.aws
+
+    ---
+    apiVersion: node.eks.aws/v1alpha1
+    kind: NodeConfig
+    spec:
+      featureGates:
+        FastImagePull: true
+{{ end }}
 
     --BOUNDARY--
 {{- if semverCompare ">=1.0.8" .Values.karpenter.targetRevision }}

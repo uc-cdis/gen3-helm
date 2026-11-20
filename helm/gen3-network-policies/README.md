@@ -49,6 +49,10 @@ Published versions of this chart are listed in the
 | global.revproxyArn | string | `"arn:aws:acm:us-east-1:123456:certificate"` | ARN of the reverse proxy certificate. |
 | global.tierAccessLevel | string | `"libre"` | Access level for tiers. acceptable values for `tier_access_level` are: `libre`, `regular` and `private`. If omitted, by default common will be treated as `private` |
 | global.tierAccessLimit | int | `"1000"` | Only relevant if tireAccessLevel is set to "regular". Summary charts below this limit will not appear for aggregated data. |
+| monitoring | map | `{"enabled":true,"namespace":"monitoring","podSelector":{"app.kubernetes.io/name":"alloy"}}` | Allow the monitoring stack (Grafana Alloy) to scrape metrics from gen3 pods |
+| monitoring.enabled | bool | `true` | Whether to allow ingress from the monitoring namespace |
+| monitoring.namespace | string | `"monitoring"` | Namespace the monitoring stack (Alloy) runs in |
+| monitoring.podSelector | map | `{"app.kubernetes.io/name":"alloy"}` | Labels of the scraper pods allowed in. Set to null to allow the whole namespace. |
 | s3CidrRanges[0].ipBlock.cidr | string | `"18.34.0.0/19"` |  |
 | s3CidrRanges[1].ipBlock.cidr | string | `"16.15.192.0/18"` |  |
 | s3CidrRanges[2].ipBlock.cidr | string | `"54.231.0.0/16"` |  |

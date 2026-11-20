@@ -797,10 +797,12 @@ USER_YAML: |
   cloud_providers: {}
   groups: {}
 
-# -- (map) Public configuration settings for Fence app
+# -- (map) Public configuration settings for Fence app.
+# DPOP_ENABLED belongs here.
 FENCE_CONFIG_PUBLIC: {}
 
-# -- (map) Private configuration settings for Fence app
+# -- (map) Private configuration settings for Fence app. Do not set DPOP_SHARED_SECRET here or in
+# FENCE_CONFIG_PUBLIC: it comes from the shared "gen3-dpop" Secret.
 FENCE_CONFIG:
   # -- (string) Name of the Fence app
   APP_NAME: "Gen3 Data Commons"

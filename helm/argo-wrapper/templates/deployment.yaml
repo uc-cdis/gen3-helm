@@ -77,3 +77,5 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: ARGO_HOST
+              value: {{ .Values.global.argoHost }}

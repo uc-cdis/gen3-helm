@@ -5,5 +5,5 @@ metadata:
 data:
   config: |
     {{- with .Values.alloy.alloyConfigmapData }}
-    {{- toYaml . | nindent 4 }}
+    {{- . | nindent 4 }}
     {{ end }}

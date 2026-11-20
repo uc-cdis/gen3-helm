@@ -68,6 +68,8 @@ externalSecrets:
   funnelOidcClient:
   # -- (string) Name of the secret that will be created in secrets manager
   dbcreds: ""
+  # -- (bool) Whether to create the database and Secrets Manager secrets via PushSecret.
+  pushSecret: false
 
 # -- (map) Secret information for External Secrets.
 secrets:
@@ -127,8 +129,8 @@ partOf: "Workflow_Execution"
 oidc_job_enabled: true
 image:
   # -- (string) The Docker image repository for the Funnel service.
-  repository: quay.io/ohsu-comp-bio/funnel
-  tag: develop-2026-07-09-19-49-55Z-97d1df55
+  repository: quay.io/cdis/funnel
+  tag: main-gen3
 
   # -- (string) When to pull the image. This value should be "Always" to ensure the latest image is used.
   pullPolicy: Always

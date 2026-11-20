@@ -30,6 +30,10 @@ dist = environ.get("DIST", None)
 if dist:
     CONFIG["DIST"] = json.loads(dist)
 
+drs_service_info = environ.get("DRS_SERVICE_INFO", None)
+if drs_service_info:
+    CONFIG["DRS_SERVICE_INFO"] = json.loads(drs_service_info)
+
 arborist = environ.get("ARBORIST", "false").lower() == "true"
 
 USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"

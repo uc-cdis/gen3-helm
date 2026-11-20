@@ -149,10 +149,11 @@ Published versions of this chart are listed in the
 | cleanup.schedule | string | `""` |  |
 | cleanup.scheduleOffsetMinutes | int | `0` |  |
 | criticalService | string | `"false"` | Valid options are "true" or "false". If invalid option is set- the value will default to "false". |
-| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null}` | External Secrets settings. |
+| externalSecrets | map | `{"createFunnelOidcClientSecret":true,"dbcreds":"","funnelOidcClient":null,"pushSecret":false}` | External Secrets settings. |
 | externalSecrets.createFunnelOidcClientSecret | bool | `true` | Whether to create the Funnel OIDC client secret using the oidc job. |
 | externalSecrets.dbcreds | string | `""` | Name of the secret that will be created in secrets manager |
 | externalSecrets.funnelOidcClient | string | `nil` | Will override the name of the aws secrets manager secret. Default is "funnel-oidc-client". |
+| externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | global.aws.awsAccessKeyId | string | `nil` | Credentials for AWS stuff. |
 | global.aws.awsSecretAccessKey | string | `nil` | Credentials for AWS stuff. |
 | global.aws.enabled | bool | `false` | Set to true if deploying to AWS. Controls ingress annotations. |
@@ -187,8 +188,8 @@ Published versions of this chart are listed in the
 | image.initContainers[0].pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
 | image.initContainers[0].tag | string | `"main-gen3"` | The Docker image tag for the Funnel init/plugin container. |
 | image.pullPolicy | string | `"Always"` | When to pull the image. This value should be "Always" to ensure the latest image is used. |
-| image.repository | string | `"quay.io/ohsu-comp-bio/funnel"` | The Docker image repository for the Funnel service. |
-| image.tag | string | `"develop-2026-07-09-19-49-55Z-97d1df55"` |  |
+| image.repository | string | `"quay.io/cdis/funnel"` | The Docker image repository for the Funnel service. |
+| image.tag | string | `"main-gen3"` |  |
 | labels.app | string | `"funnel"` |  |
 | metricsEnabled | bool | `false` |  |
 | netPolicy | map | `{"egressApps":["gen3-workflow"],"ingressApps":["gen3-workflow"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |

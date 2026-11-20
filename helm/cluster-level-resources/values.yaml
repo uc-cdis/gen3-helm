@@ -121,6 +121,7 @@ karpenter:
   enabled: false
   awsRegion: "us-east-1"
   targetRevision: 1.0.8
+  interruptionQueue: ""
   configuration:
     enabled: false
   resources:
@@ -156,6 +157,10 @@ karpenter-crds:
       cpu: "1000"
       memory: 1000Gi
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -181,7 +186,13 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
+    # -- (list) Specific EC2 instance types for the gpu NodePools (e.g. ["g6.xlarge"]). If empty, defaults to the g4dn instance family.
+    instanceTypes: []
   secondary:
     enabled: false
     weight: 1
@@ -191,6 +202,10 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -216,6 +231,10 @@ karpenter-crds:
     consolidationPolicy: "WhenEmpty"
     expireAfter: "168h"
     volumeSize: 50Gi
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -241,6 +260,10 @@ karpenter-crds:
     expireAfter: "168h"
     volumeSize: 50Gi
     sgSelector: ""
+    fastImagePull:
+      enabled: false
+      iops: 3000
+      throughput: 600
     additionalTags: {}
     requirements:
       - key: karpenter.sh/capacity-type
@@ -285,6 +308,25 @@ nvidia-device-plugin:
   configuration:
     enabled: false
   targetRevision: v0.18.0
+
+storageclass:
+  enabled: false
+  name: gp3
+  default: true
+
+  provisioner: ebs.csi.aws.com
+
+  reclaimPolicy: Retain
+  volumeBindingMode: WaitForFirstConsumer
+  allowVolumeExpansion: true
+
+  parameters:
+    type: gp3
+    encrypted: "true"
+
+  previousDefault:
+    removeDefault: true
+    name: gp2
 
 vpc-cni:
   enabled: false

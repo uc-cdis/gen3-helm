@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Observability Helm chart provides an all-in-one solution for deploying Mimir, Loki, and Grafana to your Kubernetes cluster, enabling a complete observability stack for metrics, logs, and visualization.
+The Observability Helm chart provides an all-in-one solution for deploying Mimir, Loki, and Grafana to your Kubernetes cluster, enabling a complete observability stack for metrics, logs, and visualization. Traces and profiles are supported by the wider Gen3 observability setup, but their backends live outside this chart: Tempo is disabled here (`lgtm.tempo.enabled: false`), and Pyroscope is not part of the underlying `lgtm-distributed` chart at all.
 
 ### Grafana: 
 A leading open-source platform for data visualization and monitoring. Grafana allows you to create rich, interactive dashboards from a variety of data sources, making it easy to analyze metrics and logs from your systems.
@@ -14,6 +14,11 @@ Grafana Mimir is a highly scalable time-series database optimized for storing an
 Grafana Loki is a log aggregation system designed to efficiently collect, store, and query logs from your applications. It works seamlessly with Grafana, providing an integrated way to visualize logs alongside metrics.
 
 By deploying this Helm chart, you'll set up these three components together, allowing you to monitor your systems and applications comprehensively with metrics from Mimir, logs from Loki, and dashboards and alerts in Grafana.
+
+### Pyroscope:
+Grafana Pyroscope stores continuous profiling data - the CPU and memory profiles pushed by services that ship a Pyroscope SDK - and Grafana renders them as flame graphs next to the metrics from Mimir and the logs from Loki.
+
+***Note: Pyroscope is not a component of the `lgtm-distributed` chart and is therefore not deployed by this chart. Services push profiles directly to the Pyroscope ingest endpoint they are given in `PYROSCOPE_SERVER_ADDRESS`, rather than through Alloy, so a cluster that wants profiles needs its own Pyroscope release ([`grafana/pyroscope`](https://github.com/grafana/pyroscope/tree/main/operations/pyroscope/helm/pyroscope)) or an external one, plus a Pyroscope datasource in Grafana. For local development, [docs/local-observability.md](../../docs/local-observability.md) runs one inside the single-pod LGTM image.
 
 ### Alloy:
 Grafana Alloy is a powerful observability tool that collects and ships logs and metrics from your services to Grafana Loki and Mimir for storage and analysis.
