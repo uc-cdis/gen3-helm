@@ -17,7 +17,7 @@ rules:
 {{- if and $.Values.global.externalSecrets.deploy (or $.Values.global.externalSecrets.pushSecret $.Values.externalSecrets.pushSecret) }}
 - apiGroups: ["external-secrets.io"]
   resources: ["pushsecrets"]
-  verbs: ["get", "list", "create", "patch", "update", "delete"]
+  verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
 {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
