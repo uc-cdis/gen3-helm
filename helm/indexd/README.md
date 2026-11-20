@@ -112,7 +112,7 @@ Published versions of this chart are listed in the
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID to access the db restore job S3 bucket. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service | map | `{"port":80,"targetPort":8000,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAccount | map | `{"annotations":{},"create":false,"name":""}` | Service account to use or create. |
@@ -126,5 +126,5 @@ Published versions of this chart are listed in the
 | trustedIssuers.defaultPreferredType | string | `"BearerAuth"` | The default preferred supported_type. This will ensure indexd return this supported_type before the other. |
 | useSingleTable | string | `"False"` |  |
 | uwsgi | map | `{"listen":1024}` | Values for overriding uwsgi settings |
-| volumeMounts | list | `[{"mountPath":"/etc/uwsgi/uwsgi.ini","name":"uwsgi-config","subPath":"uwsgi.ini"},{"mountPath":"/var/www/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"},{"mountPath":"/indexd/deployment/wsgi/gunicorn.conf.py","name":"gunicorn-conf","readOnly":true,"subPath":"gunicorn.conf.py"}]` | Volumes to mount to the container. |
+| volumeMounts | list | `[{"mountPath":"/indexd/local_settings.py","name":"config-volume","readOnly":true,"subPath":"local_settings.py"}]` | Volumes to mount to the container. |
 | volumes | list | `[{"configMap":{"name":"indexd-uwsgi"},"name":"uwsgi-config"},{"name":"config-volume","secret":{"secretName":"indexd-settings"}},{"configMap":{"name":"gunicorn-conf"},"name":"gunicorn-conf"}]` | Volumes to attach to the pod |
