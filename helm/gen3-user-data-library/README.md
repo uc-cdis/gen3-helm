@@ -47,6 +47,7 @@ Published versions of this chart are listed in the
 | global.externalSecrets | map | `{"deploy":false,"separateSecretStore":false}` | External Secrets settings. |
 | global.externalSecrets.deploy | bool | `false` | Will use ExternalSecret resources to pull secrets from Secrets Manager instead of creating them locally. Be cautious as this will override any metadata secrets you have deployed. |
 | global.externalSecrets.separateSecretStore | string | `false` | Will deploy a separate External Secret Store for this service. |
+| global.netPolicy | map | `{"enabled":false}` | Controls network policy settings |
 | global.postgres.dbCreate | bool | `true` | Whether the database should be created. |
 | global.postgres.externalSecret | string | `""` | Name of external secret. Disabled if empty |
 | global.postgres.master | map | `{"host":null,"password":null,"port":"5432","username":"postgres"}` | Master credentials to postgres. This is going to be the default postgres server being used for each service, unless each service specifies their own postgres |
@@ -73,6 +74,9 @@ Published versions of this chart are listed in the
 | livenessProbe.httpGet.port | string | `"http"` |  |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` |  |
+| netPolicy | map | `{"egressApps":["sowerjob"],"ingressApps":["sowerjob"]}` | Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true |
+| netPolicy.egressApps | array | `["sowerjob"]` | List of apps that this app requires egress to |
+| netPolicy.ingressApps | array | `["sowerjob"]` | List of app labels that require ingress to this service |
 | partOf | string | `"Data_Library"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | postgres | map | `{"database":null,"dbCreate":null,"dbRestore":false,"host":null,"password":null,"port":"5432","separate":false,"username":null}` | Postgres database configuration. If db does not exist in postgres cluster and dbCreate is set ot true then these databases will be created for you |
 | postgres.database | string | `nil` | Database name for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
