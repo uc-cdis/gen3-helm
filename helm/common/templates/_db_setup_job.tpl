@@ -246,7 +246,7 @@ data:
   {{- if $.Values.global.dev }}
   host: {{ (printf "%s-%s.%s" $.Release.Name "postgresql" $.Release.Namespace ) | b64enc | quote }}
   {{- else }}
-  host: {{ ( $.Values.postgres.host | default $.Values.global.postgres.master.host | default "" ) | b64enc | quote }}
+  host: {{ required (printf "%s: postgres.host or global.postgres.master.host must be set" $.Chart.Name) ( $.Values.postgres.host | default $.Values.global.postgres.master.host ) | b64enc | quote }}
   {{- end }}
 {{- end }}
 {{- end }}
