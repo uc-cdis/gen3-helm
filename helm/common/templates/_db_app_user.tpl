@@ -4,9 +4,9 @@
   tables, so a service relying on row level security connects as this role instead, which owns
   nothing. Opt-in per chart with postgres.appUser.enabled.
 
-  common.db_setup_job creates the role, or resets its password, on every run, using the admin
-  connection it already has. Its credentials follow the same local/External Secrets split as
-  <chart>-dbcreds. Table privileges are the chart's business: they can only be granted once the
+  common.db_setup_job creates the role if it is missing, using the admin connection it already
+  has; like <chart>-dbcreds, the password is set only at creation. Its credentials follow the
+  same local/External Secrets split as <chart>-dbcreds. Table privileges are the chart's business: they can only be granted once the
   migrations have created the tables.
 */}}
 
@@ -163,9 +163,8 @@ if [ -z "$APP_PGUSER" ] || [ -z "$APP_PGPASSWORD" ]; then
   echo "ERROR: {{ $secret }} has no username or password"
   exit 1
 fi
-# Setting the password on every run keeps the role in step with the Secret. The admin owns the
-# database, so it grants CONNECT; table privileges come from the chart once the tables exist.
-echo "Creating or updating app role $APP_PGUSER ..."
+# The password is set only when the role is created
+echo "Creating app role $APP_PGUSER if missing ..."
 psql -X -v ON_ERROR_STOP=1 -d "$SERVICE_PGDB" \
   -v app_user="$APP_PGUSER" -v app_password="$APP_PGPASSWORD" -v owner_user="$SERVICE_PGUSER" <<'SQL'
 SELECT format(
@@ -178,12 +177,10 @@ SELECT format(
     format('Role %s exists and is SUPERUSER or BYPASSRLS; the app role must be neither.', :'app_user')
 )
 FROM pg_roles WHERE rolname = :'app_user' AND (rolsuper OR rolbypassrls) \gexec
-SELECT format(
-    'CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS',
-    :'app_user', :'app_password'
-)
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'app_user') \gexec
-SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L', :'app_user', :'app_password') \gexec
+SELECT NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'app_user') AS create_app_role \gset
+\if :create_app_role
+CREATE ROLE :"app_user" LOGIN PASSWORD :'app_password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;
+\endif
 SELECT format('GRANT CONNECT ON DATABASE %I TO %I', current_database(), :'app_user') \gexec
 SQL
 {{- end }}

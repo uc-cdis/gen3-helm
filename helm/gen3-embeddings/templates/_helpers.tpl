@@ -80,6 +80,7 @@ Selector labels
 {{- define "gen3-embeddings.appUser" -}}
 {{- include "common.db_app_user.settings" . }}
 readySecretName: {{ printf "%s-appuser-ready" .Chart.Name | quote }}
+serviceAccountName: {{ printf "%s-appuser-sa" .Chart.Name | quote }}
 {{- end }}
 
 {{/*
