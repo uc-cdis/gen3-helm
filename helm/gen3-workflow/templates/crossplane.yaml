@@ -46,6 +46,9 @@ spec:
     name: provider-aws
   forProvider:
     name: "{{ .Values.global.environment }}-{{ .Release.Namespace }}-gen3-workflow-policy"
+    # /!\ NOTE: If you update the permissions below, make sure to update the cdistest
+    # `ci-gen3-workflow` role as well. It's setup manually instead of controlled by
+    # crossplane so the policy isn't created and torn down for every helm release in CI.
     document: |
       {
         "Version": "2012-10-17",
@@ -57,6 +60,7 @@ spec:
               "s3:CreateBucket",
               "s3:DeleteBucket",
               "s3:ListBucket",
+              "s3:PutBucketTagging",
               "s3:GetObject",
               "s3:PutObject",
               "s3:DeleteObject",

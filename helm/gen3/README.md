@@ -48,6 +48,7 @@ Published versions of this chart are listed in the
 | file://../gen3-workflow | gen3-workflow |
 | file://../guppy | guppy |
 | file://../hatchery | hatchery |
+| file://../heal-cronjobs | heal-cronjobs |
 | file://../indexd | indexd |
 | file://../jeg | jeg |
 | file://../manifestservice | manifestservice |
@@ -243,6 +244,8 @@ Published versions of this chart are listed in the
 | hatchery.hatchery.sidecarContainer.lifecycle-pre-stop[4] | string | `"/bin/sh"` |  |
 | hatchery.hatchery.sidecarContainer.lifecycle-pre-stop[5] | string | `"root"` |  |
 | hatchery.hatchery.sidecarContainer.memory-limit | string | `"256Mi"` | The maximum amount of memory the sidecar container can use |
+| heal-cronjobs | map | `{"enabled":false}` | Configurations for heal-cronjobs chart. |
+| heal-cronjobs.enabled | bool | `false` | Whether to deploy the heal-cronjobs subchart. |
 | indexd.defaultPrefix | string | `"PREFIX/"` | the default prefix for indexd records |
 | indexd.enabled | bool | `true` | Whether to deploy the indexd subchart. |
 | jeg | map | `{"enabled":false}` | Jupyter Enterprise Gateway for vectis workspaces. |

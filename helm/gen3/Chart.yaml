@@ -95,6 +95,10 @@ dependencies:
     version: "*"
     repository: "file://../hatchery"
     condition: hatchery.enabled
+  - name: heal-cronjobs
+    version: "*"
+    repository: "file://../heal-cronjobs"
+    condition: heal-cronjobs.enabled
   - name: indexd
     version: "*"
     repository: "file://../indexd"
