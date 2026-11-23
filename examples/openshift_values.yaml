@@ -85,6 +85,9 @@ metadata:
   enabled: false
   service:
     targetPort: 8000
+  # DB settings come from the metadata-dbcreds env vars; skip the .env secret
+  g3autoSecret:
+    enabled: false
   postgres:
     lookupLocalSecret: false
 
@@ -131,8 +134,9 @@ revproxy:
   enabled: true
   nginx:
     resolver: "172.30.0.10"
-    user: nginx
-    pidFile: /tmp/nginx.pid 
+    # nginx runs as the SCC-assigned non-root UID, so the `user` directive is not needed
+    user: ""
+    pidFile: /tmp/nginx.pid
   service:
     targetPort: 8000
   openshiftRoute:
@@ -146,16 +150,17 @@ revproxy:
       insecureEdgeTerminationPolicy: "Redirect"
     wildcardPolicy: "None"
 
-  podSecurityContext: 
-    fsGroup: 2000
-
+  # Do not set runAsUser/fsGroup: the restricted-v2 SCC assigns them from the
+  # namespace's UID range (openshift.io/sa.scc.uid-range) and rejects other values.
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
-    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
 
 
 sheepdog:

@@ -267,6 +267,11 @@ aggMdsConfig: |
     }
   }
 
+# -- (map) The "metadata-g3auto" secret, mounted as the service's .env file (DEBUG, DB_* and ADMIN_LOGINS).
+g3autoSecret:
+  # -- (bool) Create and mount the metadata-g3auto secret. Set to false to run without it (e.g. on OpenShift): DB settings still come from the metadata-dbcreds env vars, but ADMIN_LOGINS is unset, so the revproxy /mds-admin/ basic-auth gateway is unavailable.
+  enabled: true
+
 # -- (list) Volumes to mount to the container.
 volumeMounts:
   - name: config-volume-g3auto
@@ -353,7 +358,7 @@ service:
   port:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: http
       name: http
 
 # Values to determine the labels that are used for the deployment, pod, etc.

@@ -93,3 +93,16 @@ Create the name of the service account to use
 {{- define "metadata-g3auto" -}}
 {{- default "metadata-g3auto" .Values.externalSecrets.metadataG3auto }}
 {{- end }}
+{{/*
+  Volume mounts, minus the config-volume-g3auto (.env) mounts when g3autoSecret.enabled is false.
+  Usage: include "metadata.volumeMounts" (dict "ctx" $ "mounts" .Values.volumeMounts)
+*/}}
+{{- define "metadata.volumeMounts" -}}
+{{- $out := list -}}
+{{- range .mounts -}}
+{{- if or $.ctx.Values.g3autoSecret.enabled (ne .name "config-volume-g3auto") -}}
+{{- $out = append $out . -}}
+{{- end -}}
+{{- end -}}
+{{- if $out }}{{ toYaml $out }}{{ end -}}
+{{- end }}

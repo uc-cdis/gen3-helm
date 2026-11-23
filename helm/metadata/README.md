@@ -50,6 +50,8 @@ Published versions of this chart are listed in the
 | externalSecrets.metadataG3auto | string | `nil` | Will override the name of the aws secrets manager secret. Default is "metadata-g3auto" |
 | externalSecrets.pushSecret | bool | `false` | Whether to create the database and Secrets Manager secrets via PushSecret. |
 | forceAuthzCheckForMetadataQueries | bool | `false` |  |
+| g3autoSecret | map | `{"enabled":true}` | The "metadata-g3auto" secret, mounted as the service's .env file (DEBUG, DB_* and ADMIN_LOGINS). |
+| g3autoSecret.enabled | bool | `true` | Create and mount the metadata-g3auto secret. Set to false to run without it (e.g. on OpenShift): DB settings still come from the metadata-dbcreds env vars, but ADMIN_LOGINS is unset, so the revproxy /mds-admin/ basic-auth gateway is unavailable. |
 | global.autoscaling.averageCPUValue | string | `"500m"` |  |
 | global.autoscaling.averageMemoryValue | string | `"500Mi"` |  |
 | global.autoscaling.enabled | bool | `false` |  |
@@ -125,8 +127,8 @@ Published versions of this chart are listed in the
 | secrets.awsSecretAccessKey | str | `nil` | AWS secret access key ID. Overrides global key. |
 | securityContext | map | `{}` | Security context for the containers in the pod |
 | selectorLabels | map | `nil` | Will completely override the selectorLabels defined in the common chart's _label_setup.tpl |
-| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":80}],"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
-| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":80}]` | The port number that the service exposes. |
+| service | map | `{"port":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
+| service.port | int | `[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}]` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
 | serviceAnnotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nambassador_id: \"gen3\"\nkind:  Mapping\nname:  metadata_mapping\nprefix: /index/\nservice: http://metadata-service:80\n"` |  |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
