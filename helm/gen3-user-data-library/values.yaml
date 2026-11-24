@@ -54,6 +54,9 @@ global:
     topologyKey: "topology.kubernetes.io/zone"
     # -- (int) The maxSkew to use for topology spread constraints. Defaults to 1.
     maxSkew: 1
+  # -- (map) Controls network policy settings
+  netPolicy:
+    enabled: false
 
 #  -- (map) This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling: {}
@@ -201,3 +204,12 @@ secrets:
   # -- (str) AWS secret access key ID. Overrides global key.
   awsSecretAccessKey:
 gunicornWorkers: 1
+
+# -- (map) Configuration for network policies created by this chart. Only relevant if "global.netPolicy.enabled" is set to true
+netPolicy:
+  # -- (array) List of app labels that require ingress to this service
+  ingressApps:
+    - sowerjob
+  # -- (array) List of apps that this app requires egress to
+  egressApps:
+    - sowerjob
