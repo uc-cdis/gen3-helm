@@ -84,6 +84,15 @@ serviceAccountName: {{ printf "%s-appuser-sa" .Chart.Name | quote }}
 {{- end }}
 
 {{/*
+  Name of this deploy's app-user Job, which is also the key it writes into the ready Secret, so
+  the deployment can wait for this Job rather than any earlier one. Hashes the Job's pod
+  template, so an unchanged deploy keeps the name and any change to the Job gets a new one.
+*/}}
+{{- define "gen3-embeddings.appUserJobName" -}}
+{{- printf "%s-appuser-%s" .Chart.Name (include "gen3-embeddings.appUserPod" . | sha256sum | trunc 8) }}
+{{- end }}
+
+{{/*
   Shell that blocks until every migration is applied, for containers that need the finished
   schema. Expects DATABASE_URL, from common.db_migrate.dsn. Emitted at column 0; callers nindent.
 
@@ -112,7 +121,8 @@ while true; do
   fi
   if [ "$rc" -eq 1 ]; then
     attempts=0
-    echo "Waiting for migrations to be applied..."
+    echo "Waiting for migrations to be applied. After a new image under the same tag, run" \
+      "{{ .Chart.Name }}-dbmigrate-cronjob by hand; see docs/database-migrations.md#floating-image-tags."
   else
     attempts=$((attempts + 1))
     echo "dbmate status failed (rc=$rc), attempt ${attempts}/30"
@@ -123,6 +133,89 @@ while true; do
   fi
   sleep 5
 done
+{{- end }}
+
+{{/*
+  Query listing the row level security tables in schema public that the app role cannot fully
+  use, as one comma-separated string, or NULL when there are none. Takes a dict of `role`: the
+  SQL expression for the role name, which differs between psql (:'app_user') and asyncpg ($1).
+  Shared by the app-user Job and the deployment's wait, so they agree on what "granted" means.
+  No trailing semicolon; emitted at column 0, callers nindent.
+*/}}
+{{- define "gen3-embeddings.appUserMissingGrantsSql" -}}
+SELECT string_agg(format('%I (owner %I)', c.relname, pg_get_userbyid(c.relowner)), ', ')
+FROM pg_class c
+WHERE c.relnamespace = 'public'::regnamespace AND c.relrowsecurity
+  AND NOT (has_table_privilege({{ .role }}, c.oid, 'SELECT')
+       AND has_table_privilege({{ .role }}, c.oid, 'INSERT')
+       AND has_table_privilege({{ .role }}, c.oid, 'UPDATE')
+       AND has_table_privilege({{ .role }}, c.oid, 'DELETE'))
+{{- end }}
+
+{{/*
+  Shell that blocks until the app role can use every row level security table, for the
+  deployment's init container. Expects the DB_MIGRATION_* and PG* variables from
+  common.db_migrate.env, and APP_PGUSER. Emitted at column 0; callers nindent.
+
+  Waits rather than grants: the app-user Job is the only writer. Checks the database rather than
+  the Job, so a new image behind an unchanged tag, whose migrations added a table, waits for the
+  manual app-user Job instead of starting without privileges on it. The service image has no
+  psql, so this uses its Python and asyncpg. Connection errors get a bounded retry, as in
+  waitForMigrations.
+*/}}
+{{- define "gen3-embeddings.waitForAppUserGrants" -}}
+{{- $migrations := include "common.db_migrate.settings" . | fromYaml -}}
+python3 - <<'PY'
+import asyncio
+import os
+import sys
+import time
+
+import asyncpg
+
+SQL = """
+{{- include "gen3-embeddings.appUserMissingGrantsSql" (dict "role" "$1") | nindent 0 }}
+"""
+ROLE = os.environ["APP_PGUSER"]
+
+
+async def missing_grants():
+    conn = await asyncpg.connect(
+        host=os.environ["PGHOST"],
+        port=int(os.environ["PGPORT"]),
+        database=os.environ["PGDATABASE"],
+        user=os.environ["DB_MIGRATION_USER"],
+        password=os.environ["DB_MIGRATION_PASSWORD"],
+        ssl={{ $migrations.sslmode | default "disable" | quote }},
+    )
+    try:
+        return await conn.fetchval(SQL, ROLE)
+    finally:
+        await conn.close()
+
+
+errors = 0
+while True:
+    try:
+        tables = asyncio.run(missing_grants())
+    except Exception as e:
+        errors += 1
+        print(f"Checking grants for {ROLE} failed ({e}), attempt {errors}/30", flush=True)
+        if errors >= 30:
+            print("Giving up checking grants.", flush=True)
+            sys.exit(1)
+    else:
+        if not tables:
+            print(f"App role {ROLE} can use every row level security table.", flush=True)
+            break
+        errors = 0
+        print(
+            f"Waiting for {ROLE} to be granted {tables}. After a new image under the same tag, "
+            "run the app-user Job; see docs/database-migrations.md#floating-image-tags.",
+            flush=True,
+        )
+    time.sleep(5)
+PY
 {{- end }}
 
 {{/*

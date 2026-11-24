@@ -14,7 +14,8 @@ variables in Helm values mirrors the configuration in the service itself.
 | Public, versioned config                                 | `extraEnv` map in the service's gitops values | rendered into the container `env:` list                                                            |
 | Secret config                                            | AWS Secrets Manager, referenced by name only  | External Secrets `dataFrom.extract` into a `<service>-env-secret` Secret, projected with `envFrom` |
 | Secret config, local dev                                 | `secretEnv` map, rendered by the chart        | the same `<service>-env-secret` Secret                                                             |
-| Fixed, known credentials                                 | `<service>-dbcreds`                           | individual `env` entries with `secretKeyRef`                                                       |
+| Fixed, known credentials (table owner, migrations)       | `<service>-dbcreds`                           | individual `env` entries with `secretKeyRef`                                                       |
+| The service's database login, with `postgres.appUser`    | `<service>-app-dbcreds`                       | `PGUSER`/`PGPASSWORD` via `secretKeyRef` ([details](database-migrations.md#the-app-role))          |
 | Whole files the service reads (`user.yaml`, JSON config) | the service's g3auto Secret                   | a mounted volume                                                                                   |
 
 `dataFrom.extract` turns every property of the Secrets Manager secret into its own Secret key,
