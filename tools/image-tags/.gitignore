@@ -1,0 +1,5 @@
+# Local files created when running the tools from this folder.
+.venv/
+__pycache__/
+.pytest_cache/
+image_ages.md
