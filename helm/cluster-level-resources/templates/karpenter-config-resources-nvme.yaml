@@ -1,0 +1,114 @@
+{{- $crds := index .Values "karpenter-crds" -}}
+{{- $n := $crds.nvmeCache | default dict -}}
+{{- if and $crds.enabled $n.enabled (semverCompare ">=1.0.8" .Values.karpenter.targetRevision) }}
+---
+# EC2NodeClass must exist and be Ready before the NodePool; the sync-wave annotations enforce that in Argo CD.
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: nvme-cache
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  {{- if semverCompare ">=1.33" .Capabilities.KubeVersion.Version }}
+  amiFamily: AL2023
+  {{- else }}
+  amiFamily: AL2
+  {{- end }}
+  amiSelectorTerms:
+  {{- if not $crds.useAlias }}
+  - name: {{ $crds.amiSelectorName }}
+    owner: {{ $crds.amiOwner | quote }}
+  {{- else }}
+  - alias: {{ $crds.alias | quote }}
+  {{- end }}
+  # Stripe all local NVMe disks into one array used by kubelet, containerd and emptyDir.
+  instanceStorePolicy: RAID0
+  blockDeviceMappings:
+  - deviceName: /dev/xvda
+    ebs:
+      deleteOnTermination: true
+      encrypted: true
+      volumeSize: {{ $n.volumeSize | default "30Gi" }}
+      volumeType: gp3
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: optional
+  role: eks_{{ $crds.selectorTag }}_workers_role
+
+  securityGroupSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ $crds.selectorTag }}
+
+  subnetSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ $crds.selectorTag }}
+
+  tags:
+    Environment: {{ .Values.cluster }}
+    Name: eks-{{ .Values.cluster }}-karpenter-nvme-cache
+    karpenter.sh/discovery: {{ $crds.selectorTag }}
+    purpose: nvme-cache
+
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+    --BOUNDARY
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash -x
+    echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
+    sysctl -w fs.inotify.max_user_watches=12000
+
+    --BOUNDARY--
+  kubelet:
+    evictionHard:
+      memory.available: 5%
+    evictionSoft:
+      memory.available: 10%
+    evictionSoftGracePeriod:
+      memory.available: 5m
+    {{- if .Values.cilium.enabled }}
+    maxPods: 2000
+    {{- end }}
+---
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: nvme-cache
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  template:
+    metadata:
+      labels:
+        workload: cache
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: nvme-cache
+      taints:
+      - key: workload
+        value: cache
+        effect: NoSchedule
+      expireAfter: {{ $n.expireAfter | default "168h" }}
+      terminationGracePeriod: 48h
+      requirements:
+      {{ toYaml $n.requirements | nindent 6 }}
+
+  disruption:
+    consolidationPolicy: {{ $n.consolidationPolicy | default "WhenEmpty" }}
+    consolidateAfter: {{ $n.consolidateAfter | default "10m" }}
+    budgets:
+    - nodes: {{ $n.disruptionBudget | default "20%" | quote }}
+
+  limits:
+    cpu: {{ $n.limits.cpu | default "64" | quote }}
+    {{- if $n.limits.memory }}
+    memory: {{ $n.limits.memory }}
+    {{- end }}
+{{- end }}
