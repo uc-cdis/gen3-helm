@@ -111,3 +111,69 @@ global:
 **Notes**
 - pushSecret configuration will ensure database credentials are generated, stored in your Secrets Manager, and made available for automated deployments and recovery.
 - Pushsecret resource will never overide or replace your Secrets Manager Secret unless the AWS resource is deleted.
+
+### How the pushSecret bootstrap works
+
+With `pushSecret` enabled for a service, `<service>-dbcreds` is an ExternalSecret that pulls
+`<externalSecrets.dbcreds>` from Secrets Manager. For a new service that remote secret does not
+exist yet, so the `<service>-dbcreate` Job creates it:
+
+1. Helm renders `<service>-dbcreds-bootstrap`, a local Secret with generated credentials.
+2. The `<service>-dbcreate` Job starts from the bootstrap credentials. If `<service>-dbcreds`
+   already exists (synced from Secrets Manager), the Job uses those instead: Secrets Manager is
+   the source of truth once populated.
+3. The Job creates the role (or resets its password to match) and the database, using the master
+   credentials from `global.postgres.externalSecret`.
+4. The Job copies the resolved credentials and host into the bootstrap Secret and applies a
+   `PushSecret` (`updatePolicy: IfNotExists`), then waits for it to be Ready.
+5. External Secrets syncs the remote secret back into `<service>-dbcreds`, and the service starts.
+
+Re-running the Job is safe: an existing remote secret is never overwritten, and the role password
+is reset to the value in Secrets Manager.
+
+### Adding a new service to an environment that uses External Secrets
+
+Keep External Secrets on globally and enable the push only for the new service:
+
+```yaml
+global:
+  externalSecrets:
+    deploy: true
+    createLocalK8sSecret: false
+  postgres:
+    dbCreate: true
+    externalSecret: "<master Postgres secret in Secrets Manager>"
+
+<service-name>:
+  externalSecrets:
+    dbcreds: "<remote secret name>"   # defaults to <global.environment>-<service>-creds
+    pushSecret: true
+```
+
+Existing services keep pulling their credentials from Secrets Manager; only `<service-name>` is
+bootstrapped.
+
+To verify:
+
+```bash
+kubectl logs job/<service>-dbcreate          # ends with "PushSecret is Ready"
+kubectl get pushsecret <service>-dbcreds      # Ready=True
+kubectl get externalsecret <service>-dbcreds  # SecretSynced
+```
+
+### Pitfalls
+
+- **Do not set `global.externalSecrets.createLocalK8sSecret: true` to bootstrap one service.** It is
+  global: every service switches from its Secrets Manager credentials to locally rendered ones
+  with default names (`<service>_<release>`), and the dbcreate Jobs create new, empty databases
+  for them. Running pods keep working until they restart.
+- **Locally rendered passwords are not stable under ArgoCD.** The charts use `lookup` to keep an
+  existing password, and `lookup` returns nothing under ArgoCD, so a new random password is
+  generated on every render. Prefer `pushSecret`, which stores the password once in Secrets
+  Manager.
+- **The dbcreate Job has a fixed name and an immutable spec.** If a chart change modifies the Job,
+  delete the existing `<service>-dbcreate` Job so it can be recreated (completed Jobs are also
+  removed automatically after `ttlSecondsAfterFinished`).
+- **Recovering a broken bootstrap for a service with no data:** drop the service's database and role,
+  then delete `<service>-dbcreate` so it runs again. The Job recreates both with the credentials
+  already in Secrets Manager.

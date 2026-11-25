@@ -91,6 +91,8 @@ External secret resources will only attempt to replace Kubernetes secrets when a
 
 However, if you wish to utilize External Secrets for managing non-database secrets while still automating the creation of your database secrets, you can configure this behavior explicitly. Set `.Values.global.externalSecrets.createLocalK8sSecret` to true alongside `.Values.global.postgres.createLocalK8sSecret` or `.Values.postgres.dbCreate` to initiate the database creation job. This configuration will result in the creation of the necessary databases with their credentials stored securely within Kubernetes Secrets. Subsequently, you also choose to create Secrets in Secrets manager with the values that were generated from the dbCreate job if you wish to store these credentials long term.
 
+> **Note:** `createLocalK8sSecret` is global: it switches every service to locally rendered database credentials. To bootstrap a single new service in an environment that already uses External Secrets, use `pushSecret` instead (see [databases.md](databases.md#adding-a-new-service-to-an-environment-that-uses-external-secrets)).
+
 By default, the following services will not create the Helm internal secrets when Secrets Manager is enabled: 
 - Audit
 - Fence
@@ -177,3 +179,132 @@ When pulling a secret from AWS Secrets Manager, you want to ensure that the Exte
 You can customize the name of the secret to pull from in the `.Values.externalSecrets` section of a Chart. You can see the name for the confiugrable secrets in a chart by looking in this section as well. 
 
 Any string you put in this section will override the name of the secret that is pulled from AWS Secrets Manager NOT the name of the Kubernetes secret that is created from the External Secret resource.
+
+## Adding your own secret to a job or service
+
+Charts only create ExternalSecrets for the secrets they know about. To inject anything else (for
+example AWS bucket credentials for a sower job), you need three pieces:
+
+1. a secret in AWS Secrets Manager holding the values,
+2. an `ExternalSecret` that syncs it into a Kubernetes Secret,
+3. a reference to that Kubernetes Secret from the job or service.
+
+The example below injects AWS credentials into a sower job; replace the names with your own.
+
+### 1. Create the secret in AWS Secrets Manager
+
+Use the same AWS account and region as the cluster (`aws sts get-caller-identity` to check).
+By convention, prefix the name with the environment (`global.environment` in the values file),
+for example `stagingdatastage-bdc-ingestion-aws-creds`.
+
+Store the values as JSON. Each key becomes a key in the Kubernetes Secret, so pick the names you
+want to reference later. Write the JSON to a file instead of passing it on the command line, so the
+values do not end up in your shell history:
+
+```bash
+cat > creds.json <<'EOF'
+{"aws_access_key_id": "<access key id>", "aws_secret_access_key": "<secret access key>"}
+EOF
+chmod 600 creds.json
+
+aws secretsmanager create-secret \
+  --region us-east-1 \
+  --name <env>-bdc-ingestion-aws-creds \
+  --description "AWS creds for the bdc ingestion sower job" \
+  --secret-string file://creds.json
+
+rm creds.json
+```
+
+In the AWS console this is **Secrets Manager → Store a new secret → Other type of secret**, with one
+key/value row per key.
+
+To change the values later, use `aws secretsmanager put-secret-value --secret-id <name>
+--secret-string file://creds.json`. External Secrets picks up the change within the
+ExternalSecret's `refreshInterval`. Sower jobs get the new values on their next run; long-running
+pods that read the values as environment variables need a restart.
+
+### 2. Create the ExternalSecret
+
+Add the manifest to the environment's `cluster-values/custom-objects/` folder in gen3-gitops. The
+`custom-objects` ArgoCD app applies everything in that folder. If the environment does not have it
+yet, enable it in `<env>/cluster-values/cluster-values.yaml` and create the folder:
+
+```yaml
+custom-objects:
+  enabled: true
+```
+
+Point the ExternalSecret at the SecretStore the gen3 chart already created in the namespace
+(`kubectl -n <namespace> get secretstore`, usually `gen3-secret-store`):
+
+```yaml
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: bdc-ingestion-aws-creds
+  namespace: <namespace>              # required: custom-objects has no default namespace
+spec:
+  refreshInterval: 5m                 # how often to re-read Secrets Manager
+  secretStoreRef:
+    name: gen3-secret-store
+    kind: SecretStore
+  target:
+    name: bdc-ingestion-aws-creds     # Kubernetes Secret to create
+    creationPolicy: Owner             # the Secret is deleted with the ExternalSecret
+  dataFrom:
+    - extract:
+        key: <env>-bdc-ingestion-aws-creds   # Secrets Manager secret name
+```
+
+`dataFrom.extract` copies every JSON key. To copy only some keys, or rename them, use `data`
+instead:
+
+```yaml
+  data:
+    - secretKey: AWS_ACCESS_KEY_ID          # key in the Kubernetes Secret
+      remoteRef:
+        key: <env>-bdc-ingestion-aws-creds
+        property: aws_access_key_id         # key in the Secrets Manager JSON
+```
+
+Check that it synced, and which keys the Secret has (without printing the values):
+
+```bash
+kubectl -n <namespace> get externalsecret bdc-ingestion-aws-creds   # SecretSynced, Ready=True
+kubectl -n <namespace> get secret bdc-ingestion-aws-creds -o json | jq '.data | keys'
+```
+
+If it shows `SecretSyncedError`, `kubectl describe externalsecret bdc-ingestion-aws-creds` gives
+the reason. The usual causes are a wrong secret name or region, or the secret store's IAM role
+(`global.aws.secretStoreServiceAccount.roleArn`) not being allowed to read the secret.
+
+### 3. Reference it from the job
+
+```yaml
+sower:
+  sowerConfig:
+    - name: bdc-ingestion
+      action: <action>
+      container:
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: bdc-ingestion-aws-creds
+                key: aws_access_key_id
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: bdc-ingestion-aws-creds
+                key: aws_secret_access_key
+```
+
+The same `secretKeyRef` works in any chart that accepts extra `env` entries.
+
+> **Tip:** if the bucket is in an AWS account the cluster can reach, an IAM role on the job's
+> service account avoids storing keys at all: annotate `sower.serviceAccount` with
+> `eks.amazonaws.com/role-arn` and set `serviceAccountName: sower-service-account` on the job.
+
+For database credentials, use the built-in `pushSecret` flow instead (see
+[databases.md](databases.md#bootstrapping-databases-with-external-secrets--aws-secrets-manager)).
