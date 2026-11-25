@@ -1,0 +1,135 @@
+# Weekly gen3-helm image tag report, posted to Slack.
+#
+# Run these from the root of a gen3-helm checkout. Everything is created in
+# the current kubectl namespace; add `-n <namespace>` to every command to
+# choose another.
+#
+# 1. Create the two inputs (the webhook URL never goes in a file):
+#
+#      kubectl create secret generic gen3-image-report-slack \
+#        --from-literal=SLACK_WEBHOOK_URL='https://hooks.slack.com/services/...'
+#
+#      kubectl create configmap gen3-image-report-scripts \
+#        --from-file=tools/image-tags/gen3_helm_images.py \
+#        --from-file=tools/image-tags/weekly_slack_report.py \
+#        --from-file=tools/image-tags/requirements.txt
+#
+# 2. kubectl apply -f tools/image-tags/deploy/k8s/cronjob.yaml
+#    (creates the CronJob and the state PVC)
+#
+# 3. Test run now (note: counts as "last report" for next week's comparison):
+#      kubectl create job --from=cronjob/gen3-image-report gen3-image-report-test
+#
+# To update after changes in gen3-helm: `git pull`, then re-run the configmap
+# command with `--dry-run=client -o yaml | kubectl apply -f -` appended. The
+# next run picks it up; each run is a new pod.
+#
+# Maintainer notes:
+# - The pod installs requirements at startup into /tmp instead of using a
+#   custom image, so there is nothing to build. The cost is ~10 s per run and
+#   outbound access to PyPI. For reproducible runs, pin python:3.13-slim by
+#   digest and pin exact versions in requirements.txt.
+# - The scripts come from the ConfigMap, i.e. from whatever gen3-helm commit it
+#   was created from, not from master at run time. That's deliberate: code
+#   only changes in the cluster when someone updates the ConfigMap.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gen3-image-report-state
+  labels:
+    app.kubernetes.io/name: gen3-image-report
+spec:
+  # Uses the cluster's default StorageClass; add storageClassName if needed.
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi   # the file is a few KB; 1Gi is a common provider minimum
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gen3-image-report
+  labels:
+    app.kubernetes.io/name: gen3-image-report
+spec:
+  schedule: "0 9 * * 1"          # Mondays 09:00
+  timeZone: "America/Chicago"    # requires Kubernetes 1.27+
+  concurrencyPolicy: Forbid      # never two runs at once (they'd share the state file)
+  startingDeadlineSeconds: 3600  # still run if the scheduler was briefly down
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0            # no retries: a failure already posts a Slack notice
+      activeDeadlineSeconds: 600 # kill a hung run after 10 minutes
+      # Finished jobs (and their logs) are deleted after 7 days. With a weekly
+      # schedule this usually keeps just the latest run, regardless of the
+      # history limits above. Raise it to keep logs longer.
+      ttlSecondsAfterFinished: 604800
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: gen3-image-report
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false  # the job never calls the Kubernetes API
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534             # "nobody"
+            runAsGroup: 65534
+            fsGroup: 65534               # makes the state volume writable by that user
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: report
+              image: python:3.13-slim
+              command: ["sh", "-c"]
+              # `exec` makes Python the main process, so its exit code becomes
+              # the job's status (0 posted, 2 error).
+              args:
+                - >-
+                  pip install --quiet --no-cache-dir --disable-pip-version-check
+                  --target /tmp/deps -r /app/requirements.txt
+                  && exec python /app/weekly_slack_report.py --state /state/last-report.json
+              env:
+                - name: PYTHONPATH         # where pip installed the packages
+                  value: /tmp/deps
+                - name: PYTHONDONTWRITEBYTECODE  # /app is read-only
+                  value: "1"
+                - name: HOME               # pip wants a writable home directory
+                  value: /tmp
+                - name: SLACK_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: gen3-image-report-slack
+                      key: SLACK_WEBHOOK_URL
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 256Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true   # writable: /tmp and /state only
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: scripts
+                  mountPath: /app
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+                - name: state
+                  mountPath: /state
+          volumes:
+            - name: scripts
+              configMap:
+                name: gen3-image-report-scripts
+            - name: tmp
+              emptyDir: {}
+            - name: state
+              persistentVolumeClaim:
+                claimName: gen3-image-report-state
