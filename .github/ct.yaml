@@ -14,3 +14,6 @@ check-version-increment: false
 debug: false
 validate-maintainers: false
 helm-dependency-extra-args: "--skip-refresh"
+# Custom Chart.yaml schema: upstream's default plus quoted-appVersion
+# enforcement. See the comments at the top of that file.
+chart-yaml-schema: .github/chart_schema.yaml
