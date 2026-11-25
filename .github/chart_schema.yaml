@@ -1,0 +1,55 @@
+# Chart.yaml schema for chart-testing (`ct lint`), validated with Yamale.
+# Enabled by `chart-yaml-schema` in .github/ct.yaml.
+#
+# This is chart-testing v3.10.1's default schema (etc/chart_schema.yaml) with
+# one change, marked CHANGED below. When upgrading chart-testing (the version
+# comes from helm/chart-testing-action in lint_test.yaml), re-copy the new
+# default and re-apply the change, so new upstream fields aren't rejected.
+#
+# Yamale checks values *after* YAML parsing (with PyYAML), so str() rejects
+# anything YAML didn't read as text: unquoted numbers, booleans and dates,
+# the values Helm would misread. One gap: Go-only number forms such as 1e3
+# read as text to PyYAML, so they pass here although Helm reads a number.
+name: str()
+home: str(required=False)
+version: str()
+apiVersion: str()
+# CHANGED: upstream allows any(str(), num()). Require a string instead: an
+# unquoted appVersion like 1.10 is parsed as the number 1.1, and charts whose
+# image tag is empty deploy appVersion as the tag (`.Values.image.tag |
+# default .Chart.AppVersion`). Helm's docs also recommend quoting appVersion.
+# Booleans and dates were already rejected upstream; this adds numbers.
+# Unquoted text such as master still passes; it can't be misread.
+appVersion: str(required=False)
+description: str(required=False)
+keywords: list(str(), required=False)
+sources: list(str(), required=False)
+maintainers: list(include('maintainer'), required=False)
+dependencies: list(include('dependency'), required=False)
+icon: str(required=False)
+engine: str(required=False)
+condition: str(required=False)
+tags: str(required=False)
+deprecated: bool(required=False)
+kubeVersion: str(required=False)
+annotations: map(str(), str(), required=False)
+type: str(required=False)
+---
+maintainer:
+  name: str()
+  email: str(required=False)
+  url: str(required=False)
+---
+dependency:
+  name: str()
+  version: str()
+  repository: str(required=False)
+  condition: str(required=False)
+  tags: list(str(), required=False)
+  enabled: bool(required=False)
+  import-values: any(list(str()), list(include('import-value')), required=False)
+  alias: str(required=False)
+---
+import-value:
+  child: str()
+  parent: str()
