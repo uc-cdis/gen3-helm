@@ -1,0 +1,125 @@
+# Checks every chart's image tag on each pull request.
+#
+# Fails when a tag may be misread by Helm (e.g. unquoted 2025.10 -> 2025.1),
+# and annotates the offending line in the PR's "Files changed" view.
+#
+# The checker and its tests live in tools/image-tags/ (see its README.md),
+# which is also the single source for the weekly Slack report and the
+# image-age tool. Nothing there is a chart: chart linting, kubeconform and the
+# release tooling all look only at helm/.
+#
+# Scope: image tags in values.yaml. Quoting of appVersion in Chart.yaml (what
+# an empty tag falls back to) is checked by the "Lint and Test Charts"
+# workflow, via the custom chart-testing schema in .github/chart_schema.yaml.
+#
+# Maintainer notes:
+# - There is deliberately no `paths:` filter. If this is a required status
+#   check, a path filter leaves it "pending" forever on PRs that don't touch
+#   those paths, which blocks merging. The job takes about 20 seconds.
+# - The annotation step reads the script's --json output (fields: images[].chart,
+#   .tag, .tag_line, and ambiguous_tags / unquoted_tags). Keep them in sync.
+# - The test step runs every test in tools/image-tags/ (checker, Slack report,
+#   image ages), so changes to any of the tools are tested here. None of the
+#   tests use the network.
+
+name: Check image tags
+
+on:
+  pull_request:
+  workflow_dispatch:  # also allow manual runs from the Actions tab
+
+# Read-only token. The pull_request trigger never exposes secrets to fork PRs,
+# so running the PR's own code here is safe.
+permissions:
+  contents: read
+
+# Cancel superseded runs when new commits are pushed to the same PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCRIPT_DIR: tools/image-tags
+  # "ambiguous": fail only on tags Helm may misread (recommended).
+  # "unquoted":  stricter; fail on any unquoted tag (quote existing ones first).
+  CHECK_MODE: ambiguous
+
+jobs:
+  check-image-tags:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false  # no later step needs git credentials
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: ${{ env.SCRIPT_DIR }}/requirements*.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r "$SCRIPT_DIR/requirements-dev.txt"
+
+      # Catches a broken checker before trusting its verdict on the charts.
+      - name: Test the tools
+        run: python -m pytest -q "$SCRIPT_DIR"
+
+      - name: Check image tags
+        # --local . checks the PR's own files, not the master branch on GitHub.
+        run: |
+          script="$SCRIPT_DIR/gen3_helm_images.py"
+
+          # Capture the exit code instead of letting `bash -e` stop the step:
+          # 0 = clean, 1 = check found problems, 2 = the checker itself failed.
+          set +e
+          python "$script" --local . --json --check "$CHECK_MODE" > "$RUNNER_TEMP/tags.json"
+          status=$?
+          set -e
+
+          # The checker's own error message is already in the log.
+          if [ "$status" -eq 2 ]; then exit 2; fi
+
+          # Full table in the job summary (a second, fast run in table mode).
+          {
+            echo "## Image tags"
+            echo '```'
+            python "$script" --local .
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # On failure, print one "::error" workflow command per offending chart;
+          # GitHub turns these into annotations on the given file and line.
+          if [ "$status" -eq 1 ]; then
+            python - "$RUNNER_TEMP/tags.json" << 'PY'
+          import json, os, sys
+
+          def esc_data(s):  # escaping rules for the message part
+              return s.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+          def esc_prop(s):  # property values (file=, title=) also reserve : and ,
+              return esc_data(s).replace(":", "%3A").replace(",", "%2C")
+
+          report = json.load(open(sys.argv[1]))
+          mode = os.environ["CHECK_MODE"]
+          bad = set(report[f"{mode}_tags"])  # "ambiguous_tags" or "unquoted_tags"
+          for img in report["images"]:
+              if img["chart"] not in bad:
+                  continue
+              tag = img["tag"]  # always set: only charts with a tag can be flagged
+              hint = (f"Helm may read tag {tag} as a number, date or true/false "
+                      "and deploy a different tag. " if mode == "ambiguous"
+                      else f"Tag {tag} is unquoted. ")
+              path = esc_prop(f"helm/{img['chart']}/values.yaml")
+              msg = esc_data(f'{hint}Quote it: tag: "{tag}"')
+              print(f"::error file={path},line={img['tag_line']},"
+                    f"title={esc_prop('Unquoted image tag')}::{msg}")
+          PY
+            {
+              echo
+              echo "**Check failed (\`--check $CHECK_MODE\`).** Quote the flagged tags in their \`values.yaml\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          exit "$status"
