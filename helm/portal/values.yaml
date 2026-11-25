@@ -219,6 +219,133 @@ selectorLabels:
 # -- (map) Will completely override the commonLabels defined in the common chart's _label_setup.tpl
 commonLabels:
 
+# -- (map) Nginx configuration for the portal. Allows overriding the default nginx.conf content.
+nginxConf:
+  # -- (string) The main nginx configuration block (top-level nginx.conf)
+  main: |
+    worker_processes auto;
+    error_log /dev/stderr notice;
+    pid /tmp/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /dev/stdout main;
+
+        client_body_temp_path /tmp/client_temp;
+        proxy_temp_path /tmp/proxy_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+
+        sendfile            on;
+        tcp_nopush          on;
+        keepalive_timeout   65;
+        types_hash_max_size 4096;
+
+        include             /etc/nginx/mime.types;
+        default_type        application/octet-stream;
+
+        include /etc/nginx/conf.d/nginx.conf;
+
+        server {
+            listen       8000;
+            listen       [::]:8000;
+            server_name  _;
+            root         /usr/share/nginx/html;
+
+            include /etc/nginx/default.d/*.conf;
+
+            error_page 404 /404.html;
+            location = /404.html {
+            }
+
+            error_page 500 502 503 504 /50x.html;
+            location = /50x.html {
+            }
+        }
+
+    }
+  # -- (string) The server block configuration loaded by the main nginx.conf (winds up at /etc/nginx/conf.d/nginx.conf)
+  serverBlock: |
+    log_format json '{"gen3log": "nginx", '
+            '"date_access": "$time_iso8601", '
+            '"user_id": "$http_x_userid", '
+            '"request_id": "$http_x_reqid", '
+            '"session_id": "$http_x_sessionid", '
+            '"visitor_id": "$http_x_visitorid", '
+            '"network_client_ip": "$http_x_forwarded_for", '
+            '"network_bytes_write": $body_bytes_sent, '
+            '"http_response_time": "$request_time", '
+            '"http_status_code": $status, '
+            '"http_request": "$request_uri", '
+            '"http_verb": "$request_method", '
+            '"http_referer": "$http_referer", '
+            '"http_useragent": "$http_user_agent", '
+            '"message": "$request"}';
+
+    log_format aws   '$http_x_forwarded_for - $http_x_userid [$time_local] '
+                '"$request" $status $body_bytes_sent '
+                '"$http_referer" "$http_user_agent"';
+    access_log /dev/stdout json;
+
+    server {
+        listen {{ .Values.service.targetPort }} default_server;
+        server_tokens off;
+
+        root /data-portal;
+        index index.html index.htm;
+
+        rewrite ^(\/\w+)?\/.+$ $1/dev.html;
+
+        location ~ /\. {
+        deny all;
+        }
+
+        location ~ package.json$ {
+            deny all;
+        }
+        location ~ package-lock.json$ {
+            deny all;
+        }
+        location ^~ /npm-debug.log {
+            deny all;
+        }
+        location ^~ /tsconfig.json {
+            deny all;
+        }
+        location ^~ /webpack.config.js {
+            deny all;
+        }
+        location ^~ /yarn.lock {
+            deny all;
+        }
+        location ^~ /nginx.conf {
+            deny all;
+        }
+
+        location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+        expires -1;
+        }
+
+        location ~* \.(?:css|js)$ {
+        try_files $uri =404;
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+        }
+
+        location / {
+            try_files $uri /index.html;
+        }
+    }
+
 # -- (map) Extra images to be mounted in the deployment.
 extraImages:
 
