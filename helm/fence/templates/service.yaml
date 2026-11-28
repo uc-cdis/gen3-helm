@@ -6,6 +6,12 @@ metadata:
     {{- include "fence.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  sessionAffinity: {{ .Values.service.sessionAffinity | default "None" }}
+  {{- if eq (.Values.service.sessionAffinity | default "None") "ClientIP" }}
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ .Values.service.sessionAffinityConfig.clientIP.timeoutSeconds }}
+  {{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: http
