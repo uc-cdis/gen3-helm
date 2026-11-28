@@ -18,6 +18,16 @@ image:
 
 listenAddr: ":8080"
 
+global:
+  # Shared with hatchery via the umbrella chart; see gen3/values.yaml.
+  usernameHash: ""
+
+# Per-chart override of global.usernameHash. Leave unset (null) to follow the
+# global value. "" (escaped username) or "sha256-16"; must match hatchery's
+# "username-hash" setting. With "sha256-16" the proxy finds per-user services as
+# h-<first 16 bytes of sha256(username), hex>-s.
+usernameHash:
+
 # Optional JSON policy controlling which JEG kernelspecs are visible/launchable.
 # Example: {"allowedSpecs":["python3"],"costPerHour":{"python3":0.0}}
 jegKernelSpecPolicy: ""

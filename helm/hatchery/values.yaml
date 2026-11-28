@@ -4,6 +4,8 @@
 
 # Global configuration
 global:
+  # -- (string) "" or "sha256-16". See gen3/values.yaml. Must match workspace-proxy.
+  usernameHash: ""
   # -- (map) AWS configuration
   aws:
     # -- (bool) Set to true if deploying to AWS. Controls ingress annotations.

@@ -19,6 +19,7 @@ Published versions of this chart are listed in the
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | deploymentNamespace | string | `""` |  |
+| global.usernameHash | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"quay.io/cdis/gen3-vectis"` |  |
 | image.tag | string | `"qa-goproxy"` |  |
@@ -31,4 +32,5 @@ Published versions of this chart are listed in the
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"50m"` |  |
 | resources.requests.memory | string | `"64Mi"` |  |
+| usernameHash | string | `nil` |  |
 | workspaceNamespace | string | `""` |  |
