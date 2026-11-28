@@ -89,10 +89,15 @@ spec:
                 requests:
                   cpu: {{ .Values.resources.spark.requests.cpu }}
                   memory: {{ .Values.resources.spark.requests.memory }}
+                {{- with .Values.resources.spark.limits }}
+                limits:
+                  {{- toYaml . | nindent 18 }}
+                {{- end }}
               command: ["/bin/bash" ]
               args: 
                 - "-c"
                 - |
+                  if ! whoami >/dev/null 2>&1 && [ -w /etc/passwd ]; then echo "gen3:x:$(id -u):0:gen3:/tmp:/bin/bash" >> /etc/passwd; export HOME=/tmp; fi
                   python run_config.py
                   hdfs namenode -format
                   hdfs --daemon start namenode
@@ -147,9 +152,9 @@ spec:
                 - name: HADOOP_CLIENT_OPTS
                   value: -Xmx1g
                 - name: SPARK_EXECUTOR_MEMORY
-                  value: 8g
+                  value: {{ .Values.sparkExecutorMemory | default "8g" | quote }}
                 - name: SPARK_DRIVER_MEMORY
-                  value: 8g
+                  value: {{ .Values.sparkDriverMemory | default "8g" | quote }}
                 - name: XDG_DATA_HOME
                   value: /tube
                 - name: ETL_FORCED
@@ -186,10 +191,15 @@ spec:
                 requests:
                   cpu: {{ .Values.resources.tube.requests.cpu }}
                   memory: {{ .Values.resources.tube.requests.memory }}
+                {{- with .Values.resources.tube.limits }}
+                limits:
+                  {{- toYaml . | nindent 18 }}
+                {{- end }}
               command: ["/bin/bash"]
               args:
                 - "-c"
                 - |
+                  if ! whoami >/dev/null 2>&1 && [ -w /etc/passwd ]; then echo "gen3:x:$(id -u):0:gen3:/tmp:/bin/bash" >> /etc/passwd; export HOME=/tmp; fi
                   # Trap multiple signals to capture different exit scenarios
                   trap 'echo $? > /usr/share/pod/exit' EXIT SIGTERM SIGINT SIGHUP
                   if [ -f "/tube/gen3/tube/fence-user.yaml" ]; then

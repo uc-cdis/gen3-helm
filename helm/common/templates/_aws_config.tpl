@@ -2,7 +2,8 @@
     Credentials for all AWS stuff.
 */}}
 {{ define "common.awsconfig" -}}
-{{- if not .Values.global.aws.externalSecrets.enabled }}
+{{- if .Values.global.aws.useLocalSecret.enabled }}
+{{- else if not .Values.global.aws.externalSecrets.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:

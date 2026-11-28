@@ -70,11 +70,20 @@ Create the name of the service account to use
  Postgres Password lookup
 */}}
 {{- define "metadata.postgres.password" -}}
+{{- if .Values.postgres.lookupLocalSecret }}
 {{- $localpass := (lookup "v1" "Secret" "postgres" "postgres-postgresql" ) -}}
 {{- if $localpass }}
 {{- default (index $localpass.data "postgres-password" | b64dec) }}
 {{- else }}
 {{- default .Values.postgres.password }}
+{{- end }}
+{{- else }}
+{{- $dbcreds := (lookup "v1" "Secret" .Release.Namespace "metadata-dbcreds" ) -}}
+{{- if and $dbcreds $dbcreds.data }}
+{{- index $dbcreds.data "password" | b64dec }}
+{{- else }}
+{{- default .Values.postgres.password }}
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -83,4 +92,17 @@ Create the name of the service account to use
 */}}
 {{- define "metadata-g3auto" -}}
 {{- default "metadata-g3auto" .Values.externalSecrets.metadataG3auto }}
+{{- end }}
+{{/*
+  Volume mounts, minus the config-volume-g3auto (.env) mounts when g3autoSecret.enabled is false.
+  Usage: include "metadata.volumeMounts" (dict "ctx" $ "mounts" .Values.volumeMounts)
+*/}}
+{{- define "metadata.volumeMounts" -}}
+{{- $out := list -}}
+{{- range .mounts -}}
+{{- if or $.ctx.Values.g3autoSecret.enabled (ne .name "config-volume-g3auto") -}}
+{{- $out = append $out . -}}
+{{- end -}}
+{{- end -}}
+{{- if $out }}{{ toYaml $out }}{{ end -}}
 {{- end }}

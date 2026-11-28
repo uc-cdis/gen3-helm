@@ -47,9 +47,11 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       volumes: 
+        {{- if .Values.g3autoSecret.enabled }}
         - name: config-volume-g3auto
           secret:
             secretName: metadata-g3auto
+        {{- end }}
         - name: config-volume
           configMap:
             name: agg-mds-config
@@ -121,9 +123,9 @@ spec:
           ports:
             - containerPort:  {{ .Values.service.targetPort }}
               name: http
-          {{- with .Values.volumeMounts }}
+          {{- with (include "metadata.volumeMounts" (dict "ctx" $ "mounts" .Values.volumeMounts)) }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
+            {{- . | nindent 10 }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
@@ -167,8 +169,10 @@ spec:
                   name: metadata-dbcreds
                   key: dbcreated
                   optional: false
+          {{- with (include "metadata.volumeMounts" (dict "ctx" $ "mounts" $.Values.initVolumeMounts)) }}
           volumeMounts:
-            {{- toYaml . | nindent 10 }}
+            {{- . | nindent 10 }}
+          {{- end }}
           {{- end }}
           {{- with .Values.initResources }}
           resources:
