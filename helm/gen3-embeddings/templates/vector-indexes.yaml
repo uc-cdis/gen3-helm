@@ -1,0 +1,165 @@
+{{- /*
+  The index Job's pod template, separate so the Job name can hash it. Emitted at column 0.
+*/}}
+{{- define "gen3-embeddings.vectorIndexPod" -}}
+{{- $migrations := include "common.db_migrate.settings" . | fromYaml }}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion }}
+{{- $sessionParams := .Values.vectorIndexes.sessionParams | default "statement_timeout=0" }}
+metadata:
+  labels:
+    {{- /* Required: common.db_netpolicy grants database egress to app in (<chart>, gen3job). */}}
+    app: gen3job
+  annotations:
+    {{- /* A build can run for days; a node consolidation must not end it partway. */}}
+    karpenter.sh/do-not-disrupt: "true"
+spec:
+  serviceAccountName: {{ .Chart.Name }}-vectorindex-sa
+  restartPolicy: Never
+  volumes:
+    - name: index-migrations
+      configMap:
+        name: {{ .Chart.Name }}-vector-indexes
+    - name: work
+      emptyDir: {}
+  initContainers:
+    - name: build
+      image: "{{ .Values.image.repository }}:{{ $tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      env:
+        {{- include "common.db_migrate.env" . | nindent 8 }}
+      volumeMounts:
+        - name: index-migrations
+          mountPath: /index-migrations
+        - name: work
+          mountPath: /work
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          set -eu
+          {{- include "common.db_migrate.dsn" . | nindent 10 }}
+          export DATABASE_URL
+          {{- if $migrations.enabled }}
+          {{- include "gen3-embeddings.waitForMigrations" . | nindent 10 }}
+          {{- end }}
+          # An invalid index on these tables is either a CONCURRENTLY build still running or
+          # one that failed. Building on top of either is unsafe, so stop and say which.
+          python - <<'PY'
+          import asyncio, os, sys
+          import asyncpg
+
+          async def main():
+              conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+              rows = await conn.fetch(
+                  """
+                  SELECT c.relname
+                  FROM pg_index x JOIN pg_class c ON c.oid = x.indexrelid
+                  WHERE x.indrelid IN ('embeddings_vector'::regclass, 'embeddings_halfvec'::regclass)
+                    AND NOT x.indisvalid
+                  ORDER BY 1
+                  """
+              )
+              await conn.close()
+              if rows:
+                  names = ", ".join(r["relname"] for r in rows)
+                  sys.exit(
+                      f"Refusing to build: invalid index(es) {names}. If pg_stat_progress_create_index "
+                      "shows a build, wait for it to finish; otherwise it failed, so drop it with "
+                      "DROP INDEX CONCURRENTLY and delete this Job to run again."
+                  )
+
+          asyncio.run(main())
+          PY
+          # Session settings go in the URL: a migration file is one statement and cannot SET.
+          INDEX_URL="${DATABASE_URL}&{{ $sessionParams }}"
+          set -- -u "$INDEX_URL" -d /index-migrations --migrations-table index_migrations --no-dump-schema
+          # status --quiet exits 0 with nothing pending, 1 with migrations pending, and 2 on any
+          # other error, which must not be mistaken for "pending".
+          set +e
+          dbmate "$@" status --quiet
+          rc=$?
+          set -e
+          case "$rc" in
+            0) echo "No pending index migrations." ;;
+            1) dbmate "$@" migrate; touch /work/restart ;;
+            *) echo "dbmate status failed (rc=$rc)."; exit "$rc" ;;
+          esac
+          dbmate "$@" status
+  containers:
+    - name: restart
+      image: '{{ .Values.global.awshelper_container_image | default "quay.io/cdis/awshelper:master" }}'
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - name: work
+          mountPath: /work
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          set -euo pipefail
+          if [ -f /work/restart ]; then
+            kubectl rollout restart deployment/gen3-embeddings-deployment
+          else
+            echo "Nothing was applied, so the service is not restarted."
+          fi
+{{- end }}
+
+{{- $files := include "gen3-embeddings.vectorIndexFiles" . | fromYaml }}
+{{- if $files }}
+{{- $pod := include "gen3-embeddings.vectorIndexPod" . }}
+{{- /* The name hashes the index files and the whole pod template, so an ordinary deploy
+       re-applies an identical Job instead of rerunning it, and any change to either - an index
+       entry, the image, the session settings, this chart - gets a new Job rather than failing
+       on Job immutability. A rerun with nothing pending applies nothing and restarts nothing. */}}
+{{- $hash := printf "%s|%s" (toYaml $files) $pod | sha256sum | trunc 8 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-vector-indexes
+data:
+  {{- toYaml $files | nindent 2 }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Chart.Name }}-vectorindex-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Chart.Name }}-vectorindex-role
+rules:
+  {{- /* Only to restart the service, which reads the index catalog once at startup. */}}
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["gen3-embeddings-deployment"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Chart.Name }}-vectorindex-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Chart.Name }}-vectorindex-sa
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Chart.Name }}-vectorindex-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-vectorindex-{{ $hash }}
+  annotations:
+    {{- /* An upgrade that changes the index list must not delete a Job whose build is still
+           running. Finished Jobs are cleaned up by ttlSecondsAfterFinished instead. */}}
+    helm.sh/resource-policy: keep
+spec:
+  {{- /* No retries and no deadline. A retry while a build is still running waits on its lock,
+         then finds the index through IF NOT EXISTS and records it as applied without checking
+         that the build succeeded. A failed Job stays failed; delete it to run again. */}}
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 604800
+  template:
+    {{- $pod | nindent 4 }}
+{{- end }}
