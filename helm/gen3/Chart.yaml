@@ -43,6 +43,10 @@ dependencies:
   - name: common
     version: "*"
     repository: file://../common
+  - name: conduit
+    version: "*"
+    repository: "file://../conduit"
+    condition: conduit.enabled
   - name: dashboard
     version: "*"
     repository: file://../dashboard

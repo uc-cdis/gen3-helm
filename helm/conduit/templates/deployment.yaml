@@ -1,0 +1,114 @@
+{{- if and (not .Values.leaderElection.enabled) (gt (int .Values.replicaCount) 1) }}
+{{- fail "conduit: replicaCount > 1 requires leaderElection.enabled (agents would be split across replicas)" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conduit-deployment
+  labels:
+    {{- include "conduit.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "conduit.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "conduit.selectorLabels" . | nindent 8 }}
+        {{- include "common.extraLabels" . | nindent 8 }}
+        # gen3 networkpolicy labels
+        public: 'yes'
+        netnolimit: 'yes'
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- $metricsEnabled := .Values.metricsEnabled }}
+        {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = .Values.global.metricsEnabled }}
+        {{- end }}
+        {{- if eq $metricsEnabled nil }}
+        {{- $metricsEnabled = true }}
+        {{- end }}
+        {{- if $metricsEnabled }}
+        {{- include "common.grafanaAnnotations" . | nindent 8 }}
+        prometheus.io/port: {{ .Values.ports.admin | quote }}
+        {{- end }}
+    spec:
+      {{- if .Values.global.topologySpread.enabled }}
+      {{- include "common.TopologySpread" . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "conduit.serviceAccountName" . }}
+      # Needed for the kubernetes cert backend and leader election.
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config
+          configMap:
+            name: conduit-server-config
+        - name: tmp
+          emptyDir: {}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: conduit
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -config
+            - /config/server.json
+            - -log-level
+            - {{ .Values.logLevel | quote }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.ports.http }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.ports.grpc }}
+              protocol: TCP
+            - name: admin
+              containerPort: {{ .Values.ports.admin }}
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

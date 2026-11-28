@@ -1,0 +1,15 @@
+apiVersion: v2
+name: conduit
+description: A Helm chart for the Conduit tunnel broker (server)
+
+type: application
+
+# Chart versions are frozen at a placeholder in git and derived from tags at release time.
+version: 0.0.0
+
+appVersion: "master"
+
+dependencies:
+  - name: common
+    version: "*"
+    repository: file://../common

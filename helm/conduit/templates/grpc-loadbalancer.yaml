@@ -1,0 +1,27 @@
+{{- if .Values.grpcLoadBalancer.enabled }}
+# Agents dial this with mTLS, so it must be an L4 passthrough load balancer
+# (e.g. an AWS NLB), never an L7 ingress that terminates TLS.
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit-grpc-lb
+  labels:
+    {{- include "conduit.labels" . | nindent 4 }}
+  {{- with .Values.grpcLoadBalancer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: LoadBalancer
+  {{- with .Values.grpcLoadBalancer.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    {{- include "conduit.activeSelectorLabels" . | nindent 4 }}
+  ports:
+    - name: grpc
+      port: {{ .Values.grpcLoadBalancer.port }}
+      targetPort: grpc
+      protocol: TCP
+{{- end }}

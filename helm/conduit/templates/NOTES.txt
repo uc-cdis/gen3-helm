@@ -1,0 +1,19 @@
+Conduit server deployed to namespace {{ .Release.Namespace }}.
+
+Admin UI / API (in-cluster only, it serves agent private keys):
+  kubectl -n {{ .Release.Namespace }} port-forward svc/conduit-admin-service {{ .Values.ports.admin }}
+  open http://localhost:{{ .Values.ports.admin }}/ui
+
+{{- if .Values.grpcLoadBalancer.enabled }}
+
+Agents connect to the gRPC load balancer:
+  kubectl -n {{ .Release.Namespace }} get svc conduit-grpc-lb
+{{- if not .Values.grpcLoadBalancer.hostname }}
+Set grpcLoadBalancer.hostname to the load balancer's DNS name so it is
+included in the server certificate SANs agents verify against.
+{{- end }}
+{{- else }}
+
+grpcLoadBalancer.enabled is false: only in-cluster agents can connect
+(conduit-service.{{ .Release.Namespace }}.svc:{{ .Values.ports.grpc }}).
+{{- end }}
