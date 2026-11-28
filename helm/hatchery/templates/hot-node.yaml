@@ -23,9 +23,6 @@ rules:
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["create","get","list","watch","delete","patch","update"]
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -42,42 +39,19 @@ roleRef:
   name: hot-node-prepuller
 ---
 {{- if .Values.hotNode.jupyter }}
+{{- $job := include "hatchery.prepullJob" (dict "root" $ "app" "jupyterhub-prepuller" "tolerations" (list (dict "key" "role" "operator" "Equal" "value" "jupyter" "effect" "NoSchedule"))) }}
+{{- $jobHash := $job | sha256sum | trunc 8 }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hot-node-job
+  # Immutable, so the name carries a hash of the content: any change to the job renames the
+  # ConfigMap, which rolls the hot-node Deployments and reruns the prepull.
+  name: hot-node-job-{{ $jobHash }}
   namespace: {{ $.Release.Namespace }}
+immutable: true
 data:
   job.yaml: |
-    apiVersion: batch/v1
-    kind: Job
-    metadata:
-      name: jupyterhub-prepuller-$JOB_TIMESTAMP
-      labels:
-        app: jupyterhub-prepuller
-    spec:
-      template:
-        metadata:
-          labels:
-            app: jupyterhub-prepuller
-        spec:
-          nodeName: $NODE_NAME
-          restartPolicy: Never
-          tolerations:
-          - key: "role"
-            operator: "Equal"
-            value: "jupyter"
-            effect: "NoSchedule"
-          terminationGracePeriodSeconds: 0
-          automountServiceAccountToken: false
-          containers:
-          - name: pause
-            image: busybox:latest
-            command:
-              - /bin/sh
-              - -c 
-              - exit 0
-          initContainers:
+    {{- $job | nindent 4 }}
 ---
 {{- range .Values.hotNode.availabilityZones }}
 apiVersion: apps/v1
@@ -126,41 +100,16 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        # TODO Get the pulling logic working
+          - name: JOB_HASH
+            value: {{ $jobHash | quote }}
         args:
           - |
-            gen3_hatchery_prepuller() {
-              local images
-              local it
-              images="$@"
-
-              # Get hatchery images from the manifest-hatchery configmap
-              if kubectl get configmap manifest-hatchery > /dev/null 2>&1; then
-                images="$images $(kubectl get configmap manifest-hatchery -ojson | jq -r '.data.json | fromjson | .containers[].image')"
-              fi
-
-              export JOB_TIMESTAMP=$(date +%s )
-
-              cat "/job.yaml" | envsubst
-              if [[ -n "$images" ]]; then
-                local count=0
-                for it in ${images}; do
-                cat - <<EOM
-                  - name: "image-${count}"
-                    image: $it
-                    imagePullPolicy: IfNotPresent
-                    command:
-                      - /bin/sh
-                      - -c
-                      - echo 'Pulling complete'
-            EOM
-                  count=$((count+1))
-                done
-              fi
-            }
-
-            gen3_hatchery_prepuller | kubectl apply -f -
-        
+            set -euo pipefail
+            # The Job name comes from the job spec and the node, never the clock, so a restarted
+            # pod re-applies the same Job (a no-op) instead of creating a new one.
+            node_hash=$(printf '%s' "$NODE_NAME" | sha256sum | cut -c1-10)
+            export JOB_NAME="jupyterhub-prepuller-${JOB_HASH}-${node_hash}"
+            envsubst '$JOB_NAME $NODE_NAME' < /job.yaml | kubectl apply -f -
         volumeMounts:
         - name: job-yaml
           mountPath: /job.yaml
@@ -180,7 +129,7 @@ spec:
       volumes:
       - name: job-yaml
         configMap:
-          name: hot-node-job
+          name: hot-node-job-{{ $jobHash }}
 ---
 {{- end }}
 {{- end }}
