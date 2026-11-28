@@ -31,7 +31,7 @@ spec:
                     - key: topology.kubernetes.io/zone
                       operator: In
                       values:
-                      - us-east-1a
+                      - {{ index .Values "grafana-alloy" "availabilityZone" }}
 
           alloy:
             stabilityLevel: "public-preview"
