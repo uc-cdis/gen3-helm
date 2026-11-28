@@ -13,6 +13,9 @@ data:
       "use-internal-services-url": {{ or .Values.global.dev .Values.hatchery.useInternalServicesUrl | toJson }},
       "sub-dir": "/lw-workspace",
       "user-volume-size": "10Gi",
+      {{- if .Values.hatchery.defaultStorageClass }}
+      "default-storage-class": "{{ .Values.hatchery.defaultStorageClass }}",
+      {{- end }}
       "sidecar": {{ tpl (.Values.hatchery.sidecarContainer | toJson) . }},
       "containers": {{ tpl (.Values.hatchery.containers | toJson) . }},
       "shared-workspace": {
