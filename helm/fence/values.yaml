@@ -147,6 +147,20 @@ externalSecrets:
 usersync:
   # -- (bool) Whether to run Fence usersync or not.
   usersync: false
+  # -- (bool) Whether Arborist users with no remaining user-specific policies
+  # should be removed during usersync.
+  #
+  # Scope: this gates USER pruning only. On every run, usersync still reconciles
+  # the authz model from user.yaml regardless of this value: groups absent from
+  # user.yaml are deleted, and user policy bindings are revoked and re-applied.
+  # Setting this to false does NOT make usersync non-destructive to groups or policies.
+  #
+  # Set to false for deployments using dynamic user management
+  # (e.g. Auth0 or REMS).
+  # true: pass --prune-users; requires a Fence version supporting the flag.
+  # false: pass --no-prune-users; requires a Fence version supporting the flag.
+  # null: do not pass a pruning flag; compatible with older Fence images.
+  pruneUsers: null
   # -- (string) The cron schedule expression to use in the usersync cronjob. Runs every 30 minutes by default.
   schedule: "*/30 * * * *"
   # -- (string) To set a custom image for pulling the user.yaml file from S3. Default is the Gen3 Awshelper image.
@@ -277,8 +291,7 @@ podAnnotations: {}
 podSecurityContext: {}
 
 # -- (map) Security context for the containers in the pod
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
