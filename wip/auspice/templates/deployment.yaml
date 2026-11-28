@@ -39,8 +39,8 @@ spec:
             - name: MAPBOX_API_TOKEN
               # Optional token for mapbox api
               valueFrom:
-                configMapKeyRef:
-                  name: global
+                secretKeyRef:
+                  name: mapbox-config
                   key: mapbox_token
                   optional: true
           livenessProbe:
