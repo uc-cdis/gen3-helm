@@ -56,6 +56,11 @@ spec:
             "Effect":"Allow",
             "Action":["s3:PutObject","s3:GetObject","s3:DeleteObject"],
             "Resource":"arn:aws:s3:::{{ $bucketName }}/*"
+          },
+          {
+            "Effect":"Allow",
+            "Action":["s3:ListBucket"],
+            "Resource":"arn:aws:s3:::{{ $bucketName }}"
           }
         ]
       }
@@ -99,4 +104,4 @@ spec:
             {{- if .Values.global.crossplane.s3.kmsKeyId }}
             kmsMasterKeyID: {{ .Values.global.crossplane.s3.kmsKeyId }}
             {{- end }}
-{{- end}}            
+{{- end}}
