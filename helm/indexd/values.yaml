@@ -223,7 +223,7 @@ service:
   type: ClusterIP
   # -- (int) The port number that the service exposes.
   port: 80
-  targetPort: 80
+  targetPort: 8000
 
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
@@ -259,17 +259,17 @@ volumes:
 
 # -- (list) Volumes to mount to the container.
 volumeMounts:
-  - name: "uwsgi-config"
-    mountPath: "/etc/uwsgi/uwsgi.ini"
-    subPath: uwsgi.ini
+  # - name: "uwsgi-config"
+  #   mountPath: "/etc/uwsgi/uwsgi.ini"
+  #   subPath: uwsgi.ini
   - name: "config-volume"
     readOnly: true
-    mountPath: "/var/www/indexd/local_settings.py"
+    mountPath: "/indexd/local_settings.py"
     subPath: "local_settings.py"
-  - name: "gunicorn-conf"
-    readOnly: true
-    mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
-    subPath: "gunicorn.conf.py"
+  # - name: "gunicorn-conf"
+  #   readOnly: true
+  #   mountPath: "/indexd/deployment/wsgi/gunicorn.conf.py"
+  #   subPath: "gunicorn.conf.py"
 
 # -- (list) Environment variables to pass to the container
 env:

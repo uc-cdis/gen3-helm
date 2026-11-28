@@ -44,48 +44,38 @@ USE_SINGLE_TABLE = environ.get("USE_SINGLE_TABLE", "false").lower() == "true"
 # - ADD_PREFIX_ALIAS: aliases are created for new records - "<PREFIX><GUID>".
 # Do NOT set both ADD_PREFIX_ALIAS and PREPEND_PREFIX to True, or aliases
 # will be created as "<PREFIX><PREFIX><GUID>".
-if USE_SINGLE_TABLE:
+if USE_SINGLE_TABLE is True:
     CONFIG["INDEX"] = {
         "driver": SingleTableSQLAlchemyIndexDriver(
-            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-            ),
-            echo=True,
-            index_config=index_config
-        )
+            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
+            index_config=index_config,
+        ),
     }
+
 else:
     CONFIG["INDEX"] = {
         "driver": SQLAlchemyIndexDriver(
-            "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-                usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-            ),
-            echo=True,
-            index_config=index_config
-        )
+            f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
+            index_config=index_config,
+        ),
     }
-
 
 CONFIG["ALIAS"] = {
     "driver": SQLAlchemyAliasDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-            usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-        )
-    )
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
+    ),
 }
+
 
 if arborist:
     AUTH = SQLAlchemyAuthDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-            usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-        ),
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}",
         arborist="http://arborist-service/",
     )
+
 else:
     AUTH = SQLAlchemyAuthDriver(
-        "postgresql+psycopg2://{usr}:{psw}@{pghost}:{pgport}/{db}".format(
-            usr=usr, psw=psw, pghost=pghost, pgport=pgport, db=db
-        )
+        f"postgresql+asyncpg://{usr}:{psw}@{pghost}:{pgport}/{db}"
     )
 
 cloud_provider_map = environ.get("CLOUD_PROVIDER_MAP", None)
