@@ -13,6 +13,20 @@ Published versions of this chart are listed in the
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | accountNumber | string | `"xxxxxxxxxxxx"` |  |
+| alb-controller-mtls.configuration.enabled | bool | `false` |  |
+| alb-controller-mtls.enabled | bool | `false` |  |
+| alb-controller-mtls.hostNetworkEnabled | bool | `false` |  |
+| alb-controller-mtls.ingress.certificateArn | string | `""` |  |
+| alb-controller-mtls.ingress.hostname | string | `"token.mtls.."` |  |
+| alb-controller-mtls.ingress.name | string | `"revproxy-mtls"` |  |
+| alb-controller-mtls.ingress.namespace | string | `""` |  |
+| alb-controller-mtls.ingress.scheme | string | `"internet-facing"` |  |
+| alb-controller-mtls.ingress.serviceName | string | `"revproxy-service"` |  |
+| alb-controller-mtls.ingress.servicePort | int | `80` |  |
+| alb-controller-mtls.ingress.sslPolicy | string | `"ELBSecurityPolicy-TLS13-1-2-2021-06"` |  |
+| alb-controller-mtls.ingress.targetType | string | `"instance"` |  |
+| alb-controller-mtls.ingress.trustStore | string | `""` |  |
+| alb-controller-mtls.targetRevision | string | `"1.13.4"` |  |
 | alb-controller.configuration.enabled | bool | `false` |  |
 | alb-controller.enabled | bool | `false` |  |
 | alb-controller.hostNetworkEnabled | bool | `false` |  |
