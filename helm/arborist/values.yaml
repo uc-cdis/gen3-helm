@@ -198,6 +198,32 @@ service:
   port: 80
   targetPort: 8080
 
+# -- (map) Startup probe for the arborist container. While it is failing, the liveness and readiness probes do not
+# run, so a slow boot is not killed by the liveness probe. The container is restarted if it has not passed
+# after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable.
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
+
+# -- (map) Liveness probe for the arborist container. Only starts once the startup probe has passed. Set to `null` to disable.
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 10
+
+# -- (map) Readiness probe for the arborist container. Only starts once the startup probe has passed. Set to `null` to disable.
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+
 # -- (map) Resource requests and limits for the containers in the pod
 resources:
   # -- (map) The amount of resources that the container requests

@@ -74,6 +74,7 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/arborist"` | Docker repository. |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| livenessProbe | map | `{"httpGet":{"path":"/health","port":"http"},"initialDelaySeconds":30,"periodSeconds":60,"timeoutSeconds":10}` | Liveness probe for the arborist container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | map | `{}` | Node selector to apply to the pod |
@@ -90,6 +91,7 @@ Published versions of this chart are listed in the
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| readinessProbe | map | `{"httpGet":{"path":"/health","port":"http"}}` | Readiness probe for the arborist container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
 | resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -109,6 +111,7 @@ Published versions of this chart are listed in the
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| startupProbe | map | `{"failureThreshold":30,"httpGet":{"path":"/health","port":"http"},"initialDelaySeconds":10,"periodSeconds":10}` | Startup probe for the arborist container. While it is failing, the liveness and readiness probes do not run, so a slow boot is not killed by the liveness probe. The container is restarted if it has not passed after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable. |
 | tolerations | list | `[]` | Tolerations to apply to the pod |
 | volumeMounts | list | `[]` | Volume mounts to attach to the container |
 | volumes | list | `[]` | Volumes to attach to the pod |

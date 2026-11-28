@@ -131,18 +131,18 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
               name: http
             - containerPort: 443
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /_status?timeout=20
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 30
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
           readinessProbe:
-            initialDelaySeconds: 30
-            httpGet:
-              path: /_status?timeout=2
-              port: http
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           # command: ["/bin/bash" ]
           # args: 
           #   - "-c"

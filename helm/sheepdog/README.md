@@ -79,6 +79,7 @@ Published versions of this chart are listed in the
 | image.pullPolicy | string | `"Always"` | Docker pull policy. |
 | image.repository | string | `"quay.io/cdis/sheepdog"` | Docker repository. |
 | image.tag | string | `"master"` | Overrides the image tag whose default is the chart appVersion. |
+| livenessProbe | map | `{"httpGet":{"path":"/_status?timeout=20","port":"http"},"initialDelaySeconds":30,"periodSeconds":60,"timeoutSeconds":30}` | Liveness probe for the sheepdog container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | metricsEnabled | bool | `nil` | Whether Metrics are enabled. |
 | partOf | string | `"Core-Service"` | Label to help organize pods and their use. Any value is valid, but use "_" or "-" to divide words. |
 | podAnnotations | map | `{"gen3.io/network-ingress":"sheepdog"}` | Annotations to add to the pod |
@@ -93,6 +94,7 @@ Published versions of this chart are listed in the
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| readinessProbe | map | `{"httpGet":{"path":"/_status?timeout=2","port":"http"},"initialDelaySeconds":30}` | Readiness probe for the sheepdog container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | releaseLabel | string | `"production"` |  |
 | replicaCount | int | `1` | Number of replicas for the deployment. |
@@ -110,6 +112,7 @@ Published versions of this chart are listed in the
 | service | map | `{"port":80,"targetPort":80,"type":"ClusterIP"}` | Kubernetes service information. |
 | service.port | int | `80` | The port number that the service exposes. |
 | service.type | string | `"ClusterIP"` | Type of service. Valid values are "ClusterIP", "NodePort", "LoadBalancer", "ExternalName". |
+| startupProbe | map | `{"failureThreshold":30,"httpGet":{"path":"/_status?timeout=2","port":"http"},"initialDelaySeconds":10,"periodSeconds":10}` | Startup probe for the sheepdog container. While it is failing, the liveness and readiness probes do not run, so a slow boot is not killed by the liveness probe. The container is restarted if it has not passed after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable. |
 | strategy | map | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | Rolling update deployment strategy |
 | strategy.rollingUpdate.maxSurge | int | `1` | Number of additional replicas to add during rollout. |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum amount of pods that can be unavailable during the update. |

@@ -79,6 +79,7 @@ Published versions of this chart are listed in the
 | image.repository | string | `"quay.io/cdis/indexd"` | The Docker image repository for the indexd service |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets. |
+| livenessProbe | map | `{"httpGet":{"path":"/_status","port":"http"},"initialDelaySeconds":30,"periodSeconds":10}` | Liveness probe for the indexd container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | maxBulkRequestLength | int | `100` | The maximum number of records that can be processed in a single bulk request. This is used to prevent large requests from overwhelming the system. |
 | metricsEnabled | bool | `false` | Whether Metrics are enabled. indexd doesn't expose metrics yet. |
 | migrateToSingleTable.args | string | `nil` |  |
@@ -100,6 +101,7 @@ Published versions of this chart are listed in the
 | postgres.username | string | `nil` | Username for postgres. This is a service override, defaults to <serviceName>-<releaseName> |
 | postgresql | map | `{"primary":{"persistence":{"enabled":false}}}` | Postgresql subchart settings if deployed separately option is set to "true". Disable persistence by default so we can spin up and down ephemeral environments |
 | postgresql.primary.persistence.enabled | bool | `false` | Option to persist the dbs data. |
+| readinessProbe | map | `{"httpGet":{"path":"/_status","port":"http"}}` | Readiness probe for the indexd container. Only starts once the startup probe has passed. Set to `null` to disable. |
 | release | string | `"production"` | Valid options are "production" or "dev". If invalid option is set- the value will default to "dev". |
 | replicaCount | int | `1` | Number of desired replicas |
 | resources | map | `{"limits":{"memory":"512Mi"},"requests":{"memory":"12Mi"}}` | Resource requests and limits for the containers in the pod |
@@ -119,6 +121,7 @@ Published versions of this chart are listed in the
 | serviceAccount.annotations | map | `{}` | Annotations to add to the service account. |
 | serviceAccount.create | bool | `false` | Specifies whether a service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account |
+| startupProbe | map | `{"failureThreshold":30,"httpGet":{"path":"/_status","port":"http"},"initialDelaySeconds":10,"periodSeconds":10}` | Startup probe for the indexd container. While it is failing, the liveness and readiness probes do not run, so a slow boot is not killed by the liveness probe. The container is restarted if it has not passed after `initialDelaySeconds + periodSeconds * failureThreshold`. Set to `null` to disable. |
 | tolerations | list | `[]` | Tolerations for the pods |
 | trustedIssuers | map | `{"defaultBearerIssuer":"","defaultPassportIssuer":"","defaultPreferredType":"BearerAuth"}` | Maps an arborist resource to the issuers for passports and bearer tokens. |
 | trustedIssuers.defaultBearerIssuer | string | `""` | The default issuer for bearer tokens to be used if a given auth resource isn't provided. Defaults to the fence token issuer |
