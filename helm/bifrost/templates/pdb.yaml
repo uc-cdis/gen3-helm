@@ -1,0 +1,76 @@
+{{- if and .Values.bifrost.enabled .Values.bifrost.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-bifrost
+spec:
+  minAvailable: {{ .Values.bifrost.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 6 }}
+---
+{{- end }}
+
+{{- if and .Values.headroom.enabled .Values.headroom.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-headroom
+spec:
+  minAvailable: {{ .Values.headroom.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 6 }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.enabled .Values.redactor.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-redactor
+spec:
+  minAvailable: {{ .Values.redactor.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 6 }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.presidio.enabled .Values.redactor.presidio.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-presidio
+spec:
+  minAvailable: {{ .Values.redactor.presidio.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "presidio") | nindent 6 }}
+---
+{{- end }}
+
+{{- if and .Values.redactor.detectSecrets.enabled .Values.redactor.detectSecrets.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-detect-secrets
+spec:
+  minAvailable: {{ .Values.redactor.detectSecrets.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "detect-secrets") | nindent 6 }}
+---
+{{- end }}
+
+{{- if and .Values.adminApi.enabled .Values.adminApi.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-admin-api
+spec:
+  minAvailable: {{ .Values.adminApi.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 6 }}
+{{- end }}

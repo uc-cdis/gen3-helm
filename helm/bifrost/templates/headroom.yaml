@@ -1,0 +1,83 @@
+{{- if .Values.headroom.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-headroom
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "headroom") | nindent 4 }}
+spec:
+  replicas: {{ .Values.headroom.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 8 }}
+    spec:
+      {{- include "ai-gateway.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: headroom
+          image: "{{ .Values.headroom.image.repository }}:{{ .Values.headroom.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          ports:
+            - name: http
+              containerPort: 8081
+          env:
+            - name: HEADROOM_UPSTREAM_URL
+              value: {{ .Values.headroom.upstreamUrl | quote }}
+            - name: HEADROOM_PROXY_URL
+              value: {{ .Values.headroom.upstreamUrl | quote }}
+            - name: OPENAI_TARGET_API_URL
+              value: {{ .Values.headroom.openaiTargetUrl | quote }}
+            - name: OPENAI_BASE_URL
+              value: {{ .Values.headroom.openaiTargetUrl | quote }}
+            - name: OPENAI_API_URL
+              value: {{ .Values.headroom.openaiTargetUrl | quote }}
+            - name: HEADROOM_VAULT_REDIS_ADDR
+              value: {{ .Values.redactor.vault.redisAddr | quote }}
+            {{- with .Values.headroom.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.headroom.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-headroom
+  labels:
+    {{- include "ai-gateway.componentLabels" (dict "Chart" .Chart "Release" .Release "Values" .Values "component" "headroom") | nindent 4 }}
+spec:
+  type: {{ .Values.headroom.service.type }}
+  selector:
+    {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.headroom.service.port }}
+      targetPort: http
+{{- end }}

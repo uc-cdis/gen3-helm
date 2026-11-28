@@ -1,0 +1,380 @@
+# Global toggles
+global:
+  imageRegistry: quay.io/cdis
+  imagePullSecrets:
+    - name: quay-pull
+  # CTDS hardened base digest; Renovate updates.
+  hardenedBaseDigest: ""
+
+# ─── Bifrost (core gateway) ──────────────────────────────────────────────────
+bifrost:
+  enabled: true
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-bifrost-0.1.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits:   { cpu: "2",  memory: 2Gi }
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 75
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policy:
+          type: Percent
+          value: 100
+          periodSeconds: 60
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policy:
+          type: Percent
+          value: 30
+          periodSeconds: 60
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    seccompProfile: { type: RuntimeDefault }
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities: { drop: ["ALL"] }
+  # Bifrost config is rendered from values.providers into a ConfigMap.
+  config:
+    logLevel: info
+    enableTelemetry: true
+    plugins:
+      - name: redactor
+        endpoint: http://ai-gateway-redactor:9090
+        timeoutMs: 1500
+        failOpen: false
+  # Providers (templated from providers/*.tmpl). Empty by default — set per env.
+  providers:
+    bedrock:
+      enabled: false
+      region: us-east-1
+      authMode: irsa
+      keyName: bedrock-iam
+      aliases: {}
+      models:
+        - anthropic.claude-haiku-3-5-v1
+        - anthropic.claude-sonnet-4-v1
+    vertex:
+      enabled: false
+      project: ""
+      location: us-central1
+      authMode: workload_identity_federation
+      models:
+        - gemini-1.5-flash
+    kserve:
+      enabled: false
+      services: []
+    onpremOpenAI:
+      enabled: false
+      endpoint: ""
+      authMode: none
+      models:
+        - qwen2.5-coder-32b-instruct
+    productShim:
+      enabled: false
+
+# ─── Headroom (token compression proxy in front of Bifrost) ──────────────────
+headroom:
+  enabled: true
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-headroom-0.1.3"
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8081
+  # Headroom serves OpenAI-compatible APIs at /v1/* and proxies upstream to Bifrost.
+  upstreamUrl: http://ai-gateway-bifrost:8080
+  openaiTargetUrl: http://ai-gateway-bifrost:8080/v1
+  # Additional env toggles for runtime-specific behavior.
+  extraEnv: []
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits:   { cpu: "2",  memory: 2Gi }
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 65
+    targetMemoryUtilizationPercentage: 75
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policy:
+          type: Percent
+          value: 100
+          periodSeconds: 60
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policy:
+          type: Percent
+          value: 30
+          periodSeconds: 60
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+# ─── Reversible redactor (shared services, independently scalable) ──────────
+redactor:
+  enabled: true
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-redactor-0.1.0"
+  replicaCount: 3
+  service:
+    type: ClusterIP
+    port: 9090
+  port: 9090
+  failOpen: false
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits:   { cpu: "2",  memory: 2Gi }
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 12
+    targetCPUUtilizationPercentage: 65
+    targetMemoryUtilizationPercentage: 75
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policy:
+          type: Percent
+          value: 100
+          periodSeconds: 60
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policy:
+          type: Percent
+          value: 30
+          periodSeconds: 60
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 2
+  vault:
+    # Redis vault for placeholder → original mapping.
+    redisAddr: ai-gateway-redis-master:6379
+    ttlSeconds: 900
+  presidio:
+    enabled: true
+    image:
+      repository: quay.io/cdis/ctds-ai-gateway
+      tag: "ai-gateway-presidio-0.1.0-amd64"
+    replicaCount: 2
+    service:
+      type: ClusterIP
+      port: 5001
+    port: 5001
+    resources:
+      requests: { cpu: 500m, memory: 2Gi }
+      limits:   { cpu: "4",  memory: 8Gi }
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policy:
+            type: Percent
+            value: 100
+            periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policy:
+            type: Percent
+            value: 25
+            periodSeconds: 60
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+  detectSecrets:
+    enabled: true
+    image:
+      repository: quay.io/cdis/ctds-ai-gateway
+      tag: "ai-gateway-detect-secrets-0.1.0"
+    replicaCount: 2
+    service:
+      type: ClusterIP
+      port: 5002
+    port: 5002
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits:   { cpu: "1",  memory: 512Mi }
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policy:
+            type: Percent
+            value: 100
+            periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policy:
+            type: Percent
+            value: 30
+            periodSeconds: 60
+    podDisruptionBudget:
+      enabled: false
+      minAvailable: 1
+
+# ─── Admin API façade ────────────────────────────────────────────────────────
+adminApi:
+  enabled: true
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-admin-api-0.1.9"
+  allowedProviders:
+    - bedrock/anthropic.claude-haiku-4-5-20251001-v1:0
+    - bedrock/anthropic.claude-opus-4-6-v1
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8090
+  tierBudgetDefaults:
+    admin: "60:8:15000"
+    staff: "120:15:30000"
+    researcher: "90:12:24000"
+    default: "50:6:10000"
+  bearerTokenSecret:
+    name: ai-gateway-admin-token
+    key: token
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policy:
+          type: Percent
+          value: 100
+          periodSeconds: 60
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policy:
+          type: Percent
+          value: 30
+          periodSeconds: 60
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+# ─── Global auto-routing controller (org spend aware) ───────────────────────
+autoRouter:
+  enabled: false
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-auto-router-0.1.1"
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8093
+  pollSeconds: 60
+  orgBudgetLimitUsd: 200
+  hardStopAtCap: true
+  thresholds:
+    stage1: 0.60
+    stage2: 0.85
+    stage3: 1.00
+  dryRun: false
+  routingPatchPathTemplate: /v1/keys/by-email/{email}/routing
+  models:
+    premium:
+      - bedrock/anthropic.claude-opus-4-6-v1
+      - vertex/gemini-1.5-pro
+    balanced:
+      - bedrock/anthropic.claude-sonnet-4-v1
+      - vertex/gemini-1.5-flash
+    cheap:
+      - bedrock/anthropic.claude-haiku-3-5-v1
+      - bedrock/meta.llama3-70b-instruct-v1
+    onprem:
+      - kserve/qwen2.5-32b-onprem
+      - onprem_openai/qwen2.5-coder-32b-instruct
+
+# ─── org-standards MCP server ────────────────────────────────────────────────
+orgStandardsMcp:
+  enabled: true
+  image:
+    repository: quay.io/cdis/ctds-ai-gateway
+    tag: "ai-gateway-org-standards-mcp-0.1.0"
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8092
+  standardsRepo: https://github.com/uc-cdis/ctds-agent-standards
+  cacheTtlSeconds: 300
+
+# ─── Ingress (Caddy or ALB at the edge — we expose ClusterIP only) ───────────
+ingress:
+  enabled: false   # the staff-portal edge Caddy fronts us; set true for direct.
+  className: alb
+  hosts:
+    - host: ai-gw.staff-portal.io
+      paths:
+        - path: /v1
+          pathType: Prefix
+          service: headroom
+        - path: /admin
+          pathType: Prefix
+          service: adminApi
+  tls: []
+
+# ─── ServiceAccount (used by Bifrost for IRSA → Bedrock STS) ─────────────────
+serviceAccount:
+  create: true
+  name: ai-gateway-bifrost
+  annotations: {}
+    # eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/ai-gateway-bedrock
+
+# ─── NetworkPolicies ─────────────────────────────────────────────────────────
+networkPolicy:
+  enabled: false
+  # Headroom/admin ingress can remain broad by default for multi-namespace edge
+  # frontends; tighten with namespace label selectors per environment.
+  extraIngressNamespaceSelectors: []
+  # Enable DNS egress for provider name resolution.
+  allowDns: true
+  # Explicit external egress CIDRs + ports for provider traffic.
+  # Example tighter setting: ["10.0.0.0/8"] with ports [443].
+  externalEgressCidrs:
+    - 0.0.0.0/0
+  externalEgressPorts:
+    - 443
+
+# ─── Observability ───────────────────────────────────────────────────────────
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels: {}

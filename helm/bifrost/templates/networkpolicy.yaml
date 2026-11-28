@@ -1,0 +1,184 @@
+{{- if .Values.networkPolicy.enabled -}}
+# Default-deny + explicit allows. Headroom + admin-api receive traffic from
+# the cluster's edge ingress; Bifrost only accepts traffic from Headroom and
+# the admin-api. Egress to provider endpoints is allowed cluster-wide via
+# the CNI policy — this file covers in-cluster paths only.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-default-deny
+  labels:
+    {{- include "ai-gateway.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  egress:
+    # Allow service-to-service calls inside this namespace.
+    - to:
+        - podSelector: {}
+    {{- if .Values.networkPolicy.allowDns }}
+    # Allow DNS resolution via kube-dns/CoreDNS.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    {{- end }}
+    {{- if .Values.networkPolicy.externalEgressCidrs }}
+    # Allow explicitly configured external egress CIDRs (for provider traffic).
+    - to:
+      {{- range .Values.networkPolicy.externalEgressCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+      {{- end }}
+      ports:
+      {{- range .Values.networkPolicy.externalEgressPorts }}
+        - protocol: TCP
+          port: {{ . }}
+      {{- end }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-bifrost-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 14 }}
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 14 }}
+        {{- if .Values.autoRouter.enabled }}
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "auto-router") | nindent 14 }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-headroom-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "headroom") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: {}
+        {{- range .Values.networkPolicy.extraIngressNamespaceSelectors }}
+        - namespaceSelector:
+            matchLabels:
+              {{- toYaml . | nindent 14 }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.headroom.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-admin-api-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "admin-api") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: {}
+        {{- range .Values.networkPolicy.extraIngressNamespaceSelectors }}
+        - namespaceSelector:
+            matchLabels:
+              {{- toYaml . | nindent 14 }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.adminApi.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-redactor-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.redactor.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-presidio-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "presidio") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.redactor.presidio.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-detect-secrets-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "detect-secrets") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "redactor") | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.redactor.detectSecrets.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "ai-gateway.fullname" . }}-org-standards-mcp-ingress
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "ai-gateway.componentSelector" (dict "root" . "component" "org-standards-mcp") | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "ai-gateway.componentSelector" (dict "root" . "component" "bifrost") | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.orgStandardsMcp.service.port }}
+{{- end }}
